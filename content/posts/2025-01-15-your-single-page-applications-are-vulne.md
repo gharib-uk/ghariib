@@ -3,8 +3,6 @@ title: "Your Single-Page Applications Are Vulnerable Heres How to Fix Them"
 date: Wed, 15 Jan 2025 14:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Threat Intelligence
 ---
 # Your Single-Page Applications Are Vulnerable Heres How to Fix Them
 

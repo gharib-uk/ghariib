@@ -3,8 +3,6 @@ title: "QR Coding My Way Out of Here C2 in Browser Isolation Environments"
 date: Wed, 04 Dec 2024 14:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Threat Intelligence
 ---
 # QR Coding My Way Out of Here C2 in Browser Isolation Environments
 

@@ -3,8 +3,6 @@ title: "Ivanti Connect Secure VPN Targeted in New Zero-Day Exploitation"
 date: Wed, 08 Jan 2025 14:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Threat Intelligence
 ---
 # Ivanti Connect Secure VPN Targeted in New Zero-Day Exploitation
 

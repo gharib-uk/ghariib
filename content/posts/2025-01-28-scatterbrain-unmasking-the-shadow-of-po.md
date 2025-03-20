@@ -3,8 +3,6 @@ title: "ScatterBrain Unmasking the Shadow of PoisonPlugs Obfuscator"
 date: Tue, 28 Jan 2025 14:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Threat Intelligence
 ---
 # ScatterBrain Unmasking the Shadow of PoisonPlugs Obfuscator
 

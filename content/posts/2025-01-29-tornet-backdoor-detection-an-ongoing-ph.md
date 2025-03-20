@@ -3,8 +3,6 @@ title: "TorNet Backdoor Detection An Ongoing Phishing Email Campaign Uses PureCr
 date: Wed, 29 Jan 2025 12:57:18 +0000
 draft: false
 type: posts
-categories: 
-- Blog,Latest Threats,Cyberattack,Detection Content,Malware,Phishing,Sigma,SOC Prime Platform,Threat Detection Marketplace,Threat Hunting Content
 ---
 # TorNet Backdoor Detection An Ongoing Phishing Email Campaign Uses PureCrypter Malware to Drop Other Payloads
 

@@ -3,8 +3,6 @@ title: "Lumma Stealer Detection Sophisticated Campaign Using GitHub Infrastructu
 date: Fri, 31 Jan 2025 13:22:11 +0000
 draft: false
 type: posts
-categories: 
-- Blog,Latest Threats,Cyberattack,Detection Content,Malware,Sigma,SOC Prime Platform,Threat Detection Marketplace,Threat Hunting Content
 ---
 # Lumma Stealer Detection Sophisticated Campaign Using GitHub Infrastructure to Spread SectopRAT Vidar Cobeacon and Other Types of Malware
 

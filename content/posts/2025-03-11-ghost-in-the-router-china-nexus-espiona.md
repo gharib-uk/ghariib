@@ -3,8 +3,6 @@ title: "Ghost in the Router China-Nexus Espionage Actor UNC3886 Targets Juniper 
 date: Tue, 11 Mar 2025 20:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Threat Intelligence
 ---
 # Ghost in the Router China-Nexus Espionage Actor UNC3886 Targets Juniper Routers
 
@@ -27,6 +25,8 @@ Mandiant has reported on similar custom malware ecosystems in 2022 and 2023 that
 Mandiant previously reported on UNC3886's emphasis on techniques to gather and use [legitimate credentials](https://cloud.google.com/blog/topics/threat-intelligence/uncovering-unc3886-espionage-operations) to move laterally within a network, undetected. These objectives remained consistent but were pursued with the introduction of a new tool in 2024. Observations in this blog post strengthen our assessment that the actor’s focus is on maintaining long-term access to victim networks. UNC3886 continues to show a deep understanding of the underlying technology of the appliances being targeted.
 
 At the time of writing, Mandiant has not identified any technical overlaps between activities detailed in this blog post and those publicly reported by other parties as Volt Typhoon or Salt Typhoon. 
+
+Register for our [upcoming webinar](https://www.brighttalk.com/webcast/18282/638846?utm_source=GoogleCloudSecurity&utm_medium=blog&utm_campaign=638846) for a deeper dive into the activity described in this blog post.
 
 Attribution
 -----------

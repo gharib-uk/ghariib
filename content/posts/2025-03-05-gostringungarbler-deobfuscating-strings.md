@@ -3,8 +3,6 @@ title: "GoStringUngarbler Deobfuscating Strings in Garbled Binaries"
 date: Wed, 05 Mar 2025 14:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Threat Intelligence
 ---
 # GoStringUngarbler Deobfuscating Strings in Garbled Binaries
 
@@ -26,7 +24,7 @@ We're also introducing GoStringUngarbler, a command-line tool written in Python 
 
 aside\_block
 
-<ListValue: \[StructValue(\[('title', 'Get GoStringUngarbler!'), ('body', <wagtail.rich\_text.RichText object at 0x3e38454b3dc0>), ('btn\_text', 'Download now'), ('href', 'https://github.com/mandiant/gostringungarbler'), ('image', None)\])\]>
+<ListValue: \[StructValue(\[('title', 'Get GoStringUngarbler!'), ('body', <wagtail.rich\_text.RichText object at 0x3ead400fefd0>), ('btn\_text', 'Download now'), ('href', 'https://github.com/mandiant/gostringungarbler'), ('image', None)\])\]>
 
 Garble Obfuscating Compiler
 ---------------------------

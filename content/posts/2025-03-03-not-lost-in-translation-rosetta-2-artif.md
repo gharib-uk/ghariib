@@ -3,8 +3,6 @@ title: "Not Lost in Translation Rosetta 2 Artifacts in macOS Intrusions"
 date: Mon, 03 Mar 2025 14:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Threat Intelligence
 ---
 # Not Lost in Translation Rosetta 2 Artifacts in macOS Intrusions
 

@@ -3,8 +3,6 @@ title: "Bridging the Gap Elevating Red Team Assessments with Application Securit
 date: Thu, 05 Dec 2024 14:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Threat Intelligence
 ---
 # Bridging the Gap Elevating Red Team Assessments with Application Security Testing
 

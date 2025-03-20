@@ -3,8 +3,6 @@ title: "Blocking Russian IPs"
 date: Thu, 06 Mar 2025 23:42:30 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Blocking Russian IPs
 

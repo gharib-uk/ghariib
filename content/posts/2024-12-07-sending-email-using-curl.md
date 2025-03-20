@@ -3,8 +3,6 @@ title: "Sending Email Using Curl"
 date: Sat, 07 Dec 2024 17:00:35 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Sending Email Using Curl
 

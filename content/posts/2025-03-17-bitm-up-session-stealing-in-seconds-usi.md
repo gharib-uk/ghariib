@@ -3,8 +3,6 @@ title: "BitM Up Session Stealing in Seconds Using the Browser-in-the-Middle Tech
 date: Mon, 17 Mar 2025 05:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Threat Intelligence
 ---
 # BitM Up Session Stealing in Seconds Using the Browser-in-the-Middle Technique
 

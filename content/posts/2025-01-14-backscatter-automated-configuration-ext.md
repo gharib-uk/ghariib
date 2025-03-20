@@ -3,8 +3,6 @@ title: "Backscatter Automated Configuration Extraction"
 date: Tue, 14 Jan 2025 14:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Threat Intelligence
 ---
 # Backscatter Automated Configuration Extraction
 

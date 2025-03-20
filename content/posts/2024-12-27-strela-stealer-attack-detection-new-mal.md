@@ -3,8 +3,6 @@ title: "Strela Stealer Attack Detection New Malware Variant Now Targets Ukraine 
 date: Fri, 27 Dec 2024 12:18:37 +0000
 draft: false
 type: posts
-categories: 
-- Blog,Latest Threats,Cyberattack,Detection Content,Malware,Sigma,SOC Prime Platform,Threat Detection Marketplace,Threat Hunting Content
 ---
 # Strela Stealer Attack Detection New Malware Variant Now Targets Ukraine Alongside Spain Italy and Germany
 

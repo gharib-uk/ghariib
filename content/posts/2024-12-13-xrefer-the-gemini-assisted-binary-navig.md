@@ -3,8 +3,6 @@ title: "XRefer The Gemini-Assisted Binary Navigator"
 date: Fri, 13 Dec 2024 05:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Threat Intelligence
 ---
 # XRefer The Gemini-Assisted Binary Navigator
 
@@ -21,7 +19,7 @@ Today we introduce a new tool, XRefer (pronounced eks\-reffer), which aims to sh
 
 aside\_block
 
-<ListValue: \[StructValue(\[('title', 'Get XRefer now!'), ('body', <wagtail.rich\_text.RichText object at 0x3e3844d87580>), ('btn\_text', 'Download'), ('href', 'https://github.com/mandiant/xrefer'), ('image', None)\])\]>
+<ListValue: \[StructValue(\[('title', 'Get XRefer now!'), ('body', <wagtail.rich\_text.RichText object at 0x3ead4774bd00>), ('btn\_text', 'Download'), ('href', 'https://github.com/mandiant/xrefer'), ('image', None)\])\]>
 
 Introduction
 ------------

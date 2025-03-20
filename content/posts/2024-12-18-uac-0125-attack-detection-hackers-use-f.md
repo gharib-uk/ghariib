@@ -3,8 +3,6 @@ title: "UAC-0125 Attack Detection Hackers Use Fake Websites on Cloudflare Worker
 date: Wed, 18 Dec 2024 13:50:44 +0000
 draft: false
 type: posts
-categories: 
-- Blog,Latest Threats,CERT-UA,CERT-UA12559,CERTUA,Cyberattack,Detection Content,Malware,Sigma,SOC Prime Platform,Threat Detection Marketplace,Threat Hunting Content
 ---
 # UAC-0125 Attack Detection Hackers Use Fake Websites on Cloudflare Workers to Exploit the Army Application
 

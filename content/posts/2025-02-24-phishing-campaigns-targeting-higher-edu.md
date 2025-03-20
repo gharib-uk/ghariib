@@ -3,8 +3,6 @@ title: "Phishing Campaigns Targeting Higher Education Institutions"
 date: Mon, 24 Feb 2025 14:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Threat Intelligence
 ---
 # Phishing Campaigns Targeting Higher Education Institutions
 

@@ -3,8 +3,6 @@ title: "XE Group Activity Detection From Credit Card Skimming to Exploiting CVE-
 date: Tue, 11 Feb 2025 15:57:17 +0000
 draft: false
 type: posts
-categories: 
-- Blog,Latest Threats,CVE,Cyberattack,Detection Content,Sigma,SOC Prime Platform,Threat Detection Marketplace,Threat Hunting Content,Vulnerability,Zero-Day,ZeroDay
 ---
 # XE Group Activity Detection From Credit Card Skimming to Exploiting CVE-2024-57968 and CVE-2025-25181 VeraCore Zero-Day Vulnerabilities
 

@@ -3,8 +3,6 @@ title: "Empowering innovation The next generation of the Phi family"
 date: Wed, 26 Feb 2025 22:00:00 +0000
 draft: false
 type: posts
-categories: 
-- AI + machine learning,AI,Small language models (SLMs)
 ---
 # Empowering innovation The next generation of the Phi family
 

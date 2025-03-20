@@ -3,8 +3,6 @@ title: "New Book Tactical Wireless Security"
 date: Mon, 30 Dec 2024 18:17:36 +0000
 draft: false
 type: posts
-categories: 
-- Pentesting,book,Cybersecurity,DragonOS,Hacking,HackRF,Kali Linux,RTL-SDR,SDR,technology,wifi,Wireless
 ---
 # New Book Tactical Wireless Security
 
