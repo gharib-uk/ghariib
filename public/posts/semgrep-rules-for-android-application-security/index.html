@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Semgrep Rules for Android Application Security</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Semgrep Rules for Android Application Security</h1>
+			<b><time>22.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h2 id="introduction">Introduction</h2>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgmqKNYmEPnpcNBEXzKE7L9L8Z3vMbGd70W0XIXLj48ru63EH1VB_Jlv5DF2vctrykGOBv9H9Ob_08OxOzPDNFJx6IBD1mTpbNOA5Pza7mJEv1D4GciPW8dLxEVMMNWAjOQ70RlNYmwJMhpP-Z08X-4yXe61CtZW6x9NXbqPqNDCQgiOJcIzZmGWLTarQU/w308-h308/android_image.png" alt="" />
+</figure>
+
+
+</p>
+<p>The number of Android applications has been growing rapidly in recent years. In 2022, there were over <strong>3.55 million</strong> <strong>Android apps</strong> available in the Google Play Store, and this number is expected to continue to grow in the years to come. The expansion of the Android app market is being driven by a number of factors, including the increasing popularity of smartphones, the growing demand for mobile apps, and the ease of developing and publishing Android apps. At the same time, the number of Android app<br>
+downloads is also growing rapidly. In 2022, there were over <strong>255 billion</strong> Android app <strong>downloads</strong> worldwide.</p>
+<p>For this reason, introducing automatic security controls during Mobile Application Penetration Testing (MAPT) activity and the CI phase is necessary to ensure the security of Android apps by scanning for vulnerabilities before merging into the main repository.</p>
+<h2></h2>
+<h2 id="decompiling-android-packages">Decompiling Android Packages</h2>
+<p>The compilation of Android applications is a multi-step process that involves different bytecodes, compilers, and execution engines. Generally speaking, a common compilation flow is divided into three phases:</p>
+<ol>
+<li><strong>Precompilation</strong>: The Java source code(&quot;.java&quot;) is converted into Java bytecode(&quot;.class&quot;).</li>
+<li><strong>Postcompilation</strong>: The Java bytecode is converted into Dalvik bytecode(&quot;.dex&quot;).</li>
+<li><strong>Release</strong>: The &ldquo;.dex&rdquo; and resource files are packed, signed and compressed into the Android App Package (<strong>APK</strong>)</li>
+</ol>
+<p>Finally, the Dalvik bytecode is executed by the Android runtime (ART) environment.</p>
+<p>Generally, the target of a Mobile Application Penetration Testing (MAPT) activity is in the form of an APK file. The decompilation of the both aforementioned bytecodes is possible and can be performed through the use of tools such as Jadx.</p>
+<pre tabindex="0"><code>jadx -d ./out-dir target.apk
+</code></pre><h2></h2>
+<h2 id="owasp-mas">OWASP MAS</h2>
+<p>The OWASP MAS project is a valuable resource for mobile security professionals, providing a comprehensive set of resources to enhance the security of mobile apps. The project includes several key components:</p>
+<ul>
+<li>
+<p><strong>OWASP MASVS</strong>: This resource outlines requirements for software architects and developers who aim to create secure mobile applications. It establishes an <strong>industry standard</strong> that can be used as a benchmark in mobile app security assessments. Additionally, it clarifies the role of software protection mechanisms in mobile security and offers requirements to verify their effectiveness.</p>
+</li>
+<li>
+<p><strong>OWASP MASTG</strong>: This comprehensive manual covers the processes, techniques, and tools used during mobile application security analysis. It also includes an exhaustive set of <strong>test cases</strong> for verifying the requirements outlined in the OWASP Mobile Application Security Verification Standard (MASVS). This serves as a foundational basis for conducting thorough and consistent security tests.</p>
+</li>
+<li>
+<p><strong>OWASP MAS Checklist</strong>: This checklist aligns with the tests described in the MASTG and provides an output template for mobile security testing.</p>
+</li>
+</ul>
+<table>
+  <thead>
+      <tr>
+          <th>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhdKu4Zh5wr5AX_VDzDIKJ4OxF1_nfAY0N6KYHhjv5tHJzptABxQ_5QcPgBu4VbmBWRO8NAy6PrDN_z8kwF_WTkCbabyQF1Kuvm8Vb9f9ywXGm9xfyyFACFGlWFTRRU1eNn9PQ8sV1IdAffzkQmGVc0cfPxyYyqsXOWD5qnCi4cjtn4WyKCW6xXcxOnuA/s16000/owasp_mas.png" alt="OWASP MAS" />
+</figure>
+
+
+</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="https://mas.owasp.org/">https://mas.owasp.org/</a></td>
+      </tr>
+  </tbody>
+</table>
+<h2></h2>
+<h2 id="semgrep">Semgrep</h2>
+<p>Semgrep is a Static Application Security Testing (SAST) tool that performs <strong>intra-file analysis</strong>, allowing you to define code patterns for detecting misconfigurations or security issues by analyzing one file at a time in isolation. Some advantages of using Semgrep include:</p>
+<ul>
+<li>It does not require that the source code is uploaded to an external cloud.</li>
+<li>It does not require that the target source code is buildable and have all dependencies. It can work only with a single source file.</li>
+<li>It is exceptionally <strong>fast</strong>.</li>
+<li>It allows you to write your <strong>custom patterns</strong> very easily.</li>
+</ul>
+<p>Once Semgrep is integrated into your <strong>CI pipeline</strong>, it automatically scans your code for potential vulnerabilities every time you commit changes. This helps identify and address vulnerabilities early in the development process, improving your software&rsquo;s security.</p>
+<h4 id="key-insights-on-semgrep">Key Insights on Semgrep</h4>
+<p>First of all, install Semgrep with the following command:</p>
+<pre tabindex="0"><code>python3 -m pip install semgrep
+</code></pre><p>Semgrep accepts two fundamental input:</p>
+<ul>
+<li><strong>Rules collection</strong>: A collection is composed by &ldquo;.yaml&rdquo; files, alternatively referred to as &ldquo;rules&rdquo;. A rule includes a series of patterns designed to identify or exclude specific elements within the target source code.</li>
+<li><strong>Target source code</strong>: This denotes the source code subject to analysis. It may also encompass partial code or code with certain dependencies omitted.</li>
+</ul>
+<p>The four main elements you can find inside a Semgrep rule yaml file are:</p>
+<table>
+  <thead>
+      <tr>
+          <th>&hellip;</th>
+          <th>Match a sequence of zero or more items such as arguments, statements, parameters, fields, characters.</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>&ldquo;&hellip;&rdquo;</td>
+          <td>Match any single hardcoded string.</td>
+      </tr>
+      <tr>
+          <td>$A</td>
+          <td>Match variables, functions, arguments, classes, object methods, imports, exceptions, and more.</td>
+      </tr>
+      <tr>
+          <td>&lt;&hellip; e &hellip;&gt;</td>
+          <td>Match an expression (&ldquo;e&rdquo;) that could be deeply nested within another expression.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Moreover, Semgrep provides several <strong>experimental modes</strong> that could be really useful in more difficult situations:</p>
+<ul>
+<li><strong>taint</strong>: It enables the data-flow analysis feature allowing to specify <strong>sources</strong> and <strong>sinks</strong>.</li>
+<li><strong>join</strong>: It allows to use <strong>multiple rules</strong> on more than one file and to join the results.</li>
+<li><strong>extract</strong>: It allows work with source file that contains <strong>different programming languages</strong>.</li>
+</ul>
+<p>Suppose to have a rules collection in the directory &ldquo;myrules/&rdquo; and a target source code &ldquo;mytarget/&rdquo;. To launch a Semgrep scan is very simple:</p>
+<pre tabindex="0"><code>semgrep -c ./myrules ./mytarget
+</code></pre><h2 id="the-project">The Project:</h2>
+<h2 id="semgrep-rules-for-android-application-security">Semgrep Rules for Android Application Security</h2>
+<h4 id="the-proposal">The proposal</h4>
+<p>In March 2023, the <strong>IMQ Minded Security</strong> team, with the purpose of contributing to the ethical hacking and mobile development communities, began the &ldquo;Semgrep Rules for Android Application Security&rdquo; project. The primary objective of this project is to provide a collection of Semgrep rules that cover the static tests described in the OWASP Mobile Application Security Testing Guide (MASTG) for Android applications. The project has been publicly released on the IMQ Minded Security official GitHub page:</p>
+<ul>
+<li><a href="https://github.com/mindedsecurity/semgrep-rules-android-security">https://github.com/mindedsecurity/semgrep-rules-android-security</a></li>
+</ul>
+<p>Currently, the project boasts more than 10 internal and external contributors with different degrees of seniority.</p>
+<p><strong>Supervisor</strong>:</p>
+<ul>
+<li>Stefano Di Paola (Twitter: @WisecWisec)</li>
+</ul>
+<p><strong>Project leader</strong>:</p>
+<ul>
+<li>Riccardo Cardelli (Github: @gand3lf)</li>
+</ul>
+<p><strong>Contributors (In alphabetical order)</strong>: </p>
+<ul>
+<li>Andrea Agnello (Github: @AndreNoli)</li>
+<li>Christian Cotignola (Twitter: @b4dsheep)</li>
+<li>Federico Dotta (Twitter: @apps3c)</li>
+<li>Giacomo Zorzin (Mastodon: @gellge)</li>
+<li>Giovanni Fazi (Github: @giovifazi)</li>
+<li>Martino Lessio (Twitter: @Martinolessio)</li>
+<li>Maurizio Siddu (Github: @akabe1)</li>
+<li>Michele Di Bonaventura (Twitter: @cyberaz0r)</li>
+<li>Michele Tumolo (Twitter: @0s0urce)</li>
+<li>Riccardo Granata (Github @riccardogranata)</li>
+</ul>
+<p>The &ldquo;<em>Semgrep Rules for Android Application Security</em>&rdquo; project does not cover the entire OWASP MASTG tests due to the intrinsic constraints of a mobile application SAST activity:</p>
+<ul>
+<li>The back-end source code is out of scope.</li>
+<li>The dynamic tests are out of scope.</li>
+</ul>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhri04T_tuzbsGPMMCkTEq9hgn7d4LvuGSVq8-gdJYivcKf5gY6gdQxnew1bF01N1os4i_pfMjiAg9NbQkhNDksijUCNQAM3yfESgnq-IlBrF0yKZDrV0JwleHiNwG6x16Dcg6JnqUFuP2ryZJR7Sifs5pPpBLGPqOioHgWs8yq5bHQKxd8C37KSM5wYuM/s16000/mastg_1_5.png" alt="" />
+</figure>
+
+
+</p>
+<p>To use the project during an MAPT activity is very simple:</p>
+<pre tabindex="0"><code># Download the target APK and the rules of the current project 
+$ git clone https://github.com/mindedsecurity/semgrep-rules-android-security
+# Extract and decompile the source code from the target APK file
+$ jadx -d target_src target.apk
+# To use the .semgrepignore file launch the scan from the project folder
+$ cd semgrep-rules-android-security/# Run Semgrep with the new security rules
+$ semgrep -c ./rules/ ../target_src/
+</code></pre><h2></h2>
+<h2 id="some-implemented-rules">Some Implemented Rules</h2>
+<p>The rules implemented are <strong>more than 40</strong> and this section contains a detailed description of four of the Semgrep rules included in the <em>&ldquo;Semgrep Rules for Android Application Security&rdquo;</em> project.</p>
+<h4 id="mstg-storage-3">MSTG-STORAGE-3</h4>
+<p>The detailed description of the current test can be visited at the following MASTG 1.5.0 reference:</p>
+<ul>
+<li><a href="https://github.com/OWASP/owasp-mastg/blob/v1.5.0/Document/0x05d-Testing-Data-Storage.md#testing-logs-for-sensitive-data-mstg-storage-3">https://github.com/OWASP/owasp-mastg/blob/v1.5.0/Document/0x05d-Testing-Data-Storage.md#testing-logs-for-sensitive-data-mstg-storage-3</a></li>
+</ul>
+<p>As stated in the MSTG-STORAGE-3 test, the purpose involves identifying any <strong>sensitive data</strong> within both system and <strong>application logs</strong>.</p>
+<p>For doing this, it is important to retrieve two information:</p>
+<ol>
+<li>The methods and classes that are delegated to perform logging operations.</li>
+<li>A regex that can be used to identify potentially sensitive data and attributes names.</li>
+</ol>
+<p>The first information can be partially retrieved in the <em>MSTG-STORAGE-3</em> description. The identified methods are the following:</p>
+<ul>
+<li><em>Log.v | Log.i | Log.w | Log.e | Log.wtf</em></li>
+<li><em>System.out.print | System.err.print | System.out.println | System.err.println</em></li>
+<li><em>Logger.log | Logger.info | Logger.logp | Logger.logrb | Logger.severe | Logger.warning</em></li>
+</ul>
+<p>Please note that the &ldquo;<em>Log.d</em>&rdquo; method is not included in the list because it prints log data only if the Android manifest contains the flag &ldquo;<em>android:debuggable</em>&rdquo; set to true. This requirement is verified by another implemented rule.</p>
+<p>About the second information, the regex used to identify secrets inside the source code is the following:</p>
+<p><em>.*(?i)(key|secret|password|pwd|passwd|token|salt|seed|salt|bearer|otp|crypt|auth(?-i)|IV).*</em></p>
+<p>The following snippet shows the result translated in Semgrep rule pattern language:</p>
+<pre tabindex="0"><code>    message: The application writes sensitive data in application logs.
+    patterns:
+      - pattern-either:
+          - pattern: Log.v(...);
+          - pattern: Log.i(...);
+          - pattern: Log.w(...);
+          - pattern: Log.e(...);
+          - pattern: Log.wtf(...);
+          - pattern: System.$X.print(...);
+          - pattern: System.$X.println(...);
+          - pattern: (BufferedWriter $X).write(...);
+          - pattern: (Logger $X).log(...);
+          - pattern: (Logger $X).info(...);
+          - pattern: (Logger $X).logp(...);
+          - pattern: (Logger $X).logrb(...);
+          - pattern: (Logger $X).severe(...);
+          - pattern: (Logger $X).warning(...);
+      - pattern-regex: .*(?i)(key|secret|password|pwd|...|bearer|otp|crypt|auth(?-i)|IV).*
+</code></pre><p>Patterns nested under a &ldquo;patterns&rdquo; node operate with a <strong>logical AND</strong> condition, whereas the &ldquo;pattern-either&rdquo; is used to represent a <strong>logical OR</strong> condition. The following pattern is equivalent to the logical condition <em>(A OR B) AND C</em>.</p>
+<pre tabindex="0"><code>patterns:
+    - pattern-either:
+        - pattern: A
+        - pattern: B
+    - pattern: C
+</code></pre><p>The final version of the rule can be consulted here:</p>
+<ul>
+<li><a href="https://github.com/mindedsecurity/semgrep-rules-android-security/blob/main/rules/storage/mstg-storage-3.yaml">https://github.com/mindedsecurity/semgrep-rules-android-security/blob/main/rules/storage/mstg-storage-3.yaml</a></li>
+</ul>
+<h4 id="mstg-arch-9">MSTG-ARCH-9</h4>
+<p>The purpose of this test is to verify that the application <strong>enforces updates</strong>. This requirement regards applications with <strong>L2</strong> as <strong>verification level</strong>, such as banking applications, healthcare portals, government application, e-commerce platforms, and more. To ensure that these targets have the latest security patches installed, they should be required to use the most recent version of the application.</p>
+<p>The details of the test can be consulted at the following link:</p>
+<ul>
+<li><a href="https://github.com/OWASP/owasp-mastg/blob/v1.5.0/Document/0x05h-Testing-Platform-Interaction.md#testing-enforced-updating-mstg-arch-9">https://github.com/OWASP/owasp-mastg/blob/v1.5.0/Document/0x05h-Testing-Platform-Interaction.md#testing-enforced-updating-mstg-arch-9</a></li>
+</ul>
+<p>To update an Android application programmatically, at least three steps are required:</p>
+<ol>
+<li>Check for updates (&quot;<em>getAppUpdateInfo(&hellip;)</em>&quot;).</li>
+<li>Request the update (&quot;<em>startUpdateFlowForResult(&hellip;)</em>&quot;).</li>
+<li>Check if the update is completed successfully.</li>
+</ol>
+<p>The fundamental step that should be detected by the Semgrep rule is the second one. Unfortunately, it is necessary to face with a Semgrep <strong>limitation</strong>:</p>
+<p><em>At the current version, Semgrep does not provide a mechanism to detect the absence of a pattern</em>.</p>
+<p>(Visit the link for further information: <a href="https://github.com/returntocorp/semgrep/issues/7363">https://github.com/returntocorp/semgrep/issues/7363</a>)</p>
+<p>In other words, when dealing with a source code composed of N files, it is not possible to detect the absence of a pattern among all these files using Semgrep. However, it is possible to detect the absence of a pattern within a <strong>single</strong> specific file.</p>
+<p>Thus, the adopted strategy is the following:</p>
+<p>1. The main activity is the file that is most likely to enforce the update. This is necessary to confine the search to one single file. To identify the main activity class, it is sufficient to look for the activity with the action &ldquo;<em>android.intent.action.MAIN</em>&rdquo; and the category &ldquo;<em>android.intent.category.LAUNCHER</em>&rdquo; inside the &ldquo;intent-activity&rdquo; element.</p>
+<pre tabindex="0"><code>&lt;!-- AndroidManifest.xml --&gt;
+&lt;activity android:name=&#34;com.myexample.test.SplashScreen&#34;&gt;
+  &lt;intent-filter&gt;
+    &lt;action android:name=&#34;android.intent.action.MAIN&#34;/&gt;
+    &lt;category android:name=&#34;android.intent.category.LAUNCHER&#34;/&gt;
+  &lt;/intent-filter&gt;
+&lt;/activity&gt;
+</code></pre><p>2. The application must call the method &ldquo;startUpdateFlowForResult&rdquo; to enforce the application update.</p>
+<p>Clearly, this rule requires dealing with files in different format: XML and Java.</p>
+<p>In this situation, it is possible to use the Semgrep join mode, that allows to combine results from different rules:</p>
+<ul>
+<li><a href="https://semgrep.dev/docs/writing-rules/experiments/join-mode/overview/">https://semgrep.dev/docs/writing-rules/experiments/join-mode/overview/</a></li>
+</ul>
+<p>The &ldquo;on&rdquo; directive allows to specify constraints that must match between the result of the rules. Consider the following example of join mode:</p>
+<pre tabindex="0"><code>rules:
+  -id: join-rule-id
+  mode: join
+  join:
+    rules:
+      - id: rule1
+        languages: # . . . 
+        pattern: # . . .
+      - id: rule2
+        languages: # . . .
+        pattern: # . . .
+    on:
+      - &#39;rule1.$A == rule2.$B&#39; # 1
+      - &#39;rule1.$X &gt; rule2.$Y&#39; # 2
+</code></pre><p>Consider the &ldquo;on&rdquo; conditions in AND logic:</p>
+<ul>
+<li>&ldquo;<em># 1</em>&rdquo;: the metavariable <em>$A</em> is equal to the metavariable <em>$B</em></li>
+<li>&ldquo;<em># 2</em>&rdquo;: the metavariable <em>$X</em> contains the metavariable <em>$Y</em></li>
+</ul>
+<p>The following snippet reports the implemented rule to cover the MSTG-ARCH-9 test.</p>
+<pre tabindex="0"><code>    mode: join
+    join:
+        rules:
+          - id: activity-without-update
+            languages:
+                - java
+            patterns: # 1
+                - pattern: |
+                    public class $CLASSNAME extends $ACTIVITY{
+                        public void onCreate(...){...}
+                    }
+                - pattern-not: |
+                    public class $CLASSNAME extends $ACTIVITY{
+                        $X(...){
+                        ...
+                        (AppUpdateManager $Y).startUpdateFlowForResult(...);
+                        ...
+                        }
+                    }
+                - focus-metavariable:
+                    - $CLASSNAME
+          - id: main-activity
+            languages:
+                - xml
+            patterns: # 2
+                - pattern: |
+                    &lt;activity ... android:name=&#34;$ACT&#34; ...&gt; ...
+                    &lt;intent-filter&gt; ...
+                    &lt;action android:name=&#34;android.intent.action.MAIN&#34;/&gt; ...
+                    &lt;category android:name=&#34;android.intent.category.LAUNCHER&#34;/&gt; ...
+                    &lt;/intent-filter&gt; ...
+                    &lt;/activity&gt;
+                - focus-metavariable:
+                    - $ACT
+        on:
+          - &#39;main-activity.$ACT &gt; activity-without-update.$CLASSNAME&#39;
+</code></pre><p>The first pattern (&quot;<em># 1</em>&quot;) matches any Java class that does not use the method &ldquo;startUpdateFlowForResult&rdquo; focusing the class name with the &ldquo;focus-metavariable&rdquo; directive. The second pattern (&quot;<em># 2</em>&quot;) retrieves, inside the &ldquo;AndroidManifest.xml&rdquo; file, the name of the main activity.</p>
+<p>The condition &ldquo;<em>main-activity.$ACT &gt; activity-without-update.$CLASSNAME</em>&rdquo; means that the metavariable <em>$ACT</em> (from the &ldquo;main-activity&rdquo; rule) has to contain the value of the metavariable <em>$CLASSNAME</em> (from the &ldquo;activity-without-update&rdquo; rule).</p>
+<p>Combining what has been written, the rule presented verifies exactly that the main activity of the target application contains a call to the standard method used to update the Android applications.</p>
+<p>The most updated version of the rule can be consulted here:</p>
+<ul>
+<li><a href="https://github.com/mindedsecurity/semgrep-rules-android-security/blob/main/rules/arch/mstg-arch-9.yaml">https://github.com/mindedsecurity/semgrep-rules-android-security/blob/main/rules/arch/mstg-arch-9.yaml</a></li>
+</ul>
+<h4></h4>
+<h4 id="mstg-storage-9">MSTG-STORAGE-9</h4>
+<p>To prevent malicious applications from taking <strong>screenshots</strong> of <strong>sensitive information</strong>, it is a good security practice to disable the screenshot functionality when using applications that display sensitive information.</p>
+<p>The OWASP MASTG provides details on how to correctly configure the application:</p>
+<ul>
+<li><a href="https://github.com/OWASP/owasp-mastg/blob/v1.5.0/Document/0x05d-Testing-Data-Storage.md#finding-sensitive-information-in-auto-generated-screenshots-mstg-storage-9">https://github.com/OWASP/owasp-mastg/blob/v1.5.0/Document/0x05d-Testing-Data-Storage.md#finding-sensitive-information-in-auto-generated-screenshots-mstg-storage-9</a></li>
+</ul>
+<p>This topic has been extensively described in this blog in 2021 by the software security expert Martino Lessio:</p>
+<ul>
+<li><a href="https://blog.mindedsecurity.com/2021/05/mobile-screenshot-prevention-cheatsheet.html">https://blog.mindedsecurity.com/2021/05/mobile-screenshot-prevention-cheatsheet.html</a></li>
+</ul>
+<p>The Android Window object can be retrieved using the &ldquo;<em>getWindow</em>&rdquo; method and contains all the methods to interact with the application screen view.</p>
+<p>In particular, the &ldquo;<em>setFlags</em>&rdquo; and &ldquo;<em>addFlags</em>&rdquo; methods permit to associate some features to the window.</p>
+<pre tabindex="0"><code>public void setFlags (int flags, int mask)
+public void addFlags (int flags)
+</code></pre><p>One of these features is &ldquo;<strong>FLAG_SECURE</strong>&rdquo;, that states:</p>
+<p>&ldquo;Treat the content of the window as secure, preventing it from appearing in screenshots or from being viewed on non-secure displays.&rdquo;</p>
+<p>The constant value associated to the flag is 8192 (<em>0x00002000</em>).</p>
+<p>To detect an insecure use of the &ldquo;setFlags&rdquo; method, the following rule can be used:</p>
+<pre tabindex="0"><code>- patterns:
+  - pattern-either:
+    - pattern: getWindow().setFlags($P1, $P2)
+    - pattern: (...).getWindow().setFlags($P1, $P2)
+    - pattern: (Window $W).setFlags($P1, $P2)
+  - metavariable-comparison:
+      comparison: $P1 &amp; 8192 == 0
+</code></pre><p>Moreover, the default value of the window flags does not include the &ldquo;<em>FLAG_SECURE</em>&rdquo; by default, so we have to detect all activities that do not include this flag explicitly:</p>
+<pre tabindex="0"><code>- patterns:
+  - pattern: public class $CLASS extends $ACT{ ... }
+  - pattern-not: |
+      public class $CLASS{...
+        $M(...){...
+          (...).addFlags(...);
+        ...}
+      ...}
+  - pattern-not: |
+      public class $CLASS{...
+        $M(...){...
+          (...).setFlags(...);
+        ...}
+      ...}
+  - metavariable-regex:
+      metavariable: $ACT
+      regex: .*Activity.*
+</code></pre><p>Unfortunately, it is not possible to exhaustively cover the misuse of &ldquo;addFlags&rdquo; due to a Semgrep limitation. In other words, it is not possible to search for a method that does not contain an &ldquo;addFlags&rdquo; call with a parameter that adheres to specific characteristics.</p>
+<p>In this case, what we can do is the following attempt:</p>
+<pre tabindex="0"><code>- patterns:
+  - pattern-either:
+    - pattern: getWindow().addFlags($P1, $P2)
+    - pattern: (...).getWindow().addFlags($P1, $P2)
+    - pattern: (Window $W).addFlags($P1, $P2)
+  - metavariable-comparison:
+      comparison: $P1 &amp; 8192 == 0
+</code></pre><p>Similarly to the previous case, this snippet detect each &ldquo;<em>addFlags</em>&rdquo; call that does not use the &ldquo;<em>FLAG_SECURE</em>&rdquo;.</p>
+<p>This approach can introduce false positives, such as:</p>
+<pre tabindex="0"><code>public class MainActivity extends AppCompatActivity {
+     private void test(){
+          getWindow().addFlags(222); // This triggers the rule, generating a false positive
+          getWindow().addFlags(8192); // FLAG_SECURE
+     }
+}
+</code></pre><p>The most updated version of the rule can be consulted here:</p>
+<ul>
+<li><a href="https://github.com/mindedsecurity/semgrep-rules-android-security/blob/main/rules/storage/mstg-storage-9.yaml">https://github.com/mindedsecurity/semgrep-rules-android-security/blob/main/rules/storage/mstg-storage-9.yaml</a></li>
+</ul>
+<h4></h4>
+<h4 id="mstg-network-4">MSTG-NETWORK-4</h4>
+<p>The last rule shown on this post is described at the following link:</p>
+<ul>
+<li><a href="https://github.com/OWASP/owasp-mastg/blob/v1.5.0/Document/0x05g-Testing-Network-Communication.md#testing-custom-certificate-stores-and-certificate-pinning-mstg-network-4">https://github.com/OWASP/owasp-mastg/blob/v1.5.0/Document/0x05g-Testing-Network-Communication.md#testing-custom-certificate-stores-and-certificate-pinning-mstg-network-4</a></li>
+</ul>
+<p>Typically, tests regarding SSL pinning are performed dynamically using tools such as Frida, Objection and others. These tools help penetration testers to bypass the implementation of SSL pinning but does not analyze in details the presence of potential misconfigurations.</p>
+<p>To validate the <strong>SSL pinning configuration</strong>, it is necessary to analyze both the Network Security Configuration file (&ldquo;network_security_config.xml&rdquo;) and the Java source code of the application.</p>
+<p>Thus, the rule has been splitted as follows:</p>
+<ul>
+<li><strong>mstg-network-4.1.yaml</strong> ⇒ Rule to analyze misconfiguration inside the &ldquo;network_security_config.xml&rdquo; file.</li>
+<li><strong>mstg-network-4.1.xml</strong> ⇒ Example of &ldquo;network_security_config.xml&rdquo; vulnerable file.</li>
+<li><strong>mstg-network-4.2.yaml</strong> ⇒ Eule to detect security issues inside the Java source code.</li>
+<li><strong>mstg-network-4.2.java</strong> ⇒ Example of insecure use of pinning inside the Java source code.</li>
+</ul>
+<p>The rule &ldquo;<em>mstg-network-4.1.yaml</em>&rdquo; performs four checks:</p>
+<ul>
+<li>It verifies the presence of the pin expiration date.</li>
+<li>It verifies that the pin expiration date is not expired.</li>
+<li>It verifies the presence of a backup pin.</li>
+<li>It verifies that the trust-anchors does not use user-level certificates.</li>
+</ul>
+<pre tabindex="0"><code>    pattern-either:
+      # Pin expiration not present
+      - patterns:
+          - pattern: &lt;pin-set ... /&gt;
+          - pattern-not: &lt;pin-set expiration=&#34;...&#34; /&gt;
+      # Pin expired
+      - patterns:
+          - pattern: &lt;pin-set expiration=&#34;$X&#34; /&gt;
+          - metavariable-comparison:
+              comparison: strptime($X) &lt; today()
+      # Backup pin not present
+      - patterns:
+          - pattern: &lt;pin-set ... /&gt;
+          - pattern-not: &lt;pin-set&gt;&lt;pin/&gt;&lt;pin/&gt;&lt;/pin-set&gt;
+      # Trust anchors contains user certificates
+      - patterns:
+          - pattern: &lt;trust-anchors&gt;...&lt;certificates src=&#34;user&#34; /&gt;...&lt;/trust-anchors&gt;
+</code></pre><p>On the other side, the &ldquo;<em>mstg-network-4.2.java</em>&rdquo; performs four additional checks:</p>
+<ul>
+<li>It verifies that the &ldquo;<em>SSLContext</em>&rdquo; is correctly initialized.</li>
+<li>It verifies that the &ldquo;<em>TrustManagerFactory</em>&rdquo; is correctly initialized.</li>
+<li>It verifies that the certificate pin does not use the SHA1 deprecated hashing function.</li>
+<li>It verifies that an &ldquo;<em>HttpsURLConnection</em>&rdquo; object calls the &ldquo;connect&rdquo; method only if the &ldquo;<em>SSLSocketFactory</em>&rdquo; has been configured.</li>
+</ul>
+<pre tabindex="0"><code>    pattern-either:
+      - pattern: (SSLContext $X).init($P1, null, $P3);
+      - pattern: (TrustManagerFactory $X).init(null);
+      - patterns:
+          - pattern: new CertificatePinner.Builder().add(&#34;$D&#34;, &#34;$P&#34;)
+          - metavariable-regex:
+              metavariable: $P
+              regex: .*(?i)(sha1/).*
+      - patterns:
+          - pattern: (HttpsURLConnection $X).connect();
+          - pattern-not-inside: |
+              (HttpsURLConnection $X).setSSLSocketFactory(...);
+              ...
+              (HttpsURLConnection $X).connect();
+</code></pre><h2 id="tests-and-results">Tests and Results</h2>
+<p>The project&rsquo;s goal does not consist in generating a large number of false positives that are subsequently reviewed by penetration testers. Instead, the real goal is to find a balance that <strong>minimizes both false positives and false negatives</strong>, thereby maximizing the reliability of each rule.</p>
+<p>To test the implemented Semgrep rules, this specific workflow has been used:</p>
+<ol>
+<li>Download an Android application.</li>
+<li>Extract and decompile the code with <em>JADX</em>.</li>
+<li>Upload the source code on a cloud storage.</li>
+<li>Analyze the application source code, one application at the time.</li>
+</ol>
+<p>During the first three phases, we have collected <strong>280 Android applications</strong> belonging to different topics with a very high number of total download: <strong>more than 111 billions</strong>!</p>
+<p>The following graph shows the number of application per categories that have been included in the analysis.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhuqkKfeYeKeBbNsfu1Rj981rw_sBdBzgenkjVCd6LyLIN3ivf27ZirNBv6qdu-ABx6l6FWFUGNkT62PDmeNDSf5gC4bU20X-EiczNO_UHLe3rvBFSsJP3uYgltnPHlMXAiYNxp8itVv3ZSu3W9YGWkC1T-NdoVfco-yoh6beVi7zapA1jvK3cXWaMvOpc/s16000/app_categories.png" alt="" />
+</figure>
+
+
+</p>
+<p>The results are interesting under the quantitative point of view. During the stress test we aimed to verify:</p>
+<ul>
+<li>The presence of rules associated to an high number of results, potentially false positives.</li>
+<li>The average number of findings per application. This value has to be maintained in a reasonable range in order to allow a security expert to read and verify each result.</li>
+<li>The speed of each rule in order to detect eventual bottleneck.</li>
+</ul>
+<p>The following graph shows the results of the stress test:</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjZQWE5pYNQ-qLjUHAlXc-QiYxQqu2BAf6uJFH1n6cj1timOgyXgNzl52X6_n3PZO4zTXO5mL6QhTVE5wPpu4ucQkxQZmxBagHxG1m0pcy70cP_pYADgybs4FpqLbHVv8NV3xYOqSzdiw9sYUv7HFYgsk26C7A6_6ibFT3IKo6_cpMRUekIT0NsOUo2wJ0/s16000/app_results.png" alt="" />
+</figure>
+
+
+</p>
+<p>Analyzing the results of the scan it has been possible to infer the following information:</p>
+<ul>
+<li>Total number of findings: <strong>107173</strong>.</li>
+<li>Average number of findings per application: <strong>382</strong>.</li>
+<li>Most impacted categories: <strong>storage</strong>, <strong>code</strong>, <strong>platform</strong>.</li>
+<li>The rule about memory leaks potentially produces an high number of findings (&ldquo;MSTG-CODE-8.X&rdquo;).</li>
+</ul>
+<h2 id="future">Future</h2>
+<p>The general idea for the future of the project is to keep the rules updated. Specifically, the project will increasingly focus on improving the following three aspects.</p>
+<p><strong>The new OWASP MATGS 2.0</strong>:</p>
+<p>Currently, the project is aligned with version 1.5 of the OWASP MASTG, but version <strong>2.0</strong> is on the horizon and promises to make tests more atomic and consistent. The IMQ Minded Security team is actively working to prepare for this important update by aligning the current rules with the future OWASP MASTG version.</p>
+<p><strong>High impact rules</strong>:</p>
+<p>To cover an entire testing guide with a tool is an ambitious project that requires time, effort, and expertise. For this reason, we will continue to release new rules focusing on detecting the presence of high-impact vulnerabilities. Stay tuned and always update the ruleset!</p>
+<p><strong>Generalization of rules</strong>:</p>
+<p>There are many different ways to implement the same code, depending on the specific programming language, the desired algorithm, and the programmer&rsquo;s personal preferences. For these reasons, it is difficult to implement rules that cover every specific scenario. The current version of the project focuses on the most standard cases and best practices, but some rules need to be updated to detect various forms of the same vulnerable pattern.</p>
+<h2 id="talks--events">Talks &amp; Events</h2>
+<ul>
+<li><strong>11 Sep 2023</strong>: OWASP Italy Day</li>
+</ul>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/a/AVvXsEgSWC3_LYw1zoIE-Vn9Old6dW7lozNDxhrOUPsYOmjXvaBjZqSJCoIH0Vg9dcb1sRLW2b3i1QsH0iT8Gll7znuSzMcGoJWIAsVW_L1u9QJnxDIB6LsCcDGYxg0lrC86PeRVVtBIU905fjn2w-jAdypzz23WvJeYLIGVd5Opl_eCfILARWYwJ03GNscrXbo=w464-h261" alt="OWASP Italy Day - Slides" />
+</figure>
+
+
+</p>
+<ul>
+<li><strong>03 Ago 2023</strong>: DevSecCon - YouTube Live</li>
+</ul>
+<p>    </p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

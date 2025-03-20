@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Dumping packets from anywhere in the networking stack</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Dumping packets from anywhere in the networking stack</h1>
+			<b><time>10.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Dumping traffic on a network interface is one of the most performed steps while debugging networking and connectivity issues. On Linux, tcpdump is probably the most common way to do this, but some use Wireshark too.</p>
+<h2 id="where-does-tcpdump-get-the-packets-from">Where does tcpdump get the packets from?</h2>
+<p>Internally, both <code>tcpdump</code> and <code>Wireshark</code> use the Packet Capture (<code>pcap</code>) library. When capturing packets, a socket with the <code>PF_PACKET</code> domain is created (see <code>man packet</code>) which allows you to receive and send packets at the layer 2 from the OSI model.</p>
+<p>From libpcap:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>sock_fd = is_any_device ?
+</span></span><span style="display:flex;"><span>       socket(PF_PACKET, SOCK_DGRAM, 0) :
+</span></span><span style="display:flex;"><span>       socket(PF_PACKET, SOCK_RAW, 0);
+</span></span></code></pre></div><p>Note that the last parameter in the socket call is later set to a specific protocol, or <code>ETH_P_ALL</code> if none is explicitly provided. The latter makes all packets to be received by the socket.</p>
+<p>This allows to get packets directly after the device driver in ingress, without any change being made to the packet, and right before entering the device driver on egress. Or to say it differently packets are seen between the networking stack and the NIC drivers.</p>
+<h2 id="limitations">Limitations</h2>
+<p>While the above use of <code>PF_PACKET</code> works nicely, it also comes with limitations. As packets are retrieved from a very specific and defined place of the networking stack, they can only be seen in the state they were at that point, e.g., on ingress packets are seen before being processed by the firewall or qdiscs, and the opposite is true on egress.</p>
+<h2 id="offline-analysis">Offline analysis</h2>
+<p>By default, <code>tcpdump</code> and <code>Wireshark</code> process packets live at runtime. But they can also store the captured packets data to a file for later analysis (<code>-w</code> option for <code>tcpdump</code>). The <code>pcap</code> file format (<code>application/vnd.tcpdump.pcap</code>) is used. Both tools (and others, e.g., tshark), support reading <code>pcap</code> formatted files.</p>
+<h2 id="how-to-capture-packets-from-other-places">How to capture packets from other places?</h2>
+<p>Retrieving packets from other places of the networking stack using <code>tcpdump</code> or <code>Wireshark</code> is not possible. However, other initiatives emerged and targeted monitoring traffic within a single host, like Retis (documentation).</p>
+<p>Retis is a recently released tool aiming at improving visibility into the Linux networking stack and various control and data paths. It allows capturing networking-related events and providing relevant context using eBPF, with one notable feature being capturing packets on any (packet-aware—AKA socket buffer) kernel function and tracepoint.</p>
+<p>To capture packets from the <code>net:netif_receive_skb</code> tracepoint:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ retis collect -c skb -p net:netif_receive_skb
+</span></span><span style="display:flex;"><span>4 probe(s) loaded
+</span></span><span style="display:flex;"><span>4581128037918 (8) [irq/188-iwlwifi] 1264 [tp] net:netif_receive_skb
+</span></span><span style="display:flex;"><span> if 4 (wlp82s0) 2606:4700:4700::1111.53 &gt; [redacted].34952 ttl 54 label 0x66967 len 79 proto UDP (17) len 71
+</span></span></code></pre></div><p>Note that Retis can capture packets from multiple functions and tracepoints by using the above <code>-p</code> option multiple times. It can even identify packets and reconstruct their flow! To get a list of compatible functions and tracepoints, use <code>retis inspect -p</code>.</p>
+<p>Also it should be noted that by default <code>tcpdump</code> and <code>Wireshark</code> put devices on promiscuous mode when dumping packets from a specific interface. This is not the case with Retis. An interface can be set in this mode manually by using <code>ip link set &lt;interface&gt; promisc on</code>.</p>
+<p>In addition to the above, another tool provides a way to capture packets and convert them to a <code>pcap</code> file: bpftrace. It is a wonderful tool but is more low-level and requires to you write the probe definitions by hand and for compilation of the BPF program to take place on the target. Here the <code>skboutput</code> function can be used, as shown in the help.</p>
+<h2 id="making-the-link">Making the link</h2>
+<p>That&rsquo;s nice, but while Retis is a powerful tool when used standalone, we might want to use the existing <code>tcpdump</code> and <code>Wireshark</code> tools but with packets captured from other places of the networking stack.</p>
+<p>This can be done by using the Retis <code>pcap</code> post-processing command. This works in two steps: first Retis can capture and store packets, and then post-process them. The <code>pcap</code> sub-command allows converting Retis saved packets to a <code>pcap</code> format. This can then be used to feed existing <code>pcap</code>-aware tools, such as <code>tcpdump</code> and <code>Wireshark</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ retis collect -c skb -p net:netif_receive_skb -p net:net_dev_start_xmit -o
+</span></span><span style="display:flex;"><span>$ retis print
+</span></span><span style="display:flex;"><span>4581115688645 (9) [isc-net-0000] 12796/12797 [tp] net:net_dev_start_xmit
+</span></span><span style="display:flex;"><span> if 4 (wlp82s0) [redacted].34952 &gt; 2606:4700:4700::1111.53 ttl 64 label 0x79c62 len 59 proto UDP (17) len 51
+</span></span><span style="display:flex;"><span>4581128037918 (8) [irq/188-iwlwifi] 1264 [tp] net:netif_receive_skb
+</span></span><span style="display:flex;"><span> if 4 (wlp82s0) 2606:4700:4700::1111.53 &gt; [redacted].34952 ttl 54 label 0x66967 len 79 proto UDP (17) len 71
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ retis pcap --probe net:net_dev_start_xmit | tcpdump -nnr -
+</span></span><span style="display:flex;"><span>01:31:55.688645 IP6 [redacted].34952 &gt; 2606:4700:4700::1111.53: 28074+ [1au] A? redhat.com. (51)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ retis pcap --probe net:netif_receive_skb -o retis.pcap
+</span></span><span style="display:flex;"><span>$ wireshark retis.pcap
+</span></span></code></pre></div><p>As seen above, Retis can collect packets from multiple probes during the same session. All packets seen on a given probe can then be filtered and converted to the <code>pcap</code> format.</p>
+<p>When generating <code>pcap</code> files, Retis adds a comment in every packet with a description of the probe the packet was retrieved on:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ capinfos -p retis.pcap
+</span></span><span style="display:flex;"><span>File name:           retis.pcap
+</span></span><span style="display:flex;"><span>Packet 1 Comment:    probe=raw_tracepoint:net:netif_receive_skb
+</span></span></code></pre></div><h1 id="conclusion">Conclusion</h1>
+<p>In many cases, tools like <code>tcpdump</code> and <code>Wireshark</code> are sufficient. But, due to their design, they can only dump packets from a very specific place of the networking stack, which in some cases can be limiting. When that&rsquo;s the case it&rsquo;s possible to use more recent tools like Retis, either standalone or in combination with the beloved pcap aware utilities to allow using familiar tools or easily integrate this into existing scripts.</p>
+<p>The post Dumping packets from anywhere in the networking stack appeared first on Red Hat Developer.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

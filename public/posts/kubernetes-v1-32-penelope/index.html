@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Kubernetes v1.32: Penelope</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Kubernetes v1.32: Penelope</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p><strong>Editors:</strong> Matteo Bianchi, Edith Puclla, William Rizzo, Ryota Sawada, Rashan Smith</p>
+<p>Announcing the release of Kubernetes v1.32: Penelope!</p>
+<p>In line with previous releases, the release of Kubernetes v1.32 introduces new stable, beta, and alpha features. The consistent delivery of high-quality releases underscores the strength of our development cycle and the vibrant support from our community. This release consists of 44 enhancements in total. Of those enhancements, 13 have graduated to Stable, 12 are entering Beta, and 19 have entered in Alpha.</p>
+<h2 id="release-theme-and-logo">Release theme and logo</h2>
+<p>
+<figure>
+  <img src="https://kubernetes.io/blog/2024/12/11/kubernetes-v1-32-release/k8s-1.32.png" alt="Kubernetes v1.32 logo: Penelope from the Odyssey, a helm and a purple geometric background" />
+</figure>
+
+
+</p>
+<p>The Kubernetes v1.32 Release Theme is &ldquo;Penelope&rdquo;.</p>
+<p>If Kubernetes is Ancient Greek for &ldquo;pilot&rdquo;, in this release we start from that origin and reflect on the last 10 years of Kubernetes and our accomplishments: each release cycle is a journey, and just like Penelope, in &ldquo;The Odyssey&rdquo;,<br>
+weaved for 10 years &ndash; each night removing parts of what she had done during the day &ndash; so does each release add new features and removes others, albeit here with a much clearer purpose of constantly improving Kubernetes. With v1.32 being the last release in the year Kubernetes marks its first decade anniversary, we wanted to honour all of those that have been part of the global Kubernetes crew that roams the cloud-native seas through perils and challanges: may we continue to weave the future of Kubernetes together.</p>
+<h2 id="updates-to-recent-key-features">Updates to recent key features</h2>
+<h3 id="a-note-on-dra-enhancements">A note on DRA enhancements</h3>
+<p>In this release, like the previous one, the Kubernetes project continues proposing a number of enhancements to the Dynamic Resource Allocation (DRA), a key component of the Kubernetes resource management system. These enhancements aim to improve the flexibility and efficiency of resource allocation for workloads that require specialized hardware, such as GPUs, FPGAs and network adapters. These features are particularly useful for use-cases such as machine learning or high-performance computing applications. The core part enabling DRA Structured parameter support got promoted to beta.</p>
+<h3 id="quality-of-life-improvements-on-nodes-and-sidecar-containers-update">Quality of life improvements on nodes and sidecar containers update</h3>
+<p>SIG Node has the following highlights that go beyond KEPs:</p>
+<ol>
+<li>
+<p>The systemd watchdog capability is now used to restart the kubelet when its health check fails, while also limiting the maximum number of restarts within a given time period. This enhances the reliability of the kubelet. For more details, see pull request #127566.</p>
+</li>
+<li>
+<p>In cases when an image pull back-off error is encountered, the message displayed in the Pod status has been improved to be more human-friendly and to indicate details about why the Pod is in this condition. When an image pull back-off occurs, the error is appended to the <code>status.containerStatuses[*].state.waiting.message</code> field in the Pod specification with an <code>ImagePullBackOff</code> value in the <code>reason</code> field. This change provides you with more context and helps you to identify the root cause of the issue. For more details, see pull request #127918.</p>
+</li>
+<li>
+<p>The sidecar containers feature is targeting graduation to Stable in v1.33. To view the remaining work items and feedback from users, see comments in the issue #753.</p>
+</li>
+</ol>
+<h2 id="highlights-of-features-graduating-to-stable">Highlights of features graduating to Stable</h2>
+<p><em>This is a selection of some of the improvements that are now stable following the v1.32 release.</em></p>
+<h3 id="custom-resource-field-selectors">Custom Resource field selectors</h3>
+<p>Custom resource field selector allows developers to add field selectors to custom resources, mirroring the functionality available for built-in Kubernetes objects. This allows for more efficient and precise filtering of custom resources, promoting better API design practices.</p>
+<p>This work was done as a part of KEP #4358, by SIG API Machinery.</p>
+<h3 id="support-to-size-memory-backed-volumes">Support to size memory backed volumes</h3>
+<p>This feature makes it possible to dynamically size memory-backed volumes based on Pod resource limits, improving the workload&rsquo;s portability and overall node resource utilization.</p>
+<p>This work was done as a part of KEP #1967, by SIG Node.</p>
+<h3 id="bound-service-account-token-improvement">Bound service account token improvement</h3>
+<p>The inclusion of the node name in the service account token claims allows users to use such information during authorization and admission (ValidatingAdmissionPolicy). Furthermore this improvement keeps service account credentials from being a privilege escalation path for nodes.</p>
+<p>This work was done as part of KEP #4193 by SIG Auth.</p>
+<h3 id="structured-authorization-configuration">Structured authorization configuration</h3>
+<p>Multiple authorizers can be configured in the API server to allow for structured authorization decisions, with support for CEL match conditions in webhooks. This work was done as part of KEP #3221 by SIG Auth.</p>
+<h3 id="auto-remove-pvcs-created-by-statefulset">Auto remove PVCs created by StatefulSet</h3>
+<p>PersistentVolumeClaims (PVCs) created by StatefulSets get automatically deleted when no longer needed, while ensuring data persistence during StatefulSet updates and node maintenance. This feature simplifies storage management for StatefulSets and reduces the risk of orphaned PVCs.</p>
+<p>This work was done as part of KEP #1847 by SIG Apps.</p>
+<h2 id="highlights-of-features-graduating-to-beta">Highlights of features graduating to Beta</h2>
+<p><em>This is a selection of some of the improvements that are now beta following the v1.32 release.</em></p>
+<h3 id="job-api-managed-by-mechanism">Job API managed-by mechanism</h3>
+<p>The <code>managedBy</code> field for Jobs was promoted to beta in the v1.32 release. This feature enables external controllers (like Kueue) to manage Job synchronization, offering greater flexibility and integration with advanced workload management systems.</p>
+<p>This work was done as a part of KEP #4368, by SIG Apps.</p>
+<h3 id="only-allow-anonymous-auth-for-configured-endpoints">Only allow anonymous auth for configured endpoints</h3>
+<p>This feature lets admins specify which endpoints are allowed for anonymous requests. For example, the admin can choose to only allow anonymous access to health endpoints like <code>/healthz</code>, <code>/livez</code>, and <code>/readyz</code> while making sure preventing anonymous access to other cluster endpoints or resources even if a user misconfigures RBAC.</p>
+<p>This work was done as a part of KEP #4633, by SIG Auth.</p>
+<h3 id="per-plugin-callback-functions-for-accurate-requeueing-in-kube-schedulerenhancements">Per-plugin callback functions for accurate requeueing in kube-scheduler enhancements</h3>
+<p>This feature enhances scheduling throughput with more efficient scheduling retry decisions by per-plugin callback functions (QueueingHint). All plugins now have QueueingHints.</p>
+<p>This work was done as a part of KEP #4247, by SIG Scheduling.</p>
+<h3 id="recover-from-volume-expansion-failure">Recover from volume expansion failure</h3>
+<p>This feature lets users recover from volume expansion failure by retrying with a smaller size. This enhancement ensures that volume expansion is more resilient and reliable, reducing the risk of data loss or corruption during the process.</p>
+<p>This work was done as a part of KEP #1790, by SIG Storage.</p>
+<h3 id="volume-group-snapshot">Volume group snapshot</h3>
+<p>This feature introduces a VolumeGroupSnapshot API, which lets users take a snapshot of multiple volumes together, ensuring data consistency across the volumes.</p>
+<p>This work was done as a part of KEP #3476, by SIG Storage.</p>
+<h3 id="structured-parameter-support">Structured parameter support</h3>
+<p>The core part of Dynamic Resource Allocation (DRA), the structured parameter support, got promoted to beta. This allows the kube-scheduler and Cluster Autoscaler to simulate claim allocation directly, without needing a third-party driver. These components can now predict whether resource requests can be fulfilled based on the cluster&rsquo;s current state without actually committing to the allocation. By eliminating the need for a third-party driver to validate or test allocations, this feature improves planning and decision-making for resource distribution, making the scheduling and scaling processes more efficient.</p>
+<p>This work was done as a part of KEP #4381, by WG Device Management (a cross functional team containing SIG Node, SIG Scheduling and SIG Autoscaling).</p>
+<h3 id="label-and-field-selector-authorization">Label and field selector authorization</h3>
+<p>Label and field selectors can be used in authorization decisions. The node authorizer automatically takes advantage of this to limit nodes to list or watch their pods only. Webhook authorizers can be updated to limit requests based on the label or field selector used.</p>
+<p>This work was done as part of KEP #4601 by SIG Auth.</p>
+<h2 id="highlights-of-new-features-in-alpha">Highlights of new features in Alpha</h2>
+<p><em>This is a selection of key improvements introduced as alpha features in the v1.32 release.</em></p>
+<h3 id="asynchronous-preemption-in-thekubernetes-scheduler">Asynchronous preemption in the Kubernetes Scheduler</h3>
+<p>The Kubernetes scheduler has been enhanced with Asynchronous Preemption, a feature that improves scheduling throughput by handling preemption operations asynchronously. Preemption ensures higher-priority pods get the resources they need by evicting lower-priority ones, but this process previously involved heavy operations like API calls to delete pods, slowing down the scheduler. With this enhancement, such tasks are now processed in parallel, allowing the scheduler to continue scheduling other pods without delays. This improvement is particularly beneficial in clusters with high Pod churn or frequent scheduling failures, ensuring a more efficient and resilient scheduling process.</p>
+<p>This work was done as a part of KEP #4832 by SIG Scheduling.</p>
+<h3 id="mutating-admission-policies-using-cel-expressions">Mutating admission policies using CEL expressions</h3>
+<p>This feature leverages CEL&rsquo;s object instantiation and JSON Patch strategies, combined with Server Side Apply’s merge algorithms. It simplifies policy definition, reduces mutation conflicts, and enhances admission control performance while laying a foundation for more robust, extensible policy frameworks in Kubernetes.</p>
+<p>The Kubernetes API server now supports Common Expression Language (CEL)-based Mutating Admission Policies, providing a lightweight, efficient alternative to mutating admission webhooks. With this enhancement, administrators can use CEL to declare mutations like setting labels, defaulting fields, or injecting sidecars with simple, declarative expressions. This approach reduces operational complexity, eliminates the need for webhooks, and integrates directly with the kube-apiserver, offering faster and more reliable in-process mutation handling.</p>
+<p>This work was done as a part of KEP #3962 by SIG API Machinery.</p>
+<h3 id="pod-level-resource-specifications">Pod-level resource specifications</h3>
+<p>This enhancement simplifies resource management in Kubernetes by introducing the ability to set resource requests and limits at the Pod level, creating a shared pool that all containers in the Pod can dynamically use. This is particularly valuable for workloads with containers that have fluctuating or bursty resource needs, as it minimizes over-provisioning and improves overall resource efficiency.</p>
+<p>By leveraging Linux cgroup settings at the Pod level, Kubernetes ensures that these resource limits are enforced while enabling tightly coupled containers to collaborate more effectively without hitting artificial constraints. Importantly, this feature maintains backward compatibility with existing container-level resource settings, allowing users to adopt it incrementally without disrupting current workflows or existing configurations.</p>
+<p>This marks a significant improvement for multi-container pods, as it reduces the operational complexity of managing resource allocations across containers. It also provides a performance boost for tightly integrated applications, such as sidecar architectures, where containers share workloads or depend on each other’s availability to perform optimally.</p>
+<p>This work was done as part of KEP #2837 by SIG Node.</p>
+<h3 id="allow-zero-value-for-sleep-action-of-prestop-hook">Allow zero value for sleep action of PreStop hook</h3>
+<p>This enhancement introduces the ability to set a zero-second sleep duration for the PreStop lifecycle hook in Kubernetes, offering a more flexible and no-op option for resource validation and customization. Previously, attempting to define a zero value for the sleep action resulted in validation errors, restricting its use. With this update, users can configure a zero-second duration as a valid sleep setting, enabling immediate execution and termination behaviors where needed.</p>
+<p>The enhancement is backward-compatible, introduced as an opt-in feature controlled by the <code>PodLifecycleSleepActionAllowZero</code> feature gate. This change is particularly beneficial for scenarios requiring PreStop hooks for validation or admission webhook processing without requiring an actual sleep duration. By aligning with the capabilities of the <code>time.After</code> Go function, this update simplifies configuration and expands usability for Kubernetes workloads.</p>
+<p>This work was done as part of KEP #4818 by SIG Node.</p>
+<h3 id="dra-standardized-network-interface-data-for-resource-claim-status">DRA: Standardized network interface data for resource claim status</h3>
+<p>This enhancement adds a new field that allows drivers to report specific device status data for each allocated object in a ResourceClaim. It also establishes a standardized way to represent networking devices information.</p>
+<p>This work was done as a part of KEP #4817, by SIG Network.</p>
+<h3 id="new-statusz-and-flagz-endpoints-for-core-components">New statusz and flagz endpoints for core components</h3>
+<p>You can enable two new HTTP endpoints, <code>/statusz</code> and <code>/flagz</code>, for core components. These enhance cluster debuggability by gaining insight into what versions (e.g. Golang version) that component is running as, along with details about its uptime, and which command line flags that component was executed with; making it easier to diagnose both runtime and configuration issues.</p>
+<p>This work was done as part of KEP #4827 and KEP #4828 by SIG Instrumentation.</p>
+<h3 id="windows-strikes-back">Windows strikes back!</h3>
+<p>Support for graceful shutdowns of Windows nodes in Kubernetes clusters has been added. Before this release, Kubernetes provided graceful node shutdown functionality for Linux nodes but lacked equivalent support for Windows. This enhancement enables the kubelet on Windows nodes to handle system shutdown events properly. Doing so, it ensures that Pods running on Windows nodes are gracefully terminated, allowing workloads to be rescheduled without disruption. This improvement enhances the reliability and stability of clusters that include Windows nodes, especially during a planned maintenance or any system updates.</p>
+<p>Moreover CPU and memory affinity support has been added for Windows nodes with nodes, with improvements to the CPU manager, memory manager and topology manager.</p>
+<p>This work was done respectively as part of KEP #4802 and KEP #4885 by SIG Windows.</p>
+<h2 id="graduations-deprecations-and-removals-in-132">Graduations, deprecations, and removals in 1.32</h2>
+<h3 id="graduations-to-stable">Graduations to Stable</h3>
+<p>This lists all the features that graduated to stable (also known as <em>general availability</em>). For a full list of updates including new features and graduations from alpha to beta, see the release notes.</p>
+<p>This release includes a total of 13 enhancements promoted to Stable:</p>
+<ul>
+<li>Structured Authorization Configuration</li>
+<li>Bound service account token improvements</li>
+<li>Custom Resource Field Selectors</li>
+<li>Retry Generate Name</li>
+<li>Make Kubernetes aware of the LoadBalancer behaviour</li>
+<li>Field <code>status.hostIPs</code> added for Pod</li>
+<li>Custom profile in kubectl debug</li>
+<li>Memory Manager</li>
+<li>Support to size memory backed volumes</li>
+<li>Improved multi-numa alignment in Topology Manager</li>
+<li>Add job creation timestamp to job annotations</li>
+<li>Add Pod Index Label for StatefulSets and Indexed Jobs</li>
+<li>Auto remove PVCs created by StatefulSet</li>
+</ul>
+<h3 id="deprecations-and-removals">Deprecations and removals</h3>
+<p>As Kubernetes develops and matures, features may be deprecated, removed, or replaced with better ones for the project&rsquo;s overall health. See the Kubernetes deprecation and removal policy for more details on this process.</p>
+<h4 id="withdrawal-of-the-old-dra-implementation">Withdrawal of the old DRA implementation</h4>
+<p>The enhancement #3063 introduced Dynamic Resource Allocation (DRA) in Kubernetes 1.26.</p>
+<p>However, in Kubernetes v1.32, this approach to DRA will be significantly changed. Code related to the original implementation will be removed, leaving KEP #4381 as the &ldquo;new&rdquo; base functionality.</p>
+<p>The decision to change the existing approach originated from its incompatibility with cluster autoscaling as resource availability was non-transparent, complicating decision-making for both Cluster Autoscaler and controllers. The newly added Structured Parameter model substitutes the functionality.</p>
+<p>This removal will allow Kubernetes to handle new hardware requirements and resource claims more predictably, bypassing the complexities of back and forth API calls to the kube-apiserver.</p>
+<p>See the enhancement issue #3063 to find out more.</p>
+<h4 id="api-removals">API removals</h4>
+<p>There is one API removal in Kubernetes v1.32:</p>
+<ul>
+<li>The <code>flowcontrol.apiserver.k8s.io/v1beta3</code> API version of FlowSchema and PriorityLevelConfiguration has been removed. To prepare for this, you can edit your existing manifests and rewrite client software to use the <code>flowcontrol.apiserver.k8s.io/v1 API</code> version, available since v1.29. All existing persisted objects are accessible via the new API. Notable changes in flowcontrol.apiserver.k8s.io/v1beta3 include that the PriorityLevelConfiguration <code>spec.limited.nominalConcurrencyShares</code> field only defaults to 30 when unspecified, and an explicit value of 0 is not changed to 30.</li>
+</ul>
+<p>For more information, refer to the API deprecation guide.</p>
+<h3 id="release-notes-and-upgrade-actions-required">Release notes and upgrade actions required</h3>
+<p>Check out the full details of the Kubernetes v1.32 release in our release notes.</p>
+<h2 id="availability">Availability</h2>
+<p>Kubernetes v1.32 is available for download on GitHub or on the Kubernetes download page.</p>
+<p>To get started with Kubernetes, check out these interactive tutorials or run local Kubernetes clusters using minikube. You can also easily install v1.32 using kubeadm.</p>
+<h2 id="release-team">Release team</h2>
+<p>Kubernetes is only possible with the support, commitment, and hard work of its community. Each release team is made up of dedicated community volunteers who work together to build the many pieces that make up the Kubernetes releases you rely on. This requires the specialized skills of people from all corners of our community, from the code itself to its documentation and project management.</p>
+<p>We would like to thank the entire release team for the hours spent hard at work to deliver the Kubernetes v1.32 release to our community. The Release Team&rsquo;s membership ranges from first-time shadows to returning team leads with experience forged over several release cycles. A very special thanks goes out our release lead, Frederico Muñoz, for leading the release team so gracefully and handle any matter with the uttermost care, making sure this release was executed smoothly and efficiently. Last but not least a big thanks goes to all the release members - leads and shadows alike - and to the following SIGs for the terrific work and outcome achieved during these 14 weeks of release work:</p>
+<ul>
+<li>SIG Docs - for the fundamental support in docs and blog reviews and continous collaboration with release Comms and Docs;</li>
+<li>SIG k8s Infra and SIG Testing - for the outstanding work in keeping the testing framework in check, along with all the infra components necessary;</li>
+<li>SIG Release and all the release managers - for the incredible support provided throughout the orchestration of the entire release, addressing even the most challenging issues in a graceful and timely manner.</li>
+</ul>
+<h2 id="project-velocity">Project velocity</h2>
+<p>The CNCF K8s DevStats project aggregates a number of interesting data points related to the velocity of Kubernetes and various sub-projects. This includes everything from individual contributions to the number of companies that are contributing and is an illustration of the depth and breadth of effort that goes into evolving this ecosystem.</p>
+<p>In the v1.32 release cycle, which ran for 14 weeks (September 9th to December 11th), we saw contributions to Kubernetes from as many as 125 different companies and 559 individuals as of writing.</p>
+<p>In the whole Cloud Native ecosystem, the figure goes up to 433 companies counting 2441 total contributors. This sees an increase of 7% more overall contributions compared to the previous release cycle, along with 14% increase in the number of companies involved, showcasing strong interest and community behind the Cloud Native projects.</p>
+<p>Source for this data:</p>
+<ul>
+<li>Companies contributing to Kubernetes</li>
+<li>Overall ecosystem contributions</li>
+</ul>
+<p>By contribution we mean when someone makes a commit, code review, comment, creates an issue or PR, reviews a PR (including blogs and documentation) or comments on issues and PRs.</p>
+<p>If you are interested in contributing visit Getting Started on our contributor website.</p>
+<p>Check out DevStats to learn more about the overall velocity of the Kubernetes project and community.</p>
+<h2 id="event-updates">Event updates</h2>
+<p>Explore the upcoming Kubernetes and cloud-native events from March to June 2025, featuring KubeCon and KCD Stay informed and engage with the Kubernetes community.</p>
+<p><strong>March 2025</strong></p>
+<ul>
+<li><strong>KCD - Kubernetes Community Days: Beijing, China</strong>: In March | Beijing, China</li>
+<li><strong>KCD - Kubernetes Community Days: Guadalajara, Mexico</strong>: March 16, 2025 | Guadalajara, Mexico</li>
+<li><strong>KCD - Kubernetes Community Days: Rio de Janeiro, Brazil</strong>: March 22, 2025 | Rio de Janeiro, Brazil</li>
+</ul>
+<p><strong>April 2025</strong></p>
+<ul>
+<li><strong>KubeCon + CloudNativeCon Europe 2025</strong>: April 1-4, 2025 | London, United Kingdom</li>
+<li><strong>KCD - Kubernetes Community Days: Budapest, Hungary</strong>: April 23, 2025 | Budapest, Hungary</li>
+<li><strong>KCD - Kubernetes Community Days: Chennai, India</strong>: April 26, 2025 | Chennai, India</li>
+<li><strong>KCD - Kubernetes Community Days: Auckland, New Zealand</strong>: April 28, 2025 | Auckland, New Zealand</li>
+</ul>
+<p><strong>May 2025</strong></p>
+<ul>
+<li><strong>KCD - Kubernetes Community Days: Helsinki, Finland</strong>: May 6, 2025 | Helsinki, Finland</li>
+<li><strong>KCD - Kubernetes Community Days: San Francisco, USA</strong>: May 8, 2025 | San Francisco, USA</li>
+<li><strong>KCD - Kubernetes Community Days: Austin, USA</strong>: May 15, 2025 | Austin, USA</li>
+<li><strong>KCD - Kubernetes Community Days: Seoul, South Korea</strong>: May 22, 2025 | Seoul, South Korea</li>
+<li><strong>KCD - Kubernetes Community Days: Istanbul, Turkey</strong>: May 23, 2025 | Istanbul, Turkey</li>
+<li><strong>KCD - Kubernetes Community Days: Heredia, Costa Rica</strong>: May 31, 2025 | Heredia, Costa Rica</li>
+<li><strong>KCD - Kubernetes Community Days: New York, USA</strong>: In May | New York, USA</li>
+</ul>
+<p><strong>June 2025</strong></p>
+<ul>
+<li><strong>KCD - Kubernetes Community Days: Bratislava, Slovakia</strong>: June 5, 2025 | Bratislava, Slovakia</li>
+<li><strong>KCD - Kubernetes Community Days: Bangalore, India</strong>: June 6, 2025 | Bangalore, India</li>
+<li><strong>KubeCon + CloudNativeCon China 2025</strong>: June 10-11, 2025 | Hong Kong</li>
+<li><strong>KCD - Kubernetes Community Days: Antigua Guatemala, Guatemala</strong>: June 14, 2025 | Antigua Guatemala, Guatemala</li>
+<li><strong>KubeCon + CloudNativeCon Japan 2025</strong>: June 16-17, 2025 | Tokyo, Japan</li>
+<li><strong>KCD - Kubernetes Community Days: Nigeria, Africa</strong>: June 19, 2025 | Nigeria, Africa</li>
+</ul>
+<h2 id="upcoming-release-webinar">Upcoming release webinar</h2>
+<p>Join members of the Kubernetes v1.32 release team on <strong>Thursday, January 9th 2025 at 5:00 PM (UTC)</strong>, to learn about the release highlights of this release, as well as deprecations and removals to help plan for upgrades. For more information and registration, visit the event page on the CNCF Online Programs site.</p>
+<h2 id="get-involved">Get involved</h2>
+<p>The simplest way to get involved with Kubernetes is by joining one of the many Special Interest Groups (SIGs) that align with your interests. Have something you’d like to broadcast to the Kubernetes community? Share your voice at our weekly community meeting, and through the channels below. Thank you for your continued feedback and support.</p>
+<ul>
+<li>Follow us on Bluesky @Kubernetes.io for latest updates</li>
+<li>Join the community discussion on Discuss</li>
+<li>Join the community on Slack</li>
+<li>Post questions (or answer questions) on Stack Overflow</li>
+<li>Share your Kubernetes story</li>
+<li>Read more about what’s happening with Kubernetes on the blog</li>
+<li>Learn more about the Kubernetes Release Team</li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

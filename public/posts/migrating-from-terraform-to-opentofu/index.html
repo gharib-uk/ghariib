@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Migrating from Terraform to OpenTofu</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Migrating from Terraform to OpenTofu</h1>
+			<b><time>06.02.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>OpenTofu maintains the core functionality that made Terraform successful while introducing important improvements. The project operates under community governance, ensuring features and fixes align with the community. All of the Terraform providers worked with OpenTofu with the OpenTofu registry.</p>
+<h2 id="executing-the-migration">Executing the Migration</h2>
+<p>The migration to OpenTofu is a straightforward process:</p>
+<ol>
+<li>Install OpenTofu using your preferred package manager or download the binary from the OpenTofu releases page.</li>
+<li>Update your scripts and CI/CD configurations to use the <code>tofu</code> command instead of <code>terraform</code>:</li>
+</ol>
+<pre tabindex="0"><code># Before
+terraform init
+terraform plan
+terraform apply
+
+# After
+tofu init
+tofu plan
+tofu apply
+</code></pre><p>For teams using Terrateam, update your <code>.terrateam/config.yml</code>:</p>
+<pre tabindex="0"><code>engine:
+  name: tofu
+  version: 1.9.0
+</code></pre><p>This configuration ensures Terrateam uses OpenTofu for all operations while maintaining your existing GitOps workflow.</p>
+<h2 id="building-for-the-future">Building for the Future</h2>
+<p>OpenTofu is more than just an alternative to Terraform. It brings the principles of open-source software and community-driven progress to infrastructure as code. The migration process is very simple to do and it&rsquo;s also possible to migrate back to Terraform. The long-term benefits of an open-source solution make OpenTofu a worthwhile investment for organizations committed to infrastructure as code.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

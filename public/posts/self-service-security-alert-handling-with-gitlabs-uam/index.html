@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Self-service security alert handling with GitLab&#39;s UAM&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Self-service security alert handling with GitLab&#39;s UAM&lt;/div&gt;</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>The GitLab Security Operations team prioritizes automation that enables security engineers to focus on high-impact work rather than routine tasks that can be automated. A key innovation in this automation strategy is creation of the User Attestation Module (UAM), which allows GitLab team members to directly respond to and verify security alerts flagged as potentially malicious. When the GUARD framework detects suspicious activity, it routes the alert to the relevant team member for review. The team member can then attest whether they recognize and authorize the activity. Their response is recorded for audit purposes, and, based on their input, the system either closes the alert or escalates it to the Security Incident Response Team (SIRT).</p>
+<p>In this article, you&rsquo;ll learn about the UAM and how it can benefit your DevSecOps environment.</p>
+<h2 id="how-the-user-attestation-module-works">How the User Attestation Module works</h2>
+<p>The UAM streamlines security alert handling through a comprehensive workflow that includes:</p>
+<ul>
+<li>Alert verification by team members</li>
+<li>Collection and documentation of supporting evidence</li>
+<li>Option to request additional support from GitLab SecOps</li>
+<li>Secure storage of team member responses</li>
+<li>Automated alert resolution or incident escalation</li>
+<li>Team member feedback collection for continuous improvement</li>
+</ul>
+<p>We created UAM to help us:</p>
+<ol>
+<li>Route low priority alerts (such as administrative activities) to the relevant team members who performed them.</li>
+<li>Reduce alert fatigue by first checking with the team member who completed the activity before routing to SIRT if necessary.</li>
+<li>Collect and store team member responses to maintain an audit trail and rich metrics.</li>
+<li>Create a response tier between <strong>SIRT needs to triage this alert</strong> and <strong>This is an informational signal that does not need to be reviewed directly</strong>.</li>
+</ol>
+<h2 id="uams-design-principles">UAM&rsquo;s design principles</h2>
+<p>The UAM is a Slack-first automation that reaches out to team members to validate activity directly in Slack, reducing effort and increasing participation. Today, 40% of all security alerts are delivered to team members through the UAM, saving SIRT valuable time to focus on higher importance alerts and incidents.</p>
+<p>A robust escalation workflow in the UAM ensures that all alerts are validated by team members or escalated to SIRT. When a UAM alert reaches a team member, they have a period of time to respond attesting to the activity or stating they do not recognize the activity. If no response is recorded, the UAM alert is auto-escalated to SIRT for handling.</p>
+<p>Comprehensive metrics collection is a core GUARD design principle, which extends to how we designed UAM. All user interactivity with triggered UAM alerts is logged in a metrics database, which enables comprehensive measurement to identify problematic alerts, opportunities for process improvement, and overall UAM health.</p>
+<p>UAM enables a third alert tier, bridging the gap between alerts that always needed to be investigated, and lower importance informational signals that are grouped by entity for escalation and correlation.</p>
+<ul>
+<li>Stable alerts (must be triaged and investigated by SIRT)</li>
+<li>UAM alerts (routed to team members to attest to the activity)</li>
+<li>Informational signal (low-importance events that are interesting and correlated by entity grouping)</li>
+</ul>
+<h2 id="uam-components">UAM components</h2>
+<p>The UAM framework consists of multiple components:</p>
+<ul>
+<li>GitLab: Fetches a user email address based on user_id via user’s API and stores user&rsquo;s responses - Slack: Searches each user by email using Slack API and posts a UAM notification to the end user as well as collects responses from users using Slack modals</li>
+<li>Tines: Processes and orchestrates user responses and alerts</li>
+<li>Devo: Receives alert payload and alert notifications</li>
+<li>Metrics DB: Records metrics for triggered UAM alerts</li>
+</ul>
+<p>The workflow integrates with following modules:</p>
+<ul>
+<li>GitLab API for user identification</li>
+<li>Slack API for user communication</li>
+<li>Webhook configuration for alert reception</li>
+<li>Audit trail storage in GitLab</li>
+</ul>
+<h2 id="uam-workflow">UAM workflow</h2>
+<p>The diagram below illustrates the workflow of the UAM module:</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/540ED2ZZYEgsio1IWEkC09/7a50bf8361079b9e20f1239550dd9b6f/UAM_detection_edited.png" alt="UAM - flow chart" />
+</figure>
+
+
+</p>
+<h2 id="following-along-with-guard">Following along with GUARD</h2>
+<p>We are still unveiling parts of GUARD and how it works, so follow along to learn how we automate our security detections from end to end.</p>
+<h2 id="read-more-about-the-guard-framework">Read more about the GUARD framework</h2>
+<ul>
+<li>Unveiling the GUARD framework to automate security detections at GitLab</li>
+<li>Automating cybersecurity threat detections with GitLab CI/CD</li>
+<li>Open Source Security at GitLab</li>
+</ul>
+<p>The GitLab Security Operations team prioritizes automation that enables security engineers to focus on high-impact work rather than routine tasks that can be automated. A key innovation in this automation strategy is creation of the User Attestation Module (UAM), which allows GitLab team members to directly respond to and verify security alerts flagged as potentially malicious. When the GUARD framework detects suspicious activity, it routes the alert to the relevant team member for review. The team member can then attest whether they recognize and authorize the activity. Their response is recorded for audit purposes, and, based on their input, the system either closes the alert or escalates it to the Security Incident Response Team (SIRT).</p>
+<p>In this article, you&rsquo;ll learn about the UAM and how it can benefit your DevSecOps environment.</p>
+<h2 id="how-the-user-attestation-module-works-1">How the User Attestation Module works</h2>
+<p>The UAM streamlines security alert handling through a comprehensive workflow that includes:</p>
+<ul>
+<li>Alert verification by team members</li>
+<li>Collection and documentation of supporting evidence</li>
+<li>Option to request additional support from GitLab SecOps</li>
+<li>Secure storage of team member responses</li>
+<li>Automated alert resolution or incident escalation</li>
+<li>Team member feedback collection for continuous improvement</li>
+</ul>
+<p>We created UAM to help us:</p>
+<ol>
+<li>Route low priority alerts (such as administrative activities) to the relevant team members who performed them.</li>
+<li>Reduce alert fatigue by first checking with the team member who completed the activity before routing to SIRT if necessary.</li>
+<li>Collect and store team member responses to maintain an audit trail and rich metrics.</li>
+<li>Create a response tier between <strong>SIRT needs to triage this alert</strong> and <strong>This is an informational signal that does not need to be reviewed directly</strong>.</li>
+</ol>
+<h2 id="uams-design-principles-1">UAM&rsquo;s design principles</h2>
+<p>The UAM is a Slack-first automation that reaches out to team members to validate activity directly in Slack, reducing effort and increasing participation. Today, 40% of all security alerts are delivered to team members through the UAM, saving SIRT valuable time to focus on higher importance alerts and incidents.</p>
+<p>A robust escalation workflow in the UAM ensures that all alerts are validated by team members or escalated to SIRT. When a UAM alert reaches a team member, they have a period of time to respond attesting to the activity or stating they do not recognize the activity. If no response is recorded, the UAM alert is auto-escalated to SIRT for handling.</p>
+<p>Comprehensive metrics collection is a core GUARD design principle, which extends to how we designed UAM. All user interactivity with triggered UAM alerts is logged in a metrics database, which enables comprehensive measurement to identify problematic alerts, opportunities for process improvement, and overall UAM health.</p>
+<p>UAM enables a third alert tier, bridging the gap between alerts that always needed to be investigated, and lower importance informational signals that are grouped by entity for escalation and correlation.</p>
+<ul>
+<li>Stable alerts (must be triaged and investigated by SIRT)</li>
+<li>UAM alerts (routed to team members to attest to the activity)</li>
+<li>Informational signal (low-importance events that are interesting and correlated by entity grouping)</li>
+</ul>
+<h2 id="uam-components-1">UAM components</h2>
+<p>The UAM framework consists of multiple components:</p>
+<ul>
+<li>GitLab: Fetches a user email address based on user_id via user’s API and stores user&rsquo;s responses - Slack: Searches each user by email using Slack API and posts a UAM notification to the end user as well as collects responses from users using Slack modals</li>
+<li>Tines: Processes and orchestrates user responses and alerts</li>
+<li>Devo: Receives alert payload and alert notifications</li>
+<li>Metrics DB: Records metrics for triggered UAM alerts</li>
+</ul>
+<p>The workflow integrates with following modules:</p>
+<ul>
+<li>GitLab API for user identification</li>
+<li>Slack API for user communication</li>
+<li>Webhook configuration for alert reception</li>
+<li>Audit trail storage in GitLab</li>
+</ul>
+<h2 id="uam-workflow-1">UAM workflow</h2>
+<p>The diagram below illustrates the workflow of the UAM module:</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/540ED2ZZYEgsio1IWEkC09/7a50bf8361079b9e20f1239550dd9b6f/UAM_detection_edited.png" alt="UAM - flow chart" />
+</figure>
+
+
+</p>
+<h2 id="following-along-with-guard-1">Following along with GUARD</h2>
+<p>We are still unveiling parts of GUARD and how it works, so follow along to learn how we automate our security detections from end to end.</p>
+<h2 id="read-more-about-the-guard-framework-1">Read more about the GUARD framework</h2>
+<ul>
+<li>Unveiling the GUARD framework to automate security detections at GitLab</li>
+<li>Automating cybersecurity threat detections with GitLab CI/CD</li>
+<li>Open Source Security at GitLab</li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

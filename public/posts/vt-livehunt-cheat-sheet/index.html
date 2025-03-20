@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>VT Livehunt Cheat Sheet</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>VT Livehunt Cheat Sheet</h1>
+			<b><time>05.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Today we are happy to announce the release of our “<strong>Livehunt Cheat Sheet</strong>”, a guide to help you quickly implement monitoring rules in Livehunt. You can find the <strong>PDF</strong> <strong>version</strong> here.</p>
+<p>VirusTotal Livehunt is a service that continuously scans all incoming indicators and notifies you when any of them matches your rules. Livehunt not only monitors files, but also domains, URLs, and IP addresses. In this post we detail a few practical examples along with useful tips.</p>
+<h2 id="vt-module">VT Module</h2>
+<p>This YARA module was created for VT Hunting services to provide all available context data, which is structured in two main sections: metadata and behaviour (sandbox execution). You can find more information about the VT module here.</p>
+<h2 id="using-metadata-information-in-livehunt-rules">Using metadata information in Livehunt rules</h2>
+<p>Analysts can create rules to hunt based on the metadata information that VirusTotal gathers and processes. We are referring to hunting files by characteristics (type, size, signatures), reputation (antivirus detections, submission patterns), and even contextual details (file names, tags, etc).</p>
+<p>For example, this would allow analysts to detect files of a certain type that were submitted several times from a given country, and that more than 5 antiviruses have flagged as malicious. Here you have some detailed examples:</p>
+<p><strong>Example 1: Malicious DOCX files that use macros:</strong></p>
+<p>This example defines a rule focused on detecting potentially malicious DOCX files with macros.</p>
+<p>First we check the file type with <strong>vt.metadata.file_type == vt.FileType.DOCX</strong>.</p>
+<p>The next condition (<strong>vt.metadata.analysis_stats.malicious &gt; 5</strong>) matches files flagged as malicious by more than 5 antivirus engines in VirusTotal. This filters out most of the benign files, and can be adjusted according to the investigation.</p>
+<p>Finally, it loops all tags given by security tools in the analysis pipeline and searches for the tag “macros”: <strong>for any tag in vt.metadata.tags:(tag == “macros”)</strong></p>
+<p>import &ldquo;vt&rdquo;</p>
+<p>rule malicious_docx_macros {<br>
+  meta:<br>
+    description = &ldquo;Detect malicious documents using macros.&rdquo;<br>
+  condition:<br>
+    vt.metadata.file_type == vt.FileType.DOCX and<br>
+    vt.metadata.analysis_stats.malicious &gt; 5 and<br>
+    for any tag in vt.metadata.tags:(tag == “macros”)<br>
+}</p>
+<p><strong>Example 2: Possible LNK execution through CommandLineArguments Exif metadata field:</strong></p>
+<p>The following rule is designed to identify <strong>PowerShell</strong> execution by manipulating metadata fields of <strong>.lnk files</strong>. This technique is frequently utilized by malware to avoid detection and initiate attacks. For example, this malicious .lnk file report shows the target command line which will execute PowerShell code to download the “powercat.ps1” script.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiHHeEqT_A4aaf3iGQ0cu2hyphenhyphenNXuLcBPtXDaz9zP8hjUFCJtTkTUdEF7kGwTMbpo1T0eFv6H0XflDHV6aSykUwm4n-DXOt3QwgPhYdQn1lndB413X6sETWtaZRBFSTVTpVm3nlB-2VoDA_MjLTMw5DwFWtSpmDorVBhgMzgoPvIFL_wsjU5qPcwSMK7wutg/w640-h240/lnk_metadata.png" alt="" />
+</figure>
+
+
+</p>
+<p>In this case, the condition checks for the “powershell” string within two <strong>EXIF metadata</strong> fields usually used to store the powershell command line - “CommandLineArguments” and “RelativePath”:</p>
+<p><strong>vt.metadata.exiftool[&ldquo;CommandLineArguments&rdquo;] icontains &ldquo;powershell&rdquo;<br>
+vt.metadata.exiftool[&ldquo;RelativePath&rdquo;] icontains &ldquo;powershell&rdquo;</strong></p>
+<p>import &ldquo;vt&rdquo;</p>
+<p>rule LNK_metadata_execution_powershell {<br>
+  meta:<br>
+    description = &ldquo;Detect possible LNK execution through CommandLineArguments Exif metadata field&rdquo;<br>
+  condition:</p>
+<p>    vt.metadata.exiftool[&ldquo;CommandLineArguments&rdquo;] icontains &ldquo;powershell&rdquo; or<br>
+    vt.metadata.exiftool[&ldquo;RelativePath&rdquo;] icontains &ldquo;powershell&rdquo;<br>
+}</p>
+<h2 id="using-behaviour-information-in-livehunt-rules">Using behaviour information in Livehunt rules</h2>
+<p>Dynamic analysis can bring great value on top of static one. In VirusTotal, we run executable files through multiple sandboxes and its output is normalized into a common format, which can be leveraged through the “vt” module.</p>
+<p><strong>Example 3: Malicious files that use persistence using VBScript:</strong></p>
+<p>The following rule identifies persistence under the <strong>&ldquo;RunOnce&rdquo;</strong> registry key using <strong>VBS files</strong>. This key allows programs to automatically execute once when a user logs in, often exploited by malware to maintain presence on a system.</p>
+<p>For this rule, we iterate over <strong>vt.behaviour.registry_keys_set</strong> looking for <strong>&quot;\CurrentVersion\RunOnce\&quot;</strong> with a value that ends with <strong>&quot;.vbs&quot;</strong>.</p>
+<p>import &ldquo;vt&rdquo;</p>
+<p>rule persistence_runonce_vbs {<br>
+  meta:<br>
+    description = &ldquo;Detect persistence by establishing a VBS file in the runonce key&rdquo;<br>
+  condition:</p>
+<p>    for any registry_key in <br>
+     vt.behaviour.registry_keys_set: (registry_key.key icontains<br>
+     &ldquo;\CurrentVersion\RunOnce\&rdquo;) and (registry_key.value endswith &ldquo;.vbs&rdquo;)<br>
+}</p>
+<p><strong>Example 4: Suspicious shell scripts in &ldquo;profile.d&rdquo; folder:</strong></p>
+<p>This rule detects activity involving the creation or modification of <strong>shell scripts</strong> (.sh files) within the <strong>&quot;/etc/profile.d/&quot;</strong> directory on Linux systems. This directory is often used to host scripts that automatically execute during user login, making it a common target for malware seeking persistence or automatic execution.</p>
+<p>First condition iterates through files dropped (<strong>vt.behaviour.files_dropped</strong>) during execution as observed in VirusTotal&rsquo;s behavioral analysis and checks if the dropped file&rsquo;s path contains &ldquo;/etc/profile.d/&rdquo; and ends with &ldquo;.sh&rdquo; in order to match shell scripts.</p>
+<p>The second condition is very similar but checks the file path for files written (<strong>vt.behaviour.files_written</strong>) during detonation.</p>
+<p>import &ldquo;vt&rdquo;</p>
+<p>rule profile_folder_shell_script {<br>
+  meta:<br>
+    description = &ldquo;Detects shell script creation in &ldquo;profile.d&rdquo; path.&rdquo;<br>
+  condition:<br>
+    for any dropped in vt.behaviour.files_dropped :(<br>
+     dropped.path contains&quot;/etc/profile.d/&quot;<br>
+     and dropped.path endswith &ldquo;.sh&rdquo;<br>
+    )<br>
+    or<br>
+    for any file_path in vt.behaviour.files_written :(<br>
+     file_path contains&quot;/etc/profile.d/&quot;<br>
+     and file_path endswith &ldquo;.sh&rdquo;<br>
+    )<br>
+}</p>
+<h2 id="wrapping-up">Wrapping up</h2>
+<p>The VirusTotal (vt) YARA module brings you unprecedented flexibility in crafting Livehunt rules combining traditional file content analysis with rich metadata information and behavioral patterns from dynamic analysis.</p>
+<p>Our “VT Intelligence Cheat Sheet” provides a quick guide to implement some of the most used techniques. If you have any suggestions or want to share feedback please feel free to reach out here.</p>
+<p>Happy Hunting!</p>
+<p>Today we are happy to announce the release of our “<strong>Livehunt Cheat Sheet</strong>”, a guide to help you quickly implement monitoring rules in Livehunt. You can find the <strong>PDF</strong> <strong>version</strong> here.</p>
+<p>VirusTotal Livehunt is a service that continuously scans all incoming indicators and notifies you when any of them matches your rules. Livehunt not only monitors files, but also domains, URLs, and IP addresses. In this post we detail a few practical examples along with useful tips.</p>
+<h2 id="vt-module-1">VT Module</h2>
+<p>This YARA module was created for VT Hunting services to provide all available context data, which is structured in two main sections: metadata and behaviour (sandbox execution). You can find more information about the VT module here.</p>
+<h2 id="using-metadata-information-in-livehunt-rules-1">Using metadata information in Livehunt rules</h2>
+<p>Analysts can create rules to hunt based on the metadata information that VirusTotal gathers and processes. We are referring to hunting files by characteristics (type, size, signatures), reputation (antivirus detections, submission patterns), and even contextual details (file names, tags, etc).</p>
+<p>For example, this would allow analysts to detect files of a certain type that were submitted several times from a given country, and that more than 5 antiviruses have flagged as malicious. Here you have some detailed examples:</p>
+<p><strong>Example 1: Malicious DOCX files that use macros:</strong></p>
+<p>This example defines a rule focused on detecting potentially malicious DOCX files with macros.</p>
+<p>First we check the file type with <strong>vt.metadata.file_type == vt.FileType.DOCX</strong>.</p>
+<p>The next condition (<strong>vt.metadata.analysis_stats.malicious &gt; 5</strong>) matches files flagged as malicious by more than 5 antivirus engines in VirusTotal. This filters out most of the benign files, and can be adjusted according to the investigation.</p>
+<p>Finally, it loops all tags given by security tools in the analysis pipeline and searches for the tag “macros”: <strong>for any tag in vt.metadata.tags:(tag == “macros”)</strong></p>
+<p>import &ldquo;vt&rdquo;</p>
+<p>rule malicious_docx_macros {<br>
+  meta:<br>
+    description = &ldquo;Detect malicious documents using macros.&rdquo;<br>
+  condition:<br>
+    vt.metadata.file_type == vt.FileType.DOCX and<br>
+    vt.metadata.analysis_stats.malicious &gt; 5 and<br>
+    for any tag in vt.metadata.tags:(tag == “macros”)<br>
+}</p>
+<p><strong>Example 2: Possible LNK execution through CommandLineArguments Exif metadata field:</strong></p>
+<p>The following rule is designed to identify <strong>PowerShell</strong> execution by manipulating metadata fields of <strong>.lnk files</strong>. This technique is frequently utilized by malware to avoid detection and initiate attacks. For example, this malicious .lnk file report shows the target command line which will execute PowerShell code to download the “powercat.ps1” script.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiHHeEqT_A4aaf3iGQ0cu2hyphenhyphenNXuLcBPtXDaz9zP8hjUFCJtTkTUdEF7kGwTMbpo1T0eFv6H0XflDHV6aSykUwm4n-DXOt3QwgPhYdQn1lndB413X6sETWtaZRBFSTVTpVm3nlB-2VoDA_MjLTMw5DwFWtSpmDorVBhgMzgoPvIFL_wsjU5qPcwSMK7wutg/w640-h240/lnk_metadata.png" alt="" />
+</figure>
+
+
+</p>
+<p>In this case, the condition checks for the “powershell” string within two <strong>EXIF metadata</strong> fields usually used to store the powershell command line - “CommandLineArguments” and “RelativePath”:</p>
+<p><strong>vt.metadata.exiftool[&ldquo;CommandLineArguments&rdquo;] icontains &ldquo;powershell&rdquo;<br>
+vt.metadata.exiftool[&ldquo;RelativePath&rdquo;] icontains &ldquo;powershell&rdquo;</strong></p>
+<p>import &ldquo;vt&rdquo;</p>
+<p>rule LNK_metadata_execution_powershell {<br>
+  meta:<br>
+    description = &ldquo;Detect possible LNK execution through CommandLineArguments Exif metadata field&rdquo;<br>
+  condition:</p>
+<p>    vt.metadata.exiftool[&ldquo;CommandLineArguments&rdquo;] icontains &ldquo;powershell&rdquo; or<br>
+    vt.metadata.exiftool[&ldquo;RelativePath&rdquo;] icontains &ldquo;powershell&rdquo;<br>
+}</p>
+<h2 id="using-behaviour-information-in-livehunt-rules-1">Using behaviour information in Livehunt rules</h2>
+<p>Dynamic analysis can bring great value on top of static one. In VirusTotal, we run executable files through multiple sandboxes and its output is normalized into a common format, which can be leveraged through the “vt” module.</p>
+<p><strong>Example 3: Malicious files that use persistence using VBScript:</strong></p>
+<p>The following rule identifies persistence under the <strong>&ldquo;RunOnce&rdquo;</strong> registry key using <strong>VBS files</strong>. This key allows programs to automatically execute once when a user logs in, often exploited by malware to maintain presence on a system.</p>
+<p>For this rule, we iterate over <strong>vt.behaviour.registry_keys_set</strong> looking for <strong>&quot;\CurrentVersion\RunOnce\&quot;</strong> with a value that ends with <strong>&quot;.vbs&quot;</strong>.</p>
+<p>import &ldquo;vt&rdquo;</p>
+<p>rule persistence_runonce_vbs {<br>
+  meta:<br>
+    description = &ldquo;Detect persistence by establishing a VBS file in the runonce key&rdquo;<br>
+  condition:</p>
+<p>    for any registry_key in <br>
+     vt.behaviour.registry_keys_set: (registry_key.key icontains<br>
+     &ldquo;\CurrentVersion\RunOnce\&rdquo;) and (registry_key.value endswith &ldquo;.vbs&rdquo;)<br>
+}</p>
+<p><strong>Example 4: Suspicious shell scripts in &ldquo;profile.d&rdquo; folder:</strong></p>
+<p>This rule detects activity involving the creation or modification of <strong>shell scripts</strong> (.sh files) within the <strong>&quot;/etc/profile.d/&quot;</strong> directory on Linux systems. This directory is often used to host scripts that automatically execute during user login, making it a common target for malware seeking persistence or automatic execution.</p>
+<p>First condition iterates through files dropped (<strong>vt.behaviour.files_dropped</strong>) during execution as observed in VirusTotal&rsquo;s behavioral analysis and checks if the dropped file&rsquo;s path contains &ldquo;/etc/profile.d/&rdquo; and ends with &ldquo;.sh&rdquo; in order to match shell scripts.</p>
+<p>The second condition is very similar but checks the file path for files written (<strong>vt.behaviour.files_written</strong>) during detonation.</p>
+<p>import &ldquo;vt&rdquo;</p>
+<p>rule profile_folder_shell_script {<br>
+  meta:<br>
+    description = &ldquo;Detects shell script creation in &ldquo;profile.d&rdquo; path.&rdquo;<br>
+  condition:<br>
+    for any dropped in vt.behaviour.files_dropped :(<br>
+     dropped.path contains&quot;/etc/profile.d/&quot;<br>
+     and dropped.path endswith &ldquo;.sh&rdquo;<br>
+    )<br>
+    or<br>
+    for any file_path in vt.behaviour.files_written :(<br>
+     file_path contains&quot;/etc/profile.d/&quot;<br>
+     and file_path endswith &ldquo;.sh&rdquo;<br>
+    )<br>
+}</p>
+<h2 id="wrapping-up-1">Wrapping up</h2>
+<p>The VirusTotal (vt) YARA module brings you unprecedented flexibility in crafting Livehunt rules combining traditional file content analysis with rich metadata information and behavioral patterns from dynamic analysis.</p>
+<p>Our “VT Intelligence Cheat Sheet” provides a quick guide to implement some of the most used techniques. If you have any suggestions or want to share feedback please feel free to reach out here.</p>
+<p>Happy Hunting!</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

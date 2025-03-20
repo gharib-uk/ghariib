@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;LocalStorage vs IndexedDB: JavaScript Guide (Storage, Limits &amp; Best Practices)&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;LocalStorage vs IndexedDB: JavaScript Guide (Storage, Limits &amp; Best Practices)&lt;/div&gt;</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>When building web applications, efficient data storage is essential. JavaScript provides two key client-side storage options: <strong>LocalStorage</strong> and <strong>IndexedDB</strong>. This blog will cover their differences, usage, limits, and best practices.</p>
+<h2 id="1-what-is-localstorage">1. What is LocalStorage?</h2>
+<p><strong>LocalStorage</strong> is a simple key-value storage API that allows storing small amounts of data in the browser.</p>
+<h3 id="features">Features:</h3>
+<ul>
+<li>Stores data as <strong>strings</strong>.</li>
+<li><strong>Synchronous</strong> (may block UI).</li>
+<li>Limited to <strong>~5MB per origin</strong>.</li>
+<li><strong>Persistent storage</strong> (data remains after page refresh or browser restart).</li>
+<li>No <strong>indexing or query support</strong>.</li>
+</ul>
+<h3 id="use-cases">Use Cases:</h3>
+<ul>
+<li>Caching small data (e.g., user preferences, themes).</li>
+<li>Storing authentication tokens (consider security risks).</li>
+<li>Saving basic app settings.</li>
+</ul>
+<h3 id="how-to-use-localstorage">How to Use LocalStorage</h3>
+<h4 id="set-data"><strong>Set Data</strong></h4>
+<pre tabindex="0"><code>localStorage.setItem(&#34;username&#34;, &#34;JohnDoe&#34;);
+</code></pre><h4 id="get-data"><strong>Get Data</strong></h4>
+<pre tabindex="0"><code>const user = localStorage.getItem(&#34;username&#34;);
+console.log(user); // &#34;JohnDoe&#34;
+</code></pre><h4 id="remove-data"><strong>Remove Data</strong></h4>
+<pre tabindex="0"><code>localStorage.removeItem(&#34;username&#34;);
+</code></pre><h4 id="clear-all-data"><strong>Clear All Data</strong></h4>
+<pre tabindex="0"><code>localStorage.clear();
+</code></pre><h2 id="2-what-is-indexeddb">2. What is IndexedDB?</h2>
+<p><strong>IndexedDB</strong> is a low-level, asynchronous, NoSQL database for storing large amounts of structured data.</p>
+<h3 id="features-1">Features:</h3>
+<ul>
+<li>Stores <strong>objects</strong> (not just strings).</li>
+<li><strong>Asynchronous</strong> (non-blocking operations).</li>
+<li><strong>Much larger storage</strong> capacity (can use up to 50% of available disk space).</li>
+<li>Supports <strong>transactions and indexing</strong> for faster queries.</li>
+<li><strong>Persistent storage</strong> (data is not cleared unless deleted by user/browser policy).</li>
+</ul>
+<h3 id="use-cases-1">Use Cases:</h3>
+<ul>
+<li>Storing large datasets (e.g., product catalogs, offline data sync).</li>
+<li>Storing images, files, or blobs.</li>
+<li>Caching API responses efficiently.</li>
+</ul>
+<h3 id="how-to-use-indexeddb">How to Use IndexedDB</h3>
+<h4 id="open-or-create-a-database"><strong>Open or Create a Database</strong></h4>
+<pre tabindex="0"><code>const request = indexedDB.open(&#34;MyDatabase&#34;, 1);
+
+request.onupgradeneeded = function(event) {
+  const db = event.target.result;
+  if (!db.objectStoreNames.contains(&#34;users&#34;)) {
+    db.createObjectStore(&#34;users&#34;, { keyPath: &#34;id&#34; });
+  }
+};
+</code></pre><h4 id="add-data"><strong>Add Data</strong></h4>
+<pre tabindex="0"><code>request.onsuccess = function(event) {
+  const db = event.target.result;
+  const txn = db.transaction(&#34;users&#34;, &#34;readwrite&#34;);
+  const store = txn.objectStore(&#34;users&#34;);
+
+  store.add({ id: 1, name: &#34;Alice&#34;, age: 25 });
+
+  txn.oncomplete = () =&gt; console.log(&#34;Data added!&#34;);
+};
+</code></pre><h4 id="read-data"><strong>Read Data</strong></h4>
+<pre tabindex="0"><code>request.onsuccess = function(event) {
+  const db = event.target.result;
+  const txn = db.transaction(&#34;users&#34;, &#34;readonly&#34;);
+  const store = txn.objectStore(&#34;users&#34;);
+
+  const getRequest = store.get(1);
+  getRequest.onsuccess = () =&gt; console.log(getRequest.result);
+};
+</code></pre><h4 id="delete-data"><strong>Delete Data</strong></h4>
+<pre tabindex="0"><code>request.onsuccess = function(event) {
+  const db = event.target.result;
+  const txn = db.transaction(&#34;users&#34;, &#34;readwrite&#34;);
+  const store = txn.objectStore(&#34;users&#34;);
+
+  store.delete(1);
+  txn.oncomplete = () =&gt; console.log(&#34;Data deleted!&#34;);
+};
+</code></pre><h2 id="3-localstorage-vs-indexeddb-key-differences">3. LocalStorage vs IndexedDB: Key Differences</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Feature</th>
+          <th>LocalStorage</th>
+          <th>IndexedDB</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Data Type</td>
+          <td>Strings</td>
+          <td>Objects (JSON, files, blobs)</td>
+      </tr>
+      <tr>
+          <td>Capacity</td>
+          <td>~5MB</td>
+          <td>Up to 50% of disk space</td>
+      </tr>
+      <tr>
+          <td>Performance</td>
+          <td>Synchronous (blocks UI)</td>
+          <td>Asynchronous (non-blocking)</td>
+      </tr>
+      <tr>
+          <td>Query Support</td>
+          <td>No</td>
+          <td>Yes (Indexed queries)</td>
+      </tr>
+      <tr>
+          <td>Transactions</td>
+          <td>No</td>
+          <td>Yes (ACID transactions)</td>
+      </tr>
+      <tr>
+          <td>Security</td>
+          <td>Exposed to JavaScript (XSS risk)</td>
+          <td>More secure (sandboxed)</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="4-storage-limits--best-practices">4. Storage Limits &amp; Best Practices</h2>
+<h3 id="storage-limits"><strong>Storage Limits</strong></h3>
+<ul>
+<li><strong>LocalStorage</strong>: Limited to ~5MB per origin.</li>
+<li><strong>IndexedDB</strong>: Can use <strong>gigabytes</strong> of space, but browsers may prompt users when reaching high storage.</li>
+<li><strong>Safari Warning</strong>: Safari may auto-delete IndexedDB data if storage is low.</li>
+</ul>
+<h3 id="best-practices"><strong>Best Practices</strong></h3>
+<ul>
+<li><strong>Use LocalStorage for small, simple key-value storage.</strong></li>
+<li><strong>Use IndexedDB for complex data, large files, or offline functionality.</strong></li>
+<li><strong>Compress data</strong> (e.g., <code>JSON.stringify</code> + gzip for LocalStorage).</li>
+<li><strong>Handle errors</strong> (e.g., <code>QuotaExceededError</code> in LocalStorage).</li>
+<li><strong>Use <code>navigator.storage.estimate()</code></strong> to check available space.</li>
+</ul>
+<pre tabindex="0"><code>navigator.storage.estimate().then(({ quota, usage }) =&gt; {
+  console.log(`Used: ${usage} bytes`);
+  console.log(`Total available: ${quota} bytes`);
+});
+</code></pre><h2 id="5-conclusion-which-one-should-you-use">5. Conclusion: Which One Should You Use?</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Use Case</th>
+          <th>Recommended Storage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Small settings, themes</td>
+          <td>LocalStorage</td>
+      </tr>
+      <tr>
+          <td>User authentication tokens</td>
+          <td>LocalStorage (short-term, with security considerations)</td>
+      </tr>
+      <tr>
+          <td>Large datasets (e.g., e-commerce products)</td>
+          <td>IndexedDB</td>
+      </tr>
+      <tr>
+          <td>Offline caching</td>
+          <td>IndexedDB</td>
+      </tr>
+      <tr>
+          <td>Images, files, blobs</td>
+          <td>IndexedDB</td>
+      </tr>
+      <tr>
+          <td>Fast, indexed queries</td>
+          <td>IndexedDB</td>
+      </tr>
+  </tbody>
+</table>
+<p>For most <strong>modern web apps</strong>, IndexedDB is the <strong>better choice</strong> due to scalability, performance, and security. However, LocalStorage is useful for <strong>quick and simple storage needs</strong>.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

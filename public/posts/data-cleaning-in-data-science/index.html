@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Data Cleaning in Data Science</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Data Cleaning in Data Science</h1>
+			<b><time>08.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/atm">atm</a>
+        	       
+		           <a href="/tags/data">data</a>
+        	       
+		           <a href="/tags/data_with_missingness">data_with_missingness</a>
+        	       
+		           <a href="/tags/data_without_outliers">data_without_outliers</a>
+        	       
+		           <a href="/tags/dev">dev</a>
+        	       
+		           <a href="/tags/developers">developers</a>
+        	       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/df_cleaned">df_cleaned</a>
+        	       
+		           <a href="/tags/ict">ict</a>
+        	       
+		           <a href="/tags/jetbrains">jetbrains</a>
+        	       
+		           <a href="/tags/linux">linux</a>
+        	       
+		           <a href="/tags/modified_z_score">modified_z_score</a>
+        	       
+		           <a href="/tags/onestory">onestory</a>
+        	       
+		           <a href="/tags/saleprice">saleprice</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+		           <a href="/tags/un">un</a>
+        	       
+
+			<div>
+				<p>In this Data Science blog post series, we’ve talked about where to get data from and how to explore that data using pandas, but whilst that data is excellent for learning, it’s not similar to what we will term real-world data. Data for learning has often already been cleaned and curated to allow you to […]</p>
+<p>In this Data Science blog post series, we’ve talked about where to get data from and how to explore that data using pandas, but whilst that data is excellent for learning, it’s not similar to what we will term <em>real-world</em> data. Data for learning has often already been cleaned and curated to allow you to learn quickly without needing to venture into the world of data cleaning, but real-world data has problems and is messy. Real-world data needs cleaning before it can give us useful insights, and that’s the subject of this blog post. </p>
+<p>Data problems can come from the behaviour of the data itself, the way the data was gathered, or even the way the data was input. Mistakes and oversights can happen at every stage of the journey. </p>
+<p>We are specifically talking about data cleaning here rather than data transformation. Data cleaning ensures that conclusions you make from your data can be generalised to the population you define. In contrast, data transformation involves tasks such as converting data formats, normalising data and aggregating data. </p>
+<h2 id="why-is-data-cleaning-important">Why Is Data Cleaning Important?</h2>
+<p>The first thing we need to understand about datasets is what they represent. Most datasets are a sample representing a wider population, and in working with this sample, you will be able to extrapolate (or <em>generalise</em>) your findings to this population. For example, we used a dataset in the previous two blog posts. This dataset is broadly about house sales, but it only covers a small geographical area, a small period of time and potentially not all houses in that area and period; it is a sample of a larger population. </p>
+<p>Your data needs to be a representative sample of the wider population, for example, all house sales in that area over a defined period. To ensure that our data is a representative sample of the wider population, we must first define our population’s boundaries. </p>
+<p>As you might imagine, it’s often impractical to work with the entire population, except perhaps census data, so you need to decide where your boundaries are. These boundaries might be geographical, demographical, time-based, action-based (such as transactional) or industry-specific. There are numerous ways to define your population, but to generalise your data reliably, this is something you must do before you clean your data.</p>
+<p>In summary, if you’re planning to use your data for any kind of analysis or machine learning, you need to spend time cleaning the data to ensure that you can rely on your insights and generalise them to the <em>real world</em>. Cleaning your data results in more accurate analysis and, when it comes to machine learning, performance improvements, too.</p>
+<p>Without cleaning your data, you risk issues such as not being able to generalise your learnings to the wider population reliably, inaccurate summary statistics and incorrect visualisations. If you are using your data to train machine learning models, this can also lead to errors and inaccurate predictions.</p>
+<p>Try PyCharm Professional for free</p>
+<h2 id="examples-of-data-cleaning">Examples of Data Cleaning</h2>
+<p>We’re going to take a look at five tasks you can use to clean your data. This is not an exhaustive list, but it’s a good place to start when you get your hands on some real-world data.</p>
+<h3 id="deduplicating-data">Deduplicating data</h3>
+<p>Duplicates are a problem because they can distort your data. Imagine you are plotting a histogram where you’re using the frequency of sale prices. If you have duplicates of the same value, you will end up with a histogram that has an inaccurate pattern based on the prices that are duplicated. </p>
+<p>As a side note, when we talk about duplication being a problem in datasets, we are talking about duplication of whole rows, each of which is a single observation. There will be duplicate values in the columns, and we expect this. We’re just talking about duplicate observations. </p>
+<p>Fortunately for us, there is a pandas method we can use to help us detect if there are any duplicates in our data. We can use JetBrains AI chat if we need a reminder with a prompt such as:</p>
+<p>C_ode to identify duplicate rows_</p>
+<p>Here’s the resulting code:</p>
+<pre tabindex="0"><code>duplicate_rows = df[df.duplicated()]
+duplicate_rows
+</code></pre><p>This code assumes that your DataFrame is called df_,_ so make sure to change it to the name of your DataFrame if it is not. </p>
+<p>There isn’t any duplicated data in the Ames Housing dataset that we’ve been using, but if you’re keen to try it out, take a look at the CITES Wildlife Trade Database dataset and see if you can find the duplicates using the pandas method above.</p>
+<p>Once you have identified duplicates in your dataset, you must remove them to avoid distorting your results. You can get the code for this with JetBrains AI again with a prompt such as:</p>
+<p><em>Code to drop duplicates from my dataframe</em> </p>
+<p>The resulting code drops the duplicates, resets the index of your DataFrame and then displays it as a new DataFrame called df_cleaned:</p>
+<pre tabindex="0"><code>df_cleaned = df.drop_duplicates()
+df_cleaned.reset_index(drop=True, inplace=True)
+df_cleaned
+</code></pre><p>There are other pandas functions that you can use for more advanced duplicate management but this is enough to get you started with deduplicating your dataset.</p>
+<h3 id="dealing-with-implausible-values">Dealing with implausible values</h3>
+<p>Implausible values can occur when data is entered incorrectly or something has gone wrong in the data-gathering process. For our Ames Housing dataset, an implausible value might be a negative SalePrice, or a numerical value for Roof Style.</p>
+<p>Spotting implausible values in your dataset relies on a broad approach that includes looking at your summary statistics, checking the data validation rules that were defined by the collector for each column and noting any data points that fall outside of this validation as well as using visualisations to spot patterns and anything that looks like it might be an anomaly. </p>
+<p>You will want to deal with implausible values as they can add noise and cause problems with your analysis. However, how you deal with them is somewhat open to interpretation. If you don’t have many implausible values relative to the size of your dataset, you may want to remove the records containing them. For example, if you’ve identified an implausible value in row 214 of your dataset, you can use the pandas drop function to remove that row from your dataset. </p>
+<p>Once again, we can get JetBrains AI to generate the code we need with a prompt like: </p>
+<p><em>Code that drops index 214 from</em> <em>#df_cleaned</em></p>
+<p>Note that in PyCharm’s Jupyter notebooks I can prefix words with the # sign to indicate to JetBrains AI Assistant that I am providing additional context and in this case that my DataFrame is called df_cleaned.</p>
+<p>The resulting code will remove that observation from your DataFrame, reset the index and display it:</p>
+<pre tabindex="0"><code>df_cleaned = df_cleaned.drop(index=214)
+df_cleaned.reset_index(drop=True, inplace=True)
+df_cleaned
+</code></pre><p>Another popular strategy for dealing with implausible values is to impute them, meaning you replace the value with a different, plausible value based on a defined strategy. One of the most common strategies is to use the median value instead of the implausible value. Since the median is not affected by outliers, it is often chosen by data scientists for this purpose, but equally, the mean or the mode value of your data might be more appropriate in some situations. </p>
+<p>Alternatively, if you have domain knowledge about the dataset and how the data was gathered, you can replace the implausible value with one that is more meaningful. If you’re involved in or know of the data-gathering process, this option might be for you. </p>
+<p>How you choose to handle implausible values depends on their prevalence in your dataset, how the data was gathered and how you intend to define your population as well as other factors such as your domain knowledge. </p>
+<h3 id="formatting-data">Formatting data</h3>
+<p>You can often spot formatting problems with your summary statistics or early visualisations you perform to get an idea of the shape of your data. Some examples of inconsistent formatting are numerical values not all being defined to the same decimal place or variations in terms of spelling, such as “first” and “1st”. Incorrect data formatting can also have implications for the memory footprint of your data.</p>
+<p>Once you spot formatting issues in your dataset, you need to standardise the values. Depending on the issue you are facing, this normally involves defining your own standard and applying the change. Again, the pandas library has some useful functions here such as round. If you wanted to round the SalePrice column to 2 decimal places, we could ask JetBrains AI for the code:</p>
+<p><em>Code to round</em> <em>#SalePrice</em> <em>to two decimal places</em> </p>
+<p>The resulting code will perform the rounding and then print out the first 10 rows so you can check it:</p>
+<pre tabindex="0"><code>df_cleaned[&#39;SalePrice&#39;] = df_cleaned[&#39;SalePrice].round(2)
+df_cleaned.head()
+</code></pre><p>As another example, you might have inconsistent spelling – for example, a HouseStyle column that has both “1Story” and “OneStory”, and you’re confident that they mean the same thing. You can use the following prompt to get code for that:</p>
+<p><em>Code to change all instances of</em> <em>#OneStory</em> <em>to</em> <em>#1Story</em> <em>in</em> <em>#HouseStyle</em> </p>
+<p>The resulting code does exactly that and replaces all instances of OneStory to 1Story:</p>
+<pre tabindex="0"><code>df_cleaned[HouseStyle&#39;] = df_cleaned[&#39;HouseStyle&#39;].replace(&#39;OneStory&#39;, &#39;1Story&#39;)
+</code></pre><h3 id="addressing-outliers">Addressing outliers</h3>
+<p>Outliers are very common in datasets, but how you address them, if at all, is very context-dependent. One of the easiest ways to spot outliers is with a box plot, which uses the seaborn and matplotlib libraries. I discussed box plots in my previous blog post on exploring data with pandas if you need a quick refresher. </p>
+<p>We’ll look at SalePrice in our Ames housing dataset for this box plot. Again, I’ll use JetBrains AI to generate the code for me with a prompt such as:</p>
+<p><em>Code to create a box plot of</em> <em>#SalePrice</em> </p>
+<p>Here’s the resulting code that we need to run:</p>
+<pre tabindex="0"><code>import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Create a box plot for SalePrice
+plt.figure(figsize=(10, 6))
+sns.boxplot(x=df_cleaned[&#39;SalePrice&#39;])
+plt.title(&#39;Box Plot of SalePrice&#39;)
+plt.xlabel(&#39;SalePrice&#39;)
+plt.show()
+</code></pre><p>The box plot tells us that we have a positive skew because the vertical median line inside the blue box is to the left of the centre. A positive skew tells us that we have more house prices at the cheaper end of the scale, which is not surprising. The box plot also tells us visually that we have lots of outliers on the right-hand side. That is a small number of houses that are much more expensive than the median price.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image.png" alt="" />
+</figure>
+
+
+</p>
+<p>You might accept these outliers as it’s fairly typical to expect a small number of houses with a larger price point than the majority. However, this is all dependent on the population you want to be able to generalise to and the conclusions you want to draw from your data. Putting clear boundaries around what is and what is not part of your population will allow you to make an informed decision about whether outliers in your data are going to be a problem. </p>
+<p>For example, if your population consists of people who will not be buying expensive mansions, then perhaps you can delete these outliers. If, on the other hand, your population demographics include those who might reasonably be expected to buy these expensive houses, you might want to keep them as they’re relevant to your population.</p>
+<p>I’ve talked about box plots here as ways to spot outliers, but other options such as scatter plots and histograms can quickly show you if you have outliers in your data, so you can make an informed decision on if you need to do anything about them.</p>
+<p>Addressing outliers usually falls into two categories – deleting them or using summary statistics less prone to outliers. In the first instance, we need to know exactly which rows they are. </p>
+<p>Until now we’ve just been discussing how to identify them visually. There are different ways to determine which observations are and aren’t outliers. One common approach is using a method called the <em>modified Z score</em>. Before we look at how and why it’s modified, the Z-score is defined as:</p>
+<p><em>Z-score =</em> (<em>data point value</em> – <em>mean</em>) / <em>standard deviation</em></p>
+<p>The reason we then modify the Z-score for detecting outlets is that both the mean and the standard deviation are prone to outlier influence by virtue of how they are calculated. The modified Z-score is defined as:</p>
+<p><em>Modified Z-score =</em> (<em>data point value</em> – <em>median</em>) / <em>median absolute</em> <em>deviation</em></p>
+<p>As we learned when we talked about summary statistics, the median is not affected by outliers. The <em>median absolute deviation</em> is the <em>median</em> value of the dataset’s absolute deviations from the <em>median</em>. For example, if your data set contains these values:</p>
+<p>1, 2, 2, 2, <strong>3</strong>, 3, 3, 5,9</p>
+<p>Then your <em>median</em> is 3 as the value in the middle of the dataset. The deviations from your median value of 3 are as follows in the order presented above:</p>
+<p>2, 1, 1, 1, 0, 0, 0, 2, 5</p>
+<p>When we sort these into ascending order we get:</p>
+<p>0, 0, 0, 1, <strong>1</strong>, 1, 2, 2, 5</p>
+<p>Meaning the <em>median absolute deviation</em> in this example would be 1.</p>
+<p>How do we calculate the Modified Z-score for our data set for SalePrice? Let’s give JetBrains AI this prompt:</p>
+<p><em>Given:</em></p>
+<p><em>Modified Z-score = (data point value – median) / median absolute deviation</em></p>
+<p><em>Calculate the Modified Z-score for</em> <em>#SalePrice</em> </p>
+<p>That results in this code:</p>
+<pre tabindex="0"><code>import pandas as pd
+from scipy.stats import median_abs_deviation
+
+# Assuming &#39;data&#39; is your DataFrame and it contains the &#39;SalePrice&#39; column
+
+# Calculate the median for the SalePrice column
+median_sale_price = data[&#39;SalePrice&#39;].median()
+
+# Calculate the Median Absolute Deviation (MAD) for the SalePrice column
+mad_sale_price = median_abs_deviation(data[&#39;SalePrice&#39;], scale=&#39;normal&#39;)
+
+# Calculate the Modified Z-scores for the SalePrice column
+data[&#39;Modified_Z_Score&#39;] = (data[&#39;SalePrice&#39;] - median_sale_price) / mad_sale_price
+
+# Display the first few rows with the Modified Z-scores
+print(data[[&#39;SalePrice&#39;, &#39;Modified_Z_Score&#39;]].head())
+</code></pre><p>When we install the required packages and run this code, we can see we’re partway through, but now we need to decide what an outlier for our SalePrice is based on the modified Z-score. The general wisdom here is that an outlier is anything &gt;=3 or &lt;=-3 however, it’s worth noting that like most statistical decisions, it can and should be tailored to your dataset. </p>
+<p>Let’s pass another prompt over to JetBrains AI so we can further tailor our output:</p>
+<p><em>Just list those that have a</em> <em>#Modified_Z_Score</em> <em>of 3 or above or -3 or below</em> </p>
+<p>I’m going to take this snippet of code and replace it with the relevant rows above:</p>
+<pre tabindex="0"><code># Filter the rows where the Modified Z-score is 3 or above, or -3 or below
+outliers = data[(data[&#39;Modified_Z_Score&#39;] &gt;= 3) | (data[&#39;Modified_Z_Score&#39;] &lt;= -3)]
+
+# Print all the filtered rows, showing their index and SalePrice
+outliers = (outliers[[&#39;SalePrice&#39;, &#39;Modified_Z_Score&#39;]])
+outliers
+</code></pre><p>I have modified this code to save the outliers in a new DataFrame called outliers and print them out so I can view them. </p>
+<p>Our next step would be to remove these outliers from our DataFrame. Again we can use JetBrains AI to generate the code with a prompt like:</p>
+<p><em>Create a new dataframe without the outliers</em> </p>
+<pre tabindex="0"><code>data_without_outliers = data.drop(index=outliers.index)
+
+# Display the new DataFrame without outliers
+print(data_without_outliers)
+</code></pre><p>Our new DataFrame, data_without_outliers, excludes those values where the SalePrice variable is considered an outlier. </p>
+<p>We can update our box plot code to look at the new DataFrame. It still shows our positive skew as we’d expect, but the values considered as outliers have been removed:</p>
+<pre tabindex="0"><code>import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Create a box plot for SalePrice
+plt.figure(figsize=(10, 6))
+sns.boxplot(x=data_without_outliers[&#39;SalePrice&#39;])
+plt.title(&#39;Box Plot of SalePrice&#39;)
+plt.xlabel(&#39;SalePrice&#39;)
+plt.show()
+</code></pre><p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-1.png" alt="" />
+</figure>
+
+
+</p>
+<p>Before we finish up here, let’s take a look at how many observations were removed from our DataFrame as a percentage because we considered them to be outliers based on SalePrice.</p>
+<p>We can use a prompt such as:</p>
+<p><em>Calculate the percentage of observations removed between #data and #data_without_outliers</em></p>
+<pre tabindex="0"><code># Calculate the number of observations in the original and filtered DataFrames
+original_count = len(data)
+filtered_count = len(data_without_outliers)
+
+# Calculate the number of removed observations
+removed_count = original_count - filtered_count
+
+# Calculate the percentage of observations removed
+percentage_removed = (removed_count / original_count) * 100
+
+# Display the percentage
+print(f&#34;Percentage of observations removed: {percentage_removed:.2f}%&#34;)
+</code></pre><p>PyCharm tells us that 5.67% of observations have been removed.</p>
+<p>As I mentioned earlier, if you are keeping your outliers, consider using summary values less prone to being affected by outliers such as the <em>median</em> and <em>interquartile range</em>. You might consider using these measurements to form your conclusions when you’re working with datasets that you know contain outliers that you’ve not removed because they are relevant to the population you’ve defined and the conclusions you want to draw.</p>
+<h3 id="missing-values">Missing values</h3>
+<p>The fastest way to spot missing values in your dataset is with your summary statistics. As a reminder, in your DataFrame, click <em>Show Column Statistics</em> on the right-hand side and then select <em>Compact</em>. Missing values in the columns are shown in red, as you can see here for Lot Frontage in our Ames housing dataset:</p>
+<p>
+<figure>
+  <img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdeSNdJvl9sk5Z8QXEJCr5rhDMI5GTGmaRdqvkIufNS8QZNQi-1QwDF1LQgTS_e9vm0B-pSKa5o2aZnNZEmPiAzvoaOjvRxmOICDRzuM_0iWumPGH_UWyR07Q8xTrzIUnYvL7-j?key=ncaAk2neSPZb4YRTlVBIqdzw" alt="" />
+</figure>
+
+
+</p>
+<p>There are three kinds of missingness that we have to consider for our data:</p>
+<ul>
+<li>
+<p>Missing completely at random</p>
+</li>
+<li>
+<p>Missing at random</p>
+</li>
+<li>
+<p>Missing not at random</p>
+</li>
+</ul>
+<h3 id="missing-completely-at-random">Missing completely at random</h3>
+<p>Missing completely at random means the data has gone missing entirely by chance and the fact that it is missing has no relationship to other variables in the dataset. This can happen when someone forgets to answer a survey question, for example. </p>
+<p>Data that is missing completely at random is rare, but it’s also among the easiest to deal with. If you have a relatively small number of observations missing completely at random, the most common approach is to delete those observations because doing so shouldn’t affect the integrity of your dataset and, thus, the conclusions you hope to draw. </p>
+<h3 id="missing-at-random">Missing at random</h3>
+<p>Missing at random has a pattern to it, but we’re able to explain that pattern through other variables we’ve measured. For example, someone didn’t answer a survey question because of how the data was collected.</p>
+<p>Consider in our Ames housing dataset again, perhaps the Lot Frontage variable is missing more frequently for houses that are sold by certain real estate agencies. In that case, this missingness could be due to inconsistent data entry practices by some agencies. If true, the fact that the Lot Frontage data is missing is related to how the agency that sold the property gathered the data, which is an observed characteristic, not the Lot Frontage itself. </p>
+<p>When you have data missing at random, you will want to understand why that data is missing, which often involves digging into how the data was gathered. Once you understand why the data is missing, you can choose what to do. One of the more common approaches to deal with missing at random is to impute the values. We’ve already touched on this for implausible values, but it’s a valid strategy for missingness too. There are various options you could choose from based on your defined population and the conclusions you want to draw, including using correlated variables such as house size, year built, and sale price in this example. If you understand the pattern behind the missing data, you can often use contextual information to impute the values, which ensures that relationships between data in your dataset are preserved.  </p>
+<h3 id="missing-not-at-random">Missing not at random</h3>
+<p>Finally, missing not at random is when the likelihood of missing data is related to unobserved data. That means that the missingness is dependent on the unobserved data. </p>
+<p>One last time, let’s return to our Ames housing dataset and the fact that we have missing data in Lot Frontage. One scenario for data missing not at random is when sellers deliberately choose not to report Lot Frontage if they consider it <em>small</em> and thus reporting it might reduce the sale price of their house. If the likelihood of Lot Frontage data being missing depends on the size of the frontage itself (which is unobserved), smaller lot frontages are less likely to be reported, meaning the missingness is directly related to the missing value.</p>
+<h3 id="visualising-missingness">Visualising missingness</h3>
+<p>Whenever data is missing, you need to establish whether there’s a pattern. If you have a pattern, then you have a problem that you’ll likely have to address before you can generalize your data. </p>
+<p>One of the easiest ways to look for patterns is with heat map visualisations. Before we get into the code, let’s exclude variables with no missingness. We can prompt JetBrains AI for this code:</p>
+<p><em>Code to create a new dataframe that contains only columns with missingness</em> </p>
+<p>Here’s our code:</p>
+<pre tabindex="0"><code># Identify columns with any missing values
+columns_with_missing = data.columns[data.isnull().any()]
+
+# Create a new DataFrame with only columns that have missing values
+data_with_missingness = data[columns_with_missing]
+
+# Display the new DataFrame
+print(data_with_missingness)
+</code></pre><p>Before you run this code, change the final line so we can benefit from PyCharm’s nice DataFrame layout:</p>
+<pre tabindex="0"><code>data_with_missingness
+</code></pre><p>Now it’s time to create a heatmap; again we will prompt JetBrains AI with code such as:</p>
+<p><em>Create a heatmap of</em> <em>#data_with_missingness</em> <em>that is transposed</em></p>
+<p>Here’s the resulting code:</p>
+<pre tabindex="0"><code>import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Transpose the data_with_missingness DataFrame
+transposed_data = data_with_missingness.T
+
+# Create a heatmap to visualize missingness
+plt.figure(figsize=(12, 8))
+sns.heatmap(transposed_data.isnull(), cbar=False, yticklabels=True)
+plt.title(&#39;Missing Data Heatmap (Transposed)&#39;)
+plt.xlabel(&#39;Instances&#39;)
+plt.ylabel(&#39;Features&#39;)
+plt.tight_layout()
+plt.show()
+</code></pre><p>Note that I removed cmap=’viridis’ from the heatmap arguments as I find it hard to view. </p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-24.png" alt="" />
+</figure>
+
+
+</p>
+<p>This heatmap suggests that there might be a pattern of missingness because the same variables are missing across multiple rows. In one group, we can see that Bsmt Qual, Bsmt Cond, Bsmt Exposure, BsmtFin Type 1 and Bsmt Fin Type 2 are all missing from the same observations. In another group, we can see that Garage Type, Garage Yr Bit, Garage Finish, Garage Qual and Garage Cond are all missing from the same observations.</p>
+<p>These variables all relate to basements and garages, but there are other variables related to garages or basements that are not missing. One possible explanation is that different questions were asked about garages and basements in different real estate agencies when the data was gathered, and not all of them recorded as much detail as is in the dataset. Such scenarios are common with data you don’t collect yourself, and you can explore how the data was collected if you need to learn more about missingness in your dataset.</p>
+<h2 id="best-practices-for-data-cleaning">Best Practices for Data Cleaning</h2>
+<p>As I’ve mentioned, defining your population is high on the list of best practices for data cleaning. Know what you want to achieve and how you want to generalise your data before you start cleaning it. </p>
+<p>You need to ensure that all your methods are reproducible because reproducibility also speaks to clean data. Situations that are not reproducible can have a significant impact further down the line. For this reason, I recommend keeping your Jupyter notebooks tidy and sequential while taking advantage of the Markdown features to document your decision-making at every step, especially with cleaning. </p>
+<p>When cleaning data, you should work incrementally, modifying the DataFrame rather than the original CSV file or database, and ensuring you do it all in reproducible, well-documented code.</p>
+<h2 id="summary">Summary</h2>
+<p>Data cleaning is a big topic, and it can have many challenges. The larger the dataset is, the more challenging the cleaning process is. You will need to keep your population in mind to generalise your conclusions more widely while balancing tradeoffs between removing and imputing missing values and understanding why that data is missing in the first place. </p>
+<p>You can think of yourself as the voice of the data. You know the journey that the data has been on and how you have maintained data integrity at all stages. You are the best person to document that journey and share it with others. </p>
+<p>Try PyCharm Professional for free</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

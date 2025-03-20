@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Multiple Vulnerabilities in the Mazda In-Vehicle Infotainment (IVI) System</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Multiple Vulnerabilities in the Mazda In-Vehicle Infotainment (IVI) System</h1>
+			<b><time>04.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/cybersecurity">cybersecurity</a>
+        	       
+		           <a href="/tags/security">security</a>
+        	       
+		           <a href="/tags/zero_day">zero_day</a>
+        	       
+		           <a href="/tags/zeroday">zeroday</a>
+        	       
+
+			<div>
+				<p>Multiple vulnerabilities have been discovered in the Mazda Connect Connectivity Master Unit (CMU) system installed in multiple car models, such as the Mazda 3 model year 2014-2021. Like in so many cases, these vulnerabilities are caused by insufficient sanitization when handling attacker-supplied input. A physically present attacker could exploit these vulnerabilities by connecting a specially crafted USB device – such as an iPod or mass storage device – to the target system. Successful exploitation of some of these vulnerabilities results in arbitrary code execution with root privileges.</p>
+<h1 id="the-target">The Target</h1>
+<p>The specific CMU unit that was the target of the research was manufactured by Visteon, while the software was initially developed by Johnson Controls Inc (JCI). The research was performed against the latest available software version (74.00.324A). Earlier software versions down to at least 70.x may also be affected by these vulnerabilities.</p>
+<p>Notably, the CMU has a very active “modding scene” with the community releasing multiple software “tweaks” to alter the operation of the unit. The installation of these tweaks typically relied on software vulnerabilities. At the time of publication, we are unaware of any publicly known vulnerabilities in the latest firmware version.</p>
+<p><strong>Hardware Design</strong></p>
+<p>The unit exterior looks like this:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/d6f79a1c-d7e9-4fd0-b145-cec409a6e16c/IMG_3894.JPG?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>There is a sticker on the bottom with some technical information about the unit. The sticker notes the specific CMU model being <code>MAZDA_GEN_65_CMU</code>.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/ac488631-eff6-411d-b7be-27bb121c3ee1/IMG_3895.jpg?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>On the back, the unit provides multiple connectors that carry power, audio input/output, USB and CAN signals, and a serial console.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/e8927d4d-01bf-46a6-81d5-a274415c68d5/IMG_E4064.JPG?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>Inside, the unit is built on a single PCB which carries an application SoC (Freescale part number SCIMX06DAVT10AC), an assortment of memory ICs (a serial Flash on the back of the board, a NAND Flash, and an eMMC), an auxiliary MCU (Renesas part number R5F35MCEJFF), and a Bluetooth module (Murata part number LBEE6Z2U0C-584).</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/008d1bf6-000c-4b71-9545-337dded74d4a/IMG_E3675.JPG?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>The functionality available on the edge connectors was not explored in this research.</p>
+<p>Typically, in designs where there is more than one processing unit present, some degree of separation is implemented. User-facing applications handled by a rich OS (i.e., QNX, Linux, Android, etc.) run on the application SoC, while CAN connectivity is handled by an MCU usually running an RTOS. This appears to be the case for this unit as well.</p>
+<p><strong>Software design</strong></p>
+<p>On the software side of things, the unit’s main SoC is running a Linux-based OS image, as evidenced by the following output (abbreviated here) captured via the serial console:</p>
+<p>While there is a login prompt, authentication credentials for the latest software version are not publicly known. The console proceeds to serve a vast amount of logging output, which could be useful for testing exploits.</p>
+<p>When fully booted, the system has the following file systems mounted:</p>
+<p>All the persistent memory storage is accessible from the OS. The serial Flash is present as the <code>mtdblock</code>partitions, the NAND is present as the <code>ffx01</code> partitions, and the eMMC as the <code>mmcblk</code> partitions. Notably, several file systems are mounted read-write as signified by the <code>rw</code> string included in parentheses.</p>
+<p><strong>The Software Update Process</strong></p>
+<p>The software on the unit can be updated from the diagnostic menu:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/ed197124-dde2-453f-b7cc-966b61a8510a/Picture1.jpg?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>The update process expects a file with the <code>.up</code> extension to be located on a mass storage device connected via USB. The dealer could then enter this diagnostic menu and start the update process.</p>
+<p>Software update files are password-protected ZIP archives containing multiple directories for various steps in the update process, as well as an “instruction” file describing how to perform the update. There are 21 steps in the latest update file. Of special interest is the contents of the following directories:</p>
+<p>• <code>rootfs1upd</code> containing a <code>.tar.gz</code> archive of the entire root file system,<br>
+• <code>linux1</code> containing the Linux kernel 3.0.35,<br>
+• <code>ibc1</code> and <code>ibc2</code> containing a bootloader,<br>
+• <code>bootstrap</code> containing yet another bootloader,<br>
+• <code>passwdupdate</code> containing the replacement <code>passwd</code> file,<br>
+• <code>vip</code> containing the update image for the auxiliary MCU.</p>
+<p>The majority of the update process is implemented in several shared objects. All business logic is located in <code>svcjciupdatea.so</code> and <code>svcjciupdates.so</code>, which use supporting code in <code>libjcireflashua.so</code> and <code>libjcisecurity.so</code>. The update process was investigated only up to the point of signature verification. Further investigation would assume the ability to produce either properly signed updates or a signature verification bypass. Unfortunately, the former was not available at the time of this research, and the latter was not discovered during this effort.</p>
+<p>On a high level, the update verification process is contained in the <code>svcjciupdates.so:updates_sys_srv_ValidatePackageOperationThread()</code> function, which calls other functions to perform verification steps in the given order:</p>
+<p>• <code>updates_sys_srv_LoadUP()</code> parses the specified update file, extracts the <code>main_instructions.ini</code> and <code>versions.ini</code> files, and stores them in memory for later use.<br>
+• <code>updates_sys_srv_ValidateUPStructure()</code> validates whether the internal structure of the update file matches the expected layout. This was not an issue when the format of proper update files was followed to create an exploit.<br>
+• <code>updates_sys_srv_ExtractCertificates()</code> extracts the signing certificate chain from the update file to be used for update verification. The chain contains the publisher certificate used to sign the update and an intermediate CA certificate that issued the publisher certificate. The intermediate CA certificate is issued by the JCI root CA.<br>
+• <code>updates_sys_sec_VerifyUPCertificates()</code> verifies the extracted certificate chain to ensure the chain properly terminates in the expected root CA stored on the device.<br>
+• <code>updates_sys_sec_VerifyUPSignature()</code> verifies the signature of a specified update file against the publisher certificate. The signature in this case is located at the end of the update file and is 256 bytes long.<br>
+• <code>updates_sys_srv_RemoveExtractedCertificates()</code> cleans up after the verification process.</p>
+<p>Of particular note is the fact that multiple operations are performed on the supplied update file by the <code>updates_sys_srv_LoadUP()</code> function and its callees before any integrity checks occur against the user-supplied file.</p>
+<h1 id="the-vulnerabilities">The Vulnerabilities</h1>
+<p>Multiple vulnerabilities were discovered during our research effort, which can be used in conjunction to achieve a complete and persistent compromise of the infotainment system.</p>
+<h1 id="cve-2024-8355zdi-24-1208-devicemanager-iap-serial-number-sql-injection">CVE-2024-8355/ZDI-24-1208: DeviceManager iAP Serial Number SQL Injection</h1>
+<p>This vulnerability was the first bug discovered during research, spurring a deeper look into this unit.</p>
+<p>The specific vulnerability exists in the <code>eInsertDeviceEntry()</code> function of the <code>/jci/devicemanager/libdevicemanager.so</code> library. When attempting to insert a new Apple device into the <code>DeviceDatabase.db</code> SQLite database, several values are taken from the device and used in an SQL statement without sanitization. See the following pseudocode implementation of the <code>eInsertDeviceEntry()</code> function:</p>
+<p>Because of this, when the infotainment system detects an Apple device has been connected and requests, for example, its iAP serial number, a spoofed iPod or other Apple device can instead reply with a string along the lines of:</p>
+<p>This leads to the DeviceManager executing the injected SQL statement on the infotainment system with root privileges. This could be used to manipulate the database itself, disclose information, create arbitrary files on the file system, and possibly execute code. Exploitation of this vulnerability is somewhat limited due to an apparent length limitation of 0x36 bytes on the input, but this could potentially be worked around by having several spoofed iPods connect one after the other, each with its own injected SQL statements in place of a serial number.</p>
+<h1 id="cve-2024-8359zdi-24-1191-reflash_ddu_findfile-command-injection-rce">CVE-2024-8359/ZDI-24-1191: REFLASH_DDU_FindFile Command Injection RCE</h1>
+<p>One of the multitude of functions supporting the update process is the <code>REFLASH_DDU_FindFile()</code> function found in the <code>libjcireflashua.so</code> shared object. The pseudocode for this function is reproduced below for clarity:</p>
+<p>The function attempts to find a specific file within the update package specified via the provided file path. This is performed by interpolating the provided path into a command line for the <code>unzip</code> program. Unfortunately, no sanitization is performed before that occurs, and attacker-controlled input (e.g., <code>/dev/sda1/path/file.up</code>) is passed to the <code>system()</code> function. This allows the attacker to inject arbitrary OS commands that will be executed by the head unit OS shell, allowing for a full compromise of the system. The attacker can control both the <code>path</code> and <code>file</code> elements of the overall path.</p>
+<p>The affected function can be reached via the following call graph:</p>
+<p>• UPDATES_SYS_IPC_INTERFACE_GetPackageInfo_svc in svcjciupdates.so<br>
+• UPDATES_SYS_SRV_GetPackageInfo<br>
+• updates_sys_srv_GetPackageInfoOperationThread<br>
+• updates_sys_srv_LoadUP<br>
+• REFLASH_UA_LoadUP in libjcireflashua.so<br>
+• REFLASH_DDU_FindFile</p>
+<h1 id="cve-2024-8360zdi-24-1192-reflash_ddu_extractfile-command-injection-rce">CVE-2024-8360/ZDI-24-1192: REFLASH_DDU_ExtractFile Command Injection RCE</h1>
+<p>One of the multitude of functions supporting the update process is the <code>REFLASH_DDU_ExtractFile()</code> function found in the <code>libjcireflashua.so</code> shared object. The pseudocode for this function is reproduced below for clarity:</p>
+<p>The function attempts to extract a specific file from the update package specified by the path supplied through the <code>up_path</code> argument. This interpolates the provided path into a command line for the <code>unzip</code> program. Unfortunately, no sanitization is performed before that occurs, and attacker-controlled input (e.g., <code>/dev/sda1/path/file.up</code>) is passed to the <code>system()</code> function. The attacker can control both <code>path</code> and <code>file</code> elements of the overall path. This allows the attacker to inject arbitrary OS commands that will be executed by the head unit OS shell, allowing for a full compromise of the system.</p>
+<p>The affected function can be reached via the following call graph:</p>
+<p>• UPDATES_SYS_IPC_INTERFACE_GetPackageInfo_svc in svcjciupdates.so<br>
+• UPDATES_SYS_SRV_GetPackageInfo<br>
+• updates_sys_srv_GetPackageInfoOperationThread<br>
+• updates_sys_srv_LoadUP<br>
+• REFLASH_UA_LoadUP in libjcireflashua.so<br>
+• REFLASH_DDU_ExtractFile</p>
+<h1 id="cve-2024-8358zdi-24-1190-updates_extractfile-command-injection-rce">CVE-2024-8358/ZDI-24-1190: UPDATES_ExtractFile Command Injection RCE</h1>
+<p>One of the various functions supporting the update process is the <code>UPDATES_ExtractFile()</code> function found in the <code>svcjciupdates.so</code> shared object. The pseudocode for this function is partially reproduced below for clarity:</p>
+<p>The function attempts to extract a specific file from the update package specified by the path supplied through the <code>up_path</code> argument. This interpolates the provided path into a command line for the <code>unzip</code> program. As with the other bugs, no sanitization is performed before that occurs, and attacker-controlled input (e.g., <code>/dev/sda1/path/file.up</code>) is passed to the <code>system()</code> function. The attacker can control both <code>path</code> and <code>file</code> elements of the overall path. This allows the attacker to inject arbitrary OS commands that will be executed by the head unit OS shell, allowing for a full compromise of the system.</p>
+<p>The affected function can be reached via the following call graph:</p>
+<p>• UPDATES_SYS_IPC_INTERFACE_GetPackageInfo_svc in svcjciupdates.so<br>
+• UPDATES_SYS_SRV_GetPackageInfo<br>
+• updates_sys_srv_GetPackageInfoOperationThread<br>
+• updates_sys_srv_LoadUP<br>
+• updates_sys_srv_ExtractCertificates<br>
+• updates_sys_srv_ExtractPubCert<br>
+• UPDATES_ExtractFile(&ldquo;publisher_cert.pem&rdquo;, &ldquo;/tmp/reflash/publisher_cert.pem&rdquo;)</p>
+<h1 id="cve-2024-8357zdi-24-1189-app-soc-missing-root-of-trust-in-hardware">CVE-2024-8357/ZDI-24-1189: App SoC Missing Root of Trust in Hardware</h1>
+<p>As previously mentioned, the head unit is partitioned into two relatively independent systems: the application SoC running Linux and the VIP MCU running an unspecified OS. The application SoC uses an onboard SPI Flash chip to boot. The chip is partitioned as follows:</p>
+<p>Here, the mtd0 partition stores the bootstrap code, which appears to be the first piece of code to be executed on the system. The application SoC was found to be missing any authentication of this bootstrap code. Additionally, none of the subsequent OS boot steps perform any authentication of the next boot stage before passing control to it. This results in the following opportunities for an attacker who has gained code execution on the Linux system:</p>
+<p>• Manipulate the root filesystem, changing arbitrary files and e.g. gaining persistence on the system,<br>
+• Manipulate configuration data residing in the mtd5 partition, e.g. installing arbitrary SSH keys, and<br>
+• Manipulate the bootstrap code, gaining the ability to execute arbitrary code prior to OS boot.</p>
+<h1 id="cve-2024-8356zdi-24-1188-vip-mcu-unsigned-code">CVE-2024-8356/ZDI-24-1188: VIP MCU Unsigned Code</h1>
+<p>As previously mentioned, the head unit is partitioned into two relatively independent systems; the application SoC running Linux and the VIP MCU running an unspecified OS. The MCU appears to support several CMU functions, including CAN/LIN connectivity to the rest of the vehicle. The partitioning is also assumed to represent a security boundary in that the compromise of the application SoC is expected to be contained and not affect the rest of the vehicle in a way that may compromise safety.</p>
+<p>The MCU in question is identified as VIP in the strings found in the CMU software. Through the analysis of software update packages, it was discovered the VIP is also updated during the software update process. The tools to do so, as well as the update image, are found in the <code>vip</code> subdirectory of the update package.</p>
+<p>The <code>vcm</code> tool allows performing the following operations against the VIP:</p>
+<p>Specifically, the <code>--write-image</code> command allows writing an update image to the VIP. This command is normally used by the update script and takes an input file formatted as Motorola S-records. Of particular interest is also querying the versions of VIP software components. The following is reported on the unit running software <code>cmu150_NA_74.00.324A</code>:</p>
+<p>These strings can be located in the update file <code>image-vip_appvfbl.mot</code> and are destined to be programmed at memory address 0xC000A in the VIP MCU memory space and appear to be part of the application image spanning addresses 0xC0000 through 0xFFFFF. By modifying these strings, it is possible to determine whether the image is validated before being programmed into the internal memory.</p>
+<p>The original S-record file was manipulated to change one string to produce a visible indication of different firmware, and the resulting image was programmed back to the VIP MCU:</p>
+<p>Using the same command for version check, it is possible to confirm the tampered image was accepted:</p>
+<p>In a more global sense, this allows an attacker to pivot from a compromised application SoC running Linux to the VIP MCU by installing a crafted firmware version and subsequently gaining direct access to the connected CAN busses of the vehicle.</p>
+<h1 id="exploitation">Exploitation</h1>
+<p>Exploitation of the OS command injection vulnerabilities is relatively straightforward. All the attacker needs to do is create a file on a FAT32-formatted USB mass storage device where the name will contain the OS commands to be executed. The filename must end with <code>.up</code> for it to be recognized by the software update handling code. While all three command injection vulnerabilities are exploited via the file name, the easiest one to exploit is by far the ZDI-CAN-23420 as there are no specific exploitation requirements such as validity of the crafted update file.</p>
+<p>Exploitation of the described command injection vulnerabilities can be further facilitated by the fact that software update installation can be triggered automatically upon connecting a USB mass storage device; this is a “known feature” which is activated by simply placing an empty file named <code>jci-autoupdate</code> on the storage device.</p>
+<p>Once the initial compromise is achieved, the attacker can gain persistence through manipulation of the root file system, such as installing backdoored system components which will persist across system restarts.</p>
+<p>Furthermore, the attacker can move laterally and install a specially crafted VIP microcontroller software allowing unfettered access to vehicle networks, potentially impacting vehicle operation and safety. Specific impacts (what could be controlled and how) were not investigated during this research effort.</p>
+<h1 id="associated-risks-for-usersowners">Associated Risks for Users/Owners</h1>
+<p>In the lab environment, the entire attack chain – from plugging in a USB drive to installing a crafted update on the VIP – takes only a few minutes. Currently, there is no reason to believe a similar attack will take significantly more time against a unit installed in a car. This means that the vehicle can be compromised while, for example, it is being handled by a valet, during a ride share, or via USB malware. Naturally, the same can be done in a shop environment where there are no significant time pressures.</p>
+<p>The CMU can then be compromised and “enhanced” to, for example, attempt to compromise any connected device in targeted attacks that can result in DoS, bricking, ransomware, safety compromise, etc.</p>
+<h1 id="conclusions">Conclusions</h1>
+<p>This research effort and its output highlighted the fact that high-impact vulnerabilities can be found even in a very mature automotive product that has been on the market for a number of years and with a long history of security fixes. To date, these vulnerabilities remain unpatched by the vendor.</p>
+<p>There has been a lot of focus and discussion recently in the security community about the importance of language security and “memory safe” languages. This set of real-world vulnerabilities is a good reminder that focusing on only one bug class or employing one set of security tools (static code analysis, for instance) does not result in deployed systems being secure. In this case, C was used to develop the firmware, but it is an irrelevant fact considering the nature of the discovered vulnerabilities. Any ‘memory-safe’ firmware would have also been compromised in this instance.</p>
+<p>While the SQL and OS command injection issues represent programming errors, the remaining vulnerabilities are security design flaws. It is paramount that system integrity is ensured at all runtime stages and for all components. Only then is it possible to guarantee the downstream security properties of languages and their compilers.</p>
+<p>In summary, it is important to consider the whole system security and security-test complete production systems in all their operational modes.</p>
+<p>You can find me on Mastodon at @infosecdj, and follow the team on Twitter, Mastodon, LinkedIn, or Bluesky for the latest in exploit techniques and security patches.</p>
+<p>Multiple vulnerabilities have been discovered in the Mazda Connect Connectivity Master Unit (CMU) system installed in multiple car models, such as the Mazda 3 model year 2014-2021. Like in so many cases, these vulnerabilities are caused by insufficient sanitization when handling attacker-supplied input. A physically present attacker could exploit these vulnerabilities by connecting a specially crafted USB device – such as an iPod or mass storage device – to the target system. Successful exploitation of some of these vulnerabilities results in arbitrary code execution with root privileges.</p>
+<h1 id="the-target-1">The Target</h1>
+<p>The specific CMU unit that was the target of the research was manufactured by Visteon, while the software was initially developed by Johnson Controls Inc (JCI). The research was performed against the latest available software version (74.00.324A). Earlier software versions down to at least 70.x may also be affected by these vulnerabilities.</p>
+<p>Notably, the CMU has a very active “modding scene” with the community releasing multiple software “tweaks” to alter the operation of the unit. The installation of these tweaks typically relied on software vulnerabilities. At the time of publication, we are unaware of any publicly known vulnerabilities in the latest firmware version.</p>
+<p><strong>Hardware Design</strong></p>
+<p>The unit exterior looks like this:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/d6f79a1c-d7e9-4fd0-b145-cec409a6e16c/IMG_3894.JPG?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>There is a sticker on the bottom with some technical information about the unit. The sticker notes the specific CMU model being <code>MAZDA_GEN_65_CMU</code>.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/ac488631-eff6-411d-b7be-27bb121c3ee1/IMG_3895.jpg?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>On the back, the unit provides multiple connectors that carry power, audio input/output, USB and CAN signals, and a serial console.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/e8927d4d-01bf-46a6-81d5-a274415c68d5/IMG_E4064.JPG?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>Inside, the unit is built on a single PCB which carries an application SoC (Freescale part number SCIMX06DAVT10AC), an assortment of memory ICs (a serial Flash on the back of the board, a NAND Flash, and an eMMC), an auxiliary MCU (Renesas part number R5F35MCEJFF), and a Bluetooth module (Murata part number LBEE6Z2U0C-584).</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/008d1bf6-000c-4b71-9545-337dded74d4a/IMG_E3675.JPG?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>The functionality available on the edge connectors was not explored in this research.</p>
+<p>Typically, in designs where there is more than one processing unit present, some degree of separation is implemented. User-facing applications handled by a rich OS (i.e., QNX, Linux, Android, etc.) run on the application SoC, while CAN connectivity is handled by an MCU usually running an RTOS. This appears to be the case for this unit as well.</p>
+<p><strong>Software design</strong></p>
+<p>On the software side of things, the unit’s main SoC is running a Linux-based OS image, as evidenced by the following output (abbreviated here) captured via the serial console:</p>
+<p>While there is a login prompt, authentication credentials for the latest software version are not publicly known. The console proceeds to serve a vast amount of logging output, which could be useful for testing exploits.</p>
+<p>When fully booted, the system has the following file systems mounted:</p>
+<p>All the persistent memory storage is accessible from the OS. The serial Flash is present as the <code>mtdblock</code>partitions, the NAND is present as the <code>ffx01</code> partitions, and the eMMC as the <code>mmcblk</code> partitions. Notably, several file systems are mounted read-write as signified by the <code>rw</code> string included in parentheses.</p>
+<p><strong>The Software Update Process</strong></p>
+<p>The software on the unit can be updated from the diagnostic menu:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/ed197124-dde2-453f-b7cc-966b61a8510a/Picture1.jpg?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>The update process expects a file with the <code>.up</code> extension to be located on a mass storage device connected via USB. The dealer could then enter this diagnostic menu and start the update process.</p>
+<p>Software update files are password-protected ZIP archives containing multiple directories for various steps in the update process, as well as an “instruction” file describing how to perform the update. There are 21 steps in the latest update file. Of special interest is the contents of the following directories:</p>
+<p>• <code>rootfs1upd</code> containing a <code>.tar.gz</code> archive of the entire root file system,<br>
+• <code>linux1</code> containing the Linux kernel 3.0.35,<br>
+• <code>ibc1</code> and <code>ibc2</code> containing a bootloader,<br>
+• <code>bootstrap</code> containing yet another bootloader,<br>
+• <code>passwdupdate</code> containing the replacement <code>passwd</code> file,<br>
+• <code>vip</code> containing the update image for the auxiliary MCU.</p>
+<p>The majority of the update process is implemented in several shared objects. All business logic is located in <code>svcjciupdatea.so</code> and <code>svcjciupdates.so</code>, which use supporting code in <code>libjcireflashua.so</code> and <code>libjcisecurity.so</code>. The update process was investigated only up to the point of signature verification. Further investigation would assume the ability to produce either properly signed updates or a signature verification bypass. Unfortunately, the former was not available at the time of this research, and the latter was not discovered during this effort.</p>
+<p>On a high level, the update verification process is contained in the <code>svcjciupdates.so:updates_sys_srv_ValidatePackageOperationThread()</code> function, which calls other functions to perform verification steps in the given order:</p>
+<p>• <code>updates_sys_srv_LoadUP()</code> parses the specified update file, extracts the <code>main_instructions.ini</code> and <code>versions.ini</code> files, and stores them in memory for later use.<br>
+• <code>updates_sys_srv_ValidateUPStructure()</code> validates whether the internal structure of the update file matches the expected layout. This was not an issue when the format of proper update files was followed to create an exploit.<br>
+• <code>updates_sys_srv_ExtractCertificates()</code> extracts the signing certificate chain from the update file to be used for update verification. The chain contains the publisher certificate used to sign the update and an intermediate CA certificate that issued the publisher certificate. The intermediate CA certificate is issued by the JCI root CA.<br>
+• <code>updates_sys_sec_VerifyUPCertificates()</code> verifies the extracted certificate chain to ensure the chain properly terminates in the expected root CA stored on the device.<br>
+• <code>updates_sys_sec_VerifyUPSignature()</code> verifies the signature of a specified update file against the publisher certificate. The signature in this case is located at the end of the update file and is 256 bytes long.<br>
+• <code>updates_sys_srv_RemoveExtractedCertificates()</code> cleans up after the verification process.</p>
+<p>Of particular note is the fact that multiple operations are performed on the supplied update file by the <code>updates_sys_srv_LoadUP()</code> function and its callees before any integrity checks occur against the user-supplied file.</p>
+<h1 id="the-vulnerabilities-1">The Vulnerabilities</h1>
+<p>Multiple vulnerabilities were discovered during our research effort, which can be used in conjunction to achieve a complete and persistent compromise of the infotainment system.</p>
+<h1 id="cve-2024-8355zdi-24-1208-devicemanager-iap-serial-number-sql-injection-1">CVE-2024-8355/ZDI-24-1208: DeviceManager iAP Serial Number SQL Injection</h1>
+<p>This vulnerability was the first bug discovered during research, spurring a deeper look into this unit.</p>
+<p>The specific vulnerability exists in the <code>eInsertDeviceEntry()</code> function of the <code>/jci/devicemanager/libdevicemanager.so</code> library. When attempting to insert a new Apple device into the <code>DeviceDatabase.db</code> SQLite database, several values are taken from the device and used in an SQL statement without sanitization. See the following pseudocode implementation of the <code>eInsertDeviceEntry()</code> function:</p>
+<p>Because of this, when the infotainment system detects an Apple device has been connected and requests, for example, its iAP serial number, a spoofed iPod or other Apple device can instead reply with a string along the lines of:</p>
+<p>This leads to the DeviceManager executing the injected SQL statement on the infotainment system with root privileges. This could be used to manipulate the database itself, disclose information, create arbitrary files on the file system, and possibly execute code. Exploitation of this vulnerability is somewhat limited due to an apparent length limitation of 0x36 bytes on the input, but this could potentially be worked around by having several spoofed iPods connect one after the other, each with its own injected SQL statements in place of a serial number.</p>
+<h1 id="cve-2024-8359zdi-24-1191-reflash_ddu_findfile-command-injection-rce-1">CVE-2024-8359/ZDI-24-1191: REFLASH_DDU_FindFile Command Injection RCE</h1>
+<p>One of the multitude of functions supporting the update process is the <code>REFLASH_DDU_FindFile()</code> function found in the <code>libjcireflashua.so</code> shared object. The pseudocode for this function is reproduced below for clarity:</p>
+<p>The function attempts to find a specific file within the update package specified via the provided file path. This is performed by interpolating the provided path into a command line for the <code>unzip</code> program. Unfortunately, no sanitization is performed before that occurs, and attacker-controlled input (e.g., <code>/dev/sda1/path/file.up</code>) is passed to the <code>system()</code> function. This allows the attacker to inject arbitrary OS commands that will be executed by the head unit OS shell, allowing for a full compromise of the system. The attacker can control both the <code>path</code> and <code>file</code> elements of the overall path.</p>
+<p>The affected function can be reached via the following call graph:</p>
+<p>• UPDATES_SYS_IPC_INTERFACE_GetPackageInfo_svc in svcjciupdates.so<br>
+• UPDATES_SYS_SRV_GetPackageInfo<br>
+• updates_sys_srv_GetPackageInfoOperationThread<br>
+• updates_sys_srv_LoadUP<br>
+• REFLASH_UA_LoadUP in libjcireflashua.so<br>
+• REFLASH_DDU_FindFile</p>
+<h1 id="cve-2024-8360zdi-24-1192-reflash_ddu_extractfile-command-injection-rce-1">CVE-2024-8360/ZDI-24-1192: REFLASH_DDU_ExtractFile Command Injection RCE</h1>
+<p>One of the multitude of functions supporting the update process is the <code>REFLASH_DDU_ExtractFile()</code> function found in the <code>libjcireflashua.so</code> shared object. The pseudocode for this function is reproduced below for clarity:</p>
+<p>The function attempts to extract a specific file from the update package specified by the path supplied through the <code>up_path</code> argument. This interpolates the provided path into a command line for the <code>unzip</code> program. Unfortunately, no sanitization is performed before that occurs, and attacker-controlled input (e.g., <code>/dev/sda1/path/file.up</code>) is passed to the <code>system()</code> function. The attacker can control both <code>path</code> and <code>file</code> elements of the overall path. This allows the attacker to inject arbitrary OS commands that will be executed by the head unit OS shell, allowing for a full compromise of the system.</p>
+<p>The affected function can be reached via the following call graph:</p>
+<p>• UPDATES_SYS_IPC_INTERFACE_GetPackageInfo_svc in svcjciupdates.so<br>
+• UPDATES_SYS_SRV_GetPackageInfo<br>
+• updates_sys_srv_GetPackageInfoOperationThread<br>
+• updates_sys_srv_LoadUP<br>
+• REFLASH_UA_LoadUP in libjcireflashua.so<br>
+• REFLASH_DDU_ExtractFile</p>
+<h1 id="cve-2024-8358zdi-24-1190-updates_extractfile-command-injection-rce-1">CVE-2024-8358/ZDI-24-1190: UPDATES_ExtractFile Command Injection RCE</h1>
+<p>One of the various functions supporting the update process is the <code>UPDATES_ExtractFile()</code> function found in the <code>svcjciupdates.so</code> shared object. The pseudocode for this function is partially reproduced below for clarity:</p>
+<p>The function attempts to extract a specific file from the update package specified by the path supplied through the <code>up_path</code> argument. This interpolates the provided path into a command line for the <code>unzip</code> program. As with the other bugs, no sanitization is performed before that occurs, and attacker-controlled input (e.g., <code>/dev/sda1/path/file.up</code>) is passed to the <code>system()</code> function. The attacker can control both <code>path</code> and <code>file</code> elements of the overall path. This allows the attacker to inject arbitrary OS commands that will be executed by the head unit OS shell, allowing for a full compromise of the system.</p>
+<p>The affected function can be reached via the following call graph:</p>
+<p>• UPDATES_SYS_IPC_INTERFACE_GetPackageInfo_svc in svcjciupdates.so<br>
+• UPDATES_SYS_SRV_GetPackageInfo<br>
+• updates_sys_srv_GetPackageInfoOperationThread<br>
+• updates_sys_srv_LoadUP<br>
+• updates_sys_srv_ExtractCertificates<br>
+• updates_sys_srv_ExtractPubCert<br>
+• UPDATES_ExtractFile(&ldquo;publisher_cert.pem&rdquo;, &ldquo;/tmp/reflash/publisher_cert.pem&rdquo;)</p>
+<h1 id="cve-2024-8357zdi-24-1189-app-soc-missing-root-of-trust-in-hardware-1">CVE-2024-8357/ZDI-24-1189: App SoC Missing Root of Trust in Hardware</h1>
+<p>As previously mentioned, the head unit is partitioned into two relatively independent systems: the application SoC running Linux and the VIP MCU running an unspecified OS. The application SoC uses an onboard SPI Flash chip to boot. The chip is partitioned as follows:</p>
+<p>Here, the mtd0 partition stores the bootstrap code, which appears to be the first piece of code to be executed on the system. The application SoC was found to be missing any authentication of this bootstrap code. Additionally, none of the subsequent OS boot steps perform any authentication of the next boot stage before passing control to it. This results in the following opportunities for an attacker who has gained code execution on the Linux system:</p>
+<p>• Manipulate the root filesystem, changing arbitrary files and e.g. gaining persistence on the system,<br>
+• Manipulate configuration data residing in the mtd5 partition, e.g. installing arbitrary SSH keys, and<br>
+• Manipulate the bootstrap code, gaining the ability to execute arbitrary code prior to OS boot.</p>
+<h1 id="cve-2024-8356zdi-24-1188-vip-mcu-unsigned-code-1">CVE-2024-8356/ZDI-24-1188: VIP MCU Unsigned Code</h1>
+<p>As previously mentioned, the head unit is partitioned into two relatively independent systems; the application SoC running Linux and the VIP MCU running an unspecified OS. The MCU appears to support several CMU functions, including CAN/LIN connectivity to the rest of the vehicle. The partitioning is also assumed to represent a security boundary in that the compromise of the application SoC is expected to be contained and not affect the rest of the vehicle in a way that may compromise safety.</p>
+<p>The MCU in question is identified as VIP in the strings found in the CMU software. Through the analysis of software update packages, it was discovered the VIP is also updated during the software update process. The tools to do so, as well as the update image, are found in the <code>vip</code> subdirectory of the update package.</p>
+<p>The <code>vcm</code> tool allows performing the following operations against the VIP:</p>
+<p>Specifically, the <code>--write-image</code> command allows writing an update image to the VIP. This command is normally used by the update script and takes an input file formatted as Motorola S-records. Of particular interest is also querying the versions of VIP software components. The following is reported on the unit running software <code>cmu150_NA_74.00.324A</code>:</p>
+<p>These strings can be located in the update file <code>image-vip_appvfbl.mot</code> and are destined to be programmed at memory address 0xC000A in the VIP MCU memory space and appear to be part of the application image spanning addresses 0xC0000 through 0xFFFFF. By modifying these strings, it is possible to determine whether the image is validated before being programmed into the internal memory.</p>
+<p>The original S-record file was manipulated to change one string to produce a visible indication of different firmware, and the resulting image was programmed back to the VIP MCU:</p>
+<p>Using the same command for version check, it is possible to confirm the tampered image was accepted:</p>
+<p>In a more global sense, this allows an attacker to pivot from a compromised application SoC running Linux to the VIP MCU by installing a crafted firmware version and subsequently gaining direct access to the connected CAN busses of the vehicle.</p>
+<h1 id="exploitation-1">Exploitation</h1>
+<p>Exploitation of the OS command injection vulnerabilities is relatively straightforward. All the attacker needs to do is create a file on a FAT32-formatted USB mass storage device where the name will contain the OS commands to be executed. The filename must end with <code>.up</code> for it to be recognized by the software update handling code. While all three command injection vulnerabilities are exploited via the file name, the easiest one to exploit is by far the ZDI-CAN-23420 as there are no specific exploitation requirements such as validity of the crafted update file.</p>
+<p>Exploitation of the described command injection vulnerabilities can be further facilitated by the fact that software update installation can be triggered automatically upon connecting a USB mass storage device; this is a “known feature” which is activated by simply placing an empty file named <code>jci-autoupdate</code> on the storage device.</p>
+<p>Once the initial compromise is achieved, the attacker can gain persistence through manipulation of the root file system, such as installing backdoored system components which will persist across system restarts.</p>
+<p>Furthermore, the attacker can move laterally and install a specially crafted VIP microcontroller software allowing unfettered access to vehicle networks, potentially impacting vehicle operation and safety. Specific impacts (what could be controlled and how) were not investigated during this research effort.</p>
+<h1 id="associated-risks-for-usersowners-1">Associated Risks for Users/Owners</h1>
+<p>In the lab environment, the entire attack chain – from plugging in a USB drive to installing a crafted update on the VIP – takes only a few minutes. Currently, there is no reason to believe a similar attack will take significantly more time against a unit installed in a car. This means that the vehicle can be compromised while, for example, it is being handled by a valet, during a ride share, or via USB malware. Naturally, the same can be done in a shop environment where there are no significant time pressures.</p>
+<p>The CMU can then be compromised and “enhanced” to, for example, attempt to compromise any connected device in targeted attacks that can result in DoS, bricking, ransomware, safety compromise, etc.</p>
+<h1 id="conclusions-1">Conclusions</h1>
+<p>This research effort and its output highlighted the fact that high-impact vulnerabilities can be found even in a very mature automotive product that has been on the market for a number of years and with a long history of security fixes. To date, these vulnerabilities remain unpatched by the vendor.</p>
+<p>There has been a lot of focus and discussion recently in the security community about the importance of language security and “memory safe” languages. This set of real-world vulnerabilities is a good reminder that focusing on only one bug class or employing one set of security tools (static code analysis, for instance) does not result in deployed systems being secure. In this case, C was used to develop the firmware, but it is an irrelevant fact considering the nature of the discovered vulnerabilities. Any ‘memory-safe’ firmware would have also been compromised in this instance.</p>
+<p>While the SQL and OS command injection issues represent programming errors, the remaining vulnerabilities are security design flaws. It is paramount that system integrity is ensured at all runtime stages and for all components. Only then is it possible to guarantee the downstream security properties of languages and their compilers.</p>
+<p>In summary, it is important to consider the whole system security and security-test complete production systems in all their operational modes.</p>
+<p>You can find me on Mastodon at @infosecdj, and follow the team on Twitter, Mastodon, LinkedIn, or Bluesky for the latest in exploit techniques and security patches.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

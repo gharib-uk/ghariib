@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Four ways to grant cross-account access in AWS</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Four ways to grant cross-account access in AWS</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>As your Amazon Web Services (AWS) environment grows, you might develop a need to grant cross-account access to resources. This could be for various reasons, such as enabling centralized operations across multiple AWS accounts, sharing resources across teams or projects within your organization, or integrating with third-party services. However, granting cross-account access requires careful consideration of your security, availability, and manageability requirements.</p>
+<p>In this blog post, we explore four different ways to grant cross-account access using resource-based policies. Each method has its own unique tradeoffs, and the best choice depends on your specific requirements and use case.</p>
+<h2 id="evaluating-different-techniques-for-granting-cross-account-access">Evaluating different techniques for granting cross-account access</h2>
+<p>Cross-account access is granted by identity-based policies and resource-based policies in AWS Identity and Access Management (IAM). Identity-based policies attach to an IAM role, while resource-based polices attach to resources like Amazon Simple Storage Service (Amazon S3) buckets and AWS Key Management Service (AWS KMS) keys. Resource-based policies require you to specify one or more principals (IAM users or roles) that are allowed to access the resource.</p>
+<p>Your choice of how to specify the principal in a resource-based policy impacts some aspects of both the confidentiality and the availability of your solution. Understanding this impact and making the right tradeoffs for your use case is the focus of this post.</p>
+<h2 id="an-example-scenario">An example scenario</h2>
+<p>Imagine that you have an S3 bucket in your AWS account (Account A) that needs to be accessed by different principals in another AWS account (Account B). For this scenario, we assume that the principals in Account B have the necessary access to S3 in their identity-based policies, and we will focus on authoring the resource-based policies in Account A. While the methods explained here use Amazon S3, the concepts discussed apply to all AWS services that support resource-based policies. In the following sections, we walk through four different ways to grant cross-account access in this scenario and discuss the tradeoffs of each.</p>
+<h3 id="method-1-grant-access-to-a-specific-iam-role-using-the-principal-element-of-the-resource-based-policy">Method 1: Grant access to a specific IAM role using the Principal element of the resource-based policy</h3>
+<p>In this example, you use an S3 bucket policy to grant access to a specific IAM role (<code>RoleFromAccountB</code>) in Account B by specifying the IAM role’s Amazon Resource Name (ARN) in the <code>Principal</code> element of the policy in Account A.</p>
+<pre tabindex="0"><code>{
+  &#34;Version&#34;: &#34;2012-10-17&#34;,
+  &#34;Statement&#34;: [
+    {
+      &#34;Sid&#34;: &#34;AllowRoleInThePrincipalElement&#34;,
+      &#34;Principal&#34;: {
+        &#34;AWS&#34;: &#34;arn:aws:iam::111122223333:role/RoleFromAccountB&#34;
+      },
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Action&#34;: &#34;s3:GetObject&#34;,
+      &#34;Resource&#34;: &#34;arn:aws:s3:::amzn-s3-demo-bucket-account-a/*&#34;
+    }
+  ]
+}
+</code></pre><p>Using this bucket policy, if someone in Account B deletes or recreates the role (<code>RoleFromAccountB</code>), then that role can no longer access the <code>amzn-s3-demo-bucket-account-a</code> bucket, even if that role is recreated with the same name. The reason is that when you save this policy, the role ARN is mapped to the unique ID of the role, which looks something like this: <code>AROADBQP57FF2AEXAMPLE</code>. You will see a role identifier in the <code>Principal</code> element of your resource-based policies if you view them after you delete the role that they referenced.</p>
+<p>This behavior is intentional. The resource-based policy only allows the specific instance of the role that you set as principal at the time of policy creation. This helps prevent unintended access to your resources if you delete a role, but forget to update your resource-based policy to remove that role. This behavior can also cause an availability risk because the role (<code>RoleFromAccountB</code>) will have a new unique ID when it is recreated and will no longer have access to the bucket. Roles can be recreated for a number of reasons, including accidentally when you use tools such as infrastructure as code.</p>
+<p><strong>You might consider choosing this method if:</strong></p>
+<ul>
+<li>You own the roles in both Account A and Account B and can control the creation and deletion of these roles.</li>
+<li>You want your resource-based policy in Account A to stop granting access when the specified role (<code>RoleFromAccountB</code>) is deleted.</li>
+<li>You prioritize granular access control over potential availability concerns if the role (<code>RoleFromAccountB</code>) is deleted.</li>
+</ul>
+<h3 id="method-2-grant-access-to-an-account-using-the-principal-element-of-the-resource-based-policy">Method 2: Grant access to an account using the Principal element of the resource-based policy</h3>
+<p>In this example, you grant access to a specific account in the <code>Principal</code> element of the resource-based policy. This resource-based policy of Account A allows any user or role from Account B that also has an identity-based policy that grants them access to read the objects.</p>
+<blockquote>
+<p><strong>Note:</strong> You can use either <code>&quot;Principal&quot;: {&quot;AWS&quot;: &quot;111122223333&quot;}</code> or <code>&quot;Principal&quot;: {&quot;AWS&quot;: &quot;arn:aws:iam::111122223333:root&quot;}</code> in the <code>Principal</code> element. They are equivalent, and the long-form ARN does not represent the root user.</p></blockquote>
+<pre tabindex="0"><code>{
+  &#34;Version&#34;: &#34;2012-10-17&#34;,
+  &#34;Statement&#34;: [
+    {
+      &#34;Sid&#34;: &#34;AllowAccountInThePrincipalElement&#34;,
+      &#34;Principal&#34;: {
+        &#34;AWS&#34;: &#34;111122223333&#34;
+      },
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Action&#34;: &#34;s3:GetObject&#34;,
+      &#34;Resource&#34;: &#34;arn:aws:s3:::amzn-s3-demo-bucket-account-a/*&#34;
+    }
+  ]
+}
+</code></pre><p>This resource-based policy helps avoid the potential availability issue discussed for Method 1. If a role in Account B that needs to have access to the bucket is recreated, it will still have access after the recreation of that role. This is because you don’t specify a role in the <code>Principal</code> element—instead, you specify an account. If you use Method 2, you must be comfortable delegating access control decisions to the owner of that account.</p>
+<p>This approach explicitly delegates access control decisions to IAM in the other account (Account B). Principals in Account B have access to this bucket if allowed by their identity-based policies.</p>
+<p><strong>You might consider choosing this method if:</strong></p>
+<ul>
+<li>You need to grant access to many principals in Account B.</li>
+<li>You want to delegate the access decision in the account where the principal exists (Account B).</li>
+<li>You prioritize ease of management and availability over granular access control.</li>
+</ul>
+<h3 id="method-3-grant-access-to-a-specific-iam-role-using-the-awsprincipalarn-condition">Method 3: Grant access to a specific IAM role using the aws:PrincipalArn condition</h3>
+<p>This method expands on Method 2 and adds a condition that grants access only to a specific IAM role. Similar to Method 2, you use the account number as the value of the <code>Principal</code> element, but also use the <code>aws:PrincipalArn</code> condition key to limit access to a specific principal in Account B.</p>
+<p>The aws:PrincipalArn condition key is a global condition key that compares the ARN of the principal that made the request with the ARN that you specify in the policy. For IAM roles, the request context returns the ARN of the role, not the ARN of the user that assumed the role.</p>
+<pre tabindex="0"><code>{
+  &#34;Version&#34;: &#34;2012-10-17&#34;,
+  &#34;Statement&#34;: [
+    {
+      &#34;Sid&#34;: &#34;AllowAccountInPrincipalAndRoleInPrincipalArn&#34;,
+      &#34;Principal&#34;: {
+        &#34;AWS&#34;: &#34;111122223333&#34;
+      },
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Action&#34;: &#34;s3:GetObject&#34;,
+      &#34;Resource&#34;: &#34;arn:aws:s3:::amzn-s3-demo-bucket-account-a/*&#34;,
+      &#34;Condition&#34;: {
+        &#34;ArnEquals&#34;: {
+          &#34;aws:PrincipalArn&#34;: &#34;arn:aws:iam::111122223333:role/RoleFromAccountB&#34;
+        }
+      }
+    }
+  ]
+}
+</code></pre><p>This policy comes with the same availability benefits as the policy in Method 2: access to this resource will survive role recreation. This is because the role is translated to its unique identifier only when it is used in the <code>Principal</code> element. It is not translated to a unique identifier when it is used in a condition. If the role (<code>RoleFromAccountB</code>) in Account B is recreated, accidentally or intentionally, the policy will continue to grant access because the role matches the role ARN specified in the condition key of the resource-based policy in Account A. As a result, Method 3 provides a balanced approach to availability and security.</p>
+<p><strong>You might consider choosing this method if:</strong></p>
+<ul>
+<li>You are comfortable that this policy will continue to grant access to the role specified in the <code>aws:PrincipalArn</code> condition key if that role (<code>RoleFromAccountB</code>) is recreated.</li>
+<li>You don’t own the Account B you are granting access to and don’t control when that role may be recreated.</li>
+<li>You want a balance of availability and confidentiality.</li>
+</ul>
+<h3 id="method-4-grant-access-to-an-entire-aws-organizations-organization">Method 4: Grant access to an entire AWS Organizations organization</h3>
+<p>This method is focused on a different use case and is not an alternative to the methods listed earlier. Use this method if you have a resource (an S3 bucket, in this example) that you want to share with your entire organization, but not share with anyone outside of it.</p>
+<pre tabindex="0"><code>{
+  &#34;Version&#34;: &#34;2012-10-17&#34;,
+  &#34;Statement&#34;: [
+    {
+      &#34;Sid&#34;: &#34;AllowAccessToAnEntireOrganization&#34;,
+      &#34;Principal&#34;: {
+        &#34;AWS&#34;: &#34;*&#34;
+      },
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Action&#34;: &#34;s3:GetObject&#34;,
+      &#34;Resource&#34;: &#34;arn:aws:s3:::amzn-s3-demo-bucket-account-a/*&#34;,
+      &#34;Condition&#34;: {
+        &#34;StringEquals&#34;: {
+          &#34;aws:PrincipalOrgId&#34;: &#34;o-12345&#34;
+        },
+        &#34;StringNotEquals&#34;: {
+          &#34;aws:PrincipalAccount&#34;: &#34;${aws:ResourceAccount}&#34;
+        }
+      }
+    }
+  ]
+}
+</code></pre><p>There is no way to specify an organization by using the <code>Principal</code> element of a resource-based policy, so you must use the aws:PrincipalOrgId condition key to restrict access to a specific organization. In this policy, you specify a wildcard in the <code>Principal</code> element, which says that anyone can access the bucket. Then the condition reduces “anyone” to just those AWS account principals that belong to the specified organization and have an identity-based policy that allows them access.</p>
+<p>You then add an additional conditional block that compares the <code>aws:PrincipalAccount</code> condition key to the aws:ResourceAccount condition key by using a policy variable. This extra conditional block is optional and excludes the account that owns the bucket (Account A) from the allow statement. The reason for using this extra conditional block is so that principals in Account A still require an allow statement in their identity-based policy to access this bucket. If you choose to exclude this <code>aws:PrincipalAccount</code> comparison, principals in Account A are granted access to the bucket without an explicit allow statement in their identity-based policy. Policy evaluation logic only requires either the identity-based policy or the resource-based policy (but not both) to allow a request when the principal and resource are in the same account.</p>
+<p><strong>You might consider choosing this method if:</strong></p>
+<ul>
+<li>You have a shared resource that should be accessible to your entire organization.</li>
+</ul>
+<h2 id="conclusion">Conclusion</h2>
+<p>Choosing a method to grant cross-account access requires careful consideration of your requirements and use case. Each of the four methods discussed in this blog post has its own advantages and tradeoffs. By understanding these methods and their implications, you can decide on the most appropriate approach to grant cross-account access to your AWS resources. Remember to regularly review and audit your resource-based policies to verify that they align with your security and access requirements.</p>
+<p>To learn how resource-based policies work with Amazon S3, see the blog post IAM Policies and Bucket Policies and ACLs! Oh My! Controlling Access to S3 Resources.</p>
+<p> <br>
+If you have feedback about this post, submit comments in the <strong>Comments</strong> section below. If you have questions about this post, contact AWS Support.<br>
+ </p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2025/01/09/Anshu-Bathla.jpg" alt="Anshu Bathla" />
+</figure>
+
+
+ Anshu Bathla<br>
+Anshu is a Lead Consultant – SRC at AWS, based in Gurugram, India. He works with customers across diverse verticals to help strengthen their security infrastructure and achieve their security goals. Outside of work, Anshu enjoys reading books and gardening at his home garden.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2025/02/21/jaygorad.jpg" alt="Jay Goradia" />
+</figure>
+
+
+ Jay Goradia<br>
+Jay is a Technical Account Manager (TAM) at AWS who works closely with enterprise customers to accelerate their cloud journey through strategic guidance and technical expertise. Using his security background, he helps organizations understand security best practices in AWS.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

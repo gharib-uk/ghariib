@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Robotcop: enforcing your robots.txt policies and stopping bots before they reach your website</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Robotcop: enforcing your robots.txt policies and stopping bots before they reach your website</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Cloudflare’s AI Audit dashboard allows you to easily understand how AI companies and services access your content. AI Audit gives a summary of request counts broken out by bot, detailed path summaries for more granular insights, and the ability to filter by categories like <strong>AI Search</strong> or <strong>AI Crawler</strong>.</p>
+<p>Today, we&rsquo;re going one step further. You can now quickly see which AI services are honoring your robots.txt policies, which aren’t, and then programmatically enforce these policies. </p>
+<h3 id="what-is-robotstxt">What is robots.txt?</h3>
+<p>Robots.txt is a plain text file hosted on your domain that implements the Robots Exclusion Protocol, a standard that has been around since 1994. This file tells crawlers like Google, Bing, and many others which parts of your site, if any, they are allowed to access. </p>
+<p>There are many reasons why site owners would want to define which portions of their websites crawlers are allowed to access: they might not want certain content available on search engines or social networks, they might trust one platform more than another, or they might simply want to reduce automated traffic to their servers.</p>
+<p>With the advent of generative AI, AI services have started crawling the Internet to collect training data for their models. These models are often proprietary and commercial and are used to generate new content. Many content creators and publishers that want to exercise control over how their content is used have started using robots.txt to declare policies that cover these AI bots, in addition to the traditional search engines.</p>
+<p>Here’s an abbreviated real-world example of the robots.txt policy from a top online news site:</p>
+<pre tabindex="0"><code>User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+</code></pre><p>This policy declares that the news site doesn&rsquo;t want ChatGPT, Anthropic AI, Google Gemini, or ByteDance’s Bytespider to crawl any of their content.</p>
+<h3 id="from-voluntary-compliance-to-enforcement">From voluntary compliance to enforcement</h3>
+<p>Compliance with the Robots Exclusion Protocol has historically been voluntary. </p>
+<p>That’s where our new feature comes in. We’ve extended AI Audit to give our customers both the visibility into how AI services providers honor their robots.txt policies <em>and</em> the ability to enforce those policies at the network level in your WAF. </p>
+<p>Your robots.txt file declares your policy, but now we can help you enforce it. You might even call it … your Robotcop.  </p>
+<h3 id="how-it-works">How it works</h3>
+<p>AI Audit takes the robots.txt files from your web properties, parses them, and then matches their rules against the AI bot traffic we see for the selected property. The summary table gives you an aggregated view of the number of requests and violations we see for every Bot across all paths. If you hover your mouse over the Robots.txt column, we will show you the defined policies for each Bot in the tooltip. You can also filter by violations from the top of the page. </p>
+<p>
+<figure>
+  <img src="https://cf-assets.www.cloudflare.com/zkvhlag99gkb/o2hHH0Nm68muUzaxmbx7E/0b9c2acfb33f2ca2d59e00625b4d0fc7/BLOG-2619_2.png" alt="" />
+</figure>
+
+
+</p>
+<p>In the “Most popular paths” section, whenever a path in your site gets traffic that has violated your policy, we flag it for visibility. Ideally, you wouldn&rsquo;t see violations in the Robots.txt column — if you do see them, someone&rsquo;s not complying.</p>
+<p>
+<figure>
+  <img src="https://cf-assets.www.cloudflare.com/zkvhlag99gkb/1o5sChT2d6QK8JNPejImVk/79590e1721644a2fd067784bb9ce862e/BLOG-2619_3.png" alt="" />
+</figure>
+
+
+</p>
+<p>But that&rsquo;s not all… More importantly, AI Audit allows you to enforce your robots.txt policy at the network level. By pressing the &ldquo;Enforce robots.txt rules&rdquo; button on the top of the summary table, we automatically translate the rules defined for AI Bots in your robots.txt into an advanced firewall rule, redirect you to the WAF configuration screen, and allow you to deploy the rule in our network.</p>
+<p>This is how the robots.txt policy mentioned above looks after translation:</p>
+<p>
+<figure>
+  <img src="https://cf-assets.www.cloudflare.com/zkvhlag99gkb/5qYJG3RcvrDxzVDtb28Q2J/d73d7dcea94acb261e9fc525427c2e77/BLOG-2619_4.png" alt="" />
+</figure>
+
+
+</p>
+<p>Once you deploy a WAF rule built from your robots.txt policies, you are no longer simply requesting that AI services respect your policy, you&rsquo;re enforcing it.</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>With AI Audit, we are giving our customers even more visibility into how AI services access their content, helping them define their policies and then enforcing them at the network level.</p>
+<p>This feature is live today for all Cloudflare customers. Simply log into the dashboard and navigate to your domain to begin auditing the bot traffic from AI services and enforcing your robots.txt directives.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

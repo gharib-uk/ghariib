@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Main vulnerabilities from Microsoft&#39;s March Patch Tuesday | Kaspersky official blog&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Main vulnerabilities from Microsoft&#39;s March Patch Tuesday | Kaspersky official blog&lt;/div&gt;</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+		           <a href="/tags/cybersecurity">cybersecurity</a>
+        	       
+		           <a href="/tags/data_breaches">data_breaches</a>
+        	       
+		           <a href="/tags/infostealers">infostealers</a>
+        	       
+		           <a href="/tags/linux">linux</a>
+        	       
+		           <a href="/tags/malware">malware</a>
+        	       
+		           <a href="/tags/privacy">privacy</a>
+        	       
+		           <a href="/tags/security">security</a>
+        	       
+		           <a href="/tags/siem">siem</a>
+        	       
+
+			<div>
+				<p>Microsoft&rsquo;s March update fixes as many as half-a-dozen vulnerabilities that are being actively exploited by attackers.</p>
+<p>In its monthly <em>Patch Tuesday</em> update, Microsoft has provided patches for six vulnerabilities that are being actively exploited in the wild. Four of these vulnerabilities are related to file systems — three of which having the same trigger, which may indicate that they’re being used in one and the same attack, or at least by the same actor. The details of their exploitation are still publicly undisclosed (fortunately), but the latest update is highly recommended for immediate installation.</p>
+<h2 id="file-system-vulnerabilities">File system vulnerabilities</h2>
+<p>Two of the vulnerabilities were found in the NTFS system. They allow attackers to gain access to parts of the heap — that is, to dynamically allocated application memory. Interestingly, the first of them, CVE-2025-24984 (4.6 on the CVSS scale), implies physical access of the attacker to the victim’s computer (they need to insert a malicious drive into the USB slot). To exploit the second information disclosure vulnerability, CVE-2025-24991 (CVSS 5.5), attackers need to somehow force a local user to mount a malicious virtual hard disk (VHD).</p>
+<p>The other two file system vulnerabilities — CVE-2025-24985 in the Fast FAT file system driver, and CVE-2025-24993 in NTFS — are triggered in the same way by mounting a VHD prepared by the attackers. However, their exploitation leads to remote execution of arbitrary code on the attacked machine (RCE). Both vulnerabilities have a CVSS rating of 7.8.</p>
+<h2 id="other-exploited-vulnerabilities">Other exploited vulnerabilities</h2>
+<p>The CVE-2025-24983 (CVSS 7.0) vulnerability was found in the Windows Win32 kernel subsystem. It can allow attackers to elevate their privileges to the system level. To exploit it, attackers need to win the race condition.</p>
+<p>The latest vulnerability from the list of actively exploited ones, CVE-2025-26633 (also CVSS 7.0), allows bypassing the security mechanisms of the Microsoft Management Console. The description provides two scenarios for its exploitation; however, both are related to the delivery of a malicious file to the victim, which must then be run. The first scenario involves delivering the file in an email attachment; the second — delivering a link through an instant messaging program, or, again, via email. According to information from the Zero Day Initiative researchers, who brought this vulnerability to Microsoft’s attention, it’s used by the EncryptHub ransomware group, also known as Larva-208.</p>
+<h2 id="and-another-zero-day-vulnerability">And another zero-day vulnerability</h2>
+<p>In addition to the six vulnerabilities used in active attacks, the update from Microsoft also closes CVE-2025-26630 in Microsoft Access, which has not yet been used by attackers — though it could well be since, according to Microsoft, it’s been publicly known of for some time. This vulnerability has a CVSS rating of 7.8, and its exploitation leads to the execution of arbitrary code. However, the description emphasizes that to exploit it it needs to be opened on the attacked machine, and the Preview Pane is not an attack vector.</p>
+<h2 id="other-vulnerabilities">Other vulnerabilities</h2>
+<p>The note about the preview mechanism in the description of CVE-2025-26630 is not accidental — the update also contains a patch for the RCE vulnerability CVE-2025-24057, which is quite exploitable through the Preview Pane. In addition, Microsoft closed more vulnerabilities classified as critical, but not yet exploited. All of them also allow remote arbitrary code execution:</p>
+<ul>
+<li>CVE-2025-24035 and CVE-2025-24045 in the Remote Desktop Service (RDS);</li>
+<li>CVE-2025-24057 in Microsoft Office;</li>
+<li>CVE-2025-24084 in the Windows Subsystem for Linux — a feature of Microsoft Windows that allows the use of a Linux environment from within Windows;</li>
+<li>CVE-2025-26645 in the Remote Desktop client. This vulnerability is exploited when the victim connects to a malicious RDP server.</li>
+</ul>
+<p>We recommend installing updates from Microsoft as soon as possible. Since actively exploited vulnerabilities are most likely used by attackers in fairly complex targeted attacks, we also recommend that companies use modern security solutions with EDR functionality, and, if necessary, involve third-party experts to protect themselves; for example, as part of our Managed Detection and Response service.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

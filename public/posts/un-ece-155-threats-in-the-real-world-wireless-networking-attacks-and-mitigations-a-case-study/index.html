@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>UN ECE 155 Threats in the real world: Wireless Networking Attacks and Mitigations. A case study</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>UN ECE 155 Threats in the real world: Wireless Networking Attacks and Mitigations. A case study</h1>
+			<b><time>22.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/automotive">automotive</a>
+        	       
+		           <a href="/tags/dab">dab</a>
+        	       
+		           <a href="/tags/iso21434">iso21434</a>
+        	       
+		           <a href="/tags/rds">rds</a>
+        	       
+		           <a href="/tags/tara">tara</a>
+        	       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/a/AVvXsEiudD_Xp3lJCAzIrQrT-FSjXcxXuz72qLmrLHvFKhQhJzoSnmy-gWoWrCt-FNmbbFiylX3byUeWjZuJk7XE41wIFarc3fREroKYz7qMjXC4-l1BQJYbnvSpIUX-5LzdviiunBR1TrfDHRt-qKBvgpJNAHV8KOsUeDJM3M1Me3_ySBLstqadk8_JwyZk" alt="" />
+</figure>
+
+
+</p>
+<p>On March the 31st, I gave a quick talk on automotive security at VTM titled &ldquo;<strong>UN ECE 155 Threats in the real world: Wireless Networking Attacks and Mitigations. A case study</strong>&rdquo; (slides here).</p>
+<p>The idea was to create some content about one of the <em>most hyped topics</em> in the automotive cyber security world over the last year, without keeping it just theoretical;</p>
+<p>UN/ECE 155 and ISO/SAE 21434 whose concerns are about the implementation of a CSMS (Cyber Security Management System) which consists in performing, for each vehicle, several high level security tasks, such as Threat Analysis and Risk Assessment (TARA), supply chain security issues tracking, implementation of the mitigations, update management and so on.</p>
+<p>The following schema shows the product development lifecycle model, called V-Model, used in the automotive industry and the cybersecurity processes in each phase of the V-Model.</p>
+<p> 
+<figure>
+  <img src="https://lh4.googleusercontent.com/1w47GbhM6KsZeduLejmcHjwimwwNm3cslMo_SDs8cpY3kdkBVpL-r4xQuYk3fTk84PKFWbNoTAig6OzboYlmaO1pPkmeiPekS7eqAA5bwWqluk0Y7bwmAR0VA8K_bqkeqiy6wINWAFjMSMOCy1qZIw=w400-h249" alt="" />
+</figure>
+
+
+</p>
+<p>The most interesting point that can help mitigating the risks and performing attack surface analysis is the TARA which can really help to minimize the risk in the earliest stage. In particular it will give its best, well when the technologies that are going to be implemented, <em>are well known from a security perspective</em>. </p>
+<p>The following figure describes the steps that must be covered to perform a TARA by the ISO 21434:</p>
+<p>
+<figure>
+  <img src="https://lh4.googleusercontent.com/gPxH7kj3KglNrhtMJPwjz7c-9ea3SLTvap2NZHGedi_1_8FDwnnskmdnxK7k6DAvVwz71BHcdGun8RwfQ4XDs3UkJivTRyDwtjSv0HIP012-dexgowspCOIz36rbCfwOs4gb_ZZDIzlRqBo0RxxZlQ" alt="" />
+</figure>
+
+
+</p>
+<p>Since the audience was expected to be mixed technical/non technical I decided to keep it in the middle as well, which, alas, sometimes means the hard way.</p>
+<p>Also_,_ how to go practical without going vehicle specific? mmm, take something that is already on every vehicle and talk about attacks, risks and remediations in the context of UNECE R155 and ISO 21434 requirements.</p>
+<h3 id="digital-radio-broadcasting"><strong>Digital Radio Broadcasting!</strong> </h3>
+<p>Now, the problem is to research on those topics without being too obvious and condense all in a limited span of 30 minutes which is quite challenging.</p>
+<p>With the goal of identifying some unexplored attack surface, I took a couple of weeks to go into RDS and DAB+ specifications and their previous research in the security context. </p>
+<p>As briefly described in the slides in IMQ Minded Security I created a lab testbed with:</p>
+<ul>
+<li>A <strong>RDS transmitter</strong> using Raspberry PI and this wonderful piece of software</li>
+<li>Several non automotive <strong>RDS receivers</strong> and their software and a Renault Scenic 2015 Head Unit with RDS support.</li>
+<li>A <strong>DAB+ transmitter</strong> using <em>HackRF One</em>, and this essential set of software together with this very useful tutorial. </li>
+<li>A <em>RTL-SDR</em> for local tests and a <strong>DAB+ USB Dongle receiver</strong> that is also used in the automotive world with the most used <em>Android Automotive OS</em>  software DAB-Z and several other applications that are mostly used in desktop environments. Alas, apart from DAB-Z we had no immediately available automotive head units supporting DAB+ :/.</li>
+</ul>
+<p>The threats were identified after reading the whole RDS and DAB+ documentation and condensed for the talk.</p>
+<p>The most interesting turned out to be DAB+ which has much more perimeter.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/a/AVvXsEi-n8WiaoeeYup2cAn9D5z1ZUwBwcli0dbC8qQaoDtXZPkoAwHMa3At73nEvaP6IP5d16Cl1tnxx7pkf4fQw12iOkP7k7scA9Eyiyqvegatq4gsCRAsLwXSavxeftoyVrx_Un5heQT9CyLUq2t60E8EDcof8ospFYCVTcFLYvrZ_FOVgaxn_GWSlpdK=w400-h217" alt="" />
+</figure>
+
+
+</p>
+<p>and has already at least one known real world issue. </p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/a/AVvXsEjVkSxBWvH1pj-pmbH0XkIGw5nhS0BKHC2nIz9t44uDQMv7oS0V-OqtDWLEOwE3-v8LeDnVNuXBUA4BFpXfsIZ_P9wb6mpJpk2zs6zEqT41rI_smiQQkFFhstXueKUGofURZSgMrl1R4xm9jWxfIRuclqjgUIy9pKHO7zxP5qFi7Us7i1csvD-KeJ6S=w400-h169" alt="" />
+</figure>
+
+
+</p>
+<p>Next step was to identify a number of possible threats and attacks by studying the DAB+ specifications, a subset of tests was shown during the talk:</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/a/AVvXsEifiUjuR3a6anTy02t3Up95xBVMBt2yqnFAtrXjDsCyuyyCo6ES3-mvRKAvxyhWZA2iTeEUKJ_6Sv9omhQShjUP7OHncVjtP3LcoFsG6Yhyu7piMxmZaaEdoFK8YX9QLx6VTnHAmHMfo-eD0_N13gnXaCVSB9nRg1kdP0aYxDk1mZDmHA7GQn99wn06" alt="" />
+</figure>
+
+
+</p>
+<p>Apart from creating <strong>filenames with no extension</strong>, we identified several more possible attacks on parsers such as creating malformed unicode filenames, EPG, Journaline and other DAB+ defined formats.</p>
+<p>The stumbling blocks when going practical was that some of those formats were not implemented by the receivers we tested, so we decided to keep the tests for future activities.</p>
+<h3 id="results">Results</h3>
+<p>The most interesting issues were found on DAB+ desktop software, resulting in path traversal and HTML injection.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/a/AVvXsEir56guXWYS-tzk8SnAHLpMriSsQqtiQVqgjFWVSZyT0_Oi9uqBaSpPqj6YXdiWH-X5LEZaO1xuILvecCQRc04L-5o7RLCtnq0idDPUy6GBeS0E8R7nz9QhUkn1cgeRDthw-Kciw0wDBm01NykOl7PsfJjYkQ2e3ZVOgKvEnBarZvbr_Zd_jDlyZEcj" alt="" />
+</figure>
+
+
+</p>
+<p>Unfortunately, the lack of head units or vehicles prevented us to perform more thorough tests to get some more juicy stuff..</p>
+<p>Let&rsquo;s see what the next weeks will give back, since we are expecting new hardware to perform more tests!</p>
+<p>PS. We were expecting to have a video of the talk to publish, but it&rsquo;s not clear when and if.. so here are the slides of the talk:</p>
+<p>&ldquo;<strong>UN ECE 155 Threats in the real world: Wireless Networking Attacks and Mitigations. A case study</strong>&rdquo;</p>
+<p>Feel free to comment or contact us for any question!</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

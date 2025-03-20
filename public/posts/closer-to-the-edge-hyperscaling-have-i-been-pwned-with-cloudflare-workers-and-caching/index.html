@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Closer to the Edge: Hyperscaling Have I Been Pwned with Cloudflare Workers and Caching</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Closer to the Edge: Hyperscaling Have I Been Pwned with Cloudflare Workers and Caching</h1>
+			<b><time>05.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/penetrationtesting">penetrationtesting</a>
+        	       
+
+			<div>
+				<p><strong>Presently sponsored by:</strong> Report URI: Guarding you from rogue JavaScript! Don’t get pwned; get real-time alerts &amp; prevent breaches #SecureYourSite</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2024/11/2024-11-20_12-46-16.png" alt="Closer to the Edge: Hyperscaling Have I Been Pwned with Cloudflare Workers and Caching" />
+</figure>
+
+
+</p>
+<p>I&rsquo;ve spent more than a decade now writing about how to make Have I Been Pwned (HIBP) fast. <em>Really</em> fast. Fast to the extent that sometimes, it was even <em>too</em> fast:</p>
+<blockquote>
+<p>The response from each search was coming back so quickly that the user wasn’t sure if it was legitimately checking subsequent addresses they entered or if there was a glitch.</p></blockquote>
+<p>Over the years, the service has evolved to use emerging new techniques to not just make things fast, but make them scale more under load, increase availability and sometimes, even drive down cost. For example, 8 years ago now I started rolling the most important services to Azure Functions, &ldquo;serverless&rdquo; code that was no longer bound by logical machines and would just scale out to whatever volume of requests was thrown at it. And just last year, I turned on Cloudflare cache reserve to ensure that all cachable objects <em>remained</em> cached, even under conditions where they previously would have been evicted.</p>
+<p>And now, the pièce de résistance, the coolest performance thing we&rsquo;ve done to date (and it is now &ldquo;we&rdquo;, thank you Stefán): just caching the whole lot at Cloudflare. Everything. Every search you do&hellip; almost. Let me explain, firstly by way of some background:</p>
+<p>When you hit any of the services on HIBP, the first place the traffic goes from your browser is to one of Cloudflare&rsquo;s 330 &ldquo;edge nodes&rdquo;:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2024/11/Artboard-1.png" alt="Closer to the Edge: Hyperscaling Have I Been Pwned with Cloudflare Workers and Caching" />
+</figure>
+
+
+</p>
+<p>As I sit here writing this on the Gold Coast on Australia&rsquo;s most eastern seaboard, any request I make to HIBP hits that edge node on the far right of the Aussie continent which is just up the road in Brisbane. The capital city of our great state of Queensland is just a short jet ski away, about 80km as the crow flies. Before now, every single time I searched HIBP from home, my request bytes would travel up the wire to Brisbane and then take a giant 12,000km trip to Seattle where the Azure Function in the West US Azure data would query the database before sending the response 12,000km back west to Cloudflare&rsquo;s edge node, then the final 80km down to my Surfers Paradise home. But what if it didn&rsquo;t have to be that way? What if that data was already sitting on the Cloudflare edge node in Brisbane? And the one in Paris, and the one in well, I&rsquo;m not even sure where all those blue dots are, but what if it was <em>everywhere?</em> Several awesome things would happen:</p>
+<ol>
+<li>You&rsquo;d get your response much faster as we&rsquo;ve just shaved off more than 99% of the distance the bytes need to travel.</li>
+<li>The availability would massively improve as there are far fewer nodes for the traffic to traverse through, plus when a response is cached, we&rsquo;re no longer dependent on the Azure Function or underlying storage mechanism.</li>
+<li>We&rsquo;d save on Azure Function execution costs, storage account hits and especially egress bandwidth (which is <em>very</em> expensive).</li>
+</ol>
+<p>In short, pushing data and processing &ldquo;closer to the edge&rdquo; benefits both our customers and ourselves. But how do you do that for 5 <em>billion</em> unique email addresses? (Note: As of today, HIBP reports over 14 billion breached accounts, the number of unique email addresses is lower as on average, each breached address has appeared in multiple breaches.) To answer this question, let&rsquo;s recap on how the data is queried:</p>
+<ol>
+<li>Via the front page of the website. This hits a &ldquo;unified search&rdquo; API which accepts an email address and uses Cloudflare&rsquo;s Turnstile to prohibit automated requests not originating from the browser.</li>
+<li>Via the public API. This endpoint also takes an email address as input and then returns all breaches it appears in.</li>
+<li>Via the k-anonyity enterprise API. This endpoint is used by a handful of large subscribers such as Mozilla and 1Password. Instead of searching by email address, it implements k-anonymity and searches by hash prefix.</li>
+</ol>
+<p>Let&rsquo;s delve into that last point further because it&rsquo;s the secret sauce to how this whole caching model works. In order to provide subscribers of this service with complete anonymity over the email addresses being searched for, the only data passed to the API is the first six characters of the SHA-1 hash of the full email address. If this sounds odd, read the blog post linked to in that last bullet point for full details. The important thing for now, though, is that it means there are a total of 16^6 different possible requests that can be made to the API, which is just over 16 million. Further, we can transform the first two use cases above into k-anonymity searches on the server side as it simply involved hashing the email address and taking those first six characters.</p>
+<p>In summary, this means we can boil the entire searchable database of email addresses down to the following:</p>
+<ol>
+<li>AAAAAA</li>
+<li>AAAAAB</li>
+<li>AAAAAC</li>
+<li>&hellip;about 16 million other values&hellip;</li>
+<li>FFFFFD</li>
+<li>FFFFFE</li>
+<li>FFFFFF</li>
+</ol>
+<p>That&rsquo;s a large albeit finite list, and that&rsquo;s what we&rsquo;re now caching. So, here&rsquo;s what a search via email address looks like:</p>
+<ol>
+<li>Address to search: <a href="mailto:test@example.com">test@example.com</a></li>
+<li>Full SHA-1 hash: 567159D622FFBB50B11B0EFD307BE358624A26EE</li>
+<li>Six char prefix: 567159</li>
+<li>API endpoint: https://[host]/[path]/567159</li>
+<li>If hash prefix is cached, retrieve result from there</li>
+<li>If hash prefix is <em>not</em> cached, query origin and save to cache</li>
+<li>Return result to client</li>
+</ol>
+<p>K-anonymity searches obviously go straight to step four, skipping the first few steps as we already know the hash prefix. All of this happens in a Cloudflare worker, so it&rsquo;s &ldquo;code on the edge&rdquo; creating hashes, checking cache then retrieving from the origin where necessary. That code also takes care of handling parameters that transform queries, for example, filtering by domain or truncating the response. It&rsquo;s a beautiful, simple model that&rsquo;s all self-contained within a worker and a very simple origin API. But there&rsquo;s a catch - what happens when the data changes?</p>
+<p>There are two events that can change cached data, one is simple and one is major:</p>
+<ol>
+<li>Someone opts out of public searchability and their email address needs to be removed. That&rsquo;s easy, we just call an API at Cloudflare and flush a single hash prefix.</li>
+<li>A new data breach is loaded and there are changes to a large number of hash prefixes. In this scenario, we flush the entire cache and start populating it again from scratch.</li>
+</ol>
+<p>The second point is kind of frustrating as we&rsquo;ve built up this beautiful collection of data all sitting close to the consumer where it&rsquo;s super fast to query, and then we nuke it all and go from scratch. The problem is it&rsquo;s either that or we selectively purge what could be many millions of individual hash prefixes, which you can&rsquo;t do:</p>
+<blockquote>
+<p>For Zones on Enterprise plan, you may purge up to 500 URLs in one API call.</p></blockquote>
+<p>And:</p>
+<blockquote>
+<p>Cache-Tag, host, and prefix purging each have a rate limit of 30,000 purge API calls in every 24 hour period.</p></blockquote>
+<p>We&rsquo;re giving all this further thought, but it&rsquo;s a non-trivial problem and a full cache flush is both easy and (near) instantaneous.</p>
+<p>Enough words, let&rsquo;s get to some pictures! Here&rsquo;s a typical week of queries to the enterprise k-anonymity API:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2024/11/image-9.png" alt="Closer to the Edge: Hyperscaling Have I Been Pwned with Cloudflare Workers and Caching" />
+</figure>
+
+
+</p>
+<p>This is a <em>very</em> predictable pattern, largely due to one particular subscriber regularly querying their entire customer base each day. (Sidenote: most of our enterprise level subscribers use callbacks such that we push updates to them via webhook when a new breach impacts their customers.) That&rsquo;s the total volume of inbound requests, but the really interesting bit is the requests that hit the origin (blue) versus those served directly by Cloudflare (orange):</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2024/11/image-10.png" alt="Closer to the Edge: Hyperscaling Have I Been Pwned with Cloudflare Workers and Caching" />
+</figure>
+
+
+</p>
+<p>Let&rsquo;s take the lowest blue data point towards the end of the graph as an example:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2024/11/image-12-1.png" alt="Closer to the Edge: Hyperscaling Have I Been Pwned with Cloudflare Workers and Caching" />
+</figure>
+
+
+</p>
+<p>At that time, 96% of requests were served from Cloudflare&rsquo;s edge. Awesome! But look at it only a little bit later:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2024/11/image-15-1.png" alt="Closer to the Edge: Hyperscaling Have I Been Pwned with Cloudflare Workers and Caching" />
+</figure>
+
+
+</p>
+<p>That&rsquo;s when I flushed cache for the Finsure breach, and 100% of traffic started being directed to the origin. (We&rsquo;re still seeing 14.24k hits via Cloudflare as, inevitably, some requests in that 1-hour block were to the same hash range and were served from cache.) It then took a whole 20 hours for the cache to repopulate to the extent that the hit:miss ratio returned to about 50:50:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2024/11/image-11-1.png" alt="Closer to the Edge: Hyperscaling Have I Been Pwned with Cloudflare Workers and Caching" />
+</figure>
+
+
+</p>
+<p>Look back towards the start of the graph and you can see the same pattern from when I loaded the DemandScience breach. This all does pretty funky things to our origin API:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2024/11/image-13.png" alt="Closer to the Edge: Hyperscaling Have I Been Pwned with Cloudflare Workers and Caching" />
+</figure>
+
+
+</p>
+<p>That last sudden increase is more than a 30x traffic increase in an instant! If we hadn&rsquo;t been careful about how we managed the origin infrastructure, we would have built a literal DDoS machine. Stefán will write later about how we manage the underlying database to ensure this doesn&rsquo;t happen, but even still, whilst we&rsquo;re dealing with the cyclical support patterns seen in that first graph above, I know that the best time to load a breach is later in the Aussie afternoon when the traffic is a third of what it is first thing in the morning. This helps smooth out the rate of requests to the origin such that by the time the traffic is ramping up, more of the content can be returned directly from Cloudflare. You can see that in the graphs above; that big peaky block towards the end of the last graph is pretty steady, even though the inbound traffic the first graph over the same period of time increases quite significantly. It&rsquo;s like we&rsquo;re trying to race the increasing inbound traffic by building ourselves up a bugger in cache.</p>
+<p>Here&rsquo;s another angle to this whole thing: now more than ever, loading a data breach costs us money. For example, by the end of the graphs above, we were cruising along at a 50% cache hit ratio, which meant we were only paying for half as many of the Azure Function executions, egress bandwidth, and underlying SQL database as we would have been otherwise. Flushing cache and suddenly sending all the traffic to the origin doubles our cost. Waiting until we&rsquo;re back at 90% cache it ratio literally increases those costs 10x when we flush. If I were to be completely financially ruthless about it, I would need to either load fewer breaches or bulk them together such that a cache flush is only ejecting a small amount of data anyway, but clearly, that&rsquo;s not what I&rsquo;ve been doing 😄</p>
+<p>There&rsquo;s just one remaining fly in the ointment&hellip;</p>
+<p>Of those three methods of querying email addresses, the first is a no-brainer: searches from the front page of the website hit a Cloudflare Worker where it validates the Turnstile token and returns a result. Easy. However, the second two models (the public and enterprise APIs) have the added burden of validating the API key against Azure API Management (APIM), and the only place that exists is in the West US origin service. What this means for those endpoints is that before we can return search results from a location that may be just a short jet ski ride away, we need to go all the way to the other side of the world to validate the key and ensure the request is within the rate limit. We do this in the lightest possible way with barely any data transiting the request to check the key, plus we do it in async with pulling the data back from the origin service if it isn&rsquo;t already in cache. In other words, we&rsquo;re as efficient as humanly possible, but we still cop a massive latency burden.</p>
+<p>Doing API management at the origin is super frustrating, but there are really only two alternatives. The first is to distribute our APIM instance to other Azure data centres, and the problem with that is we need a Premium instance of the product. We presently run on a Basic instance, which means we&rsquo;re talking about a 19x increase in price just to unlock that ability. But that&rsquo;s just to go Premium; we then need at least one more instance somewhere else for this to make sense, which means we&rsquo;re talking about a 28x increase. And every region we add amplifies that even further. It&rsquo;s a financial non-starter.</p>
+<p>The second option is for Cloudflare to build an API management product. <em>This</em> is the killer piece of this puzzle, as it would put all the checks and balances within the one edge node. It&rsquo;s a suggestion I&rsquo;ve put forward on many occasions now, and who knows, maybe it&rsquo;s already in the works, but it&rsquo;s a suggestion I make out of a love of what the company does and a desire to go all-in on having them control the flow of our traffic. I did get a suggestion this week about rolling what is effectively a &ldquo;poor man&rsquo;s API management&rdquo; within workers, and it&rsquo;s a really cool suggestion, but it gets hard when people change plans or when we want to apply quotas to APIs rather than rate limits. So c&rsquo;mon Cloudflare, let&rsquo;s make this happen!</p>
+<p>Finally, just one more stat on how powerful serving content directly from the edge is: I shared this stat last month for Pwned Passwords which serves well over 99% of requests from Cloudflare&rsquo;s cache reserve:</p>
+<!-- raw HTML omitted -->
+<p>That&rsquo;s about 3,900 requests <em>per second</em>, on average, non-stop for 30 days. It&rsquo;s obviously way more than that at peak; just a quick glance through the last month and it looks like about 17k requests per second in a one-minute period a few weeks ago:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2024/11/image-8.png" alt="Closer to the Edge: Hyperscaling Have I Been Pwned with Cloudflare Workers and Caching" />
+</figure>
+
+
+</p>
+<p>But it doesn&rsquo;t matter how high it is, because I never even think about it. I set up the worker, I turned on cache reserve, and that&rsquo;s it 😎</p>
+<p>I hope you&rsquo;ve enjoyed this post, Stefán and I will be doing a live stream on this topic at 06:00 AEST Friday morning for this week&rsquo;s regular video update, and it&rsquo;ll be available for replay immediately after. It&rsquo;s also embedded here for convenience:</p>
+<!-- raw HTML omitted -->
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

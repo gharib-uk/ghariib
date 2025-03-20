@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Docker Bake is Now Generally Available in Docker Desktop 4.38!</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Docker Bake is Now Generally Available in Docker Desktop 4.38!</h1>
+			<b><time>05.02.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>We’re excited to announce the General Availability of <strong>Docker Bake</strong> with Docker Desktop 4.38! This powerful build orchestration tool takes the hassle out of managing complex builds and offers simplicity, flexibility, and performance for teams of all sizes.</p>
+<p>
+<figure>
+  <img src="https://live-docker.pantheonsite.io/app/uploads/2024/12/2400x1260_docker-evergreen_logo_blog_C-1-1110x583.png" alt="2400x1260 docker evergreen logo blog C 1" />
+  <figcaption>- 2400x1260 docker evergreen logo blog C 1</figcaption>
+</figure>
+
+
+</p>
+<h2 id="what-is-docker-bake">What is Docker Bake?</h2>
+<p>Docker Bake is an orchestration tool that streamlines Docker builds, similar to how Compose simplifies managing runtime environments. With Bake, you can define build stages and deployment environments in a declarative file, making complex builds easier to manage. It also leverages BuildKit’s parallelization and optimization features to speed up build times.</p>
+<p>While Dockerfiles are excellent for defining image build steps, teams often need to build multiple images and execute helper tasks like testing, linting, and code generation. Traditionally, this meant juggling numerous <code>docker build</code> commands with their own options and arguments – a tedious and error-prone process.</p>
+<p>Bake changes the game by introducing a declarative file format that encapsulates all options and image dependencies, referred to as <strong>targets</strong>. Additionally, Bake’s ability to parallelize and deduplicate work ensures faster and more efficient builds.</p>
+<h2 id="why-should-you-use-bake">Why should you use Bake?</h2>
+<h3 id="challenges-with-complex-docker-build-configuration">Challenges with complex Docker Build configuration:</h3>
+<ul>
+<li>Managing long, complex build commands filled with countless flags and environment variables.</li>
+<li>Tedious workflows for building multiple images.</li>
+<li>Difficulty declaring builds for specific targets or environments.</li>
+<li>Requires a script or 3rd-party tool to make things manageable</li>
+</ul>
+<p>Docker Bake tackles these challenges with a better way to manage complex builds with a simple, declarative approach.</p>
+<h3 id="key-benefits-of-docker-bake">Key benefits of Docker Bake</h3>
+<ul>
+<li><strong>Simplicity</strong>: Replace complex chains of Docker build commands and scripts with a single <code>docker buildx bake</code> command while maintaining clear, version-controlled configuration files that are easy to understand and modify.</li>
+<li><strong>Flexibility</strong>: Express sophisticated build logic through HCL syntax and matrix builds, enabling dynamic configurations that adapt to different environments and requirements while supporting custom functions for advanced use cases.</li>
+<li><strong>Consistency</strong>: Maintain standardized build configurations across teams and environments through version-controlled files and inheritance patterns, eliminating environment-specific build issues and reducing configuration drift.</li>
+<li><strong>Performance</strong>: Automatically parallelize independent builds and eliminate redundant operations through context deduplication and intelligent caching, dramatically reducing build times for complex multi-image workflows.</li>
+</ul>
+<p>
+<figure>
+  <img src="https://live-docker.pantheonsite.io/app/uploads/2025/02/Blog-Bake-After-1068x673-1.png" alt="Blog Bake After 1068x673 1" />
+  <figcaption>- Blog Bake After 1068x673 1</figcaption>
+</figure>
+
+
+</p>
+<p><strong>Figure 1</strong>: One simple Docker buildx bake command to replace all the flags and environment variables.</p>
+<h3 id="use-cases-for-docker-bake">Use cases for Docker Bake</h3>
+<h4 id="1-monorepo-and-image-bakery">1. Monorepo and Image Bakery</h4>
+<p>Docker Bake can help developers efficiently manage and build multiple related Docker images from a single source repository. Plus, they can leverage shared configurations and automated dependency handling to enforce organizational standards.</p>
+<ul>
+<li><strong>Development Efficiency:</strong> Teams can maintain consistent build logic across dozens or hundreds of microservices in a single repository, reducing configuration drift and maintenance overhead.</li>
+<li><strong>Resource Optimization:</strong> Shared base images and contexts are automatically deduplicated, dramatically reducing build times and storage costs.</li>
+<li><strong>Standardization:</strong> Enforce organizational standards through inherited configurations, ensuring all services follow security, tagging, and testing requirements.</li>
+<li><strong>Change Management:</strong> A single source of truth for build configurations makes it easier to implement organization-wide changes like base image updates or security patches.</li>
+</ul>
+<h4 id="2-compose-users">2. Compose users</h4>
+<p>Docker Bake provides seamless compatibility with existing docker-compose.yml files, allowing direct use of your current configurations. Existing Compose users are able to get started using Bake with minimal effort.</p>
+<ul>
+<li><strong>Gradual Adoption:</strong> Teams can incrementally adopt advanced build features while still leveraging their existing compose workflows and knowledge.</li>
+<li><strong>Development Consistency:</strong> Use the same configuration for both local development (via compose) and production builds (via Bake), eliminating “works on my machine” issues.</li>
+<li><strong>Enhanced Capabilities</strong>: Access powerful features like matrix builds and HCL expressions while maintaining compatibility with familiar compose syntax.</li>
+<li><strong>CI/CD Integration</strong>: Seamlessly integrate with existing CI/CD pipelines that already understand compose files while adding Bake’s advanced build capabilities.</li>
+</ul>
+<h4 id="3-complex-build-configurations">3. Complex build configurations</h4>
+<p>Developers can use targets, groups, variables, functions, and matrix targets and many more tools in Bake to simplify their build configurations across projects and teams.</p>
+<ul>
+<li><strong>Cross-Platform Compatibility:</strong> Matrix builds enable teams to efficiently manage builds across multiple architectures, OS versions, and dependency combinations from a single configuration.</li>
+<li><strong>Dynamic Adaptation:</strong> HCL expressions allow builds to adapt to different environments, git branches, or CI variables without maintaining multiple configurations.</li>
+<li><strong>Build Optimization:</strong> Custom functions enable sophisticated logic for things like version calculation, tag generation, and conditional builds based on git history.</li>
+<li><strong>Quality Control:</strong> Variable validation and inheritance ensure consistent configuration across complex build scenarios, reducing errors and maintenance burden.</li>
+<li><strong>Scale Management:</strong> Groups and targets help organize large-scale build systems with dozens or hundreds of permutations, making them manageable and maintainable.</li>
+</ul>
+<h4 id="4-docker-build-cloud">4. Docker Build Cloud</h4>
+<p>With Bake-optimized builds as the foundation, developers can achieve more efficient Docker Build Cloud performance and faster builds.</p>
+<ul>
+<li><strong>Enhanced Docker Build Cloud Performance:</strong> Instantly parallelize matrix builds across cloud infrastructure, turning hour-long build pipelines into minutes without managing build infrastructure.</li>
+<li><strong>Resource Optimization:</strong> Leverage Build Cloud’s distributed caching and deduplication to dramatically reduce bandwidth usage and build times, which is especially valuable for remote teams.</li>
+<li><strong>Cost Management:</strong> Save cost with DBC <strong>—</strong> Bake’s precise target definitions mean you only consume cloud resources for exactly what needs to be built.</li>
+<li><strong>Developer Experience:</strong> Teams can run complex multi-architecture builds without powerful local machines, enabling development from any device while maintaining build performance.</li>
+<li><strong>CI/CD Enhancement:</strong> Offload resource-intensive builds from CI runners to Build Cloud, reducing CI costs and queue times while improving reliability.</li>
+</ul>
+<h2 id="whats-new-in-bake-for-ga">What’s New in Bake for GA?</h2>
+<p>Docker Bake has been an experimental feature for several years, allowing us to refine and improve it based on user feedback. So, there is already a strong set of ingredients that users love, such as targets and groups, variables, HCL Expression Support, inheritance capabilities, matrix targets, and additional contexts. With this GA release, Bake is now ready for production use, and we’ve added several enhancements to make it more efficient, secure, and easier to use:</p>
+<ul>
+<li><strong>Deduplicated Context Transfers</strong>**:** Significantly speeds up build pipelines by eliminating redundant file transfers when multiple targets share the same build context.</li>
+<li><strong>Entitlements</strong>**:** Enhances security and resource management by providing fine-grained control over what capabilities and resources builders can access during the build process.</li>
+<li><strong>Composable Attributes</strong>**:** Simplifies configuration management by allowing teams to define reusable attribute sets that can be mixed, matched, and overridden across different targets.</li>
+<li><strong>Variable Validation</strong>**:** Prevents wasted time and resources by catching configuration errors before the actual build process begins.</li>
+</ul>
+<h3 id="deduplicate-context-transfers">Deduplicate context transfers</h3>
+<p>When you build targets concurrently using groups, build contexts are loaded independently for each target. If the same context is used by multiple targets in a group, that context is transferred once for each time it’s used. This can significantly impact build time, depending on your build configuration.</p>
+<p>Previously, the workaround required users to define a named context that loads the context files and then have each target reference the named context. But with Bake, this will be handled automatically now.</p>
+<p>Bake can automatically deduplicate context transfers from targets sharing the same context. When you build targets concurrently using groups, build contexts are loaded independently for each target. If the same context is used by multiple targets in a group, that context is transferred once for each time it’s used. This more efficient approach leads to much faster build time. </p>
+<p>Read more about how to speed up your build time in our docs. </p>
+<h3 id="entitlements">Entitlements</h3>
+<p>Bake now includes entitlements to control access to privileged operations, aligning with Build. This prevents unintended side effects and security risks. If Bake detects a potential issue — like a privileged access request or an attempt to access files outside the current directory — the build will fail unless explicitly allowed.</p>
+<p>To be consistent, the Bake command now supports the <code>--allow=ENTITLEMENT</code> flag to grant access to additional entitlements. The following entitlements are currently supported for Bake.</p>
+<ul>
+<li>Build equivalents
+<ul>
+<li><code>--allow network.host</code> <strong>—</strong> Allows executions with host networking.</li>
+<li><code>--allow security.insecure</code> <strong>—</strong> Allows executions without sandbox. (i.e. —privileged)</li>
+</ul>
+</li>
+<li>File system: Grant filesystem access for builds that need access files outside the working directory. This will impact <code>context, output, cache-from, cache-to, dockerfile, secret</code>
+<ul>
+<li><code>--allow fs=&lt;path|*&gt;</code> <strong>—</strong> Grant read and write access to files outside the working directory.</li>
+<li><code>--allow fs.read=&lt;path|*&gt;</code> <strong>—</strong> Grant read access to files outside the working directory.</li>
+<li><code>--allow fs.write=&lt;path|*&gt;</code> <strong>—</strong> Grant write access to files outside the working directory.</li>
+</ul>
+</li>
+<li>ssh
+<ul>
+<li><code>--allow ssh</code> <strong>—</strong>– Allows exposing SSH agent.</li>
+</ul>
+</li>
+</ul>
+<h3 id="composable-attributes">Composable attributes</h3>
+<p>Several attributes previously had to be defined in CSV (e.g. <code>type=provenance,mode=min</code>). These were challenging to read and couldn’t be easily overridden. The following can now be defined as structured objects:</p>
+<pre tabindex="0"><code>target &#34;app&#34; {
+		attest = [
+			{ type = &#34;provenance&#34;, mode = &#34;max&#34; },
+			{ type = &#34;sbom&#34;, disabled = true}
+		]
+
+		cache-from = [
+			{ type = &#34;registry&#34;, ref = &#34;user/app:cache&#34; },
+			{ type = &#34;local&#34;, src = &#34;path/to/cache&#34;}
+		]
+
+		cache-to = [
+			{ type = &#34;local&#34;, dest = &#34;path/to/cache&#34; },
+		]
+
+		output = [
+			{ type = &#34;oci&#34;, dest = &#34;../out.tar&#34; },
+			{ type = &#34;local&#34;, dest=&#34;../out&#34;}
+		]
+
+		secret = [
+			{ id = &#34;mysecret&#34;, src = &#34;path/to/secret&#34; },
+			{ id = &#34;mysecret2&#34;, env = &#34;TOKEN&#34; },
+		]
+
+		ssh = [
+			{ id = &#34;default&#34; },
+			{ id = &#34;key&#34;, paths = [&#34;path/to/key&#34;] },
+		]
+}
+</code></pre><p>As such, the attributes are now composable. Teams can mix, match, and override attributes across different targets which simplifies configuration management.</p>
+<pre tabindex="0"><code> target &#34;app-dev&#34; {
+    attest = [
+			{ type = &#34;provenance&#34;, mode = &#34;min&#34; },
+			{ type = &#34;sbom&#34;, disabled = true}
+		]
+  }
+
+  target &#34;app-prod&#34; {
+    inherits = [&#34;app-dev&#34;]
+
+    attest = [
+			{ type = &#34;provenance&#34;, mode = &#34;max&#34; },
+		]
+  }
+</code></pre><h3 id="variable-validation">Variable validation</h3>
+<p>Bake now supports validation for variables similar to Terraform to help developers catch and resolve configuration errors early. The GA for Bake also supports the following use cases.</p>
+<p><strong>Basic validation</strong></p>
+<p>To verify that the value of a variable conforms to an expected type, value range, or other condition, you can define custom validation rules using the <code>validation</code> block.</p>
+<pre tabindex="0"><code>variable &#34;FOO&#34; {
+  validation {
+    condition = FOO != &#34;&#34;
+    error_message = &#34;FOO is required.&#34;
+  }
+}
+
+target &#34;default&#34; {
+  args = {
+    FOO = FOO
+  }
+}
+</code></pre><p><strong>Multiple validations</strong></p>
+<p>To evaluate more than one condition, define multiple <code>validation</code> blocks for the variable. All conditions must be true.</p>
+<pre tabindex="0"><code>variable &#34;FOO&#34; {
+  validation {
+    condition = FOO != &#34;&#34;
+    error_message = &#34;FOO is required.&#34;
+  }
+  validation {
+    condition = strlen(FOO) &gt; 4
+    error_message = &#34;FOO must be longer than 4 characters.&#34;
+  }
+}
+
+target &#34;default&#34; {
+  args = {
+    FOO = FOO
+  }
+}
+</code></pre><p><strong>Dependency on other variables</strong></p>
+<p>You can reference other Bake variables in your condition expression, enabling validations that enforce dependencies between variables. This ensures that dependent variables are set correctly before proceeding.</p>
+<pre tabindex="0"><code>variable &#34;FOO&#34; {}
+variable &#34;BAR&#34; {
+  validation {
+    condition = FOO != &#34;&#34;
+    error_message = &#34;BAR requires FOO to be set.&#34;
+  }
+}
+
+target &#34;default&#34; {
+  args = {
+    BAR = BAR
+  }
+}
+</code></pre><h3 id="new-bake-options">New Bake options</h3>
+<p>In addition to updating the Bake configuration, we’ve added a new –list option. Previously, if you were unfamiliar with a project or wanted a reminder of the supported targets and variables, you would have to read through the file. Now, the list option will allow you to quickly query a list of them. It also supports the JSON format option if you need programmatic access.</p>
+<p><strong>List target</strong></p>
+<p>Quickly get a list of the targets available in your Bake configuration.</p>
+<ul>
+<li><code>docker buildx bake --list targets</code></li>
+<li><code>docker buildx bake --list type=targets,format=json</code></li>
+</ul>
+<p><strong>List variables</strong></p>
+<p>Get a list of variables available for your Bake configuration.</p>
+<ul>
+<li><code>docker buildx bake --list variables</code></li>
+<li><code>docker buildx bake --list type=variables,format=json</code></li>
+</ul>
+<p>These improvements build on a powerful feature set, ensuring Bake is both reliable and future-ready.</p>
+<h2 id="get-started-with-docker-bake">Get started with Docker Bake</h2>
+<p>Ready to simplify your builds? Update to Docker Desktop 4.38 today and start using Bake. With its declarative syntax and advanced features, Docker Bake is here to help you build faster, more efficiently, and with less effort.</p>
+<p>Explore the documentation to learn how to create your first Bake file and experience the benefits of streamlined builds firsthand.</p>
+<p>Let’s bake something amazing together!</p>
+<p>​Products, build, Docker</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

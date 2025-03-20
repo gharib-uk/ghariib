@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Automating with GitLab Duo, Part 2: Complex testing&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Automating with GitLab Duo, Part 2: Complex testing&lt;/div&gt;</h1>
+			<b><time>03.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>The first part of our three-part series on test generation with GitLab Duo focused on how to automate code testing. Now, we will share the lessons we learned while using AI for test generation.</p>
+<h2 id="situations-we-encountered-and-how-we-handled-them">Situations we encountered and how we handled them</h2>
+<p>Overall, we were pleased with the results using GitLab Duo to generate tests on our code. As is the case with any language generation, some cases required minor adjustments such as fixing import paths or editing contents in datasets. For the more complex cases, we had to remember that AI solutions often lack context. Here&rsquo;s how we handled the more complex testing situations with GitLab Duo.</p>
+<h3 id="updating-existing-test-cases">Updating existing test cases</h3>
+<p>As is often the case when developing a software product, we encountered instances that required updates to existing tests. Rather than manually making adjustments to a full test suite for a common issue, we took full advantage of the GitLab Duo Chat window in VS Code. For example, to refactor tests, we used the Chat prompt “Please update the provided tests to use unittest rather than pytest” followed by pasting in the tests we wanted GitLab Duo to update.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/eSDIEGqi7Wz45wWjqjWeE/d082b52e703eba3142164f8f2d203c11/image5.png" alt="Automated test generation" />
+</figure>
+
+
+</p>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/6H0edPtZPc5TpoS0q4vhG6/b37a7eb3e1de35c05efd907b395e88f4/image3.png" alt="Chat prompt requesting use of unittest rather than pytest" />
+</figure>
+
+
+</p>
+<p><strong>Note:</strong> We copy-and-pasted GitLab Duo&rsquo;s recommendations into our code.</p>
+<h3 id="creating-tests-for-legacy-code">Creating tests for legacy code</h3>
+<p>Creating tests for legacy code we knew worked was another challenging situation we encountered. In such circumstances, it was valuable to provide error snippets alongside failing tests and ask GitLab Duo to provide new tests. A full copy-and-paste from the terminal window of noted failures and errors to Chat, along with a request to “Please explain and fix this failing test” or similar prompts, yielded a summary of the issues the test was encountering as well as a new test addressing the problem. We did find this sometimes required multiple rounds of refactoring as new test failures were identified. However, the efficiency of GitLab Duo to provide various refactored solutions was fast and a net positive on team and developer efficiency.</p>
+<h3 id="working-with-complex-or-abstracted-code">Working with complex or abstracted code</h3>
+<p>In other instances, the modularization or complexity of our code led to variance in GitLab Duo’s results. For instance, when generating tests, GitLab Duo sometimes generated a series of passing and failing tests caused by differences in testing approach (e.g. usage of Mock and which objects were mocked). We provided GitLab Duo its own example of a passing test and asked it to modify individual tests one at a time to match the style of the passing tests to maintain consistency. We also would provide GitLab Duo a file of functioning tests for a similar object or task so it could mirror the structure.</p>
+<h3 id="ensuring-generated-code-follows-our-standards">Ensuring generated code follows our standards</h3>
+<p>While developing a Python module, GitLab Duo generated many tests using Mock and often they required refactoring, particularly around naming standardization. In such cases, we could leverage GitLab Duo Chat to refactor tests with instructions as to which specific test components to update. Prompting GitLab Duo for these changes was immensely faster than refactoring tests individually, as we had previousy done.</p>
+<h3 id="addressing-uncovered-test-cases">Addressing uncovered test cases</h3>
+<p>GitLab Duo generated tests for additional test cases the team had not previously considered, thus increasing coverage. Luckily, we could use GitLab Duo to quickly and efficiently address these edge cases and expand testing coverage, which is a key value-add for our team to build quickly and ensure a robust product.</p>
+<h2 id="what-we-learned">What we learned</h2>
+<p>Here are few key lessons that have been important to our success with GitLab Duo:</p>
+<ul>
+<li><strong>Fast and efficient for rapid development and iteration -</strong> GitLab Duo’s role in generating automated tests has been a key accelerator in development for our team and allowed us to work faster and with greater confidence in our changes.</li>
+<li><strong>Important to use appropriate prompts -</strong> When using GitLab Duo for our use case, we touched on a key topic for machine learning optimization: prompt engineering. Sometimes we needed to modify our question by just a few keywords to lead to the ideal generated answer.</li>
+<li><strong>Need understanding of underlying frameworks and code -</strong> When it comes to any AI-generated code that makes it into a product, even if only as testing, it’s critical that we understand how the code functions so we can adequately debug as well as request informed changes.</li>
+<li><strong>Need understanding of desired end state and standards -</strong> Similar to following coding standards for formatting and library usage while developing without AI, it’s important to maintain the vision of what the intended outcomes look like and what standards are being adhered to when using AI. GitLab Duo needs the context to understand code standards, so it’s critical for team members using GitLab Duo to provide adequate oversight of its outputs to ensure quality and other expectations are met.</li>
+<li><strong>GitLab Duo is not a replacement for all tests -</strong> While we use GitLab Duo significantly for generating automated tests, it does not replace our other tests and human oversight. Functional tests, integration tests, and more still serve a valuable place in the QA process and overall software development lifecycle.</li>
+</ul>
+<p>In our next article in this series, we’ll cover a test we ran to validate the impact of GitLab Duo on our team’s automated testing and discuss the impressive results we have achieved thus far.</p>
+<p>The first part of our three-part series on test generation with GitLab Duo focused on how to automate code testing. Now, we will share the lessons we learned while using AI for test generation.</p>
+<h2 id="situations-we-encountered-and-how-we-handled-them-1">Situations we encountered and how we handled them</h2>
+<p>Overall, we were pleased with the results using GitLab Duo to generate tests on our code. As is the case with any language generation, some cases required minor adjustments such as fixing import paths or editing contents in datasets. For the more complex cases, we had to remember that AI solutions often lack context. Here&rsquo;s how we handled the more complex testing situations with GitLab Duo.</p>
+<h3 id="updating-existing-test-cases-1">Updating existing test cases</h3>
+<p>As is often the case when developing a software product, we encountered instances that required updates to existing tests. Rather than manually making adjustments to a full test suite for a common issue, we took full advantage of the GitLab Duo Chat window in VS Code. For example, to refactor tests, we used the Chat prompt “Please update the provided tests to use unittest rather than pytest” followed by pasting in the tests we wanted GitLab Duo to update.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/eSDIEGqi7Wz45wWjqjWeE/d082b52e703eba3142164f8f2d203c11/image5.png" alt="Automated test generation" />
+</figure>
+
+
+</p>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/6H0edPtZPc5TpoS0q4vhG6/b37a7eb3e1de35c05efd907b395e88f4/image3.png" alt="Chat prompt requesting use of unittest rather than pytest" />
+</figure>
+
+
+</p>
+<p><strong>Note:</strong> We copy-and-pasted GitLab Duo&rsquo;s recommendations into our code.</p>
+<h3 id="creating-tests-for-legacy-code-1">Creating tests for legacy code</h3>
+<p>Creating tests for legacy code we knew worked was another challenging situation we encountered. In such circumstances, it was valuable to provide error snippets alongside failing tests and ask GitLab Duo to provide new tests. A full copy-and-paste from the terminal window of noted failures and errors to Chat, along with a request to “Please explain and fix this failing test” or similar prompts, yielded a summary of the issues the test was encountering as well as a new test addressing the problem. We did find this sometimes required multiple rounds of refactoring as new test failures were identified. However, the efficiency of GitLab Duo to provide various refactored solutions was fast and a net positive on team and developer efficiency.</p>
+<h3 id="working-with-complex-or-abstracted-code-1">Working with complex or abstracted code</h3>
+<p>In other instances, the modularization or complexity of our code led to variance in GitLab Duo’s results. For instance, when generating tests, GitLab Duo sometimes generated a series of passing and failing tests caused by differences in testing approach (e.g. usage of Mock and which objects were mocked). We provided GitLab Duo its own example of a passing test and asked it to modify individual tests one at a time to match the style of the passing tests to maintain consistency. We also would provide GitLab Duo a file of functioning tests for a similar object or task so it could mirror the structure.</p>
+<h3 id="ensuring-generated-code-follows-our-standards-1">Ensuring generated code follows our standards</h3>
+<p>While developing a Python module, GitLab Duo generated many tests using Mock and often they required refactoring, particularly around naming standardization. In such cases, we could leverage GitLab Duo Chat to refactor tests with instructions as to which specific test components to update. Prompting GitLab Duo for these changes was immensely faster than refactoring tests individually, as we had previousy done.</p>
+<h3 id="addressing-uncovered-test-cases-1">Addressing uncovered test cases</h3>
+<p>GitLab Duo generated tests for additional test cases the team had not previously considered, thus increasing coverage. Luckily, we could use GitLab Duo to quickly and efficiently address these edge cases and expand testing coverage, which is a key value-add for our team to build quickly and ensure a robust product.</p>
+<h2 id="what-we-learned-1">What we learned</h2>
+<p>Here are few key lessons that have been important to our success with GitLab Duo:</p>
+<ul>
+<li><strong>Fast and efficient for rapid development and iteration -</strong> GitLab Duo’s role in generating automated tests has been a key accelerator in development for our team and allowed us to work faster and with greater confidence in our changes.</li>
+<li><strong>Important to use appropriate prompts -</strong> When using GitLab Duo for our use case, we touched on a key topic for machine learning optimization: prompt engineering. Sometimes we needed to modify our question by just a few keywords to lead to the ideal generated answer.</li>
+<li><strong>Need understanding of underlying frameworks and code -</strong> When it comes to any AI-generated code that makes it into a product, even if only as testing, it’s critical that we understand how the code functions so we can adequately debug as well as request informed changes.</li>
+<li><strong>Need understanding of desired end state and standards -</strong> Similar to following coding standards for formatting and library usage while developing without AI, it’s important to maintain the vision of what the intended outcomes look like and what standards are being adhered to when using AI. GitLab Duo needs the context to understand code standards, so it’s critical for team members using GitLab Duo to provide adequate oversight of its outputs to ensure quality and other expectations are met.</li>
+<li><strong>GitLab Duo is not a replacement for all tests -</strong> While we use GitLab Duo significantly for generating automated tests, it does not replace our other tests and human oversight. Functional tests, integration tests, and more still serve a valuable place in the QA process and overall software development lifecycle.</li>
+</ul>
+<p>In our next article in this series, we’ll cover a test we ran to validate the impact of GitLab Duo on our team’s automated testing and discuss the impressive results we have achieved thus far.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

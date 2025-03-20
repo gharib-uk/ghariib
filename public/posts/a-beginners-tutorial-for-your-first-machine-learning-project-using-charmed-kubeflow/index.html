@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;A beginner’s tutorial for your first Machine Learning project using Charmed Kubeflow&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;A beginner’s tutorial for your first Machine Learning project using Charmed Kubeflow&lt;/div&gt;</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Wouldn’t it be wonderful to wake up one day with a desire to explore AI and machine learning, only to find a well-crafted, simple, and beginner-friendly tutorial that covers all of the crucial core elements you need to build your very first model? Well, you’ve come to  the right place!</p>
+<p>The goal of this guide is to show you how to develop a model capable of classifying different species of Iris flowers based on their characteristics, such as sepal length and petal width. This will help you to learn the fundamentals of building and deploying machine learning models, which will serve you well in more complex projects down the line. In this guide, we will walk through how to build a model to solve the Iris Classifier problem, a famous classification example in the machine learning community.</p>
+<h2 id="overview">Overview</h2>
+<p>The Iris Classifier problem challenges us to build a model that can accurately categorize Iris flowers into three species: “setosa”, “versicolor”, and “virginica”. By the end of this tutorial, you’ll have a working machine learning model trained on the Iris dataset, ready to make predictions.</p>
+<p>This comprehensive tutorial covers the following topics:</p>
+<ol>
+<li><strong>Writing Basic ML Code:</strong> Learn how to write fundamental machine learning code using popular Python libraries.</li>
+<li><strong>Converting Notebooks to YAML</strong>: Understand the steps to convert a Jupyter notebook into a YAML file.</li>
+<li><strong>Creating a Pipeline</strong>: Discover how to build a pipeline from the YAML file and initiate a run.</li>
+<li><strong>Model Inferencing:</strong> Gain insights into performing inference with the machine learning model stored in our MinIO bucket.</li>
+</ol>
+<p>Whether you’re a newcomer to the field or looking to solidify your understanding of core ML principles, this tutorial will provide you with the hands-on experience you need to start your machine learning journey.<br>
+This tutorial uses Charmed Kubeflow as a project platform, as it is a straightforward, easy-to-use choice for beginners venturing into AI and machine learning. Charmed Kubeflow is built on Kubernetes (microK8s) and has a user-friendly deployment process and integrated suite of tools that streamline the various stages of machine learning projects, making it an ideal starting point for beginners.</p>
+<p>Since it automates many operational tasks, it enables beginners to focus on learning rather than infrastructure management. This also makes it highly scalable, by accommodating growing needs without the complexities of managing infrastructure.</p>
+<h2 id="1-environmental-setup">1. Environmental Setup</h2>
+<p>This tutorial requires you to install Charmed Kubeflow and its required components. The process is quick and easy,  however going over them is outside of the scope of this tutorial. Lucky for you and other newcomers, there’s a comprehensive and easy-to-follow guide available on the Charmed Kubeflow documentation page.</p>
+<p>The minimum requirements to run Charmed Kubeflow are:</p>
+<ol>
+<li>Ubuntu 20.04 (Focal) or later.</li>
+<li>A host machine with at least a 4-core CPU processor, 32GB RAM and 50GB of disk space available.</li>
+</ol>
+<p>I launched an AWS t3.xlarge instance configuration with 8 vCPUs and 150 GB of volume, but  you are free to choose  other options that fit your needs. Generally this is more than enough to get started with your first project. After installing kubeflow and configuring the dex-auth login credentials, configure  minIO for storing our model, artifacts, datasets, etc. Installing these should be quick and efficient, taking less than an hour. The discourse pages linked at the bottom of these guides contain helpful resources and tips for dealing with  any potential issues you may face.</p>
+<h3 id="11-introduction-to-the-kubeflow-environment">1.1 Introduction to the Kubeflow environment:</h3>
+<p>After setting up the environment successfully, we can now access the dashboard at <a href="https://10.64.140.43.nip.io/">https://10.64.140.43.nip.io/</a> or at the IP that was output by “Access the dashboard” step.</p>
+<blockquote>
+<p>
+<figure>
+  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_720/https://lh7-rt.googleusercontent.com/docsz/AD_4nXdqY8zy-04bwRM13Lm1q1ReXyDCJRpA1KQHdTghwEZse1i2o_CKYpCg2-4TEDJ0eZWL9g3oTEbkxihxZvrGPs-LiwPpu95CI9ulHZg6fXaqseVsGiMwqfXtQQmyQaJK0Xyf38Q6Ele1pEMXN-Qe0JnPlzM?key=ciaIp1uPI1RHgcfPPG9TaA" alt="" />
+</figure>
+
+
+</p></blockquote>
+<p><strong>Diagram 1.1 a: Kubeflow central dashboard</strong></p>
+<p>This step involves launching a JupyterLab notebook to begin writing Python code. Jupyter Notebook is an interactive Python-based computing platform that enables data scientists to combine code, visualizations, video, images, text and other media into highly interactive data science projects.</p>
+<p>In our JupyterLab notebook we will use the standard SciPy image and enable access to Kubeflow pipelines through the advanced options. You can see in the below image how I launched a Jupyter notebook using the base image: scipy (standard).</p>
+<p>
+<figure>
+  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_720/https://lh7-rt.googleusercontent.com/docsz/AD_4nXc_GACHTJJ8uonYRrZ7lmy256_e1LIjdltKHe_wcV93TAN8ixhvvL_eieB5pCBazKV84-Pj-ge5gOYrozOb-2kaEcGeTkQ8-ElXpKLl73gjUM2UJ9C85gRgBWrBelmiBu20hrCYNNDUW2OOU2cbbEU2RQ?key=ciaIp1uPI1RHgcfPPG9TaA" alt="" />
+</figure>
+
+
+</p>
+<p><strong>Diagram 1.1 b: Kubeflow notebooks tab</strong></p>
+<p>
+<figure>
+  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_720/https://lh7-rt.googleusercontent.com/docsz/AD_4nXfcSfHvVNT1l8XIa5wm7YIiq2adIkiPVI4-aN7y7yAcTFcQqqBkr91XSvb3cYBTSBSIXBYs-oCwcWacWn-q-zfggc3EbwGYgHL0NGM9gv_cFBtw2NootS8oUJMdNzY5-bDFV7dQIEHn9fUozCW7U-uur2E?key=ciaIp1uPI1RHgcfPPG9TaA" alt="" />
+</figure>
+
+
+</p>
+<p><strong>Diagram 1.1 c: Launched notebook options</strong></p>
+<p>We can also login to the MinIO dashboard with the credentials obtained from “Access the dashboard IP address” step.</p>
+<p>
+<figure>
+  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_720/https://lh7-rt.googleusercontent.com/docsz/AD_4nXfkRATEVbwtVfX92IBZTmnsE6IQmcmJsBEA0aJ6D25OeE8V_pCQUDnkSlYhywgJ093PWEwDIz1Z8lpvO4EMef4_HpX974yx-FMXyahIu7sjtRhzRrM5nan3rTRTwc5b9EHzI3ceK-bnzdP_-D-aw1w3fw?key=ciaIp1uPI1RHgcfPPG9TaA" alt="" />
+</figure>
+
+
+</p>
+<p><strong>Diagram 1.1 d: MinIO dashboard</strong></p>
+<h2 id="2-machine-learning-code">2. Machine learning code</h2>
+<p>In this section, we will analyse the problem statement and start writing the machine learning code. We will explore a fundamental example often referred to as the “hello world” of machine learning: the Iris classification problem.</p>
+<h3 id="21-the-iris-classification-problem">2.1 The Iris classification problem</h3>
+<p>The Iris classification problem is perhaps the most famous project example problem in beginner machine learning. This problem involves classifying iris flowers into one of three species (Setosa, Versicolor, and Virginica) based on four measurable characteristics, which are the flower’s sepal length, sepal width, petal length and petal width (all measured in centimeters). </p>
+<p>This dataset consists of 50 samples from each of the three species, resulting in a total of 150 samples.</p>
+<p>The iris problem is perfect as a beginner project, as it’s an easy-to-understand, real-world example with clear use cases beyond its data set, and it teaches beginners to work with multivariate data and continuous features to make clear categorizations or classifications. The data set is also freely available for download, and deals with some of the most fundamental concepts in machine learning and problem solving.</p>
+<p>Your project will begin by importing this dataset from the sklearn datasets. </p>
+<p>Let’s begin by understanding what the iris dataset looks like. Iris is a class of flower. In the standard iris dataset, sklearn.datasets.load_iris(), there are 3 target classes: Iris Setosa, Iris virginica, and Iris versicolor. The job of the classifier is to predict the class of the flower given the input. The input has 4 parameters – sepal length (cm),sepal width (cm), petal length (cm), petal width (cm). </p>
+<p>The most important things that we’ll be looking at here are the input and output data structures, because these indicate what category of algorithms the problem falls under, like linear regression, computer vision, language translation, and so on. </p>
+<p>So for our purposes, we need a model capable of predicting the class to which a flower belongs, which can be framed as a logistic regression problem. </p>
+<p>Let’s delve into the reasoning behind this approach.</p>
+<h4 id="211-what-is-logistic-regression-and-why-do-we-use-it">2.1.1 What is logistic regression and why do we use it?</h4>
+<p>In order to begin classifying the iris flowers, we need to first have a basic understanding of linear and logistic regression. The iris example is a little challenging, as it involves a four-dimensional input and three outputs, and so in the interest of simplicity and beginner friendliness let us consider a simpler, more relatable scenario: the relationship between weight and obesity. Instead of flowers, we can use mice: we can define 𝑥 as the weight of a mouse and 𝑦 as a binary indicator of whether the mouse is obese.</p>
+<p>We can think of logistic regression as a concept similar to linear regression which we are all familiar with, but with one key difference: logistic regression predicts binary outcomes (‘true’ or ‘false’) rather than continuous values like linear regression does.</p>
+<p>
+<figure>
+  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_720/https://lh7-rt.googleusercontent.com/docsz/AD_4nXe6yxmSs-aSI0TrfQpOQZOz4jG_37alFGnMEPMQ0SjkLbMYb-c9Ie2J5gBrGMqvKirSzbWG3vG_FqMIxkkcX_F6D-mSqITM5o0gyO_ZepmCFFgyiSg97xqXorApsQGp2slXbpz0mhdnTiZYZia85_HieFE?key=ciaIp1uPI1RHgcfPPG9TaA" alt="" />
+</figure>
+
+
+</p>
+<p><strong>Diagram 2.1.1 a: Logistic regression mice example</strong></p>
+<p>In linear regression, we fit a line through the data but in logistic regression, we fit an S-shaped curve which tells you whether the mouse is obese based on its weight.</p>
+<p>
+<figure>
+  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_720/https://lh7-rt.googleusercontent.com/docsz/AD_4nXcErvya227XmrCEtdNI0e4hUpDXWmfyCW01r6vIYafiZlWd1csSzDsVFC-wCDmyDBTukPZGwxKhpiI_XLBusL9pzci7tFpM_1qx5c27weyxe_mNBrLkUXPGppWupE0fKSnHttdNpGI8SwjhsyAs8PyreLg?key=ciaIp1uPI1RHgcfPPG9TaA" alt="" />
+</figure>
+
+
+</p>
+<p><strong>Diagram 2.1.1 b: Logistic regression curve</strong></p>
+<p>If we add  a new mouse to our data set and it is heavy, there’s a strong likelihood that it is obese. If it has an average weight, there’s a 50% chance of obesity, while a light mouse has a very low probability of being obese.</p>
+<p>Although logistic regression gives us the probability of whether the mouse is obese or not, it’s mostly used for classification. For example, if the output probability is greater than 50%, we classify it as obese, else not obese. We can also develop more complex models where factors like weight, genotype, age, and others influence whether a mouse is obese or not.</p>
+<p>Another difference between linear and logistic regression is how the line fits on the data points. In linear regression, we consider the line with minimum sum of squares of the residuals and in logistic regression, we use something known as “maximum likelihood”. This is done by calculating the likelihood of all the mice and then picking the curve with maximum likelihood.  </p>
+<p>
+<figure>
+  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_720/https://lh7-rt.googleusercontent.com/docsz/AD_4nXdPMIM7srVNJdEFOBUgUeaQ8hfm3nfs3WtrdvyLmP1nVozCTMTsy1zCYoD3oF1lLjkzEvBtOLNO9URt7za7jWEjM8FkztjA4UJpDt5-aoTguZq6Jnhz1Z1mBVPSLxRcKDrOZWiZPzi0RIggiffYJOt10mc?key=ciaIp1uPI1RHgcfPPG9TaA" alt="" />
+</figure>
+
+
+</p>
+<p><strong>Diagram 2.1.1 c: Comparison between linear and logistic regression</strong></p>
+<p>The logistic regression equation looks like this – </p>
+<p>
+<figure>
+  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_567,h_99/https://lh7-rt.googleusercontent.com/docsz/AD_4nXdqnhXAwTKa38H987TBROYZLLU8DbRmnNXV1Qum8OFDLLXIa-3YOnLyQ9UXpcq618l4mD8H-KwIH6PS83sAiiXHNM5DgXlUGGEOkHgjihzl5iC-02dotcsCbwDaaIJrtXEkI0xuXGQD1b6EB7O7i9963dM?key=ciaIp1uPI1RHgcfPPG9TaA" alt="" />
+</figure>
+
+
+</p>
+<p>Even though it may seem like there’s no actual training happening to consider logistic regression as a machine learning technique, it still learns from the data to fit the curve as shown in diagram 2.1.1 c. <br>
+For the purpose of our code, we will use the LogisticRegression classifier from the sklearn library to fit the model on the training data and use the joblib library to dump the final model weights into the MinIO bucket or the local folder.</p>
+<h4 id="212-the-code">2.1.2 The code</h4>
+<p>A typical machine learning workflow consists of the following steps:</p>
+<ol>
+<li>Load the data</li>
+<li>Pre-process the dataset</li>
+<li>Train the model</li>
+<li>Evaluate the model</li>
+<li>Perform inference on new data</li>
+</ol>
+<p>In this particular instance, we do not require extensive pre-processing because we extracted the dataset from the sklearn library and it is already clean. Therefore, after loading the iris dataset, our pre-processing step will involve splitting the data into training and testing sets. Typically, we divide the dataset into a training set and a test set, as indicated by their names: the training set is used for training the model, while the test set is reserved for evaluating it. During the evaluation process, we input the test data without revealing the corresponding outputs, and we calculate the error between the actual outputs of the test set and those produced by the model using the logistic regression equation.</p>
+<p>Let’s begin by importing the datasets and libraries that we need for our project:</p>
+<pre tabindex="0"><code>import pandas as pd
+import os
+from sklearn import datasets
+from minIO import minIO
+   
+ # Load dataset
+def prepare_data():
+    iris = datasets.load_iris()
+    df = pd.DataFrame(iris.data, columns=iris.feature_names)
+    df[&#39;species&#39;] = iris.target
+    return df
+
+# Split the data into training and testing data
+def train_test_split(df):
+    target_column = &#39;species&#39;
+    X = df.loc[:, df.columns != target_column]
+    y = df.loc[:, df.columns == target_column]
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3,stratify = y, random_state=47)
+    return X_train, X_test, y_train, y_test
+
+# Train the model
+def train_model(X_train, y_train):
+    iris_model = LogisticRegression(max_iter=200)
+    iris_model.fit(X_train,y_train)
+    joblib.dump(iris_model, &#39;iris_model.pkl&#39;)
+
+df = prepare_data()
+X_train, X_test, y_train, y_test = train_test_split(df)
+train_model(X_train, y_train)
+</code></pre><h2 id="3-building-kubeflow-pipelines-from-jupyterlab-notebooks">3. <strong>Building KubeFlow pipelines from JupyterLab notebooks</strong></h2>
+<p>We will now convert our JupyterLab notebook code into a YAML file to create a Kubeflow pipeline as it brings several important benefits for machine learning workflows. Kubeflow pipelines enhance reproducibility by ensuring consistent execution of experiments, while also allowing for easy scalability to manage larger datasets and complex computations. Automation of tasks reduces manual intervention and the risk of errors, and better versioning helps track changes and optimize models over time.</p>
+<p>Additionally, Kubeflow pipelines integrate seamlessly with various tools and services, facilitating streamlined workflows for data preprocessing, model training, and deployment. <br>
+We will use kfp to convert our jupyterlab code to a pipeline.</p>
+<h3 id="31-using-kubeflow-pipelines">    3.1 Using Kubeflow pipelines</h3>
+<p>By allowing us to create reusable and scalable pipelines, kfp enhances the reproducibility and efficiency of our machine learning projects. In this section, we’ll dive into how to convert our existing machine learning code into a Kubeflow pipeline, making it easier to manage and execute our workflows effectively.</p>
+<p>Now, we will convert our functions to components and link these components together into a pipeline and compile it all into a YAML file. This generated YAML file is then used to create a new pipeline run using the GUI. <br>
+We can also pass our model artifacts like return values and variables through the different functions, but this advanced technique is out of scope for this beginner tutorial. However, it’s worth learning later on to use in more complex projects.</p>
+<h4 id="311-final-code">3.1.1 Final code </h4>
+<p>We’re using MinIO for storing our dataset and model. It is an object storage platform like S3 storage in AWS but MinIO has direct integration with Kubeflow when we use Charmed Kubeflow. Next, we’ll start loading data from the library and upload it in a MinIO bucket named “mlpipeline”.</p>
+<pre tabindex="0"><code>@component(
+    Packages_to_instal = [&#34;pandas&#34;, &#34;numpy&#34;, &#34;scikit-learn&#34;, &#34;minIO&#34;],
+    base_image=&#34;python:3.9&#34;,
+)
+def prepare_data():
+    import pandas as pd
+    import os
+    from sklearn import datasets
+    from minIO import minIO
+    # Load dataset
+    iris = datasets.load_iris()
+    df = pd.DataFrame(iris.data, columns=iris.feature_names)
+    df[&#39;species&#39;] = iris.target
+    
+    df = df.dropna()
+
+    minIO_client = minIO(
+        &#34;10.152.183.213:9000&#34;,
+        access_key = &#34;minIO&#34;,
+        secret_key = &#34;minIO123&#34;,
+        secure = False
+    )
+    minIO_bucket = &#34;mlpipeline&#34;
+    df.to_csv(&#39;final_df.csv&#39;, index=False)
+    minIO_client.fput_object(minIO_bucket,&#34;final_df.csv&#34;,&#34;final_df.csv&#34;)
+</code></pre><p>Now, let’a split the data into X – train/test and y – train/test</p>
+<pre tabindex="0"><code>@component(
+    packages_to_install=[&#34;pandas&#34;, &#34;numpy&#34;, &#34;scikit-learn&#34;, &#34;minIO&#34;],
+    base_image=&#34;python:3.9&#34;,
+)
+def train_test_split():    
+    import pandas as pd
+    import numpy as np
+    import os
+    from sklearn.model_selection import train_test_split
+    from minIO import minIO
+    minIO_client = minIO(
+        &#34;10.152.183.213:9000&#34;,
+        access_key=&#34;minIO&#34;,
+        secret_key=&#34;minIO123&#34;,
+        secure=False
+    )
+    minIO_bucket = &#34;mlpipeline&#34;
+    
+    minIO_client.fget_object(minIO_bucket,&#34;final_df.csv&#34;,&#34;final_df.csv&#34;)
+    final_data = pd.read_csv(&#39;final_df.csv&#39;)
+    
+    target_column = &#39;species&#39;
+    X = final_data.loc[:, final_data.columns != target_column]
+    y = final_data.loc[:, final_data.columns == target_column]
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3,stratify = y, random_state=47)
+    
+    np.save(&#39;X_train.npy&#39;, X_train)
+    minIO_client.fput_object(minIO_bucket,&#34;X_train.npy&#34;,&#34;X_train.npy&#34;)
+    np.save(&#39;X_test.npy&#39;, X_test)
+    minIO_client.fput_object(minIO_bucket,&#34;X_test.npy&#34;,&#34;X_test.npy&#34;)
+    np.save(&#39;y_train.npy&#39;, y_train)
+    minIO_client.fput_object(minIO_bucket,&#34;y_train.npy&#34;,&#34;y_train.npy&#34;)
+    np.save(&#39;y_test.npy&#39;, y_test)
+    minIO_client.fput_object(minIO_bucket,&#34;y_test.npy&#34;,&#34;y_test.npy&#34;)
+</code></pre><p>Now, lets build a component for training the Logistic Regression model using sklearn</p>
+<pre tabindex="0"><code>@component(
+    packages_to_install=[&#34;pandas&#34;, &#34;numpy&#34;, &#34;scikit-learn&#34;, &#34;minIO&#34;, &#34;joblib&#34;],
+    base_image=&#34;python:3.9&#34;,
+)
+def training_basic_classifier():
+    import pandas as pd
+    import numpy as np
+    import os
+    from sklearn.linear_model import LogisticRegression
+    from minIO import minIO
+    import joblib
+    minIO_client = minIO(
+        &#34;10.152.183.213:9000&#34;,
+        access_key=&#34;minIO&#34;,
+        secret_key=&#34;minIO123&#34;,
+        secure=False
+    )
+    minIO_bucket = &#34;mlpipeline&#34;
+
+    minIO_client.fget_object(minIO_bucket,&#34;X_train.npy&#34;,&#34;X_train.npy&#34;)
+    X_train = np.load(&#39;X_train.npy&#39;,allow_pickle=True)
+    minIO_client.fget_object(minIO_bucket,&#34;y_train.npy&#34;,&#34;y_train.npy&#34;)
+    y_train = np.load(&#39;y_train.npy&#39;,allow_pickle=True)
+    
+    iris_model = LogisticRegression(max_iter=200)
+    iris_model.fit(X_train,y_train)
+    joblib.dump(iris_model, &#39;iris_model.pkl&#39;)
+    minIO_client.fput_object(minIO_bucket,&#34;models/iris_model.pkl&#34;,&#34;iris_model.pkl&#34;)
+</code></pre><p>The component outlined below will retrieve the model from MinIO and execute an inference service using the KServe InferenceService client, a widely recognized inference component within Kubernetes.</p>
+<pre tabindex="0"><code>@component(
+    packages_to_install=[&#34;kserve&#34;],
+    base_image=&#34;python:3.9&#34;,
+)
+def model_serving():
+    from kubernetes import client 
+    from kserve import KServeClient
+    from kserve import constants
+    from kserve import utils
+    from kserve import V1beta1InferenceService
+    from kserve import V1beta1InferenceServiceSpec
+    from kserve import V1beta1PredictorSpec
+    from kserve import V1beta1SKLearnSpec
+    import os
+
+    namespace = utils.get_default_target_namespace()
+    
+    name=&#39;iris-model&#39;
+    kserve_version=&#39;v1beta1&#39;
+    api_version = constants.KSERVE_GROUP + &#39;/&#39; + kserve_version
+
+    isvc = V1beta1InferenceService(api_version=api_version,
+                                   kind=constants.KSERVE_KIND,
+                                   metadata=client.V1ObjectMeta(
+                                       name=name, namespace=namespace, annotations={&#39;sidecar.istio.io/inject&#39;:&#39;false&#39;}),
+                                   spec=V1beta1InferenceServiceSpec(
+                                   predictor=V1beta1PredictorSpec(
+                                   service_account_name=&#34;sa-minIO-kserve&#34;,
+                                   sklearn=(V1beta1SKLearnSpec(storage_uri=&#34;s3://mlpipeline/models/iris_model.pkl&#34;)))))
+</code></pre><p>Now, to the final act of assembling all of our components into a pipeline:</p>
+<pre tabindex="0"><code>@pipeline(
+    name=&#34;iris-pipeline&#34;
+)
+def iris_pipeline():
+    prepare_data_task = prepare_data()
+# Split data into Train and Test set
+    train_test_split_task = train_test_split() 
+    train_test_split_task.after(prepare_data_task)
+    
+    # Model training
+    training_basic_classifier_task = training_basic_classifier()
+    training_basic_classifier_task.after(train_test_split_task)
+
+    model_serving_task = model_serving()
+    model_serving_task.after(training_basic_classifier)
+
+# Compile the pipeline
+if __name__ == &#39;__main__&#39;:
+    compiler.Compiler().compile(
+        pipeline_func=iris_pipeline,
+        package_path=iris_pipeline.yaml&#39;
+    )
+</code></pre><p>This process generates an iris_pipeline.yaml file in our local directory, which we can use to create a Kubeflow pipeline. YAML files are widely utilized for configuration purposes and in applications where data is stored or transmitted. So, we’ll use this file to create a pipeline.</p>
+<p>Next, we will navigate to the Pipelines tab in our Kubeflow dashboard to upload the file. To initiate a run, we must first create an experiment from the Experiments tab.</p>
+<p>
+<figure>
+  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_720/https://lh7-rt.googleusercontent.com/docsz/AD_4nXeAQOlyh0eAyCpsJ37qhs0I3Fq-0sgTUungkvmrsNvK2ru8IfLh2WwtvIhFJGemIiGMsdxGWBOqgOErSiqLuZvLWi0whHui0SGuwLv1i1Cr4VSLiqmuWw_ysUazp764hHAQ0fuYCp5Stjuf9A7KLzKWyQ?key=ciaIp1uPI1RHgcfPPG9TaA" alt="" />
+</figure>
+
+
+</p>
+<p><strong>Diagram 3.1.2 a: Iris classification pipeline</strong></p>
+<p>After running the pipeline, we can see the model.pkl (weights file) in MinIO under the models folder in the mlpipeline bucket:</p>
+<p>
+<figure>
+  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_720/https://lh7-rt.googleusercontent.com/docsz/AD_4nXd3qmZnG--hea5hPtXyVvZ0bhhbCepFVSPF35by_iGDd1u9SsddaZ5vX9w0J5yJh5AbdTL4bHROJpmLK-irbcotWqVPocRibV9CcDhwQG8E5dfDrbtreEaz-YX626W39tGwl3B5dU_UBRexY5DX5znSKWc?key=ciaIp1uPI1RHgcfPPG9TaA" alt="" />
+</figure>
+
+
+</p>
+<p><strong>Diagram 3.1.2 b: Iris classification model in MinIO bucket</strong></p>
+<h2 id="4-inference-with-kserve-inferenceservice">4. <strong>Inference with Kserve InferenceService</strong></h2>
+<p>Now that we have created the inference service, you should see the model in the inferenceservices list:</p>
+<pre tabindex="0"><code>kubectl get inferenceservices iris-model -n admin
+</code></pre><p>You should see the following output</p>
+<p>
+<figure>
+  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_720/https://lh7-rt.googleusercontent.com/docsz/AD_4nXcX_3DWXkvKPBibA-JtWyVxdFnIEaun0B-43kpn7oP-Lk7_xK_JKfcjMN51AzviQ6hwHkPw7-GAPDsPojRH8gt_iXQdhi3fGWvyVqoMsBoLaFIT9iNED9OuDMaZOwbXPSZ1ZG4VmY-p05IajpNc-uOpTho?key=ciaIp1uPI1RHgcfPPG9TaA" alt="" />
+</figure>
+
+
+</p>
+<p>Next, we will create an input json file to request an inference:</p>
+<pre tabindex="0"><code>cat &lt;&lt;EOF &gt; &#34;./iris-input.json&#34;
+{
+  &#34;instances&#34;: [
+    [6.8,  2.8,  4.8,  1.4],
+    [6.0,  3.4,  4.5,  1.6]
+  ]
+}
+EOF
+</code></pre><p>Now, we can directly curl the InferenceService with the URL obtained from the status:</p>
+<pre tabindex="0"><code>curl -v -H &#34;Content-Type: application/json&#34; http://sklearn-iris.kserve-test.${CUSTOM_DOMAIN}/v1/models/sklearn-iris:predict -d @./iris-input.json
+</code></pre><p>You should see the following output:</p>
+<!-- raw HTML omitted -->
+<table>
+  <thead>
+      <tr>
+          <th>{“predictions”: [1, 1]}</th>
+      </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<!-- raw HTML omitted -->
+<p>Both flowers are classified as “Iris Versicolor.”</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Both sets of data points submitted for inference correspond to the flower with index 1. In this instance, the model predicts that both flowers are classified as “Iris Versicolor.”The iris classes “Setosa,” “Versicolor,” and “Virginica” were encoded using one-hot vectors during training. This approach is commonly used by data scientists, as it simplifies the representation of classes in a binary format, such as 000, 001, and 010.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This beginner’s guide to machine learning with Charmed Kubeflow has provided a clear pathway into the fascinating world of AI. We began by setting up the necessary environment and progressed through fundamental concepts such as data handling, model training, and deployment. By taking advantage ofCharmed Kubeflow’s user-friendly interface and powerful tools, we could simplify the complex processes involved in machine learning.</p>
+<p>Through our exploration of the Iris classification problem, we demonstrated how to implement logistic regression and convert our code into a robust Kubeflow pipeline. This not only enhances reproducibility but also streamlines our workflows, allowing for efficient experimentation and model optimization.</p>
+<p>As you embark on your machine learning journey, remember that Charmed Kubeflow offers a supportive framework for beginners to focus on learning rather than infrastructure management. With the knowledge and tools gained from this tutorial, you are now well-equipped to tackle more complex machine learning projects. Embrace the learning process and continue to explore the vast possibilities that AI has to offer!</p>
+<p>You can learn more about Kubeflow and discover additional machine learning examples by visiting the official Kubeflow examples page.</p>
+<h2 id="references"><strong>References</strong>:</h2>
+<ol>
+<li><a href="https://github.com/flopach/digits-recognizer-kubeflow/tree/master?tab=readme-ov-file">https://github.com/flopach/digits-recognizer-kubeflow/tree/master?tab=readme-ov-file</a></li>
+<li><a href="https://medium.com/@vinayakshanawad/build-an-ml-pipeline-part-1-getting-started-with-kubeflow-v2-pipelines-74981b88db9a">https://medium.com/@vinayakshanawad/build-an-ml-pipeline-part-1-getting-started-with-kubeflow-v2-pipelines-74981b88db9a</a></li>
+<li><a href="https://www.kubeflow.org/docs/components/pipelines/user-guides/migration/">https://www.kubeflow.org/docs/components/pipelines/user-guides/migration/</a></li>
+</ol>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

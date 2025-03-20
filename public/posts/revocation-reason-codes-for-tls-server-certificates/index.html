@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Revocation Reason Codes for TLS Server Certificates</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Revocation Reason Codes for TLS Server Certificates</h1>
+			<b><time>19.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/certificate-authority">certificate-authority</a>
+        	       
+
+			<div>
+				<p>In our continued efforts to improve the security of the web PKI, we are taking a multi-pronged approach to tackling some long-existing problems with revocation of TLS server certificates. In addition to our ongoing CRLite work, we added new requirements to version 2.8 of Mozilla’s Root Store Policy that will enable Firefox to depend on revocation reason codes being used consistently, so they can be relied on when verifying the validity of certificates during TLS connections. We also added a new requirement that CA operators provide their full CRL URLs in the CCADB. This will enable Firefox to pre-load more complete certificate revocation data, eliminating dependency on the infrastructure of CAs during the certificate verification part of establishing TLS connections. The combination of these two new sets of requirements will further enable Firefox to enforce revocation checking of TLS server certificates, which makes TLS connections even more secure.</p>
+<h2 id="previous-policy-updates">Previous Policy Updates</h2>
+<p>Significant improvements have already been made in the web PKI, including the following changes to Mozilla’s Root Store Policy and the CA/Browser Forum Baseline Requirements (BRs), which reduced risks associated with exposure of the private keys of TLS certificates by reducing the amount of time that the exposure can exist.</p>
+<ul>
+<li>TLS server certificates issued on or after 1 September 2020 MUST NOT have a Validity Period greater than 398 days.</li>
+<li>For TLS server certificates issued on or after October 1, 2021, each dNSName or IPAddress in the certificate MUST have been validated within the prior 398 days.</li>
+</ul>
+<p>Under those provisions, the maximum validity period and maximum re-use of domain validation for TLS certificates roughly corresponds to the typical period of time for owning a domain name; i.e. one year. This reduces the risk of potential exposure of the private key of each TLS certificate that is revoked, replaced, or no longer needed by the original certificate subscriber.</p>
+<h2 id="new-requirements">New Requirements</h2>
+<p>In version 2.8 of Mozilla’s Root Store Policy we added requirements stating that:</p>
+<ol>
+<li>Specific RFC 5280 Revocation Reason Codes must be used under certain circumstances; and</li>
+<li>CA operators must provide their full CRL URLs in the Common CA Database (CCADB).</li>
+</ol>
+<p>These new requirements will provide a complete accounting of all revoked TLS server certificates. This will enable Firefox to pre-load more complete certificate revocation data, eliminating the need for it to query CAs for revocation information when establishing TLS connections.</p>
+<p>The new requirements about revocation reason codes account for the situations that can happen at any time during the certificate’s validity period, and address the following problems:</p>
+<ul>
+<li>There were no policies specifying which revocation reason codes should be used and under which circumstances.</li>
+<li>Some CAs were not using revocation reason codes at all for TLS server certificates.</li>
+<li>Some CAs were using the same revocation reason code for every revocation.</li>
+<li>There were no policies specifying the information that CAs should provide to their certificate subscribers about revocation reason codes.</li>
+</ul>
+<h3 id="revocation-reason-codes">Revocation Reason Codes</h3>
+<p>Section 6.1.1 of version 2.8 of Mozilla’s Root Store Policy states that when a TLS server certificate is revoked for one of the following reasons the corresponding entry in the CRL must include the revocation reason code:</p>
+<ul>
+<li>keyCompromise (RFC 5280 Reason Code #1)
+<ul>
+<li>The certificate subscriber must choose the “keyCompromise” revocation reason code when they have reason to believe that the private key of their certificate has been compromised, e.g., an unauthorized person has had access to the private key of their certificate.</li>
+</ul>
+</li>
+<li>affiliationChanged (RFC 5280 Reason Code #3)
+<ul>
+<li>The certificate subscriber should choose the “affiliationChanged” revocation reason code when their organization’s name or other organizational information in the certificate has changed.</li>
+</ul>
+</li>
+<li>superseded (RFC 5280 Reason Code #4)
+<ul>
+<li>The certificate subscriber should choose the “superseded” revocation reason code when they request a new certificate to replace their existing certificate.</li>
+</ul>
+</li>
+<li>cessationOfOperation (RFC 5280 Reason Code #5)
+<ul>
+<li>The certificate subscriber should choose the “cessationOfOperation” revocation reason code when they no longer own all of the domain names in the certificate or when they will no longer be using the certificate because they are discontinuing their website.</li>
+</ul>
+</li>
+<li>privilegeWithdrawn (RFC 5280 Reason Code #9)
+<ul>
+<li>The CA will specify the “privilegeWithdrawn” revocation reason code when they obtain evidence that the certificate was misused or the certificate subscriber has violated one or more material obligations under the subscriber agreement or terms of use.</li>
+</ul>
+</li>
+</ul>
+<p>RFC 5280 Reason Codes that are not listed above shall not be specified in the CRL for TLS server certificates, for reasons explained in the wiki page.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>These new requirements are important steps towards improving the security of the web PKI, and are part of our effort to resolve long-existing problems with revocation of TLS server certificates. The requirements about revocation reason codes will enable Firefox to depend on revocation reason codes being used consistently, so they can be relied on when verifying the validity of certificates during TLS connections. The requirement that CA operators provide their full CRL URLs in the CCADB will enable Firefox to pre-load more complete certificate revocation data, eliminating dependency on the infrastructure of CAs during the certificate verification part of establishing TLS connections. The combination of these two new sets of requirements will further enable Firefox to enforce revocation checking of TLS server certificates, which makes TLS connections even more secure.</p>
+<p>The post Revocation Reason Codes for TLS Server Certificates appeared first on Mozilla Security Blog.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

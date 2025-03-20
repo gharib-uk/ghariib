@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;What’s new in Git 2.48.0?&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;What’s new in Git 2.48.0?&lt;/div&gt;</h1>
+			<b><time>12.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>The Git project recently released Git 2.48.0. Let&rsquo;s look at a few notable highlights from this release, which includes contributions from GitLab&rsquo;s Git team and the wider Git community.</p>
+<h2 id="meson-build-system">Meson build system</h2>
+<p>For a long time, Git could be built using either a Makefile-based build system or an Autoconf-based build system. Git developers have been using mostly the Makefile-based build system, so the Autoconf-based build system has lagged behind in features and maintenance. Another issue was that a lot of Windows developers use integrated development environments (IDEs) that don’t have good support for Makefile- and Autoconf-based build systems.</p>
+<p>In 2020, support for building Git using CMake was added. CMake added better Windows support and IDE integration, especially for Visual Studio. Some modern build system features like out-of-source builds were also included.</p>
+<p>Recently, it appeared the CMake support was also lagging behind and that it might never be a good option to replace the two other build systems. So Patrick Steinhardt, GitLab Git Engineering Manager, implemented support for the Meson build system with the goal of eventually replacing the Autoconf-, CMake-, and maybe the Makefile-based build systems.</p>
+<p>The new Meson-based build system has the following advantages:</p>
+<ul>
+<li>Allows users to easily find the available build options, something which is difficult with Makefiles and CMake</li>
+<li>Has a simple syntax compared to Autoconf and CMake</li>
+<li>Supports many different operating systems, compilers, and IDEs</li>
+<li>Supports modern build system features like out-of-source builds</li>
+</ul>
+<p>Here is an example of how it can actually be used to build Git:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ cd git             	<span style="color:#75715e"># go into the root of Git&#39;s source code</span>
+</span></span><span style="display:flex;"><span>$ meson setup build/ 	<span style="color:#75715e"># setup &#34;build&#34; as a build directory</span>
+</span></span><span style="display:flex;"><span>$ cd build           	<span style="color:#75715e"># go into the &#34;build&#34; directory</span>
+</span></span><span style="display:flex;"><span>$ meson compile      	<span style="color:#75715e"># actually build Git</span>
+</span></span><span style="display:flex;"><span>$ meson test         	<span style="color:#75715e"># test the new build</span>
+</span></span><span style="display:flex;"><span>$ meson install      	<span style="color:#75715e"># install the new build</span>
+</span></span></code></pre></div><p>Multiple build directories can be set up using <code>meson setup &lt;build_dir&gt;</code>, and the configuration of the build inside a build directory can be viewed or changed by running <code>meson configure</code> inside the build directory.</p>
+<p>More information on how to build Git using Meson can be found at the top of the <code>meson.build</code> file in the Git code repository. A comparison of the different build systems for Git is available as part of Git&rsquo;s technical documentation.</p>
+<p>This project was led by Patrick Steinhardt.</p>
+<h2 id="git-is-now-memory-leak-free-as-exercised-by-the-test-suite">Git is now memory-leak-free (as exercised by the test suite)</h2>
+<p>In our Git release blog post about the previous Git 2.47.0 release, we talked about our ongoing effort to fix all memory leaks surfaced by existing tests in the project. We said that prior to the Git 2.47.0 release, the project had 223 test files containing memory leaks, and that this had been whittled down to just 60.</p>
+<p>We are pleased to report that the memory leaks in all 60 remaining test files have been resolved. As a result, Git, as exercised by the test suite, is now free of memory leaks. This is an important step towards the longstanding goal of “libifying” Git internal components (which means converting those components into internal libraries). It will also help with optimizing Git for memory usage.</p>
+<p>Now, any newly added test must be leak-free by default. It&rsquo;s still possible to have leaking tests, but the authors will have to use an escape hatch for that and provide good arguments why their test cannot be made leak free.</p>
+<p>This project was led by Patrick Steinhardt.</p>
+<h2 id="improved-bundle-uri-checks">Improved bundle URI checks</h2>
+<p>In our Git release blog post about the Git 2.46.0 release, we talked about some bundle URI fixes by Xing Xin. After those fixes, Xing Xin worked on making it possible for fetches using bundles to be fully checked using the fsck mechanism like regular fetches.</p>
+<p>When validating regular fetches, it&rsquo;s possible to specify different severities for different fsck issues to have fine-grained handling of what is accepted and what is rejected in a specific repository. This wasn&rsquo;t possible for fetches using bundles previously.</p>
+<p>To further increase the usefulness and safety of bundle-uri, we addressed this problem so that the different severities specified for different fsck issues are now used when checking fetches using bundles, too.</p>
+<p>This project was led by Justin Tobler.</p>
+<h2 id="add-reference-consistency-checks">Add reference consistency checks</h2>
+<p>In our Git release blog post about the Git 2.47.0 release, we mentioned Jialuo She&rsquo;s work on adding a new &lsquo;verify&rsquo; subcommand to git-refs(1) which was part of the Google Summer of Code 2024 (GSoC 2024).</p>
+<p>In that blog post, we said that eventually the goal was to integrate this new subcommand as part of git-fsck(1) to provide a unified way to execute repository consistency checks. Jialuo She has decided to work on that after his GSoC was over.</p>
+<p>The result from this effort is that git-fsck(1) can now detect and handle a number of reference-related issues, like when the content of a reference is bad, when a symbolic link is used as a symbolic reference, or when the target of a symbolic reference doesn&rsquo;t point to a valid reference. We still need to call <code>git refs verify</code> as part of git-fsck(1), and have the former perform all non-backend-specific checks that the latter currently does, but we are closer to our end goal of a unified way to execute all refs consistency checks.</p>
+<p>This project was led by Jialuo She.</p>
+<h2 id="iterator-reuse-in-reftables">Iterator reuse in reftables</h2>
+<p>In the Git 2.45.0 release, the &lsquo;reftables&rsquo; format was introduced as a new backend for storing references (mostly branches and tags). If you are not yet familiar with the reftables backend, check out our previous Git release blog post where the feature was introduced and our beginner’s guide to learn more about how reftables work.</p>
+<p>Since that release, we continued to improve this backend, and we recently focused on improving its performance by reusing some internal iterators when reading random references. Before these changes, reading a single reference required us to create a whole new iterator, seek it to the correct location in the respective tables, and then read the next value from it, which can be quite inefficient when reading many references in quick succession. After the change we now only create a single iterator and reuse it to read multiple references, thus saving some overhead.</p>
+<p>The result of this work is increased performance in a number of reftables-related use cases, especially a 7% speedup when creating many references in a transaction that performs many random reads. Furthermore, this creates the possibility for more optimizations as we can continue to reuse more state kept in the iterators.</p>
+<p>This project was led by Patrick Steinhardt.</p>
+<h2 id="support-for-reflogs-in-git-refs-migrate">Support for reflogs in <code>git-refs migrate</code></h2>
+<p>After the &lsquo;reftables&rsquo; backend was introduced in Git 2.45.0 (see the section above), we worked on tooling to migrate reference backends in Git 2.46.0, which consisted of adding a new <code>migrate</code> subcommand to git-refs(1).</p>
+<p>Our article about Git 2.46.0 talked about this work and mentioned some limitations that still existed. In particular, the article said:</p>
+<p>&ldquo;The reflogs in a repository are a component of a reference backend and would also require migration between formats. Unfortunately, the tooling is not yet capable of converting reflogs between the files and reftables backends.&rdquo;</p>
+<p>We are pleased to report that we have lifted this limitation in Git 2.48.0. Reflogs can now also be migrated with <code>git refs migrate</code>. The migration tool is not yet capable of handling a repository with multiple worktrees, but this is the only limitation left. If you don&rsquo;t use worktrees, you can already take advantage of the reftables backend in your existing repositories.</p>
+<p>This project was led by Karthik Nayak.</p>
+<h2 id="ref-filter-optimization">Ref-filter optimization</h2>
+<p>The &lsquo;ref-filter&rsquo; subsystem is some formatting code used by commands like <code>git for-each-ref</code>, <code>git branch</code> and <code>git tag</code> to sort, filter, format, and display information related to Git references.</p>
+<p>As repositories grow, they can contain a huge number of references. This is why there is work not only on improving backends that store references, like the reftables backend (see above), but also on optimizing formatting code, like the &lsquo;ref-filter&rsquo; subsystem.</p>
+<p>We recently found a way to avoid temporarily buffering references and iterating several times on them in the ref-filter code when they should be processed in the same sorting order as the order the backends provide them. This results in memory savings and makes certain commands up to 770 times faster in some cases.</p>
+<p>This project was led by Patrick Steinhardt.</p>
+<h2 id="read-more">Read more</h2>
+<p>This blog post highlighted just a few of the contributions made by GitLab and the wider Git community for this latest release. You can learn about these from the official release announcement of the Git project. Also, check out our previous Git release blog posts to see other past highlights of contributions from GitLab team members.</p>
+<ul>
+<li>What’s new in Git 2.47.0?</li>
+<li>What’s new in Git 2.46.0?</li>
+<li>What’s new in Git 2.45.0</li>
+<li>A beginner&rsquo;s guide to the Git reftable format</li>
+</ul>
+<p>The Git project recently released Git 2.48.0. Let&rsquo;s look at a few notable highlights from this release, which includes contributions from GitLab&rsquo;s Git team and the wider Git community.</p>
+<h2 id="meson-build-system-1">Meson build system</h2>
+<p>For a long time, Git could be built using either a Makefile-based build system or an Autoconf-based build system. Git developers have been using mostly the Makefile-based build system, so the Autoconf-based build system has lagged behind in features and maintenance. Another issue was that a lot of Windows developers use integrated development environments (IDEs) that don’t have good support for Makefile- and Autoconf-based build systems.</p>
+<p>In 2020, support for building Git using CMake was added. CMake added better Windows support and IDE integration, especially for Visual Studio. Some modern build system features like out-of-source builds were also included.</p>
+<p>Recently, it appeared the CMake support was also lagging behind and that it might never be a good option to replace the two other build systems. So Patrick Steinhardt, GitLab Git Engineering Manager, implemented support for the Meson build system with the goal of eventually replacing the Autoconf-, CMake-, and maybe the Makefile-based build systems.</p>
+<p>The new Meson-based build system has the following advantages:</p>
+<ul>
+<li>Allows users to easily find the available build options, something which is difficult with Makefiles and CMake</li>
+<li>Has a simple syntax compared to Autoconf and CMake</li>
+<li>Supports many different operating systems, compilers, and IDEs</li>
+<li>Supports modern build system features like out-of-source builds</li>
+</ul>
+<p>Here is an example of how it can actually be used to build Git:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ cd git             	<span style="color:#75715e"># go into the root of Git&#39;s source code</span>
+</span></span><span style="display:flex;"><span>$ meson setup build/ 	<span style="color:#75715e"># setup &#34;build&#34; as a build directory</span>
+</span></span><span style="display:flex;"><span>$ cd build           	<span style="color:#75715e"># go into the &#34;build&#34; directory</span>
+</span></span><span style="display:flex;"><span>$ meson compile      	<span style="color:#75715e"># actually build Git</span>
+</span></span><span style="display:flex;"><span>$ meson test         	<span style="color:#75715e"># test the new build</span>
+</span></span><span style="display:flex;"><span>$ meson install      	<span style="color:#75715e"># install the new build</span>
+</span></span></code></pre></div><p>Multiple build directories can be set up using <code>meson setup &lt;build_dir&gt;</code>, and the configuration of the build inside a build directory can be viewed or changed by running <code>meson configure</code> inside the build directory.</p>
+<p>More information on how to build Git using Meson can be found at the top of the <code>meson.build</code> file in the Git code repository. A comparison of the different build systems for Git is available as part of Git&rsquo;s technical documentation.</p>
+<p>This project was led by Patrick Steinhardt.</p>
+<h2 id="git-is-now-memory-leak-free-as-exercised-by-the-test-suite-1">Git is now memory-leak-free (as exercised by the test suite)</h2>
+<p>In our Git release blog post about the previous Git 2.47.0 release, we talked about our ongoing effort to fix all memory leaks surfaced by existing tests in the project. We said that prior to the Git 2.47.0 release, the project had 223 test files containing memory leaks, and that this had been whittled down to just 60.</p>
+<p>We are pleased to report that the memory leaks in all 60 remaining test files have been resolved. As a result, Git, as exercised by the test suite, is now free of memory leaks. This is an important step towards the longstanding goal of “libifying” Git internal components (which means converting those components into internal libraries). It will also help with optimizing Git for memory usage.</p>
+<p>Now, any newly added test must be leak-free by default. It&rsquo;s still possible to have leaking tests, but the authors will have to use an escape hatch for that and provide good arguments why their test cannot be made leak free.</p>
+<p>This project was led by Patrick Steinhardt.</p>
+<h2 id="improved-bundle-uri-checks-1">Improved bundle URI checks</h2>
+<p>In our Git release blog post about the Git 2.46.0 release, we talked about some bundle URI fixes by Xing Xin. After those fixes, Xing Xin worked on making it possible for fetches using bundles to be fully checked using the fsck mechanism like regular fetches.</p>
+<p>When validating regular fetches, it&rsquo;s possible to specify different severities for different fsck issues to have fine-grained handling of what is accepted and what is rejected in a specific repository. This wasn&rsquo;t possible for fetches using bundles previously.</p>
+<p>To further increase the usefulness and safety of bundle-uri, we addressed this problem so that the different severities specified for different fsck issues are now used when checking fetches using bundles, too.</p>
+<p>This project was led by Justin Tobler.</p>
+<h2 id="add-reference-consistency-checks-1">Add reference consistency checks</h2>
+<p>In our Git release blog post about the Git 2.47.0 release, we mentioned Jialuo She&rsquo;s work on adding a new &lsquo;verify&rsquo; subcommand to git-refs(1) which was part of the Google Summer of Code 2024 (GSoC 2024).</p>
+<p>In that blog post, we said that eventually the goal was to integrate this new subcommand as part of git-fsck(1) to provide a unified way to execute repository consistency checks. Jialuo She has decided to work on that after his GSoC was over.</p>
+<p>The result from this effort is that git-fsck(1) can now detect and handle a number of reference-related issues, like when the content of a reference is bad, when a symbolic link is used as a symbolic reference, or when the target of a symbolic reference doesn&rsquo;t point to a valid reference. We still need to call <code>git refs verify</code> as part of git-fsck(1), and have the former perform all non-backend-specific checks that the latter currently does, but we are closer to our end goal of a unified way to execute all refs consistency checks.</p>
+<p>This project was led by Jialuo She.</p>
+<h2 id="iterator-reuse-in-reftables-1">Iterator reuse in reftables</h2>
+<p>In the Git 2.45.0 release, the &lsquo;reftables&rsquo; format was introduced as a new backend for storing references (mostly branches and tags). If you are not yet familiar with the reftables backend, check out our previous Git release blog post where the feature was introduced and our beginner’s guide to learn more about how reftables work.</p>
+<p>Since that release, we continued to improve this backend, and we recently focused on improving its performance by reusing some internal iterators when reading random references. Before these changes, reading a single reference required us to create a whole new iterator, seek it to the correct location in the respective tables, and then read the next value from it, which can be quite inefficient when reading many references in quick succession. After the change we now only create a single iterator and reuse it to read multiple references, thus saving some overhead.</p>
+<p>The result of this work is increased performance in a number of reftables-related use cases, especially a 7% speedup when creating many references in a transaction that performs many random reads. Furthermore, this creates the possibility for more optimizations as we can continue to reuse more state kept in the iterators.</p>
+<p>This project was led by Patrick Steinhardt.</p>
+<h2 id="support-for-reflogs-in-git-refs-migrate-1">Support for reflogs in <code>git-refs migrate</code></h2>
+<p>After the &lsquo;reftables&rsquo; backend was introduced in Git 2.45.0 (see the section above), we worked on tooling to migrate reference backends in Git 2.46.0, which consisted of adding a new <code>migrate</code> subcommand to git-refs(1).</p>
+<p>Our article about Git 2.46.0 talked about this work and mentioned some limitations that still existed. In particular, the article said:</p>
+<p>&ldquo;The reflogs in a repository are a component of a reference backend and would also require migration between formats. Unfortunately, the tooling is not yet capable of converting reflogs between the files and reftables backends.&rdquo;</p>
+<p>We are pleased to report that we have lifted this limitation in Git 2.48.0. Reflogs can now also be migrated with <code>git refs migrate</code>. The migration tool is not yet capable of handling a repository with multiple worktrees, but this is the only limitation left. If you don&rsquo;t use worktrees, you can already take advantage of the reftables backend in your existing repositories.</p>
+<p>This project was led by Karthik Nayak.</p>
+<h2 id="ref-filter-optimization-1">Ref-filter optimization</h2>
+<p>The &lsquo;ref-filter&rsquo; subsystem is some formatting code used by commands like <code>git for-each-ref</code>, <code>git branch</code> and <code>git tag</code> to sort, filter, format, and display information related to Git references.</p>
+<p>As repositories grow, they can contain a huge number of references. This is why there is work not only on improving backends that store references, like the reftables backend (see above), but also on optimizing formatting code, like the &lsquo;ref-filter&rsquo; subsystem.</p>
+<p>We recently found a way to avoid temporarily buffering references and iterating several times on them in the ref-filter code when they should be processed in the same sorting order as the order the backends provide them. This results in memory savings and makes certain commands up to 770 times faster in some cases.</p>
+<p>This project was led by Patrick Steinhardt.</p>
+<h2 id="read-more-1">Read more</h2>
+<p>This blog post highlighted just a few of the contributions made by GitLab and the wider Git community for this latest release. You can learn about these from the official release announcement of the Git project. Also, check out our previous Git release blog posts to see other past highlights of contributions from GitLab team members.</p>
+<ul>
+<li>What’s new in Git 2.47.0?</li>
+<li>What’s new in Git 2.46.0?</li>
+<li>What’s new in Git 2.45.0</li>
+<li>A beginner&rsquo;s guide to the Git reftable format</li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

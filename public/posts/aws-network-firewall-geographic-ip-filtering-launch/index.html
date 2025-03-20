@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>AWS Network Firewall Geographic IP Filtering launch</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>AWS Network Firewall Geographic IP Filtering launch</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>AWS Network Firewall is a managed service that provides a convenient way to deploy essential network protections for your virtual private clouds (VPCs). In this blog post, we discuss Geographic IP Filtering, a new feature of Network Firewall that you can use to filter traffic based on geographic location and meet compliance requirements.</p>
+<p>Customers with internet-facing applications are constantly in need of advanced security features to protect their applications from threat actors. This includes restricting traffic to and from their workloads in Amazon Web Services (AWS) to certain geographies because of security risk. Customers operating in highly regulated industries—such as banking, public sector, or insurance—might have specific security requirements that can be addressed by Geographic IP Filtering.</p>
+<p>Previously, customers had to rely on third-party tools for retrieving an IP address list of specific countries and updating their firewall rules on a regular basis to meet applicable requirements. Now, with Geographic IP Filtering on Network Firewall, you can protect your application workloads based on the geolocation of the IP address. As new IP addresses are assigned by the Internet Assigned Numbers Authority (IANA), the Geographic IP database underneath Network Firewall is automatically updated so that the service can consistently filter inbound and outbound traffic from specific countries based on country codes. It supports IPv4 and IPv6 traffic.</p>
+<p>Geographic IP Filtering is supported in all AWS Regions where Network Firewall is available today, including the AWS GovCloud (US) Regions.</p>
+<h2 id="set-up-geographic-ip-filtering-in-network-firewall">Set up Geographic IP Filtering in Network Firewall</h2>
+<p>You can use Network Firewall to inspect network traffic and protect your VPCs using layer 3–7 rules (network layer to application layer of the OSI model). When traffic reaches Network Firewall, it will identify the location of the source and destination IP address from the Geographic IP database and block traffic if you have a firewall rule to block that location. You can choose to pass, drop, reject, or create an alert for traffic coming from or going to specific countries.</p>
+<p>Before setting up Geographic IP Filtering rules, you need to deploy Network Firewall and attach a firewall policy. You can learn more about these steps in the Network Firewall Getting Started guide. You can configure Network Firewall Geographic IP Filtering in minutes using the AWS Management Console, AWS Command Line Interface (AWS CLI), AWS SDK, or the Network Firewall API.</p>
+<p>To configure Geographic IP Filtering rules using the console:</p>
+<ol>
+<li>
+<p>Sign in to the AWS Management Console and open the Amazon VPC console.</p>
+</li>
+<li>
+<p>In the navigation pane, under <strong>Network Firewall</strong>, choose <strong>Network Firewall rule groups</strong>.</p>
+</li>
+<li>
+<p>Choose <strong>Create rule group</strong>.</p>
+</li>
+<li>
+<p>In the <strong>Create rule group page</strong>, for the <strong>Rule group type</strong>, select <strong>Stateful rule group</strong>.</p>
+</li>
+<li>
+<p>For the <strong>Rule group format</strong>, select <strong>Standard stateful rule</strong>.</p>
+</li>
+<li>
+<p>For <strong>Rule evaluation order</strong>, select either Strict order (recommended) or Action order.</p>
+</li>
+<li>
+<p>Enter a name for the stateful rule group.</p>
+</li>
+<li>
+<p>For <strong>Capacity</strong>, enter the maximum capacity you want to allow for the stateful rule group.</p>
+</li>
+<li>
+<p>Under <strong>Standard stateful rules</strong>, for <strong>Geographic IP Filtering</strong>, select whether you want to <strong>Disable Geographic IP filtering</strong>, <strong>Match only selected countries,</strong> or <strong>Match all but selected countries</strong>.</p>
+</li>
+<li>
+<p>If you opt for Geographic IP Filtering, then select the Geographic IP traffic direction and Country codes that you want to filter the traffic for.</p>
+</li>
+<li>
+<p>Enter the appropriate values for <strong>Protocol</strong>, <strong>Source</strong>, <strong>Source port</strong>, <strong>Destination</strong>, and <strong>Destination port</strong>.</p>
+</li>
+<li>
+<p>For <strong>Action</strong>, select the action that you want Network Firewall to take when a packet matches the rule settings.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/05/img1-1-1024x952.png" alt="Figure 1: Standard stateful rule" />
+</figure>
+
+
+</p>
+<p>Figure 1: Standard stateful rule</p>
+</li>
+<li>
+<p>Click <strong>Add rule</strong> and then review the rule to create the rule group.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/05/img2-1024x191.png" alt="Figure 2: Geographic IP Filtering rules" />
+</figure>
+
+
+</p>
+<p>Figure 2: Geographic IP Filtering rules</p>
+</li>
+</ol>
+<h2 id="suricata-compatibility">Suricata compatibility</h2>
+<p>You can also use Geographic IP filtering with Suricata-compatible rule strings using the geoip keyword.</p>
+<p>To create a Suricata compatible rule string:</p>
+<ol>
+<li>Follow steps 1 through 4 of the previous procedure.</li>
+<li>For the <strong>Rule group format</strong>, select <strong>Suricata compatible rule string</strong>.</li>
+<li>For <strong>Rule evaluation order</strong>, select either Strict order (recommended) or Action order.</li>
+<li>Enter a name for the stateful rule group.</li>
+<li>For <strong>Capacity</strong>, enter the maximum capacity you want to allow for the stateful rule group.</li>
+<li>Under <strong>Suricata compatible rule string</strong>, enter an appropriate string based on your source and destination along with the country code to filter traffic for. To use a Geographic IP filter, provide the geoip keyword, the filter type, and the country codes for the countries that you want to filter for.</li>
+<li>Suricata supports filtering for source and destination IPs. You can filter on either of these types by itself, by specifying <code>dst</code> or <code>src</code>. You can filter on the two types together with AND or OR logic, by specifying <code>both</code> or <code>any</code>.</li>
+</ol>
+<p>For example, the following sample Suricata rule string drops traffic originating from Japan:</p>
+<pre tabindex="0"><code>drop ip any any -&gt; any any (msg:&#34;Geographic IP from JP,Japan&#34;; geoip:src,JP; sid:55555555; rev:1;)
+</code></pre><p>Note that Suricata determines the location of requests using MaxMind GeoIP databases. MaxMind reports very high accuracy of their data at the country level, although accuracy varies according to factors such as country and type of IP. For more information about MaxMind, see MaxMind IP Geolocation.</p>
+<p>If you think any of the Geographic IP data is incorrect, you can submit a correction request to MaxMind at MaxMind Correct GeoIP Data.</p>
+<h2 id="logging-geographic-ip-filtering">Logging Geographic IP Filtering</h2>
+<p>You can configure Network Firewall logging for your firewall’s stateful engine to get detailed information about the packet and any stateful rule action taken against the packet. There are no changes to the logging and monitoring mechanism with the introduction of the Geographic IP Filtering feature. However, by explicitly specifying the <code>msg</code> and <code>metadata</code> keywords, you can see additional geographic information in the alert logs that can help with troubleshooting. If these keywords aren’t specified in the Suricata rule string, the log event will not show any geographic information.</p>
+<h2 id="suricata-rule-examples">Suricata rule examples</h2>
+<p>In this section, you will find examples of Suricata rule strings to pass, block, reject, and alert on traffic to or from a specific country.</p>
+<h3 id="example-1-to-pass-ingress-traffic-from-a-specific-country">Example 1: To pass ingress traffic from a specific country</h3>
+<p>The following example passes ingress traffic from India.</p>
+<blockquote>
+<p><strong>Note</strong>: The rule evaluation order should be set to <code>Strict</code> for alert logs to be generated in this example. If the rule evaluation order is set to <code>Action</code>, then although the traffic will pass, alert logs will not be generated.</p></blockquote>
+<pre tabindex="0"><code>alert ip $EXTERNAL_NET any -&gt; $HOME_NET any (msg:&#34;Ingress traffic from IN allowed&#34;; flow:to_server; geoip:src,IN; metadata:geo IN; sid:202409301;)
+pass ip $EXTERNAL_NET any -&gt; $HOME_NET any (msg:&#34;Ingress traffic from IN allowed&#34;; flow:to_server; geoip:src,IN; metadata:geo IN; sid:202409302;)
+</code></pre><p>The following are the alert and flow logs for Example 1.</p>
+<p><strong>Alert logs:</strong></p>
+<pre tabindex="0"><code>{
+    &#34;firewall_name&#34;: &#34;Test-NFW&#34;,
+    &#34;availability_zone&#34;: &#34;eu-north-1a&#34;,
+    &#34;event_timestamp&#34;: &#34;1731102856&#34;,
+    &#34;event&#34;: {
+        &#34;src_ip&#34;: &#34;13.127.20.X&#34;,
+        &#34;src_port&#34;: 56630,
+        &#34;event_type&#34;: &#34;alert&#34;,
+        &#34;alert&#34;: {
+            &#34;severity&#34;: 3,
+            &#34;signature_id&#34;: 202409301,
+            &#34;rev&#34;: 0,
+            &#34;metadata&#34;: {
+                &#34;geo&#34;: [&#34;IN&#34;]
+            },
+            &#34;signature&#34;: &#34;Ingress traffic from IN allowed&#34;,
+            &#34;action&#34;: &#34;allowed&#34;,
+            &#34;category&#34;: &#34;&#34;
+        },
+        &#34;flow_id&#34;: 234143298308779,
+        &#34;dest_ip&#34;: &#34;172.31.2.4&#34;,
+        &#34;proto&#34;: &#34;TCP&#34;,
+        &#34;verdict&#34;: {
+            &#34;action&#34;: &#34;pass&#34;
+        },
+        &#34;dest_port&#34;: 80,
+        &#34;pkt_src&#34;: &#34;geneve encapsulation&#34;,
+        &#34;timestamp&#34;: &#34;2024-11-08T21:54:16.972019+0000&#34;,
+        &#34;direction&#34;: &#34;to_server&#34;
+    }
+}
+</code></pre><p><strong>Flow logs from source to destination:</strong></p>
+<pre tabindex="0"><code>{
+    &#34;firewall_name&#34;: &#34;Test-NFW&#34;,
+    &#34;availability_zone&#34;: &#34;eu-north-1a&#34;,
+    &#34;event_timestamp&#34;: &#34;1731102918&#34;,
+    &#34;event&#34;: {
+        &#34;tcp&#34;: {
+            &#34;tcp_flags&#34;: &#34;13&#34;,
+            &#34;syn&#34;: true,
+            &#34;fin&#34;: true,
+            &#34;ack&#34;: true
+        },
+        &#34;app_proto&#34;: &#34;unknown&#34;,
+        &#34;src_ip&#34;: &#34;13.127.20.X&#34;,
+        &#34;src_port&#34;: 56630,
+        &#34;netflow&#34;: {
+            &#34;pkts&#34;: 4,
+            &#34;bytes&#34;: 216,
+            &#34;start&#34;: &#34;2024-11-08T21:54:16.972019+0000&#34;,
+            &#34;end&#34;: &#34;2024-11-08T21:54:17.263030+0000&#34;,
+            &#34;age&#34;: 1,
+            &#34;min_ttl&#34;: 112,
+            &#34;max_ttl&#34;: 112
+        },
+        &#34;event_type&#34;: &#34;netflow&#34;,
+        &#34;flow_id&#34;: 234143298308779,
+        &#34;dest_ip&#34;: &#34;172.31.2.4&#34;,
+        &#34;proto&#34;: &#34;TCP&#34;,
+        &#34;dest_port&#34;: 80,
+        &#34;timestamp&#34;: &#34;2024-11-08T21:55:18.257416+0000&#34;
+    }
+}
+</code></pre><p><strong>Flow logs from destination to source:</strong></p>
+<pre tabindex="0"><code>{
+    &#34;firewall_name&#34;: &#34;Test-NFW&#34;,
+    &#34;availability_zone&#34;: &#34;eu-north-1a&#34;,
+    &#34;event_timestamp&#34;: &#34;1731102918&#34;,
+    &#34;event&#34;: {
+        &#34;tcp&#34;: {
+            &#34;tcp_flags&#34;: &#34;13&#34;,
+            &#34;syn&#34;: true,
+            &#34;fin&#34;: true,
+            &#34;ack&#34;: true
+        },
+        &#34;app_proto&#34;: &#34;unknown&#34;,
+        &#34;src_ip&#34;: &#34;172.31.2.4&#34;,
+        &#34;src_port&#34;: 80,
+        &#34;netflow&#34;: {
+            &#34;pkts&#34;: 2,
+            &#34;bytes&#34;: 112,
+            &#34;start&#34;: &#34;2024-11-08T21:54:16.972019+0000&#34;,
+            &#34;end&#34;: &#34;2024-11-08T21:54:17.263030+0000&#34;,
+            &#34;age&#34;: 1,
+            &#34;min_ttl&#34;: 126,
+            &#34;max_ttl&#34;: 126
+        },
+        &#34;event_type&#34;: &#34;netflow&#34;,
+        &#34;flow_id&#34;: 234143298308779,
+        &#34;dest_ip&#34;: &#34;13.127.20.X&#34;,
+        &#34;proto&#34;: &#34;TCP&#34;,
+        &#34;dest_port&#34;: 56630,
+        &#34;timestamp&#34;: &#34;2024-11-08T21:55:18.257449+0000&#34;
+    }
+}
+</code></pre><h3 id="example-2-to-block-ingress-traffic-from-a-specific-country">Example 2: To block ingress traffic from a specific country</h3>
+<p>The following example blocks ingress traffic from Japan.</p>
+<pre tabindex="0"><code>drop ip $EXTERNAL_NET any -&gt; $HOME_NET any (msg:&#34;Ingress traffic from JP blocked&#34;; flow:to_server; geoip:any,JP; metadata:geo JP; sid:202409303;)
+</code></pre><h3 id="example-3-to-block-ingress-ssh-traffic-from-a-specific-country">Example 3: To block ingress SSH traffic from a specific country</h3>
+<p>The following example blocks ingress SSH traffic from Russia.</p>
+<pre tabindex="0"><code>drop ssh $EXTERNAL_NET any -&gt; $HOME_NET any (msg:&#34;Ingress SSH traffic from RU blocked&#34;; flow:to_server; geoip:src,RU; metadata:geo RU; sid:202409304;)
+</code></pre><h3 id="example-4-to-reject-egress-tcp-traffic-to-a-specific-country">Example 4: To reject egress TCP traffic to a specific country:</h3>
+<p>The following example rejects egress TCP traffic to Iran.</p>
+<pre tabindex="0"><code>reject tcp $HOME_NET any -&gt; $EXTERNAL_NET any (msg:&#34;Egress traffic to IR rejected&#34;; flow:to_server; geoip:dst,IR; metadata:geo IR; sid:202409305;)
+</code></pre><h3 id="example-5-to-alert-on-traffic-originating-from-or-destined-to-specific-country">Example 5: To alert on traffic originating from or destined to specific country</h3>
+<p>The following example alerts on traffic that originates from Venezuela.</p>
+<pre tabindex="0"><code>alert ip any any -&gt; any any (msg:&#34;Geographic IP is from VE, Venezuela&#34;; geoip:any,VE; sid: 202409306;)
+</code></pre><h2 id="conclusion">Conclusion</h2>
+<p>You can use the new Geographic IP Filtering feature in AWS Network Firewall to enhance your security posture by controlling traffic based on geographic locations. In this post, you learned about the key concepts, configuration steps, and examples for implementing the Geographic IP Filtering feature in Network Firewall. By using this feature, businesses can protect their networks from potentially harmful traffic and control which geographic locations can interact with their infrastructure. As cyber threats continue to evolve, the Geographic IP Filtering feature serves as a vital tool for strengthening network security.</p>
+<p>If you have feedback about this post, submit comments in the <strong>Comments</strong> section below. If you have questions about this post, contact AWS Support.<br>
+ </p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/05/prasanjt.jpg" alt="Prasanjit Tiwari" />
+</figure>
+
+
+ Prasanjit Tiwari<br>
+Prasanjit is a Cloud Support Engineer II based out of Virginia, USA. He has a Master of Science in Telecommunications Engineering from the University of Maryland. He is a WAF and Route 53 subject matter expert and enjoys working on networking and perimeter security services. He is enthusiastic about using innovative solutions to address customer challenges.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/05/dhrnptl.jpg" alt="Dhiren Patel" />
+</figure>
+
+
+ Dhiren Patel<br>
+Dhiren is a Cloud Support Engineer-II based out of Virginia, USA. He has a Master of Science in Electrical and Computer Engineering from New York University. As a WAF and Route 53 subject matter expert, he specializes in AWS networking and security services. He’s passionate about helping customers solve their AWS issues and get the best cloud experience possible through AWS.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Demystifying Web Cache Threats</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Demystifying Web Cache Threats</h1>
+			<b><time>22.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/application-security">application-security</a>
+        	       
+		           <a href="/tags/web-architecture-security">web-architecture-security</a>
+        	       
+		           <a href="/tags/web-attacks">web-attacks</a>
+        	       
+		           <a href="/tags/web-cache">web-cache</a>
+        	       
+
+			<div>
+				<h3></h3>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiWL3jEeTLPmGyJjKXnLpPwr-d-BbCGNMHKmFBzDeq50KbLehNFFzo-VkEAfWlBu2NDbkTP-PSM4fT-KX5atRzl8fDjhWDGQaaNFwDIzwVO4UtjyTMhymBMAIhD-5NeWPFRJ-ySJvJBzUR/" alt="" />
+</figure>
+
+
+</p>
+<p>Authors</p>
+<ul>
+<li>Alessandro Brucato</li>
+<li>Giorgio Rando</li>
+</ul>
+<h3 id="introduction">Introduction</h3>
+<p>Did you know the word “<em>Cache</em>” comes from French and means “Hidden”?<br>
+If we transpose it to IT we can see why it has been named as such: It is because of its nature.<br>
+A concealed and faster memory part of a CPU used to overcome the bottleneck of a slower RAM externally connected via BUS.</p>
+<p>In general, a caching algorithm has a predefined <em>set of primary keys</em> to be matched so that it will be able to retrieve or store data according to them.<br>
+The use of cache techniques has been spreading over time along with technologies, resulting in features such as:</p>
+<ul>
+<li>- Database Caching</li>
+<li>- DNS Caching</li>
+<li>- Distributed Cache</li>
+</ul>
+<p>Last but not least, when it comes to <em>Web Applications</em> and <em>Web Servers</em>, caching has become a very important feature capable of managing thousands of different users and requests per second.<br>
+In this case it is known as <strong>Web Cache</strong>.<br>
+<em>Web Cache</em> principles are:</p>
+<ul>
+<li>- Temporary storage of Web Application generated content (usually customized according to the different user’s data);</li>
+<li>- Avoid unnecessary <strong>server overload</strong>, which would be otherwise needed to generate again the customized content;</li>
+<li>- Define unique tuples (n-dimensional keys) per entry.</li>
+</ul>
+<p>In case of web cache usage, contents generated from a web server are temporarily stored within the cache memory (<em>Request #1</em> in the schema below). Then, the subsequent request (<em>Request #2</em>) will not be processed by the web server since it will be returned by the web cache.</p>
+<h3></h3>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhQ6wD_-vVk3OPMQq52DKd1FvA_NGLS7IUHXTpb13i4h6pTrpWXhcIrKXSPU3-Rf7nG9mdBn4TRTCJb_DKiXBEdDQpPcLj2z88tZy_w0P3FY75FVbhBQHsvSChjSDQUCIZ2oHGHNLFq0LV2/w640-h258/image.png" alt="" />
+</figure>
+
+
+</p>
+<h3 id="the-cache-flow">The Cache Flow</h3>
+<p>When client and server interact, there might be one or more middleware <em>caching</em> components elaborating data in a more or less transparent way, during the actual client-server communication. The following components might involve data caching such as:</p>
+<ul>
+<li><em>- Internet Browsers</em>: static copies of the required web pages are stored within the device local disk, in order to provide a quicker response to a user if the requested web page has not be changed after the last request;</li>
+<li><em>- Internet Service Providers (ISPs</em>): due to the huge amount of requests that providers have to handle, often they rely on their own cache copies, in order to limit the bandwidth use;</li>
+<li><em>- Internet Gateways</em>: cached pages are stored within the web server reverse proxy in order to optimize the server memory use, avoiding useless overloads on the main one;</li>
+<li><em>- Web Server Proxies</em>: unlike other components which are detached from the internal network of the web server, often the “<em>Web Server Proxies</em>” are deployed on organisation network boundaries. The behaviour of this component is the same described above for <em>ISPs</em> and <em>Internet Gateways</em> components;</li>
+<li><em>- Content Delivery Networks (CDNs)</em>: users are redirected (through a <em>DNS</em> service) to <em>CDNs</em> when a website which relies on <em>CDNs</em> servers is required. One of the <em>CDN</em> objectives is to cache in an orderly fashion the different requested web pages from different regions;</li>
+<li><em>- Internal Servers:</em> the <em>internal</em> <em>servers</em> cache has the same aim of <em>Internet Gateways</em> one, reducing requests processing overload by temporarily saving required web pages.</li>
+</ul>
+<p>The following diagram shows how the aforementioned components are usually distributed within a client-server communication.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj822WugVjSAOzZFcGMuj-SRonyFQvvz2UF0_UOCTOGYo5nkqjQtmR9GtCjyIpe9kCJWXzmZFRnO2KPM_GTe-NpwVcrc7zfklnkzy0V5WWGoIX6gHQSQDrIdtWf9svusecZbOcNPxjzZKE/w640-h323/components_diagram.png" alt="" />
+</figure>
+
+
+</p>
+<p>Each one of these components might handle its own cached copy, which is useful in a number of particular contexts. However, not every caching component can be controlled by the end user and that might pose a threat from a privacy point of view. </p>
+<p>For instance, <strong><em>internet browser web cache</em></strong> is highly manageable by the end-user itself, being able to delete at his sole discretion the web pages cached within. </p>
+<p>On the other hand, <strong><em>ISPs</em></strong> and <strong><em>CDNs</em></strong> (just to mention a few) work in a different manner and interact with the cached web pages without user interaction, according to particular HTTP directives.</p>
+<p>Usually, these directives are defined through <em>HTTP Headers</em> which are parsed by the caching servers to understand if a web page has changed after its last request.</p>
+<p>The full set of standard headers used for caching is defined in the RFC7234, some of them follows:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Header</th>
+          <th>Definition</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Age</td>
+          <td>delta-seconds</td>
+      </tr>
+      <tr>
+          <td>Cache-Control (request)</td>
+          <td>max-age  max-stale  min-fresh  only-if-cached  no-cache  no-store  no-transform</td>
+      </tr>
+      <tr>
+          <td>Cache-Control (response)</td>
+          <td>max-age  s-maxage  must-revalidate  no-cache  no-store  no-transform  public  private  proxy-revalidate</td>
+      </tr>
+      <tr>
+          <td>Expires</td>
+          <td>HTTP-date timestamp</td>
+      </tr>
+      <tr>
+          <td>Pragma   (allows backwards compatibility with HTTP/1.0 caches)</td>
+          <td>no-cache, token</td>
+      </tr>
+  </tbody>
+</table>
+<p>In addition, more conditional headers can be implemented in the request and response, in order to ensure some precondition while a web page cache-copy has to be provided to users. These headers are described in the RFC7232, some of them follows:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Header</th>
+          <th>Definition</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>If-Match</td>
+          <td>entity-tag</td>
+      </tr>
+      <tr>
+          <td>If-None-Match</td>
+          <td>entity-tag</td>
+      </tr>
+      <tr>
+          <td>If-Modified-Since</td>
+          <td>HTTP-date timestamp</td>
+      </tr>
+      <tr>
+          <td>If-Unmodified-Since</td>
+          <td>HTTP-date timestamp</td>
+      </tr>
+      <tr>
+          <td>If-Range</td>
+          <td>entity-tag / HTTP-date timestamp  (<a href="https://tools.ietf.org/html/rfc7233#section-3.2">https://tools.ietf.org/html/rfc7233#section-3.2</a>)</td>
+      </tr>
+      <tr>
+          <td>ETag</td>
+          <td>entity-tag  weak  opaque-tag  etagc</td>
+      </tr>
+  </tbody>
+</table>
+<p>In some specific cases, the following <strong>custom caching headers</strong> can be implemented in the response when a communication relies on a <em>CDN</em> or a <em>reverse proxy server</em>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Header</th>
+          <th>Definition</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>CF-Cache-Status</td>
+          <td>used by CloudFlare CDN in order to provide user the web page caching-state</td>
+      </tr>
+      <tr>
+          <td>X-Drupal-Cache</td>
+          <td>used by Drupal CMS in order to provide user the web page caching-state</td>
+      </tr>
+      <tr>
+          <td>X-Cache-Status</td>
+          <td>used by NGINX reverse proxy in order to provide user the web page caching-state</td>
+      </tr>
+      <tr>
+          <td>X-Proxy-Cache</td>
+          <td>enables the web-page caching in NGINX reverse proxy</td>
+      </tr>
+      <tr>
+          <td>X-Cache</td>
+          <td>general custom header used by CDNs in order to provide user the web page caching-state</td>
+      </tr>
+      <tr>
+          <td>X-Served-By  X-Cache-Hits</td>
+          <td>“X-Served-By” header lists nodes which provide a web page cache copy  (i.e. “node1-cacheserver,  node2-cacheserver, external-node-cacheserver”);  “X-Cache-Hits” specifies which of the listed hosts provides the actual cache  copy (i.e. in case of “node2-cacheserver”,  the header would be “0, 1, 0”)</td>
+      </tr>
+      <tr>
+          <td>X-Cacheable</td>
+          <td>general custom caching header</td>
+      </tr>
+      <tr>
+          <td>X-Cache-Enabled</td>
+          <td>general custom status caching header</td>
+      </tr>
+  </tbody>
+</table>
+<p>These headers play an important role in the web cache exploitability context, since they can be used by a malicious user in order to obtain additional information related to the aimed cache/web server and framework in use.</p>
+<h3 id="a-suitable-webserver-configuration">A Suitable WebServer Configuration</h3>
+<p>As described in the <em>RFC7234</em> section 2 and section 3, within a web server configuration, the <strong>logical control</strong> of the web page “<em>changed-state</em>” is assigned to specific headers inside the request. These headers are also known as “<em><strong>cache keys</strong></em>”.</p>
+<p>For instance, a “<em>Nginx</em>” web server configured as “Content Caching” uses by default the following cache keys:</p>
+<ul>
+<li><strong>- headers</strong> (i.e. <em>Accept-Language, Host, User-Agent, Accept-Encoding</em>);</li>
+<li><strong>- cookies</strong>;</li>
+<li><strong>- resources path</strong>;</li>
+<li><strong>- URL query</strong>.</li>
+</ul>
+<p>Once the cache server finds a different <em>cache key</em> value <em>within the header</em>, it will process it as a brand new web page, until its expiration.</p>
+<p>Beyond <em>cache keys</em>, the basis of a web cache configuration is a suitable <strong>web server</strong> setup which provides the following <strong>basic rules</strong> in order to avoid to cache <strong>custom responses with sensitive information</strong> or <em>dynamic documents</em>:</p>
+<table>
+  <thead>
+      <tr>
+          <th># If you are using the HTTP 1.0 protocol (you are a bad person in this case, you should   # disable it since it has been deprecated!) the following instruction enables the   # “Expires: 0” header limits the detention of the cache response to 0 seconds:      httpResponse.setDateHeader(&ldquo;Expires&rdquo;, 0);      # If you are using the HTTP 1.0 protocol, the following instruction disables the web   # response caching:      httpResponse.setHeader(&ldquo;Pragma&rdquo;, &ldquo;no-cache&rdquo;);      # For further HTTP protocols (v1.1, v1.2 and v1.3), please refer to the following rule  # in order to disable the web resource caching:      httpResponse.setHeader(&ldquo;Cache-Control&rdquo;, &ldquo;no-cache,must-revalidate&rdquo;);      # For further HTTP protocols (v1.1, v1.2 and v1.3), if you are using a proxy or a   # reverse-proxy, do not cache the required resource within but relies exclusively on the   # web server version:      httpResponse.addHeader(&ldquo;Cache-Control&rdquo;, &ldquo;proxy-revalidate&rdquo;);</th>
+      </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<p>In order to provide a fine-tuned configuration, for a more in-depth analysis as regards the custom caching headers, you can refer to the following official providers guides:</p>
+<ul>
+<li>- NGINX Caching guide;</li>
+<li>- Apache Caching Guide;</li>
+<li>- Akamai Caching Guide: Part 1, Part 2, Part 3;</li>
+<li>- Cloudflare Caching Guide;</li>
+<li>- Fastly Caching Guide.</li>
+</ul>
+<h3 id="web-cache-exploitability">Web Cache Exploitability</h3>
+<p>The web-cache headers might sometimes be part of the problem related to web cache security <em>issues</em>.<br>
+For example, an attacker might abuse a requested path to create a <strong>type confusion flaw</strong> within a misconfigured server-side web cache storage leading, for instance, to <strong>user data exfiltration</strong> and that might happen even if the response headers related to the cache are properly configured.</p>
+<p>As shown in the following table, there can be multiple gateways layers composing a web infrastructure. Each of these layers handles the web cache server according to its own rules.</p>
+<p>These usually are: </p>
+<table>
+  <thead>
+      <tr>
+          <th>TOP   Architecture Gateways                     LOW   Architecture Gateways</th>
+          <th>DNS</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Load Balancer (AWS)   CDN (Cloudflare, Akamai, Amazon CloudFront)   Reverse Proxy (Haproxy, AWS, Caddy) </td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>CMS (OPENCMS, AEM, DRUPAL)</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>Application Server (JBOSS, JETTY)</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>Web Server (NGINX, TOMCAT, APACHE)</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<p> <br>
+When different gateways enable <strong>conflicting caching rules</strong>, the web cache server may prioritize one of the gateways for certain cases. Specifically, this happens when the same web page would be cached by one gateway but not by another one.<br>
+In these cases, <strong>a secure configuration of the gateways that are not prioritized is completely useless for the purpose of preventing web caching attacks</strong>.</p>
+<p>To prevent them, it is necessary to ensure that all the active caching mechanisms are properly configured, considering also edge cases in which different mechanisms result in conflicts about what to cache.</p>
+<p>For instance, while performing a security assessment for one of our clients, we faced a web infrastructure in which the <em>Content Management System (CMS)</em> and the web cache server itself had different rules for detecting and caching static files.<br>
+The <em>CMS</em> identified static files based on the URL only, thus it could be fooled to treat an API response as an image.<br>
+The <em>web cache</em> server did not identify that kind of response as images and so it returned the correct caching headers, aiming not to cache them.</p>
+<p>In summary, the flaw was generated by the <em>CMS</em> rules with a higher priority than the web cache server’s ones, leading to a <strong>Web Cache Deception Vulnerability</strong> (deeply described following).</p>
+<p>The previous scenario is called <strong><em>path confusing web cache</em></strong>, in that case, it should be paid attention to the “<strong><em>vertical order</em></strong>” of the components and layers involved in the communication between the two endpoints.</p>
+<p>The purpose and the behaviour of the different cache copies related to the components mentioned in the table, as discussed in the beginning of this article, are mostly the same. Differences lie in the <strong>physical and logical position</strong> of these copies within the space and the architecture of the internet communication itself. Moreover, in the <strong>internal configuration</strong> related to each component.</p>
+<h3 id="web-cache-attacks">Web Cache Attacks</h3>
+<p>Beyond the issue of different overlapped web cache configurations, the main impact of a web cache attack is to <em>store a web page with unexpected content</em>. In other words, caching ordinary web pages containing <strong>malicious content</strong> or <strong>users’ sensitive information</strong>.<br>
+In summary, an insecure cache management could allow the following attacks:</p>
+<ul>
+<li><strong>- Web Cache Deception</strong>, where the attacker forces the victim to cache their sensitive data;</li>
+<li><strong>- Web Cache Poisoning</strong>, where the attacker poisons a web page and induces the victim to visit it.</li>
+</ul>
+<p>Overall, these attacks might result in the possibility of exploiting the following scenarios:</p>
+<ul>
+<li><strong><em>- Phishing</em></strong></li>
+<li><strong><em>- HTML Injection</em></strong></li>
+<li><strong><em>- Cross-Site Scripting</em></strong></li>
+<li><strong><em>- Open Redirect</em></strong></li>
+<li><strong><em>- Secrets Disclosure</em></strong></li>
+</ul>
+<h3 id="web-cache-deception-attack">Web Cache Deception Attack</h3>
+<p>So far so good, but how to perform a “<strong>Web Cache Deception Attack</strong>“ (<em>WCD</em>) in order to verify if your web application is vulnerable?</p>
+<p>A WCD attack consists in forcing the web server to store victim’s data in a <strong>public cache</strong> and then access it. The fun part is that this is one of those rare cases in which it is easier done than said.<br>
+This attack was firstly documented by Omer Gil in 2017 and presented at Black Hat in the same year.</p>
+<p>Let’s consider a web application that provides an API to retrieve the user personal data at the endpoint ‘<em>/my-account/getData.json</em>’.<br>
+In a standard configuration, the server would cache web pages based on the response headers. Instead, the application implements a CMS, whose configuration caches web pages based on file extension, disregarding the headers. For this reason, since the response of this API call is JSON data, it does not get cached.</p>
+<p>What if the user calls ‘<em>/my-account/getData.json/<strong>test.css</strong></em>’? The application processes the request to ‘/getData.json’ and then the CMS caches the response, since it detected a static file extension.</p>
+<p>Request:</p>
+<table>
+  <thead>
+      <tr>
+          <th>GET /my-account/getData.json/test.css HTTP/1.1  Host: <a href="https://www.vulndomain.com">www.vulndomain.com</a></th>
+      </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<p> Response: </p>
+<table>
+  <thead>
+      <tr>
+          <th>HTTP/1.1 200 OK  Cache-Control: max-age=0, no-cache, no-store      {&ldquo;companyName&rdquo;:&ldquo;Acme Corp.&rdquo;,&ldquo;userName&rdquo;:&ldquo;admin&rdquo;,&ldquo;firstName&rdquo;:&ldquo;Mario&rdquo;,  &ldquo;lastName&rdquo;:&ldquo;Rossi&rdquo;,&ldquo;email&rdquo;:&ldquo;<a href="mailto:mario@acme.com">mario@acme.com</a>&rdquo;,&ldquo;telephone&rdquo;:&quot;+39 3333333333&quot;}</th>
+      </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<p>    It can be noted that the “Cache-Control” header in the response should prevent the server from caching the page, but it still gets stored in a public cache. This is due to the CMS treating the response as a public static file.<br>
+Thus, anyone who has access to the same web cache of that user, will be able to access the same content by requesting ‘<em>/my-account/.getData.json/test.css</em>’.<br>
+That happens because the subsequent request does not reach the central server (that processes API calls), but stops at a closer edge server, which returns the cached response.</p>
+<p>In other words, to exploit this vulnerability an attacker sends the victim a custom URL which forces the CMS to publicly cache sensitive data once the victim user visits the malicious URL. The malicious user then, accessing the URL he knows, will receive within the response body the victim user’s sensitive information wrongly stored due to the cache flaw.</p>
+<p>Therefore, if the web server is configured to not cache any requests under the directory &ldquo;<em>/getData.json</em>&rdquo; and in a second place an admin adds a rule within the reverse-proxy in order to cache JPEG files, an attacker could exploit a <strong><em>Web Cache Deception</em></strong> attack by confusing the required path (i.e. requiring the resource &ldquo;<em>/getData.json/..;/a.jpg</em>&rdquo;).</p>
+<p>You should also verify the following payloads (which may fool one of the caching components of your infrastructure) to ensure that your endpoints are properly secured against Web Cache Deception Attacks:</p>
+<table>
+  <thead>
+      <tr>
+          <th># Encoded Newline (n)  example.com/account.php%0Anonexistent.css  # Encoded Semicolon (;)  example.com/account.php%3Bnonexistent.css      # Encoded Pound (#)  example.com/account.php%23nonexistent.css      # Encoded Question Mark (?)  example.com/account.php%3Fname=valnonexistent.css</th>
+      </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<p> Reference: “Cached and Confused: Web Cache Deception in the Wild”.</p>
+<h3 id="web-cache-poisoning-attack">Web Cache Poisoning Attack</h3>
+<p>On the other side, the “<strong>Web Cache Poisoning Attack</strong>” objective is to <strong>add malicious code</strong> inside a vulnerable web page and <strong>aim the attack</strong> at a specific victim since the attacker would know the exact cache keys used to <strong>store</strong> the malicious web page.</p>
+<p>This attack was firstly documented by James Kettle in 2018 and presented at Black Hat in the same year.</p>
+<p>Within this scenario, the targeted web page is identified with a specific “<em>cache key</em>” which could be, for instance, a <strong>nonexistent URL parameter value</strong> on a specific path. Indeed, the attacker-controlled web page will be cached on this specific nonexistent parameter value.<br>
+Moreover, while in the “<em>Web Cache Deception</em>” scenario it is necessary to detect a vulnerable file extension, this attack also requires the interaction of the web page with a header parameter that is not used as key by the caching server.</p>
+<p>For instance, suppose that a malicious user discovers through the BurpSuite extension “Param Miner” the hidden “<strong>X-Origin-URL</strong>” header which is <strong>reflected</strong> in the response web page and it is <strong>not used as cache-key</strong>. This header represents an entry point able to exploit a <strong>Cross-Site Scripting</strong> vulnerability, as shown in the following request.</p>
+<p>Request:</p>
+<table>
+  <thead>
+      <tr>
+          <th>GET /home/private/projections?insurance=not_existing HTTP/1.1  Host: vulnerable-host.com  User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:81.0) Gecko/20100101 Firefox/81.0  Accept-Language: it-IT,it;q=0.8,en-US;q=0.5,en;q=0.3  Accept-Encoding: gzip, deflate  X-Origin-URL: “&gt;<!-- raw HTML omitted -->&lt;!&ndash;</th>
+      </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<p> Response:   </p>
+<table>
+  <thead>
+      <tr>
+          <th>HTTP/1.1 200 OK  Content-Type: text/html  Connection: close  X-Cache: MISS  Content-Length: 3114      [ . . . ]  <!-- raw HTML omitted --><!-- raw HTML omitted -->&lt;!&ndash;/img/bank_logo.png”&gt;<!-- raw HTML omitted -->  [ . . . ]</th>
+      </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<p>Once the victim user visits the resource with the arbitrary URL parameter value controlled by the malicious user:  </p>
+<ul>
+<li><em>“vulnerable-host.com/home/private/projections?insurance=not_existing”</em></li>
+</ul>
+<p>The <strong>cached response</strong> with the <strong>XSS payload</strong> is returned to the victim user, exploiting successfully the Cache Poisoning attack.</p>
+<p>Request: </p>
+<table>
+  <thead>
+      <tr>
+          <th>GET /home/private/projections?insurance=not_existing HTTP/1.1  Host: vulnerable-host.com  User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:81.0) Gecko/20100101 Firefox/81.0  Accept-Language: it-IT,it;q=0.8,en-US;q=0.5,en;q=0.3  Accept-Encoding: gzip, deflate</th>
+      </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<p> <br>
+Response: </p>
+<table>
+  <thead>
+      <tr>
+          <th>HTTP/1.1 200 OK  Content-Type: text/html  Connection: close  X-Cache: HIT  Content-Length: 3114      [ . . . ]  <!-- raw HTML omitted --><!-- raw HTML omitted -->&lt;!&ndash;/img/bank_logo.png”&gt;<!-- raw HTML omitted -->  [ . . . ]</th>
+      </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<p>A different scenario regards the “<strong><em>Edge Side Includes</em></strong>” (<em>ESI</em>) <em><strong>tag injection attack</strong></em> when reverse proxies, load balancers, caching servers or proxy servers (for instance, <em>“Squid Proxy”, “Varnish”, “Oracle WebLogic”, “F5” and “Fastly”</em>) are involved in a communication.</p>
+<p>This attack, combined with the cache poisoning one, could lead to potential <strong>stored SSRF</strong> and <strong>XSS attacks</strong>. Since the ESI parser is not able to distinguish between legitimate ESI tags provided by the upstream server and malicious ones injected in the HTTP response, an attacker could abuse a Cache Poisoning flaw in order to <strong>store a malicious <!-- raw HTML omitted --></strong> <strong>tag inside</strong> a dynamic-generated response page.</p>
+<p>Let’s consider, for instance, the <em>SSRF</em> scenario:<br>
+The following request injects an <em><!-- raw HTML omitted --></em>  tag inside the response through a URL parameter usafely reflected in the response page and the “client_id” header used as cache-key. </p>
+<p>Request: </p>
+<table>
+  <thead>
+      <tr>
+          <th>GET /home/contact?client_id=143&amp;country_id=<a href="esi:include%20src=%22http://10.0.0.7/transfer?recipient=12345&amp;amount=54321%22/">esi:include%20src=&quot;http://10.0.0.7/transfer?recipient=12345&amp;amount=54321&quot;/</a> HTTP/1.1  Host: vulnerable-host.com  User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:81.0) Gecko/20100101 Firefox/81.0  Accept-Language: it-IT,it;q=0.8,en-US;q=0.5,en;q=0.3  Accept-Encoding: gzip, deflate</th>
+      </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<p>Response: </p>
+<table>
+  <thead>
+      <tr>
+          <th>HTTP/1.1 200 OK  Content-Type: text/html  Connection: close  X-Cache: MISS  Content-Length: 3114      [ . . . ]  &lt;esi:include src=&ldquo;http://10.0.0.7/transfer?recipient=12345&amp;amount=54321&rdquo;/&gt;  [ . . . ]</th>
+      </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<p>If a malicious user tricks a victim user to visit the URL with the attacker’s cache-key:</p>
+<ul>
+<li><em>“vulnerable-host.com/home/contact?client_id=143”</em></li>
+</ul>
+<p>the application sends the cached response page with the injected <em><!-- raw HTML omitted --></em> tag to the surrogate. It detects the tag and the “<em>Stored Server-Side Request Forgery</em>” attack is successfully exploited!<br>
+The diagram below shows how the parts interact each other:</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgKq_4iN5O_TZW0DeVTjbm7RSATWqxyswNBjiXHFu2jVZdKeVk9u0CKbaSVWBdtsQB6dgFPsa8h_z_98itLZZ20vfmCStKCHq-vaRYoA9i8JqXya2fQDJH20KkJOfIpE9yTvkxQwEuhyphenhyphenpU/w640-h384/ssrf_blog.jpg" alt="" />
+</figure>
+
+
+</p>
+<h3 id="conclusions">Conclusions</h3>
+<p>It is recommended to pay close attention when <strong>new caching rules</strong> are added, since extending pre-existing configurations is a typical <strong>main source</strong> for cache flaws.</p>
+<p>For this reason, it is strongly discouraged the use of <em>pre-made</em> <em>scripts</em> for an homogeneous and immediate cache-control setting over all endpoints.</p>
+<p>Regarding <strong>Web Cache Deception</strong> mitigation, all the gateway layers should have a consistent configuration in order to prevent a misconfiguration among them and should cache web pages based on their content type.</p>
+<p>On the other hand, in order to decrease the possibility of being vulnerable against <em>Web Cache Poisoning</em> attacks, it is recommended to <strong>validate</strong> and <strong>escape</strong> all the users-controlled inputs, including the request headers.</p>
+<p>In particular, it is important to check all the inputs which are <strong>reflected</strong> in cacheable responses. Indeed, it is strongly recommended to <strong>avoid caching web responses</strong> which include user-provided inputs.</p>
+<p>Last but not least, as a best-practice, it is important to <strong>stay up to date</strong> with the last <strong>security bulletin</strong> related to your own <em>web components</em> in-use. In order to become aware of new <strong>security patches</strong> or guides for a correct and secure infrastructure configuration!</p>
+<h2 id="references">References</h2>
+<ul>
+<li>- Cloudflare CDN cache behaviour: https://support.cloudflare.com/hc/en-us/articles/200172516</li>
+<li>- Reverse proxies related attacks: https://www.acunetix.com/blog/articles/a-fresh-look-on-reverse-proxy-related-attacks/</li>
+<li>- Paper “Cached And Confused”: https://arxiv.org/pdf/1912.10190.pdf </li>
+<li>- CloudFlare - How to avoid cache poisoning: https://support.cloudflare.com/hc/en-us/articles/360014881471-Avoiding-Web-Cache-Poisoning-Attacks</li>
+<li>- Header Caching by Amazon:<br>
+<a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/header-caching.html">https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/header-caching.html</a></li>
+<li>- Cache Poisoning Attack:<br>
+<a href="https://samcurry.net/abusing-http-path-normalization-and-cache-poisoning-to-steal-rocket-league-accounts/">https://samcurry.net/abusing-http-path-normalization-and-cache-poisoning-to-steal-rocket-league-accounts/</a></li>
+<li>- General HTTP header list: https://hackertarget.com/http-header-check/</li>
+<li>- Introduction to cache: http://home.eng.iastate.edu/~zzhang/courses/cpre581-f05/reading/smith-csur82-cache.pdf<br>
+<a href="https://appcheck-ng.com/web-cache-poisoning-explained/">https://appcheck-ng.com/web-cache-poisoning-explained/</a></li>
+<li>- Using cache memory to reduce processor-memory traffic: https://dl.acm.org/doi/abs/10.1145/800046.801647</li>
+<li>- Beyond XSS: Edge Side Include Injection:<br>
+<a href="https://www.gosecure.net/blog/2018/04/03/beyond-xss-edge-side-include-injection/">https://www.gosecure.net/blog/2018/04/03/beyond-xss-edge-side-include-injection/</a></li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

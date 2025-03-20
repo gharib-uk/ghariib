@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Observability throughout the software development lifecycle increases delivery performance</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Observability throughout the software development lifecycle increases delivery performance</h1>
+			<b><time>07.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/dynatrace">dynatrace</a>
+        	       
+		           <a href="/tags/observability">observability</a>
+        	       
+		           <a href="/tags/software-delivery">software-delivery</a>
+        	       
+		           <a href="/tags/software-development-lifecycle">software-development-lifecycle</a>
+        	       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://dt-cdn.net/wp-content/uploads/2024/10/Blog_-OTP-0207_-high-res-version-300x169.png" alt="" />
+</figure>
+
+
+</p>
+<p>Today, development teams suffer from a lack of automation for time-consuming tasks, the absence of standardization due to an overabundance of tool options, and insufficiently mature DevSecOps processes. This leads to frustrating bottlenecks for developers attempting to build and deliver software. For multinational enterprises, the cost of all that toil, complexity, and frustration multiplies exponentially due to the size of those organizations. In such contexts, platform engineering offers a compelling solution to enable business competitiveness in a manner that significantly enhances the developer experience. A central element of platform engineering teams is a robust Internal Developer Platform (IDP), which encompasses a set of tools, services, and infrastructure that enables developers to build, test, and deploy software applications.</p>
+<p>Treating an Internal Developer Platform (IDP) as a product is an emerging paradigm within platform engineering communities. Similar to the observability desired for a request being processed by your digital services, it’s necessary to comprehend the metrics, traces, logs, and events associated with a code change from development through to production. The end-to-end observability of the engineering process becomes essential when building software under product safety legislation, such as medical devices. It’s nearly as crucial as the final product itself when high-frequency releases are critical to the business.</p>
+<p>This blog post focuses on pipeline observability as a method for monitoring the software delivery capabilities of an organization’s IDP. This process begins when the developer merges a code change and ends when it is running in a production environment. In other words, pipeline observability encompasses Continuous Integration (CI) and includes Continuous Delivery (CD), as depicted in the following image.</p>
+<p>
+<figure>
+  <img src="https://dt-cdn.net/wp-content/uploads/2024/10/pipeline_observability.png" alt="Pipelines observability in DevSecOps circle" />
+</figure>
+
+
+</p>
+<h2 id="unlocked-use-cases">Unlocked use cases</h2>
+<p>Gaining insights into your pipelines and applying the power of Dynatrace analytics and automation unlocks numerous use cases:</p>
+<ul>
+<li><strong>Make data-driven improvements:</strong> Invest in those software delivery capabilities that provide the most significant payoff. To make the right decision, pipeline KPIs can reveal areas for improvement, protect your long-term investment in development, and present stakeholders with the benefits of sustained funding.</li>
+<li><strong>Automate delivery processes:</strong> Ideally, an improvement entails introducing automation to eliminate manual tasks, foster collaboration, or speed up processes.</li>
+<li><strong>Ensure pipeline compliance/governance:</strong> By obtaining an end-to-end view of the pipeline activities that a code change progresses through, you can identify blind spots that require monitoring and ensure compliance across the entire organization.</li>
+</ul>
+<h2 id="software-development-lifecycle-sdlc-events">Software Development Lifecycle (SDLC) events</h2>
+<p>The Software Development Lifecycle (SDLC) is similar to the DevSecOps loop as it outlines the various phases a product idea undergoes before it is released into production. These phases must be aligned with security best practices, as discussed in A Beginner`s Guide to DevOps. While the lifecycle starts with a ticket specifying a new product idea, an actual code change often triggers various automated tasks kicking off the next phase. These automation tasks process the code change to build a deployable and create new artifacts accompanying the change throughout the delivery process.</p>
+<p>In Dynatrace, examples of such tasks and resulting artifacts include the following, visualized in the below diagram:</p>
+<ul>
+<li><strong>Plan</strong>: A ticket for enhancing a platform service is created in Jira.</li>
+<li><strong>Code</strong>: The branch for the new feature in a GitHub repository is merged into the main branch.</li>
+<li><strong>Build</strong>: GitHub builds the code changes and creates a deployable image.</li>
+<li><strong>Test</strong>: Playwright executes end-to-end tests.</li>
+<li><strong>Release</strong>:
+<ul>
+<li>The image is published on Harbor, and the Helm Chart is updated.</li>
+<li>BlackDuck performs a security and vulnerability check, returning a scan result.</li>
+</ul>
+</li>
+<li><strong>Deploy</strong>:
+<ul>
+<li>ArgoCD deploys the Helm Chart in a development environment.</li>
+<li>Synthetic HTTP monitors are executed in the hardening stage.</li>
+<li>An automation updates a GitOps repository to roll out the artifact to production</li>
+</ul>
+</li>
+<li><strong>Operate</strong>: FlagD switches a feature flag from OFF to ON.</li>
+</ul>
+<p>
+<figure>
+  <img src="https://dt-cdn.net/wp-content/uploads/2024/10/pipeline_observability_and_events.png" alt="Events in DevSecOps and pipeline observability" />
+</figure>
+
+
+</p>
+<p>Given these examples, which are a subset of many others, crucial information about a software change and the related component is generated before monitoring begins. Consequently, Dynatrace defines the semantics of essential data points and stores them in a normalized manner. For instance, the Git commit, ticket ID, artifact version, release version, deployment stage, etc., are data points that require special attention. When the semantics of this metadata are well-defined, you can build insightful analytics and robust automation.</p>
+<p>The specification defines the new event type <strong>SDLC_EVENT</strong>, which covers the event category for pipeline and task events. A pipeline can be the parent of multiple tasks to group the resulting events logically. A task event, however, represents the state of a single lifecycle activity like a build, test, deployment, scan, etc. Dynatrace Documentation maintains a list of events, which will grow as we unlock new use cases.</p>
+<p>Defining an event standard succeeds through adoption within the ecosystem. This is why we’re aligned with open source initiatives and compatible with the CI/CD specification in OpenTelemetry driven by the CD Foundation. Consequently, your efforts into OpenTelemetry for pipeline observability will be natively supported by Dynatrace.</p>
+<h2 id="generic-sdlc-event-ingest-endpoint">Generic SDLC event ingest endpoint</h2>
+<p>Dynatrace introduced a generic SDLC event ingest endpoint that enables data ingestion directly from any third-party CI/CD tool. While this endpoint accepts any JSON payload and adds default properties of the SDLC specification,  OpenPipeline™ is leveraged to process vendor-specific data and extract those properties defined by the specification. GitHub and ArgoCD are the first two tools to receive an OpenPipeline configuration.</p>
+<p>The endpoint, together with OpenPipeline, opens a range of use cases, such as:</p>
+<ul>
+<li>Pipeline anomaly visualization on custom dashboards tailored within Dynatrace.</li>
+<li>In-depth analysis of delivery tasks using tools like Notebooks.</li>
+<li>Automated release validation using Dynatrace Site Reliability Guardian.</li>
+<li>Contextualization of third-party CI/CD activities with Dynatrace monitored entities.</li>
+</ul>
+<h2 id="stay-tuned">Stay tuned</h2>
+<p>Currently, the API allows for the configuration of an event processing pipeline. Support for managing configuration in the OpenPipline app is a high priority. This will be accompanied by the above-mentioned GitHub and ArgoCD configurations and others to follow.</p>
+<p>In some cases, a CI/CD tool’s log line contains important data points that, on their own, eliminate the need to additionally send an event to Dynatrace. Therefore, we’re working on a log processor to automatically extract relevant metadata and generate SDLC events from log lines.</p>
+<p>Lastly, we’re working on a ready-made dashboard for the DORA metrics based on GitHub and ArgoCD metadata.</p>
+<h2 id="whats-next">What’s next</h2>
+<ul>
+<li><strong>Explore:</strong> See the analytics sample in our documentation, which is executable in the playground environment.</li>
+<li><strong>Adopt:</strong> Identify your most critical pipelines and make them visible. In other words, leverage the available event ingest endpoint and send pipeline activities to Dynatrace. In many cases, this is possible by leveraging webhook capabilities.</li>
+<li><strong>Fine-tune:</strong> Perform data normalization by creating an OpenPipeline configuration that extracts properties according to the SDLC specification.</li>
+</ul>
+<p>The post Observability throughout the software development lifecycle increases delivery performance appeared first on Dynatrace news.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

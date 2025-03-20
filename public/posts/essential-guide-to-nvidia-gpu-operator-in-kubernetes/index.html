@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Essential Guide to NVIDIA GPU Operator in Kubernetes&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Essential Guide to NVIDIA GPU Operator in Kubernetes&lt;/div&gt;</h1>
+			<b><time>03.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>As artificial intelligence (AI) and machine learning (ML) workloads continue to grow in complexity and scale, the need for powerful and efficient computational resources becomes more critical. Running workloads on Kubernetes allows you to leverage the scalability and self-healing capabilities, however, there are challenges when it comes to managing and optimizing GPU resources. This is where the GPU Operators and plugins step in. They provide a solution to deploy and manage GPUs in Kubernetes.</p>
+<p>There are a few GPU operators like Intel Device Plugin Operator, AMD GPU operator and NVIDIA GPU Operator. However,the NVIDIA GPU Operator is one of the most popular ones. It provides a comprehensive solution to streamline the deployment, management, and optimization of GPUs in Kubernetes environments.</p>
+<p>In this post, we’ll dive into the NVIDIA GPU Operator, its features and understand some basic constructs that enable you to use those features. Let’s begin!</p>
+<h2 id="what-is-the-nvidia-gpu-operator">What is the NVIDIA GPU Operator?</h2>
+<p>Managing GPUs in Kubernetes clusters can be a daunting task. Traditional methods often require manual installation and configuration of GPU drivers, which can be time-consuming and error-prone. Additionally, leveraging advanced GPU features and ensuring efficient data transfer between GPUs and other system components requires specialized knowledge and tools. Without a streamlined approach, these challenges can hinder the performance and scalability of AI/ML workloads.</p>
+<p>The NVIDIA GPU Operator offers multiple features. It makes setting up GPU drivers and their configuration on Kubernetes effortless. The ability to use advanced features like vGPU, Multi-Instance GPU (MIG), and GPU Time-Slicing is crucial when it comes to running multiple AI workloads on given nodes. Also, GPUs need fast communication abilities with other applications/GPUs as well as with the storage setup. GPUDirect RDMA, GPU Direct storage and GDR Copy play an important role in enabling the same. GPU Operator helps easily bring all of these features and more to your Kubernetes cluster.</p>
+<p>
+<figure>
+  <img src="https://www.infracloud.io/assets/img/Blog/nvidia-gpu-operator/nvidia-gpu-operator.webp" alt="NVIDIA GPU Operator" />
+</figure>
+
+
+</p>
+<p>(NVIDIA GPU Operator)</p>
+<h3 id="key-features-of-nvidia-gpu-operator">Key Features of NVIDIA GPU Operator</h3>
+<ol>
+<li>
+<p><strong>Automated installation and maintenance of GPU drivers</strong>: The NVIDIA GPU Operator automates the installation and upkeep of GPU drivers, eliminating the need for manual intervention. This automation ensures that the drivers are always up-to-date and correctly configured, allowing AI/ML workloads to run smoothly and efficiently.</p>
+</li>
+<li>
+<p><strong>Configuration of advanced GPU features</strong>:</p>
+<ul>
+<li><strong>vGPU (Virtual GPU)</strong>: Enables the sharing of a single GPU among multiple virtual machines, maximizing resource utilization and flexibility.</li>
+<li><strong>MIG (Multi-instance GPU)</strong>: Allows a single GPU to be partitioned into multiple independent instances, each with its own dedicated resources, improving workload isolation and efficiency.</li>
+<li><strong>GPU Time-Slicing</strong>: Slices GPU time among multiple tasks, ensuring fair and efficient distribution of GPU resources across different workloads.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configuring GPUDirect RDMA and GPUDirect Storage</strong>:</p>
+<ul>
+<li><strong>GPUDirect RDMA (Remote Direct Memory Access)</strong>: Facilitates direct communication between GPUs across different nodes, bypassing the CPU and reducing latency, which is crucial for high-performance computing applications.</li>
+<li><strong>GPUDirect Storage</strong>: Enables direct data transfer between GPUs and storage devices, significantly speeding up data access and processing for data-intensive applications.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configuring GDR Copy</strong>: GPUDirect RDMA (GDR) Copy is a low-latency GPU memory copy library based on GPUDirect RDMA technology that allows the CPU to directly map and access GPU memory. It enhances the efficiency of memory copy operations, reducing overhead and improving overall performance.</p>
+</li>
+<li>
+<p><strong>Sandboxed Workloads</strong>: Enables applications to run in an isolated environment leveraging virtual machines (VMs) or containers with security restrictions. This helps with enhanced security, better resource management and reproducibility of the models.</p>
+</li>
+</ol>
+<h2 id="installation-of-nvidia-gpu-operator">Installation of NVIDIA GPU Operator</h2>
+<p>To leverage the power of the NVIDIA GPU Operator for managing GPU resources in your Kubernetes clusters, you need to follow a structured installation process and meet certain prerequisites.</p>
+<h3 id="prerequisites">Prerequisites</h3>
+<p>Before installing the NVIDIA GPU Operator, ensure that the following prerequisites are met:</p>
+<ol>
+<li>
+<p>Kubernetes Cluster v1.18 or later</p>
+</li>
+<li>
+<p>Node Requirements:</p>
+<ul>
+<li>Nodes equipped with NVIDIA GPUs.</li>
+<li>Nodes must have NVIDIA drivers installed (though the GPU Operator can automate this).</li>
+</ul>
+</li>
+<li>
+<p>Helm v3</p>
+</li>
+</ol>
+<h3 id="installation-steps">Installation steps</h3>
+<p>Follow these steps to install the NVIDIA GPU Operator on your Kubernetes cluster.</p>
+<ol>
+<li>
+<p>Set up Helm Repository. Add the NVIDIA Helm repository to your Helm configuration.</p>
+<pre tabindex="0"><code>helm repo add nvidia https://nvidia.github.io/gpu-operator
+helm repo update
+</code></pre></li>
+<li>
+<p>Create a dedicated namespace for the GPU Operator:</p>
+<pre tabindex="0"><code>kubectl create namespace gpu-operator
+</code></pre></li>
+<li>
+<p>Use Helm to install the GPU Operator in the created namespace:</p>
+<pre tabindex="0"><code>helm install --namespace gpu-operator gpu-operator nvidia/gpu-operator
+</code></pre></li>
+<li>
+<p>Verify installation. Check the status of the deployed resources to ensure the GPU Operator is running correctly:</p>
+<pre tabindex="0"><code>kubectl get pods -n gpu-operator
+</code></pre><p>You should see the GPU Operator and its components running in the gpu-operator namespace.</p>
+</li>
+<li>
+<p>Check Node Configuration: Verify that the GPU Operator has configured the nodes correctly by checking for NVIDIA drivers and other necessary components.</p>
+<pre tabindex="0"><code>$ kubectl describe nodes
+</code></pre><pre tabindex="0"><code>Name:               infracloud01
+Roles:              control-plane
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/os=linux
+...
+                    nvidia.com/gpu.deploy.container-toolkit=true
+                    nvidia.com/gpu.deploy.dcgm=true
+                    nvidia.com/gpu.deploy.dcgm-exporter=true
+                    nvidia.com/gpu.deploy.device-plugin=true
+                    nvidia.com/gpu.deploy.driver=true
+                    nvidia.com/gpu.deploy.gpu-feature-discovery=true
+                    nvidia.com/gpu.deploy.node-status-exporter=true
+                    nvidia.com/gpu.deploy.operator-validator=true
+                    nvidia.com/gpu.present=true
+Annotations:        node.alpha.kubernetes.io/ttl: 0
+                    nvidia.com/gpu-driver-upgrade-enabled: true
+                    projectcalico.org/IPv4Address: 192.168.0.52/24
+...
+Capacity:
+  cpu:                32
+  ephemeral-storage:  982345180Ki
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             131600376Ki
+  pods:               110
+Allocatable:
+  cpu:                32
+  ephemeral-storage:  905329316390
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             131497976Ki
+  pods:               110
+...
+</code></pre><p>Look for annotations and labels indicating that the nodes are GPU-enabled and configured.</p>
+</li>
+</ol>
+<h3 id="running-a-sample-gpu-application">Running a sample GPU application</h3>
+<p>You can now test your setup by deploying a sample CUDA VectorAdd application in your cluster. The sample application adds two vectors together and requests 1 gpu resource. The GPU allocation request is handled by the GPU operator.</p>
+<ol>
+<li>
+<p>Run the CUDA VectorAdd application.</p>
+<pre tabindex="0"><code>cat &lt;&lt; EOF | kubectl create -f -
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cuda-vectoradd
+spec:
+restartPolicy: OnFailure
+containers:
+- name: cuda-vectoradd
+  image: &#34;nvidia/samples:vectoradd-cuda11.2.1&#34;
+  resources:
+    limits:
+      nvidia.com/gpu: 1
+EOF
+</code></pre><pre tabindex="0"><code>pod/cuda-vectoradd created
+</code></pre></li>
+<li>
+<p>Check the pod logs.</p>
+<pre tabindex="0"><code>$ kubectl logs cuda-vectoradd
+</code></pre><pre tabindex="0"><code>[Vector addition of 50000 elements]
+Copy input data from the host memory to the CUDA device
+CUDA kernel launch with 196 blocks of 256 threads
+Copy output data from the CUDA device to the host memory
+Test PASSED
+Done
+</code></pre></li>
+</ol>
+<p>Let’s look at some of the key technologies of GPU Operators in detail.</p>
+<h2 id="gpu-concurrency">GPU concurrency</h2>
+<p>GPU concurrency is the ability of a GPU to execute multiple operations simultaneously by utilizing its parallel processing capabilities. This feature is essential for enhancing the performance, efficiency, and scalability of AI/ML workloads. With parallel processing, GPUs can significantly speed up training and inference, manage larger and more complex datasets, and provide real-time responses.</p>
+<p>vGPU (Virtual GPU), Multi-Instance GPU (MIG), and GPU Time-Slicing are key technologies that enable GPU concurrency in various scenarios and through different mechanisms. Here’s a brief overview of each.</p>
+<ul>
+<li><strong>vGPU</strong>: vGPU enables a single physical GPU to be shared among multiple virtual machines (VMs), each with its own dedicated GPU resources.</li>
+<li><strong>MIG</strong>: MIG partitions a single GPU into multiple isolated instances at the hardware level, each with its own dedicated memory and compute resources. This feature is specific to NVIDIA’s A100 and later version GPUs such as H100, H200, B100, B200</li>
+<li><strong>GPU Time-Slicing</strong>: GPU Time-Slicing involves dividing the GPU’s processing time among multiple tasks or users, allowing them to share the GPU in a time-allocated manner, very similar to how CPU concurrency works.</li>
+</ul>
+<p>
+<figure>
+  <img src="https://www.infracloud.io/assets/img/Blog/nvidia-gpu-operator/vgpuvs-migvs-time-slicing.webp" alt="vGPU vs MIG vs Time-Slicing" />
+</figure>
+
+
+</p>
+<p>(vGPU vs MIG vs Time-Slicing)</p>
+<h2 id="gpudirect-rdma-and-gpudirect-storage">GPUDirect RDMA and GPUDirect Storage</h2>
+<p>NVIDIA GPUDirect RDMA (Remote Direct Memory Access) and GPUDirect Storage (GDS) are advanced technologies designed to optimize data transfer for high-performance computing applications. GPUDirect RDMA enables direct communication between GPUs across different nodes, bypassing the CPU and reducing latency. This direct data path is crucial for applications requiring fast, low-latency communication, such as distributed AI training and real-time data processing. By minimizing CPU involvement, GPUDirect RDMA significantly enhances performance and efficiency, enabling faster computations and more scalable AI workloads.</p>
+<p>
+<figure>
+  <img src="https://www.infracloud.io/assets/img/Blog/nvidia-gpu-operator/gpu-direct-rdma.webp" alt="GPUDirect RDMA: directly connecting GPUs over the network" />
+</figure>
+
+
+</p>
+<p>(GPUDirect RDMA: directly connecting GPUs over the network)</p>
+<p>Similarly, GPUDirect Storage facilitates direct data transfer between GPUs and storage devices, bypassing the CPU and system memory. This direct access to storage devices, such as NVMe SSDs, accelerates data throughput and reduces latency, which is essential for data-intensive applications. By streamlining the data flow, GPUDirect Storage ensures that GPUs can quickly access and process large datasets, leading to faster and more efficient computations.</p>
+<p>
+<figure>
+  <img src="https://www.infracloud.io/assets/img/Blog/nvidia-gpu-operator/storage-access-pattern.webp" alt="Storage access pattern with and without GPUDirect Storage" />
+</figure>
+
+
+</p>
+<p>(GStorage access pattern with and without GPUDirect Storage)</p>
+<h2 id="gdr-copy">GDR Copy</h2>
+<p>
+<figure>
+  <img src="https://www.infracloud.io/assets/img/Blog/nvidia-gpu-operator/gpudirect-rdma-copy.webp" alt="GPUDirect RDMA (GDR) Copy" />
+</figure>
+
+
+</p>
+<p>(GPUDirect RDMA (GDR) Copy)</p>
+<p>GDR Copy stands for GPUDirect RDMA Copy, which is a low-latency GPU memory copy library based on GPUDirect RDMA. One of the prominent use-cases for this library is to transfer data between the CPU (host) and GPU when the GPU is waiting to receive data and signal from the host to start the processing operations. GDR Copy uses the GPUDirect RDMA capability of exposing a part of the GPU memory to external devices, such as NICs, CPU, etc. to do CPU driven data copy operations. This enables GDR Copy to execute copy operations between CPU and GPU memory with lower latency and higher throughput, as opposed to GPU driven memory copy operations, such as cudaMemcpy, for small data sizes.</p>
+<p>
+<figure>
+  <img src="https://www.infracloud.io/assets/img/Blog/nvidia-gpu-operator/host-device-memory-copy-operation.webp" alt="Host-Device memory copy operation using cudaMemcpy and GDR Copy" />
+</figure>
+
+
+</p>
+<p>(Host-Device memory copy operation using cudaMemcpy and GDR Copy)</p>
+<p>Figure above shows the difference between host-device memory copy operations using GDR Copy vs cudaMemcpy. cudaMemcpy is GPU driven operation and it uses GPU DMA engine to move data. This involves DMA engine overheads for lower data sizes. GDR Copy allows the CPU to access GPU memory directly via BAR mappings, allowing for low latency data transfers.</p>
+<h2 id="gpu-operator-crds">GPU Operator CRDs</h2>
+<p>The NVIDIA GPU Operator uses several Custom Resource Definitions (CRDs) to manage the lifecycle of GPU drivers and associated components on Kubernetes. Here are some of the main CRDs.</p>
+<h3 id="cluster-policy-crd">Cluster Policy CRD</h3>
+<p>The ClusterPolicy custom resource definition (CRD) is central to the NVIDIA GPU Operator. It serves as a single point of configuration for deploying all necessary NVIDIA software components on a Kubernetes cluster. The ClusterPolicy CRD allows administrators to specify and manage the entire lifecycle of GPU-related components, including drivers, runtime, device plugins, and monitoring tools.</p>
+<p>The custom resource allows managing the configuration of important properties such as:</p>
+<ul>
+<li><strong>driver</strong>: Configuration for the NVIDIA driver, including image, version, and repository settings.</li>
+<li><strong>toolkit</strong>: Settings for the NVIDIA Container Toolkit, which provides utilities to run GPU-accelerated containers.</li>
+<li><strong>devicePlugin</strong>: Configuration for the NVIDIA device plugin, which allows Kubernetes to recognize and schedule GPU resources.</li>
+<li><strong>mig</strong>: Parameters for managing Multi-Instance GPU (MIG) configurations on supported hardware.</li>
+<li><strong>gpuFeatureDiscovery</strong>: Settings for the GPU Feature Discovery tool, which detects and labels nodes with GPU capabilities.</li>
+<li><strong>dcgmExporter</strong>: Configuration for the Data Center GPU Manager (DCGM) Exporter, used for monitoring GPU metrics.</li>
+<li><strong>validator</strong>: Configuration for the GPU Operator Validator, which ensures all components are properly deployed and functioning.</li>
+</ul>
+<h3 id="nvidia-driver-crd">NVIDIA Driver CRD</h3>
+<p>The NvidiaDriver custom resource definition (CRD) specifically manages the deployment and lifecycle of NVIDIA drivers on the Kubernetes nodes. It ensures that the correct version of the driver is installed and running, compatible with the GPU hardware and Kubernetes environment. While the driver configuration can also be controlled by the Cluster Policy CR, the Driver CR allows to specify the driver type and version per node.</p>
+<p>Here are some of the configurations that can be managed with it.</p>
+<ul>
+<li><strong>image</strong>: Specifies the container image for the NVIDIA driver. This includes the repository, image name, and tag.</li>
+<li><strong>repository</strong>: URL or path to the repository containing the driver image.</li>
+<li><strong>version</strong>: The specific version of the NVIDIA driver to be deployed.</li>
+<li><strong>deploy</strong>: Configuration options for how the driver should be deployed, such as using DaemonSets.</li>
+<li><strong>nodeSelector</strong>: Specifies the nodes on which the driver should be installed, usually matching GPU-capable nodes.</li>
+<li><strong>tolerations</strong>: Tolerations for node taints, ensuring the driver can be scheduled on tainted nodes if necessary.</li>
+<li><strong>resources</strong>: Resource requests and limits for the driver installation pods.</li>
+</ul>
+<h2 id="summary">Summary</h2>
+<p>In this post, we saw how the NVIDIA GPU Operator is a crucial tool for optimizing and managing GPU resources in Kubernetes clusters, specifically tailored to meet the demanding needs of AI and ML workloads. It automates the installation and maintenance of GPU drivers, simplifies the configuration of advanced GPU features like Virtual GPU (vGPU), Multi-Instance GPU (MIG), GPU Time Slicing, GPUDirect RDMA, and GPUDirect Storage, and significantly enhances performance and efficiency.</p>
+<p>We also examined the key technologies supported by the GPU Operator, such as GPUDirect RDMA and GPUDirect Storage, which are essential for low-latency, high-speed data transfers. We also discussed GPU sharing technologies like vGPU, MIG, and GPU Time-Slicing and how all three aim to enable shared GPU access, improve efficiency, and reduce costs, but for different use cases and hardware configurations.</p>
+<p>In summary, the NVIDIA GPU Operator is vital for managing GPU resources efficiently in Kubernetes environments, supporting advanced technologies, and simplifying complex configurations, thereby driving superior performance and scalability for AI and ML workloads.</p>
+<p>Now that you have learned about NVIDIA GPU Operator, its features and key concepts, you can bring in AI &amp; GPU Cloud experts to help you build your own AI cloud.</p>
+<p>If you found this post useful and informative, subscribe to our weekly newsletter for more posts like this. We’d love to hear your thoughts on this post, so do start a conversation on LinkedIn with Sameer and Sanket.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

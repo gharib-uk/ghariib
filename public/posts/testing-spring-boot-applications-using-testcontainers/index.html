@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Testing Spring Boot Applications Using Testcontainers</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Testing Spring Boot Applications Using Testcontainers</h1>
+			<b><time>04.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/dev">dev</a>
+        	       
+		           <a href="/tags/developers">developers</a>
+        	       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/jetbrains">jetbrains</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>Testing is a crucial part of software development, verifying that a system functions as intended. Developers create unit tests to validate the behavior of individual components, isolating them from external dependencies such as file systems, databases, message brokers, and third-party APIs. However, since many applications rely on these external components, developers write integration tests to […]</p>
+<p>Testing is a crucial part of software development, verifying that a system functions as intended. Developers create unit tests to validate the behavior of individual components, isolating them from external dependencies such as file systems, databases, message brokers, and third-party APIs. However, since many applications rely on these external components, developers write integration tests to ensure an application interacts correctly with its dependencies in a more complete environment.</p>
+<p>Integration testing can be challenging if developers rely on shared environments, mock systems, or manual configuration of dependencies, all of which can lead to brittle tests and undetected issues in production.</p>
+<p>Testcontainers for Java is an open-source Java library that provides lightweight, disposable containers as test fixtures, enabling developers to run real instances of databases, message brokers, web servers, and other dependencies during testing. By leveraging Docker, Testcontainers ensures that tests run in isolated and consistent environments, independent of the host machine’s configuration. Testcontainers integrates seamlessly with popular testing libraries like JUnit and TestNG, making it easy for developers to write integration tests.</p>
+<p>This blog post covers the following topics:</p>
+<ul>
+<li>
+<p>Getting started with Testcontainers</p>
+</li>
+<li>
+<p>Writing tests with Testcontainers and JUnit 5</p>
+</li>
+<li>
+<p>Testing Spring Data JPA repositories using Testcontainers</p>
+</li>
+<li>
+<p>Testing Spring Boot REST APIs using Testcontainers</p>
+</li>
+</ul>
+<p>Let’s get started by setting up Testcontainers. If you already know how to do that, feel free to skip ahead to the <em>Writing tests with Testcontainers and JUnit 5</em> section.</p>
+<h2 id="getting-started-with-testcontainers">Getting started with Testcontainers</h2>
+<p>The Testcontainers library provides a higher-level API to manage the container life cycle, extract information about running containers, and more. While it is predominantly used for testing, Testcontainers can also be used for local development.</p>
+<p>The Testcontainers library needs a container runtime to create the container instances. To find the supporting container runtimes, see this doc.</p>
+<p>Let’s look at how you can use the Testcontainers API to create a Redis Docker container instance using a <code>GenericContainer</code> abstraction.</p>
+<p>First, add the testcontainers dependency to your build file:</p>
+<pre tabindex="0"><code>// Gradle build.gradle
+testImplementation &#39;org.testcontainers:testcontainers:1.20.4&#39;
+
+//Maven pom.xml
+&lt;dependency&gt;
+   &lt;groupId&gt;org.testcontainers&lt;/groupId&gt;
+   &lt;artifactId&gt;testcontainers&lt;/artifactId&gt;
+   &lt;version&gt;1.20.4&lt;/version&gt;
+   &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+</code></pre><p>Now, you can use the <code>GenericContainer</code> API to create a container from the <code>redis:7</code> Docker image exposing the container’s port 6379 to the host and use the container as follows:</p>
+<pre tabindex="0"><code>import org.testcontainers.containers.GenericContainer;
+
+GenericContainer&lt;?&gt; container = new GenericContainer&lt;&gt;(&#34;redis:7&#34;).withExposedPorts(6379);
+container.start();
+String host = container.getHost();
+int hostPort = container.getMappedPort(6379);
+System.out.println(&#34;Redis started on &#34; + host + &#34;:&#34; + hostPort);
+container.stop();
+</code></pre><p>Testcontainers maps the exposed container ports to randomly available ports on the host machine so there won’t be any conflicts with other containers running in parallel. You can use the <code>container.getMappedPort(port)</code> method to get the mapped port on the host machine.</p>
+<p>The <code>GenericContainer</code> provides a generic API for managing containers, but it doesn’t provide any container-specific methods. To streamline working with various technologies, Testcontainers offers technology-specific modules and additional API methods. You can see the full list of available Testcontainers modules here.</p>
+<p>Now, let’s look at how you can use the Testcontainers PostgreSQL module and the additional methods it provides.</p>
+<p>Add the Testcontainer <code>postgresql</code> module dependency to your build file:</p>
+<pre tabindex="0"><code>// Gradle build.gradle
+testImplementation &#39;org.testcontainers:postgresql:1.20.4&#39;
+
+//Maven pom.xml
+&lt;dependency&gt;
+   &lt;groupId&gt;org.testcontainers&lt;/groupId&gt;
+   &lt;artifactId&gt;postgresql&lt;/artifactId&gt;
+   &lt;version&gt;1.20.4&lt;/version&gt;
+   &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+</code></pre><p>Now, you can use the <code>PostgreSQLContainer</code> class to create an instance of a PostgreSQL container:</p>
+<pre tabindex="0"><code>PostgreSQLContainer&lt;?&gt; postgres = new PostgreSQLContainer&lt;&gt;(&#34;postgres:17&#34;);
+postgres.start();
+
+host = postgres.getHost();
+hostPort = postgres.getMappedPort(5432);
+//If you expose only one port, then you can use getFirstMappedPort()
+hostPort = postgres.getFirstMappedPort();
+
+// container-specific methods
+String jdbcUrl = postgres.getJdbcUrl();
+String username = postgres.getUsername();
+String password = postgres.getPassword();
+String databaseName = postgres.getDatabaseName();
+
+postgres.stop();
+</code></pre><p><code>PostgreSQLContainer</code> abstracts the details of the container port number, database credentials, and readiness checks and provides you with a high-level API to interact with it. You can also see that this class provides additional methods to get information about the PostgreSQL container, such as <code>getJdbcUrl()</code> and <code>getDatabaseName()</code>.</p>
+<p><strong>NOTE:</strong> Even if you don’t explicitly destroy the containers by calling the <code>container.stop()</code> method, Testcontainers will automatically destroy the container upon exiting the JVM or by using the Moby Ryuk sidecar container behind the scenes.</p>
+<p>Now that we’ve explored setting up the Testcontainers library to create, start, and stop Docker containers, as well as extract information about them, let’s see how to use Testcontainers for testing.</p>
+<h2 id="writing-tests-with-testcontainers-and-junit-5">Writing tests with Testcontainers and JUnit 5</h2>
+<p>Typically, the Testcontainers library is used for integration testing in conjunction with testing libraries like JUnit. The components, such as databases and message brokers, that are required for tests will be started before running any test cases​​ and destroyed after the test execution is completed.</p>
+<p>You can use JUnit test life cycle callback methods to start and stop the containers:</p>
+<pre tabindex="0"><code>import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.PostgreSQLContainer;
+
+class TestcontainersWithJunit5Callbacks {
+   static PostgreSQLContainer postgres = new PostgreSQLContainer(&#34;postgres:17&#34;);
+  
+   @BeforeAll
+   static void beforeAll() {
+       postgres.start();
+       // configure your application to talk to the PostgreSQL container
+   }
+
+   @AfterAll
+   static void afterAll() {
+       postgres.stop();
+   }
+
+   @Test
+   void test1() {
+       // test code that uses postgres
+   }
+
+   @Test
+   void test2() {
+       // test code that uses postgres
+   }
+}
+</code></pre><p>A common practice is starting the containers before test execution and destroying those containers after test execution is completed. The Testcontainers JUnit 5 Jupiter extension is created to simplify this process by using an annotation-based approach.</p>
+<p>First, add the following Testcontainers <code>junit-jupiter</code> dependency:</p>
+<pre tabindex="0"><code>// Gradle build.gradle
+testImplementation &#39;org.testcontainers:junit-jupiter:1.20.4&#39;
+
+//Maven pom.xml
+&lt;dependency&gt;
+   &lt;groupId&gt;org.testcontainers&lt;/groupId&gt;
+   &lt;artifactId&gt;junit-jupiter&lt;/artifactId&gt;
+   &lt;version&gt;1.20.4&lt;/version&gt;
+   &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+</code></pre><p>Now, you can write integration tests using the Testcontainers JUnit Jupiter extension:</p>
+<pre tabindex="0"><code>import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+@Testcontainers
+class TestcontainersWithJuperExtension {
+  
+   @Container
+   static PostgreSQLContainer postgres =
+           new PostgreSQLContainer(&#34;postgres:17&#34;);
+
+   @Test
+   void test1() {
+       // test talking to postgres
+   }
+
+   @Test
+   void test2() {
+       // test talking to postgres
+   }
+}
+</code></pre><p>By adding the <code>@Testcontainers</code> annotation on the class and <code>@Container</code> annotation on the container declaration field, JUnit will automatically start the container before running tests and automatically destroy it after the test has been executed.</p>
+<p><strong>NOTE:</strong> When you use the <code>@Container</code> annotation on <code>static</code> container declarations, like in the example above, only one instance of that container is created for all test cases within a single test class. If you want to create a separate instance for each test case, make it a <code>non-static</code> field. Remember that spinning up a new container instance for every test case is not recommended, as it slows down the test execution.</p>
+<h2 id="integration-testing-spring-boot-applications-using-testcontainers">Integration testing Spring Boot applications using Testcontainers</h2>
+<p>While Testcontainers can be used with any Java application, frameworks like Spring Boot provide out-of-the-box support for Testcontainers to make integration testing easier.</p>
+<p>Let’s explore how you can test Spring Data JPA repositories and Spring Boot REST APIs that use a PostgreSQL database with Testcontainers.</p>
+<p>If you want to learn how to build a Spring Boot REST API with Spring Data JPA, PostgreSQL, and Flyway, read the following blog posts:</p>
+<ul>
+<li>
+<p>How to Build a CRUD REST API Using Spring Boot </p>
+</li>
+<li>
+<p>How to Use Flyway for Database Migrations in Spring Boot Applications</p>
+</li>
+</ul>
+<p>Let’s use the bookmarks Spring Boot application that was created in the above blog posts and write tests for the Spring Data JPA repository and REST API using Testcontainers.</p>
+<p>First, clone the <code>flyway</code> branch of the bookmarks repository and create a new branch called <code>testcontainers</code>. The <code>flyway</code> branch uses Flyway database migrations to manage database schema changes.</p>
+<pre tabindex="0"><code>$ git clone --branch flyway https://github.com/sivaprasadreddy/bookmarks.git
+$ git checkout -b testcontainers
+</code></pre><p>Now, add the following Testcontainers PostgreSQL module and junit-jupiter dependencies:</p>
+<pre tabindex="0"><code>// Gradle build.gradle
+testImplementation &#39;org.testcontainers:postgresql&#39;
+testImplementation &#39;org.testcontainers:junit-jupiter&#39;
+
+//Maven pom.xml
+&lt;dependency&gt;
+   &lt;groupId&gt;org.testcontainers&lt;/groupId&gt;
+   &lt;artifactId&gt;postgresql&lt;/artifactId&gt;
+   &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+   &lt;groupId&gt;org.testcontainers&lt;/groupId&gt;
+   &lt;artifactId&gt;junit-jupiter&lt;/artifactId&gt;
+   &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+</code></pre><p>Spring Boot provides slice test annotations such as <code>@DataJpaTest</code>, <code>@DataMongoTest</code>, and <code>@WebMvcTest</code> to test a slice of the application. By using these slice test annotations, you can write tests that load only the necessary components of the application. To write integration tests, Spring Boot’s <code>@SpringBootTest</code> annotation bootstraps the entire application context, loading all the components.</p>
+<h3 id="testing-spring-data-jpa-repositories">Testing Spring Data JPA repositories</h3>
+<p>Here’s the BookmarkRepository interface within the bookmarks project:</p>
+<pre tabindex="0"><code>package com.jetbrains.bookmarks;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface BookmarkRepository extends JpaRepository&lt;Bookmark, Long&gt; {
+ List&lt;BookmarkInfo&gt; findAllByOrderByCreatedAtDesc();
+
+ Optional&lt;BookmarkInfo&gt; findBookmarkById(Long id);
+}
+</code></pre><p>A common mistake when testing repositories is using an in-memory database like H2 for testing while using a different type of database like PostgreSQL or Oracle Database in production. There is no guarantee that the implementation that worked with an in-memory database will work in the same way with other databases. Additionally, the in-memory database may not have all the features provided by your production database and vice versa.</p>
+<p>For example, the following is a valid query for PostgreSQL:</p>
+<pre tabindex="0"><code>INSERT INTO items(id, code, name) VALUES(?,?,?) ON CONFLICT DO NOTHING;
+</code></pre><p>However, this query doesn’t work with the H2 database by default. Executing the above query with the H2 database results in the following exception:</p>
+<pre tabindex="0"><code>Caused by: org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement &#34;INSERT INTO items (id, code, name) VALUES (?, ?, ?) ON[*] CONFLICT DO NOTHING&#34;;&#34;
+</code></pre><p>Furthermore, the H2 database supports the <code>ROWNUM()</code> function, whereas PostgreSQL does not.</p>
+<p>To ensure consistent behavior between testing and production, using the same database type is recommended. Testcontainers is useful because it facilitates this approach.</p>
+<p>Now, let’s write tests for the <code>BookmarkRepository</code> using the <code>@DataJpaTest</code> slice test annotation using Testcontainers:</p>
+<pre tabindex="0"><code>package com.jetbrains.bookmarks;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@DataJpaTest
+@Testcontainers
+class BookmarkRepositoryTest {
+   @Container
+   static PostgreSQLContainer&lt;?&gt; postgres = new PostgreSQLContainer&lt;&gt;(&#34;postgres:17&#34;);
+
+   @DynamicPropertySource
+   static void configureProperties(DynamicPropertyRegistry registry) {
+       registry.add(&#34;spring.datasource.url&#34;, postgres::getJdbcUrl);
+       registry.add(&#34;spring.datasource.username&#34;, postgres::getUsername);
+       registry.add(&#34;spring.datasource.password&#34;, postgres::getPassword);
+   }
+
+   @Autowired
+   BookmarkRepository bookmarkRepository;
+
+   @Test
+   void shouldFindBookmarkById() {
+       var bookmark = new Bookmark(&#34;JetBrains Blog&#34;,&#34;https://blog.jetbrains.com&#34;);
+       Long bookmarkId = bookmarkRepository.save(bookmark).getId();
+
+       var bookmarkInfo = bookmarkRepository.findBookmarkById(bookmarkId).orElseThrow();
+       assertThat(bookmarkInfo.getTitle()).isEqualTo(&#34;JetBrains Blog&#34;);
+       assertThat(bookmarkInfo.getUrl()).isEqualTo(&#34;https://blog.jetbrains.com&#34;);
+   }
+}
+</code></pre><p>We are using the <code>@Testcontainers</code> and <code>@Container</code> annotations to start the PostgreSQL container before running tests and destroying it afterward. Once the PostgreSQL container is started, we can configure our Spring Boot application data source properties to connect to the PostgreSQL container using <code>@DynamicPropertySource</code> – this allows us to override the default properties.</p>
+<p>If you run the test, you can see that a PostgreSQL container starts, and the test executes against the PostgreSQL database container.</p>
+<p>Spring Boot 3.1.0 introduced ServiceConnection support, simplifying the usage of Testcontainers for testing and local development. To use this feature, add the following dependency:</p>
+<pre tabindex="0"><code>// Gradle build.gradle
+testImplementation &#39;org.springframework.boot:spring-boot-testcontainers&#39;
+
+//Maven pom.xml
+&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-testcontainers&lt;/artifactId&gt;
+   &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+</code></pre><p>Now, let’s update the <code>BookmarkRepositoryTest</code> to use the ServiceConnection support:</p>
+<pre tabindex="0"><code>import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+
+@DataJpaTest
+@Testcontainers
+class BookmarkRepositoryTest {
+   
+   @Container
+   @ServiceConnection
+   static PostgreSQLContainer&lt;?&gt; postgres = new PostgreSQLContainer&lt;&gt;(&#34;postgres:17&#34;);
+
+   @Autowired
+   BookmarkRepository bookmarkRepository;
+
+   @Test
+   void shouldFindBookmarkById() {
+       //...
+   }
+}
+</code></pre><p>By adding the <code>@ServiceConnection</code> annotation to the container field definition, Spring Boot will automatically configure the data source properties pointing to the PostgreSQL database container. There is no need to explicitly configure the data source properties using <code>@DynamicPropertySource</code>.</p>
+<p>If you create a Spring Boot project with PostgreSQL and Testcontainers dependencies, a class with the name <code>TestcontainersConfiguration</code> will be created under the <code>src/test/java</code> directory:</p>
+<pre tabindex="0"><code>package com.jetbrains.bookmarks;
+
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.context.annotation.Bean;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
+
+@TestConfiguration(proxyBeanMethods = false)
+class TestcontainersConfiguration {
+
+   @Bean
+   @ServiceConnection
+   PostgreSQLContainer&lt;?&gt; postgresContainer() {
+      return new PostgreSQLContainer&lt;&gt;(DockerImageName.parse(&#34;postgres:17&#34;));
+   }
+}
+</code></pre><p>If you introduce Testcontainers in an existing application, you need to manually create this class.</p>
+<p>Instead of defining the <code>PostgreSQLContainer</code> in each test class, you can import the <code>TestcontainersConfiguration</code> class and use it in your test:</p>
+<pre tabindex="0"><code>@DataJpaTest
+@Import(TestcontainersConfiguration.class)
+class BookmarkRepositoryTest {
+
+   @Autowired
+   BookmarkRepository bookmarkRepository;
+
+   @Test
+   void shouldFindBookmarkById() {
+       //...
+   }
+}
+</code></pre><p>The <code>PostgreSQLContainer</code> bean definition and the <code>@ServiceConnection</code> annotation defined in <code>TestcontainersConfiguration</code> will take care of spinning up a PostgreSQL database container and configure the application to connect to that database.</p>
+<h3 id="testing-spring-boot-rest-apis">Testing Spring Boot REST APIs</h3>
+<p>While slice tests are valuable, integration tests with real dependencies, like databases and message brokers, are crucial for verifying overall system behavior.</p>
+<p>Similar to how we used Testcontainers to test Spring Data JPA repositories, you can write integration tests with the <code>@SpringBootTest</code> annotation and use Testcontainers to spin up the dependencies required by your application.</p>
+<p>In the bookmarks application, there is the <code>GET /api/bookmarks API</code> endpoint, which returns all the bookmarks ordered from newest to oldest.</p>
+<p>Let’s write an integration test to test this endpoint:</p>
+<pre tabindex="0"><code>package com.jetbrains.bookmarks;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.context.annotation.Import;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
+@SpringBootTest(webEnvironment = RANDOM_PORT)
+@Import(TestcontainersConfiguration.class)
+class BookmarkControllerTest {
+
+   @Autowired
+   private TestRestTemplate restTemplate;
+
+   @Autowired
+   private BookmarkRepository bookmarkRepository;
+
+   @BeforeEach
+   void setUp() {
+       bookmarkRepository.deleteAllInBatch();
+   }
+
+   @Test
+   void shouldGetAllBookmarks() {
+       bookmarkRepository.save(new Bookmark(&#34;JetBrains Blog&#34;,&#34;https://blog.jetbrains.com&#34;));
+       bookmarkRepository.save(new Bookmark(&#34;IntelliJ IDEA Blog&#34;,&#34;https://blog.jetbrains.com/idea/&#34;));
+
+       Bookmark[] bookmarks = restTemplate.getForObject(&#34;/api/bookmarks&#34;, Bookmark[].class);
+
+       assertThat(bookmarks.length).isEqualTo(2);
+       assertThat(bookmarks[0].getTitle()).isEqualTo(&#34;IntelliJ IDEA Blog&#34;);
+       assertThat(bookmarks[1].getTitle()).isEqualTo(&#34;JetBrains Blog&#34;);
+   }
+}
+</code></pre><p>We used the <code>@SpringBootTest</code> annotation, which loads the entire application context and is configured to start the server on a random available port on the host machine. We also imported the <code>TestcontainersConfiguration</code> class so that the required dependencies (in our case, PostgreSQL) are provisioned using Testcontainers. We then autowired <code>TestRestTemplate</code> to make calls to our API endpoints. We also deleted all existing bookmarks before running tests using the <code>setUp()</code> JUnit callback method, so we have fresh data for each test run.</p>
+<p>In the test case, we saved two new bookmarks and fetched them, invoking the <code>GET /api/bookmarks</code> endpoint, and asserting the expected results.</p>
+<p>You can find the complete code here.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Testcontainers helps you test applications using real dependencies instead of relying on mock objects or in-memory alternatives, giving you more confidence in your test suite and your application’s behavior. Additionally, Spring Boot’s out-of-the-box support for Testcontainers makes it even easier to write integration tests.</p>
+<p>Spring Boot’s <code>@ServiceConnection</code> support is available for the most commonly used technologies. Even if there is no direct support provided by Spring Boot, you can use the Testcontainers <code>GenericContainer</code> abstraction to work with any containerized dependency. You can find more information about Testcontainers and its features here.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

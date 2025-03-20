@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Example-CNF: Automating the deployment of DPDK-based network functions on OpenShift with fault tolerance</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Example-CNF: Automating the deployment of DPDK-based network functions on OpenShift with fault tolerance</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Network optimization with Data Plane Development Kit (DPDK) and Single Root Input/Output Virtualization (SR-IOV) is widely supported and adopted in Kubernetes and Red Hat OpenShift. In this article, we will present a means of automatically deploying an open source Cloud-Native Network Function (CNF), called Example-CNF, in order to test particular Telco-related configurations and scenarios, leveraging DPDK&rsquo;s capabilities within containerized environments.</p>
+<p>Example-CNF is a workload to exercise both DPDK and SR-IOV technologies for Telco setups. The project is composed of several Kubernetes operators built with open source toolkits, such as Operator SDK, using Red Hat Universal Base Images (UBI) images pushed to Quay.io, deploying two main components:</p>
+<ul>
+<li>A packet generator, based on TRex, which emulates different 5G User Equipment (UE) network traffic profiles.</li>
+<li>A traffic forwarder, based on TestPMD (an example application shipped in DPDK) that manages the traffic sent by the packet generator, forwarding it back to it and computing packet loss.</li>
+</ul>
+<p>The network scenario is shown in Figure 1, where we can see the following:</p>
+<ul>
+<li>Each component is deployed in a different worker node, thanks to pod anti-affinity rules.</li>
+<li>Each component has two ports, each of them connected to a virtual network interface controller (NIC) managed by SR-IOV. Each NIC belongs to a given SR-IOV network, related to a given network configuration: physical interface, VLAN, and etc.</li>
+</ul>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/network_setup_0.png?itok=h-x0o5Nl" alt="Example-CNF network diagram" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 1: Example-CNF network diagram.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Validated use cases range from a simple TRex-DPDK traffic flow to more complex and end-to-end cases where cluster nodes are cordoned and drained (emulating a cluster upgrade), thus ensuring fault tolerance in the workflow while nodes get reconciliation. All these scenarios have been automated with Red Hat Ansible Automation Platform’s playbooks and roles that validate some prerequisites and prepare the environment to orchestrate the installation and testing, all being managed by Red Hat Distributed-CI.</p>
+<h2 id="what-do-you-need-to-launch-example-cnf">What do you need to launch Example-CNF?</h2>
+<p>In a nutshell, you need to meet the following requirements:</p>
+<ul>
+<li>Have an OpenShift cluster composed by +3 worker nodes.</li>
+<li>Install SR-IOV Network Operator.</li>
+<li>Deploy <code>SriovNetworkNodePolicy</code> and <code>SriovNetwork</code> CustomResourceDefinitions (CRDs) that describe your network setup.
+<ul>
+<li>Each node needs a physical NIC with at least two SR-IOV Virtual Functions.</li>
+<li>Each SRIOV network requires a VLAN.</li>
+</ul>
+</li>
+<li>Make a proper configuration in network devices (switches, nodes, etc.) to match the SR-IOV resources definition (physical interfaces, VLAN, etc.)</li>
+<li>Deploy a PerformanceProfile, setting up CPU isolation, hugepages, etc.</li>
+</ul>
+<h2 id="how-are-operators-automated">How are Operators automated?</h2>
+<p>Example-CNF is composed by three main Operator Lifecycle Manager (OLM)-based operators:</p>
+<ul>
+<li><code>trex-operator</code>: Packet generator, based on TRex, which emulates different 5G-UE network traffic profiles targeting specific CNFs.</li>
+<li><code>testpmd-operator</code>: TestPMD-based CNF that performs traffic forwarding.</li>
+<li><code>cnf-app-mac-operator</code>: Extra custom resource that retrieves MAC addresses from TestPMD pods to make them available to other resources.</li>
+</ul>
+<p>All these operators have been built with the Operator SDK framework, which relies on the operator reconciliation loop. This feature is explained in Figure 2.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/operator_sdk_description.png?itok=imyvvr0t" alt="How operator reconciliation loop works in Operator SDK" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 2: How operator reconciliation loop works in Operator SDK.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>The key topic is how Kubernetes/OpenShift resources are created (for example, a deployment with two pods), based on the generic description provided by the CustomResourceDefinition object. The link between them is the CustomResource, which is the object that is observed by the reconciliation loop. This way, when a CustomResource is instantiated in the cluster, this eventually implies the creation of the desired cluster resources. In this video, you can see how TestPMD Pods are deployed in Example-CNF, using the TestPMD CustomResource.</p>
+<p>These three operators are working together to reach the final objective of deploying and testing all pieces of software. This is summarized in Figure 3.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/workflow_description.png?itok=l68BvC5P" alt="Example-CNF lifecycle workflow" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 3: Example-CNF lifecycle workflow.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Key details of this workflow are the following:</p>
+<ul>
+<li>Image generation is automated with Github workflows in the <code>example-cnf</code> repository.</li>
+<li>The example_cnf_deploy public Ansible role is used to deploy Example-CNF.</li>
+<li>The workflow involves several Kubernetes resources.</li>
+<li>The process is orchestrated with Red Hat Distributed-CI.</li>
+</ul>
+<h2 id="testing-and-validation">Testing and validation</h2>
+<p>The example_cnf_deploy public Ansible role is also used for testing Example-CNF. In particular, there are different scenarios that are covered under this automation:</p>
+<ul>
+<li>Simple TRex-TestPMD traffic flow (shown in Figure 1).</li>
+<li>Validation during cluster upgrades, where cluster nodes are cordoned and drained, thus ensuring fault tolerance in the workflow while nodes get reconciliation.</li>
+</ul>
+<p>For this second scenario, the automation follows the following steps, that are also presented in this video:</p>
+<ul>
+<li>Deploy TestPMD and TRex.</li>
+<li>Launch a TRex test with enough duration to perform node cording-draining.</li>
+<li>Cordon-drain the node where TestPMD is running.</li>
+<li>Wait until TestPMD is allocated in a different worker node.</li>
+<li>Measure the following statistics:
+<ul>
+<li>Downtime: Time that TestPMD spends for being recreated in a new worker node.</li>
+<li>Packet loss: How many packets were lost, and what’s the percentage of packet loss in the test case. For the calculation, TestPMD and TRex counters are read with some scripts.</li>
+</ul>
+</li>
+</ul>
+<h2 id="conclusions-and-future-work">Conclusions and future work</h2>
+<p>In this article, we have discussed the following:</p>
+<ul>
+<li>The benefits of using an approach based on Kubernetes operators and Ansible roles and playbooks. This approach facilitates the testing of new changes with CI, and it accelerates the integration when new versions of tools are available for deployment and testing.</li>
+<li>Specific examples about how to build automation around TestPMD and TRex.</li>
+</ul>
+<p>However, we were not free of challenges found. In particular, we found complications when trying to automate the TestPMD configuration, since the two different modes that it has to be launched (auto-start and interactive) cannot be used simultaneously, which made debugging and troubleshooting harder to follow, because sometimes we were interested in checking on live the status of TestPMD pod statistics, but if not using interactive mode, it was hard to automate.</p>
+<p>To deal with these issues, the idea of future work is to make the DPDK piece more (and better) configurable. The idea is to replace TestPMD with Grout, an open source DPDK-based network processing application. Example-CNF would benefit from the message-based API offered by Grout to be able to simultaneously use multiple ways of configuring the tool: interactive shell, script, batches, and etc.</p>
+<p>The final objective is to define a CNF emulating 5G User Plane Functions that supports cluster upgrades seamlessly, being able to modify the DPDK configuration whenever needed, and achieving more complex use cases with the usage of Grout, such as load-balancing through the fabric switch.</p>
+<p>The post Example-CNF: Automating the deployment of DPDK-based network functions on OpenShift with fault tolerance appeared first on Red Hat Developer.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

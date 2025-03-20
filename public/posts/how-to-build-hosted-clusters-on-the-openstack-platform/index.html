@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How to build hosted clusters on the OpenStack platform</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How to build hosted clusters on the OpenStack platform</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>As cloud-native infrastructure evolves, managing Red Hat OpenShift clusters demands greater scalability and efficiency. Hosted control planes (HCP) represent a transformative approach in OpenShift, decoupling control planes and hosting them in lightweight, flexible pods. This innovation enhances resource utilization, multi-tenancy, and hybrid-cloud capabilities—key priorities for modern infrastructure.</p>
+<p>Learn more about Shift-On-Stack enhanced with hosted control planes.</p>
+<h2 id="cluster-preparation">Cluster preparation</h2>
+<p>A more comprehensive guide is available here in the project documentation. This section will highlight some requirements and steps that are specific to the OpenStack platform.</p>
+<h3 id="requirements">Requirements</h3>
+<p>The following requirements must be met:</p>
+<ul>
+<li>Admin access to an OpenShift cluster (version 4.17+) specified by the <code>KUBECONFIG</code> environment variable. This cluster is referred to as the Management cluster. It can run on any platform supported by HCP. The HyperShift Operator must be installed in this Management cluster.</li>
+<li>OpenStack Octavia service must be running in the cloud hosting the Hosted Cluster Infrastructure when ingress is configured with an Octavia load balancer. In the future, we&rsquo;ll explore other Ingress options like MetalLB.</li>
+<li>The default external network (on which the kube-apiserver LoadBalancer type service is created) of the Management OpenShift Container Platform cluster must be reachable from the Hosted Clusters.</li>
+<li>The Red Hat Enterprise Linux CoreOS (RHCOS) image must be uploaded to OpenStack prior to deploying a Hosted Cluster. The image can be pushed in the admin project and made available to other tenants (by being public) or can be pushed to every project used by HostedClusters.</li>
+</ul>
+<h3 id="prerequisites">Prerequisites</h3>
+<p>In addition to the above requirements, the HyperShift Operator and the HCP CLI must also be installed.</p>
+<p>Because OpenStack is not yet a supported platform in HCP, the following procedure must be followed:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>podman run --rm --privileged -it -v 
+</span></span><span style="display:flex;"><span>$PWD:/output docker.io/library/golang:1.22 /bin/bash -c 
+</span></span><span style="display:flex;"><span>&#39;git clone https://github.com/openshift/hypershift.git &amp;&amp; 
+</span></span><span style="display:flex;"><span>cd hypershift/ &amp;&amp; 
+</span></span><span style="display:flex;"><span>make hypershift product-cli &amp;&amp; 
+</span></span><span style="display:flex;"><span>mv bin/hypershift /output/hypershift &amp;&amp; 
+</span></span><span style="display:flex;"><span>mv bin/hcp /output/hcp&#39;
+</span></span><span style="display:flex;"><span>sudo install -m 0755 -o root -g root $PWD/hypershift /usr/local/bin/hypershift
+</span></span><span style="display:flex;"><span>sudo install -m 0755 -o root -g root $PWD/hcp /usr/local/bin/hcp
+</span></span><span style="display:flex;"><span>rm $PWD/hypershift
+</span></span><span style="display:flex;"><span>rm $PWD/hcp
+</span></span><span style="display:flex;"><span>export KUBECONFIG=&lt;path to management cluster admin kubeconfig&gt;
+</span></span><span style="display:flex;"><span>hypershift install --tech-preview-no-upgrade
+</span></span></code></pre></div><p>In production, the procedure would typically look like this:</p>
+<ol>
+<li>You need Red Hat Advanced Cluster Management for Kubernetes installed. See the documentation and follow the installation manual.</li>
+<li>Enable the HCP feature by following the procedure documented in the HCP manual.</li>
+</ol>
+<p>Note that the HyperShift Operator has to be installed with a TechPreview flag. This can be accomplished by creating a ConfigMap named <code>hypershift-operator-install-flag</code>s in <code>local-cluster namespace</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>kind: ConfigMap
+</span></span><span style="display:flex;"><span>apiVersion: v1
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  name: hypershift-operator-install-flags
+</span></span><span style="display:flex;"><span>  namespace: local-cluster
+</span></span><span style="display:flex;"><span>data:
+</span></span><span style="display:flex;"><span>  installFlagsToAdd: &#34;--tech-preview-no-upgrade&#34;
+</span></span><span style="display:flex;"><span>  installFlagsToRemove: &#34;&#34;
+</span></span></code></pre></div><ol start="3">
+<li>Install the HCP command line interface following this procedure documented in the HCP manual (please refer to the latest version of OpenShift).</li>
+</ol>
+<h2 id="prerequisites-for-ingress">Prerequisites for Ingress</h2>
+<p>To get Ingress healthy in a HostedCluster without manual intervention, you need to create a floating IP that will be used by the Ingress service:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>export OS_CLOUD=&lt;name of the credentials used for the Hosted Cluster&gt;
+</span></span><span style="display:flex;"><span>openstack floating ip create &lt;external-network-id&gt;
+</span></span></code></pre></div><p>You’ll need to create a DNS record for the following wildcard domain that needs to point to the Ingress floating IP: <code>*.apps.&lt;cluster-name&gt;.&lt;base-domain&gt;</code></p>
+<h2 id="create-a-hostedcluster">Create a HostedCluster</h2>
+<p>Multiple options are available on OpenStack so you can choose how the NodePools will be configured. See below:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>export CLUSTER_NAME=example
+</span></span><span style="display:flex;"><span>export BASE_DOMAIN=hypershift.lab
+</span></span><span style="display:flex;"><span>export PULL_SECRET=&#34;$HOME/pull-secret&#34;
+</span></span><span style="display:flex;"><span>export WORKER_COUNT=&#34;3&#34;
+</span></span><span style="display:flex;"><span># &#34;openstack-tenant-dev&#34; is an entry in clouds.yaml
+</span></span><span style="display:flex;"><span># to create OpenStack resources in the cloud with enough
+</span></span><span style="display:flex;"><span># quotas and permissions to deploy the needed resources.
+</span></span><span style="display:flex;"><span>export OS_CLOUD=&#34;openstack-tenant-dev&#34;
+</span></span><span style="display:flex;"><span># RHCOS image name that must already exist in OpenStack Glance
+</span></span><span style="display:flex;"><span># This image can be shared across multiple projects or unique
+</span></span><span style="display:flex;"><span># per project.
+</span></span><span style="display:flex;"><span>export IMAGE_NAME=&#34;rhcos&#34;
+</span></span><span style="display:flex;"><span># Flavor for the nodepool which would be the same flavor
+</span></span><span style="display:flex;"><span># as a regular worker
+</span></span><span style="display:flex;"><span>export FLAVOR=&#34;m1.large&#34;
+</span></span><span style="display:flex;"><span># Floating IP for Ingress (previously created)
+</span></span><span style="display:flex;"><span>export INGRESS_FLOATING_IP=&#34;&lt;ingress-floating-ip&gt;&#34;
+</span></span><span style="display:flex;"><span># External network to use for the Ingress endpoint.
+</span></span><span style="display:flex;"><span>export EXTERNAL_NETWORK_ID=&#34;5387f86a-a10e-47fe-91c6-41ac131f9f30&#34;
+</span></span><span style="display:flex;"><span># SSH Key for the nodepool VMs
+</span></span><span style="display:flex;"><span>export SSH_KEY=&#34;$HOME/.ssh/id_rsa.pub&#34;
+</span></span><span style="display:flex;"><span>hcp create cluster openstack 
+</span></span><span style="display:flex;"><span>  --name $CLUSTER_NAME 
+</span></span><span style="display:flex;"><span>  --base-domain $BASE_DOMAIN 
+</span></span><span style="display:flex;"><span>  --node-pool-replicas $WORKER_COUNT 
+</span></span><span style="display:flex;"><span>  --pull-secret $PULL_SECRET 
+</span></span><span style="display:flex;"><span>  --ssh-key $SSH_KEY 
+</span></span><span style="display:flex;"><span>  --openstack-external-network-id $EXTERNAL_NETWORK_ID 
+</span></span><span style="display:flex;"><span>  --openstack-node-image-name $IMAGE_NAME 
+</span></span><span style="display:flex;"><span>  --openstack-node-flavor $FLAVOR 
+</span></span><span style="display:flex;"><span>  --openstack-ingress-floating-ip $INGRESS_FLOATING_IP
+</span></span></code></pre></div><p>The time to deploy a HostedCluster with 3 NodePool replicas (3 virtual machines) is usually less than 15 minutes.</p>
+<p>You can check that it’s deployed with this command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>oc get --namespace clusters hostedclusters
+</span></span><span style="display:flex;"><span>NAME            VERSION   KUBECONFIG                       PROGRESS   AVAILABLE   PROGRESSING   MESSAGE
+</span></span><span style="display:flex;"><span>example         4.18.0    example-admin-kubeconfig         Completed  True        False         The hosted control plane is available
+</span></span></code></pre></div><p>Since we deployed 3 replicas of the default NodePool, you can check that you have 3 virtual machines (VMs) running in OpenStack:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>openstack server list
+</span></span></code></pre></div><h2 id="accessing-the-hostedcluster">Accessing the HostedCluster</h2>
+<p>CLI access to the Guest Cluster is gained by retrieving the guest cluster&rsquo;s <code>kubeconfig</code>. Below is an example of how to retrieve the guest cluster&rsquo;s <code>kubeconfig</code> using the <code>hcp</code> command line:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>hcp create kubeconfig --name $CLUSTER_NAME &gt; $CLUSTER_NAME-kubeconfig
+</span></span></code></pre></div><h2 id="scale-the-nodepools">Scale the NodePools</h2>
+<p>Not only can you scale (up or down) the number of replicas for a given NodePool, you can also create new NodePools by specifying a name, number of replicas, and platform-specific information like the additional ports to create for each node and availability zone for the VMs.</p>
+<p>Here is an example of a NodePool that will be deployed in a specific OpenStack Nova Availability Zone, with additional network connectivity to the SR-IOV network for running Containerized Network Functions (CNF):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span># &#34;openstack-tenant-nfv&#34; is an entry in clouds.yaml
+</span></span><span style="display:flex;"><span># to create OpenStack resources in the cloud with enough
+</span></span><span style="display:flex;"><span># quotas and permissions to deploy the NFV resources.
+</span></span><span style="display:flex;"><span>export OS_CLOUD=&#34;openstack-tenant-nfv&#34;
+</span></span><span style="display:flex;"><span>export NODEPOOL_NAME=$CLUSTER_NAME-cnf
+</span></span><span style="display:flex;"><span>export WORKER_COUNT=&#34;3&#34;
+</span></span><span style="display:flex;"><span>export IMAGE_NAME=&#34;rhcos&#34;
+</span></span><span style="display:flex;"><span>export FLAVOR=&#34;m1.xlarge.nfv&#34;
+</span></span><span style="display:flex;"><span># OpenStack Nova Availablity Zone
+</span></span><span style="display:flex;"><span>export AZ=&#34;az1&#34;
+</span></span><span style="display:flex;"><span># OpenStack Neutron Network UUID for SR-IOV
+</span></span><span style="display:flex;"><span>export SRIOV_NEUTRON_NETWORK_ID=&#34;&lt;NEUTRON-NETWORK-UUID&gt;&#34;
+</span></span><span style="display:flex;"><span>hcp create nodepool openstack 
+</span></span><span style="display:flex;"><span>  --cluster-name $CLUSTER_NAME 
+</span></span><span style="display:flex;"><span>  --name $NODEPOOL_NAME 
+</span></span><span style="display:flex;"><span>  --node-count $WORKER_COUNT 
+</span></span><span style="display:flex;"><span>  --openstack-node-image-name $IMAGE_NAME 
+</span></span><span style="display:flex;"><span>  --openstack-node-flavor $FLAVOR 
+</span></span><span style="display:flex;"><span>  --openstack-node-availability-zone $AZ 
+</span></span><span style="display:flex;"><span>  --openstack-node-additional-port &#34;network-id:$SRIOV_NEUTRON_NETWORK_ID,vnic-type:direct,disable-port-security:true&#34;
+</span></span></code></pre></div><p>Once the NodePool has been deployed, the Cluster Instance Admin can easily deploy the SR-IOV Network Operator so CNF workloads can run on these nodes alongside with a Performance Profile.</p>
+<h2 id="destroy-the-hostedcluster">Destroy the HostedCluster</h2>
+<p>To delete a HostedCluster, run the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>hcp destroy cluster openstack --name $CLUSTER_NAME
+</span></span></code></pre></div><p>The process will take a few minutes to complete and will destroy all resources associated with the HostedCluster including OpenStack resources.</p>
+<h2 id="wrapping-up">Wrapping up</h2>
+<p>The integration of OpenStack with hosted control planes represents a pivotal advancement in the &ldquo;Shift-On-Stack&rdquo; journey, offering Cluster Service Providers an efficient, scalable, and streamlined way to manage Kubernetes control planes.</p>
+<p>In upcoming posts, we’ll dive into more advanced scenarios and share real-world examples. Stay tuned!</p>
+<p>The post How to build hosted clusters on the OpenStack platform appeared first on Red Hat Developer.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Define on Gharib Personal Blog</title>
+    <link>https://ghariib.ir/tags/define/</link>
+    <description>Recent content in Define on Gharib Personal Blog</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <copyright>Alireza Gharib. All right reserved</copyright>
+    <lastBuildDate>Sun, 19 Jan 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://ghariib.ir/tags/define/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Understanding Python by breaking it</title>
+      <link>https://ghariib.ir/posts/understanding-python-by-breaking-it/</link>
+      <pubDate>Sun, 19 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/understanding-python-by-breaking-it/</guid>
+      <description>&lt;p&gt;I have recently discovered &lt;code&gt;ctypes&lt;/code&gt; and decided to use it to manipulate Python in a way I should not. The purpose was to see some of the &lt;em&gt;Python&amp;rsquo;s internals&lt;/em&gt; at work directly from the interpreter.&lt;br&gt;&#xA;The article studies to the &lt;code&gt;CPython&lt;/code&gt; implementation of Python 2.7.&lt;/p&gt;&#xA;&lt;h2 id=&#34;reference-counting-and-the-garbage-collector&#34;&gt;Reference counting and the Garbage Collector&lt;/h2&gt;&#xA;&lt;p&gt;One thing to know about Python is that its Garbage Collector uses reference counting. It means that every Python object has a &lt;em&gt;ref counter&lt;/em&gt; that knows how many references are pointing to the object.&lt;br&gt;&#xA;Our first goal is to visualise that &lt;em&gt;ref counter&lt;/em&gt; for any object from the Python interpreter.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Understanding Python execution from inside: A Python assembly tracer</title>
+      <link>https://ghariib.ir/posts/understanding-python-execution-from-inside-a-python-assembly-tracer/</link>
+      <pubDate>Sun, 19 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/understanding-python-execution-from-inside-a-python-assembly-tracer/</guid>
+      <description>&lt;p&gt;Lately, I have been looking at the Python&amp;rsquo;s execution model. I was curious about the implementation of some opcodes like &lt;code&gt;YIELD_VALUE&lt;/code&gt; and &lt;code&gt;YIELD_FROM&lt;/code&gt;, how were compiled list comprehensions, generator expressions and other fun Python features, and what happens at the bytecode level when exceptions were raised. Reading the &lt;code&gt;CPython&lt;/code&gt; code is really instructive, but I was feeling like something was missing to fully understand the bytecode execution and the stack evolution. Yeah, &lt;code&gt;GDB&lt;/code&gt; is cool but I&amp;rsquo;m a lazy guy who wanted a high-level interface and code some Python.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Mind the Patch Gap: Exploiting an io_uring Vulnerability in Ubuntu</title>
+      <link>https://ghariib.ir/posts/mind-the-patch-gap-exploiting-an-io_uring-vulnerability-in-ubuntu/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/mind-the-patch-gap-exploiting-an-io_uring-vulnerability-in-ubuntu/</guid>
+      <description>&lt;p&gt;By Oriol Castejón&lt;/p&gt;&#xA;&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;&#xA;&lt;p&gt;This post discusses a use-after-free vulnerability, CVE-2024-0582, in io_uring in the Linux kernel. Despite the vulnerability being patched in the stable kernel in December 2023, it wasn’t ported to Ubuntu kernels for over two months, making it an easy 0day vector in Ubuntu during that time.&lt;/p&gt;&#xA;&lt;p&gt;In early January 2024, a Project Zero issue for a recently fixed &lt;code&gt;io_uring&lt;/code&gt; use-after-free (UAF) vulnerability (CVE-2024-0582) was made public. It was apparent that the vulnerability allowed an attacker to obtain read and write access to a number of previously freed &lt;em&gt;pages&lt;/em&gt;. This seemed to be a very powerful primitive: usually a UAF gets you access to a freed kernel &lt;em&gt;object&lt;/em&gt;, not a whole page – or even better, multiple pages. As the Project Zero issue also described, it was clear that this vulnerability should be easily exploitable: if an attacker has total access to free pages, once these pages are returned to a slab cache to be reused, they will be able to modify any contents of any object allocated within these pages. In the more common situation, the attacker can modify only a certain type of object, and possibly only at certain offsets or with certain values.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Simplify AI Development with the Model Context Protocol and Docker</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Simplify AI Development with the Model Context Protocol and Docker</h1>
+			<b><time>15.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p><em>This ongoing</em> <em>Docker Labs GenAI series</em> <em>explores the exciting space of AI developer tools. At Docker, we believe there is a vast scope to explore, openly and without the hype. We will share our explorations and collaborate with the developer community in real time. Although developers have adopted autocomplete tooling like GitHub Copilot and use chat, there is significant potential for AI tools to assist with more specific tasks and interfaces throughout the entire software lifecycle. Therefore, our exploration will be broad. We will be releasing software as open source so you can play, explore, and hack with us, too.</em></p>
+<p>In December, we published The Model Context Protocol: Simplifying Building AI apps with Anthropic Claude Desktop and Docker. Along with the blog post, we also created Docker versions for each of the reference servers from Anthropic and published them to a new Docker Hub mcp namespace.</p>
+<p>This provides lots of ways for you to experiment with new AI capabilities using nothing but Docker Desktop.</p>
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/06/2400x1260_docker-labs-genai-1110x583.png" alt="2400x1260 docker labs genai" />
+  <figcaption>- 2400x1260 docker labs genai</figcaption>
+</figure>
+
+
+</p>
+<p>For example, to extend Claude Desktop to use Puppeteer, update your <code>claude_desktop_config.json</code> file with the following snippet:</p>
+<pre tabindex="0"><code>&#34;puppeteer&#34;: {
+    &#34;command&#34;: &#34;docker&#34;,
+    &#34;args&#34;: [&#34;run&#34;, &#34;-i&#34;, &#34;--rm&#34;, &#34;--init&#34;, &#34;-e&#34;, &#34;DOCKER_CONTAINER=true&#34;,          &#34;mcp/puppeteer&#34;]
+  }
+</code></pre><p>After restarting Claude Desktop, you can ask Claude to take a screenshot of any URL using a Headless Chromium browser running in Docker.</p>
+<p>You can do the same thing for a Model Context Protocol (MCP) server that you’ve written. You will then be able to distribute this server to your users without requiring them to have anything besides Docker Desktop.</p>
+<h2 id="how-to-create-an-mcp-server-docker-image">How to create an MCP server Docker Image</h2>
+<p>An MCP server can be written in any language. However, most of the examples, including the set of reference servers from Anthropic, are written in either Python or TypeScript and use one of the official SDKs documented on the MCP site.</p>
+<p>For typical uv-based Python projects (projects with a <code>pyproject.toml</code> and <code>uv.lock</code> in the root), or npm TypeScript projects, it’s simple to distribute your server as a Docker image.</p>
+<ol>
+<li>If you don’t already have Docker Desktop, sign up for a free Docker Personal subscription so that you can push your images to others.</li>
+<li>Run <code>docker login</code> from your terminal.</li>
+<li>Copy either this npm Dockerfile or this Python Dockerfile template into the root of your project. The Python Dockerfile will need at least one update to the last line.</li>
+<li>Run the build with the Docker CLI (instructions below).</li>
+</ol>
+<p>The two Dockerfiles shown above are just templates. If your MCP server includes other runtime dependencies, you can update the Dockerfiles to include these additions. The runtime of your MCP server should be self-contained for easy distribution.</p>
+<p>If you don’t have an MCP server ready to distribute, you can use a simple mcp-hello-world project to practice. It’s a simple Python codebase containing a server with one tool call. Get started by forking the repo, cloning it to your machine, and then following the following instructions to build the MCP server image.</p>
+<h3 id="building-the-image">Building the image</h3>
+<p>Most sample MCP servers are still designed to run locally (on the same machine as the MCP client, communication over stdio). Over the next few months, you’ll begin to see more clients supporting remote MCP servers but for now, you need to plan for your server running on at least two different architectures (<code>amd64</code> and <code>arm64</code>). This means that you should always distribute what we call multi-platform images when your target is local MCP servers. Fortunately, this is easy to do.</p>
+<h3 id="create-a-multi-platform-builder">Create a multi-platform builder</h3>
+<p>The first step is to create a local builder that will be able to build both platforms. Don’t worry; this builder will use emulation to build the platforms that you don’t have. See the multi-platform documentation for more details.</p>
+<pre tabindex="0"><code>docker buildx create 
+  --name mcp-builder 
+  --driver docker-container 
+  --bootstrap
+</code></pre><h3 id="build-and-push-the-image">Build and push the image</h3>
+<p>In the command line below, substitute <code>&lt;your-account&gt;</code> and your <code>mcp-server-name</code> for valid values, then run a build and push it to your account.</p>
+<pre tabindex="0"><code>docker buildx build 
+  --builder=mcp-builder 
+  --platform linux/amd64,linux/arm64 
+  -t &lt;your-docker-account&gt;/mcp-server-name 
+  --push .
+</code></pre><h3 id="extending-claude-desktop">Extending Claude Desktop</h3>
+<p>Once the image is pushed, your users will be able to attach your MCP server to Claude Desktop by adding an entry to <code>claude_desktop_config.json</code> that looks something like:</p>
+<pre tabindex="0"><code>&#34;your-server-name&#34;: {
+    &#34;command&#34;: &#34;docker&#34;,
+    &#34;args&#34;: [&#34;run&#34;, &#34;-i&#34;, &#34;--rm&#34;, &#34;--pull=always&#34;,
+             &#34;your-account/your-server-name&#34;]
+  }
+</code></pre><p>This is a minimal set of arguments. You may want to pass in additional command-line arguments, environment variables, or volume mounts.</p>
+<h2 id="next-steps">Next steps</h2>
+<p>The MCP protocol gives us a standard way to extend AI applications. Make sure your extension is easy to distribute by packaging it as a Docker image. Check out the Docker Hub mcp namespace for examples that you can try out in Claude Desktop today.</p>
+<p>As always, feel free to follow along in our public repo.</p>
+<p>For more on what we’re doing at Docker, subscribe to our newsletter.</p>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li>Subscribe to the Docker Newsletter. </li>
+<li>Learn about accelerating AI development with the Docker AI Catalog.</li>
+<li>Read the Docker Labs GenAI series.</li>
+<li>Get the latest release of Docker Desktop.</li>
+<li>Have questions? The Docker community is here to help.</li>
+<li>New to Docker? Get started.</li>
+</ul>
+<p>​Products, AI/ML, Docker Desktop, Docker Labs GenAI series, GenAI Stack</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

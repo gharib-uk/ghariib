@@ -1,0 +1,3576 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>iOS 15 Image Forensics Analysis and Tools Comparison  - Browsers, Mail Clients, and Productivity apps</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>iOS 15 Image Forensics Analysis and Tools Comparison  - Browsers, Mail Clients, and Productivity apps</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>The fifth episode is dedicated to three categories of third-party apps: browsers, mail clients, and productivity apps.</p>
+<p>There are 6 browsers, 3 mail clients, and 3 productivity applications available in Josh Hickman’s acquisition. </p>
+<p>The 6 browsers are listed below, in alphabetical order.</p>
+<ol>
+<li>Brave</li>
+<li>DuckDuckGo</li>
+<li>Firefox</li>
+<li>Firefox Focus</li>
+<li>Google Chrome</li>
+<li>Microsoft Edge</li>
+</ol>
+<p>The 3 mail clients are listed below, in alphabetical order.</p>
+<ol>
+<li>Gmail</li>
+<li>Proton Mail</li>
+<li>Tutanota</li>
+</ol>
+<p>The 3 productivity applications are listed below, in alphabetical order.</p>
+<ol>
+<li>Microsoft Teams</li>
+<li>Slack</li>
+<li>Zoom</li>
+</ol>
+<p>APOLLO has no parsers for third-party apps, while ArtEx only has a parser for Google Chrome.</p>
+<p>Each section for each app is structured similarly: first, a list of the most important files and folders is provided, then a description of the tools parsing capabilities for that app, and finally two different tables. The first table provides the details for each action documented by Josh in the iOS 15 image documentation, and the second table provides a summary of the tools’ parsing capabilities based on the test results.</p>
+<p>As usual, YES means that the value was parsed and parsed correctly, NO means that the value was not parsed, YELLOW means that it was partially parsed, and BLUE means that the value was found elsewhere (i.e., iOS Notification or iOS Cache).</p>
+<p>The rest of the blog post is organized by categories: browsers, email clients, and last productivity applications.</p>
+<h2 id="brave-browser">Brave Browser</h2>
+<p>Relevant information for this application is stored in these files and folders:</p>
+<ul>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Brave.sqlite</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application  Support/Chromium/Default/History</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application  Support/Chromium/Default/Login Data</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application  Support/Chromium/Default/Web Data</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application  Support/Chromium/Default/Favicons</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application  Support/Chromium/Default/Preferences</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Caches/WebKit/NetworkCache/Version 16/Blobs</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Caches/WebKit/NetworkCache/Version 16/Records</p>
+</li>
+</ul>
+<p><strong>Direct parsing of this application is supported by AXIOM, OXYGEN, and BELKASOFT</strong>. Oxygen seems to cover this browser in a more complete way: it parses history, cache, cookies, and tabs, while AXIOM only parses tabs and BELKASOFT only parses history. All tools extracted some information about visited websites in normal mode, but not about visited websites in private mode.</p>
+<p>Following is the comparison table with the details of each action documented by Josh in the creation of the image.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Date</strong></th>
+          <th><strong>Time (EDT)</strong></th>
+          <th><strong>Time (UTC)</strong></th>
+          <th><strong>Action</strong></th>
+          <th><strong>Type</strong></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>05/05/2023</td>
+          <td>10:50</td>
+          <td>14:50</td>
+          <td>Typed “nhl.com” in address bar. Visited NHL website.</td>
+          <td>Normal mode</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>10:53</td>
+          <td>14:53</td>
+          <td>Clicked on link “Panthers pleased after 2 wins in Toronto”</td>
+          <td>Normal mode</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>10:54</td>
+          <td>14:54</td>
+          <td>Opened second tab</td>
+          <td>Normal mode</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>10:56</td>
+          <td>14:56</td>
+          <td>Typed “digitalcorpora” in address bar (search)</td>
+          <td>Normal mode</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>10:57</td>
+          <td>14:57</td>
+          <td>Clicked result for “digitalcorpora.org” / visited site</td>
+          <td>Normal mode</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>10:58</td>
+          <td>14:58</td>
+          <td>Opened Private tab</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:00</td>
+          <td>15:00</td>
+          <td>Typed “sans.org” in the address bar. Visited SANS website</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:01</td>
+          <td>15:01</td>
+          <td>Clicked on the “Find Training” link</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:02</td>
+          <td>15:02</td>
+          <td>Opened second Private tab</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:03</td>
+          <td>15:03</td>
+          <td>Typed “ESPN” in address bar (search) (2nd Private tab)</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:04</td>
+          <td>15:04</td>
+          <td>Clicked on result for “espn.com” / visited site (2nd Private tab)</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:08</td>
+          <td>15:08</td>
+          <td>Switched from Private to Public tab space then back to Private</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:09</td>
+          <td>15:09</td>
+          <td>Opened new Private tab</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<p>The overall results for each category and tool are shown in the following table.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>History</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Cache</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Cookies</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Bookmarks</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Tabs</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="duck-duck-go">Duck Duck Go</h2>
+<p>Relevant information for this application is stored in these files and folders:</p>
+<ul>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Preferences/com.duckduckgo.mobile.ios.plist</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Caches/com.duckduckgo.mobile.ios/Cache.db</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Caches/WebKit/NetworkCache/Blobs/</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Caches/WebKit/NetworkCache/Records/</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Cookies/Cookies.binarycookies</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Shared/AppGroup/<!-- raw HTML omitted -->/Bookmarks.sqlite</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Shared/AppGroup/<!-- raw HTML omitted -->/Favicons/</p>
+</li>
+</ul>
+<p><strong>Direct parsing of this application is supported by AXIOM and OXYGEN</strong>. OXYGEN parses cache, cookies, and tabs, while AXIOM parses tabs and bookmarks. <strong>Traces of visited webpages were found in tabs, cache, and cookies</strong>.</p>
+<p>Following is the comparison table with the details of each action documented by Josh in the creation of the image.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Date</strong></th>
+          <th><strong>Time (EDT)</strong></th>
+          <th><strong>Time (UTC)</strong></th>
+          <th><strong>Action</strong></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>05/05/2023</td>
+          <td>12:37</td>
+          <td>16:37</td>
+          <td>Typed “nhl.com” in address bar. Visited NHL website.</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>12:38</td>
+          <td>16:38</td>
+          <td>Clicked on link “Daily fantasy picks, projections”</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>12:39</td>
+          <td>16:39</td>
+          <td>Opened second tab</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>12:40</td>
+          <td>16:40</td>
+          <td>Typed “digitalcorpora” in address bar (search) (2nd tab)</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>12:41</td>
+          <td>16:41</td>
+          <td>Clicked result for “digitalcorpora.org” / visited site (2nd tab)</td>
+          <td>Tabs</td>
+          <td>NO</td>
+          <td>Tabs</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>12:44</td>
+          <td>16:44</td>
+          <td>Bookmarked digitalcorpora.org (2nd tab)</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>12:45</td>
+          <td>16:45</td>
+          <td>Opened third tab</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>12:46</td>
+          <td>16:46</td>
+          <td>Typed “ESPN” in address bar (search) (3rd tab)</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>12:47</td>
+          <td>16:47</td>
+          <td>Clicked on result for “espn.com” / visited site (3rd tab)</td>
+          <td>NO</td>
+          <td>Cookies</td>
+          <td>Cookies</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>12:48</td>
+          <td>16:48</td>
+          <td>“Clicked on link “Former Mets star Harvey ends ‘dream’ career” (3rd tab)</td>
+          <td>Tabs</td>
+          <td>NO</td>
+          <td>Tabs</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>12:49</td>
+          <td>16:49</td>
+          <td>Deleted first tab</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<p>The overall results for each category and tool are shown in the following table.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>History</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Cache</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Cookies</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Tabs</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Bookmarks</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="firefox">Firefox</h2>
+<p>Relevant information for this application is stored in these files and folders:</p>
+<ul>
+<li>
+<p>/private/var/mobile/Containers/Shared/AppGroup/<!-- raw HTML omitted -->/profile.profile/places.db</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Shared/AppGroup/<!-- raw HTML omitted -->/profile.profile/browser.db</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Caches/org.mozilla.ios.Firefox/Cache.db</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Caches/WebKit/NetworkCache/Version 16/Blobs/</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Caches/WebKit/NetworkCache/Version 16/Records/</p>
+</li>
+</ul>
+<p><strong>Direct parsing of this application is supported by PA, OXYGEN, XAMN, and BELKASOFT</strong>. PA, XAMN, and BELKASOFT parsed history and bookmarks, OXYGEN and XAMN parsed cache, and PA and OXYGEN parsed cookies. <strong>Traces of websites visited in private mode were found in cache and cookies</strong>.</p>
+<p>It’s worth noting that <strong>none of the tested tools parsed the folder /private/var/mobile/Containers/Shared/AppGroup/<!-- raw HTML omitted -->/profile.profile/TabManagerScreenshots and the file /private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Documents/favicon-url-cache</strong> that contain screenshots of tabs and favicons, <strong>including those of webpages visited in private mode</strong>.</p>
+<p>Following is the comparison table with the details of each action documented by Josh in the creation of the image.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Date</strong></th>
+          <th><strong>Time (EDT)</strong></th>
+          <th><strong>Time (UTC)</strong></th>
+          <th><strong>Action</strong></th>
+          <th><strong>Type</strong></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>06/05/2023</td>
+          <td>20:28</td>
+          <td>00:28</td>
+          <td>Typed “nhl.com” in address bar. Visited NHL website.</td>
+          <td>Normal mode</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>Cookies</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>20:30</td>
+          <td>00:30</td>
+          <td>Clicked on link “Hurricanes succeeding in playoffs with goalie tandem”</td>
+          <td>Normal mode</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>20:32</td>
+          <td>00:32</td>
+          <td>Opened second tab</td>
+          <td>Normal mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>20:33</td>
+          <td>00:33</td>
+          <td>Typed “digitalcorpora” in address bar (search) (2nd tab)</td>
+          <td>Normal mode</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>20:34</td>
+          <td>00:34</td>
+          <td>Clicked result for “digitalcorpora.org” / visited site (2nd tab)</td>
+          <td>Normal mode</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>20:35</td>
+          <td>00:35</td>
+          <td>Opened third tab</td>
+          <td>Normal mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>20:37</td>
+          <td>00:37</td>
+          <td>Opened Private Browsing tab</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>20:38</td>
+          <td>00:38</td>
+          <td>Typed “sans.org” in the address bar. Visited SANS website</td>
+          <td>Private mode</td>
+          <td>Cache</td>
+          <td>Cookies</td>
+          <td>Cache</td>
+          <td>Cache</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>20:39</td>
+          <td>00:39</td>
+          <td>Opened second Private Browsing tab</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>20:41</td>
+          <td>00:41</td>
+          <td>Typed “ESPN” in address bar (search) (2nd Private Browsing tab)</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>20:43</td>
+          <td>00:43</td>
+          <td>Clicked on result for “espn.com” / visited site (2nd Private Browsing tab)</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>Cookies</td>
+          <td>Cookies</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>20:44</td>
+          <td>00:44</td>
+          <td>Clicked on the “Find Training” link (1st Private Browsing tab)</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>20:45</td>
+          <td>00:45</td>
+          <td>Closed second Private Browsing tab</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>20:46</td>
+          <td>00:46</td>
+          <td>Bookmarked “digitalcorpora.org” (2nd tab)</td>
+          <td>Normal mode</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>20:47</td>
+          <td>00:47</td>
+          <td>Closed 1st tab</td>
+          <td>Normal mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<p>The overall results for each category and tool are shown in the following table.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>History</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Cache</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Cookies</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Bookmarks</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Tabs</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="firefox-focus">Firefox Focus</h2>
+<p>This secure browser does not store relevant information on the device&rsquo;s internal memory. </p>
+<p>Some execution timestamps can be extracted from:</p>
+<ul>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Caches/lo.sentry/<!-- raw HTML omitted -->/session.current</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/tmp/</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Preferences/org.mozilla.ios.Focus.plist</p>
+</li>
+</ul>
+<p><strong>None of the compared tools had a parser for this application</strong>.</p>
+<h2 id="google-chrome">Google Chrome</h2>
+<p>Relevant information for this application is stored in these files and folders:</p>
+<ul>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Google/Chrome/Default/History</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Google/Chrome/Default/Preferences</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Google/Chrome/Default/Web Data</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Google/Chrome/Default/Bookmarks</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Google/Chrome/Default/Favicons</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Google/Chrome/Default/Top Sites</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Google/Chrome/Default/Cache/</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Google/Chrome/Default/Session/{SyntheticIdentifier}/session.plist</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Google/Chrome/Default/OTR/Sessions/{SyntheticIdentifier}/session.plist</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Caches/WebKit/NetworkCache/Blobs/</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Caches/WebKit/NetworkCache/Records/</p>
+</li>
+</ul>
+<p><strong>Direct parsing of this application is supported by all tested tools</strong>. Oxygen has the most complete parsing capability, while PA and AXIOM also have a good parsing capability, but PA didn’t parse tabs and AXIOM didn’t parse cookies. <strong>Traces of websites visited in private mode were found in Tabs.</strong></p>
+<p>It’s worth noting that none of the tested tools parsed the folders /private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Google/Chrome/Default/Session/{SyntheticIdentifier}/Snapshots/ and /private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Google/Chrome/Default/OTR/Sessions/{SyntheticIdentifier}/Snapshots/ that contain screenshots of tabs, <strong>including those of webpages visited in private mode</strong></p>
+<p>Following is the comparison table with the details of each action documented by Josh in the creation of the image.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Date</strong></th>
+          <th><strong>Time (EDT)</strong></th>
+          <th><strong>Time (UTC)</strong></th>
+          <th><strong>Action</strong></th>
+          <th><strong>Type</strong></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ARTEX</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:19</td>
+          <td>15:19</td>
+          <td>Typed “nhl.com” in address bar. Visited NHL website.</td>
+          <td>Normal mode</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:20</td>
+          <td>15:20</td>
+          <td>Clicked on link “Hurricanes’ Staal up to task against Hughes”</td>
+          <td>Normal mode</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:22</td>
+          <td>15:22</td>
+          <td>Opened second tab</td>
+          <td>Normal mode</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:23</td>
+          <td>15:23</td>
+          <td>Typed “digitalcorpora” in address bar (search)</td>
+          <td>Normal mode</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:24</td>
+          <td>15:24</td>
+          <td>Clicked result for “digitalcorpora.org” / visited site</td>
+          <td>Normal mode</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:26</td>
+          <td>15:26</td>
+          <td>Opened third tab</td>
+          <td>Normal mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:27</td>
+          <td>15:27</td>
+          <td>Opened Incognito tab</td>
+          <td>Private mode</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:28</td>
+          <td>15:28</td>
+          <td>Typed “sans.org” in the address bar. Visited SANS website</td>
+          <td>Private mode</td>
+          <td>Tabs</td>
+          <td>NO</td>
+          <td>Tabs</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:29</td>
+          <td>15:29</td>
+          <td>Opened second Incognito tab</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:30</td>
+          <td>15:30</td>
+          <td>Typed “ESPN” in address bar (search) (2nd Incognito tab)</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:31</td>
+          <td>15:31</td>
+          <td>Clicked on result for “espn.com” / visited site (2nd Incognito tab)</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:32</td>
+          <td>15:32</td>
+          <td>Clicked on the “Find Training” link (1st Incognito tab)</td>
+          <td>Private mode</td>
+          <td>Tabs</td>
+          <td>NO</td>
+          <td>Tabs</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>11:59</td>
+          <td>15:59</td>
+          <td>Closed second Incognito tab</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>12:01</td>
+          <td>16:01</td>
+          <td>Bookmarked “digitalcorpora.org” in second tab</td>
+          <td>Normal mode</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>12:02</td>
+          <td>16:02</td>
+          <td>Closed 1st tab</td>
+          <td>Normal mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<p>The overall results for each category and tool are shown in the following table.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ARTEX</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>History</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Cache</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Cookies</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Tabs</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Bookmarks</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Favicons</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Autofill</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="microsoft-edge">Microsoft Edge</h2>
+<p>Relevant information for this application is stored in these files and folders:</p>
+<ul>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Microsoft/Edge/Default/History</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/ Microsoft/Edge/Default/Preferences</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/ Microsoft/Edge/Default/Web Data</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/ Microsoft/Edge/Default/Bookmarks</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/ Microsoft/Edge/Default/Favicons</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/ Microsoft/Edge/Default/Top Sites</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/ Microsoft/Edge/Default/Cache/</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/ Microsoft/Edge/Default/Collections/collectionsSQLite</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Microsoft/Edge/Default/Session/{SyntheticIdentifier}/session.plist</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Microsoft/Edge/Default/OTR/Sessions/{SyntheticIdentifier}/session.plist</p>
+</li>
+</ul>
+<p><strong>Direct parsing of this application is supported by AXIOM, OXYGEN, and BELKASOFT</strong>. Oxygen parses history, cache, cookies, and tabs, while AXIOM parses history, bookmarks, and favicons. <strong>Traces of websites visited in private mode were found in tabs.</strong></p>
+<p>It’s worth noting that none of the tested tools parsed the folders /private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Microsoft/Edge/Default/Session/{SyntheticIdentifier}/Snapshots/ and /private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Microsoft/Edge/Default/OTR/Sessions/{SyntheticIdentifier}/Snapshots/ that contain screenshots of tabs, <strong>including those of webpages visited in private mode</strong></p>
+<p>Following is the comparison table with the details of each action documented by Josh in the creation of the image.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Date</strong></th>
+          <th><strong>Time (EDT)</strong></th>
+          <th><strong>Time (UTC)</strong></th>
+          <th><strong>Action</strong></th>
+          <th><strong>Type</strong></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>06/05/2023</td>
+          <td>10:36</td>
+          <td>14:36</td>
+          <td>Typed “nhl.com” in address bar. Visited NHL website.</td>
+          <td>Normal mode</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>10:38</td>
+          <td>14:38</td>
+          <td>Clicked on link “Hurricanes ease past Devils again in Game 2”</td>
+          <td>Normal mode</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>10:39</td>
+          <td>14:39</td>
+          <td>Opened second tab</td>
+          <td>Normal mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>10:40</td>
+          <td>14:40</td>
+          <td>Typed “digitalcorpora” in address bar (search) (2nd tab)</td>
+          <td>Normal mode</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>10:41</td>
+          <td>14:41</td>
+          <td>Clicked result for “digitalcorpora.org” / visited site (2nd tab)</td>
+          <td>Normal mode</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>10:42</td>
+          <td>14:42</td>
+          <td>Opened third tab</td>
+          <td>Normal mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>10:43</td>
+          <td>14:43</td>
+          <td>Opened InPrivate tab</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>10:44</td>
+          <td>14:44</td>
+          <td>Typed “sans.org” in the address bar (search)</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>Tabs</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>10:45</td>
+          <td>14:45</td>
+          <td>Clicked on result for “sans.org” / visited site (InPrivate tab)</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>Tabs</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>10:46</td>
+          <td>14:46</td>
+          <td>Opened second InPrivate tab</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>10:47</td>
+          <td>14:47</td>
+          <td>Typed “espn.com” in address bar / visited ESPN website (2nd InPrivate tab)</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>10:48</td>
+          <td>14:48</td>
+          <td>Clicked on the “Find Training” link (1st InPrivate tab)</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>10:49</td>
+          <td>14:49</td>
+          <td>Closed second InPrivate tab</td>
+          <td>Private mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>10:50</td>
+          <td>14:50</td>
+          <td>Added “digitalcorpora.org” to favorites (2nd tab)</td>
+          <td>Normal mode</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>10:51</td>
+          <td>14:51</td>
+          <td>Closed 1st tab</td>
+          <td>Normal mode</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<p>The overall results for each category and tool are shown in the following table.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>History</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Cache</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Cookies</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Tabs</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Bookmarks</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Favicons</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Autofill</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="gmail">Gmail</h2>
+<p>Relevant information for this application is stored in these files and folders:</p>
+<ul>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/data/&lt;email_adress&gt;/sqlitedb</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Caches/WebKit/NetworkCache/Version 16/Blobs</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Caches/WebKit/NetworkCache/Version 16/Records</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Caches/com.google.Gmail/Cache.db</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Documents/drivekit/users/<!-- raw HTML omitted -->/gdx-cello/cello.db</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Preferences/com.google.Gmail.plist</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Shared/AppGroup/<!-- raw HTML omitted -->/Library/Preferences/group.com.google.Gmail.plist</p>
+</li>
+</ul>
+<p><strong>Direct parsing of this application is supported by AXIOM, PA, OXYGEN, XAMN, and iLEAPP</strong>.</p>
+<p>Following is the comparison table with the details of each action documented by Josh in the creation of the image.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Date</strong></th>
+          <th><strong>Time (EDT)</strong></th>
+          <th><strong>Time (UTC)</strong></th>
+          <th><strong>Action</strong></th>
+          <th><strong>Subject</strong></th>
+          <th><strong>Message</strong></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>20/05/2023</td>
+          <td>09:30</td>
+          <td>13:30</td>
+          <td>Sent message</td>
+          <td>iOS 15 Test</td>
+          <td>Here is your first test message.</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>20/05/2023</td>
+          <td>09:32</td>
+          <td>13:32</td>
+          <td>Received message</td>
+          <td>iOS 15 Test</td>
+          <td>Got it. Here is your reply.</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>20/05/2023</td>
+          <td>09:37</td>
+          <td>13:37</td>
+          <td>Sent message</td>
+          <td>iOS 15 Test Attachment</td>
+          <td>Test attachment message. (attached picture: year I was born)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>20/05/2023</td>
+          <td>09:30</td>
+          <td>13:30</td>
+          <td>Received message</td>
+          <td>iOS 15 Test Attachment</td>
+          <td>Received. Picture attached. (attached picture: Assault Cow)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+  </tbody>
+</table>
+<p>The overall results for each category and tool are shown in the following table.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Account Information</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Emails</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Attachments</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="proton-mail">Proton Mail</h2>
+<p>Relevant information for this application is stored in an SQLite database:</p>
+<ul>
+<li>/private/var/mobile/Containers/Shared/AppGroup/<!-- raw HTML omitted -->/ProtonMail.sqlite</li>
+</ul>
+<p><strong>Messages are stored in an encrypted way in the database: PA and XAMN are the only tools with a decryption and parsing feature for this database</strong>. PA parsed both email header and body, while XAMN only parsed headers. OXYGEN parsed contacts, that are stored unencrypted in the SQLite database.</p>
+<p>Following is the comparison table with the details of each action documented by Josh in the creation of the image.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Date</strong></th>
+          <th><strong>Time (EDT)</strong></th>
+          <th><strong>Time (UTC)</strong></th>
+          <th><strong>Action</strong></th>
+          <th><strong>Subject</strong></th>
+          <th><strong>Message</strong></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>08/05/2023</td>
+          <td>12:35</td>
+          <td>16:35</td>
+          <td>Sent email</td>
+          <td>iOS 15 Image</td>
+          <td>Here is your first test message.</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>08/05/2023</td>
+          <td>12:37</td>
+          <td>16:37</td>
+          <td>Received email</td>
+          <td>Re: iOS 15 Image</td>
+          <td>Got it. Here is your reply.</td>
+          <td>Notifications</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>08/05/2023</td>
+          <td>12:41</td>
+          <td>16:41</td>
+          <td>Received email</td>
+          <td>iOS 15 Pic</td>
+          <td>Picture attached. (eight hours of sleep)</td>
+          <td>Notifications</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>08/05/2023</td>
+          <td>12:43</td>
+          <td>16:43</td>
+          <td>Saved picture</td>
+          <td></td>
+          <td>eight hours of sleep</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>08/05/2023</td>
+          <td>12:46</td>
+          <td>16:46</td>
+          <td>Sent email</td>
+          <td>Re: iOS 15 Pic</td>
+          <td>Got it. I attached one (Nothing)</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<p>The overall results for each category and tool are shown in the following table.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Account Information</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Contacts</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Emails</td>
+          <td>Notifications</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>Notifications</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="tutanota">Tutanota</h2>
+<p>Relevant information is probably stored in this encrypted SQLite database:</p>
+<ul>
+<li>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Documents/offline_NHk0zAV&mdash;-9.sqlite</li>
+</ul>
+<p><strong>None of the compared tools had a parser for this application</strong> and I was not able to find relevant information in the application folders.</p>
+<h2 id="microsoft-teams">Microsoft Teams</h2>
+<p>Relevant information for this application is stored in these files and folders:</p>
+<ul>
+<li>
+<p>/private/var/mobile/Containers/Shared/AppGroup/<!-- raw HTML omitted -->/SkypeSpacesDogfood/<!-- raw HTML omitted -->/SkypeSpacesDogood-<!-- raw HTML omitted -->.sqlite</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Shared/AppGroup/<!-- raw HTML omitted -->/SkypeSpacesDogfood/Downloads</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Shared/AppGroup/<!-- raw HTML omitted -->/Library/Preferences/group.com.microsoft.skype.teams.plist</p>
+</li>
+</ul>
+<p><strong>Direct parsing of this application is supported by PA, OXYGEN, XAMN, and BELKASOFT</strong>. All tested tools correctly parsed messages, including the deleted ones. Some differences were noted in the parsing capabilities of other artifacts (i.e., calls, file transfer, locations).</p>
+<p>Following is the comparison table with the details of each action documented by Josh in the creation of the image.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Date</strong></th>
+          <th><strong>Time (EDT)</strong></th>
+          <th><strong>Time (UTC)</strong></th>
+          <th><strong>Action</strong></th>
+          <th><strong>Message</strong></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>28/04/2023</td>
+          <td>09:44</td>
+          <td>13:44</td>
+          <td>Received message</td>
+          <td>You here yet?</td>
+          <td>Notifications</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>09:45</td>
+          <td>13:45</td>
+          <td>Reacted to message</td>
+          <td>(Message received at 09:44) (Thumbs up emoji)</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>09:47</td>
+          <td>13:47</td>
+          <td>Sent message</td>
+          <td>I am. Battery and all.</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>09:48</td>
+          <td>13:48</td>
+          <td>Received message</td>
+          <td>Yeah, how is it doing this morning?</td>
+          <td>Notifications</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>09:49</td>
+          <td>13:49</td>
+          <td>Sent message</td>
+          <td>Still horrible. It’s drained like 30 percent in the last hour or so.</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>09:50</td>
+          <td>13:50</td>
+          <td>Received message</td>
+          <td>Yikes! That is bad. When we do location stuff you’ll need to be plugged in.</td>
+          <td>Notifications</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>09:53</td>
+          <td>13:53</td>
+          <td>Sent message</td>
+          <td>This phone is retiring after this image.</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>09:54</td>
+          <td>13:54</td>
+          <td>Received message</td>
+          <td>Definitely. I’ll send you a picture. Hang on.</td>
+          <td>Notifications</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>09:57</td>
+          <td>13:57</td>
+          <td>Received image</td>
+          <td>50% chance</td>
+          <td>Notifications</td>
+          <td>Notifications</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>10:18</td>
+          <td>14:18</td>
+          <td>Sent message</td>
+          <td>That picture is truth.</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>10:19</td>
+          <td>14:19</td>
+          <td>Received message</td>
+          <td>Thought you might like it.</td>
+          <td>Notifications</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>10:20</td>
+          <td>14:20</td>
+          <td>Sent message</td>
+          <td>I will audio call you now.</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>10:21</td>
+          <td>14:21</td>
+          <td>Outgoing audio call</td>
+          <td>(0:22) (Call was disconnected)</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>10:23</td>
+          <td>14:23</td>
+          <td>Received message</td>
+          <td>What happened?</td>
+          <td>Notifications</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>10:24</td>
+          <td>14:24</td>
+          <td>Sent message</td>
+          <td>No clue. I’ll try it again.</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>10:25</td>
+          <td>14:25</td>
+          <td>Outgoing audio call</td>
+          <td>(0:20) (Call was disconnected)</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>10:27</td>
+          <td>14:27</td>
+          <td>Sent message</td>
+          <td>Well, it happened again. You try audio calling and see what happens.</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>10:28</td>
+          <td>14:28</td>
+          <td>Incoming audio call</td>
+          <td>(1:30)</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>10:34</td>
+          <td>14:34</td>
+          <td>Received message</td>
+          <td>Well, that worked. You can try video calling me now.</td>
+          <td>Notifications</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>10:37</td>
+          <td>14:37</td>
+          <td>Outgoing video call</td>
+          <td>(1:35)</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>10:42</td>
+          <td>14:42</td>
+          <td>Received message</td>
+          <td>I’ll video call. Standby.</td>
+          <td>Notifications</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>10:43</td>
+          <td>14:43</td>
+          <td>Incoming video call</td>
+          <td>(1:43)</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>10:47</td>
+          <td>14:47</td>
+          <td>Sent message</td>
+          <td>I am sending you this message. I will delete it in a minute.</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>28/04/2023</td>
+          <td>10:48</td>
+          <td>14:48</td>
+          <td>Deleted message</td>
+          <td>(Message sent at 10:47)</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>17/05/2023</td>
+          <td>09:10</td>
+          <td>13:10</td>
+          <td>Start sending dynamic location</td>
+          <td></td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>17/05/2023</td>
+          <td>09:15</td>
+          <td>13:15</td>
+          <td>End sending dynamic location</td>
+          <td></td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>17/05/2023</td>
+          <td>09:17</td>
+          <td>13:17</td>
+          <td>Start receiving dynamic location</td>
+          <td></td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>17/05/2023</td>
+          <td>09:22</td>
+          <td>13:22</td>
+          <td>End receiving dynamic location</td>
+          <td></td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>17/05/2023</td>
+          <td>09:27</td>
+          <td>13:27</td>
+          <td>Received static location</td>
+          <td></td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>17/05/2023</td>
+          <td>09:30</td>
+          <td>13:30</td>
+          <td>Sent static location</td>
+          <td></td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<p>The overall results for each category and tool are shown in the following table.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Account Information</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Contacts</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Messages</td>
+          <td>Notifications</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>Deleted message</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Calls</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Static location</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Dynamic location</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Cache</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="slack">Slack</h2>
+<p>Relevant information for this application is stored in these files and folders:</p>
+<ul>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Slack/<!-- raw HTML omitted -->/ModelDatabase/1/main_db</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Application Support/Slack/<!-- raw HTML omitted -->/team-preferences</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Caches/com.hackemist.SDImageCache/</p>
+</li>
+</ul>
+<p><strong>Direct parsing of this application is supported by AXIOM, OXYGEN, XAMN, BELKASOFT, and iLEAPP</strong>. All tested tools correctly parsed messages, including the deleted ones. Some differences were noted in the parsing capabilities of other artifacts (i.e., calls, file transfer, locations).</p>
+<p>Following is the comparison table with the details of each action documented by Josh in the creation of the image.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Date</strong></th>
+          <th><strong>Time (EDT)</strong></th>
+          <th><strong>Time (UTC)</strong></th>
+          <th><strong>Action</strong></th>
+          <th><strong>Message</strong></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:04</td>
+          <td>19:04</td>
+          <td>Received message</td>
+          <td>Are you here?</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:05</td>
+          <td>19:05</td>
+          <td>Sent message</td>
+          <td>Present.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:06</td>
+          <td>19:06</td>
+          <td>Changed profile picture</td>
+          <td>HAL</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:07</td>
+          <td>19:07</td>
+          <td>Received message</td>
+          <td>Awesome. I don’t think the third guy is coming.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:08</td>
+          <td>19:08</td>
+          <td>Sent message</td>
+          <td>You are correct. Lol.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:10</td>
+          <td>19:10</td>
+          <td>Received message</td>
+          <td>I suppose he’s already here to some degree.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:11</td>
+          <td>19:11</td>
+          <td>Sent message</td>
+          <td>True. Let’s hustle through this, shall we? I’ve got things to do.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:12</td>
+          <td>19:12</td>
+          <td>Received message</td>
+          <td>Works for me. Here comes a picture.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:15</td>
+          <td>19:15</td>
+          <td>Received picture</td>
+          <td>Perfect date</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:17</td>
+          <td>19:17</td>
+          <td>Sent message</td>
+          <td>Lol. ‘Murica. Hang on and I’ll send you one.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:21</td>
+          <td>19:21</td>
+          <td>Sent picture</td>
+          <td>Pulled pork sandwich</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:23</td>
+          <td>19:23</td>
+          <td>Received message</td>
+          <td>Nice! Want to huddle (I think that’s what they’re called here)?</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:25</td>
+          <td>19:25</td>
+          <td>Sent message</td>
+          <td>Sure.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:27</td>
+          <td>19:27</td>
+          <td>Received system message</td>
+          <td>(Huddle started by other party)</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:28</td>
+          <td>19:28</td>
+          <td>Joined huddle</td>
+          <td>(~1:30)</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:30</td>
+          <td>19:30</td>
+          <td>Sent message</td>
+          <td>Head over to DM’s.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:31</td>
+          <td>19:31</td>
+          <td>Other party reacted to message</td>
+          <td>(Message sent at 15:30)</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:32</td>
+          <td>19:32</td>
+          <td>Received message</td>
+          <td>I’m here. It looks like we can huddle here, too.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:33</td>
+          <td>19:33</td>
+          <td>Sent message</td>
+          <td>Yeah, I noticed that.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:34</td>
+          <td>19:34</td>
+          <td>Received message</td>
+          <td>I will send you a picture. Standby.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:35</td>
+          <td>19:35</td>
+          <td>Received picture</td>
+          <td>base64</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:37</td>
+          <td>19:37</td>
+          <td>Sent message</td>
+          <td>You’d be amazed how many people think that.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:38</td>
+          <td>19:38</td>
+          <td>Received message</td>
+          <td>No, no I would not.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:39</td>
+          <td>19:39</td>
+          <td>Sent message</td>
+          <td>Here comes a picture for you.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:40</td>
+          <td>19:40</td>
+          <td>Sent two pictures</td>
+          <td>Unpatched systems and Find out</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:41</td>
+          <td>19:41</td>
+          <td>Received message</td>
+          <td>Did you mean to send two?</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:42</td>
+          <td>19:42</td>
+          <td>Sent message</td>
+          <td>No. Total accident. I will start a huddle in just a moment.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:43</td>
+          <td>19:43</td>
+          <td>Started huddle</td>
+          <td>(~1:30)</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:46</td>
+          <td>19:46</td>
+          <td>Sent message</td>
+          <td>We can only delete messages we send. I will delete this one in a minute.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:47</td>
+          <td>19:47</td>
+          <td>Deleted message</td>
+          <td>(Message sent at 15:46)</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:48</td>
+          <td>19:48</td>
+          <td>Sent message</td>
+          <td>Deleted.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:49</td>
+          <td>19:49</td>
+          <td>Received message</td>
+          <td>(Reply to message sent at 15:48) Thank you.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:50</td>
+          <td>19:50</td>
+          <td>Sent message</td>
+          <td>I will also delete this message.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:51</td>
+          <td>19:51</td>
+          <td>Deleted message</td>
+          <td>(Message sent at 15:50)</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:52</td>
+          <td>19:52</td>
+          <td>Sent message</td>
+          <td>I deleted it.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>29/04/2023</td>
+          <td>15:53</td>
+          <td>19:53</td>
+          <td>Received message</td>
+          <td>(Reply to message sent at 15:52) Awesome! Thanks.</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+  </tbody>
+</table>
+<p>The overall results for each category and tool are shown in the following table.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Account Information</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Contacts</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Messages</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Deleted messages</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Cache</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="zoom">Zoom</h2>
+<p>Relevant information for this application is stored in these files and folders:</p>
+<ul>
+<li>
+<p>/private/var/mobile/Containers/Shared/AppGroup/<!-- raw HTML omitted -->/Library/Caches/contacts.db</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Documents/data/<!-- raw HTML omitted -->@xmpp.zoom.us/</p>
+</li>
+<li>
+<p>/private/var/mobile/Containers/Data/Application/<!-- raw HTML omitted -->/Library/Caches/us.zoom.videomeetings/Cache.db</p>
+</li>
+</ul>
+<p><strong>None of the compared tools had a parser for this application</strong>. Some received messages were parsed by AXIOM, PA, OXYGEN, XAMN, and iLEAPP in iOS Notifications.</p>
+<p>Following is the comparison table with the details of each action documented by Josh in the creation of the image.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Date</strong></th>
+          <th><strong>Time (EDT)</strong></th>
+          <th><strong>Time (UTC)</strong></th>
+          <th><strong>Action</strong></th>
+          <th><strong>Message</strong></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:14</td>
+          <td>16:14</td>
+          <td>Login</td>
+          <td></td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:15</td>
+          <td>16:15</td>
+          <td>Set profile picture</td>
+          <td>HAL</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:20</td>
+          <td>16:20</td>
+          <td>Sent message</td>
+          <td>You here yet?</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:21</td>
+          <td>16:21</td>
+          <td>Received message</td>
+          <td>I am. Looks like our chat history populated after all.</td>
+          <td>Notifications</td>
+          <td>Notifications</td>
+          <td>NO</td>
+          <td>Notifications</td>
+          <td>NO</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:22</td>
+          <td>16:22</td>
+          <td>Sent message</td>
+          <td>I know. Odd since it didn’t show up initially.</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:24</td>
+          <td>16:24</td>
+          <td>Received message</td>
+          <td>(Shrugging man emoji) Who knows. Anything exciting happening today?</td>
+          <td>Notifications</td>
+          <td>Notifications</td>
+          <td>NO</td>
+          <td>Notifications</td>
+          <td>NO</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:25</td>
+          <td>16:25</td>
+          <td>Sent message</td>
+          <td>(Reply to message received at 12:24) Nope. Just general stuff.</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:26</td>
+          <td>16:26</td>
+          <td>Received message</td>
+          <td>That’s good. You can work on this image.</td>
+          <td>Notifications</td>
+          <td>Notifications</td>
+          <td>NO</td>
+          <td>Notifications</td>
+          <td>NO</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:27</td>
+          <td>16:27</td>
+          <td>Sent message</td>
+          <td>I know. It’s long overdue.</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:28</td>
+          <td>16:28</td>
+          <td>Received message</td>
+          <td>Are you doing to do 16 after?</td>
+          <td>Notifications</td>
+          <td>Notifications</td>
+          <td>NO</td>
+          <td>Notifications</td>
+          <td>NO</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:29</td>
+          <td>16:29</td>
+          <td>Sent message</td>
+          <td>Probably. It needs to be done. I won’t use this phone, though.</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:30</td>
+          <td>16:30</td>
+          <td>Received message</td>
+          <td>Makes sense. I am going to send you a picture.</td>
+          <td>Notifications</td>
+          <td>Notifications</td>
+          <td>NO</td>
+          <td>Notifications</td>
+          <td>NO</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:31</td>
+          <td>16:31</td>
+          <td>Reacted to message</td>
+          <td>(Message received at 12:30) (Thumbs up emoji)</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:32</td>
+          <td>16:32</td>
+          <td>Received picture</td>
+          <td>Last day of 2023</td>
+          <td>Notifications</td>
+          <td>Notifications</td>
+          <td>NO</td>
+          <td>Notifications</td>
+          <td>NO</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:34</td>
+          <td>16:34</td>
+          <td>Sent message</td>
+          <td>Got it. I’ll send you one.</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:35</td>
+          <td>16:35</td>
+          <td>Sent picture</td>
+          <td>Close the lid</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:37</td>
+          <td>16:37</td>
+          <td>Received message</td>
+          <td>I’ll audio call you now.</td>
+          <td>Notifications</td>
+          <td>Notifications</td>
+          <td>NO</td>
+          <td>Notifications</td>
+          <td>NO</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:38</td>
+          <td>16:38</td>
+          <td>Incoming audio call</td>
+          <td>(~2:00)</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:42</td>
+          <td>16:42</td>
+          <td>Sent message</td>
+          <td>My turn to call you.</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:43</td>
+          <td>16:43</td>
+          <td>Outgoing audio call</td>
+          <td>(~1:30)</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:47</td>
+          <td>16:47</td>
+          <td>Received message</td>
+          <td>I will video call you now.</td>
+          <td>Notifications</td>
+          <td>Notifications</td>
+          <td>NO</td>
+          <td>Notifications</td>
+          <td>NO</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:48</td>
+          <td>16:48</td>
+          <td>Incoming video call</td>
+          <td>(</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:53</td>
+          <td>16:53</td>
+          <td>Sent message</td>
+          <td>Ok. I’ll video call you.</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:54</td>
+          <td>16:54</td>
+          <td>Outgoing video call</td>
+          <td>(~1:30)</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>12:58</td>
+          <td>16:58</td>
+          <td>Sent message</td>
+          <td>We can only delete our own messages. I will delete this one in a minute.</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>03/05/2023</td>
+          <td>13:01</td>
+          <td>17:01</td>
+          <td>Deleted message</td>
+          <td>(Message sent at 12:58)</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<p>The overall results for each category and tool are shown in the following table.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Account Information</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Contacts</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Messages</td>
+          <td>Notifications</td>
+          <td>Notifications</td>
+          <td>NO</td>
+          <td>Notifications</td>
+          <td>NO</td>
+          <td>Notifications</td>
+      </tr>
+      <tr>
+          <td>Deleted message</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Calls</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Cache</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="final-comments">Final comments</h2>
+<p>Some final comments after this complex post.</p>
+<p>The most commonly used browsers in the iOS world (Safari, Google Chrome, and Mozilla Firefox) are supported by most of the tested tools, but there are still some unexplored areas, like tabs screenshots. Information about websites visited in Private Browsing were recovered for Google Chrome (Tabs), Mozilla Firefox (Tabs, Cookies, Cache, and Favicons), and Microsoft Edge (Tabs). Support for Gmail email client is wide, but encrypted email clients are only supported by some tools (Proton Mail is supported by PA and XAMN) or not supported at all (Tutanota). Common productivity applications like Microsoft Teams and Slack are supported by most of the tested tools and for both of them all tools were also able to recover the deleted message. Zoom databases seem encrypted, so messages were recovered only from iOS notifications.</p>
+<p>The following tables contain an overview of which tools parsed which applications. Be careful in evaluating the quality of extracted date, as in some cases tools have a very limited parsing capability (i.e., extracting the user account information).</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>App Name</strong></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Brave</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Chrome</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>DuckDuckGo</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Firefox</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Firefox Focus</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Microsoft Edge</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<table>
+  <thead>
+      <tr>
+          <th><strong>App Name</strong></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Gmail</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Microsoft Teams</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Proton Mail</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Slack</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Tutanota</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Zoom</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<p>That’s all for this episode! The next one will be about cloud storage, photos and videos, navigation, news, and music applications!</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

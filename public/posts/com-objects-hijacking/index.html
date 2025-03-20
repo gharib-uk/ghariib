@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>COM Objects Hijacking</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>COM Objects Hijacking</h1>
+			<b><time>05.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>The COM Hijacking technique is often utilized by threat actors and various malware families to achieve both persistence and privilege escalation in target systems. It relies on manipulating Component Object Model (COM), exploiting the core architecture of Windows that enables communication between software components, by adding a new value on a specific registry key related to the COM object itself.</p>
+<p>We studied the usage of this technique by different malware samples to pinpoint the most exploited COM objects in 2023.</p>
+<h1 id="abused-com-objects">Abused COM Objects</h1>
+<p>We identified the most abused COM objects by samples using MITRE’s T1546.015 technique during sandbox execution. In addition to the most abused ones, we will also highlight other abused COM objects that we found interesting.</p>
+<p>The chart below shows the distribution of how many samples abused different COM objects for persistence:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/h9F_1wEQn6e2aSnJXjER-y0oCTFnHMIuIlAPGbaXS7K1yDPWttnbG1eDp5wz8jWx6PEihyuhwPcLMdNA_JbgF6jRUybVK2FQTDOZFIWs3rkUSN4q6GTdrq-1mJb450-CKWKooEi1nfXMw5e-Vnhso_fPeNoka9TkBw1x5gKFxPdTNmCBqMkBRFnSZQRnciY" alt="" />
+</figure>
+
+
+</p>
+<p>You can find the most used COM / CLSIDs listed in the Appendix.</p>
+<h2 id="berbew">Berbew</h2>
+<p>One of the main malware families we have observed abusing COM for persistence is Padodor/Berbew. This Trojan primarily focuses on stealing credentials and exfiltrating them to remote hosts controlled by attackers. The main COM objects abused by this family are as follows:</p>
+<ul>
+<li>
+<p>{79ECA078-17FF-726B-E811-213280E5C831}</p>
+</li>
+<li>
+<p>{79FEACFF-FFCE-815E-A900-316290B5B738}</p>
+</li>
+<li>
+<p>{79FAA099-1BAE-816E-D711-115290CEE717}</p>
+</li>
+</ul>
+<p>The corresponding registry entries point to the malicious DLL. However, multiple samples of this family use a second registry key for persistence, which points to this previous CLSID we described, as in the following example :</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/HOCWTX4YofORhFsq73bFupGrAYiKazOlk6-PFnfosNb2GGx5lMbCYa5cM9QWyKSEjvXPAReIPoV8d09uNZ2KHihlrb0Rojd1hRtadkT-zDluMTMKVzsD0U0lzAtzEn8VhW0wUaG3ZfHBAbP53ES1mJAJWIJg93MwvfxVmSBGRQsQTPX8vZnKE1OUmX1s-5I" alt="" />
+</figure>
+
+
+</p>
+<p>In this case, the registry key …CLSID{79ECA078-17FF-726B-E811-213280E5C831}InProcServer32(Default) points to the malicious DLL C:WindowsSysWow64Iimgdcia.dll. A second registry entry …Wow6432NodeMicrosoftWindowsCurrentVersionShellServiceObjectDelayLoadWeb Event Logger points to the previous CLSID {79ECA078-17FF-726B-E811-213280E5C831} which loads the malicious DLL.</p>
+<p>The ShellServiceObjectDelayLoad registry entry (part of ShellServiceObjectDelayLoad), combined with the Web Event Logger subkey used here by Berbew, has frequently been utilized to initiate the loading of the genuine webcheck.dll. This DLL was tasked with monitoring websites within the Internet Explorer application.</p>
+<p>The previously utilized CLSID by WebCheck registry key was {E6FB5E20-DE35-11CF-9C87-00AA005127ED} However, in certain instances today the CLSID {08165EA0-E946-11CF-9C87-00AA005127ED} is used. Both are responsible for loading the webcheck.dll DLL and are abused by malware samples.</p>
+<h2 id="rats">RATs</h2>
+<p>The CLSID {89565275-A714-4a43-912E-978B935EDCCC} seems to be extensively used by various RATs . This CLSID has primarily been associated with families like RemcosRAT and AsyncRAT in our observations. However, we&rsquo;ve also encountered instances where BitRAT samples have used it. Researchers at Cisco Talos found this CLSID activity associated with the SugarGh0st RAT malware.</p>
+<p>In the majority of cases, the DLL used for persistence with this CLSID is dynwrapx.dll. This DLL was found in the wild in a GitHub repository, currently unavailable, however the DLL originates from a project named DynamicWrapperX (first seen in VirusTotal in 2010). It executes shellcode to inject the RAT into a process.</p>
+<p>A similar case is CLSID {26037A0E-7CBD-4FFF-9C63-56F2D0770214}. The associated DLL for persistence is dbggame.dll. First uploaded to VirusTotal in 2012, this DLL is deployed by various types of malware, including ransomware such as XiaoBa.</p>
+<h3 id="rats-w-vulnerabilities">RATs w/ vulnerabilities</h3>
+<p>To finish with RATs that use this technique, from late December 2023 to February 2024, there were various incidents linked to the CVE-2024-21412 vulnerability uncovered by the Trend Micro Zero Day Initiative team (ZDI). During these events, active campaigns were distributing the Darkme RAT. Throughout the infection process, a primary goal was to evade Microsoft Defender SmartScreen and introduce victims to the DarkMe malware.</p>
+<p>The TrendMicro analysis highlights that the Darkme RAT sample utilizes the CLSID {74A94F46-4FC5-4426-857B-FCE9D9286279} to carry out the final load of the RAT. Yet, we&rsquo;ve noted the utilization of other CLSIDs for persistence, including {D4D4D7B7-1774-4FE5-ABA8-4CC0B99452B4} in this sample.</p>
+<p>Furthermore, to guarantee the DLL&rsquo;s execution, they generate a registry key employing Autorun keys. This key&rsquo;s objective is to initiate the CLSID using rundll32.exe and /sta parameter, which is used to load a COM object, in this case, the previous malicious COM object created.</p>
+<pre tabindex="0"><code>EventID:13 
+EventType:SetValue
+Details:%windir%SysWOW64rundll32.exe /sta {D4D4D7B7-1774-4FE5-ABA8-4CC0B99452B4} &#34;USB_Module&#34;
+TargetObject:HKUS-1-5-21-575823232-3065301323-1442773979-1000SoftwareMicrosoftWindowsCurrentVersionRunRunDllModule
+</code></pre><h2 id="why-use-one-when-you-can-use-many">Why use one when you can use many?</h2>
+<p>Some samples (like this Sality one) use multiple CLSIDs:</p>
+<ul>
+<li>
+<p>{EBEB87A6-E151-4054-AB45-A6E094C5334B}</p>
+</li>
+<li>
+<p>{57477331-126E-4FC8-B430-1C6143484AA9}</p>
+</li>
+<li>
+<p>{241D7F03-9232-4024-8373-149860BE27C0}</p>
+</li>
+<li>
+<p>{C07DB6A3-34FC-4084-BE2E-76BB9203B049}</p>
+</li>
+</ul>
+<p>The sample drops two different DLLs during execution, three of the registry keys point to one of them, the remaining one to the other. The sample also turns off the Windows firewall and UAC to carry out additional actions while infecting the system.</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/CgMyQFCyp8QdRzn7oDZEjeNzyRRKAGdauSqFbB8dbgPigeeiSmfM5fBd6fbKbw9yC7jduHNgsNZsWfuzQa6qfOJehvBFm2jtNPikgGzs4tfKdTMepE57mQmmawpP09rQpGoj_jE-v4pLeEOdN3e5JaGC_12FohlKpf2dFVauablqF4ThWHBqqBiJV8w389s" alt="" />
+</figure>
+
+
+</p>
+<p>The Allaple worm family deploys multiple COM objects pointing to the malicious DLL during execution, like in this example:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/srr4NcbbgMs00yPDx3sji6jBvO4cZYTFrmiUTpr-RE98-A4nV0qPIAzGfP4Iu6onRyiLJknQ21ryWH2y0YQbU5vICwzVsc7DPpWF8UFpnNzyfKZ2UYGfTgvarleHGOENsAuC1-cKR16vsrxG3M7IfVmfJ4NjrxInM8HTDGLkVDQWCODlUcgOVOAtDT2yatU" alt="" />
+</figure>
+
+
+</p>
+<h2 id="adware">Adware</h2>
+<p>Citrio, an adware web browser designed by Catalina Group, uses in its more recent versions a COM object for persistence with CLSID {F4CBF20B-F634-4095-B64A-2EBCDD9E560E}. It drops several harmful DLLs, one masquerades as Google Update (goopdate.dll), also observed as psuser.dll, that possesses the capability to establish services on the system along using a COM object for persistence.</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/vmzA_B8lAkuJCNYSz0IWihUOUXtD0tCy2jsGuebDJESCgQCsCe_MMWjCyMTBCAHKSEAiGweELdegS0IuSqPlBg8I6qT8cbLx-8feKUgosuYUMDqrxjJk-RKEPlkxY9KlklQW5BiT_RDfPPWZkcVJRnM-miOK3lEo5zPHinbCb7liR96DKOWiyC4w6PzFovk" alt="" />
+</figure>
+
+
+</p>
+<h1 id="common-folders-used-to-store-the-payloads">Common folders used to store the payloads</h1>
+<p>Most malicious DLLs we saw so far are typically stored in the C:Users<!-- raw HTML omitted -->AppDataRoaming directory. It&rsquo;s also common to create subfolders within this directory, the most frequently found include:</p>
+<ul>
+<li>
+<p>qmacro</p>
+</li>
+<li>
+<p>mymacro</p>
+</li>
+<li>
+<p>MacroCommerce</p>
+</li>
+<li>
+<p>Plugin</p>
+</li>
+<li>
+<p>Microsoft</p>
+</li>
+</ul>
+<p>In addition to these, we also found the following folders being frequently used to hide malicious DLLs:</p>
+<ul>
+<li>
+<p>The C:WindowsSysWow64 is a folder found in 64-bit versions of Windows, containing legitimate 32-bit system files and libraries, and is oftenly used to conceal malicious DLLs. Its prevalence makes it an attractive hiding place, complicating detection efforts. However, permissions are required to create files in it.</p>
+</li>
+<li>
+<p>The C:Program Files (x86) folder is another legitimate directory used to store malicious COM hijacking payloads. Similar to AppDataRoaming, in this case we have observed that the malicious DLLs are stored under specific subfolders, such as “Google”, “Mozilla Firefox”, “Microsoft”, “Common Files” or “Internet Download Manager”.</p>
+</li>
+<li>
+<p>C:Users<!-- raw HTML omitted -->AppDataLocal is another folder used for storing these payloads, including the “Temp”, “Microsoft” and “Google” subfolders.</p>
+</li>
+</ul>
+<h1 id="detection">Detection</h1>
+<p>In order to detect unusual modifications to registry COM objects, there are a couple of crowdsourced Sigma rules to identify this behavior.</p>
+<ul>
+<li>
+<p>Potential Persistence Via COM Hijacking From Suspicious Locations (high risk level). Detects suspicious when creating a registry key using COM objects.</p>
+</li>
+<li>
+<p>Potential Persistence Via COM Search Order Hijacking (medium risk level). Similar to the previous rule, it also filters out paths associated with legitimate behaviors.</p>
+</li>
+</ul>
+<p>These rules will detect uncommon registry modifications related to COM objects. You can use the following queries to retrieve samples triggered by the previous rules, respectively: VTI query for sigma1 and VTI query for sigma2.</p>
+<p>You can also identify this behavior using Livehunt rules that target the creation of registry keys utilized for this purpose, for instance with the vt.behaviour.registry_keys_set modifier.</p>
+<pre tabindex="0"><code>import &#34;vt&#34;
+
+rule CLSID_COM_Hijacking:  {
+  meta:
+    target_entity = &#34;file&#34;
+    hash = &#34;a19472bd5dd89a6bd725c94c89469f12cdbfee3b0f19035a07374a005b57b5e0&#34;
+    author = &#34;@Joseliyo_Jstnk&#34;
+    mitre_technique = &#34;T1546.015&#34;
+    mitre_tactic = &#34;TA0003&#34;
+
+  condition:
+    vt.metadata.new_file and vt.metadata.analysis_stats.malicious &gt;= 5 and 
+    for any vt_behaviour_registry_keys_set in vt.behaviour.registry_keys_set: (
+      vt_behaviour_registry_keys_set.key matches /\CLSID\{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}\InProcServer32\(Default)/
+    )  
+}
+</code></pre><p>The rule above might generate some noise, so we suggest considering polishing it by excluding certain common families like Berbew, which as mentioned, heavily relies on this technique:</p>
+<pre tabindex="0"><code>and not 
+    (
+        for any engine, signature in vt.metadata.signatures : (  
+        signature icontains &#34;berbew&#34;  
+        )  
+    )
+</code></pre><p>You can also use the paths listed in Appendix to identify suspicious samples using them.</p>
+<p>A final idea is including interesting existing Sigma rules into our Livehunt. Given that these rules already cover the targeted registry keys, we don’t need to use vt.behaviour.registry_keys_set in our condition.</p>
+<pre tabindex="0"><code>import &#34;vt&#34;
+
+rule CLSID_COM_Hijacking:  {
+  meta:
+    target_entity = &#34;file&#34;
+    hash = &#34;a19472bd5dd89a6bd725c94c89469f12cdbfee3b0f19035a07374a005b57b5e0&#34;
+    author = &#34;@Joseliyo_Jstnk&#34;
+    sigma_authors = &#34;Maxime Thiebaut (@0xThiebaut), oscd.community, Cédric Hien&#34;
+    mitre_technique = &#34;T1546.015&#34;
+    mitre_tactic = &#34;TA0003&#34;
+
+  condition:
+    vt.metadata.new_file and vt.metadata.analysis_stats.malicious &gt;= 5 and 
+    for any vt_behaviour_sigma_analysis_results in vt.behaviour.sigma_analysis_results: (
+      vt_behaviour_sigma_analysis_results.rule_id == &#34;7f5d257abc981b5eddb52d4a9a02fb66201226935cf3d39177c8a81c3a3e8dd4&#34;
+    )
+}
+</code></pre><h1 id="wrapping-up">Wrapping up</h1>
+<p>The T1546.015 - Event Triggered Execution: Component Object Model Hijacking is just one of several techniques employed for persistence. Leveraging COM objects for this task is frequently straightforward for threat actors. The analysis of how malware abuses this technique helps us get a better understanding in how to identify different families and develop protection methods. Although the technique is not the most popular for persistence (that would be T1547.001 - Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder), it is widely abused by many malware families.</p>
+<p>Identifying some of the most abused CLSIDs can help us generate detection rules that identify possible malware abuses in our infrastructure. It can also serve as a good guide for prevalence in order to detect any anomalies for new suspicious activity.</p>
+<p>The use of VirusTotal sandbox reports provides a very powerful tool to translate TTPs into actionable queries and monitoring. In this example we used it to better understand how attackers use COM objects, but could be used for any techniques employed by different threat actors.</p>
+<p>We hope you join our fan club of Sigma and VirusTotal, and as always we are happy to hear your feedback.</p>
+<h1 id="appendix">APPENDIX</h1>
+<h2 id="abused-clsids">Abused CLSIDs</h2>
+<p>Next, you&rsquo;ll find a list of the main CLSIDs described in the blog, along with a chart to show which ones were used the most.</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/Dn_TKOQbzGbN6WR3mwhz34h0pZAPNXhCVrEfwKkmfkk5MeYZ2LoRp3a0IwUgoEBsOau9ewHpjxuXMAoL9BsrY82z3iXijDpi65ZM3tvn1Cvo1OIfIp2xeurNAjRH3ugmBaraveflDx2MB-3kCIXMonrU94mM5mEHZmD7rttkjubPlLV4KgWnTn65DSChYyI" alt="" />
+</figure>
+
+
+</p>
+<table>
+  <thead>
+      <tr>
+          <th>CLSID - COM Objects</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>79FAA099-1BAE-816E-D711-115290CEE717</td>
+      </tr>
+      <tr>
+          <td>EBEB87A6-E151-4054-AB45-A6E094C5334B</td>
+      </tr>
+      <tr>
+          <td>241D7F03-9232-4024-8373-149860BE27C0</td>
+      </tr>
+      <tr>
+          <td>C07DB6A3-34FC-4084-BE2E-76BB9203B049</td>
+      </tr>
+      <tr>
+          <td>79ECA078-17FF-726B-E811-213280E5C831</td>
+      </tr>
+      <tr>
+          <td>22C6C651-F6EA-46BE-BC83-54E83314C67F</td>
+      </tr>
+      <tr>
+          <td>F4CBF20B-F634-4095-B64A-2EBCDD9E560E</td>
+      </tr>
+      <tr>
+          <td>57477331-126E-4FC8-B430-1C6143484AA9</td>
+      </tr>
+      <tr>
+          <td>C73F6F30-97A0-4AD1-A08F-540D4E9BC7B9</td>
+      </tr>
+      <tr>
+          <td>89565275-A714-4a43-912E-978B935EDCCC</td>
+      </tr>
+      <tr>
+          <td>26037A0E-7CBD-4FFF-9C63-56F2D0770214</td>
+      </tr>
+      <tr>
+          <td>16426152-126E-4FC8-B430-1C6143484AA9</td>
+      </tr>
+      <tr>
+          <td>33414471-126E-4FC8-B430-1C6143484AA9</td>
+      </tr>
+      <tr>
+          <td>23716116-126E-4FC8-B430-1C6143484AA9</td>
+      </tr>
+      <tr>
+          <td>D4D4D7B7-1774-4FE5-ABA8-4CC0B99452B4</td>
+      </tr>
+      <tr>
+          <td>79FEACFF-FFCE-815E-A900-316290B5B738</td>
+      </tr>
+      <tr>
+          <td>74A94F46-4FC5-4426-857B-FCE9D9286279</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="common-paths">Common paths</h2>
+<p>Below you will find a list with some of the most common paths used during the creation of the COM objects for persistence. The table contains the &lsquo;parent&rsquo; paths as well, while the chart includes only the &lsquo;subpaths&rsquo;.</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/Apy2CDZzU_kZqC5EwbVrWhJSZ8VcmyvGVwrxTn5PXiOdFez2r6Tm1JOJHzSt-7J6nGWg8qYbR9qRF5yFN2Ua6M8Id1dLg9-weNnfmrNFafRxJayw0oy7SNZG9y1gxSvjYsg3CuMMRyUrf5ecDe1YSsC-GwavMoumQa2_ruWN6NI9dKC91VHmNAiz0_d-keY" alt="" />
+</figure>
+
+
+</p>
+<table>
+  <thead>
+      <tr>
+          <th>Common paths used during COM object persistence</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataRoaming</td>
+      </tr>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataRoamingqmacro</td>
+      </tr>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataRoamingmymacro</td>
+      </tr>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataRoamingMacroCommerce</td>
+      </tr>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataRoamingPlugin</td>
+      </tr>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataRoamingMicrosoft</td>
+      </tr>
+      <tr>
+          <td>C:WindowsSysWow64</td>
+      </tr>
+      <tr>
+          <td>C:Program Files (x86)</td>
+      </tr>
+      <tr>
+          <td>C:Program Files (x86)Google</td>
+      </tr>
+      <tr>
+          <td>C:Program Files (x86)Mozilla Firefox</td>
+      </tr>
+      <tr>
+          <td>C:Program Files (x86)Microsoft</td>
+      </tr>
+      <tr>
+          <td>C:Program Files (x86)Common Files</td>
+      </tr>
+      <tr>
+          <td>C:Program Files (x86)Internet Download Manager</td>
+      </tr>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataLocal</td>
+      </tr>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataLocalTemp</td>
+      </tr>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataLocalMicrosoft</td>
+      </tr>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataLocalGoogle</td>
+      </tr>
+      <tr>
+          <td>C:WindowsTemp</td>
+      </tr>
+  </tbody>
+</table>
+<p>The COM Hijacking technique is often utilized by threat actors and various malware families to achieve both persistence and privilege escalation in target systems. It relies on manipulating Component Object Model (COM), exploiting the core architecture of Windows that enables communication between software components, by adding a new value on a specific registry key related to the COM object itself.</p>
+<p>We studied the usage of this technique by different malware samples to pinpoint the most exploited COM objects in 2023.</p>
+<h1 id="abused-com-objects-1">Abused COM Objects</h1>
+<p>We identified the most abused COM objects by samples using MITRE’s T1546.015 technique during sandbox execution. In addition to the most abused ones, we will also highlight other abused COM objects that we found interesting.</p>
+<p>The chart below shows the distribution of how many samples abused different COM objects for persistence:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/h9F_1wEQn6e2aSnJXjER-y0oCTFnHMIuIlAPGbaXS7K1yDPWttnbG1eDp5wz8jWx6PEihyuhwPcLMdNA_JbgF6jRUybVK2FQTDOZFIWs3rkUSN4q6GTdrq-1mJb450-CKWKooEi1nfXMw5e-Vnhso_fPeNoka9TkBw1x5gKFxPdTNmCBqMkBRFnSZQRnciY" alt="" />
+</figure>
+
+
+</p>
+<p>You can find the most used COM / CLSIDs listed in the Appendix.</p>
+<h2 id="berbew-1">Berbew</h2>
+<p>One of the main malware families we have observed abusing COM for persistence is Padodor/Berbew. This Trojan primarily focuses on stealing credentials and exfiltrating them to remote hosts controlled by attackers. The main COM objects abused by this family are as follows:</p>
+<ul>
+<li>
+<p>{79ECA078-17FF-726B-E811-213280E5C831}</p>
+</li>
+<li>
+<p>{79FEACFF-FFCE-815E-A900-316290B5B738}</p>
+</li>
+<li>
+<p>{79FAA099-1BAE-816E-D711-115290CEE717}</p>
+</li>
+</ul>
+<p>The corresponding registry entries point to the malicious DLL. However, multiple samples of this family use a second registry key for persistence, which points to this previous CLSID we described, as in the following example :</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/HOCWTX4YofORhFsq73bFupGrAYiKazOlk6-PFnfosNb2GGx5lMbCYa5cM9QWyKSEjvXPAReIPoV8d09uNZ2KHihlrb0Rojd1hRtadkT-zDluMTMKVzsD0U0lzAtzEn8VhW0wUaG3ZfHBAbP53ES1mJAJWIJg93MwvfxVmSBGRQsQTPX8vZnKE1OUmX1s-5I" alt="" />
+</figure>
+
+
+</p>
+<p>In this case, the registry key …CLSID{79ECA078-17FF-726B-E811-213280E5C831}InProcServer32(Default) points to the malicious DLL C:WindowsSysWow64Iimgdcia.dll. A second registry entry …Wow6432NodeMicrosoftWindowsCurrentVersionShellServiceObjectDelayLoadWeb Event Logger points to the previous CLSID {79ECA078-17FF-726B-E811-213280E5C831} which loads the malicious DLL.</p>
+<p>The ShellServiceObjectDelayLoad registry entry (part of ShellServiceObjectDelayLoad), combined with the Web Event Logger subkey used here by Berbew, has frequently been utilized to initiate the loading of the genuine webcheck.dll. This DLL was tasked with monitoring websites within the Internet Explorer application.</p>
+<p>The previously utilized CLSID by WebCheck registry key was {E6FB5E20-DE35-11CF-9C87-00AA005127ED} However, in certain instances today the CLSID {08165EA0-E946-11CF-9C87-00AA005127ED} is used. Both are responsible for loading the webcheck.dll DLL and are abused by malware samples.</p>
+<h2 id="rats-1">RATs</h2>
+<p>The CLSID {89565275-A714-4a43-912E-978B935EDCCC} seems to be extensively used by various RATs . This CLSID has primarily been associated with families like RemcosRAT and AsyncRAT in our observations. However, we&rsquo;ve also encountered instances where BitRAT samples have used it. Researchers at Cisco Talos found this CLSID activity associated with the SugarGh0st RAT malware.</p>
+<p>In the majority of cases, the DLL used for persistence with this CLSID is dynwrapx.dll. This DLL was found in the wild in a GitHub repository, currently unavailable, however the DLL originates from a project named DynamicWrapperX (first seen in VirusTotal in 2010). It executes shellcode to inject the RAT into a process.</p>
+<p>A similar case is CLSID {26037A0E-7CBD-4FFF-9C63-56F2D0770214}. The associated DLL for persistence is dbggame.dll. First uploaded to VirusTotal in 2012, this DLL is deployed by various types of malware, including ransomware such as XiaoBa.</p>
+<h3 id="rats-w-vulnerabilities-1">RATs w/ vulnerabilities</h3>
+<p>To finish with RATs that use this technique, from late December 2023 to February 2024, there were various incidents linked to the CVE-2024-21412 vulnerability uncovered by the Trend Micro Zero Day Initiative team (ZDI). During these events, active campaigns were distributing the Darkme RAT. Throughout the infection process, a primary goal was to evade Microsoft Defender SmartScreen and introduce victims to the DarkMe malware.</p>
+<p>The TrendMicro analysis highlights that the Darkme RAT sample utilizes the CLSID {74A94F46-4FC5-4426-857B-FCE9D9286279} to carry out the final load of the RAT. Yet, we&rsquo;ve noted the utilization of other CLSIDs for persistence, including {D4D4D7B7-1774-4FE5-ABA8-4CC0B99452B4} in this sample.</p>
+<p>Furthermore, to guarantee the DLL&rsquo;s execution, they generate a registry key employing Autorun keys. This key&rsquo;s objective is to initiate the CLSID using rundll32.exe and /sta parameter, which is used to load a COM object, in this case, the previous malicious COM object created.</p>
+<pre tabindex="0"><code>EventID:13 
+EventType:SetValue
+Details:%windir%SysWOW64rundll32.exe /sta {D4D4D7B7-1774-4FE5-ABA8-4CC0B99452B4} &#34;USB_Module&#34;
+TargetObject:HKUS-1-5-21-575823232-3065301323-1442773979-1000SoftwareMicrosoftWindowsCurrentVersionRunRunDllModule
+</code></pre><h2 id="why-use-one-when-you-can-use-many-1">Why use one when you can use many?</h2>
+<p>Some samples (like this Sality one) use multiple CLSIDs:</p>
+<ul>
+<li>
+<p>{EBEB87A6-E151-4054-AB45-A6E094C5334B}</p>
+</li>
+<li>
+<p>{57477331-126E-4FC8-B430-1C6143484AA9}</p>
+</li>
+<li>
+<p>{241D7F03-9232-4024-8373-149860BE27C0}</p>
+</li>
+<li>
+<p>{C07DB6A3-34FC-4084-BE2E-76BB9203B049}</p>
+</li>
+</ul>
+<p>The sample drops two different DLLs during execution, three of the registry keys point to one of them, the remaining one to the other. The sample also turns off the Windows firewall and UAC to carry out additional actions while infecting the system.</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/CgMyQFCyp8QdRzn7oDZEjeNzyRRKAGdauSqFbB8dbgPigeeiSmfM5fBd6fbKbw9yC7jduHNgsNZsWfuzQa6qfOJehvBFm2jtNPikgGzs4tfKdTMepE57mQmmawpP09rQpGoj_jE-v4pLeEOdN3e5JaGC_12FohlKpf2dFVauablqF4ThWHBqqBiJV8w389s" alt="" />
+</figure>
+
+
+</p>
+<p>The Allaple worm family deploys multiple COM objects pointing to the malicious DLL during execution, like in this example:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/srr4NcbbgMs00yPDx3sji6jBvO4cZYTFrmiUTpr-RE98-A4nV0qPIAzGfP4Iu6onRyiLJknQ21ryWH2y0YQbU5vICwzVsc7DPpWF8UFpnNzyfKZ2UYGfTgvarleHGOENsAuC1-cKR16vsrxG3M7IfVmfJ4NjrxInM8HTDGLkVDQWCODlUcgOVOAtDT2yatU" alt="" />
+</figure>
+
+
+</p>
+<h2 id="adware-1">Adware</h2>
+<p>Citrio, an adware web browser designed by Catalina Group, uses in its more recent versions a COM object for persistence with CLSID {F4CBF20B-F634-4095-B64A-2EBCDD9E560E}. It drops several harmful DLLs, one masquerades as Google Update (goopdate.dll), also observed as psuser.dll, that possesses the capability to establish services on the system along using a COM object for persistence.</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/vmzA_B8lAkuJCNYSz0IWihUOUXtD0tCy2jsGuebDJESCgQCsCe_MMWjCyMTBCAHKSEAiGweELdegS0IuSqPlBg8I6qT8cbLx-8feKUgosuYUMDqrxjJk-RKEPlkxY9KlklQW5BiT_RDfPPWZkcVJRnM-miOK3lEo5zPHinbCb7liR96DKOWiyC4w6PzFovk" alt="" />
+</figure>
+
+
+</p>
+<h1 id="common-folders-used-to-store-the-payloads-1">Common folders used to store the payloads</h1>
+<p>Most malicious DLLs we saw so far are typically stored in the C:Users<!-- raw HTML omitted -->AppDataRoaming directory. It&rsquo;s also common to create subfolders within this directory, the most frequently found include:</p>
+<ul>
+<li>
+<p>qmacro</p>
+</li>
+<li>
+<p>mymacro</p>
+</li>
+<li>
+<p>MacroCommerce</p>
+</li>
+<li>
+<p>Plugin</p>
+</li>
+<li>
+<p>Microsoft</p>
+</li>
+</ul>
+<p>In addition to these, we also found the following folders being frequently used to hide malicious DLLs:</p>
+<ul>
+<li>
+<p>The C:WindowsSysWow64 is a folder found in 64-bit versions of Windows, containing legitimate 32-bit system files and libraries, and is oftenly used to conceal malicious DLLs. Its prevalence makes it an attractive hiding place, complicating detection efforts. However, permissions are required to create files in it.</p>
+</li>
+<li>
+<p>The C:Program Files (x86) folder is another legitimate directory used to store malicious COM hijacking payloads. Similar to AppDataRoaming, in this case we have observed that the malicious DLLs are stored under specific subfolders, such as “Google”, “Mozilla Firefox”, “Microsoft”, “Common Files” or “Internet Download Manager”.</p>
+</li>
+<li>
+<p>C:Users<!-- raw HTML omitted -->AppDataLocal is another folder used for storing these payloads, including the “Temp”, “Microsoft” and “Google” subfolders.</p>
+</li>
+</ul>
+<h1 id="detection-1">Detection</h1>
+<p>In order to detect unusual modifications to registry COM objects, there are a couple of crowdsourced Sigma rules to identify this behavior.</p>
+<ul>
+<li>
+<p>Potential Persistence Via COM Hijacking From Suspicious Locations (high risk level). Detects suspicious when creating a registry key using COM objects.</p>
+</li>
+<li>
+<p>Potential Persistence Via COM Search Order Hijacking (medium risk level). Similar to the previous rule, it also filters out paths associated with legitimate behaviors.</p>
+</li>
+</ul>
+<p>These rules will detect uncommon registry modifications related to COM objects. You can use the following queries to retrieve samples triggered by the previous rules, respectively: VTI query for sigma1 and VTI query for sigma2.</p>
+<p>You can also identify this behavior using Livehunt rules that target the creation of registry keys utilized for this purpose, for instance with the vt.behaviour.registry_keys_set modifier.</p>
+<pre tabindex="0"><code>import &#34;vt&#34;
+
+rule CLSID_COM_Hijacking:  {
+  meta:
+    target_entity = &#34;file&#34;
+    hash = &#34;a19472bd5dd89a6bd725c94c89469f12cdbfee3b0f19035a07374a005b57b5e0&#34;
+    author = &#34;@Joseliyo_Jstnk&#34;
+    mitre_technique = &#34;T1546.015&#34;
+    mitre_tactic = &#34;TA0003&#34;
+
+  condition:
+    vt.metadata.new_file and vt.metadata.analysis_stats.malicious &gt;= 5 and 
+    for any vt_behaviour_registry_keys_set in vt.behaviour.registry_keys_set: (
+      vt_behaviour_registry_keys_set.key matches /\CLSID\{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}\InProcServer32\(Default)/
+    )  
+}
+</code></pre><p>The rule above might generate some noise, so we suggest considering polishing it by excluding certain common families like Berbew, which as mentioned, heavily relies on this technique:</p>
+<pre tabindex="0"><code>and not 
+    (
+        for any engine, signature in vt.metadata.signatures : (  
+        signature icontains &#34;berbew&#34;  
+        )  
+    )
+</code></pre><p>You can also use the paths listed in Appendix to identify suspicious samples using them.</p>
+<p>A final idea is including interesting existing Sigma rules into our Livehunt. Given that these rules already cover the targeted registry keys, we don’t need to use vt.behaviour.registry_keys_set in our condition.</p>
+<pre tabindex="0"><code>import &#34;vt&#34;
+
+rule CLSID_COM_Hijacking:  {
+  meta:
+    target_entity = &#34;file&#34;
+    hash = &#34;a19472bd5dd89a6bd725c94c89469f12cdbfee3b0f19035a07374a005b57b5e0&#34;
+    author = &#34;@Joseliyo_Jstnk&#34;
+    sigma_authors = &#34;Maxime Thiebaut (@0xThiebaut), oscd.community, Cédric Hien&#34;
+    mitre_technique = &#34;T1546.015&#34;
+    mitre_tactic = &#34;TA0003&#34;
+
+  condition:
+    vt.metadata.new_file and vt.metadata.analysis_stats.malicious &gt;= 5 and 
+    for any vt_behaviour_sigma_analysis_results in vt.behaviour.sigma_analysis_results: (
+      vt_behaviour_sigma_analysis_results.rule_id == &#34;7f5d257abc981b5eddb52d4a9a02fb66201226935cf3d39177c8a81c3a3e8dd4&#34;
+    )
+}
+</code></pre><h1 id="wrapping-up-1">Wrapping up</h1>
+<p>The T1546.015 - Event Triggered Execution: Component Object Model Hijacking is just one of several techniques employed for persistence. Leveraging COM objects for this task is frequently straightforward for threat actors. The analysis of how malware abuses this technique helps us get a better understanding in how to identify different families and develop protection methods. Although the technique is not the most popular for persistence (that would be T1547.001 - Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder), it is widely abused by many malware families.</p>
+<p>Identifying some of the most abused CLSIDs can help us generate detection rules that identify possible malware abuses in our infrastructure. It can also serve as a good guide for prevalence in order to detect any anomalies for new suspicious activity.</p>
+<p>The use of VirusTotal sandbox reports provides a very powerful tool to translate TTPs into actionable queries and monitoring. In this example we used it to better understand how attackers use COM objects, but could be used for any techniques employed by different threat actors.</p>
+<p>We hope you join our fan club of Sigma and VirusTotal, and as always we are happy to hear your feedback.</p>
+<h1 id="appendix-1">APPENDIX</h1>
+<h2 id="abused-clsids-1">Abused CLSIDs</h2>
+<p>Next, you&rsquo;ll find a list of the main CLSIDs described in the blog, along with a chart to show which ones were used the most.</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/Dn_TKOQbzGbN6WR3mwhz34h0pZAPNXhCVrEfwKkmfkk5MeYZ2LoRp3a0IwUgoEBsOau9ewHpjxuXMAoL9BsrY82z3iXijDpi65ZM3tvn1Cvo1OIfIp2xeurNAjRH3ugmBaraveflDx2MB-3kCIXMonrU94mM5mEHZmD7rttkjubPlLV4KgWnTn65DSChYyI" alt="" />
+</figure>
+
+
+</p>
+<table>
+  <thead>
+      <tr>
+          <th>CLSID - COM Objects</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>79FAA099-1BAE-816E-D711-115290CEE717</td>
+      </tr>
+      <tr>
+          <td>EBEB87A6-E151-4054-AB45-A6E094C5334B</td>
+      </tr>
+      <tr>
+          <td>241D7F03-9232-4024-8373-149860BE27C0</td>
+      </tr>
+      <tr>
+          <td>C07DB6A3-34FC-4084-BE2E-76BB9203B049</td>
+      </tr>
+      <tr>
+          <td>79ECA078-17FF-726B-E811-213280E5C831</td>
+      </tr>
+      <tr>
+          <td>22C6C651-F6EA-46BE-BC83-54E83314C67F</td>
+      </tr>
+      <tr>
+          <td>F4CBF20B-F634-4095-B64A-2EBCDD9E560E</td>
+      </tr>
+      <tr>
+          <td>57477331-126E-4FC8-B430-1C6143484AA9</td>
+      </tr>
+      <tr>
+          <td>C73F6F30-97A0-4AD1-A08F-540D4E9BC7B9</td>
+      </tr>
+      <tr>
+          <td>89565275-A714-4a43-912E-978B935EDCCC</td>
+      </tr>
+      <tr>
+          <td>26037A0E-7CBD-4FFF-9C63-56F2D0770214</td>
+      </tr>
+      <tr>
+          <td>16426152-126E-4FC8-B430-1C6143484AA9</td>
+      </tr>
+      <tr>
+          <td>33414471-126E-4FC8-B430-1C6143484AA9</td>
+      </tr>
+      <tr>
+          <td>23716116-126E-4FC8-B430-1C6143484AA9</td>
+      </tr>
+      <tr>
+          <td>D4D4D7B7-1774-4FE5-ABA8-4CC0B99452B4</td>
+      </tr>
+      <tr>
+          <td>79FEACFF-FFCE-815E-A900-316290B5B738</td>
+      </tr>
+      <tr>
+          <td>74A94F46-4FC5-4426-857B-FCE9D9286279</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="common-paths-1">Common paths</h2>
+<p>Below you will find a list with some of the most common paths used during the creation of the COM objects for persistence. The table contains the &lsquo;parent&rsquo; paths as well, while the chart includes only the &lsquo;subpaths&rsquo;.</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/Apy2CDZzU_kZqC5EwbVrWhJSZ8VcmyvGVwrxTn5PXiOdFez2r6Tm1JOJHzSt-7J6nGWg8qYbR9qRF5yFN2Ua6M8Id1dLg9-weNnfmrNFafRxJayw0oy7SNZG9y1gxSvjYsg3CuMMRyUrf5ecDe1YSsC-GwavMoumQa2_ruWN6NI9dKC91VHmNAiz0_d-keY" alt="" />
+</figure>
+
+
+</p>
+<table>
+  <thead>
+      <tr>
+          <th>Common paths used during COM object persistence</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataRoaming</td>
+      </tr>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataRoamingqmacro</td>
+      </tr>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataRoamingmymacro</td>
+      </tr>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataRoamingMacroCommerce</td>
+      </tr>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataRoamingPlugin</td>
+      </tr>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataRoamingMicrosoft</td>
+      </tr>
+      <tr>
+          <td>C:WindowsSysWow64</td>
+      </tr>
+      <tr>
+          <td>C:Program Files (x86)</td>
+      </tr>
+      <tr>
+          <td>C:Program Files (x86)Google</td>
+      </tr>
+      <tr>
+          <td>C:Program Files (x86)Mozilla Firefox</td>
+      </tr>
+      <tr>
+          <td>C:Program Files (x86)Microsoft</td>
+      </tr>
+      <tr>
+          <td>C:Program Files (x86)Common Files</td>
+      </tr>
+      <tr>
+          <td>C:Program Files (x86)Internet Download Manager</td>
+      </tr>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataLocal</td>
+      </tr>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataLocalTemp</td>
+      </tr>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataLocalMicrosoft</td>
+      </tr>
+      <tr>
+          <td>C:Users<!-- raw HTML omitted -->AppDataLocalGoogle</td>
+      </tr>
+      <tr>
+          <td>C:WindowsTemp</td>
+      </tr>
+  </tbody>
+</table>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

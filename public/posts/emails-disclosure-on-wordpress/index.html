@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Emails Disclosure on WordPress</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Emails Disclosure on WordPress</h1>
+			<b><time>22.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/email">email</a>
+        	       
+		           <a href="/tags/leaks">leaks</a>
+        	       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgq2xqKk1ubaVqsHfi6sEA09BIrKp0tq5owY7LB4nlg8eNKmroRMqHEqFoTabFGi0ZLEQYie07RtSjDbve08MCwVdLisOINcEcnNfcPkHmWCRgAJXyMBOmDRhEc_o5G-ZRKVnxJbtBiMeaK/s320/blog-email-disclosure-wordpress-image-1%255B1%255D.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>Password brute force is one of the common most attack on WordPress. Only a few hours after the deployment of a new blog, we can see login attempts to /xmlrpc.php or /wp-login.php endpoints. While not being sophisticated, they remain strong attacks as they put pressure on the limited complexity passwords and potential password reuse from users. In this article, we are going to explain how the public</p>
+<p>wordpress.com REST API makes it easier for brute-force attacks on millions of WordPress instances managed by wordpress.com or private instances with the Jetpack plugin installed.</p>
+<h2 id="wordpress-out-of-the-box">WordPress Out of the Box</h2>
+<h3 id="user-enumeration">User Enumeration</h3>
+<p>Out of the box, user accounts can be enumerated with unauthenticated REST API requests. This API will return all authors who have written at least one post. Additionally, the generated welcome post, automatically created on new installs, exposes the administrator user by default.</p>
+<p>In the screen capture below, we can see 2 interesting pieces of metadata for the administrative user: its username (<strong>superadmin</strong>) and its email address hash in the form of a gravatar link (<a href="http://0.gravatar.com/avatar/6e2b22791df03c1290687b2807f52afd)">http://0.gravatar.com/avatar/6e2b22791df03c1290687b2807f52afd)</a>. Email MD5 hashes can be reversed (cracked) in most cases. For example, Dominique Bongard presented at PasswordCon 2013 that he manage to recover 45% from a sample of 2800 hashes taken on a french political website.</p>
+<table>
+  <thead>
+      <tr>
+          <th>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj8SeEukR5XM2-szWIB0SfmgXas9y3nAcj5mj7jyDOuEC1iJDJ49x7Pp0wuroy3_1kW_qCaIbUSPqhbCfwf6W3uD7qFLCngLofSwUXOq9FxQVqN8F9G6j59kxG61HN9NXIejKDYo0U2sIzX/w640-h502/blog-email-disclosure-wordpress-image-2%255B1%255D.png" alt="" />
+</figure>
+
+
+</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>/wp/v2/users endpoints accessible by default</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="potential-hardening">Potential Hardening</h3>
+<p>The simplest way to avoid this user enumeration is to disable the REST API. It can be done by installing a third-party plugin. There are also plenty of manual code edits that are being used to avoid installing third-party plugins. The iThemes Security plugin does filtering on the most sensitive endpoints by default.</p>
+<table>
+  <thead>
+      <tr>
+          <th>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiNxxdPtnWCx8AsyLN3fid3CPBzMJEXvs16qXZBT-vqOTB0-dGKGYLmxFd0RFeBZ8PbR4_uWYCjM5xNysgJrR7FiEzZ6atvlIoS4rc966xSfnWpehwbRrWwb6XaWC36QcXj5WUjSMjfS4pg/w640-h560/blog-email-disclosure-wordpress-image-3%255B1%255D.png" alt="" />
+</figure>
+
+
+</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Examples of errors messages</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="the-jetpack-plugin">The Jetpack Plugin</h2>
+<h3 id="jetpack-and-wordpresscom">Jetpack and WordPress.com</h3>
+<p>Jetpack comes with the promise of improving security, performance, and management. Being developed by Automattic, the company supporting WordPress.com, the plugin is said to be installed on 5 million WordPress instances. To activate the plugin, the user must authenticate with a valid wordpress.com account. Most of the dashboard features and settings are hosted on wordpress.com. With the help of the Jetpack plugin, wordpress.com will obtain an authentication token to allow the synchronization of data including the list of users and posts.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhEY_da0NB3JG0GrOGLPo19bl-NVAMOHIEs4P2iEeOy0WmU811pTGqGhXucaNll2wPc1-VG-VmQpdlYWuzl0bVLTAlQpEjfj6gHMvmdSMIIzh-hvQJ6XqG5s7TvKz92X9Byrg_NGD4IYAMM/w640-h506/blog-email-disclosure-wordpress-image-4%255B1%255D.png" alt="" />
+</figure>
+
+
+</p>
+<p>WordPress is connecting through a privileged XML-RPC connection</p>
+<p>The Jetpack plugin by itself is not causing any harm, however, part of the data that it synchronizes on WordPress.com servers is exposed publicly with a documented REST API.</p>
+<p>Looking at the REST API for potential information leaks, we can see that the main endpoints returning user information are protected.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>REST URL</strong></th>
+          <th><strong>Require Authentication Token</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>/sites/$site/users</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>/sites/$site/users/login:$user_id</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>/me</td>
+          <td>YES</td>
+      </tr>
+  </tbody>
+</table>
+<p>
+<figure>
+  <img src="https://3akfc19rcxr3p4ohv3z7zzp6-wpengine.netdna-ssl.com/wp-content/uploads/blog-email-disclosure-wordpress-image-7.png" alt="blog-email-disclosure-wordpress-image-7" />
+  <figcaption>blog-email-disclosure-wordpress-image-7</figcaption>
+</figure>
+
+
+</p>
+<p>User information returned</p>
+<p>However, most of the user metadata is also publicly available on the posts endpoints. The following endpoints are returning post objects which include author metadata. The author object includes the username and the hashed e-mail via the Gravatar URL.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>REST URL</strong></th>
+          <th><strong>Require Authentication Token</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>/sites/$site/posts/$post_ID</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>/sites/$site/posts</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<table>
+  <thead>
+      <tr>
+          <th>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgQJO2vgSewfmud7D8c91hqxpdbpvvIZ23NAPP4XCr6eAHVAABOYLkP7kegd25tTTGY1sw3dyqJ4GebJjrHvvswQHKFMzZPV6EbqD7ClpvphM6aqQdNxy90FMsoKDkyHijG8IpYnmh4ZCUi/w472-h640/blog-email-disclosure-wordpress-image-5%255B1%255D.png" alt="" />
+</figure>
+
+
+</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Information available publicly on post related endpoints</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="why-are-emails-so-important">Why are emails so important?</h3>
+<p>First, there are privacy concerns with the disclosure of user emails. A user might want to remain anonymous when publishing their personal blog. Some organizations might need to protect their employees to avoid attacks targeting them. Associated metadata, such the organization and website, could also be used to personalize phishing attacks.</p>
+<p>While we could extend on the topic of privacy and phishing, the present article will focus on the application security aspects. Email disclosure of all users can greatly improve brute force attack success rates. As we live in an era of periodic password breaches, single factor authentication is more vulnerable than ever to brute force attacks. An attacker can correlate the list of a specific user’s email addresses against known passwords that they have used.</p>
+<p><strong>Potential abuse scenario</strong></p>
+<p>An automated bot could do the following steps:</p>
+<ol>
+<li>Enumerate the user’s emails for a given blog</li>
+<li>Attempt to log in with every password known for the specific emails</li>
+<li>For a successful login, verify the permission of the user.</li>
+<li>Install a malicious plugin / Edit template page (PHP) / Insert malicious HTML in article post / etc…</li>
+</ol>
+<h3 id="quick-data-analysis">Quick data analysis</h3>
+<p>Since email addresses are in a relatively straightforward format, obfuscating them as MD5 in order to anonymize them is no longer sufficient. Using modern GPUs and simple rulesets we were able to deanonymize over 53 million emails out of the 91 million hashes we extracted with the WordPress.com API. 32 million users had one password leak in the past 10 years. This is at least 36% percent accounts that are more susceptible to credential stuffing attacks. The correlation was made using a collection of 2.6 billion leaked emails and passwords provided by Flare Systems.</p>
+<p>When we analyzed the dataset, we verified the number of illegitimate accounts. Less than 1% of the accounts were either of invalid email format, temporary email inboxes or known spam emails. This is a sign that Automattic is actively closing spam accounts. The remaining emails are likely to be legitimate WordPress users.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Category</strong></th>
+          <th></th>
+          <th><strong>Numbers</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Emails that could not be cracked (40%)</td>
+          <td></td>
+          <td>36,381,990</td>
+      </tr>
+      <tr>
+          <td>Cracked Emails (60%)</td>
+          <td>With at least one leaked password</td>
+          <td>32,735,798</td>
+      </tr>
+      <tr>
+          <td>With no leaked password found</td>
+          <td>20,644,054</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>Invalid</td>
+          <td>480,879</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjD3tppWIOOQuqkx0cLd1VFKfS-M7XzbxQ4d4_tYWpMjHGsWLnQjKXRGFYd9rOUj-cy69ZsTBEenXJMlDWqdNCcyqG3tw4L33w2XhKUFH9PtLFdHD7GbZrSPj3UgxVX6IX6mRk2eVsoQR7-/w640-h440/blog-email-disclosure-wordpress-image-6%255B1%255D.png" alt="" />
+</figure>
+
+
+</p>
+<p>Here are some of the notable organizations using WordPress with user emails being exposed:</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Organization</strong></th>
+          <th><strong>Number of Users</strong></th>
+          <th><strong>Alexa Rank</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>newsfeed.time.com</td>
+          <td>186</td>
+          <td>1524th</td>
+      </tr>
+      <tr>
+          <td>vimeo.com/blog</td>
+          <td>177</td>
+          <td>170th</td>
+      </tr>
+      <tr>
+          <td>blog.ted.com</td>
+          <td>120</td>
+          <td>1291st</td>
+      </tr>
+      <tr>
+          <td>blog.etsy.com</td>
+          <td>2570</td>
+          <td>76th</td>
+      </tr>
+      <tr>
+          <td>techcrunch.com</td>
+          <td>57</td>
+          <td>1754th</td>
+      </tr>
+      <tr>
+          <td>wired.com</td>
+          <td>1052</td>
+          <td>1525th</td>
+      </tr>
+      <tr>
+          <td>devblogs.microsoft.com</td>
+          <td>1000+</td>
+          <td>21st</td>
+      </tr>
+      <tr>
+          <td>gblogs.cisco.com</td>
+          <td>123</td>
+          <td>824th</td>
+      </tr>
+      <tr>
+          <td>godaddy.com/garage</td>
+          <td>1430</td>
+          <td>172nd</td>
+      </tr>
+      <tr>
+          <td>books.disney.com</td>
+          <td>14</td>
+          <td>4436th</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="moving-forward">Moving Forward</h2>
+<h3 id="response-from-wordpresscom">Response from WordPress.com</h3>
+<p>Regarding the e-mail disclosure through the Gravatar URL, the Automattic team responded with the following message:</p>
+<blockquote>
+<p>“Thanks for the report.</p>
+<p>I have just confirmed with the team that Gravatar is working as it should be. The information that is exposed by Gravatar are intended for the public.”</p></blockquote>
+<p>Our interpretation is that Automattic is not willing to remove the Gravatar integration from their APIs.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Easy user enumeration is not a fatal flaw. However, it is something to keep in mind if you are deploying a blog for commercial or personal purposes. Here are a few ideas to mitigate this risk:</p>
+<ul>
+<li>Enforce multi-factor authentication for all your users with the JetPack plugin</li>
+<li>Force users to use generated passwords</li>
+<li>Disable the Jetpack plugin if you are not using any of its features</li>
+</ul>
+<p><em>This blog was originally posted on GoSecure blog.</em></p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

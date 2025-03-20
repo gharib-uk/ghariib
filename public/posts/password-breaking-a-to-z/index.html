@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Password Breaking A to Z</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Password Breaking A to Z</h1>
+			<b><time>15.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/comprehensive">comprehensive</a>
+        	       
+		           <a href="/tags/edpr">edpr</a>
+        	       
+		           <a href="/tags/passwords">passwords</a>
+        	       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://blog.elcomsoft.com/wp-content/uploads/2024/07/passwords-az.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>Our blog features numerous articles on breaking passwords and accessing encrypted data, ranging from simple “how-to” guides to comprehensive manuals. However, many of the questions we are frequently asked are not about the technical stuff but rather the very basics of password recovery. Can you break that password? Is it legal? How much time do you think it will take to break this one? We do have the answers, but they require digging through the extensive content of our blog. To address this, we’ve created a comprehensive A to Z article that not only answers many common questions but also links to our previous posts.</p>
+<h2 id="why-do-we-attack-passwords-and-not-encryption">Why do we attack passwords (and not encryption)?</h2>
+<p>We attack passwords instead of encryption because modern encryption methods are extremely secure and practically unbreakable due to their complexity and long key lengths. The industry-standard AES-256 algorithm used in practically all encrypted formats employs 256-bit keys, creating an astronomical number of possible combinations that would take an infeasible amount of time to crack through brute force. Passwords, on the other hand, are the entry point to this encryption and are often much weaker due to human limitations in remembering complex strings. Therefore, it’s more practical and efficient to target the password itself rather than attempting to break the encryption algorithm.</p>
+<h2 id="what-is-strong-encryption">What is “strong encryption”?</h2>
+<p>Strong encryption is a type of encryption that can’t be cracked in a reasonable amount of time by directly attacking the encryption key. A strong encryption method should have no vulnerabilities that would allow an attacker to significantly reduce the time needed to break it. To decrypt data protected by strong encryption, one must know the password or possess the original encryption key. The AES encryption algorithm with 256-bit keys is considered secure as no vulnerabilities have been discovered during the many years of its use. Therefore, if strong encryption is used, attacking the password is the only viable way to access the encrypted data.</p>
+<h2 id="will-quantum-computing-change-that">Will quantum computing change that?</h2>
+<p>Quantum computing does have the potential to change the landscape of encryption cracking. While classic encryption methods are incredibly secure against attacks with traditional computing methods, quantum computers can process information in fundamentally different ways. Grover’s algorithm, which quantum computers could use, would reduce the effective key length of AES-256 to 128 bits, immensely reducing the required time to brute-force the encryption key, yet even 128-bit keys are practically unbreakable. However, AES-256 is still considered secure in the face of quantum attacks because it would require a quantum computer with capabilities far beyond what is currently feasible. Therefore, while quantum computing poses future challenges (or opportunities, depending on which side you are), it does not yet fundamentally change the approach of attacking passwords as the entry point to encryption.</p>
+<h2 id="is-breaking-passwords-legal">Is breaking passwords legal?</h2>
+<p>The short answer is “it depends”. Regulations jurisdictions have different rules; in some countries suspects must reveal their passwords when interrogated by authorities (welcome to France, the country of Liberté). Obviously, no one can stop you from breaking your own lost or forgotten password; however, if this password protects access to your data stored in some online service, it does not actually matter that the account is yours as you cannot legally attack it. In other words, breaking passwords is perfectly legal if you work with local data and the data is yours, or if you have the permission from the legal owner, or if you work for legal authorities and follow the local regulations. Cracking someone else’s data may be a criminal offence, but there is a huge gray area.</p>
+<blockquote>
+<p>Everything You Wanted to Ask About Cracking Passwords</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="is-a-million-passwords-a-second-a-lot">Is a million passwords a second a lot?</h2>
+<p>We have a tool that leverages the computational power of modern GPUs alongside with modern multi-core processors to maximize the speed of password attacks. Benchmarks demonstrate the recovery speed on various hardware configurations for different encryption formats. These speeds vary widely; for some formats, even the best hardware can only test a few passwords per second, while for others, speeds can reach millions passwords per second.</p>
+<p>So, is a million passwords per second a lot or a little? The thing is, this is not the right question. The correct question to ask would be either “What kind of passwords can be broken withing a certain timeframe at a rate of a million passwords per second?” or “How long will it take to break a certain password at a rate of a million passwords per second?” To answer these, we published some formulas that will allow calculating the answer.</p>
+<blockquote>
+<p>The ABC’s of Password Cracking: The True Meaning of Speed</p></blockquote>
+<!-- raw HTML omitted -->
+<p>In the first scenario, there is a typical situation where neither the length nor complexity of the password are known in advance, but there is a certain time limit on how long we can spend on the attack. In the second scenario, the limit is on the maximum password length and complexity (for example, we only try passwords containing digits and Latin letters in both cases plus a small set of special characters), while we calculate the time required to try all possible combinations.</p>
+<p>For example, if a certain password can be attacked at the speed of 10 million passwords per second, it would take no more than five minutes to recover a password consisting of only 5 Latin letters in both cases. If the speed is 100 passwords per second and the password is at least 7 characters long and has symbols from the extended character range, the maximum attack time increases to around 700 billion seconds, or approximately 22,000 years. You can find formulas for calculating attack times and much more useful information in our guide.</p>
+<blockquote>
+<p>May the [Brute] Force Be with You!</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="how-to-benchmark-password-recovery-speeds">How to benchmark password recovery speeds?</h2>
+<p>Benchmarking password recovery is a bit more complex than the nice graphs may suggest. We always test using a full brute-force attack method with a fixed password length and a specific character set limitation. In addition, the testing is always performed by running a brute-force attack. The brute-force attack allows us to measure the pure attack speed on a particular  GPU or CPU model. Other attack methods, such as mask attacks, dictionary attacks, or more complex hybrid attacks, require additional computations that may limit the utilization of the graphics card. Finally, we don’t start measurements immediately. Instead, we wait for several minutes for the attack to ‘settle’, giving the tool some time to load and compile the required code into the GPU.</p>
+<blockquote>
+<p>Elcomsoft Lab: Benchmarking Password Recovery Speeds</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="why-do-we-need-video-cards-what-about-distributed-attacks">Why do we need video cards? What about distributed attacks?</h2>
+<p>Most password protection methods rely on multiple rounds of hash iterations to slow down brute-force attacks. Even the fastest processors choke when trying to break a reasonably strong password. Video cards can be used to speed up the recovery with GPU acceleration, yet the GPU market is currently overheated, and most high-end video cards are severely overpriced. Today, we’ll test a bunch of low-end video cards and compare their price/performance ratio.</p>
+<p>Making use of GPU cores instead of the CPU helps break passwords faster. Even the slowest built-in GPU with a TDP of several watts may demonstrate performance comparable to a 190W CPU without a sweat. High-end GPUs such as the NVIDIA RTX 4080 can break passwords up to 500 times faster compared to a common Intel Core i7 CPU, while mid-range video cards delivering up to a 250x boost.</p>
+<p>GPU acceleration offloads computational-intensive calculations from the computer’s CPU onto the video card’s Compute Units (CUs). A dedicated video card can deliver the speed far exceeding the metrics of a high-end CPU. Even a modest integrated GPU (the one built into a CPU) may be able to match or exceed the performance of the central processor while consuming significantly less electricity and dissipating a fraction of the heat produced by the CPU with similar load.</p>
+<blockquote>
+<p>GPU Acceleration On The Cheap: Using Affordable Video Cards to Break Passwords Faster</p></blockquote>
+<!-- raw HTML omitted -->
+<p>Often enough, even multiple high-performance graphics cards might not be enough to successfully recover a password in reasonable timeframe. In such cases, distributed computing (see, Elcomsoft Distributed Password Recovery) comes to the rescue. The effectiveness of distributed computing versus using GPUs is highly dependent on on the data format and the hashing algorithm. If the data can be accelerated on a GPU, even basic graphics cards can outperform a large network of non-accelerated computers. However, several computers, each equipped with several of powerful GPUs, can provide a significant advantage over a single computer. Notably, some algorithms cannot be accelerated on GPUs at all, making distributed computing the only option for speeding up the attack.</p>
+<p>Therefore, while a distributed network is generally better, each computer in the network should be equipped with powerful GPUs for optimal performance.</p>
+<h2 id="will-video-cards-eventually-replace-cpus">Will video cards eventually replace CPUs?</h2>
+<p>This is highly unlikely. GPUs will not replace CPUs because of their fundamental architectural differences. GPUs excel at parallelizing a single operation across thousands of threads, making them highly efficient for tasks like password cracking. However, for everyday tasks, CPUs are more suitable because their cores can operate fully independently. This independence allows CPUs to handle a variety of tasks simultaneously, whereas each GPU core is slower than an individual CPU core and can only perform the same operation concurrently. Therefore, while GPUs are faster for specific parallelizable tasks, CPUs are necessary for the diverse and independent tasks encountered in daily computing.</p>
+<h2 id="which-video-card-is-best-for-breaking-passwords">Which video card is best for breaking passwords?</h2>
+<p>If you are shopping for a new system, buy the most powerful NVIDIA board of the current generation that fits your budget. If you already have previous-generation GPUs, you can continue using those if they are powerful enough; if not, see above. Please note that previous-generation GPUs are generally not worth it if you are buying new, even if the price seems attractive. More on the subject:</p>
+<blockquote>
+<p>NVIDIA RTX 40 Series Graphics Cards: The Faster and More Efficient Password Recovery Accelerators</p></blockquote>
+<!-- raw HTML omitted -->
+<p>The current NVIDIA range is complicated. There are multiple models of 4060 alone, as well as multiple variations of 4070 and 4080 to choose from. The following article will help you havigate NVIDIA’s product range:</p>
+<blockquote>
+<p>Navigating NVIDIA’s Super 40-Series GPU Update: A Guide for IT Professionals</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="what-about-fpgaasic">What about FPGA/ASIC?</h2>
+<p>They are great in theory, less so in real life due to their high cost and limited software support. Granted, one could build a cost-effective ASIC, but their price only goes down enough with economy of the scale. There is simply not enough demand from the password breaking perspective to build a cost-effective ASIC, and let us not forget about the still limited software support. If you are looking for efficient acceleration hardware, look for energy-efficient GPUs instead.</p>
+<h2 id="how-to-build-an-efficient-computer-for-breaking-passwords">How to build an efficient computer for breaking passwords</h2>
+<p>Power consumption and power efficiency are two crucial parameters that are often overlooked in favor of sheer speed. When building a workstation with 24×7 workload, absolute performance numbers become arguably less important compared to performance per watt.</p>
+<blockquote>
+<p>Building an Efficient Password Recovery Workstation: Power Savings and Waste Heat Management</p></blockquote>
+<!-- raw HTML omitted -->
+<p>We compared power efficiency and cooling solutions of various video cards:</p>
+<blockquote>
+<p>Building an Efficient Password Recovery Workstation: NVIDIA RTX Passwords-per-Watt Benchmarks</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="building-a-data-center-calculating-energy-consumption">Building a data center: calculating energy consumption</h2>
+<p>When building a data center with multiple computers equipped with power-hungry GPUs, it is crucial to calculate the total energy consumption of the system as a whole to ensure accurate planning for power delivery and heat dissipation.</p>
+<p>For instance, consider a setup with one hundred GPUs, each with a maximum consumption of 300W, installed in a number of workstations. Alongside these, there would be the required number of UPS. Together, this setup would require at least 45KW of power. Not only will you need adequate power delivery, but also sufficient air conditioning to cool the room.</p>
+<h2 id="how-encryption-works-what-is-the-difference-between-passwords-and-encryption-keys">How encryption works? What is the difference between passwords and encryption keys?</h2>
+<p>Passwords are used to protect access to documents, databases, compressed archives, encrypted disks, and many other things one can think of. When it comes to encryption, passwords are almost never stored, encrypted or not. Instead, passwords are “hashed”, or transformed with a one-way function. The result of the transformation, if one is performed correctly, cannot be reversed, and the original password cannot be “decrypted” from the result of a hash function.</p>
+<p>Raw password hashes are rarely used directly as encryption keys. For example, many disk encryption tools can use passwords to encrypt a so-called “protector”, which in turn is used to protect the “key encryption key”, which in turn is used to protect the “media encryption key”, which in turn is finally used to encrypt and decrypt data. Notably, there are kinds of protectors that do not use passwords at all (instead, they can employ TPM, recovery keys, or USB flash drives for unlocking the disk). Password is the only thing that can be broken by trying multiple different combinations. More on passwords, hashing, and encryption:</p>
+<blockquote>
+<p>It’s Hashed, Not Encrypted</p></blockquote>
+<!-- raw HTML omitted -->
+<p>Typically, a password is hashed using multiple rounds of a one-way transformation function, then stored in the file’s header, which allows verifying the password without actually decrypting the encrypted content. The encryption key itself is different from the saved hash, but password attacks are performed against this hash. If the correct password is found, the encryption key is calculated separately. Sometimes, the password hash is not stored in the file’s header, requiring part or all of the data to be decrypted to verify the password, which slows down the attack. The speed of such an attack depends on the size of data needing decryption. One common format using this approach is RAR4 archives. The later version, RAR5, is no longer using this approach.</p>
+<blockquote>
+<p>Breaking RAR5 and 7Zip Passwords</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="what-kinds-of-attacks-are-available">What kinds of attacks are available?</h2>
+<p>There are several methods for recovering the original password ranging from brute force to very complex rule-based attacks.</p>
+<p>Theoretically, during a brute force attack one would try <em>all</em> possible password combinations up to a certain length, but in practice, this is often limited to a subset of characters (like uppercase and lowercase Latin letters, digits, and a few special characters). Since the full Unicode set has 149,186 characters, running a brute-force attack on the entire character set is simply infeasible. Even a three-character password composed of the full Unicode set would take an impractically long time to crack. In reality, passwords rarely include symbols from such diverse and extended character sets, so brute force attacks are usually limited to certain alphabets.</p>
+<blockquote>
+<p>Use The Brute Force, Luke</p></blockquote>
+<!-- raw HTML omitted -->
+<p>Brute-force attacks are the fastest, but due to the largest number of passwords one needs to try during these attacks, brute-force is the last resort when all other options are exhausted. Since brute force is extremely inefficient for longer passwords, other types of attacks were invented to reduce the number of passwords to try. Dictionary attacks use words from the dictionary of English language (and/or the user’s native language) as possible passwords. Various other attacks using masks, mutations, and custom rules are also available.</p>
+<blockquote>
+<p>A Word About Dictionaries</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="order-matters">Order matters</h2>
+<p>With the many types of password recovery attacks, when would you use each one of them, and in what order? The following article explains how to order password recovery jobs based on the types of data and information available about the owner.</p>
+<blockquote>
+<p>Building a Password Recovery Queue</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="gpu-and-cpu-utilization">GPU and CPU utilization</h2>
+<p>When it comes to encryption, data formats differ in various ways. One of the major differences is the type of hardware that can be used for running and accelerating password recovery attacks. There are three main scenarios:</p>
+<ol>
+<li>Brute force supports GPU acceleration, with minimal CPU usage.</li>
+<li>Brute force only works on CPUs, making GPUs irrelevant. GPU acceleration not supported.</li>
+<li>Both GPUs and CPUs are utilized, with GPUs doing the bulk of the work and CPUs providing additional support (sometimes using multiple cores).</li>
+</ol>
+<h4 id="gpu-accelerated-attacks">GPU-accelerated attacks</h4>
+<p>GPUs excel at performing multiple simple calculations in parallel across many cores. This makes them ideal for brute force attacks on formats that can be split into a large number of simple tasks. When a job can be split to run across thousands of GPU cores, the few cores of the computer’s CPU become insignificant, as they add minimal performance gains while increasing overhead.</p>
+<p>Most current data formats are optimized for GPUs, but we observe a slow shift toward algorithms designed to be GPU-resistant.</p>
+<h4 id="cpu-only-attacks-gpu-resistant-algorithms">CPU-only attacks (GPU-resistant algorithms)</h4>
+<p>Some algorithms are designed to resist GPU-accelerated attacks. This can be achieved by various means. For one, GPU cores handle simple tasks well but falter with more complex computations required by some password-to-binary key transformations. Such algorithms must run on CPUs, significantly slowing down the attack speed.</p>
+<h4 id="gpu-assisted-attacks-with-high-cpu-utilization">GPU-assisted attacks with high CPU utilization</h4>
+<p>Some algorithms utilize both GPU and CPU cores. Typically, the GPU handles most of the workload, while the CPU performs essential supporting tasks. For instance, a powerful 16-core CPU can assist the GPU, but it won’t match the brute force speed achievable by the GPU alone.</p>
+<p>Non-brute force attacks, which are often more efficient, still heavily load the CPU. These “smart” attacks are slower than brute force because they rely on batches of passwords, which must be generated. On certain formats, the CPU may struggle to generate password batches quickly enough to fully load the GPU, thus requiring the generation to be run on the GPU itself, which further strains the GPU and slows the attack.</p>
+<blockquote>
+<p>Breaking Passwords on Alder Lake CPUs</p></blockquote>
+<!-- raw HTML omitted -->
+<h4 id="memory-intensive-algorithms">Memory-intensive algorithms</h4>
+<p>Some hashing algorithms are designed to thwart GPU attacks by requiring significant memory usage. For example, the Scrypt algorithm, used in BestCrypt, ensures that even the weakest computers can check a single password without issues, but attempting to run many checks in parallel on a GPU would quickly exhaust its memory. This deliberate design choice makes such algorithms GPU-resistant.</p>
+<blockquote>
+<p>Breaking BestCrypt Volume Encryption 5</p></blockquote>
+<!-- raw HTML omitted -->
+<h2 id="more-information">More information</h2>
+<p>We will keep posting about password recovery, yet we have many existing articles on the subject. Below are just a few of them.</p>
+<blockquote>
+<p>Decrypting Password-Protected DOC and XLS Files in Minutes</p></blockquote>
+<!-- raw HTML omitted -->
+<blockquote>
+<p>Microsoft Office encryption evolution: from Office 97 to Office 2019</p></blockquote>
+<!-- raw HTML omitted -->
+<p>Password leaks can be used to accelerate cold attacks:</p>
+<blockquote>
+<p>How to Break 30 Per Cent of Passwords in Seconds</p></blockquote>
+<!-- raw HTML omitted -->
+<blockquote>
+<p>How to Break 70% of Passwords in Minutes</p></blockquote>
+<!-- raw HTML omitted -->
+<blockquote>
+<p>Password Crackers’ Gold Mine: Browser Passwords</p></blockquote>
+<!-- raw HTML omitted -->
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

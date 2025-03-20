@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Change the Priority of PPAs or Apt Package Repositories in Ubuntu</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Change the Priority of PPAs or Apt Package Repositories in Ubuntu</h1>
+			<b><time>05.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2022/04/softwarecenter-logo-250x250.webp" alt="" />
+</figure>
+
+
+</p>
+<p>This is a step by step guide shows how to set the priority of certain packages, launchpad PPAs, and/or other apt repositories in Ubuntu, Debian, Linux Mint, and their based systems.</p>
+<p>Besides using the default system repositories, we can also install additional packages from third-party or software’s own repositories.</p>
+<p>For example, user may update LibreOffice office suite via the Ubuntu PPA, install Spotify, Google Chrome, Edge from their own repositories, or install tons of media apps from deb multimedia repository in Debian.</p>
+<p>Due to mixed software sources, you have multiple versions of same app package, but you may want to install and keep an older or certain version. Or you added a third-party repository, but only want to install single or few packages from it, while keep all others being blocked.</p>
+<p>In the cases, you need to set the priority for certain packages or repositories, and here’s how!</p>
+<p><strong>NOTE: This tutorial does NOT work for Flatpak and Snap packages, as they run in sandbox environment.</strong></p>
+<h3 id="step-1-find-out-the-key-attribute-for-the-target-repository">Step 1: Find out the key attribute for the target repository</h3>
+<p>Before getting started, you need to first find out the key attribute to identify the target package repository.</p>
+<p><strong>1.</strong> First, press <code>Ctrl+Alt+T</code> on keyboard to open up a terminal window. Then, run command to refresh the package cache:</p>
+<pre tabindex="0"><code>sudo apt update
+</code></pre><p><strong>2.</strong> Next, <strong>list all local repositories as well as their properties</strong> by running the command below:</p>
+<pre tabindex="0"><code>apt policy
+</code></pre><p>In the output, find out the target PPA or package repository, and <strong>the unique attributes (usually ‘o=xxx’) to make it different to others.</strong></p>
+<p>In my case (see the screenshot below), I can use:</p>
+<ul>
+<li>The ‘release’ attribute: <code>o=LP-PPA-ubuntuhandbook1-testarm</code> or <code>l=testarm</code> to identify my testarm PPA.</li>
+<li>The ‘release’ attribute: <code>o=Spotify</code> or ‘origin’ attribute <code>repository.spotify.com</code> to identify the Spotify repository</li>
+<li>The ‘release’ attribute: <code>o=aptian</code> or <code>l=aptian</code>, or ‘origin’ attribute <code>minecraft-linux.github.io</code> to identify the minecraft github repository.</li>
+<li>Or even <code>o=Ubuntu</code> for all Ubuntu official repositories, <code>c=multiverse</code> for the multiverse, <code>c=restricted</code> for the restricted repositories.</li>
+</ul>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/apt-policy-700x540.webp" alt="" />
+</figure>
+
+
+</p>
+<h3 id="step-2-createedit-apt-preferences-config-file">Step 2: Create/Edit Apt Preferences Config file</h3>
+<p>The apt package manager reads the package priority rules from files under <code>/etc/apt/preferences.d</code> directory.</p>
+<p><strong>1.</strong> Simply open terminal (Ctrl+Alt+T) and run command to create a file (with whatever name) under that directory:</p>
+<pre tabindex="0"><code>sudo nano /etc/apt/preferences.d/mozillateamppa
+</code></pre><p>Here I use <code>nano</code> command line text editor that works in most Linux desktops and servers. You may replace it accordingly, such as  <code>gnome-text-editor</code> for GNOME, <code>pluma</code> for MATE, or <code>mousepad</code> for XFCE.</p>
+<p><strong>2.</strong> When file opens, add rules accordingly.</p>
+<p>For example, set higher priority (1001) for all packages from Mozilla Team PPA:</p>
+<pre tabindex="0"><code>Package: *
+Pin: release o=LP-PPA-mozillateam
+Pin-Priority: 1001
+</code></pre><p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/mozilla-ppa-priority-700x453.webp" alt="" />
+</figure>
+
+
+</p>
+<p>As you see, each rule has <strong>3 lines</strong>. They include:</p>
+<ul>
+<li><strong>Package:</strong> – specify which package or packages to set priority. Use value <strong>*</strong> (for any package), exact package name, or regex patterns.</li>
+<li><strong>Pin:</strong> – specify which repository the packages are from. Use <code>release o=xxx</code>, <code>release l=xxx</code>, or <code>origin xxx.xxx.xxx</code> according to step 1.</li>
+<li><strong>Pin-Priority:</strong> – set the priority number for the specified packages.</li>
+</ul>
+<p>As the screenshot above shows, you may add as many rules as possible, according what you need.</p>
+<p>For example, the rules below tell to set higher priority for firefox packages from MozillaTeam PPA, while set all others to -1.</p>
+<pre tabindex="0"><code>Package: firefox*
+Pin: release o=LP-PPA-mozillateam
+Pin-Priority: 1001
+
+Package: *
+Pin: release o=LP-PPA-mozillateam
+Pin-Priority: -1
+</code></pre><p>Rather than setting priority for packages from certain repository, you may also set package in certain version. For example, set <code>perl</code> at version <code>5.38.2-3.2build2</code> with 1001 priority.</p>
+<pre tabindex="0"><code>Package: perl
+Pin: version 5.38.2-3.2build2
+Pin-Priority: 1001
+</code></pre><p><strong>Apt by default will install the package with highest priority, unless you specify version number in the <code>apt</code> command, e.g., sudo apt install firefox=133.0.3-0build3…</strong></p>
+<p>The default package priority in Debian and Ubuntu is <strong>500</strong>. And, if you set a package priority to number:</p>
+<ul>
+<li><strong>1000</strong> or <strong>higher</strong>, then apt command will install that version and even downgrade an already installed package.</li>
+<li>from <strong>501</strong> to <strong>999</strong> (higher than default 500), then apt will install that version, even it’s older than other versions. But it won’t downgrade if higher version already installed.</li>
+<li>from <strong>1</strong> to <strong>499</strong>, only install if there’s no other version available in local repositories.</li>
+<li><strong>-1</strong> or <strong>lower</strong>, prevent the version from being installed, unless you specify version number in apt command, or use <code>-t &quot;o=unique-release-attribute&quot;</code> (won’t work if another package version available with higher priority) to tell to install from certain repository.</li>
+</ul>
+<p>For more details, run <code>man apt_preferences</code> command in terminal to tell.</p>
+<h3 id="step-3-apply-changes-and-verify">Step 3: Apply changes and Verify</h3>
+<p>After editing the config file, press <code>Ctrl+S</code> to save and <code>Ctrl+X</code> to exit.</p>
+<p>Finally, <strong>apply change</strong> by running command:</p>
+<pre tabindex="0"><code>sudo apt update
+</code></pre><p>And, verify by <code>apt policy</code> command + target package name. For example, run command to check the firefox package:</p>
+<pre tabindex="0"><code>apt policy firefox
+</code></pre><p>In the output, it will show available versions of the package, as well as their priority.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/verify-priority-700x541.webp" alt="" />
+</figure>
+
+
+</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

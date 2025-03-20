@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Kubernetes v1.31: New Kubernetes CPUManager Static Policy: Distribute CPUs Across Cores</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Kubernetes v1.31: New Kubernetes CPUManager Static Policy: Distribute CPUs Across Cores</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>In Kubernetes v1.31, we are excited to introduce a significant enhancement to CPU management capabilities: the <code>distribute-cpus-across-cores</code> option for the CPUManager static policy. This feature is currently in alpha and hidden by default, marking a strategic shift aimed at optimizing CPU utilization and improving system performance across multi-core processors.</p>
+<h2 id="understanding-the-feature">Understanding the feature</h2>
+<p>Traditionally, Kubernetes&rsquo; CPUManager tends to allocate CPUs as compactly as possible, typically packing them onto the fewest number of physical cores. However, allocation strategy matters, CPUs on the same physical host still share some resources of the physical core, such as the cache and execution units, etc.</p>
+<p>
+<figure>
+  <img src="https://kubernetes.io/blog/2024/08/22/cpumanager-static-policy-distributed-cpu-across-cores/cpu-cache-architecture.png" alt="cpu-cache-architecture" />
+</figure>
+
+
+</p>
+<p>While default approach minimizes inter-core communication and can be beneficial under certain scenarios, it also poses a challenge. CPUs sharing a physical core can lead to resource contention, which in turn may cause performance bottlenecks, particularly noticeable in CPU-intensive applications.</p>
+<p>The new <code>distribute-cpus-across-cores</code> feature addresses this issue by modifying the allocation strategy. When enabled, this policy option instructs the CPUManager to spread out the CPUs (hardware threads) across as many physical cores as possible. This distribution is designed to minimize contention among CPUs sharing the same physical core, potentially enhancing the performance of applications by providing them dedicated core resources.</p>
+<p>Technically, within this static policy, the free CPU list is reordered in the manner depicted in the diagram, aiming to allocate CPUs from separate physical cores.</p>
+<p>
+<figure>
+  <img src="https://kubernetes.io/blog/2024/08/22/cpumanager-static-policy-distributed-cpu-across-cores/cpu-ordering.png" alt="cpu-ordering" />
+</figure>
+
+
+</p>
+<h2 id="enabling-the-feature">Enabling the feature</h2>
+<p>To enable this feature, users firstly need to add <code>--cpu-manager-policy=static</code> kubelet flag or the <code>cpuManagerPolicy: static</code> field in KubeletConfiuration. Then user can add <code>--cpu-manager-policy-options distribute-cpus-across-cores=true</code> or <code>distribute-cpus-across-cores=true</code> to their CPUManager policy options in the Kubernetes configuration or. This setting directs the CPUManager to adopt the new distribution strategy. It is important to note that this policy option cannot currently be used in conjunction with <code>full-pcpus-only</code> or <code>distribute-cpus-across-numa</code> options.</p>
+<h2 id="current-limitations-and-future-directions">Current limitations and future directions</h2>
+<p>As with any new feature, especially one in alpha, there are limitations and areas for future improvement. One significant current limitation is that <code>distribute-cpus-across-cores</code> cannot be combined with other policy options that might conflict in terms of CPU allocation strategies. This restriction can affect compatibility with certain workloads and deployment scenarios that rely on more specialized resource management.</p>
+<p>Looking forward, we are committed to enhancing the compatibility and functionality of the <code>distribute-cpus-across-cores</code> option. Future updates will focus on resolving these compatibility issues, allowing this policy to be combined with other CPUManager policies seamlessly. Our goal is to provide a more flexible and robust CPU allocation framework that can adapt to a variety of workloads and performance demands.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>The introduction of the <code>distribute-cpus-across-cores</code> policy in Kubernetes CPUManager is a step forward in our ongoing efforts to refine resource management and improve application performance. By reducing the contention on physical cores, this feature offers a more balanced approach to CPU resource allocation, particularly beneficial for environments running heterogeneous workloads. We encourage Kubernetes users to test this new feature and provide feedback, which will be invaluable in shaping its future development.</p>
+<p>This draft aims to clearly explain the new feature while setting expectations for its current stage and future improvements.</p>
+<h2 id="further-reading">Further reading</h2>
+<p>Please check out the Control CPU Management Policies on the Node task page to learn more about the CPU Manager, and how it fits in relation to the other node-level resource managers.</p>
+<h2 id="getting-involved">Getting involved</h2>
+<p>This feature is driven by the SIG Node. If you are interested in helping develop this feature, sharing feedback, or participating in any other ongoing SIG Node projects, please attend the SIG Node meeting for more details.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>The end of the i386 kernel and images</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>The end of the i386 kernel and images</h1>
+			<b><time>07.02.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>The <code>i386</code> architecture has long been obsolete, and from this week, support for i386 in Kali Linux is going to shrink significantly: i386 kernel and images are going away. Images and releases will no longer be created for this platform.</p>
+<h2 id="some-terminology-first">Some terminology first</h2>
+<p>Let’s start with the terms used in Kali Linux to talk about CPU architectures. These terms apply more generally to any Debian-based Linux distribution.</p>
+<ul>
+<li><code>amd64</code> refers to the x86-64 architecture, ie. the <em>64-bit version of the x86 instruction set</em>.</li>
+<li><code>i386</code> refers to the x86 architecture, ie. the <em>original 32-bit x86 architecture</em>.</li>
+</ul>
+<h2 id="whats-changing">What’s changing</h2>
+<p>First, the <strong>Linux kernel</strong>: starting version 6.11 (that just landed in Kali rolling), the kernel is no longer built for the i386 architecture.</p>
+<p>Second, and as a direct consequence: the <strong>Kali Linux images</strong>. We will no longer build the i386 Installer image, the i386 Live image and the i386 Pre-Built VM images. This change impacts the next batch of weekly images (<em>2024-W44</em>, due next Monday) and the next Kali Linux release (<em>2024.4</em>, due before end of year).</p>
+<p>However, <em>i386 packages in general are not removed from the repository</em>, therefore it’s still possible to run i386 programs on a 64-bit system. One can use <code>dpkg --add-architecture i386</code> in order to then install i386 packages on their system via the package manager. Running i386 binaries on a 64-bit system is a standard scenario and is very well supported. Alternatively, we also provide i386 Docker images.</p>
+<p>If you’re impacted by this change and need more guidance to run your i386 binaries on Kali Linux, please reach out to us via our bug tracker, we’ll do our best to help.</p>
+<h2 id="background-and-context-for-the-curious">Background and context, for the curious</h2>
+<p>Kali Linux can run on a variety of CPU architectures, <em>amd64</em> being by far the most popular. It’s the architecture of choice for Intel and AMD CPUs that equip personal computers (workstations and laptops alike) and servers. In short, it’s ubiquitous for personal computing. Kali can also run on <em>i386</em> CPUs. <em>i386</em> is the ancestor of <em>amd64</em>, and it was used in personal computers, back in the days before the 64-bit x86 architecture took over and replaced it.</p>
+<p>Note that the first <em>amd64</em> processor was released in 2003, and the first Debian release to support it was “4.0 Etch”, back in 2007. Also worth noting, the last <em>i386</em> CPU produced seem to have been some models of the Intel Pentium 4, and were discontinued in 2007. So, this is a change a long time coming.</p>
+<p>Now that we’ve established a rough timeline for the hardware, what about software? Of course, support in software, in particular in the Linux kernel, has to last many years after the hardware is discontinued. But with times, there’s less and less i386 CPUs out there, and less and less effort is made to maintain i386-specific code, so it slowly dies.</p>
+<p>In Linux distributions, support for i386 has declined steadily over the years. In 2017, Arch Linux phased out 32-bit ISOs. Then the big year was 2019, with Fedora 31 dropping i386 kernel and images, and Ubuntu 19.10 doing the same.</p>
+<p>By the end of 2023, Debian agreed that it would drop i386 kernel and images. It finally came into effect a few weeks ago, in September, when the Debian kernel team announced they would stop building i386 kernel packages. Then the 6.11 kernel was uploaded to Debian beginning of October, without i386 kernel package. It also means the end of i386 installer images.</p>
+<p>Kali Linux is based on Debian, so it follows that Kali Linux also drops i386 kernel and images. This is going to be effective for weekly images starting 2024-W44, to be published on Monday 28th of October. It’s already effective for Kali rolling users.</p>
+<p>What about packages, you may ask? i386 packages remain, as long as they can be rebuilt. Which means, as long as there are people to maintain it and fix i386-specific issues as they arise. One of the biggest area that keeps i386 alive is gaming: old games that were compiled for 32-bits x86 are still around, and enjoyed by gamers. Thanks to that, we can hope that a baseline of packages will remain for i386 for the time coming. And at the same time, we can expect other areas and ecosystems to drop i386 support as they see fit, to reduce maintenance efforts. So the overall number of i386 packages will slowly go down over the years, that’s for sure.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

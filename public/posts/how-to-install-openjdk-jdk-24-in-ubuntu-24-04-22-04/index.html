@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How to Install OpenJDK JDK 24 in Ubuntu 24.04 | 22.04</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How to Install OpenJDK JDK 24 in Ubuntu 24.04 | 22.04</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2022/03/java-logo-250x250.png" alt="" />
+</figure>
+
+
+</p>
+<p>OpenJDK announced the latest JDK 24 yesterday. This is the beginner’s guide shows how to install it in all current Ubuntu and Linux Mint releases.</p>
+<p>OpenJDK 24 is a short term release with 6 months support. Ubuntu has made JDK 24 into system repository for upcoming Ubuntu 25.04, while all current Ubuntu releases may use the official tarball instead.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/03/rc24-java24-700x366.webp" alt="" />
+</figure>
+
+
+</p>
+<p>image from oracle.com</p>
+<p>Ubuntu developers provide updates for the long term support (LTS) OpenJDK releases (e.g., JDK 8, JDK 17, and JDK 21). Users can install them simply by running a single command in terminal.</p>
+<p>For example, you may install OpenJDK 21 in all current Ubuntu releases by running the single command below in terminal:</p>
+<pre tabindex="0"><code>sudo apt install openjdk-21-jdk
+</code></pre><p>While you may replace <strong>21</strong> with 17 or 8 for other JDK LTS releases.</p>
+<p>For non-LTS releases, they also maintains a restricted PPA that contains the most recent OpenJDK for all current Ubuntu releases. However, it’s not updated for JDK 24 at the moment of writing.</p>
+<h3 id="difference-between-openjdk-and-oracle-jdk">Difference between OpenJDK and Oracle JDK</h3>
+<p>OpenJDK and Oracle JDK are “same thing”, but with different licence.</p>
+<p>Oracle JDK is built from the OpenJDK JDK source, but non-opensource licence. While both OpenJDK source and the OpenJDK builds binaries are distributed under the same GPL2+CPE licence.</p>
+<p><strong>Both are free!</strong> Though, Oracle also offers a subscription for the Oracle JDK builds that user can buy for support! And, I’ve written about how to install Oracle Java 21/24 in Ubuntu.</p>
+<h3 id="install-openjdk-jdk-24">Install OpenJDK JDK 24:</h3>
+<p><strong>NOTE: The steps below will override Oracle JDK 24 if installed.</strong></p>
+<p><strong>1.</strong> To install the new OpenJDK JDK 24, first go to java website via the link below:</p>
+<p>Download OpenJDK 24</p>
+<p>Then select download the “Linux / x64” build for AMD/Intel platform, or “Linux / AArch64” for ARM devices (e.g., Raspberry Pi).</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/03/download-openjdk24-700x507.webp" alt="" />
+</figure>
+
+
+</p>
+<p><strong>2.</strong> After downloaded the Linux tarball, press <code>Ctrl+Alt+T</code> to open up a terminal window, and run commands below to extract to <code>/usr/lib/jvm</code> directory.</p>
+<ul>
+<li>
+<p>First, create the target directory in case this is the first time you install Java on the system.</p>
+<pre tabindex="0"><code>sudo mkdir -p /usr/lib/jvm
+</code></pre></li>
+<li>
+<p>Then, run command to extract OpenJDK 24 tarball into that directory:</p>
+<pre tabindex="0"><code>sudo tar -zxf ~/Downloads/openjdk-24_linux-*_bin.tar.gz -C /usr/lib/jvm/
+</code></pre><p>Here assume you saved the tarball in user Downloads folder.</p>
+</li>
+</ul>
+<p>After that, run <code>ls /usr/lib/jvm/</code> to list directory content. It should include a new <strong>jdk-24</strong> (or jdk-24.0.1, jdk-24.0.2, etc) sub-folder.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/03/extract-openjdk24-700x385.webp" alt="" />
+</figure>
+
+
+</p>
+<p><strong>3. Set OpenJDK JDK 24 as default</strong>.</p>
+<p>To set it as default, first run commands below one by one to link executable files as alternatives:</p>
+<pre tabindex="0"><code>sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-24/bin/java 1
+</code></pre><pre tabindex="0"><code>sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-24/bin/javac 1
+</code></pre><pre tabindex="0"><code>sudo update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/jdk-24/bin/jar 1
+</code></pre><p>As you see in the screenshot below, there are many other executable files under <code>/usr/lib/jvm/jdk-24/bin</code> (e.g., javap, jdb, jfr, and more). You may run similar commands above for them one by one as you need.</p>
+<p><strong>NOTE: As time goes on, OpenJDK may release updates for JDK 24. In the case, you’ll need to replace “jdk-24” in command with “jdk-24.0.1” or “jdk-24.0.2” according to the Java root folder name under “/usr/lib/jvm”.</strong></p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/03/add-openjdk24-alternatives-700x364.webp" alt="" />
+</figure>
+
+
+</p>
+<p>After that, run the commands below one by one to choose default Java:</p>
+<pre tabindex="0"><code>sudo update-alternatives --config java
+</code></pre><pre tabindex="0"><code>sudo update-alternatives --config javac
+</code></pre><pre tabindex="0"><code>sudo update-alternatives --config jar
+</code></pre><p>Also run similar command above for other executable files if you created links for them.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/03/config-openjdk24-700x456.webp" alt="" />
+</figure>
+
+
+</p>
+<p><strong>4.</strong> Finally, run command to check the default Java edition:</p>
+<pre tabindex="0"><code>java --version
+</code></pre><pre tabindex="0"><code>javac --version
+</code></pre><p>And, use <code>java -XshowSettings:properties -version</code> to print more the properties.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/03/verify-openjdk24-700x505.webp" alt="" />
+</figure>
+
+
+</p>
+<h3 id="uninstall-openjdk-jdk-24">Uninstall OpenJDK JDK 24</h3>
+<p>To uninstall OpenJDK JDK 24 installed via the steps above, simply open terminal (Ctrl+Alt+T) and run command to remove the Java folder under <code>/usr/lib/jvm</code>:</p>
+<pre tabindex="0"><code>sudo rm -R /usr/lib/jvm/jdk-24
+</code></pre><p>Then, remove the alternative links:</p>
+<pre tabindex="0"><code>sudo update-alternatives --remove java /usr/lib/jvm/jdk-24/bin/java
+</code></pre><pre tabindex="0"><code>sudo update-alternatives --remove javac /usr/lib/jvm/jdk-24/bin/javac
+</code></pre><pre tabindex="0"><code>sudo update-alternatives --remove jar /usr/lib/jvm/jdk-24/bin/jar
+</code></pre><p>Also run similar command above for other executable files if added. And, replace <strong>jdk-24</strong> with <strong>jdk-24.0.1</strong> etc. for point releases.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

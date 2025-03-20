@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Hfinger - Fingerprinting HTTP Requests</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Hfinger - Fingerprinting HTTP Requests</h1>
+			<b><time>24.06.2024 08:30</time></b>
+		       
+
+			<div>
+				<h1 id="hfinger---fingerprinting-http-requests">Hfinger - Fingerprinting HTTP Requests</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Tool for Fingerprinting HTTP requests of malware. Based on Tshark and written in Python3. Working prototype stage :-)</p>
+<p>Its main objective is to provide unique representations (fingerprints) of malware requests, which help in their identification. <em>Unique</em> means here that each fingerprint should be seen only in one particular malware family, yet one family can have multiple fingerprints. Hfinger represents the request in a shorter form than printing the whole request, but still human interpretable.</p>
+<p>Hfinger can be used in manual malware analysis but also in sandbox systems or SIEMs. The generated fingerprints are useful for grouping requests, pinpointing requests to particular malware families, identifying different <a href="https://www.kitploit.com/search/label/Operations" title="operations">operations</a> of one family, or discovering unknown malicious requests omitted by other security systems but which share fingerprint.</p>
+<p><a href="https://www.mdpi.com/1099-4300/23/5/507/htm" title="An academic paper">An academic paper</a> accompanies work on this tool, describing, for example, the motivation of design choices, and the <a href="https://www.kitploit.com/search/label/Evaluation" title="evaluation">evaluation</a> of the tool compared to <a href="https://lcamtuf.coredump.cx/p0f3/" title="p0f">p0f</a>, <a href="https://github.com/0x4D31/fatt" title="FATT">FATT</a>, and <a href="https://github.com/cisco/mercury" title="Mercury">Mercury</a>.</p>
+<h2 id="the-idea">The idea</h2>
+<p>The basic assumption of this project is that HTTP requests of different malware families are more or less unique, so they can be fingerprinted to provide some sort of identification. Hfinger retains information about the structure and values of some headers to provide means for further analysis. For example, grouping of similar requests - at this moment, it is still a work in progress.</p>
+<p>After analysis of malware&rsquo;s HTTP requests and headers, we have identified some parts of requests as being most distinctive. These include: * Request method * Protocol version * Header order * Popular headers&rsquo; values * Payload length, entropy, and presence of non-ASCII characters</p>
+<p>Additionally, some standard features of the request URL were also considered. All these parts were translated into a set of features, described in details <a href="https://github.com/CERT-Polska/docs/feature_description.md" title="here">here</a>.</p>
+<p>The above features are translated into varying length representation, which is the actual fingerprint. Depending on report mode, different features are used to fingerprint requests. More information on these modes is presented below. The feature selection process will be described in the forthcoming academic paper.</p>
+<h2 id="installation">Installation</h2>
+<p>Minimum requirements needed before installation: * <code>Python</code> &gt;= 3.3, * <code>Tshark</code> &gt;= 2.2.0.</p>
+<p>Installation available from PyPI:</p>
+<p><code>pip install hfinger</code></p>
+<p>Hfinger has been tested on Xubuntu 22.04 LTS with <code>tshark</code> package in version <code>3.6.2</code>, but should work with older versions like <code>2.6.10</code> on Xubuntu 18.04 or <code>3.2.3</code> on Xubuntu 20.04.</p>
+<p>Please note that as with any PoC, you should run Hfinger in a separated environment, at least with Python virtual environment. Its setup is not covered here, but you can try <a href="https://docs.python.org/3/library/venv.html" title="this tutorial">this tutorial</a>.</p>
+<h2 id="usage">Usage</h2>
+<p>After installation, you can call the tool directly from a command line with <code>hfinger</code> or as a Python module with <code>python -m hfinger</code>.</p>
+<p>For example:</p>
+<pre tabindex="0"><code>foo@bar:~$ hfinger -f /tmp/test.pcap[{&#34;epoch_time&#34;: &#34;1614098832.205385000&#34;, &#34;ip_src&#34;: &#34;127.0.0.1&#34;, &#34;ip_dst&#34;: &#34;127.0.0.1&#34;, &#34;port_src&#34;: &#34;53664&#34;, &#34;port_dst&#34;: &#34;8080&#34;, &#34;fingerprint&#34;: &#34;2|3|1|php|0.6|PO|1|us-ag,ac,ac-en,ho,co,co-ty,co-le|us-ag:f452d7a9/ac:as-as/ac-en:id/co:Ke-Al/co-ty:te-pl|A|4|1.4&#34;}]
+</code></pre><p>Help can be displayed with short <code>-h</code> or long <code>--help</code> switches:</p>
+<pre tabindex="0"><code>usage: hfinger [-h] (-f FILE | -d DIR) [-o output_path] [-m {0,1,2,3,4}] [-v]               [-l LOGFILE]Hfinger - fingerprinting malware HTTP requests stored in pcap filesoptional arguments:  -h, --help            show this help message and exit  -f FILE, --file FILE  Read a single pcap file  -d DIR, --directory DIR                        Read pcap files from the directory DIR  -o output_path, --output-path output_path                        Path to the output directory  -m {0,1,2,3,4}, --mode {0,1,2,3,4}                        Fingerprint report mode.                         0 - similar number of collisions and fingerprints as mode 2, but using fewer features,                         1 - representation of all designed features, but a little more collisions than modes 0, 2, and 4,                         2 - optimal (the default mode),                         3 - the lowest number of generated fingerprints, but the highest number of collisions,                         4 - the highest fingerprint entropy, but slightly more fingerprints than modes 0-2  -v, --verbose         Report information about non-standard values in the request                         (e.g., non-ASCII characters, no CRLF tags, values not present in the configuration list).                         Without --logfile (-l) will print to the standard error.  -l LOGFILE, --logfile LOGFILE                        Output logfile in the verbose mode. Implies -v or --verbose switch.
+</code></pre><p>You must provide a path to a pcap file (-f), or a directory (-d) with pcap files. The output is in JSON format. It will be printed to standard output or to the provided directory (-o) using the name of the source file. For example, output of the command:</p>
+<p><code>hfinger -f example.pcap -o /tmp/pcap</code></p>
+<p>will be saved to:</p>
+<p><code>/tmp/pcap/example.pcap.json</code></p>
+<p>Report mode <code>-m</code>/<code>--mode</code> can be used to change the default report mode by providing an integer in the range <code>0-4</code>. The modes differ on represented request features or rounding modes. The default mode (<code>2</code>) was chosen by us to represent all features that are usually used during requests&rsquo; analysis, but it also offers low number of collisions and generated fingerprints. With other modes, you can achieve different goals. For example, in mode <code>3</code> you get a lower number of generated fingerprints but a higher chance of a collision between malware families. If you are unsure, you don&rsquo;t have to change anything. More information on report modes is <a href="https://github.com/CERT-Polska/hfinger#report-modes" title="here">here</a>.</p>
+<p>Beginning with version <code>0.2.1</code> Hfinger is less verbose. You should use <code>-v</code>/<code>--verbose</code> if you want to receive information about encountered non-standard values of headers, non-ASCII characters in the non-payload part of the request, lack of CRLF tags (<code>\r\n\r\n</code>), and other problems with analyzed requests that are not application errors. When any such issues are encountered in the verbose mode, they will be printed to the standard error output. You can also save the log to a defined location using <code>-l</code>/<code>--log</code> switch (it implies <code>-v</code>/<code>--verbose</code>). The log data will be appended to the log file.</p>
+<h3 id="using-hfinger-in-a-python-application">Using <em>hfinger</em> in a Python application</h3>
+<p>Beginning with version <code>0.2.0</code>, Hfinger supports importing to other Python applications. To use it in your app simply import <code>hfinger_analyze</code> function from <code>hfinger.analysis</code> and call it with a path to the pcap file and reporting mode. The returned result is a list of dicts with fingerprinting results.</p>
+<p>For example:</p>
+<pre tabindex="0"><code>from hfinger.analysis import hfinger_analyzepcap_path = &#34;SPECIFY_PCAP_PATH_HERE&#34;reporting_mode = 4print(hfinger_analyze(pcap_path, reporting_mode))
+</code></pre><p>Beginning with version <code>0.2.1</code> Hfinger uses <code>logging</code> module for logging information about encountered non-standard values of headers, non-ASCII characters in the non-payload part of the request, lack of CRLF tags (<code>\r\n\r\n</code>), and other problems with analyzed requests that are not application errors. Hfinger creates its own logger using name <code>hfinger</code>, but without prior <a href="https://www.kitploit.com/search/label/Configuration" title="configuration">configuration</a> log information in practice is discarded. If you want to receive this log information, before calling <code>hfinger_analyze</code>, you should configure <code>hfinger</code> logger, set log level to <code>logging.INFO</code>, configure log handler up to your needs, add it to the logger. More information is available in the <code>hfinger_analyze</code> function docstring.</p>
+<h2 id="fingerprint-creation">Fingerprint creation</h2>
+<p>A fingerprint is based on features extracted from a request. Usage of particular features from <a href="https://github.com/CERT-Polska/docs/feature_description.md" title="the full list">the full list</a> depends on the chosen report mode from a predefined list (more information on report modes is <a href="https://github.com/CERT-Polska/hfinger#report-modes" title="here">here</a>). The figure below represents the creation of an exemplary fingerprint in the default report mode.</p>
+<p><a href="https://blogger.googleusercontent.com/img/a/AVvXsEjIoQN5piNbjX18DFu8bFxIuHvoPpc4h7pO194_d5Q07BcwCyugkTvNnbwH6SRSD6IqPobXleHHJDcagEutrLFpFmq5hijc_kzz39Z0ilR2ffrDdV3XFZxUmrmVobIY1E2b7BbOpuPmtgRNqUQyJeuBeYDAFz9oA5GezWa7tj5MlSVbCgp5HKoqwNWVTxI">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/a/AVvXsEjIoQN5piNbjX18DFu8bFxIuHvoPpc4h7pO194_d5Q07BcwCyugkTvNnbwH6SRSD6IqPobXleHHJDcagEutrLFpFmq5hijc_kzz39Z0ilR2ffrDdV3XFZxUmrmVobIY1E2b7BbOpuPmtgRNqUQyJeuBeYDAFz9oA5GezWa7tj5MlSVbCgp5HKoqwNWVTxI=w640-h468" alt="" />
+</figure>
+
+
+</a></p>
+<p>Three parts of the request are analyzed to extract information: URI, headers&rsquo; structure (including method and protocol version), and payload. Particular features of the fingerprint are separated using <code>|</code> (pipe). The final fingerprint generated for the <code>POST</code> request from the example is:</p>
+<p><code>2|3|1|php|0.6|PO|1|us-ag,ac,ac-en,ho,co,co-ty,co-le|us-ag:f452d7a9/ac:as-as/ac-en:id/co:Ke-Al/co-ty:te-pl|A|4|1.4</code></p>
+<p>The creation of features is described below in the order of appearance in the fingerprint.</p>
+<p>Firstly, URI features are extracted: * URI length represented as a logarithm base 10 of the length, rounded to an integer, (in the example URI is 43 characters long, so <code>log10(43)≈2</code>), * number of directories, (in the example there are 3 directories), * average directory length, represented as a logarithm with base 10 of the actual average length of the directory, rounded to an integer, (in the example there are three directories with total length of 20 characters (6+6+8), so <code>log10(20/3)≈1</code>), * extension of the requested file, but only if it is on a list of known extensions in <code>hfinger/configs/extensions.txt</code>, * average value length represented as a logarithm with base 10 of the actual average value length, rounded to one decimal point, (in the example two values have the same length of 4 characters, what is obviously equal to 4 characters, and <code>log10(4)≈0.6</code>).</p>
+<p>Secondly, header structure features are analyzed: * request method encoded as first two letters of the method (<code>PO</code>), * protocol version encoded as an integer (<em>1</em> for version <em>1.1</em>, <em>0</em> for version <em>1.0</em>, and <em>9</em> for version <em>0.9</em>), * order of the headers, * and popular headers and their values.</p>
+<p>To represent order of the headers in the request, each header&rsquo;s name is encoded according to the schema in <code>hfinger/configs/headerslow.json</code>, for example, <code>User-Agent</code> header is encoded as <code>us-ag</code>. Encoded names are separated by <code>,</code>. If the header name does not start with an upper case letter (or any of its parts when analyzing compound headers such as <code>Accept-Encoding</code>), then encoded representation is prefixed with <code>!</code>. If the header name is not on the list of the known headers, it is hashed using <a href="https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function" title="FNV1a hash">FNV1a hash</a>, and the hash is used as encoding.</p>
+<p>When analyzing popular headers, the request is checked if they appear in it. These headers are: * Connection * Accept-Encoding * Content-Encoding * Cache-Control * TE * Accept-Charset * Content-Type * Accept * Accept-Language * User-Agent</p>
+<p>When the header is found in the request, its value is checked against a table of typical values to create pairs of <code>header_name_representation:value_representation</code>. The name of the header is encoded according to the schema in <code>hfinger/configs/headerslow.json</code> (as presented before), and the value is encoded according to schema stored in <code>hfinger/configs</code> directory or <code>configs.py</code> file, depending on the header. In the above example <code>Accept</code> is encoded as <code>ac</code> and its value <code>*/*</code> as <code>as-as</code> (<code>asterisk-asterisk</code>), giving <code>ac:as-as</code>. The pairs are inserted into fingerprint in order of appearance in the request and are delimited using <code>/</code>. If the header value cannot be found in the encoding table, it is hashed using the FNV1a hash.<br>
+If the header value is composed of multiple values, they are tokenized to provide a list of values delimited with <code>,</code>, for example, <code>Accept: */*, text/*</code> would give <code>ac:as-as,te-as</code>. However, at this point of development, if the header value contains a &ldquo;quality value&rdquo; tag (<code>q=</code>), then the whole value is encoded with its FNV1a hash. Finally, values of <em>User-Agent</em> and <em>Accept-Language</em> headers are directly encoded using their FNV1a hashes.</p>
+<p>Finally, in the payload features: * presence of non-ASCII characters, represented with the letter <code>N</code>, and with <code>A</code> otherwise, * payload&rsquo;s Shannon entropy, rounded to an integer, * and payload length, represented as a logarithm with base 10 of the actual payload length, rounded to one decimal point.</p>
+<h2 id="report-modes">Report modes</h2>
+<p><code>Hfinger</code> operates in five report modes, which differ in features represented in the fingerprint, thus information extracted from requests. These are (with the number used in the tool configuration): * mode <code>0</code> - producing a similar number of collisions and fingerprints as mode <code>2</code>, but using fewer features, * mode <code>1</code> - representing all designed features, but producing a little more collisions than modes <code>0</code>, <code>2</code>, and <code>4</code>, * mode <code>2</code> - optimal (the default mode), representing all features which are usually used during requests&rsquo; analysis, but also offering a low number of collisions and generated fingerprints, * mode <code>3</code> - producing the lowest number of generated fingerprints from all modes, but achieving the highest number of collisions, * mode <code>4</code> - offering the highest fingerprint entropy, but also generating slightly more fingerprints than modes <code>0</code>-<code>2</code>.</p>
+<p>The modes were chosen in order to optimize Hfinger&rsquo;s capabilities to uniquely identify malware families versus the number of generated fingerprints. Modes <code>0</code>, <code>2</code>, and <code>4</code> offer a similar number of collisions between malware families, however, mode <code>4</code> generates a little more fingerprints than the other two. Mode <code>2</code> represents more request features than mode <code>0</code> with a comparable number of generated fingerprints and collisions. Mode <code>1</code> is the only one representing all designed features, but it increases the number of collisions by almost two times comparing to modes <code>0</code>, <code>1</code>, and <code>4</code>. Mode <code>3</code> produces at least two times fewer fingerprints than other modes, but it introduces about nine times more collisions. Description of all designed features is <a href="https://github.com/CERT-Polska/docs/feature_description.md" title="here">here</a>.</p>
+<p>The modes consist of features (in the order of appearance in the fingerprint): * mode <code>0</code>: * number of directories, * average directory length represented as an integer, * extension of the requested file, * average value length represented as a float, * order of headers, * popular headers and their values, * payload length represented as a float. * mode <code>1</code>: * URI length represented as an integer, * number of directories, * average directory length represented as an integer, * extension of the requested file, * variable length represented as an integer, * number of variables, * average value length represented as an integer, * request method, * version of protocol, * order of headers, * popular headers and their values, * presence of non-ASCII characters, * payload entropy represented as an integer, * payload length represented as an integer. * mode <code>2</code>: * URI length represented as an integer, * number of directories, * average directory length represented as an integer, * extension of the requested file, * average value length represented as a float, * request method, * version of protocol, * order of headers, * popular headers and their values, * presence of non-ASCII characters, * payload entropy represented as an integer, * payload length represented as a float. * mode <code>3</code>: * URI length represented as an integer, * average directory length represented as an integer, * extension of the requested file, * average value length represented as an integer, * order of headers. * mode <code>4</code>: * URI length represented as a float, * number of directories, * average directory length represented as a float, * extension of the requested file, * variable length represented as a float, * average value length represented as a float, * request method, * version of protocol, * order of headers, * popular headers and their values, * presence of non-ASCII characters, * payload entropy represented as a float, * payload length represented as a float.</p>
+<p><strong><a href="https://github.com/CERT-Polska/hfinger" title="Download Hfinger">Download Hfinger</a></strong></p>
+<h2><a href="http://www.kitploit.com/2024/06/hfinger-fingerprinting-http-requests.html">Source</a>
+<!-- raw HTML omitted --></h2>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

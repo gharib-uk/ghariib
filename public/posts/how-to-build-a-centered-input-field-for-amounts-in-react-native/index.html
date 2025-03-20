@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How to Build a Centered Input Field for Amounts in React Native</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How to Build a Centered Input Field for Amounts in React Native</h1>
+			<b><time>07.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>A clean, centered input field for entering amounts is a small but significant part of any financial app. It enhances user experience, provides clarity, and ensures ease of use. In this article, we’ll walk through creating a reusable <strong><code>CurrencySection</code></strong> component in React Native.</p>
+<p>This component is simple yet powerful, featuring:</p>
+<ul>
+<li>Dynamic height adjustment for the input field.</li>
+<li>Automatic formatting for amounts in a specified currency.</li>
+<li>Inline error messaging for better user feedback.</li>
+</ul>
+<p>Let’s dive into the details!</p>
+<h3 id="what-the-currencysection-does">What the <code>CurrencySection</code> Does</h3>
+<p>The <code>CurrencySection</code> component is designed to:</p>
+<ol>
+<li>Allow users to input amounts in a visually appealing, centered format.</li>
+<li>Automatically format amounts into the specified currency.</li>
+<li>Provide flexibility to customize elements such as the currency symbol, placeholder text, and error messages.</li>
+</ol>
+<h3 id="implementation">Implementation</h3>
+<p>Here’s the full implementation of the <code>CurrencySection</code> component:</p>
+<pre tabindex="0"><code>/* eslint-disable react-native/no-inline-styles */
+import React, {useCallback, useState} from &#39;react&#39;;
+import {
+  Keyboard,
+  NativeSyntheticEvent,
+  Platform,
+  StyleSheet,
+  TextInput,
+  TextInputContentSizeChangeEventData,
+  TextInputProps,
+  View,
+} from &#39;react-native&#39;;
+import {
+  formatAmountInCurrency,
+  MAX_AMOUNT_LENGTH_CURRENCY_SECTION,
+  trimNumber,
+} from &#39;../../utils/functions&#39;;
+import colors from &#39;../../utils/helpers/colors&#39;;
+import {InlineError} from &#39;../../utils/helpers/Reusables&#39;;
+import AppText from &#39;../texts/appText&#39;;
+
+interface CurrencySectionProps extends TextInputProps {
+  title?: string;
+  amount?: string;
+  error?: string;
+  onChangeAmount?: (amount: string) =&gt; void;
+  isEditable?: boolean;
+  currency?: string;
+}
+
+const CurrencySection: React.FC&lt;CurrencySectionProps&gt; = ({
+  title = &#39;Enter amount&#39;,
+  amount = &#39;&#39;,
+  error = &#39;&#39;,
+  onChangeAmount,
+  isEditable = true,
+  currency = &#39;₦&#39;,
+  ...props
+}) =&gt; {
+  const [height, setHeight] = useState(42);
+
+  const onChangeText = useCallback(
+    (text: string) =&gt; {
+      onChangeAmount?.(trimNumber(text));
+    },
+    [onChangeAmount],
+  );
+
+  const onBlur = useCallback(() =&gt; {
+    if (amount) {
+      const formattedAmount = formatAmountInCurrency(
+        Number(amount.replaceAll(&#39;,&#39;, &#39;&#39;)),
+      ).replaceAll(&#39;,&#39;, &#39;&#39;);
+      onChangeAmount?.(formattedAmount);
+    }
+  }, [amount, onChangeAmount]);
+
+  const handleContentSizeChange = useCallback(
+    (e: NativeSyntheticEvent&lt;TextInputContentSizeChangeEventData&gt;) =&gt; {
+      setHeight(e.nativeEvent.contentSize.height);
+    },
+    [],
+  );
+
+  return (
+    &lt;View style={styles.amountContainerStyle}&gt;
+      {title ? &lt;AppText size={15}&gt;{title}&lt;/AppText&gt; : null}
+      &lt;View style={[styles.rowContainer, {alignItems: &#39;center&#39;}]}&gt;
+        &lt;AppText size={36} weight=&#34;bold&#34;&gt;
+          {currency}
+        &lt;/AppText&gt;
+        &lt;TextInput
+          value={amount}
+          style={[
+            styles.amountInputTextStyle,
+            !amount?.length &amp;&amp; styles.emptyInputFieldStyle,
+            {height},
+          ]}
+          onContentSizeChange={handleContentSizeChange}
+          placeholderTextColor={colors.grey}
+          underlineColorAndroid=&#34;transparent&#34;
+          placeholder=&#34;0.00&#34;
+          keyboardType=&#34;numeric&#34;
+          returnKeyType=&#34;done&#34;
+          onChangeText={onChangeText}
+          onBlur={onBlur}
+          editable={isEditable}
+          multiline
+          maxLength={MAX_AMOUNT_LENGTH_CURRENCY_SECTION}
+          onSubmitEditing={Keyboard.dismiss}
+          {...props}
+        /&gt;
+      &lt;/View&gt;
+
+      {error?.toString()?.length &gt; 0 &amp;&amp; (
+        &lt;InlineError
+          style={{marginTop: 10, padding: 10, borderRadius: 18}}
+          message={error}
+        /&gt;
+      )}
+    &lt;/View&gt;
+  );
+};
+
+const styles = StyleSheet.create({
+  amountContainerStyle: {
+    alignItems: &#39;center&#39;,
+    backgroundColor: &#39;transparent&#39;,
+  },
+  rowContainer: {
+    flexDirection: &#39;row&#39;,
+    alignItems: &#39;center&#39;,
+  },
+  amountInputTextStyle: {
+    fontSize: 36,
+    fontWeight: &#39;600&#39;,
+    backgroundColor: &#39;transparent&#39;,
+    ...(Platform.OS === &#39;ios&#39; ? {paddingBottom: 6} : {}),
+  },
+  emptyInputFieldStyle: {width: 100},
+});
+
+export default CurrencySection;
+</code></pre><p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2F7xk3z7wdgl7vch14fpu0.png" alt="Example of the centered input field for the currency section" />
+</figure>
+
+
+</p>
+<h3 id="highlights-of-the-currencysection-component">Highlights of the <code>CurrencySection</code> Component</h3>
+<ol>
+<li>
+<p><strong>Dynamic Height Adjustment</strong></p>
+<p>The input field dynamically resizes to match its content size, ensuring a clean and adaptive design.</p>
+</li>
+<li>
+<p><strong>Automatic Currency Formatting</strong></p>
+<p>The <code>formatAmountInCurrency</code> function ensures amounts are formatted appropriately, making them easier to read.</p>
+</li>
+<li>
+<p><strong>Customizable and Reusable</strong></p>
+<p>With props for titles, currency symbols, and error messages, this component is flexible enough for various use cases.</p>
+</li>
+<li>
+<p><strong>Error Feedback</strong></p>
+<p>Inline error messages provide immediate feedback without disrupting the flow of the UI.</p>
+</li>
+</ol>
+<h3 id="styling-choices">Styling Choices</h3>
+<ul>
+<li><strong>Alignment</strong>: Centering the input and currency symbol creates a clean, balanced layout.</li>
+<li><strong>Font Size and Weight</strong>: The bold and large font for the currency and input fields ensures they stand out.</li>
+<li><strong>Colors</strong>: Neutral placeholder colors and transparent backgrounds maintain focus on the content.</li>
+</ul>
+<h3 id="conclusion">Conclusion</h3>
+<p>This <code>CurrencySection</code> component is a simple yet effective addition to any financial app. It’s designed to handle core input requirements while keeping the UI visually appealing and functional.</p>
+<p>Give it a try, customize it to suit your app’s style, and let your users enjoy a seamless experience!</p>
+<p><em>Feel free to share your thoughts or questions in the comments.</em></p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

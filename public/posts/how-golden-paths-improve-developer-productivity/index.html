@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How golden paths improve developer productivity</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How golden paths improve developer productivity</h1>
+			<b><time>29.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Building software is hard enough without getting bogged down by repetitive tasks, endless approval chains, and inconsistent tooling. Enter golden paths—the shortcuts every developer wishes they had. They’re not just about speed. They’re about freeing your brain to focus on the good stuff: writing code, solving problems, and shipping features.</p>
+<p>This guide explores how golden paths and software templates can transform your workflow from chaos to cosmos. We’ll cover how to set them up, why they matter, and where they might trip you up. By the end, you’ll have a clear map to hyperspace your way to faster, more secure, and less frustrating development.</p>
+<h2 id="the-purpose-of-golden-paths">The purpose of golden paths</h2>
+<p>Golden paths are the tried-and-true methods that guide developers and engineers through the most efficient way to tackle common tasks. Think of them as the rails that keep you from wandering off into chaos. They provide structure and ensure consistent best practices compliance, saving time and cognitive load.</p>
+<p>Using infrastructure as code (IaC) to automate underlying infrastructure was a driving force for DevOps. But that automation failed developers. It was self-service, but there were hundreds of configuration fields to be filled out. It&rsquo;s the same with DevSecOps. Developers can&rsquo;t (and shouldn&rsquo;t) be infrastructure or security experts. </p>
+<p>Golden paths shift that responsibility onto systems rather than people. They integrate configuration and security guidelines and bake in policies and rules for proactive prevention, making a developer&rsquo;s work secure by default.</p>
+<h2 id="the-role-of-software-templates">The role of software templates</h2>
+<p>Software templates make golden paths come to life. They are prewritten pieces of code/config that allow us to implement golden paths automatically. When you need a CI/CD pipeline, database provisioning, or a Git repo set up according to compliance rules, you can push a button or issue a command, and it’s done.</p>
+<p>IaC is like putting your thumb out to hitchhike. Software templates are like getting in the car. They’re not just about provisioning infrastructure, but also ensuring that everything is done consistently and securely for developers—every single time.</p>
+<h2 id="implementing-golden-paths">Implementing golden paths</h2>
+<p>Implementing your golden path starts with a data-driven approach: analyze workflows to identify repetitive, tedious tasks, and standardize how they’re addressed using software templates. By mapping pain points such as inconsistent processes, error-prone configurations, or redundant approvals, you can create templates that enforce best practices and streamline common tasks. </p>
+<p>Once these templates are in place, you can integrate developer-friendly tools like Red Hat OpenShift Dev Spaces to ensure a consistent experience. With preconfigured linting, docs generation, and debugging setups baked into the environment, developers can focus on coding instead of fighting their tools, catching issues early, and avoiding costly mistakes down the line.</p>
+<h2 id="case-study-managing-terraform-projects-with-developer-hub-and-openshift-dev-spaces">Case study: Managing Terraform projects with Developer Hub and OpenShift Dev Spaces</h2>
+<p>Organizations face common challenges when using Terraform, such as enforcing standards, setting guardrails, cloud cost awareness, and consistent tooling. Let’s explore how we can address these challenges with golden paths in Red Hat Developer Hub and OpenShift Dev Spaces.</p>
+<h3 id="developer-hub-basics">Developer Hub basics</h3>
+<p>You can refer a full code example on GitHub.</p>
+<p>In Developer Hub (Figure 1), a template resource serves as the foundation for scaffolding a project or automating a process. It defines:</p>
+<ul>
+<li>Inputs: The parameters that the end user (e.g., a developer) must provide, like project name, instance type, or region.</li>
+<li>Outputs: The resources or configurations that will be generated based on the provided inputs, such as a Terraform project, CI/CD pipelines, or standardized code structures.</li>
+</ul>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_full_width_1440px_w/public/pic-window-241121-1007-05.png?itok=uET-mZ5V" alt="Red Hat Developer Hub Template Editor" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Template Editor view in Developer Hub with Form Preview</p>
+<!-- raw HTML omitted -->
+<p>Created by Josephine Pfeiffer,</p>
+<p>License under Apache 2.0.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Figure 1: Red Hat Developer Hub template editor.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>A Developer Hub template structures a terraform project automatically, generating the following resources out of a project skeleton using scaffolding:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>❯ tree
+</span></span><span style="display:flex;"><span>.
+</span></span><span style="display:flex;"><span>├── catalog-info.yaml
+</span></span><span style="display:flex;"><span>├── devfile.yaml
+</span></span><span style="display:flex;"><span>└── terraform
+</span></span><span style="display:flex;"><span>    ├── main.tf
+</span></span><span style="display:flex;"><span>    ├── outputs.tf
+</span></span><span style="display:flex;"><span>    ├── terraform.tfvars
+</span></span><span style="display:flex;"><span>    └── variables.tf
+</span></span><span style="display:flex;"><span>2 directories, 6 files
+</span></span></code></pre></div><p>Scaffolding creates a structured starting point for a project based on the user’s inputs. This ensures that the required files are ready, so developers don’t start from scratch, as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>(...)
+</span></span><span style="display:flex;"><span>  steps:
+</span></span><span style="display:flex;"><span>    - id: generateTerraform
+</span></span><span style="display:flex;"><span>      name: Generating Terraform Configuration
+</span></span><span style="display:flex;"><span>      action: fetch:template
+</span></span><span style="display:flex;"><span>      input:
+</span></span><span style="display:flex;"><span>        url: ./terraform-skeleton
+</span></span><span style="display:flex;"><span>        values:
+</span></span><span style="display:flex;"><span>          projectName: ${{ parameters.repoName }}
+</span></span><span style="display:flex;"><span>          instanceType: ${{ parameters.instanceType }}
+</span></span><span style="display:flex;"><span>          databaseType: ${{ parameters.databaseType }}
+</span></span><span style="display:flex;"><span>          securityGroupType: ${{ parameters.securityGroupType }}
+</span></span><span style="display:flex;"><span>          dataType: ${{ parameters.dataType }}
+</span></span><span style="display:flex;"><span>          region: ${{ parameters.location }}
+</span></span><span style="display:flex;"><span>          orgName: ${{ parameters.orgName }}
+</span></span><span style="display:flex;"><span>          repoName: ${{ parameters.repoName }}
+</span></span><span style="display:flex;"><span>          owner: ${{ parameters.owner }}
+</span></span><span style="display:flex;"><span>          system: ${{ parameters.system }}
+</span></span><span style="display:flex;"><span>          applicationType: api
+</span></span><span style="display:flex;"><span>          description: ${{ parameters.description }}
+</span></span><span style="display:flex;"><span>          sourceControl: gitlab-gitlab.apps.cluster-vxdd5.vxdd5.sandbox1858.opentlc.com
+</span></span><span style="display:flex;"><span>(...)
+</span></span></code></pre></div><p>The template’s <code>publish</code> action creates the project repository, passing along config. In this case, we dynamically set the <code>repoUrl</code>, and pre-fill <code>projectVariables</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>(...)
+</span></span><span style="display:flex;"><span>    - id: publish
+</span></span><span style="display:flex;"><span>      name: Publishing Terraform Project to GitLab
+</span></span><span style="display:flex;"><span>      action: publish:gitlab
+</span></span><span style="display:flex;"><span>      input:
+</span></span><span style="display:flex;"><span>        repoUrl: gitlab-gitlab.apps.cluster-vxdd5.vxdd5.sandbox1858.opentlc.com?owner=devconf&amp;repo=${{ parameters.repoName }}
+</span></span><span style="display:flex;"><span>        description: Terraform project for ${{ parameters.repoName }}
+</span></span><span style="display:flex;"><span>        defaultBranch: main
+</span></span><span style="display:flex;"><span>        projectVariables:
+</span></span><span style="display:flex;"><span>          - key: &#39;INFRACOST_API_KEY&#39;
+</span></span><span style="display:flex;"><span>            value: &#39;&#39;
+</span></span><span style="display:flex;"><span>            protected: false
+</span></span><span style="display:flex;"><span>            masked: true
+</span></span><span style="display:flex;"><span>(...)
+</span></span></code></pre></div><p>The <code>output</code> section in the template defines dynamic links that will be displayed for the user after the template execution is complete. The following links provide quick access to key resources generated or affected during the process:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>(...)
+</span></span><span style="display:flex;"><span>  output:
+</span></span><span style="display:flex;"><span>    links:
+</span></span><span style="display:flex;"><span>      - title: Open the Terraform Repository in GitLab
+</span></span><span style="display:flex;"><span>        url: ${{ steps.publish.output.remoteUrl }}
+</span></span><span style="display:flex;"><span>      - title: Open the Catalog Info Component
+</span></span><span style="display:flex;"><span>        icon: catalog
+</span></span><span style="display:flex;"><span>        entityRef: ${{ steps.publish.output.entityRef }}
+</span></span><span style="display:flex;"><span>(...)
+</span></span></code></pre></div><p>In our case, it looks like outputs shown in Figure 2.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_full_width_1440px_w/public/pic-selected-241121-1337-40.png?itok=sAkc3ExB" alt="Red Hat Developer Hub scaffolding process outputs" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Outputs are shown after the template run</p>
+<!-- raw HTML omitted -->
+<p>Created by Josephine Pfeiffer,</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Figure 2: Red Hat Developer Hub scaffolding process outputs.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h3 id="enforcing-standards-and-setting-guardrails">Enforcing standards and setting guardrails</h3>
+<p>Templates enforce compliance from day zero. They ensure valid inputs (e.g., repo names and instance types) and logical defaults (e.g., AWS regions). For example, selecting &ldquo;public data&rdquo; limits region choices to Europe or the United States. Selecting &ldquo;customer data&rdquo; forces Zurich to be the only option.</p>
+<p>Constraints like <code>maxLength</code> and regex patterns prevent invalid input. For example, <code>repoName</code> must start with a letter and only contain alphanumeric characters or hyphens:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>(...)
+</span></span><span style="display:flex;"><span>      properties:
+</span></span><span style="display:flex;"><span>        repoName:
+</span></span><span style="display:flex;"><span>          title: Repository Name
+</span></span><span style="display:flex;"><span>          type: string
+</span></span><span style="display:flex;"><span>          maxLength: 16
+</span></span><span style="display:flex;"><span>          pattern: &#39;^([a-zA-Z][a-zA-Z0-9]*)(-[a-zA-Z0-9]+)*$&#39;
+</span></span><span style="display:flex;"><span>          ui:autofocus: true
+</span></span><span style="display:flex;"><span>          ui:help: &#39;Must be alphanumeric, 1-16 characters, starting with a letter&#39;
+</span></span><span style="display:flex;"><span>(...)
+</span></span></code></pre></div><p>In the template, we can set guardrails for allowed instance types, as shown in the following example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>(...)
+</span></span><span style="display:flex;"><span>      properties:
+</span></span><span style="display:flex;"><span>        instanceType:
+</span></span><span style="display:flex;"><span>          title: Compute Instance Type (AWS Graviton)
+</span></span><span style="display:flex;"><span>          type: string
+</span></span><span style="display:flex;"><span>          enum:
+</span></span><span style="display:flex;"><span>            - t4g.micro
+</span></span><span style="display:flex;"><span>            - t4g.small
+</span></span><span style="display:flex;"><span>            - t4g.medium
+</span></span><span style="display:flex;"><span>          description: Select the Graviton instance type
+</span></span><span style="display:flex;"><span>(...)
+</span></span></code></pre></div><p>When we&rsquo;re setting up our infrastructure, the type of data we&rsquo;re handling directly impacts the region where we can store it. If the data type is <code>public_data</code>, we have the flexibility to pick between regions like <code>eu-central-1</code> (Frankfurt), <code>us-east-1</code> (Virginia), or <code>eu-central-2</code> (Zurich). However, if we&rsquo;re dealing with <code>customer_data</code>, our choice is restricted to <code>eu-central-2</code> only. This could ensure that customer information is kept within a specific geographic boundary to comply with local privacy regulations, as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>(...)
+</span></span><span style="display:flex;"><span>        dataType:
+</span></span><span style="display:flex;"><span>          title: Data Type
+</span></span><span style="display:flex;"><span>          type: string
+</span></span><span style="display:flex;"><span>          enum:
+</span></span><span style="display:flex;"><span>            - customer_data
+</span></span><span style="display:flex;"><span>            - employee_data
+</span></span><span style="display:flex;"><span>            - public_data
+</span></span><span style="display:flex;"><span>          enumNames:
+</span></span><span style="display:flex;"><span>            - customer data
+</span></span><span style="display:flex;"><span>            - employee data
+</span></span><span style="display:flex;"><span>            - public data
+</span></span><span style="display:flex;"><span>          description: Select the type of data being processed
+</span></span><span style="display:flex;"><span>        location:
+</span></span><span style="display:flex;"><span>          title: AWS Region
+</span></span><span style="display:flex;"><span>          type: string
+</span></span><span style="display:flex;"><span>          enum:
+</span></span><span style="display:flex;"><span>            - eu-central-1
+</span></span><span style="display:flex;"><span>            - us-east-1
+</span></span><span style="display:flex;"><span>            - eu-central-2
+</span></span><span style="display:flex;"><span>          enumNames:
+</span></span><span style="display:flex;"><span>            - Frankfurt
+</span></span><span style="display:flex;"><span>            - Virginia
+</span></span><span style="display:flex;"><span>            - Zurich
+</span></span><span style="display:flex;"><span>          description: Choose the AWS region for your infrastructure.
+</span></span><span style="display:flex;"><span>          ui:options:
+</span></span><span style="display:flex;"><span>            conditional:
+</span></span><span style="display:flex;"><span>              dataType: public_data
+</span></span><span style="display:flex;"><span>              allowedValues:
+</span></span><span style="display:flex;"><span>                - eu-central-1
+</span></span><span style="display:flex;"><span>                - us-east-1
+</span></span><span style="display:flex;"><span>                - eu-central-2
+</span></span><span style="display:flex;"><span>              defaultValues: eu-central-2
+</span></span><span style="display:flex;"><span>      dependencies:
+</span></span><span style="display:flex;"><span>        dataType:
+</span></span><span style="display:flex;"><span>          allOf:
+</span></span><span style="display:flex;"><span>            - if:
+</span></span><span style="display:flex;"><span>                properties:
+</span></span><span style="display:flex;"><span>                  dataType:
+</span></span><span style="display:flex;"><span>                    const: public_data
+</span></span><span style="display:flex;"><span>              then:
+</span></span><span style="display:flex;"><span>                properties:
+</span></span><span style="display:flex;"><span>                  location:
+</span></span><span style="display:flex;"><span>                    enum:
+</span></span><span style="display:flex;"><span>                      - eu-central-1
+</span></span><span style="display:flex;"><span>                      - us-east-1
+</span></span><span style="display:flex;"><span>                      - eu-central-2
+</span></span><span style="display:flex;"><span>                    enumNames:
+</span></span><span style="display:flex;"><span>                      - Frankfurt
+</span></span><span style="display:flex;"><span>                      - Virginia
+</span></span><span style="display:flex;"><span>                      - Zurich
+</span></span><span style="display:flex;"><span>            - if:
+</span></span><span style="display:flex;"><span>                properties:
+</span></span><span style="display:flex;"><span>                  dataType:
+</span></span><span style="display:flex;"><span>                    const: customer_data
+</span></span><span style="display:flex;"><span>              then:
+</span></span><span style="display:flex;"><span>                properties:
+</span></span><span style="display:flex;"><span>                  location:
+</span></span><span style="display:flex;"><span>                    enum:
+</span></span><span style="display:flex;"><span>                      - eu-central-2
+</span></span><span style="display:flex;"><span>                    enumNames:
+</span></span><span style="display:flex;"><span>                      - Zurich
+</span></span><span style="display:flex;"><span>(...)
+</span></span></code></pre></div><p>In its final form, the user interacts with an interface like Figure 3.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_full_width_1440px_w/public/guardrails.png?itok=s5LJUnYF" alt="Comparison of logic gates in a software template" />
+</figure>
+
+
+</p>
+<p>Created by Josephine Pfeiffer,</p>
+<!-- raw HTML omitted -->
+<p>Figure 3: Comparison of logic gates in a software template.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>In the image shown in Figure 3, selecting <strong>Public Data</strong> on the left allows the user to select three AWS regions. On the right, selecting <strong>Customer Data</strong> allows the user to select only one region.</p>
+<p>Scaffolding syntax supports logic which allows us to define some default behaviors and conditions to simplify reuse and reduce redundancy.</p>
+<p>The following example checks if <code>values.instanceType</code> exists. If true, it&rsquo;s assigned to <code>instance_type</code>. Otherwise, it defaults to <code>&quot;t4g.micro&quot;</code> as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>(...)
+</span></span><span style="display:flex;"><span>{%- if values.instanceType %}
+</span></span><span style="display:flex;"><span>instance_type = &#34;${{ values.instanceType }}&#34;
+</span></span><span style="display:flex;"><span>{%- else %}
+</span></span><span style="display:flex;"><span>instance_type = &#34;t4g.micro&#34;
+</span></span><span style="display:flex;"><span>{%- endif %}
+</span></span><span style="display:flex;"><span>(...)
+</span></span></code></pre></div><p>The next example determines the <code>vpc_id</code> based on the region. If it&rsquo;s <code>&quot;us-east-1&quot;</code>, <code>&quot;eu-central-1&quot;</code>, or <code>&quot;eu-central-2&quot;</code>, it gets a specific VPC. If it is anything else, it defaults back to <code>&quot;vpc-0e2fd71e4d9b6fec5&quot;</code> as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>(...)
+</span></span><span style="display:flex;"><span>{%- if region == &#34;us-east-1&#34; %}
+</span></span><span style="display:flex;"><span>vpc_id = &#34;vpc-0e2fd71e4d9b6fec5&#34;
+</span></span><span style="display:flex;"><span>{%- elif region == &#34;eu-central-1&#34; %}
+</span></span><span style="display:flex;"><span>vpc_id = &#34;vpc-3707605d&#34;
+</span></span><span style="display:flex;"><span>{%- elif region == &#34;eu-central-2&#34; %}
+</span></span><span style="display:flex;"><span>vpc_id = &#34;vpc-09321946b9adb23fa&#34;
+</span></span><span style="display:flex;"><span>{%- else %}
+</span></span><span style="display:flex;"><span>vpc_id = &#34;vpc-0e2fd71e4d9b6fec5&#34;
+</span></span><span style="display:flex;"><span>{%- endif %}
+</span></span></code></pre></div><h3 id="cost-awareness">Cost awareness</h3>
+<p>Managing costs in the cloud is an important topic, and many organizations who go to the cloud are doing it wrong. When I was the CTO at a startup, my personal credit card was the payment method for the company&rsquo;s AWS account. Believe me, there is no better way to keep costs managed than that. A less nerve-wracking approach is integrating FinOps practices by shifting cloud cost analysis left. This promotes accountability early and transparently projects cost upfront.</p>
+<p>In our example, we achieved this by baking CI jobs into the scaffolded project, which generates projected cost reports for every merge request, as shown in Figure 4.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_full_width_1440px_w/public/pic-selected-241121-1523-54.png?itok=oJiyWUqe" alt="Cost Report generated based on terraform code" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Cost Report generated based on terraform code</p>
+<!-- raw HTML omitted -->
+<p>Created by Josephine Pfeiffer,</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Figure 4: Cost Report generated based on terraform code.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h3 id="consistent-tooling">Consistent tooling</h3>
+<p>Devfiles standardize environments, bundling integrated development environment (IDE) configs, containers, and commands into a unified setup. They are a mechanism for teams to share configurations across projects and provide a single source of truth throughout the application lifecycle.</p>
+<p>In our example, we can preinstall the Terraform extension for VS Code as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>  .vscode/extensions.json: |
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   &#34;recommendations&#34;: [
+</span></span><span style="display:flex;"><span>         &#34;hashicorp.terraform&#34;
+</span></span><span style="display:flex;"><span>       ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>To define standardized commands, we can run right in the IDE, shifting left even further from the CI pipeline. The following example automatically generates documentation for the Terraform code we write:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>(...)
+</span></span><span style="display:flex;"><span>commands:
+</span></span><span style="display:flex;"><span>  - id: generate-docs
+</span></span><span style="display:flex;"><span>exec:
+</span></span><span style="display:flex;"><span>   component: terraform-tools
+</span></span><span style="display:flex;"><span>   commandLine: &#34;terraform-docs markdown . &gt; ../docs.md&#34;
+</span></span><span style="display:flex;"><span>   workingDir: ${PROJECTS_ROOT}/galaxy/terraform
+</span></span><span style="display:flex;"><span>   group:
+</span></span><span style="display:flex;"><span>     kind: build
+</span></span><span style="display:flex;"><span>     isDefault: false
+</span></span><span style="display:flex;"><span>(...)
+</span></span></code></pre></div><p>The development environment uses a custom container image packaged with the required tooling for infrastructure projects. For other use cases like developing Quarkus or Node.js apps, you might want to build a different container image that includes the tooling for those frameworks as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>(...)
+</span></span><span style="display:flex;"><span>components:
+</span></span><span style="display:flex;"><span>  - name: terraform-tools
+</span></span><span style="display:flex;"><span>container:
+</span></span><span style="display:flex;"><span>   image: quay.io/pfeifferj/tfdev:latest
+</span></span><span style="display:flex;"><span>   memoryLimit: 512Mi
+</span></span><span style="display:flex;"><span>   cpuLimit: &#34;1&#34;
+</span></span><span style="display:flex;"><span>   mountSources: true
+</span></span><span style="display:flex;"><span>   volumeMounts:
+</span></span><span style="display:flex;"><span>     - name: terraform-data
+</span></span><span style="display:flex;"><span>       path: ${PROJECTS_ROOT}/galaxy/terraform
+</span></span><span style="display:flex;"><span>(...)
+</span></span></code></pre></div><p>Putting everything together, we just scaffolded our development environment for this project as shown in Figure 5.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_full_width_1440px_w/public/pic-window-241121-1344-33.png?itok=QoB20SFv" alt="OpenShift Dev Spaces Web Development Environment" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>OpenShift Dev Spaces Web Development Environment</p>
+<!-- raw HTML omitted -->
+<p>Created by Josephine Pfeiffer,</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Figure 5: OpenShift Dev Spaces web development environment.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>The documentation we generated with our <code>tf-docs</code> task is shown in Figure 6.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_full_width_1440px_w/public/pic-window-241121-1350-31.png?itok=GiNaqsQx" alt="Documentation automatically generated by tf-docs task" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Documentation automatically generated by tf-docs task</p>
+<!-- raw HTML omitted -->
+<p>Created by Josephine Pfeiffer,</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Figure 6: Documentation automatically generated by tf-docs task.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h2 id="4-benefits-of-golden-paths">4 benefits of golden paths</h2>
+<p>The ultimate question: Why bother with golden paths? When deciding whether to utilize golden paths, consider the many benefits they offer.</p>
+<p>4 golden path benefits:</p>
+<ol>
+<li><strong>Reduces cognitive load:</strong> Standardized processes free up mental space for innovation.</li>
+<li><strong>Better security:</strong> Shift left without requiring developers to be security experts. Templates ensure built-in security practices.</li>
+<li><strong>Faster development:</strong> Standardization means no more reinventing the wheel.</li>
+<li><strong>Simplified compliance and auditing:</strong> You can meet security standards using templates, making audits painless.</li>
+</ol>
+<h2 id="golden-path-pitfalls">Golden path pitfalls</h2>
+<p>When utilizing golden paths, be wary of these issues that may present themselves:</p>
+<ul>
+<li><strong>Outdated templates:</strong> If templates aren&rsquo;t regularly updated, they can embed obsolete or insecure practices.</li>
+<li><strong>Over-reliance:</strong> Developers might become too dependent on templates, stifling innovation or producing cookie-cutter solutions that don&rsquo;t fit specific needs.</li>
+<li><strong>Security blind spots:</strong> Templates can create a false sense of security if not implemented correctly, which could introduce vulnerabilities.</li>
+</ul>
+<p>Lifecycle management is essential. You can’t just set up templates and forget them. They need continuous updates to adapt to new technologies, security threats, and user needs. A dedicated team should treat these templates as a product, evolving them as the galaxy shifts.</p>
+<h2 id="wrapping-up">Wrapping up</h2>
+<p>Golden paths and software templates accelerate developer productivity, enhance security, and reduce frustration. If Infrastructure as Code was the start, golden paths are the hyperspace jump that takes you where you need to go, efficiently and with enhanced security.</p>
+<p>Learn more about Red Hat Trusted Software Supply Chain, Red Hat Developer Hub, and explore what shift security left means.</p>
+<p>The post How golden paths improve developer productivity appeared first on Red Hat Developer.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

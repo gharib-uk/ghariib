@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Toward a code-breaking quantum computer</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Toward a code-breaking quantum computer</h1>
+			<b><time>06.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/algorithms">algorithms</a>
+        	       
+		           <a href="/tags/computerscienceandartificialintelligencelaboratorycsail">computerscienceandartificialintelligencelaboratorycsail</a>
+        	       
+		           <a href="/tags/computerscienceandtechnology">computerscienceandtechnology</a>
+        	       
+		           <a href="/tags/dataprivacy">dataprivacy</a>
+        	       
+		           <a href="/tags/dataprotection">dataprotection</a>
+        	       
+		           <a href="/tags/defenseadvancedresearchprojectsagencydarpa">defenseadvancedresearchprojectsagencydarpa</a>
+        	       
+		           <a href="/tags/mitschwarzmancollegeofcomputing">mitschwarzmancollegeofcomputing</a>
+        	       
+		           <a href="/tags/quantumcomputing">quantumcomputing</a>
+        	       
+
+			<div>
+				<p>The most recent email you sent was likely encrypted using a tried-and-true method that relies on the idea that even the fastest computer would be unable to efficiently break a gigantic number into factors.</p>
+<p>Quantum computers, on the other hand, promise to rapidly crack complex cryptographic systems that a classical computer might never be able to unravel. This promise is based on a quantum factoring algorithm proposed in 1994 by Peter Shor, who is now a professor at MIT.</p>
+<p>But while researchers have taken great strides in the last 30 years, scientists have yet to build a quantum computer powerful enough to run Shor’s algorithm.</p>
+<p>As some researchers work to build larger quantum computers, others have been trying to improve Shor’s algorithm so it could run on a smaller quantum circuit. About a year ago, New York University computer scientist Oded Regev proposed a major theoretical improvement. His algorithm could run faster, but the circuit would require more memory.</p>
+<p>Building off those results, MIT researchers have proposed a best-of-both-worlds approach that combines the speed of Regev’s algorithm with the memory-efficiency of Shor’s. This new algorithm is as fast as Regev’s, requires fewer quantum building blocks known as qubits, and has a higher tolerance to quantum noise, which could make it more feasible to implement in practice.</p>
+<p>In the long run, this new algorithm could inform the development of novel encryption methods that can withstand the code-breaking power of quantum computers.</p>
+<p>“If large-scale quantum computers ever get built, then factoring is toast and we have to find something else to use for cryptography. But how real is this threat? Can we make quantum factoring practical? Our work could potentially bring us one step closer to a practical implementation,” says Vinod Vaikuntanathan, the Ford Foundation Professor of Engineering, a member of the Computer Science and Artificial Intelligence Laboratory (CSAIL), and senior author of a paper describing the algorithm.</p>
+<p>The paper’s lead author is Seyoon Ragavan, a graduate student in the MIT Department of Electrical Engineering and Computer Science. The research will be presented at the 2024 International Cryptology Conference.</p>
+<p><strong>Cracking cryptography</strong></p>
+<p>To securely transmit messages over the internet, service providers like email clients and messaging apps typically rely on RSA, an encryption scheme invented by MIT researchers Ron Rivest, Adi Shamir, and Leonard Adleman in the 1970s (hence the name “RSA”). The system is based on the idea that factoring a 2,048-bit integer (a number with 617 digits) is too hard for a computer to do in a reasonable amount of time.</p>
+<p>That idea was flipped on its head in 1994 when Shor, then working at Bell Labs, introduced an algorithm which proved that a quantum computer could factor quickly enough to break RSA cryptography.</p>
+<p>“That was a turning point. But in 1994, nobody knew how to build a large enough quantum computer. And we’re still pretty far from there. Some people wonder if they will ever be built,” says Vaikuntanathan.</p>
+<p>It is estimated that a quantum computer would need about 20 million qubits to run Shor’s algorithm. Right now, the largest quantum computers have around 1,100 qubits.</p>
+<p>A quantum computer performs computations using quantum circuits, just like a classical computer uses classical circuits. Each quantum circuit is composed of a series of operations known as quantum gates. These quantum gates utilize qubits, which are the smallest building blocks of a quantum computer, to perform calculations.</p>
+<p>But quantum gates introduce noise, so having fewer gates would improve a machine’s performance. Researchers have been striving to enhance Shor’s algorithm so it could be run on a smaller circuit with fewer quantum gates.</p>
+<p>That is precisely what Regev did with the circuit he proposed a year ago.</p>
+<p>“That was big news because it was the first real improvement to Shor’s circuit from 1994,” Vaikuntanathan says.</p>
+<p>The quantum circuit Shor proposed has a size proportional to the square of the number being factored. That means if one were to factor a 2,048-bit integer, the circuit would need millions of gates.</p>
+<p>Regev’s circuit requires significantly fewer quantum gates, but it needs many more qubits to provide enough memory. This presents a new problem.</p>
+<p>“In a sense, some types of qubits are like apples or oranges. If you keep them around, they decay over time. You want to minimize the number of qubits you need to keep around,” explains Vaikuntanathan.</p>
+<p>He heard Regev speak about his results at a workshop last August. At the end of his talk, Regev posed a question: Could someone improve his circuit so it needs fewer qubits? Vaikuntanathan and Ragavan took up that question.</p>
+<p><strong>Quantum ping-pong</strong></p>
+<p>To factor a very large number, a quantum circuit would need to run many times, performing operations that involve computing powers, like 2 to the power of 100.</p>
+<p>But computing such large powers is costly and difficult to perform on a quantum computer, since quantum computers can only perform reversible operations. Squaring a number is not a reversible operation, so each time a number is squared, more quantum memory must be added to compute the next square.</p>
+<p>The MIT researchers found a clever way to compute exponents using a series of Fibonacci numbers that requires simple multiplication, which is reversible, rather than squaring. Their method needs just two quantum memory units to compute any exponent.</p>
+<p>“It is kind of like a ping-pong game, where we start with a number and then bounce back and forth, multiplying between two quantum memory registers,” Vaikuntanathan adds.</p>
+<p>They also tackled the challenge of error correction. The circuits proposed by Shor and Regev require every quantum operation to be correct for their algorithm to work, Vaikuntanathan says. But error-free quantum gates would be infeasible on a real machine.</p>
+<p>They overcame this problem using a technique to filter out corrupt results and only process the right ones.</p>
+<p>The end-result is a circuit that is significantly more memory-efficient. Plus, their error correction technique would make the algorithm more practical to deploy.</p>
+<p>“The authors resolve the two most important bottlenecks in the earlier quantum factoring algorithm. Although still not immediately practical, their work brings quantum factoring algorithms closer to reality,” adds Regev.</p>
+<p>In the future, the researchers hope to make their algorithm even more efficient and, someday, use it to test factoring on a real quantum circuit.</p>
+<p>“The elephant-in-the-room question after this work is: Does it actually bring us closer to breaking RSA cryptography? That is not clear just yet; these improvements currently only kick in when the integers are much larger than 2,048 bits. Can we push this algorithm and make it more feasible than Shor’s even for 2,048-bit integers?” says Ragavan.</p>
+<p>This work is funded by an Akamai Presidential Fellowship, the U.S. Defense Advanced Research Projects Agency, the National Science Foundation, the MIT-IBM Watson AI Lab, a Thornton Family Faculty Research Innovation Fellowship, and a Simons Investigator Award.</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

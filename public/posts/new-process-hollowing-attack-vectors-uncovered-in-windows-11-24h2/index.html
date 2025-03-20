@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>New Process Hollowing Attack Vectors Uncovered in Windows 11 (24H2)</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>New Process Hollowing Attack Vectors Uncovered in Windows 11 (24H2)</h1>
+			<b><time>03.02.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>The recent release of Windows 11 version 24H2 has introduced a range of new features and updates, but it has also raised significant cybersecurity concerns.</p>
+<p>A longstanding malware technique known as Process Hollowing or RunPE has encountered compatibility issues on this latest Windows update, leading to broader discussions about the evolving landscape of cybersecurity.</p>
+<p>Process Hollowing is a sophisticated code injection technique often used by malware to evade detection. It involves creating a legitimate process in a suspended state, hollowing out its memory, and replacing it with malicious code.</p>
+<p>Once resumed, the process appears legitimate while executing harmful actions in disguise. Attackers have widely utilized this method due to its effectiveness in bypassing traditional security measures.</p>
+<h2 id="process-hollowing-with-windows-11-24h2"><strong>Process Hollowing with Windows 11 24H2</strong></h2>
+<p>Windows 11 version 24H2, released on October 1, 2024, introduced several under-the-hood changes aimed at improving performance and security.</p>
+<p>According to the researcher, the update added native support for Hotpatching and modified the Windows loader’s behavior during process initialization. These changes inadvertently disrupted the functionality of Process Hollowing techniques by introducing stricter checks on memory properties.</p>
+<!-- raw HTML omitted -->
+<p>Specifically, the new loader calls a function, <code>ZwQueryVirtualMemory</code>with a parameter that requires memory regions to be flagged as <code>MEM_IMAGE</code>.</p>
+<p>Since Process Hollowing typically uses <code>MEM_PRIVATE</code> memory allocations for injected payloads, this mismatch causes the process to terminate with an error (0xC0000141).</p>
+<p>While this change complicates the use of Process Hollowing by attackers, it also affects legitimate tools and research frameworks that rely on this technique for penetration testing or debugging purposes.</p>
+<p>The issue highlights how evolving operating system updates can disrupt both malicious and benign use cases of certain techniques.</p>
+<p>Moreover, attackers are already adapting. Alternative methods such as Process Doppelgänging, Process Ghosting, and hybrid techniques like Transacted Hollowing have emerged as potential replacements.</p>
+<p>These approaches map payloads as <code>MEM_IMAGE</code>, bypassing the new restrictions while maintaining stealth.</p>
+<p>For developers or researchers relying on Process Hollowing, two primary solutions are available:</p>
+<ol>
+<li>
+<p><strong>Adopt Alternative Techniques:</strong> Transition to newer methods such as Transacted or Ghostly Hollowing, which are compatible with Windows 11 24H2.</p>
+</li>
+<li>
+<p><strong>Patch NTDLL:</strong> Modify specific functions in the NTDLL library to bypass the new checks. However, this approach is riskier and may introduce system instability.</p>
+</li>
+</ol>
+<!-- raw HTML omitted -->
+<p>This development underscores the ongoing arms race between operating system security enhancements and malware evolution. While Microsoft’s changes aim to strengthen defenses against exploitation, they also challenge cybersecurity professionals to adapt their tools and methodologies.</p>
+<p>As Windows 11 version 24H2 continues its rollout, organizations must remain vigilant. Enhanced detection strategies focusing on behavioral analysis rather than reliance on specific techniques will be critical in mitigating emerging threats.</p>
+<p><strong><code>Collect Threat Intelligence with TI Lookup to Improve Your Company’s Security - Get 50 Free Request</code></strong></p>
+<p>The post New Process Hollowing Attack Vectors Uncovered in Windows 11 (24H2) appeared first on Cyber Security News.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

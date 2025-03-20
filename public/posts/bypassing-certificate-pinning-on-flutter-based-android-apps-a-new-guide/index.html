@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Bypassing Certificate Pinning on Flutter-based Android Apps. A new guide.</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Bypassing Certificate Pinning on Flutter-based Android Apps. A new guide.</h1>
+			<b><time>22.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/certificate-pinning">certificate-pinning</a>
+        	       
+		           <a href="/tags/flutter">flutter</a>
+        	       
+		           <a href="/tags/reverse-engineering">reverse-engineering</a>
+        	       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/a/AVvXsEiLZOgVn35LqPDpfHUk6wcqLOjrvV6JioR2CPitS6-4WhuB6jSaudX8wXAwTaHk3U7ebucLS-R5vO6GRTF2dC-cjzUcm-qv1IQLhkB-zDUYLavj06fTkgqAbwsix1lSP2klyN8rqETtdsCcQFAv_FOKE9AGSNQ0TOyi3q5sxBSkyE_lhziAZbmO1DDnroxg" alt="" />
+</figure>
+
+
+</p>
+<p>One of the preliminary activities when analyzing mobile application, <em>more usually than not</em>, is to be able to sniff HTTP/S traffic via <strong>a MitM proxy</strong>. </p>
+<p>This is quite straightforward in the case of naive applications, but can be quite challenging when applications use certificate pinning techniques. In this post I&rsquo;ll try to explain the methodology I used to make this possible for a <strong>Flutter-based</strong> <strong>Android</strong> sample application in a reliable way.</p>
+<h4 id="introduction"><strong>Introduction</strong></h4>
+<p>It was indeed the need to <em>bypass</em> a certificate validation on a <em>Flutter framework</em> during a mobile application penetration testing activity for a customer of ours, that led to this research. </p>
+<p>As a first approach, as usual, we tried some of the specific exploits/bypasses we found on the web. </p>
+<p>Alas, in this case, they failed.</p>
+<p>Some of the main concepts that are going to be explained, actually, overlap in what those articles contain; what it differs is the technique used for identifying and hooking at runtime the routine used for certificate verification.</p>
+<p>While minimizing effort was a key objective in bypassing certificate pinning controls, the chosen approach turned out to be overly generic.  Unlike pattern matching techniques, which can be tailored to specific scenarios, this method becomes unreliable across different platforms, architectures, and even builds.</p>
+<p>While the article&rsquo;s findings may not address all the case studies, it proposes an effective methodology that can be readily applied, with minimal adjustments, to similar scenarios. </p>
+<p>Moreover, as a different approach, reFlutter would be a valid tool for such a similar job. Anyway, as it statically patches code to deactivate runtime checks, if the mobile application was signed and/or had file integrity checks, static approach would definitely be challenging.  </p>
+<p>In the next paragraphs, we&rsquo;re going to cover the following topics:</p>
+<ul>
+<li>Why Flutter is so different</li>
+<li>Flutter based APK structure</li>
+<li>Force traffic forwarding to my proxy</li>
+<li>Diving into BoringSSL source code</li>
+<li>Reverse-engineering on libflutter.so</li>
+<li>Frida hooking script</li>
+</ul>
+<p>Finally, in order to give some testbed, we created a basic Flutter application which fetches data from the URL https://dummy.restapi.example.ltd/api/v1/employees, using code that correctly implements <strong>certificate pinning</strong>.</p>
+<p>The entire application code, the build and the Frida script are available on Github at the following link:</p>
+<p><a href="https://github.com/mindedsecurity/flutter-cert-check-bypass/">https://github.com/mindedsecurity/flutter-cert-check-bypass/</a></p>
+<p><strong>Why Flutter is so Different</strong></p>
+<p>This is, obviously, not the first time we have to deal with bypassing certificate pinning, so, why is Flutter so different from other scenarios?</p>
+<ul>
+<li>Flutter is a Google&rsquo;s open source portable toolkit able to create natively compiled applications for mobile, web, and desktop from a single codebase. </li>
+<li>The final Flutter applications are written in Dart, whilst the framework engine is built mainly in C++. </li>
+<li>The compilation obviously differs on the target platform: for Android, the engine is compiled using the Android&rsquo;s NDK (for this blogpost we are going to focus only on the Android ARMv8 platform). </li>
+</ul>
+<p>In this development environment more blazoned SSL pinning bypass methods, would not work, as the real checks are implemented in &ldquo;native code&rdquo;, thus results compiled in machine code and many details may change among different framework builds. </p>
+<p>In addition, for our activities of analysis of the HTTP request sent to remote servers we would like to forward the application&rsquo;s traffic throughout a forward HTTP proxy:</p>
+<p>- the first idea that an unaware analyst could have is to set this in the Network settings of Android system, but this would not work at all. </p>
+<p>Flutter, at low level, uses <strong>dart:io</strong> library for managing socket, file and other I/O support in non browser-based applications. </p>
+<p>As <strong>dart:io</strong> documentation says, by default the HttpClient uses the proxy configuration available from the environment, i.e it will take into account enviroment variables <strong>http_proxy, https_proxy, no_proxy, HTTP_PROXY, HTTPS_PROXY, NO_PROXY</strong> which, on Android based OSs, are not affected by any settings change, since every application runs in a child process of Zygote inheriting its environment variables, that are loaded at system boot.</p>
+<h4 id="flutter-based-apk-structure"><strong>Flutter Based APK Structure</strong></h4>
+<p>The <strong>resource/lib</strong> folder inside the APK contains the compiled Dart code (compiled to native binary code using the Dart VM&rsquo;s Ahead-of-Time compilation) for the Flutter application. </p>
+<p>The compiled code is stored in various folders organized according to the target platform, such as <em>arm64-v8a</em> for 64-bit ARM, <em>armeabi-v7a</em>  for 32-bit ARM etc. </p>
+<p>Specifically the two main shared objects are:</p>
+<ul>
+<li><strong>libapp.so</strong>: which contains the compiled native code that corresponds to the Dart code of your Flutter app. This native code is executed when the Flutter app is launched on a device.</li>
+<li><strong>libflutter.so</strong>: containing the native code of the Flutter engine, which powers the Flutter framework and enables the execution of Flutter apps on Android devices. This library includes the core functionalities of the Flutter framework</li>
+</ul>
+<h4 id="forcing-traffic-forwarding-to-the-proxy"><strong>Forcing Traffic Forwarding to the Proxy</strong></h4>
+<p>We know that the Flutter application will not honor the proxy settings at system level, thus we need a finer technique for fundamental part.<br>
+Once granted root privileges on our Android device (Google Pixel 4a), we have the possibility to set an <em>iptables</em> rule for the redirection of the desired HTTP traffic table throughout the a Burp Pro proxy instance running on my laptop:</p>
+<ol>
+<li>connect the android device via USB and run an adb shell as root.<br>
+<strong>adb shell su</strong></li>
+<li>setup the redirection:<br>
+<strong>iptables -t nat -A OUTPUT -p tcp -d destination-host.domain &ndash;dport</strong> <strong>443</strong> <strong>-j DNAT &ndash;to-destination 127.0.0.1:8080</strong></li>
+<li>reverse map the port 8080 of the android device over the proxy running on my laptop on port 8080:<br>
+<strong>adb reverse tcp:8080 tcp:8080</strong></li>
+</ol>
+<p><em><strong>Note:</strong> proxydroid could also be adopted equivalently to the iptables rule: it is just a frontend for iptables.</em></p>
+<p>Finally, it is also important to point out that we need to set up our Burp listening server as invisible, so that it won&rsquo;t be necessary to explicitly set a proxy on the device, and the proxy itself will act as a perfect man-in-the-middle and directly intercept the SSL/TLS handshaking.  </p>
+<p>At this point the traffic is redirected to Burp as shown in a screenshot of the test application taken just after the triggering of the sample HTTP request and after the setting up of the proxy interception:</p>
+<table>
+  <thead>
+      <tr>
+          <th>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjRti7fd5GSfOrfWL17BFZJQhS0CcG8pYU9MeHJI1u6GMTnxw67RbDLoYHM8zzcVIdswTKfBQtOgyAHe1ixqpb4sbWlbtQ27rI59fCmzMgRqvRi18r50C-gRY4F05mYddg5IQT3PojifoAQMt9TDmPh9eeDPrqCgaikimOrnGeKNgll-vk2qNkAbXPQTPY/w315-h725/error1.1.png" alt="" />
+</figure>
+
+
+</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Sample application&rsquo;s error message after having forced traffic to Burp Pro proxy instance</td>
+      </tr>
+  </tbody>
+</table>
+<p>The error is pretty verbose about the code which triggered the <strong>HandshakeException</strong>.</p>
+<p>Someone at this point might say: <em>&ldquo;Well, production applications usually don&rsquo;t show such verbose errors!&rdquo;</em>. </p>
+<p>We&rsquo;re using our test bed, once we have the <strong>know-how</strong> to bypass such controls, we&rsquo;ll be able to replicate it to any Flutter-based application. </p>
+<h4 id="diving-into-boringssl-source-code"><strong>Diving into BoringSSL Source Code</strong></h4>
+<p>Flutter Engine relies on <strong><em>boringssl</em></strong> library for SSL/TLS implementation, which is the Google&rsquo;s fork of the well known <strong><em>openssl</em>.</strong> </p>
+<p>As the error suggested, the certificate verification which trapped was performed in <strong>boringssl/ssl/handshake.cc</strong> at line 393, coherently with what displayed in the previous screenshot, there is the raising of the represented error concerning the failure of the certificate verification. </p>
+<table>
+  <thead>
+      <tr>
+          <th>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg48P69JoMk3H_-u0De3peDNYLfqzAVQjou030hQBd1ecqPhDQ8mATJx1nFdpsCIec7yZA8OYnnYesPrR-vxVMu5rQmo4-Slus285c8KvUJTZ1KZit-7JofE9ag6ZpDNteVg4Wsguog_T6bBHVyIFd9ME9NP2EhOpsxRhUHEFbhIxKvP0WtFM_ogHadRwY/w641-h555/handshake_Errortrigger.png" alt="" />
+</figure>
+
+
+</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Point of triggering in BoringSSL source code of the TLS certificate verification error</td>
+      </tr>
+  </tbody>
+</table>
+<p>The interesting part of this function is the <strong><em>else</em></strong> block immediately above: assuming no <strong><em>custom_verify_callback</em></strong> has been set, the code is invoking <em>**ssl-&gt;ctx-&gt;x509_method-&gt;**<strong>session_verify_cert_chain</strong></em> and is setting <strong><em>ret</em></strong> by evaluating the boolean result of the same. </p>
+<p>That method is a function pointer referring <strong><em>ssl_crypto_x509_session_verify_cert_chain</em></strong>, which is defined in <strong><em>borisngssl/ssl/ssl_x509.cc</em>.</strong> To bypass the check was only needed to make this function return always <strong><em>true</em></strong>.  </p>
+<h4 id="reverse-engineering-on-libflutterso"><strong>Reverse-Engineering on libflutter.so</strong></h4>
+<p>At this point, we unpack the application&rsquo;s apk and open in IDA the <strong><em>resources/lib/arm64-v8a/libflutter.so</em></strong> shared object; which is the Flutter core engine natively compiled for the platform <strong>Android ARM64</strong>. </p>
+<p>The ELF file was stripped and had just a single exported symbol: <strong><strong><em>JNI_Onload</em></strong></strong> (address <strong><em>0x00382940</em></strong>). For this reason, identifying the portion of assembly which was related to <strong><em>ssl_crypto_x509_session_verify_cert_chain</em></strong> was not so trivial.</p>
+<p>Here follows the integral source code of that function.</p>
+<table>
+  <thead>
+      <tr>
+          <th>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjp6oM00_LOlYPbS7V9-yqPqF27VaRJpLgnXg_OGJgP65ayRH-0n0RXYel1HfCg9uRzHueaA_o4IuT3-aVrdJN3_GVf9Alhwa6Ul-Qy8yKg21asCNbbxCMHEFFPSW7z8soiCn4bpyVigv-BM74de4EJI55TsYDISy_faaPkrnGcp2NTdQyIJ5s3VZo244s/w660-h1077/function_to_hook_s.png" alt="" />
+</figure>
+
+
+</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong><em>ssl_crypto_x509_session_verify_cert_chain</em></strong> implementation taken from BoringSSL repository</td>
+      </tr>
+  </tbody>
+</table>
+<p>As it can be seen, the function at a certain point uses two string literals: &ldquo;<em>ssl_client</em>&rdquo; and &ldquo;<em>ssl_server</em>&rdquo;. Those are both stored in the <strong>.rodata</strong> section of <em><strong>libflutter.so</strong>.</em> So, the strategy used was to analyze the <em>XREFS</em> (cross-references) of those strings to find a function which locally addressed both. The single procedure which used both was that at address <strong><em>0x005FDF64</em></strong>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhb7wQM7GZy6suq8TTqP2N1jR8ASxiQRP_3FCLbmzbll_M45ROBHlMvxdWwv_n7nDj92wA55u9mCYiJaGl05NpsbMAOq2-5v1qgDg4a3u2jAdFQqSko6gtRIio5NjppBUkfEHqbnODWcnDSLBdhCicz7ai0kVwwGrzLBOff2vbOci-CmLN2ypdBF5ROzUU/w632-h728/decompiled.png" alt="" />
+</figure>
+
+
+</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Decompiled <strong>ssl_crypto_x509_session_verify_cert_chain</strong> by IDA Pro 7.7 </td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="frida-hooking-script"><strong>Frida Hooking Script</strong></h4>
+<p>After identifying the native subroutine that should have been hooked, it is possible to implement a simple Frida script to intercept calls to the function  <strong><em>ssl_crypto_x509_session_verify_cert_chain</em></strong> and force its return value to <strong><em>true</em></strong> (i.e., 0x01).</p>
+<p>To find the absolute address which depends on the memory mapping of <strong><em>libflutter.so</em></strong> into application proces,s the reader will have to:</p>
+<ul>
+<li>Calculate the relative logical offset between <em><strong>ssl_crypto_x509_session_verify_cert_chain</strong> <strong>and JNI_Onload:</strong></em> this is done by simply subtract the JNI_Onload logical address inside libflutter.so, which is readable into the shared object exports table, to the <strong>ssl_crypto_x509_session_verify_cert_chain</strong> logical address address, whose value was previously found with the technique shown in the previous section; in this sample analysis they are respectively <strong><em>0x005FDF64</em> <strong>and</strong> <em>0x00382940</em></strong>, thus the resulting offset would be:<br>
+ <strong><em>0x005FDF64 - 0x00382940 = 0x0027b624</em></strong>.</li>
+<li>Since <strong>JNI_OnLoad</strong> is an exported symbol, the dynamic linker updates the global offset table (<em>GOT</em>) upon its first invocation. This update provides the logical address of <strong>JNI_OnLoad</strong> relative to the shared object&rsquo;s memory layout within the process.  Therefore, we can easily access it using the <strong>enumerateExports</strong>() method in the Frida script.</li>
+<li>Add the offset obtained to the <strong><strong><em>JNI_Onload</em></strong></strong> address for this process, to get the current <strong><strong><em>ssl_crypto_x509_session_verify_cert_chain</em></strong></strong> address (i.e. the address to which the function </li>
+</ul>
+<p>function hook_ssl_crypto_x509_session_verify_cert_chain(address){</p>
+<p>Interceptor.attach(address, {</p>
+<p>onEnter: function(args) { console.log(&ldquo;Disabling SSL certificate validation&rdquo;) },</p>
+<p>onLeave: function(retval) { console.log(&ldquo;Retval: &quot; + retval); retval.replace(0x1);}</p>
+<p>});</p>
+<p>}</p>
+<p>function disable_certificate_validation(){</p>
+<p>var m = Process.findModuleByName(&ldquo;libflutter.so&rdquo;);</p>
+<p>console.log(&ldquo;libflutter.so loaded at &ldquo;, m.base);</p>
+<p>var jni_onload_addr = m.enumerateExports()[0].address;</p>
+<p>console.log(&ldquo;jni_onload_address: &ldquo;, jni_onload_addr);</p>
+<p>// Adding the offset between</p>
+<p>// ssl_crypto_x509_session_verify_cert_chain and JNI_Onload = <em>0x0027b624</em></p>
+<p>let addr = ptr(jni_onload_addr).add(<em>0x0027b624</em>);</p>
+<p>console.log(&ldquo;ssl_crypto_x509_session_verify_cert_chain_addr: &ldquo;, addr);</p>
+<p>let buf = Memory.readByteArray(addr, 12);</p>
+<p>console.log(hexdump(buf, { offset: 0, length: 64, header: false, ansi: false}));</p>
+<p>hook_ssl_crypto_x509_session_verify_cert_chain(addr);</p>
+<p>}</p>
+<p>setTimeout(disable_certificate_validation, 1000)</p>
+<h4 id="conclusion"><strong>Conclusion</strong></h4>
+<p>At this point we are ready to execute Frida server via adb and run the above script with this command:</p>
+<p><strong><em>frida -U -f com.application -l script.js</em></strong>; </p>
+<p>We managed to bypass the certificate verification and intercepted HTTPS traffic:</p>
+<table>
+  <thead>
+      <tr>
+          <th>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEignDxzEvhcR-mXy6_voevoTho_8IQCtXj6SYMezpjIwXT2rSCqpsVD7JszCGh5HBwqbxQ5ox9LDEIMPY0LEOI5ffyVSpgxE_-l2oyVt4t4tp8R2PjKm23htfKrXOVmhwbZdN9IiGyiXmEzTHbgo5aoCQrcDj_TBhUTdxwekuFcDGWd1QhRVtsNjMxYV84/w621-h287/successful.png" alt="" />
+</figure>
+
+
+</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Frida script launching </td>
+      </tr>
+  </tbody>
+</table>
+<p>Here follows the result of the bypass, showing the Burp Pro intercepting the request and its related response.</p>
+<p> </p>
+<table>
+  <thead>
+      <tr>
+          <th>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEinZ4PXz3Y-5E5an5e0fFvyvBOgVpG2CXZN8aleGF7xPmSIBrOjtLMhnPiBvL7tf38dEOyN_Rno3gC-L_dw2FWut4L5Ahc9fuc1pxjmCcyH8vxtxVOBihn6iTChvdIa8uqurEGJybGZpz0FqdS11NmD-p1aGO90Uf54PZf6TL9QJ13sK0284k1DEo8hUs0/w610-h387/request_successful.png" alt="" />
+</figure>
+
+
+</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Request triggered by the Flutter App intercepted by Burp Pro</td>
+      </tr>
+  </tbody>
+</table>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

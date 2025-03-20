@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>PPA for Installing Kodi 21.2 Deb Package in Ubuntu 24.04</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>PPA for Installing Kodi 21.2 Deb Package in Ubuntu 24.04</h1>
+			<b><time>22.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2021/10/kodi-icon-feature-250x250.png" alt="" />
+</figure>
+
+
+</p>
+<p>Want to install Kodi home theater software v21.2 “Omega” via native <code>.deb</code> package? Here’s a PPA for Ubuntu 24.04 LTS, though unofficial.</p>
+<p>Kodi has an official Ubuntu PPA, which has not been updated for long time. The official package for Linux now is Flatpak that runs in sandbox environment.</p>
+<p>For those who don’t like Flatpak or have issue running the software in sandbox, here’s an unofficial PPA available for Ubuntu 24.04 and Linux Mint 22 users.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/kodi-about212-700x467.webp" alt="" />
+</figure>
+
+
+</p>
+<p>Kodi so far is at 21 release series that features LG webOS TV, M3U8 playlist files, Xbox for HDR10 passthrough support. The latest v21.2 point release was out few days ago with significant speed increase of library scans, faster artwork caching, and various bug-fixes.</p>
+<h3 id="install-kodi-212-in-ubuntu-2404-via-ppa">Install Kodi 21.2 in Ubuntu 24.04 via PPA</h3>
+<p>The PPA so far supports only Ubuntu 24.04, because it has so many add-ons that take too much time to maintain. And, packages here are mostly backported from deb multimedia repository.</p>
+<p><strong>NOTE: The PPA package seems working good in my case, but without well testing! Please report missing features or add-ons.</strong></p>
+<p>1. First, press <code>Ctrl+Alt+T</code> on keyboard to open up a terminal window. When it opens, run command to add the PPA:</p>
+<pre tabindex="0"><code>sudo add-apt-repository ppa:ubuntuhandbook1/kodi
+</code></pre><p><em>Type user password (no visual feedback) and hit Enter to continue.</em></p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/kodi-ppa-unofficial-700x396.webp" alt="" />
+</figure>
+
+
+</p>
+<p>2. If you’re following this tutorial in Linux Mint, then you may run command below to refresh cache:</p>
+<pre tabindex="0"><code>sudo apt update
+</code></pre><p>3. Finally, install Kodi via command:</p>
+<pre tabindex="0"><code>sudo apt install kodi
+</code></pre><p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/apt-kodi-700x505.webp" alt="" />
+</figure>
+
+
+</p>
+<p>The PPA also contains many audio encoder/decoder, inputstream, and PVR addons. You may run the command below and hit <strong>Tab</strong> to list available packages:</p>
+<pre tabindex="0"><code>sudo apt install kodi-
+</code></pre><p>Then replace <code>kodi-</code> with your desired add-on package name to install. <strong>NOTE</strong>: some old add-ons (from Ubuntu system repository) MAY refuse to install due to dependency issue.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/kodi-addons-700x434.webp" alt="" />
+</figure>
+
+
+</p>
+<h3 id="uninstall">Uninstall:</h3>
+<p>If you want to revert back the stock Kodi 20.5, then open terminal (Ctrl+Alt+T) and run command:</p>
+<pre tabindex="0"><code>sudo apt install ppa-purge &amp;&amp; sudo ppa-purge ppa:ubuntuhandbook1/kodi
+</code></pre><p>The command will install ppa-purge tool and use it to purge the PPA which also downgrade all installed packages from that repository.</p>
+<p>For choice, you may use the command below instead to remove the PPA repository:</p>
+<pre tabindex="0"><code>sudo add-apt-repository --remove ppa:ubuntuhandbook1/kodi
+</code></pre><p>Then, remove Kodi packages via command:</p>
+<pre tabindex="0"><code>sudo apt remove --autoremove kodi*
+</code></pre><p>Keep an eye on terminal output before answering ‘y/yes’, <code>--autoremove</code> flag will try to remove useless packages that you might need.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Secure and publish Python packages: A guide to CI integration&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Secure and publish Python packages: A guide to CI integration&lt;/div&gt;</h1>
+			<b><time>22.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>Supply chain security is a critical concern in software development. Organizations need to verify the authenticity and integrity of their software packages. This guide will show you how to implement a secure CI/CD pipeline for Python packages using GitLab CI, incorporating package signing and attestation using Sigstore&rsquo;s Cosign.</p>
+<p>You&rsquo;ll learn:</p>
+<ul>
+<li>
+<p>Why sign and attest your Python packages?</p>
+</li>
+<li>
+<p>Pipeline overview</p>
+</li>
+<li>
+<p>Complete pipeline implementation: Setting up the environment</p>
+<ul>
+<li>Environment configuration</li>
+<li>Configuration breakdown</li>
+</ul>
+</li>
+<li>
+<p>The 6 stages</p>
+<ol>
+<li>Building</li>
+<li>Signing</li>
+<li>Verification</li>
+<li>Publishing</li>
+<li>Publishing signatures</li>
+<li>Consumer verification</li>
+</ol>
+</li>
+</ul>
+<h2 id="why-sign-and-attest-your-python-packages">Why sign and attest your Python packages?</h2>
+<p>Here are four reasons to sign and attest your Python packages:</p>
+<ul>
+<li><strong>Supply chain security:</strong> Package signing ensures that the code hasn&rsquo;t been tampered with between build and deployment, protecting against supply chain attacks.</li>
+<li><strong>Compliance requirements:</strong> Many organizations, especially in regulated industries, require cryptographic signatures and provenance information for all deployed software.</li>
+<li><strong>Traceability:</strong> Attestations provide a verifiable record of build conditions, including who built the package and under what circumstances.</li>
+<li><strong>Trust verification:</strong> Consumers of your package can cryptographically verify its authenticity before installation.</li>
+</ul>
+<h2 id="pipeline-overview">Pipeline overview</h2>
+<p>Ensuring your code&rsquo;s integrity and authenticity is necessary. Imagine a pipeline that doesn&rsquo;t just compile your code but creates a cryptographically verifiable narrative of how, when, and by whom your package was created. Each stage acts as a guardian, checking and documenting the package&rsquo;s provenance.</p>
+<p>Here are six stages of a GitLab pipeline that ensure your package is secure and trustworthy:</p>
+<ul>
+<li>Build: Creates a clean, standard package that can be easily shared and installed.</li>
+<li>Signing: Adds a digital signature that proves the package hasn&rsquo;t been tampered with since it was created.</li>
+<li>Verification: Double-checks that the signature is valid and the package meets all our security requirements.</li>
+<li>Publishing: Uploads the verified package to GitLab&rsquo;s package registry, making it available for others to use.</li>
+<li>Publishing Signatures: Makes signatures available for verification.</li>
+<li>Consumer Verification: Simulates how end users can verify package authenticity.</li>
+</ul>
+<h2 id="complete-pipeline-implementation-setting-up-the-environment">Complete pipeline implementation: Setting up the environment</h2>
+<p>Before we build our package, we need to set up a consistent and secure build environment. This configuration ensures every package is created with the same tools, settings, and security checks.</p>
+<h3 id="environment-configuration">Environment configuration</h3>
+<p>Our pipeline requires specific tools and settings to work correctly.</p>
+<p>Primary configurations:</p>
+<ul>
+<li>Python 3.10 for consistent builds</li>
+<li>Cosign 2.2.3 for package signing</li>
+<li>GitLab package registry integration</li>
+<li>Hardcoded package version for reproducibility</li>
+</ul>
+<p><strong>Note about versioning:</strong> We&rsquo;ve chosen to use a hardcoded version (<code>&quot;1.0.0&quot;</code>) in this example rather than deriving it from git tags or commits. This approach ensures complete reproducibility and makes the pipeline behavior more predictable. In a production environment, you might want to use semantic versioning based on git tags or another versioning strategy that fits your release process.</p>
+<p>Tool requirements:</p>
+<ul>
+<li>Basic utilities: <code>curl</code>, <code>wget</code></li>
+<li>Cosign for cryptographic signing</li>
+<li>Python packaging tools: <code>build</code>, <code>twine</code>, <code>setuptools</code>, <code>wheel</code></li>
+</ul>
+<h3 id="configuration-breakdown">Configuration breakdown</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">variables</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">PYTHON_VERSION</span>: <span style="color:#e6db74">&#39;3.10&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">PACKAGE_NAME</span>: <span style="color:#ae81ff">${CI_PROJECT_NAME}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">PACKAGE_VERSION</span>: <span style="color:#e6db74">&#34;1.0.0&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">FULCIO_URL</span>: <span style="color:#e6db74">&#39;https://fulcio.sigstore.dev&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">REKOR_URL</span>: <span style="color:#e6db74">&#39;https://rekor.sigstore.dev&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">CERTIFICATE_IDENTITY</span>: <span style="color:#e6db74">&#39;https://gitlab.com/${CI_PROJECT_PATH}//.gitlab-ci.yml@refs/heads/${CI_DEFAULT_BRANCH}&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">CERTIFICATE_OIDC_ISSUER</span>: <span style="color:#e6db74">&#39;https://gitlab.com&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">PIP_CACHE_DIR</span>: <span style="color:#e6db74">&#34;$CI_PROJECT_DIR/.pip-cache&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">COSIGN_YES</span>: <span style="color:#e6db74">&#34;true&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">GENERIC_PACKAGE_BASE_URL</span>: <span style="color:#e6db74">&#34;${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${PACKAGE_NAME}/${PACKAGE_VERSION}&#34;</span>
+</span></span></code></pre></div><p>We use caching to speed up subsequent builds:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">cache</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">paths</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">${PIP_CACHE_DIR}</span>
+</span></span></code></pre></div><h2 id="building-crafting-the-package">Building: Crafting the package</h2>
+<p>Every software journey begins with creation. In our pipeline, the build stage is where raw code transforms into a distributable package, ready to travel across different Python environments.</p>
+<p>The build process creates two standardized formats:</p>
+<ul>
+<li>a wheel package (.whl) for quick, efficient installation</li>
+<li>a source distribution (.tar.gz) that carries the complete code</li>
+</ul>
+<p>Here&rsquo;s the build stage implementation:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">build</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">extends</span>: <span style="color:#ae81ff">.python-job</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">git init</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">git config --global init.defaultBranch main</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">git config --global user.email &#34;ci@example.com&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">git config --global user.name &#34;CI&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">git add .</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">git commit -m &#34;Initial commit&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">export NORMALIZED_NAME=$(echo &#34;${CI_PROJECT_NAME}&#34; | tr &#39;-&#39; &#39;_&#39;)</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">sed -i &#34;s/name = &#34;.*&#34;/name = &#34;${NORMALIZED_NAME}&#34;/&#34; pyproject.toml</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">sed -i &#34;s|&#34;Homepage&#34; = &#34;.*&#34;|&#34;Homepage&#34; = &#34;https://gitlab.com/${CI_PROJECT_PATH}&#34;|&#34; pyproject.toml</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">python -m build</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">artifacts</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">paths</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">dist/</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">pyproject.toml</span>
+</span></span></code></pre></div><p>Let&rsquo;s break down what this build stage does:</p>
+<ol>
+<li>Initializes a Git repository (<code>git init</code>) and configures it with basic settings</li>
+<li>Normalizes the package name by converting hyphens to underscores, which is required for Python packaging</li>
+<li>Updates the package metadata in <code>pyproject.toml</code> to match our project settings</li>
+<li>Builds both wheel and source distribution packages using <code>python -m build</code></li>
+<li>Preserves the built packages and configuration as artifacts for subsequent stages</li>
+</ol>
+<h2 id="signing-the-digital-notarization">Signing: The digital notarization</h2>
+<p>If attestation is the package&rsquo;s biography, signing is its cryptographic seal of authenticity. This is where we transform our package from a mere collection of files into a verified, tamper-evident artifact.</p>
+<p>The signing stage uses Cosign to apply a digital signature as an unbreakable seal. This isn&rsquo;t just a stamp — it&rsquo;s a complex cryptographic handshake that proves the package&rsquo;s integrity and origin.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">sign</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">extends</span>: <span style="color:#ae81ff">.python+cosign-job</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">sign</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">id_tokens</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">SIGSTORE_ID_TOKEN</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">aud</span>: <span style="color:#ae81ff">sigstore</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      for file in dist/*.whl dist/*.tar.gz; do
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        if [ -f &#34;$file&#34; ]; then
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          filename=$(basename &#34;$file&#34;)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          cosign sign-blob --yes 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --fulcio-url=${FULCIO_URL} 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --rekor-url=${REKOR_URL} 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --oidc-issuer $CI_SERVER_URL 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --identity-token $SIGSTORE_ID_TOKEN 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --output-signature &#34;dist/${filename}.sig&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --output-certificate &#34;dist/${filename}.crt&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            &#34;$file&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        fi
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      done</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">artifacts</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">paths</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">dist/</span>
+</span></span></code></pre></div><p>This signing stage performs several crucial operations:</p>
+<ol>
+<li>Obtains an OIDC token from GitLab for authentication with Sigstore services</li>
+<li>Processes each built package (both wheel and source distribution)</li>
+<li>Uses Cosign to create a cryptographic signature (<code>.sig</code>) for each package</li>
+<li>Generates a certificate (<code>.crt</code>) that proves the signature&rsquo;s authenticity</li>
+<li>Stores both signatures and certificates alongside the packages as artifacts</li>
+</ol>
+<h2 id="verification-the-security-checkpoint">Verification: The security checkpoint</h2>
+<p>Verification is our final quality control gate. It&rsquo;s not just a check — it&rsquo;s a security interrogation where every aspect of the package is scrutinized.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">verify</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">extends</span>: <span style="color:#ae81ff">.python+cosign-job</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">verify</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      failed=0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      for file in dist/*.whl dist/*.tar.gz; do
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        if [ -f &#34;$file&#34; ]; then
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          filename=$(basename &#34;$file&#34;)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          if ! cosign verify-blob 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --signature &#34;dist/${filename}.sig&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --certificate &#34;dist/${filename}.crt&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --certificate-identity &#34;${CERTIFICATE_IDENTITY}&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --certificate-oidc-issuer &#34;${CERTIFICATE_OIDC_ISSUER}&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            &#34;$file&#34;; then
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            failed=1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          fi
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        fi
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      done
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      if [ $failed -eq 1 ]; then
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        exit 1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      fi</span>
+</span></span></code></pre></div><p>The verification stage implements several security checks:</p>
+<ol>
+<li>Examines each package file in the <code>dist</code> directory</li>
+<li>Uses Cosign to verify the signature matches the package content</li>
+<li>Confirms the certificate&rsquo;s identity matches our expected GitLab pipeline identity</li>
+<li>Validates our trusted OIDC provider issued the certificate</li>
+<li>Fails the entire pipeline if any verification check fails, ensuring only verified packages proceed</li>
+</ol>
+<h2 id="publishing-the-controlled-release">Publishing: The controlled release</h2>
+<p>Publishing is where we make our verified packages available through GitLab&rsquo;s package registry. It&rsquo;s a carefully choreographed release that ensures only verified, authenticated packages reach their destination.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">publish</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">extends</span>: <span style="color:#ae81ff">.python-job</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">publish</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      cat &lt;&lt; EOF &gt; ~/.pypirc
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      [distutils]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      index-servers = gitlab
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      [gitlab]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      repository = ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      username = gitlab-ci-token
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      password = ${CI_JOB_TOKEN}
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      EOF
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        dist/*.whl dist/*.tar.gz</span>
+</span></span></code></pre></div><p>The publishing stage handles several important tasks:</p>
+<ol>
+<li>Creates a <code>.pypirc</code> configuration file with GitLab package registry credentials</li>
+<li>Uses the GitLab CI job token for secure authentication</li>
+<li>Uploads both wheel and source distribution packages to the GitLab PyPI registry</li>
+<li>Makes the packages available for installation via pip</li>
+</ol>
+<h2 id="publishing-signatures-making-verification-possible">Publishing signatures: Making verification possible</h2>
+<p>After publishing the packages, we must make their signatures and certificates available for verification. We store these in GitLab&rsquo;s generic package registry, making them easily accessible to users who want to verify package authenticity.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">publish_signatures</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">extends</span>: <span style="color:#ae81ff">.python+cosign-job</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">publish_signatures</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      for file in dist/*.whl dist/*.tar.gz; do
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        if [ -f &#34;$file&#34; ]; then
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          filename=$(basename &#34;$file&#34;)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          curl --header &#34;JOB-TOKEN: ${CI_JOB_TOKEN}&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               --fail 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               --upload-file &#34;dist/${filename}.sig&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               &#34;${GENERIC_PACKAGE_BASE_URL}/${filename}.sig&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          curl --header &#34;JOB-TOKEN: ${CI_JOB_TOKEN}&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               --fail 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               --upload-file &#34;dist/${filename}.crt&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               &#34;${GENERIC_PACKAGE_BASE_URL}/${filename}.crt&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        fi
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      done</span>
+</span></span></code></pre></div><p>The signature publishing stage performs these key operations:</p>
+<ol>
+<li>Processes each built package to find its corresponding signature files</li>
+<li>Uses the GitLab API to upload the signature (<code>.sig</code>) file to the generic package registry</li>
+<li>Uploads the corresponding certificate (<code>.crt</code>) file</li>
+<li>Makes these verification artifacts available for downstream package consumers</li>
+<li>Uses the same version and package name to maintain the connection between packages and signatures</li>
+</ol>
+<h2 id="consumer-verification-testing-the-user-experience">Consumer verification: Testing the user experience</h2>
+<p>The final stage simulates how end users will verify your package&rsquo;s authenticity. This stage acts as a final check and a practical example of the verification process.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">consumer_verification</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">extends</span>: <span style="color:#ae81ff">.python+cosign-job</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">consumer_verification</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      git init
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      git config --global init.defaultBranch main
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      mkdir -p pkg signatures
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      pip download --index-url &#34;https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          &#34;${NORMALIZED_NAME}==${PACKAGE_VERSION}&#34; --no-deps -d ./pkg
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      pip download --no-binary :all: 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          --index-url &#34;https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          &#34;${NORMALIZED_NAME}==${PACKAGE_VERSION}&#34; --no-deps -d ./pkg
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      failed=0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      for file in pkg/*.whl pkg/*.tar.gz; do
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        if [ -f &#34;$file&#34; ]; then
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          filename=$(basename &#34;$file&#34;)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          sig_url=&#34;${GENERIC_PACKAGE_BASE_URL}/${filename}.sig&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          cert_url=&#34;${GENERIC_PACKAGE_BASE_URL}/${filename}.crt&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          curl --fail --silent --show-error 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               --header &#34;JOB-TOKEN: ${CI_JOB_TOKEN}&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               --output &#34;signatures/${filename}.sig&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               &#34;$sig_url&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          curl --fail --silent --show-error 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               --header &#34;JOB-TOKEN: ${CI_JOB_TOKEN}&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               --output &#34;signatures/${filename}.crt&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               &#34;$cert_url&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          if ! cosign verify-blob 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --signature &#34;signatures/${filename}.sig&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --certificate &#34;signatures/${filename}.crt&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --certificate-identity &#34;${CERTIFICATE_IDENTITY}&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --certificate-oidc-issuer &#34;${CERTIFICATE_OIDC_ISSUER}&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            &#34;$file&#34;; then
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            failed=1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          fi
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        fi
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      done
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      if [ $failed -eq 1 ]; then
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        exit 1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      fi</span>
+</span></span></code></pre></div><p>This consumer verification stage simulates the end-user experience by:</p>
+<ol>
+<li>Creating a clean environment to test package installation</li>
+<li>Downloading the published packages from the GitLab PyPI registry</li>
+<li>Retrieving the corresponding signatures and certificates from the generic package registry</li>
+<li>Performing the same verification steps that end users would perform</li>
+<li>Ensuring the entire process works from a consumer&rsquo;s perspective</li>
+<li>Failing the pipeline if any verification step fails, providing an early warning of any issues</li>
+</ol>
+<h2 id="summary">Summary</h2>
+<p>This comprehensive pipeline provides a secure and reliable way to build, sign, and publish Python packages to GitLab&rsquo;s package registry. By following these practices and implementing the suggested security measures, you can ensure your packages are appropriately verified and safely distributed to your users.</p>
+<p>The pipeline combines modern security practices with efficient automation to create a robust software supply chain. Using Sigstore&rsquo;s Cosign for signing and attestation, along with GitLab&rsquo;s built-in security features, you can provide users with trustworthy cryptographically verified packages.</p>
+<blockquote>
+<h4 id="get-started-on-your-security-journey-today-with-a-free-60-day-trial-of-gitlab-ultimate">Get started on your security journey today with a free 60-day trial of GitLab Ultimate.</h4></blockquote>
+<h2 id="learn-more">Learn more</h2>
+<ul>
+<li>Documentation: Use Sigstore for keyless signing and verification</li>
+<li>Streamline security with keyless signing and verification in GitLab</li>
+<li>Annotate container images with build provenance using Cosign in GitLab CI/CD</li>
+</ul>
+<p>Supply chain security is a critical concern in software development. Organizations need to verify the authenticity and integrity of their software packages. This guide will show you how to implement a secure CI/CD pipeline for Python packages using GitLab CI, incorporating package signing and attestation using Sigstore&rsquo;s Cosign.</p>
+<p>You&rsquo;ll learn:</p>
+<ul>
+<li>
+<p>Why sign and attest your Python packages?</p>
+</li>
+<li>
+<p>Pipeline overview</p>
+</li>
+<li>
+<p>Complete pipeline implementation: Setting up the environment</p>
+<ul>
+<li>Environment configuration</li>
+<li>Configuration breakdown</li>
+</ul>
+</li>
+<li>
+<p>The 6 stages</p>
+<ol>
+<li>Building</li>
+<li>Signing</li>
+<li>Verification</li>
+<li>Publishing</li>
+<li>Publishing signatures</li>
+<li>Consumer verification</li>
+</ol>
+</li>
+</ul>
+<h2 id="why-sign-and-attest-your-python-packages-1">Why sign and attest your Python packages?</h2>
+<p>Here are four reasons to sign and attest your Python packages:</p>
+<ul>
+<li><strong>Supply chain security:</strong> Package signing ensures that the code hasn&rsquo;t been tampered with between build and deployment, protecting against supply chain attacks.</li>
+<li><strong>Compliance requirements:</strong> Many organizations, especially in regulated industries, require cryptographic signatures and provenance information for all deployed software.</li>
+<li><strong>Traceability:</strong> Attestations provide a verifiable record of build conditions, including who built the package and under what circumstances.</li>
+<li><strong>Trust verification:</strong> Consumers of your package can cryptographically verify its authenticity before installation.</li>
+</ul>
+<h2 id="pipeline-overview-1">Pipeline overview</h2>
+<p>Ensuring your code&rsquo;s integrity and authenticity is necessary. Imagine a pipeline that doesn&rsquo;t just compile your code but creates a cryptographically verifiable narrative of how, when, and by whom your package was created. Each stage acts as a guardian, checking and documenting the package&rsquo;s provenance.</p>
+<p>Here are six stages of a GitLab pipeline that ensure your package is secure and trustworthy:</p>
+<ul>
+<li>Build: Creates a clean, standard package that can be easily shared and installed.</li>
+<li>Signing: Adds a digital signature that proves the package hasn&rsquo;t been tampered with since it was created.</li>
+<li>Verification: Double-checks that the signature is valid and the package meets all our security requirements.</li>
+<li>Publishing: Uploads the verified package to GitLab&rsquo;s package registry, making it available for others to use.</li>
+<li>Publishing Signatures: Makes signatures available for verification.</li>
+<li>Consumer Verification: Simulates how end users can verify package authenticity.</li>
+</ul>
+<h2 id="complete-pipeline-implementation-setting-up-the-environment-1">Complete pipeline implementation: Setting up the environment</h2>
+<p>Before we build our package, we need to set up a consistent and secure build environment. This configuration ensures every package is created with the same tools, settings, and security checks.</p>
+<h3 id="environment-configuration-1">Environment configuration</h3>
+<p>Our pipeline requires specific tools and settings to work correctly.</p>
+<p>Primary configurations:</p>
+<ul>
+<li>Python 3.10 for consistent builds</li>
+<li>Cosign 2.2.3 for package signing</li>
+<li>GitLab package registry integration</li>
+<li>Hardcoded package version for reproducibility</li>
+</ul>
+<p><strong>Note about versioning:</strong> We&rsquo;ve chosen to use a hardcoded version (<code>&quot;1.0.0&quot;</code>) in this example rather than deriving it from git tags or commits. This approach ensures complete reproducibility and makes the pipeline behavior more predictable. In a production environment, you might want to use semantic versioning based on git tags or another versioning strategy that fits your release process.</p>
+<p>Tool requirements:</p>
+<ul>
+<li>Basic utilities: <code>curl</code>, <code>wget</code></li>
+<li>Cosign for cryptographic signing</li>
+<li>Python packaging tools: <code>build</code>, <code>twine</code>, <code>setuptools</code>, <code>wheel</code></li>
+</ul>
+<h3 id="configuration-breakdown-1">Configuration breakdown</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">variables</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">PYTHON_VERSION</span>: <span style="color:#e6db74">&#39;3.10&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">PACKAGE_NAME</span>: <span style="color:#ae81ff">${CI_PROJECT_NAME}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">PACKAGE_VERSION</span>: <span style="color:#e6db74">&#34;1.0.0&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">FULCIO_URL</span>: <span style="color:#e6db74">&#39;https://fulcio.sigstore.dev&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">REKOR_URL</span>: <span style="color:#e6db74">&#39;https://rekor.sigstore.dev&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">CERTIFICATE_IDENTITY</span>: <span style="color:#e6db74">&#39;https://gitlab.com/${CI_PROJECT_PATH}//.gitlab-ci.yml@refs/heads/${CI_DEFAULT_BRANCH}&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">CERTIFICATE_OIDC_ISSUER</span>: <span style="color:#e6db74">&#39;https://gitlab.com&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">PIP_CACHE_DIR</span>: <span style="color:#e6db74">&#34;$CI_PROJECT_DIR/.pip-cache&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">COSIGN_YES</span>: <span style="color:#e6db74">&#34;true&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">GENERIC_PACKAGE_BASE_URL</span>: <span style="color:#e6db74">&#34;${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${PACKAGE_NAME}/${PACKAGE_VERSION}&#34;</span>
+</span></span></code></pre></div><p>We use caching to speed up subsequent builds:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">cache</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">paths</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">${PIP_CACHE_DIR}</span>
+</span></span></code></pre></div><h2 id="building-crafting-the-package-1">Building: Crafting the package</h2>
+<p>Every software journey begins with creation. In our pipeline, the build stage is where raw code transforms into a distributable package, ready to travel across different Python environments.</p>
+<p>The build process creates two standardized formats:</p>
+<ul>
+<li>a wheel package (.whl) for quick, efficient installation</li>
+<li>a source distribution (.tar.gz) that carries the complete code</li>
+</ul>
+<p>Here&rsquo;s the build stage implementation:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">build</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">extends</span>: <span style="color:#ae81ff">.python-job</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">build</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">git init</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">git config --global init.defaultBranch main</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">git config --global user.email &#34;ci@example.com&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">git config --global user.name &#34;CI&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">git add .</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">git commit -m &#34;Initial commit&#34;</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">export NORMALIZED_NAME=$(echo &#34;${CI_PROJECT_NAME}&#34; | tr &#39;-&#39; &#39;_&#39;)</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">sed -i &#34;s/name = &#34;.*&#34;/name = &#34;${NORMALIZED_NAME}&#34;/&#34; pyproject.toml</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">sed -i &#34;s|&#34;Homepage&#34; = &#34;.*&#34;|&#34;Homepage&#34; = &#34;https://gitlab.com/${CI_PROJECT_PATH}&#34;|&#34; pyproject.toml</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">python -m build</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">artifacts</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">paths</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">dist/</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">pyproject.toml</span>
+</span></span></code></pre></div><p>Let&rsquo;s break down what this build stage does:</p>
+<ol>
+<li>Initializes a Git repository (<code>git init</code>) and configures it with basic settings</li>
+<li>Normalizes the package name by converting hyphens to underscores, which is required for Python packaging</li>
+<li>Updates the package metadata in <code>pyproject.toml</code> to match our project settings</li>
+<li>Builds both wheel and source distribution packages using <code>python -m build</code></li>
+<li>Preserves the built packages and configuration as artifacts for subsequent stages</li>
+</ol>
+<h2 id="signing-the-digital-notarization-1">Signing: The digital notarization</h2>
+<p>If attestation is the package&rsquo;s biography, signing is its cryptographic seal of authenticity. This is where we transform our package from a mere collection of files into a verified, tamper-evident artifact.</p>
+<p>The signing stage uses Cosign to apply a digital signature as an unbreakable seal. This isn&rsquo;t just a stamp — it&rsquo;s a complex cryptographic handshake that proves the package&rsquo;s integrity and origin.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">sign</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">extends</span>: <span style="color:#ae81ff">.python+cosign-job</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">sign</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">id_tokens</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">SIGSTORE_ID_TOKEN</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">aud</span>: <span style="color:#ae81ff">sigstore</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      for file in dist/*.whl dist/*.tar.gz; do
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        if [ -f &#34;$file&#34; ]; then
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          filename=$(basename &#34;$file&#34;)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          cosign sign-blob --yes 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --fulcio-url=${FULCIO_URL} 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --rekor-url=${REKOR_URL} 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --oidc-issuer $CI_SERVER_URL 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --identity-token $SIGSTORE_ID_TOKEN 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --output-signature &#34;dist/${filename}.sig&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --output-certificate &#34;dist/${filename}.crt&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            &#34;$file&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        fi
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      done</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">artifacts</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">paths</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">dist/</span>
+</span></span></code></pre></div><p>This signing stage performs several crucial operations:</p>
+<ol>
+<li>Obtains an OIDC token from GitLab for authentication with Sigstore services</li>
+<li>Processes each built package (both wheel and source distribution)</li>
+<li>Uses Cosign to create a cryptographic signature (<code>.sig</code>) for each package</li>
+<li>Generates a certificate (<code>.crt</code>) that proves the signature&rsquo;s authenticity</li>
+<li>Stores both signatures and certificates alongside the packages as artifacts</li>
+</ol>
+<h2 id="verification-the-security-checkpoint-1">Verification: The security checkpoint</h2>
+<p>Verification is our final quality control gate. It&rsquo;s not just a check — it&rsquo;s a security interrogation where every aspect of the package is scrutinized.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">verify</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">extends</span>: <span style="color:#ae81ff">.python+cosign-job</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">verify</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      failed=0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      for file in dist/*.whl dist/*.tar.gz; do
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        if [ -f &#34;$file&#34; ]; then
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          filename=$(basename &#34;$file&#34;)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          if ! cosign verify-blob 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --signature &#34;dist/${filename}.sig&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --certificate &#34;dist/${filename}.crt&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --certificate-identity &#34;${CERTIFICATE_IDENTITY}&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --certificate-oidc-issuer &#34;${CERTIFICATE_OIDC_ISSUER}&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            &#34;$file&#34;; then
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            failed=1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          fi
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        fi
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      done
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      if [ $failed -eq 1 ]; then
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        exit 1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      fi</span>
+</span></span></code></pre></div><p>The verification stage implements several security checks:</p>
+<ol>
+<li>Examines each package file in the <code>dist</code> directory</li>
+<li>Uses Cosign to verify the signature matches the package content</li>
+<li>Confirms the certificate&rsquo;s identity matches our expected GitLab pipeline identity</li>
+<li>Validates our trusted OIDC provider issued the certificate</li>
+<li>Fails the entire pipeline if any verification check fails, ensuring only verified packages proceed</li>
+</ol>
+<h2 id="publishing-the-controlled-release-1">Publishing: The controlled release</h2>
+<p>Publishing is where we make our verified packages available through GitLab&rsquo;s package registry. It&rsquo;s a carefully choreographed release that ensures only verified, authenticated packages reach their destination.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">publish</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">extends</span>: <span style="color:#ae81ff">.python-job</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">publish</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      cat &lt;&lt; EOF &gt; ~/.pypirc
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      [distutils]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      index-servers = gitlab
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      [gitlab]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      repository = ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      username = gitlab-ci-token
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      password = ${CI_JOB_TOKEN}
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      EOF
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        dist/*.whl dist/*.tar.gz</span>
+</span></span></code></pre></div><p>The publishing stage handles several important tasks:</p>
+<ol>
+<li>Creates a <code>.pypirc</code> configuration file with GitLab package registry credentials</li>
+<li>Uses the GitLab CI job token for secure authentication</li>
+<li>Uploads both wheel and source distribution packages to the GitLab PyPI registry</li>
+<li>Makes the packages available for installation via pip</li>
+</ol>
+<h2 id="publishing-signatures-making-verification-possible-1">Publishing signatures: Making verification possible</h2>
+<p>After publishing the packages, we must make their signatures and certificates available for verification. We store these in GitLab&rsquo;s generic package registry, making them easily accessible to users who want to verify package authenticity.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">publish_signatures</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">extends</span>: <span style="color:#ae81ff">.python+cosign-job</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">publish_signatures</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      for file in dist/*.whl dist/*.tar.gz; do
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        if [ -f &#34;$file&#34; ]; then
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          filename=$(basename &#34;$file&#34;)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          curl --header &#34;JOB-TOKEN: ${CI_JOB_TOKEN}&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               --fail 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               --upload-file &#34;dist/${filename}.sig&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               &#34;${GENERIC_PACKAGE_BASE_URL}/${filename}.sig&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          curl --header &#34;JOB-TOKEN: ${CI_JOB_TOKEN}&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               --fail 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               --upload-file &#34;dist/${filename}.crt&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               &#34;${GENERIC_PACKAGE_BASE_URL}/${filename}.crt&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        fi
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      done</span>
+</span></span></code></pre></div><p>The signature publishing stage performs these key operations:</p>
+<ol>
+<li>Processes each built package to find its corresponding signature files</li>
+<li>Uses the GitLab API to upload the signature (<code>.sig</code>) file to the generic package registry</li>
+<li>Uploads the corresponding certificate (<code>.crt</code>) file</li>
+<li>Makes these verification artifacts available for downstream package consumers</li>
+<li>Uses the same version and package name to maintain the connection between packages and signatures</li>
+</ol>
+<h2 id="consumer-verification-testing-the-user-experience-1">Consumer verification: Testing the user experience</h2>
+<p>The final stage simulates how end users will verify your package&rsquo;s authenticity. This stage acts as a final check and a practical example of the verification process.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">consumer_verification</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">extends</span>: <span style="color:#ae81ff">.python+cosign-job</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">stage</span>: <span style="color:#ae81ff">consumer_verification</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      git init
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      git config --global init.defaultBranch main
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      mkdir -p pkg signatures
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      pip download --index-url &#34;https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          &#34;${NORMALIZED_NAME}==${PACKAGE_VERSION}&#34; --no-deps -d ./pkg
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      pip download --no-binary :all: 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          --index-url &#34;https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          &#34;${NORMALIZED_NAME}==${PACKAGE_VERSION}&#34; --no-deps -d ./pkg
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      failed=0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      for file in pkg/*.whl pkg/*.tar.gz; do
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        if [ -f &#34;$file&#34; ]; then
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          filename=$(basename &#34;$file&#34;)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          sig_url=&#34;${GENERIC_PACKAGE_BASE_URL}/${filename}.sig&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          cert_url=&#34;${GENERIC_PACKAGE_BASE_URL}/${filename}.crt&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          curl --fail --silent --show-error 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               --header &#34;JOB-TOKEN: ${CI_JOB_TOKEN}&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               --output &#34;signatures/${filename}.sig&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               &#34;$sig_url&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          curl --fail --silent --show-error 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               --header &#34;JOB-TOKEN: ${CI_JOB_TOKEN}&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               --output &#34;signatures/${filename}.crt&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">               &#34;$cert_url&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          if ! cosign verify-blob 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --signature &#34;signatures/${filename}.sig&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --certificate &#34;signatures/${filename}.crt&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --certificate-identity &#34;${CERTIFICATE_IDENTITY}&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            --certificate-oidc-issuer &#34;${CERTIFICATE_OIDC_ISSUER}&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            &#34;$file&#34;; then
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            failed=1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          fi
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        fi
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      done
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      if [ $failed -eq 1 ]; then
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        exit 1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      fi</span>
+</span></span></code></pre></div><p>This consumer verification stage simulates the end-user experience by:</p>
+<ol>
+<li>Creating a clean environment to test package installation</li>
+<li>Downloading the published packages from the GitLab PyPI registry</li>
+<li>Retrieving the corresponding signatures and certificates from the generic package registry</li>
+<li>Performing the same verification steps that end users would perform</li>
+<li>Ensuring the entire process works from a consumer&rsquo;s perspective</li>
+<li>Failing the pipeline if any verification step fails, providing an early warning of any issues</li>
+</ol>
+<h2 id="summary-1">Summary</h2>
+<p>This comprehensive pipeline provides a secure and reliable way to build, sign, and publish Python packages to GitLab&rsquo;s package registry. By following these practices and implementing the suggested security measures, you can ensure your packages are appropriately verified and safely distributed to your users.</p>
+<p>The pipeline combines modern security practices with efficient automation to create a robust software supply chain. Using Sigstore&rsquo;s Cosign for signing and attestation, along with GitLab&rsquo;s built-in security features, you can provide users with trustworthy cryptographically verified packages.</p>
+<blockquote>
+<h4 id="get-started-on-your-security-journey-today-with-a-free-60-day-trial-of-gitlab-ultimate-1">Get started on your security journey today with a free 60-day trial of GitLab Ultimate.</h4></blockquote>
+<h2 id="learn-more-1">Learn more</h2>
+<ul>
+<li>Documentation: Use Sigstore for keyless signing and verification</li>
+<li>Streamline security with keyless signing and verification in GitLab</li>
+<li>Annotate container images with build provenance using Cosign in GitLab CI/CD</li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

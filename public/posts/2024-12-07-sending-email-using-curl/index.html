@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Sending Email Using Curl</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Sending Email Using Curl</h1>
+			<b><time>07.12.2024 17:00</time></b>
+		       
+
+			<div>
+				<h1 id="sending-email-using-curl">Sending Email Using Curl</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Turns out curl can be used to send an email, and it’s pretty trivial. Curl is already installed inside my gitlab runner because I needed it as part of the build. I already have an authenticated SMTP server:</p>
+<pre tabindex="0"><code>curl --ssl-reqd \
+     --url       &#34;smtps://mail.example.com:465&#34; \
+     --user      &#34;username:password&#34; \
+     --mail-from &#34;postmaster@example.com&#34; \
+     --mail-rcpt &#34;postmaster@example.com&#34; \
+     --upload-file &lt;(echo -e &#34;Subject: New $IMAGE_NAME:$IMAGE_VERSION tag pushed\n\nSee subject. Sent from gitlab runner&#34;)
+</code></pre><p>I used environment variables configured in gitlab for the creds, sender and rcpt email rather than hardcoding them in a public git repo, for obvious reasons.</p>
+<p>Then I waited. I wasn’t sure if this would work initially as for all I knew gitlab would block outgoing port 465 from it’s runners. It doesn’t though. The next time a new version of sqlite3 was released I received the email alerting me to that fact.</p>
+<h4 id="source"><a href="https://www.grepular.com/Sending_Email_Using_Curl">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Developing an AI Agent for Smart Contextual Q&amp;A&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Developing an AI Agent for Smart Contextual Q&amp;A&lt;/div&gt;</h1>
+			<b><time>03.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Accelerated by the pandemic, online tech communities have grown rapidly. With new members joining every day, it’s tough to keep track of past conversations. Often, newcomers ask questions that have already been answered, causing repetition and redundancy. To tackle this, we built an intelligent assistant that tracks past conversations, searches Stack Overflow for technical help, and browses the web for relevant information.</p>
+<p>InSightful is a ReAct (Reasoning and Action) Agent with access to multiple tools, such as a web searcher and a context retriever, to achieve the given task. In our case, it is a question and answer application. We will delve deeper into the workings of the application as we progress. At the end of the day, you will be able to understand how agents work and how you can develop your own. These agents are highly customizable, giving you a lot of flexibility in picking a use-case.</p>
+<h2 id="insightul-demo-lets-see-what-insightful-can-do">InSightul demo: Let’s see what InSightful can do</h2>
+<p>InSightful is meant to be an AI Agent that can smartly retrieve conversations from a workspace, search results on Stack Overflow with a given context and as well as browse the web whenever the information asked for is not available in the other two places. This makes sure that InSightful has a safety net to fallback on in case the intermediary response (thought and observation) does not match the user’s question. Let us see how we can develop such an application.</p>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>A GPU-enabled Kubernetes cluster OR a single GPU-enabled machine with Docker installed</li>
+<li>A HuggingFace account with a valid API key</li>
+<li>Three Services:
+<ul>
+<li>TGI - Text Generation Inference</li>
+<li>TEI - Text Embeddings Inference</li>
+<li>Vector store - Chroma DB</li>
+</ul>
+</li>
+</ul>
+<p><em>Note: This tutorial assumes the developer has experience with Docker and understands how to use it appropriately. If the developer is using Kubernetes, this tutorial assumes they have a multi-node GPU cluster.</em></p>
+<p>For the demo, we will be using a readily available HuggingFace dataset consisting of conversations from a workplace, simulating the real environment. The dataset mimics actual interactions amongst colleagues in tech communities like Slack workspaces, Reddit threads, or Discord servers. Downloading the dataset does not require any additional steps as it is included in the Python code.</p>
+<h3 id="set-up">Set up</h3>
+<p>In our set up, we are using a Kubernetes cluster that is already provisioned and completely set up to run AI workloads on.</p>
+<p>If this is not your case, run the ai-stack separately on a GPU-enabled machine. If your machine is not equipped with a GPU, the inference will be extremely slow and is not recommended.</p>
+<pre tabindex="0"><code>$ kubectl get svc -n ai-stack
+
+NAME       TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)          AGE
+tei        LoadBalancer   10.233.22.94    192.168.0.203   80:32215/TCP     21h
+tgi        LoadBalancer   10.233.50.250   192.168.0.202   80:31963/TCP     21h
+vectordb   LoadBalancer   10.233.27.106   192.168.0.201   8000:30992/TCP   21h
+</code></pre><p>(Kubernetes Services deployed using our AI stack chart)</p>
+<p>Once each service is deployed and running, we can access their respective IPs and ports to send and receive data. Go ahead and clone the repo and follow the steps in the InSightful README file.</p>
+<p>After successfully following the steps in the README, if all goes well, you should be greeted with this page on your browser:</p>
+<p>
+<figure>
+  <img src="https://www.infracloud.io/assets/img/Blog/insightful-ai-agent/insightful-landing-page.webp" alt="InSightful landing page" />
+</figure>
+
+
+</p>
+<p>(InSightful landing page)</p>
+<h3 id="insightful-in-action">InSightful in action</h3>
+<p>Now, let’s see InSightful in action by asking it a question.You can ask different types of questions, according to the information you need.</p>
+<ul>
+<li>
+<p><strong>Conversation analysis</strong>: InSightful can analyze and provide insights on the topics being discussed in tech communities. For example, if people are frequently discussing a specific programming language, it can highlight that.</p>
+<p>
+<figure>
+  <img src="https://www.infracloud.io/assets/img/Blog/insightful-ai-agent/insightful-capturing-details-in-slack-conversations.webp" alt="InSightful capturing details in Slack conversations" />
+</figure>
+
+
+</p>
+<p>(InSightful capturing details in Slack conversations)</p>
+</li>
+<li>
+<p><strong>Community health analysis</strong>: InSightful can evaluate engagement, sentiment, and overall health of a tech community. It can show if people are generally positive or negative about certain topics.</p>
+<p>
+<figure>
+  <img src="https://www.infracloud.io/assets/img/Blog/insightful-ai-agent/insightful-analyzing-sentiments-and-overall-community-health.webp" alt="InSightful analyzing sentiments and overall community health" />
+</figure>
+
+
+</p>
+<p>(InSightful analyzing sentiments and overall community healths)</p>
+</li>
+<li>
+<p><strong>Search Stack Overflow</strong>: InSightful can search Stack Overflow for relevant questions and answers, saving users time by providing instant solutions to common problems.</p>
+<p>
+<figure>
+  <img src="https://www.infracloud.io/assets/img/Blog/insightful-ai-agent/insightful-responding-to-technical-question.webp" alt="InSightful responding to a technical question" />
+</figure>
+
+
+</p>
+<p>(InSightful responding to a technical question)</p>
+</li>
+<li>
+<p><strong>Browse the web</strong>: InSightful can conduct web searches to gather relevant information on community topics, providing up-to-date knowledge.</p>
+<p>
+<figure>
+  <img src="https://www.infracloud.io/assets/img/Blog/insightful-ai-agent/insightful-providing-response-from-web-search-result.webp" alt="InSightful providing a response from web search results" />
+</figure>
+
+
+</p>
+<p>(InSightful providing a response from web search results)</p>
+</li>
+</ul>
+<p>Now that we know what InSightful can do, let’s understand what it is, and how it works. As mentioned earlier, InSightful is powered by an AI Agent, so let’s begin with Agents.</p>
+<h2 id="agents-a-brief-introduction">Agents: A brief introduction</h2>
+<p>When ChatGPT was released, it quickly became popular, surpassing 1 millions users in just 5 days. Natural Language Processing (NLP) has been around for a while, but ChatGPT took it to the next level by turning a Language Model into a Large Language Model (LLM).</p>
+<p>However, LLMs, while powerful language models, are like parrots—they repeat what they hear without real understanding. To make them more applicable to specific tasks and problems, we have to fine-tune, provide detailed prompts, and set guard rails to align their responses closely to the demands of the user. Developing agents exploit some of these approaches that enable them to reason and act accordingly. With a set of tools, an agent can perform actions on an environment, something a regular base LLM cannot achieve. Agents integrate these additional tools and frameworks, allowing them to perform specific tasks, make decisions, and interact dynamically with their environment.</p>
+<p>For the sake of simplicity and to limit the scope of the InSightful demo, we will only be talking about the techniques we have employed to adapt the LLM to our own use case. We integrated LLM with web search and context retrieval tools, as well as provided a well-defined prompt. The combination of the prompt and the accessibility of the tools is what brings our agent to life. Something to note is that we don’t necessarily have to create an agent to utilize tools, instead, we can directly provide a compatible LLM with tools. We mention “compatible LLM” because not all LLMs are tool-calling enabled. However, with the help of LangChain, any LLM can be used to develop an agent to achieve the same results of tool-calling enabled LLMs. Ultimately, the LLM is used solely for reasoning and accessing a set of provided tools in a LangChain agent.</p>
+<p>We prompted the agent cautiously and refined the prompt in several iterations, making it almost foolproof. The prompt makes the agent much more reliable in solving tasks, consistently abiding to a structure while forming its final response.</p>
+<p>For InSightful, we took the Reasoning and Action (ReAct) Agent approach, which is a type of agent that can reason through a task, form an action plan to guide its actions and finally responds after thorough self-reflection. The incorporation of tools into the agent enables it to form effective responses.</p>
+<p>
+<figure>
+  <img src="https://www.infracloud.io/assets/img/Blog/insightful-ai-agent/bts-of-react-agent.webp" alt="Behind The Scenes of a ReAct agent" />
+</figure>
+
+
+</p>
+<p>(Behind The Scenes of a ReAct agent)</p>
+<p>From the diagram, we can understand that the task-in-hand is the question provided by the user and the environment is provided by the tool’s description. The tool’s description provides concise context to the agent to decide if a given tool is useful for the task or not. The cycle of “Thought-Action-Observation” is repeated a defined number of times until a satisfiable observation is made.</p>
+<p>There are other alternatives to ReAct that are linear rather than ReAct’s cyclic approach such as Chain-of-Thought (CoT) and Tree-of-Thought (ToT), however, these alternatives do not support actions and will not enable learning from the consequences of the actions on an environment. They are purely reasoning-backed approaches.</p>
+<h2 id="creating-tools-as-functions">Creating tools as functions</h2>
+<p>Fundamentally, tools are exactly what they sound like they are. They supplement the agent to generate accurate and contextual responses according to the user’s question. LangChain has an exhaustive list of such tools that can be integrated with agents.</p>
+<p>InSightful applies several tools to enhance the agent:</p>
+<ul>
+<li>
+<p><strong>Conversation Retriever tool</strong>: We converted the traditional Retrieval-Augmented Generation (RAG) approach into a tool, making it more efficient for the agent. We essentially created our own tool, since the tool we want is not directly available in the LangChain package. This tool uses a vectorstore as its retriever, enabling similarity searches and predictions.This integration streamlines the process, allowing the agent to retrieve information without executing separate functions.</p>
+</li>
+<li>
+<p><strong>Stack Overflow search tool</strong>: We developed this tool using the Stack Exchange API, enabling the agent to search and query the extensive database of questions and answers on Stack Overflow.</p>
+</li>
+<li>
+<p><strong>Search engine tool</strong>: Tavily Search is a search engine tailored specifically for LLMs. We use the Tavily API integration with LangChain, which provides Tavily Search as a tool to use with LangChain agents.</p>
+</li>
+</ul>
+<h2 id="providing-tools-to-our-agent">Providing tools to our Agent</h2>
+<p>After creating these tools as callable functions, we compile them into a simple Python list like so:</p>
+<pre tabindex="0"><code>tools = [retriever_tool, stack_overflow_search_tool, web_search_tool]
+</code></pre><p>(List of tools provided to the agent)</p>
+<p>LangChain iterates over this list, using the name and description provided in each tool’s docstring to understand their purposes. Setting a name and description for each custom tool is mandatory as it provides LangChain with the context of what each function achieves.</p>
+<p>Once we have our list of tools, we set it as a parameter when creating our agent. This setup indicates to the agent that it has access to these tools. When the agent determines which tool to use, it runs the corresponding function to trigger the tool. Ideally, the tool returns the desired results, and the agent uses that as additional context to augment its responses.</p>
+<p>By integrating these tools, InSightful can:</p>
+<ul>
+<li><strong>Retrieve and analyze conversations</strong>: Identify recurring questions and provide answers from past discussions, saving time and reducing redundancy.</li>
+<li><strong>Engage in technical Q&amp;A</strong>: Answer technical questions using Stack Overflow, giving quick and accurate responses.</li>
+<li><strong>Conduct independent research</strong>: Browse the web for additional information on community topics, ensuring up-to-date and comprehensive answers.</li>
+</ul>
+<h2 id="connecting-the-dots">Connecting the dots</h2>
+<p>
+<figure>
+  <img src="https://www.infracloud.io/assets/img/Blog/insightful-ai-agent/insightful-workflow-diagram.webp" alt="InSightful workflow diagram" />
+</figure>
+
+
+</p>
+<p>(InSightful workflow diagram)</p>
+<p>Let’s break down each of the components and how they fit into the big picture:</p>
+<ul>
+<li>
+<p><strong>Document Retrieval</strong>: Retrieve conversation histories, technical questions, and other relevant data from a Data Source such as the vector store in our case.</p>
+</li>
+<li>
+<p><strong>Vector Storage</strong>: Vector Stores are where the embeddings are stored. The embeddings are generated by TEI.</p>
+</li>
+<li>
+<p><strong>LLM</strong>: TGI is where the LLM is running to generate responses based on the retrieved data, providing meaningful answers to user queries.</p>
+</li>
+<li>
+<p><strong>Tool/External API Integration</strong>: Integrate additional tools for searching Stack Overflow and browsing the web, expanding the assistant’s capabilities. The tools are powered by APIs offered by each of the services (Tavily and Stack Overflow).</p>
+</li>
+</ul>
+<p>Here’s an example of the process when a user query is entered.The query “Latest news on Kubernetes” yields this result, only visible to the developer:</p>
+<p>
+<figure>
+  <img src="https://www.infracloud.io/assets/img/Blog/insightful-ai-agent/insightful-reasoning-and-action-stage.webp" alt="InSightful’s Reasoning and Action stage" />
+</figure>
+
+
+</p>
+<p>(InSightful’s Reasoning and Action stage)</p>
+<p>The user sees this on the front-end:</p>
+<p>
+<figure>
+  <img src="https://www.infracloud.io/assets/img/Blog/insightful-ai-agent/results-of-the-reasoning-and-action-steps.webp" alt="Results of the Reasoning and Action steps" />
+</figure>
+
+
+</p>
+<p>(Results of the Reasoning and Action steps)</p>
+<h2 id="benefits-of-the-on-premise-approach-local-kubernetes-cluster">Benefits of the on-premise approach (local Kubernetes cluster)</h2>
+<p>InSightful works well in various online tech communities, such as Slack workspaces, Reddit threads, and Discord servers. The on-premise approach offers several advantages:</p>
+<ul>
+<li>
+<p><strong>Data security</strong>: On-premise solutions provide enhanced security by keeping data within the organization’s own infrastructure, making it harder for remote hackers to access sensitive information. This level of control is especially crucial for industries with strict compliance requirements​.</p>
+</li>
+<li>
+<p><strong>Customization</strong>: Organizations can tailor their hardware and software configurations to meet specific needs and compliance requirements. This allows for more specialized and efficient setups that cloud solutions might not offer​.</p>
+</li>
+<li>
+<p><strong>Performance and low latency</strong>: Since the infrastructure is local, data processing and access times are faster. This is particularly beneficial for real-time applications or those handling large data volumes​.</p>
+</li>
+<li>
+<p><strong>Control and ownership</strong>: Complete control over the hardware, software, and data ensures that organizations can implement their own security measures and protocols without relying on external providers​.</p>
+</li>
+</ul>
+<h2 id="conclusion">Conclusion</h2>
+<p>InSightful uses state-of-the-art Generative AI to provide an intelligent assistant for tech communities and enterprises. By keeping track of past and present conversations, accessing Stack Overflow for technical questions, and browsing the web for additional research, InSightful reduces redundancy and improves the efficiency of information retrieval. This on-premise approach shows how integrating LLMs with specialized tools can create a practical and powerful AI assistant for enterprises. You can follow this article to build an AI Agent to power a conversation search and retrieval engine for your communication channels like Discord and Slack; however, having an efficient and scalable cloud infrastructure is crucial for building an AI application. AI &amp; GPU Cloud experts can help you achieve this.</p>
+<p>Hopefully, this has been as informative as we sought out to make it. Stay connected with us by subscribing to our weekly newsletter. Please share your valuable feedback with us, and we would love to hear from you on LinkedIn!</p>
+<h2 id="references">References</h2>
+<ul>
+<li>LLM App dev framework - LangChain docs</li>
+<li>Tools used by InSightful - Tavily, Stack Exchange API, Chroma</li>
+<li>HuggingFace components - Text Generation Inference, Text Embeddings Inference</li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

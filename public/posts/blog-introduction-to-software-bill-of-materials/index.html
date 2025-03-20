@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Blog: Introduction to Software Bill Of Materials</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Blog: Introduction to Software Bill Of Materials</h1>
+			<b><time>03.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/jenkins">jenkins</a>
+        	       
+
+			<div>
+				<h2 id="introduction">Introduction</h2>
+<p>Before going through Software Bill Of Materials (SBOMs), we need to set the ground for a rising concern in the software industry which is Software Supply Chain Security. Like traditional industries, deploying a piece of a software artifact goes through multiple stages composed of collecting source code components, libraries, tools, and processes used in those stages.</p>
+<p>
+<figure>
+  <img src="https://jenkins-x.io/images/sbom-guide/supply-chain.png" alt="comparing the different steps in a real world supply chain with software supply chain" />
+</figure>
+
+
+</p>
+<p>Fig. 1 <a href="https://blog.convisoappsec.com/en/is-your-software-supply-chain-secure/">https://blog.convisoappsec.com/en/is-your-software-supply-chain-secure/</a></p>
+<p>A supply chain attack can occur along the chain from submitting unauthorized malicious code in your source, unauthorized injection of harmful dependencies, and even replacing packages after being built with other compromised artifacts. A more detailed explanation about those types of attacks is here</p>
+<p>Due to its importance and being a critical issue, generating SBOM for your software adds another layer of protection to this threat.</p>
+<h2 id="definition-what-is-sbom">Definition: What is SBOM?</h2>
+<p>As far as we know, developers around the world are building web applications using hundreds of third-party open-source libraries and packages. You can confidently tell that 90% of the software products around the world are built over open-source components. With that in mind, we need to keep track of using these dependencies while building our applications. What if there are vulnerabilities in the libraries we use? How to efficiently protect ourselves against it?.</p>
+<p><strong>Software Bill Of Materials</strong> (SBOM) is a complete formally structured list of the materials (components, packages, libraries, SDK) used to build (i.e. compile, link) a given piece of software and the supply chain relationships between all these materials.</p>
+<p>It is an inventory of all the components developers used to make this software. It has many formats and many generating tools but all have the same purpose in the end. <em><strong>Example: a simple formatted SBOM of Ubuntu alpine docker image using syft</strong></em></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>✔ Loaded image  
+</span></span><span style="display:flex;"><span> ✔ Parsed image  
+</span></span><span style="display:flex;"><span> ✔ Cataloged packages      <span style="color:#f92672">[</span><span style="color:#ae81ff">14</span> packages<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>NAME                    VERSION      TYPE 
+</span></span><span style="display:flex;"><span>alpine-baselayout       3.2.0-r18    apk   
+</span></span><span style="display:flex;"><span>alpine-keys             2.4-r1       apk   
+</span></span><span style="display:flex;"><span>apk-tools               2.12.7-r3    apk   
+</span></span><span style="display:flex;"><span>busybox                 1.34.1-r3    apk   
+</span></span><span style="display:flex;"><span>ca-certificates-bundle  20191127-r7  apk   
+</span></span><span style="display:flex;"><span>libc-utils              0.7.2-r3     apk   
+</span></span><span style="display:flex;"><span>libcrypto1.1            1.1.1l-r7    apk   
+</span></span><span style="display:flex;"><span>libretls                3.3.4-r2     apk   
+</span></span><span style="display:flex;"><span>libssl1.1               1.1.1l-r7    apk   
+</span></span><span style="display:flex;"><span>musl                    1.2.2-r7     apk   
+</span></span><span style="display:flex;"><span>musl-utils              1.2.2-r7     apk   
+</span></span><span style="display:flex;"><span>scanelf                 1.3.3-r0     apk   
+</span></span><span style="display:flex;"><span>ssl_client              1.34.1-r3    apk   
+</span></span><span style="display:flex;"><span>zlib                    1.2.11-r3    apk
+</span></span></code></pre></div><p>Here it shows only softwares included in the final layer of the container (default choice by syft). If we want to view a detailed SBOM with one detailed format, we can run <code>syft alpine -o spdx-json</code>. This will view the output as <code>.json</code> file following the <code>spdx</code> format (will discuss that later)</p>
+<h2 id="use-cases-in-supply-chain-security">Use cases in Supply chain security</h2>
+<p>What makes a supply chain attack susceptible is the lack of transparency and visibility about whether the software gets affected by a recent exploit or not. This greatly affects both producers and customers of the product.</p>
+<p>On the user’s side if they know the components of the software and that there is one component affected by certain vulnerabilities, they are better aware and ready to protect against potential attacks. This is crucial in many cases, especially with open-source tools.</p>
+<p>On the software producer’s side, it happens a lot that they are not fully aware of all the third parties used inside the project, and in turn, they can not track vulnerabilities in the system that could pose a threat. Cases like the Log4Shell vulnerability are an example of a component (in this case, a logging library) that many producers never bothered to check because it isn’t a direct software dependency, but rather a transitive one that is depended upon by other components.</p>
+<p>SBOM can also be useful in licensing and legal issues with some formats. SPDX (Software Package Data Exchange) standard for SBOM identifies the licenses of the used components and can be checked for compliance later.</p>
+<p>Next, we view the different standards and formats for SBOMs and the specifications of each one. See them here</p>
+<h2 id="introduction-1">Introduction</h2>
+<p>Before going through Software Bill Of Materials (SBOMs), we need to set the ground for a rising concern in the software industry which is Software Supply Chain Security. Like traditional industries, deploying a piece of a software artifact goes through multiple stages composed of collecting source code components, libraries, tools, and processes used in those stages.</p>
+<p>
+<figure>
+  <img src="https://jenkins-x.io/images/sbom-guide/supply-chain.png" alt="comparing the different steps in a real world supply chain with software supply chain" />
+</figure>
+
+
+</p>
+<p>Fig. 1 <a href="https://blog.convisoappsec.com/en/is-your-software-supply-chain-secure/">https://blog.convisoappsec.com/en/is-your-software-supply-chain-secure/</a></p>
+<p>A supply chain attack can occur along the chain from submitting unauthorized malicious code in your source, unauthorized injection of harmful dependencies, and even replacing packages after being built with other compromised artifacts. A more detailed explanation about those types of attacks is here</p>
+<p>Due to its importance and being a critical issue, generating SBOM for your software adds another layer of protection to this threat.</p>
+<h2 id="definition-what-is-sbom-1">Definition: What is SBOM?</h2>
+<p>As far as we know, developers around the world are building web applications using hundreds of third-party open-source libraries and packages. You can confidently tell that 90% of the software products around the world are built over open-source components. With that in mind, we need to keep track of using these dependencies while building our applications. What if there are vulnerabilities in the libraries we use? How to efficiently protect ourselves against it?.</p>
+<p><strong>Software Bill Of Materials</strong> (SBOM) is a complete formally structured list of the materials (components, packages, libraries, SDK) used to build (i.e. compile, link) a given piece of software and the supply chain relationships between all these materials.</p>
+<p>It is an inventory of all the components developers used to make this software. It has many formats and many generating tools but all have the same purpose in the end. <em><strong>Example: a simple formatted SBOM of Ubuntu alpine docker image using syft</strong></em></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>✔ Loaded image  
+</span></span><span style="display:flex;"><span> ✔ Parsed image  
+</span></span><span style="display:flex;"><span> ✔ Cataloged packages      <span style="color:#f92672">[</span><span style="color:#ae81ff">14</span> packages<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>NAME                    VERSION      TYPE 
+</span></span><span style="display:flex;"><span>alpine-baselayout       3.2.0-r18    apk   
+</span></span><span style="display:flex;"><span>alpine-keys             2.4-r1       apk   
+</span></span><span style="display:flex;"><span>apk-tools               2.12.7-r3    apk   
+</span></span><span style="display:flex;"><span>busybox                 1.34.1-r3    apk   
+</span></span><span style="display:flex;"><span>ca-certificates-bundle  20191127-r7  apk   
+</span></span><span style="display:flex;"><span>libc-utils              0.7.2-r3     apk   
+</span></span><span style="display:flex;"><span>libcrypto1.1            1.1.1l-r7    apk   
+</span></span><span style="display:flex;"><span>libretls                3.3.4-r2     apk   
+</span></span><span style="display:flex;"><span>libssl1.1               1.1.1l-r7    apk   
+</span></span><span style="display:flex;"><span>musl                    1.2.2-r7     apk   
+</span></span><span style="display:flex;"><span>musl-utils              1.2.2-r7     apk   
+</span></span><span style="display:flex;"><span>scanelf                 1.3.3-r0     apk   
+</span></span><span style="display:flex;"><span>ssl_client              1.34.1-r3    apk   
+</span></span><span style="display:flex;"><span>zlib                    1.2.11-r3    apk
+</span></span></code></pre></div><p>Here it shows only softwares included in the final layer of the container (default choice by syft). If we want to view a detailed SBOM with one detailed format, we can run <code>syft alpine -o spdx-json</code>. This will view the output as <code>.json</code> file following the <code>spdx</code> format (will discuss that later)</p>
+<h2 id="use-cases-in-supply-chain-security-1">Use cases in Supply chain security</h2>
+<p>What makes a supply chain attack susceptible is the lack of transparency and visibility about whether the software gets affected by a recent exploit or not. This greatly affects both producers and customers of the product.</p>
+<p>On the user’s side if they know the components of the software and that there is one component affected by certain vulnerabilities, they are better aware and ready to protect against potential attacks. This is crucial in many cases, especially with open-source tools.</p>
+<p>On the software producer’s side, it happens a lot that they are not fully aware of all the third parties used inside the project, and in turn, they can not track vulnerabilities in the system that could pose a threat. Cases like the Log4Shell vulnerability are an example of a component (in this case, a logging library) that many producers never bothered to check because it isn’t a direct software dependency, but rather a transitive one that is depended upon by other components.</p>
+<p>SBOM can also be useful in licensing and legal issues with some formats. SPDX (Software Package Data Exchange) standard for SBOM identifies the licenses of the used components and can be checked for compliance later.</p>
+<p>Next, we view the different standards and formats for SBOMs and the specifications of each one. See them here</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

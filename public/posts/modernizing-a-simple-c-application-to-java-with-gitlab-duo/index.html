@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Modernizing a simple C&#43;&#43; application to Java with GitLab Duo&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Modernizing a simple C&#43;&#43; application to Java with GitLab Duo&lt;/div&gt;</h1>
+			<b><time>03.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>Memory unsafe languages are those that do not handle any memory management on behalf of the developer. For example, when programming in C or C++, if you need memory during runtime, you will need to allocate and deallocate the memory yourself, running the risk of ending up with memory leaks in cases when you inadvertently forget to deallocate it. Other languages like Ada and FORTRAN provide some memory management but may not prevent memory leaks. Many organizations, including those in the public sector, have applications that have been developed using languages that are memory unsafe and are often looking to modernize these to a memory safe language, such as Java, Python, JavaScript, or Golang.</p>
+<p>This tutorial focuses on a specific example of modernizing a simple C++ application to Java by refactoring it with the help of GitLab Duo, our suite of AI capabilities, and shows how much time and effort you can save in the migration.</p>
+<h2 id="understanding-the-simple-c-application">Understanding the simple C++ application</h2>
+<p>Let’s make the assumption that we have been tasked with the migration of a C++ application to a memory safe language, namely Java. The C++ application can be found in the following project (thank you to @sugaroverflow for contributing this sample application):</p>
+<p><a href="https://gitlab.com/gitlab-da/use-cases/ai/ai-applications/refactor-to-java/air-quality-application">https://gitlab.com/gitlab-da/use-cases/ai/ai-applications/refactor-to-java/air-quality-application</a></p>
+<p>Since this is the first time we are seeing this application, let’s invoke GitLab Duo Code explanation to better understand what it does. We open file <code>main.cpp</code> in Visual Studio Code and select the entirety of this file. We then right-click and select <strong>GitLab Duo Chat &gt; Explain selected snippet</strong> from the popup menu.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/18vrGTIjMuOByYSRIowhr0/bd2bd8a31cdadf73757f265714bdf3dc/code-explanation-menu-option.png" alt="duo-code-explanation-menu-option" />
+</figure>
+
+
+</p>
+<p>The GitLab Duo Chat window opens up and the slash command <code>/explain</code> is executed for the selected code. Chat returns a very thorough and detailed description and explanation in natural language form of what each function does in the file as well as examples on how to run the compiled program.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/7t53q0zQ4PYKoOMcexLUx7/08dfe137fe2fdbbec868872fe34df78a/code-explanation-text.png" alt="code-explanation-text" />
+</figure>
+
+
+</p>
+<p>In short, the simple C++ application takes a U.S. zip code as input and returns the air quality index for that zip code.</p>
+<h2 id="compiling-and-running-the-c-application">Compiling and running the C++ application</h2>
+<p>To further understand this simple C++ application, we proceed to compile and run it. We could have asked Chat how to do this, however, the project has a README file that provides the commands to compile the project, so we go ahead and use those by entering them in the Terminal window of VS Code.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/jnS8QMd3YaJEsU8v49G4w/25065bd3bce9eec30b7a1a50301836fd/compile-command.png" alt="compile-command" />
+</figure>
+
+
+</p>
+<p>After the compilation finishes, we change directory to the <code>build</code> subdirectory in the project, which is where the compilation process places the executable file for this application. Then, we run the executable by entering the following command:</p>
+<p><code>./air_quality_app 32836</code></p>
+<p>And we see the response as follows:</p>
+<p><code>Air Quality Index (AQI) for Zip Code 32836: 2 (Fair)</code></p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/4KZ2WtEGmXvj0QudG0X60p/e3a1fe946e8a79bbca771c451a0c5f71/cplus-plus-app-execution-output.png" alt="cplus-plus-app-execution-output" />
+</figure>
+
+
+</p>
+<p>This confirms to us that the application was successfully compiled and it’s executing appropriately.</p>
+<h2 id="refactoring-the-application-to-java">Refactoring the application to Java</h2>
+<p>Let’s start migrating this C++ application to Java. We take advantage of GitLab Duo Chat and its refactoring capabilities by using the slack command <code>/refactor</code>. We qualify the slash command with specific instructions on what to do for the refactoring. We enter the following command in the Chat input field:</p>
+<blockquote>
+<p>/refactor this entire application to Java. Provide its associated pom.xml to build and run the Java application. Also, provide the directory structure showing where all the resulting files should reside for the Java application.</p></blockquote>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/dJ0RJ9oY0MFfo4I991fOF/652e507160fefd7f01b3d9e3907ca29a/refactor-chat-output.png" alt="refactor-chat-output" />
+</figure>
+
+
+</p>
+<p>Chat returns a set of Java files that basically refactor the entire C++ application to the memory safe language. In addition and per the prompt, Chat returns the pom.xml file, needed by maven for the building and execution of the refactored application as well as its directory structure, indicating where each generated file should reside.</p>
+<p>We copy and save all the generated files to our local directory.</p>
+<h2 id="creating-the-java-project">Creating the Java project</h2>
+<p>In VS Code, we now proceed to open an empty project in which we will set up the directory structure of the new Java application and its contents.</p>
+<p>We create all the previously generated Java files in their corresponding directories in the new project and paste their contents in each.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/To1yAXGM0aHvfqCTHwNpa/47e93379eca044fd7cf1761ce23c761a/java-files-created.png" alt="java-files-created" />
+</figure>
+
+
+</p>
+<p>Lastly, we save all the files to our local disk.</p>
+<h2 id="asking-for-help-to-build-and-run-the-java-application">Asking for help to build and run the Java application</h2>
+<p>At this point, we have an entire Java application that has been refactored from C++. Now, we need to build it but we don’t quite remember what maven command we need to use to accomplish this.</p>
+<p>So we ask GitLab Duo Chat about this. We enter the following prompt in the Chat input field:</p>
+<blockquote>
+<p>How do you build and run this application using maven?</p></blockquote>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/2s87d5LTF4GM3wIjQqq4uT/cc40607673c2f59b3eda89d9f201e924/maven-info-output.png" alt="maven-info-output" />
+</figure>
+
+
+</p>
+<p>Chat returns with a thorough explanation on how to do this, including examples of the maven command to build and run the newly created Java application.</p>
+<h2 id="building-and-running-the-java-application">Building and running the Java application</h2>
+<p>GitLab Duo Chat understands the application and environment context and responds that we first need to create an environment variable called <code>API_KEY</code> before we can run the application.</p>
+<p>It also provides the maven command to execute to build the application, which we enter in the Terminal window:</p>
+<pre tabindex="0"><code class="language-unset" data-lang="unset">mvn clean package
+</code></pre><p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/6sjDplbMvWylBq4ATMCaT4/adc24bb1197269748485e6d7bda3edfa/java-build-output.png" alt="java-build-output" />
+</figure>
+
+
+</p>
+<p>Once the build finishes successfully, we copy the generated command to run the application from the Chat window and paste it in the Terminal window:</p>
+<pre tabindex="0"><code class="language-unset" data-lang="unset">java -jar target/air-quality-checker-1.0-SNAPSHOT-jar-with-dependencies.jar 90210
+</code></pre><p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/29wcsmJwpLS7t9EyMoEjqU/6c08a56ccc077d31eb09bc657cf2b611/java-app-execution-output.png" alt="java-app-execution-output" />
+</figure>
+
+
+</p>
+<p>The application successfully executes and returns the string:</p>
+<pre tabindex="0"><code class="language-unset" data-lang="unset">Air Quality Index (AQI) for Zip Code 90210: 2 (Fair)
+</code></pre><p>We have confirmed that the modernized version of the application, now refactored in Java, runs just like its original C++ version.</p>
+<h2 id="watch-this-tutorial-in-action">Watch this tutorial in action</h2>
+<p>We have seen that by leveraging the power of GitLab Duo in your modernization activities, you can save a great deal of time and effort, freeing you to spend more time innovating and creating value to your organization.</p>
+<p>Here is a video to show you, in action, the tutorial you just read:</p>
+<blockquote>
+<h4 id="want-to-get-started-with-gitlab-duo-start-a-free-60-day-trial-today">Want to get started with GitLab Duo? Start a free, 60-day trial today!</h4></blockquote>
+<h2 id="learn-more">Learn more</h2>
+<ul>
+<li>Refactor code into modern languages with AI-powered GitLab Duo</li>
+<li>Secure by Design principles meet DevSecOps innovation in GitLab 17</li>
+<li>How to secure memory-safe vs. manually managed languages</li>
+</ul>
+<p>Memory unsafe languages are those that do not handle any memory management on behalf of the developer. For example, when programming in C or C++, if you need memory during runtime, you will need to allocate and deallocate the memory yourself, running the risk of ending up with memory leaks in cases when you inadvertently forget to deallocate it. Other languages like Ada and FORTRAN provide some memory management but may not prevent memory leaks. Many organizations, including those in the public sector, have applications that have been developed using languages that are memory unsafe and are often looking to modernize these to a memory safe language, such as Java, Python, JavaScript, or Golang.</p>
+<p>This tutorial focuses on a specific example of modernizing a simple C++ application to Java by refactoring it with the help of GitLab Duo, our suite of AI capabilities, and shows how much time and effort you can save in the migration.</p>
+<h2 id="understanding-the-simple-c-application-1">Understanding the simple C++ application</h2>
+<p>Let’s make the assumption that we have been tasked with the migration of a C++ application to a memory safe language, namely Java. The C++ application can be found in the following project (thank you to @sugaroverflow for contributing this sample application):</p>
+<p><a href="https://gitlab.com/gitlab-da/use-cases/ai/ai-applications/refactor-to-java/air-quality-application">https://gitlab.com/gitlab-da/use-cases/ai/ai-applications/refactor-to-java/air-quality-application</a></p>
+<p>Since this is the first time we are seeing this application, let’s invoke GitLab Duo Code explanation to better understand what it does. We open file <code>main.cpp</code> in Visual Studio Code and select the entirety of this file. We then right-click and select <strong>GitLab Duo Chat &gt; Explain selected snippet</strong> from the popup menu.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/18vrGTIjMuOByYSRIowhr0/bd2bd8a31cdadf73757f265714bdf3dc/code-explanation-menu-option.png" alt="duo-code-explanation-menu-option" />
+</figure>
+
+
+</p>
+<p>The GitLab Duo Chat window opens up and the slash command <code>/explain</code> is executed for the selected code. Chat returns a very thorough and detailed description and explanation in natural language form of what each function does in the file as well as examples on how to run the compiled program.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/7t53q0zQ4PYKoOMcexLUx7/08dfe137fe2fdbbec868872fe34df78a/code-explanation-text.png" alt="code-explanation-text" />
+</figure>
+
+
+</p>
+<p>In short, the simple C++ application takes a U.S. zip code as input and returns the air quality index for that zip code.</p>
+<h2 id="compiling-and-running-the-c-application-1">Compiling and running the C++ application</h2>
+<p>To further understand this simple C++ application, we proceed to compile and run it. We could have asked Chat how to do this, however, the project has a README file that provides the commands to compile the project, so we go ahead and use those by entering them in the Terminal window of VS Code.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/jnS8QMd3YaJEsU8v49G4w/25065bd3bce9eec30b7a1a50301836fd/compile-command.png" alt="compile-command" />
+</figure>
+
+
+</p>
+<p>After the compilation finishes, we change directory to the <code>build</code> subdirectory in the project, which is where the compilation process places the executable file for this application. Then, we run the executable by entering the following command:</p>
+<p><code>./air_quality_app 32836</code></p>
+<p>And we see the response as follows:</p>
+<p><code>Air Quality Index (AQI) for Zip Code 32836: 2 (Fair)</code></p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/4KZ2WtEGmXvj0QudG0X60p/e3a1fe946e8a79bbca771c451a0c5f71/cplus-plus-app-execution-output.png" alt="cplus-plus-app-execution-output" />
+</figure>
+
+
+</p>
+<p>This confirms to us that the application was successfully compiled and it’s executing appropriately.</p>
+<h2 id="refactoring-the-application-to-java-1">Refactoring the application to Java</h2>
+<p>Let’s start migrating this C++ application to Java. We take advantage of GitLab Duo Chat and its refactoring capabilities by using the slack command <code>/refactor</code>. We qualify the slash command with specific instructions on what to do for the refactoring. We enter the following command in the Chat input field:</p>
+<blockquote>
+<p>/refactor this entire application to Java. Provide its associated pom.xml to build and run the Java application. Also, provide the directory structure showing where all the resulting files should reside for the Java application.</p></blockquote>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/dJ0RJ9oY0MFfo4I991fOF/652e507160fefd7f01b3d9e3907ca29a/refactor-chat-output.png" alt="refactor-chat-output" />
+</figure>
+
+
+</p>
+<p>Chat returns a set of Java files that basically refactor the entire C++ application to the memory safe language. In addition and per the prompt, Chat returns the pom.xml file, needed by maven for the building and execution of the refactored application as well as its directory structure, indicating where each generated file should reside.</p>
+<p>We copy and save all the generated files to our local directory.</p>
+<h2 id="creating-the-java-project-1">Creating the Java project</h2>
+<p>In VS Code, we now proceed to open an empty project in which we will set up the directory structure of the new Java application and its contents.</p>
+<p>We create all the previously generated Java files in their corresponding directories in the new project and paste their contents in each.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/To1yAXGM0aHvfqCTHwNpa/47e93379eca044fd7cf1761ce23c761a/java-files-created.png" alt="java-files-created" />
+</figure>
+
+
+</p>
+<p>Lastly, we save all the files to our local disk.</p>
+<h2 id="asking-for-help-to-build-and-run-the-java-application-1">Asking for help to build and run the Java application</h2>
+<p>At this point, we have an entire Java application that has been refactored from C++. Now, we need to build it but we don’t quite remember what maven command we need to use to accomplish this.</p>
+<p>So we ask GitLab Duo Chat about this. We enter the following prompt in the Chat input field:</p>
+<blockquote>
+<p>How do you build and run this application using maven?</p></blockquote>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/2s87d5LTF4GM3wIjQqq4uT/cc40607673c2f59b3eda89d9f201e924/maven-info-output.png" alt="maven-info-output" />
+</figure>
+
+
+</p>
+<p>Chat returns with a thorough explanation on how to do this, including examples of the maven command to build and run the newly created Java application.</p>
+<h2 id="building-and-running-the-java-application-1">Building and running the Java application</h2>
+<p>GitLab Duo Chat understands the application and environment context and responds that we first need to create an environment variable called <code>API_KEY</code> before we can run the application.</p>
+<p>It also provides the maven command to execute to build the application, which we enter in the Terminal window:</p>
+<pre tabindex="0"><code class="language-unset" data-lang="unset">mvn clean package
+</code></pre><p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/6sjDplbMvWylBq4ATMCaT4/adc24bb1197269748485e6d7bda3edfa/java-build-output.png" alt="java-build-output" />
+</figure>
+
+
+</p>
+<p>Once the build finishes successfully, we copy the generated command to run the application from the Chat window and paste it in the Terminal window:</p>
+<pre tabindex="0"><code class="language-unset" data-lang="unset">java -jar target/air-quality-checker-1.0-SNAPSHOT-jar-with-dependencies.jar 90210
+</code></pre><p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/29wcsmJwpLS7t9EyMoEjqU/6c08a56ccc077d31eb09bc657cf2b611/java-app-execution-output.png" alt="java-app-execution-output" />
+</figure>
+
+
+</p>
+<p>The application successfully executes and returns the string:</p>
+<pre tabindex="0"><code class="language-unset" data-lang="unset">Air Quality Index (AQI) for Zip Code 90210: 2 (Fair)
+</code></pre><p>We have confirmed that the modernized version of the application, now refactored in Java, runs just like its original C++ version.</p>
+<h2 id="watch-this-tutorial-in-action-1">Watch this tutorial in action</h2>
+<p>We have seen that by leveraging the power of GitLab Duo in your modernization activities, you can save a great deal of time and effort, freeing you to spend more time innovating and creating value to your organization.</p>
+<p>Here is a video to show you, in action, the tutorial you just read:</p>
+<blockquote>
+<h4 id="want-to-get-started-with-gitlab-duo-start-a-free-60-day-trial-today-1">Want to get started with GitLab Duo? Start a free, 60-day trial today!</h4></blockquote>
+<h2 id="learn-more-1">Learn more</h2>
+<ul>
+<li>Refactor code into modern languages with AI-powered GitLab Duo</li>
+<li>Secure by Design principles meet DevSecOps innovation in GitLab 17</li>
+<li>How to secure memory-safe vs. manually managed languages</li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>XRefer The Gemini-Assisted Binary Navigator</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>XRefer The Gemini-Assisted Binary Navigator</h1>
+			<b><time>13.12.2024 05:00</time></b>
+		       
+
+			<div>
+				<h1 id="xrefer-the-gemini-assisted-binary-navigator">XRefer The Gemini-Assisted Binary Navigator</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<hr>
+<p>Here at Mandiant FLARE, malware reverse engineering is a regular part of our day jobs. At times we are required to perform basic triages on binaries, where every hour saved is critical to incident response timelines. At other times we examine complicated samples for days developing comprehensive analysis reports. As we face larger and more complex malware, often written in modern languages like Rust, knowing where to go, what to look at, and developing a &ldquo;map&rdquo; of the malware forms a significant effort that directly impacts our response times and triage effectiveness.</p>
+<p>Today we introduce a new tool, XRefer (pronounced eks-reffer), which aims to shoulder some of this burden for anyone who endeavors to go down these rabbit holes like us, helping analysts get to the important parts faster while maintaining the context of their investigation.</p>
+<p>aside_block</p>
+<p>&lt;ListValue: [StructValue([(&rsquo;title&rsquo;, &lsquo;Get XRefer now!&rsquo;), (&lsquo;body&rsquo;, &lt;wagtail.rich_text.RichText object at 0x3e3844d87580&gt;), (&lsquo;btn_text&rsquo;, &lsquo;Download&rsquo;), (&lsquo;href&rsquo;, &lsquo;<a href="https://github.com/mandiant/xrefer')">https://github.com/mandiant/xrefer')</a>, (&lsquo;image&rsquo;, None)])]&gt;</p>
+<h2 id="introduction">Introduction</h2>
+<p>XRefer provides a persistent companion view to assist analysts in navigating and understanding binaries. It&rsquo;s a modular and extensible tool that comes in the form of an IDA Pro plugin. Figure 1 shows the XRefer interface.</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/images/xrefer-fig1.max-1000x1000.png" alt="XRefer opened as a side pane, displaying Cluster Tables" />
+</figure>
+
+
+</p>
+<p>Figure 1: XRefer opened as a side pane, displaying Cluster Tables</p>
+<p>At its core, XRefer offers two complementary navigation paradigms:</p>
+<ol>
+<li>
+<p><a href="https://gemini.google.com/">Gemini</a>-powered cluster analysis, which decomposes the binary into functional units and leverages the large language model (LLM) to describe their purpose and relationships. Think of this like viewing a city from Google Maps: you can quickly identify the business districts, residential areas, and green spaces. In binary terms, this feature helps identify functional groupings like command-and-control communication, persistence mechanisms, or information-gathering routines, giving you a strategic view of the malware&rsquo;s architecture.</p>
+</li>
+<li>
+<p>A context-aware view, which dynamically updates based on your current location in the code. This view presents both immediate artifacts of the current function and those from related functions along the same execution path. It&rsquo;s similar to standing outside a shopping mall with X-ray vision: without entering each store, you can see the restaurant menus, shop inventories, and services offered on each floor. This allows you to make informed decisions about which areas deserve deeper investigation. Just as a mall directory helps you efficiently plan your shopping route, XRefer&rsquo;s context-aware view helps analysts quickly identify relevant code paths by surfacing APIs, strings, <a href="https://github.com/mandiant/capa">capa</a> matches, library information, and other artifacts that might otherwise require manual exploration of multiple functions. </p>
+</li>
+</ol>
+<p>Let&rsquo;s take a closer look at each of these paradigms, beginning with cluster-based navigation.</p>
+<h2 id="the-birds-eye-view-cluster-based-binary-navigation">The Birds-Eye View: Cluster-Based Binary Navigation</h2>
+<p>One of XRefer&rsquo;s key features is its ability to break down a binary into functional units, providing an immediate high-level understanding of its architecture. To demonstrate this capability, let&rsquo;s examine an ALPHV ransomware sample written in Rust. Despite containing over 2,700 functions, XRefer&rsquo;s analysis organizes key functionality of this complex binary into clear functional clusters, as shown in the Cluster Relationship graph in Figure 2.</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/images/xrefer-fig2.max-1000x1000.png" alt="Cluster Relationship graph view" />
+</figure>
+
+
+</p>
+<p>Figure 2: Cluster Relationship graph view</p>
+<p>These functional clusters are descriptively labelled as follows:</p>
+<ul>
+<li>
+<p>Ransomware Main Module</p>
+</li>
+<li>
+<p>Configuration Parsing Module    </p>
+</li>
+<li>
+<p>User Profile and Process Information Module</p>
+</li>
+<li>
+<p>Privilege Escalation, System Information, and AntiAnalysis Module</p>
+</li>
+<li>
+<p>File Processing Pipeline Module</p>
+</li>
+<li>
+<p>Network Communication and Cluster Management Module</p>
+</li>
+<li>
+<p>Thread Synchronization and Keyed Events Module</p>
+</li>
+<li>
+<p>File Path and Encryption Key Generation Module</p>
+</li>
+<li>
+<p>Console Clearing Module</p>
+</li>
+<li>
+<p>UI Rendering and Console Output Module</p>
+</li>
+<li>
+<p>Image Generation and Encoding Module</p>
+</li>
+<li>
+<p>Data Encoding and Hashing Module</p>
+</li>
+<li>
+<p>File Discovery and Dispatch Module</p>
+</li>
+<li>
+<p>Thread Synchronization and Time Management Module</p>
+</li>
+</ul>
+<p>While each cluster contains deeper sub-clusters that analysts can explore, we&rsquo;ll focus on the high-level view for now. The clustering and relationship identification is performed through static analysis. XRefer then leverages Gemini to provide natural language descriptions of each cluster and how they relate to one another. Figure 3 illustrates key components in the graph navigation interface.</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/images/xrefer-fig3.max-1000x1000.png" alt="Cluster graph view" />
+</figure>
+
+
+</p>
+<p>Figure 3: Cluster graph view</p>
+<p>At the top, the view provides a brief description of the binary&rsquo;s functionality and its category. Next, it describes the currently selected cluster and its relationships to other clusters. For convenient navigation, the cross-references of that cluster are listed, followed by a visual graph representation. For readability, these details are transcribed in Table 1.</p>
+<p><strong>BINARY CATEGORY</strong></p>
+<p>Ransomware</p>
+<p><strong>BINARY DESCRIPTION</strong></p>
+<p>This binary is ransomware that encrypts files using various ciphers, propagates over the network, and employs anti-analysis techniques.</p>
+<p><strong>CLUSTER</strong></p>
+<p>Image Generation and Encoding Module</p>
+<p><strong>DESCRIPTION</strong></p>
+<p>Generates and encodes images in PNG format</p>
+<p><strong>RELATIONSHIPS</strong></p>
+<p>Uses embedded-graphics and PNG crates for image generation, DEFLATE compression (<code>cluster.id.0061</code>), and PNG encoding. Handles image rendering and encoding errors.</p>
+<p><strong>CROSS REFERENCES</strong></p>
+<p>&lt;functon_name&gt; - <code>cluster.id.0001</code> - Ransomware Main Module</p>
+<p>&lt;function_address&gt;</p>
+<p>Table 1: Transcribed information from Figure 3</p>
+<p>The clusters can also be viewed in a linear format within XRefer&rsquo;s interface, as shown in Figure 1.</p>
+<p>To better demonstrate cluster navigation visually, we&rsquo;ve used a lightweight backdoor that displays more clearly on screen. Figure 4 provides a quick glimpse of the cluster navigation workflow, showing how analysts can quickly browse clusters and navigate to their respective functions in the disassembly or pseudocode views.</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/original_images/xrefer-fig4.gif" alt="Hover over clusters/functions to provide information pop ups. Click to navigate inside them. Double click on addresses to navigate to those functions." />
+</figure>
+
+
+</p>
+<p>Figure 4: Hover over clusters/functions to provide information pop ups. Click to navigate inside them. Double click on addresses to navigate to those functions.</p>
+<p>The navigation can automatically sync with clusters—when you navigate to a function that belongs to a known cluster, XRefer can automatically open that cluster&rsquo;s view and highlight the current function within it. XRefer offers two approaches to clustering:</p>
+<ol>
+<li>
+<p>Cluster all paths that are part of XRefer’s analysis (XRefer’s analysis is discussed later)</p>
+</li>
+<li>
+<p>Cluster a focused subset of functions, pre-filtered by Gemini based on their artifacts</p>
+</li>
+</ol>
+<p>Note: Throughout this blog post, we use the term &ldquo;artifacts&rdquo; to refer to binary elements like strings, API calls, library references, and other extractable information that help understand program behavior.</p>
+<p>By default, XRefer employs the first method. While this approach is comprehensive, it may create additional clusters around unidentified libraries in the program. These library clusters are typically easy to identify and exclude from analysis.</p>
+<p>The second clustering method is optionally available via the context menu and proves valuable for automatically filtering out library, runtime/compiler artifacts, and repetitive noisy functions. However, due to the inherent nature of LLMs, this approach can be inconsistent—artifacts might be missed, and results can vary between runs. While missed artifacts can usually be recovered through a quick re-run of the LLM analysis, this variability remains an inherent characteristic of this approach.</p>
+<p>XRefer can also display these LLM-filtered artifacts in a dedicated view, separate from the clustering visualization. This view, shown in Figure 5, provides analysts with a streamlined overview of the binary&rsquo;s most relevant artifacts while filtering out noise like library functions and runtime artifacts.</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/images/xrefer-fig5.max-1000x1000.png" alt="Interesting artifacts and their corresponding functions filtered out by Gemini" />
+</figure>
+
+
+</p>
+<p>Figure 5: Interesting artifacts and their corresponding functions filtered out by Gemini</p>
+<p>It&rsquo;s important to note that clusters aren&rsquo;t perfect boundaries. They may not capture every related function and can contain functions that are reused across different parts of the binary. However, any missed related functions will typically be found in the vicinity of their logical cluster, and reused functions are generally easy to identify at a glance. The goal of clustering is not to create strict divisions, but rather to establish general zones and subzones of related functionality.</p>
+<h3 id="function-labeling-prefixing-cluster-membership-in-names">Function Labeling: Prefixing Cluster Membership in Names</h3>
+<p>XRefer can optionally encode cluster information directly into IDA&rsquo;s interface by prefixing function names. These labels provide architectural context directly inside the disassembly and pseudocode windows. Table 2 shows the classification system used to prefix functions based on their cluster relationships.</p>
+<p><strong>Prefix</strong></p>
+<p><strong>Description</strong></p>
+<p><!-- raw HTML omitted -->_</p>
+<p>Single-cluster functions using Gemini-suggested prefixes specific to their cluster&rsquo;s role</p>
+<p>xutil_</p>
+<p>Utility functions that serve multiple clusters (e.g., memory operations, string handling, logging, runtime operations)</p>
+<p>xint_</p>
+<p>Intermediate nodes that connect functions within or between clusters but aren&rsquo;t strictly part of any cluster</p>
+<p>xunc_</p>
+<p>Functions that don&rsquo;t belong to any cluster</p>
+<p>Table 2: XRefer&rsquo;s function prefix categories and their architectural significance</p>
+<h2 id="down-in-the-trenches-context-aware-code-navigation">Down in the Trenches: Context-Aware Code Navigation</h2>
+<p>Having seen how XRefer&rsquo;s cluster analysis provides a high-level view of binary architecture, let&rsquo;s examine its second navigation paradigm: a context-aware view that updates automatically based on the function currently being analyzed.</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/images/xrefer-fig6.max-1000x1000.png" alt="Function context table" />
+</figure>
+
+
+</p>
+<p>Figure 6: Function context table</p>
+<p>The function context table (shown in Figure 6) organizes information into three main components:</p>
+<ol>
+<li>
+<p><strong>Cluster Membership -</strong> At the top, displaying which clusters the current function belongs to. Functions appearing in multiple clusters often indicate utility or helper functions rather than specialized functionality.</p>
+</li>
+<li>
+<p><strong>Direct References</strong> - Listed under &ldquo;DIRECT XREFS,&rdquo; showing artifacts directly used or called by the current function.</p>
+</li>
+<li>
+<p><strong>Indirect References</strong> - Categorized tables prefixed with &ldquo;INDIRECT,&rdquo; showing artifacts used by all functions called through the current function&rsquo;s execution paths. This provides a preview of downstream functionality without requiring manual traversal of each function.</p>
+</li>
+</ol>
+<p>Both direct and indirect references include:</p>
+<ul>
+<li>
+<p>APIs and API traces</p>
+</li>
+<li>
+<p>Strings</p>
+</li>
+<li>
+<p>Libraries</p>
+</li>
+<li>
+<p>capa results</p>
+</li>
+</ul>
+<p>For direct references, each artifact is listed with its reference addresses. Double clicking these addresses jumps to their exact location in the current function. For indirect artifacts, the displayed addresses are different—they point to function calls within the current function that eventually lead to those artifacts through execution paths. This x-ray-like capability eliminates the tedious process of diving into nested function calls to discover artifacts and functionality, only to return to the primary function.</p>
+<p>XRefer extends this visibility through its <code>Peek View</code> feature, accessible via the context menu. When enabled, clicking on any function dynamically filters the artifact view to display only those elements that lie along its execution paths. This instant preview allows analysts to quickly assess a function&rsquo;s downstream behavior without manually tracing through its call graph, significantly streamlining the exploration of complex codebases. Figure 7 demonstrates how this functions in practice.</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/original_images/xrefer-fig7a.gif" alt="Peek View filtering artifacts based on selected function&rsquo;s execution paths" />
+</figure>
+
+
+</p>
+<p>Figure 7: Peek View filtering artifacts based on selected function&rsquo;s execution paths</p>
+<p>Beyond Peek View, XRefer offers on-demand artifact filtering through key bindings. A core design principle of XRefer is the uniform treatment of all artifact types—any operation available for one type of artifact is consistently available across all others. For instance, path analysis capabilities that work with API references can be similarly applied to capa results. Let&rsquo;s examine the key functionalities available under this navigation paradigm.</p>
+<h3 id="path-graphs">Path Graphs</h3>
+<p>XRefer can generate and visualize all simple paths from the entry point to any type of artifact. These interactive graphs serve as powerful navigation tools, particularly when analysts need to trace specific functionality through the binary. Figure 8 demonstrates this capability by displaying all execution paths leading to <code>GetComputerNameW</code> in the ALPHV ransomware sample. Each function node in the graph provides a contextual pop-up showing its complete artifact inventory.</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/original_images/xrefer-fig8.gif" alt="Searching for an artifact, drawing its path graph, and using it to navigate while glancing over function artifacts through pop-ups" />
+</figure>
+
+
+</p>
+<p>Figure 8: Searching for an artifact, drawing its path graph, and using it to navigate while glancing over function artifacts through pop-ups</p>
+<p>Path graphs include a simplification feature that can reduce visual complexity by omitting nodes that either contain no artifacts or contain only excluded artifacts (exclusions are discussed later). Figure 10 illustrates this simplification, where the graph is reduced from 15 to 12 nodes, representing a 20% reduction in complexity. While more complex graphs can achieve higher simplification ratios, their full visualization extends beyond the practical constraints of this blog post.</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/images/xrefer-fig9-fig10.max-1000x1000.png" alt="Showing side by side versions of an example normal path graph and its corresponding simplified path graph with 20% reduction" />
+</figure>
+
+
+</p>
+<p>Figure 9 (left) and Figure 10 (right): Showing side by side versions of an example normal path graph and its corresponding simplified path graph with 20% reduction</p>
+<h3 id="search">Search</h3>
+<p>XRefer provides unified search functionality across all artifact types directly within the function context table view. Figure 8 demonstrates this capability while searching for the API reference used in path graph generation.</p>
+<h3 id="cross-references">Cross References++</h3>
+<p>XRefer implements its own cross-reference view that goes beyond IDA Pro&rsquo;s traditional functionality (accessed via &ldquo;X&rdquo;). This view, similarly triggered by pressing &ldquo;X&rdquo; on any artifact, encompasses all artifact types, including elements that IDA Pro cannot typically track, such as capa results, APIs identified through dynamic traces, and strings extracted by language-specific modules like the Rust parser.</p>
+<h3 id="trace-navigation">Trace Navigation</h3>
+<p>While API traces are integrated throughout XRefer&rsquo;s interface—from function context tables (Figure 6) to information pop-ups (Figure 8)—the plugin also offers dedicated trace navigation modes. These three modes, illustrated in Figure 11, provide views of API calls with their arguments, each offering different levels of scope:</p>
+<ul>
+<li>
+<p><strong>Function Scope</strong> - Shows only the API calls made directly within the current function, providing a clean view of its immediate external interactions</p>
+</li>
+<li>
+<p><strong>Path Scope</strong> - Reveals all API calls that occur downstream from the current function, following its execution paths. This helps analysts understand the complete chain of system interactions triggered by a particular function.</p>
+</li>
+<li>
+<p><strong>Full Trace</strong> - Displays the complete API trace captured during dynamic analysis, regardless of static code paths. Useful when you may have calls associated with encrypted regions in the binary or generally from dynamically resolved APIs.</p>
+</li>
+</ul>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/original_images/xrefer-fig11a.gif" alt="API trace-based navigation" />
+</figure>
+
+
+</p>
+<p>Figure 11: API trace-based navigation</p>
+<h3 id="artifact-exclusion">Artifact Exclusion</h3>
+<p>XRefer supports artifact exclusion to reduce noise when analyzing large, complex binaries. Excluded artifacts are omitted from multiple views and processes including the main interface, cluster analysis, and simplified path graphs.</p>
+<p>Artifacts can be excluded in two ways:</p>
+<ul>
+<li>
+<p>Directly through XRefer&rsquo;s interface, where multiple artifacts can be selected and excluded using key bindings</p>
+</li>
+<li>
+<p>Via the settings dialog (shown in Figure 12), which supports wildcard-based exclusion patterns. For instance, noisy Rust standard library references can be filtered using patterns like <code>std*</code>, providing efficient bulk exclusion of known noise sources.</p>
+</li>
+</ul>
+<p>These exclusions persist across sessions, allowing analysts to maintain their preferred filtering setup.</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/original_images/xrefer-fig12.gif" alt="Shows wildcarding artifacts for exclusion from the Settings Dialog" />
+</figure>
+
+
+</p>
+<p>Figure 12: Shows wildcarding artifacts for exclusion from the Settings Dialog</p>
+<h3 id="specialized-rust-support">Specialized Rust Support</h3>
+<p>XRefer has a specialized Rust module (discussed later) that extracts strings and library usage information. During Rust compilation, the compiler embeds library source paths that typically appear adjacent to their corresponding library code within functions. These compiler-inserted references serve two key purposes as function artifacts:</p>
+<ul>
+<li>
+<p>Identifying library dependencies and their specific functionality within code sections</p>
+</li>
+<li>
+<p>Providing positional hints that help locate where library code is actually implemented within functions</p>
+</li>
+</ul>
+<p>This compiler-provided context feeds into both XRefer&rsquo;s cluster analysis and enhances manual navigation, helping analysts quickly locate relevant code regions while understanding which Rust library implementations are being used. The module also includes a basic function renaming capability for Rust binaries, which will be covered in detail later.</p>
+<h3 id="auxiliary-features">Auxiliary Features</h3>
+<p>Before concluding this section, two standalone features warrant mention, though they operate independently of the clustering mechanism and exclusion system.</p>
+<p><strong>Boundary Method Scanning:</strong> XRefer allows multiple artifacts to be selected in the function context view for boundary scanning. This operation identifies the Lowest Common Ancestor (LCA) in the call graph for all selected artifacts. In niche scenarios, this can be used to isolate specific functionality based on a subset of artifacts and identify the most specific parent function that encompasses all selected artifacts without intermediate functions. While originally intended to serve a larger purpose in the clustering mechanism, the clustering system ultimately took a different direction, leaving this as a standalone feature.</p>
+<p><strong>String Lookups:</strong> During processing, XRefer can optionally query strings against public Git repositories through Grep App for categorization purposes. This is strictly a placeholder implementation; locally maintained databases by teams or individuals would be better suited for these queries. The feature operates independently of XRefer&rsquo;s broader ecosystem, primarily serving to categorize known strings for noise reduction or occasional OSINT insights.</p>
+<h2 id="under-the-hood-xrefers-analysis-engine">Under the Hood: XRefer&rsquo;s Analysis Engine</h2>
+<p>Having explored both navigation paradigms, let&rsquo;s examine the technical foundation that makes them possible. While a deep dive into XRefer&rsquo;s internals would warrant its own blog post, understanding a high-level view of its analysis pipelines and extensibility will help set the context.</p>
+<h3 id="ingestion-sources">Ingestion Sources</h3>
+<p>XRefer builds its understanding of binaries through two primary data ingestion channels:</p>
+<ol>
+<li>
+<p><strong>Internal</strong> - Whereby it extracts and processes all the imports, strings and any library data from the binary itself. This also involves language-specific modules. XRefer comes out of the box with a Rust-specific language module, and more can be added.</p>
+</li>
+<li>
+<p><strong>External</strong> - This includes API traces from third-party tooling and results from <a href="https://github.com/mandiant/capa">capa’s</a> analysis. XRefer currently supports ingestion of API traces from VMRay’s sandbox and Cape Sandbox. Additional modules can be written, for instance, TTD traces would be a good candidate.</p>
+</li>
+</ol>
+<p>Note: Out of the mentioned traces, VMRay produces the best results. Cape sandbox, while good, hooks NT* APIs and is much noisier in terms of visual display as it loses 1:1 API to import mapping. Unfortunately, that’s one of the very few open-source solutions available right now.</p>
+<p>XRefer feeds the available data along with cluster relationships in the form of call flows to the LLM, which generates semantic descriptions for each cluster, their relationships, and the overall binary. As demonstrated in Table 3, while external data sources enhance the analysis, XRefer can produce meaningful results even with just internal binary analysis.</p>
+<p><strong>With External Data Sources (API Traces/capa)</strong></p>
+<p><strong>Without External Data Sources</strong></p>
+<ul>
+<li>Ransomware Main Module</li>
+</ul>
+<ol>
+<li>
+<p>Configuration Parsing Module    </p>
+</li>
+<li>
+<p>User Profile and Process Information Module</p>
+</li>
+<li>
+<p>Privilege Escalation, System Information, and AntiAnalysis Module</p>
+</li>
+<li>
+<p>File Processing Pipeline Module</p>
+</li>
+<li>
+<p>Network Communication and Cluster Management Module</p>
+</li>
+<li>
+<p>Thread Synchronization and Keyed Events Module</p>
+</li>
+<li>
+<p>File Path and Encryption Key Generation Module</p>
+</li>
+<li>
+<p>Console Clearing Module</p>
+</li>
+<li>
+<p>UI Rendering and Console Output Module</p>
+</li>
+<li>
+<p>Image Generation and Encoding Module</p>
+</li>
+<li>
+<p>Data Encoding and Hashing Module</p>
+</li>
+<li>
+<p>File Discovery and Dispatch Module</p>
+</li>
+<li>
+<p>Thread Synchronization and Time Management Module</p>
+</li>
+</ol>
+<ul>
+<li>Ransomware Main Module</li>
+</ul>
+<ol>
+<li>
+<p>Configuration Parsing Module</p>
+</li>
+<li>
+<p>User Profile Retrieval Module</p>
+</li>
+<li>
+<p>Privilege Escalation and System Manipulation Module</p>
+</li>
+<li>
+<p>File Processing Pipeline Management Module</p>
+</li>
+<li>
+<p>Cluster Communication Module</p>
+</li>
+<li>
+<p>Synchronization Primitives Module</p>
+</li>
+<li>
+<p>Filename Generation and Encryption Key Generation Module</p>
+</li>
+<li>
+<p>Console Clearing Module</p>
+</li>
+<li>
+<p>UI Rendering Module</p>
+</li>
+<li>
+<p>Desktop Note and Wallpaper Module</p>
+</li>
+<li>
+<p>Soft Persistence Module</p>
+</li>
+<li>
+<p>File Queue Management Module</p>
+</li>
+<li>
+<p>Time Handling Module</p>
+</li>
+</ol>
+<p>Table 3: Example cluster analysis showing how results vary with and without external data (API traces/capa) for an ALPHV sample. Actual analysis quality for any binary depends on the richness of both internal binary artifacts and external data sources.</p>
+<p>Note: While LLM-generated labels and descriptions may vary in phrasing between runs, they tend to consistently convey similar semantic information.</p>
+<h3 id="language-modules-and-rust">Language Modules and Rust</h3>
+<p>XRefer supports language-specific analysis through dedicated modules and ships with a module for Rust binaries. This allows for specialized handling of language-specific characteristics. The Rust module provides:</p>
+<ul>
+<li>
+<p>Identification of rust_main </p>
+</li>
+<li>
+<p>Parsing of Rust thread objects and their indirect calls, improving path coverage</p>
+</li>
+<li>
+<p>Extraction of library/crate information for better code understanding in both cluster analysis and context tables</p>
+</li>
+<li>
+<p>Limited function renaming capabilities for a subset of functions where no inlining conflicts are detected, based on compiler strings and excluding runtime/std/internal libraries</p>
+</li>
+</ul>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/images/xrefer-fig13-fig14.max-1000x1000.png" alt="Subset of library information extracted from ALPHV. The categorization seen here is also performed via Gemini." />
+</figure>
+
+
+</p>
+<p>Figure 13 (left) and Figure 14 (right): Subset of library information extracted from ALPHV. The categorization seen here is also performed via Gemini.</p>
+<h4 id="rust-function-renaming">Rust Function Renaming</h4>
+<p>The Rust module includes a limited function renaming capability for Rust binaries, though its approach is deliberately restrictive. While XRefer is not a function identification tool, it can leverage compiler strings embedded in Rust binaries for basic renaming. Due to the prevalence of inlining from compiler optimizations, the module only renames functions where no inlining is detected and excludes internal references (<code>std*</code>, <code>core*</code>, <code>alloc*</code>, etc.) which are particularly prone to inlining.</p>
+<p>The renaming doesn&rsquo;t provide the full function names but does include up to the submodule name. Again, this is not a substitute for proper function identification as only a very small handful of functions can be renamed this way. However, since this capability is not version-specific to the toolchain, platform, and/or crate, it represents a low-hanging fruit that would have been unwise to ignore. As an example, in the ALPHV binary, the Rust module was safely able to rename 362 out of ~2,700 functions.</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/images/xrefer-fig15.max-1000x1000.png" alt="Subset of functions renamed via XRefer’s Rust module" />
+</figure>
+
+
+</p>
+<p>Figure 15: Subset of functions renamed via XRefer’s Rust module</p>
+<h3 id="llm-analysis-and-extensibility">LLM Analysis and Extensibility</h3>
+<p>XRefer ships with support for <a href="https://gemini.google.com/">Gemini</a> through a modular provider system. The architecture is designed for extensibility—new LLM providers can be added by implementing a simple interface that handles model-specific requirements like rate limiting and token management. It should be noted that cluster analysis, especially for large binaries, requires large context windows, an area in which Gemini models excel compared to other models.</p>
+<p>Similarly, the prompt system is built to be extensible. New prompts can be easily added by creating prompt templates and corresponding response parsers. This allows XRefer&rsquo;s analysis capabilities to grow as new use cases are identified or as LLM technology evolves.</p>
+<p>It&rsquo;s important to note that XRefer currently limits its LLM analysis to artifacts and function/cluster relationships (in the form of call flows) without submitting any actual code. For example, when analyzing a network communication module, XRefer provides the LLM with a rich set of artifacts like API calls (<code>send</code>, <code>recv</code>), strings (URLs, User-Agents), dynamic API traces, capa matches (network communication, socket operations), library/crate information, and their relationships in the call graph, rather than the underlying implementation code. This is just one simplified example. The actual analysis encompasses the full spectrum of artifacts XRefer collects. </p>
+<p>The effectiveness of this approach depends on the successful extraction of these artifacts, whether through specialized language modules, internal binary analysis, or ingestion of external data sources. When artifacts are available, the Gemini-powered analysis effectively breaks down binary functionality into distinct functional units, providing an explorable architectural view of the binary. Code-level analysis represents the next logical step in XRefer&rsquo;s evolution.</p>
+<h3 id="path-analysis-the-foundation-of-xrefers-navigation">Path Analysis: The Foundation of XRefer&rsquo;s Navigation</h3>
+<p>XRefer&rsquo;s architecture is fundamentally entrypoint-centric. It constructs execution paths between entry points and functions containing artifacts, forming the backbone of both its clustering algorithm and the context-aware navigation capabilities described earlier. While clustering can be implemented without path analysis, our current approach of path-based clustering consistently produces decent results. Standalone clustering may come as a feature later down the road.</p>
+<p>While entry point selection for PE executables is straightforward and automatic, DLL analysis may require analysts to select specific exports as starting points, since the default entry point might not be the most interesting one. XRefer allows analysts to analyze multiple entry points, providing flexibility in how they approach the binary.</p>
+<p>Path analysis introduces computational overhead, but the benefits it provides to both navigation capabilities and clustering accuracy make this trade-off worthwhile. It&rsquo;s important to note that this overhead is entirely front-loaded into the initial processing phase. Once analysis is complete, the pre-processed results ensure fluid navigation and responsiveness during actual usage. Table 4 shows what analysis times look like for several large binaries.</p>
+<p><strong>SHA256</strong></p>
+<p><strong>Function Count</strong></p>
+<p><strong>Size</strong></p>
+<p><strong>Analysis Time</strong></p>
+<p>3e4d512ad2aa464ecc0a10397a009f15904e17504feb6e14efe3e68a7cfe14ae</p>
+<p>2,677</p>
+<p>5.5 MB</p>
+<p>209 sec</p>
+<p>9a85242fbb7d81452866a494f187640d6727a322882558497e4435eefad01e75</p>
+<p>60,508</p>
+<p>13.0 MB</p>
+<p>428 sec</p>
+<p>0f11aeecbde1f355d26c9d406dad80cb0ae8536aea31fdddaf915d4afd434f3f</p>
+<p>1,756</p>
+<p>3.0 MB</p>
+<p>262 sec</p>
+<p>c6b727d7cff517577db838db18ad17b46334d3c91c2e50893634e56cdc19e41f</p>
+<p>2,773</p>
+<p>3.0 MB</p>
+<p>400 sec</p>
+<p>3e91e5444e37283a227c20a79d1dd6cd722766fd7c92208254ed8b5abca6a231</p>
+<p>1,196</p>
+<p>352 KB</p>
+<p>118 sec</p>
+<p>Table 4: Analysis-time listing for an arbitrary set of binaries</p>
+<p>Note: Times include LLM queries for artifact discovery and cluster analysis. Actual duration varies based on system capabilities and binary complexity—from seconds for simple binaries to longer for complex ones. This listing aims to provide a general sense of expected time scales.</p>
+<p>A notable limitation of path analysis arises in binaries with numerous indirect calls, where complete coverage cannot be guaranteed without proper resolution of these indirect targets.</p>
+<h3 id="configuration">Configuration</h3>
+<p>All LLM configurations and paths for external data sources can be managed through XRefer&rsquo;s settings dialog.</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/images/xrefer-fig16.max-1000x1000.png" alt="XRefer settings dialog box" />
+</figure>
+
+
+</p>
+<p>Figure 16: XRefer settings dialog box</p>
+<p>XRefer supports the ingestion of indirect cross-references that IDA cannot resolve statically. Examples can include dynamically resolved addresses for indirect calls, such as virtual function calls through vtables in C++ binaries and function pointer calls. These resolutions can be imported from sources like debugger scripts or binary instrumentation frameworks, enabling XRefer to construct more complete execution paths.</p>
+<h2 id="uiux-and-compatibility">UI/UX and Compatibility</h2>
+<p>XRefer is implemented as an interactive TUI (Text-based User Interface) plugin. While IDA&rsquo;s <code>simplecustviewer_t</code> wasn&rsquo;t designed to be a proper TUI system, additional Qt implementations have been added to improve the interface. Users may encounter bugs, which will be addressed as they are reported.</p>
+<p>Some rules of thumb when working with XRefer:</p>
+<ul>
+<li>
+<p>All addresses, regardless of where they are displayed in the TUI, are navigable by double clicking.</p>
+</li>
+<li>
+<p>Cluster IDs (<code>cluster.id.xxxx</code>), regardless of where they show up in the TUI, are also explorable by single clicking.</p>
+</li>
+<li>
+<p>If an address is the start of a function, hovering over it will always display an information pop-up about that function.</p>
+</li>
+<li>
+<p>Hovering over cluster IDs will display a pop-up with details about that cluster.</p>
+</li>
+<li>
+<p>Press ESC to return to the previous location/state (unless a graph is explicitly &ldquo;pinned&rdquo;).</p>
+</li>
+</ul>
+<p>XRefer maintains state within the current function and resets upon navigation to a new function. For detailed usage instructions and key bindings, please refer to the <a href="https://github.com/mandiant/xrefer">XRefer repository</a>.</p>
+<p>It is recommended to enable auto-resizing, which automatically adjusts XRefer&rsquo;s window dimensions when viewing graphs and restores default size upon exit. While XRefer is designed to remain open as a persistent companion view, it includes an expand/collapse feature for quick access when needed. Figure 17 demonstrates these interface elements.</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/original_images/xrefer-fig17.gif" alt="Auto-resizing and widget collapse/expansion" />
+</figure>
+
+
+</p>
+<p>Figure 17: Auto-resizing and widget collapse/expansion</p>
+<p>XRefer is recommended for use with either IDA &lt;= 8.3 or IDA &gt;= 9.0. IDA 8.4 contains a <code>simplecustviewer_t</code> visual bug that causes washed-out colors in several areas. Due primarily to the author&rsquo;s preference for dark mode, the plugin currently provides better color contrast in dark themes compared to the default theme, though this may be balanced in future releases.</p>
+<p>XRefer has been primarily tested with Windows binaries. While there are no fundamental limitations preventing support for ELF or Mach-O formats and XRefer may just work out of the box with most of them, some tweaks or implementation fixes might be required to ensure proper support.</p>
+<h2 id="how-to-get-xrefer">How to Get XRefer</h2>
+<p>XRefer is now available as an open-source tool in <a href="https://github.com/mandiant/xrefer">Mandiant&rsquo;s GitHub repository</a>. Installation requires installing Python dependencies from requirements.txt and copying the XRefer plugin to IDA&rsquo;s plugin directory.</p>
+<p>Note that one of the dependencies, <code>asciinet</code>, requires Java (JRE or OpenJDK) to be configured on your system. For detailed installation instructions, please refer to the <a href="https://github.com/mandiant/xrefer">XRefer repository</a>.</p>
+<p>Another alternative is to use <a href="https://github.com/mandiant/flare-vm">FLARE-VM</a>, which sets up a reverse engineering environment with a lot of useful tools, including XRefer.</p>
+<h2 id="future-work">Future Work</h2>
+<p>This is the initial release of XRefer and thus includes some implementations that are early in their maturity. While LLMs may eventually evolve to accurately interpret all forms of source and compiled code, the current approach focuses on systematic analysis rather than treating LLMs as a black box for binary summarization. This methodology not only provides high-level insights but actively supports analysts in their detailed investigation workflows.</p>
+<p>Immediate areas for future development include, beyond bug fixes and UI/UX refinements:</p>
+<ul>
+<li>
+<p>Extend cluster analysis to include code submissions, improving not just analysis at scale but also providing targeted insights for manual reverse engineering workflows</p>
+</li>
+<li>
+<p>Research and potentially implement path-independent clustering methodologies (the primary benefit here would be speed improvements if path analysis is not required)</p>
+</li>
+<li>
+<p>Implement LLM-based cluster merging (helps neatly tuck away similar clusters such as those belonging to a library)</p>
+</li>
+<li>
+<p>Ensure proper support for non-Windows file formats</p>
+</li>
+<li>
+<p>Add support for other language modules, particularly Golang</p>
+</li>
+</ul>
+<p>Currently, XRefer is tightly coupled with IDA due to its TUI implementation. As the core matures, the processing engine may be decoupled into a standalone package.</p>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>Special thanks to Genwei Jiang and Mustafa Nasser for their code contributions to XRefer and to Ana Martinez Gomez for including XRefer in the default FLARE-VM configuration. Additional thanks to the FLARE team members who provided valuable feedback through their use of XRefer.</p>
+<h4 id="source"><a href="https://cloud.google.com/blog/topics/threat-intelligence/xrefer-gemini-assisted-binary-navigator/">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

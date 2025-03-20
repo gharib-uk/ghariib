@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How AI Assistants Can Decode GitHub Repos for UI Writers</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How AI Assistants Can Decode GitHub Repos for UI Writers</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p><em>This ongoing</em> <em>Docker Labs GenAI series</em> <em>explores the exciting space of AI developer tools. At Docker, we believe there is a vast scope to explore, openly and without the hype. We will share our explorations and collaborate with the developer community in real time. Although developers have adopted autocomplete tooling like GitHub Copilot and use chat, there is significant potential for AI tools to assist with more specific tasks and interfaces throughout the entire software lifecycle. Therefore, our exploration will be broad. We will be releasing software as open source so you can play, explore, and hack with us, too.</em></p>
+<p>Can an AI-powered assistant understand a GitHub repo enough to answer questions for UI writers?</p>
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/06/2400x1260_docker-labs-genai-1110x583.png" alt="2400x1260 docker labs genai" />
+  <figcaption>- 2400x1260 docker labs genai</figcaption>
+</figure>
+
+
+</p>
+<p>Across many projects, user-facing content is rendered based on some sort of client-side code. Whether a website, a game, or a mobile app, it’s critical to nail the text copy displayed to the user.</p>
+<p>So let’s take a sample question: <strong>Do any open PRs in this project need to be reviewed for UI copy?</strong> In other words, we want to scan a GitHub repo’s PRs and gain intelligence about the changes included.</p>
+<p>Disclaimer: The best practice to accomplish this at a mature organization would be to implement Localization (i18n), which would facilitate centralized user-facing text. However, in a world of AI-powered tools, we believe our assistants will help minimize friction for all projects, not just ones that have adopted i18n.</p>
+<p>So, let’s start off by seeing what options we already have.</p>
+<p>The first instinct someone might have is to open the new copilot friend in the GitHub nav</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/11/genai-series-13_f1.png" alt="genai series 13 f1" />
+  <figcaption>- genai series 13 f1</figcaption>
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 1: Type / to search.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>We tried to get it to answer basic questions, first: “How many PR’s are open?”</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/11/genai-series-13_f2.png" alt="genai series 13 f2" />
+  <figcaption>- genai series 13 f2</figcaption>
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 2: How many PR’s are there open? The answer doesn’t give a number.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Despite having access to the GitHub repo, the Copilot agent provides less helpful information than we might expect.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/11/genai-series-13_f3.png" alt="genai series 13 f3" />
+  <figcaption>- genai series 13 f3</figcaption>
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 3: Copilot is powered by AI, so mistakes are possible.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>We don’t even get a number like we asked, despite GitHub surfacing that information on the repository’s main page. Following up our first query with the main query we want to ask effectively just gives us the same answer</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/11/genai-series-13_f4.png" alt="genai series 13 f4" />
+  <figcaption>- genai series 13 f4</figcaption>
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 4: The third PR is filesharing: add some missing contexts.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>And, after inspecting the third PR in the list, it doesn’t contain user-facing changes. One great indicator for this web project is the lack of any clientside code being modified. This was a backend change so we didn’t want to see this one.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/11/genai-series-13_f5.png" alt="genai series 13 f5" />
+  <figcaption>- genai series 13 f5</figcaption>
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 5: The PR doesn’t contain user-facing changes.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>So let’s try to improve this:</p>
+<p>First prompt file</p>
+<pre tabindex="0"><code>---
+functions:
+  - name: bash
+	description: Run a bash script in the utilities container.
+	parameters:
+  	  type: object
+  	  properties:
+    	    command:
+      	      type: string
+      	description: The command to send to bash
+	container:
+    	  image: wbitt/network-multitool  
+    	  command:
+      	    - &#34;bash&#34;
+      	    - &#34;-c&#34;
+      	    - &#34;{{command|safe}}&#34;
+  - name: git
+	description: Run a git command.
+	parameters:
+  	  type: object
+  	  properties:
+    	    command:
+      	      type: string
+      	description: The git command to run, excluding the `git` command itself
+	container:
+  	  image: alpine/git
+  	  entrypoint:
+    	    - &#34;/bin/sh&#34;
+  	  command:
+    	    - &#34;-c&#34;
+    	    - &#34;git --no-pager {{command|safe}}&#34;
+---
+
+# prompt system
+
+You are a helpful assistant that helps the user to check if a PR contains any user-facing changes.
+
+You are given a container to run bash in with the following tools:
+
+  curl, wget, jq
+and default alpine linux tools too.
+
+# prompt user
+You are at $PWD of /project, which is a git repo.
+
+Checkout branch `{{branch}}`.
+
+Diff the changes and report any containing user facing changes
+</code></pre><p>This prompt was promising, but it ended up with a few blocking flaws. The reason is that using <code>git</code> to compare files is quite tricky for an LLM.</p>
+<ul>
+<li><code>git diff</code> uses a pager, and therefore needs the <code>--no-pager</code> arg to send <code>stdout</code> to the conversation.</li>
+<li>The total number of files affected via <code>git diff</code> can be quite large.</li>
+<li>Given each file, the raw diff output can be massive and difficult to parse.</li>
+<li>The important files changed in a PR might be buried with many extra files in the diff output.</li>
+<li>The container has many more tools than necessary, allowing the LLM to hallucinate.</li>
+</ul>
+<p>The agent needs some understanding of the repo to determine the sorts of files that contain user-facing changes, and it needs to be capable of seeing just the important pieces of information.</p>
+<p>Our next pass involves a few tweaks:</p>
+<ul>
+<li>Switch to <code>alpine git</code> image and a file writer as the only tools necessary.</li>
+<li>Use <code>–files-only</code> and <code>–no-pager</code> args.</li>
+</ul>
+<pre tabindex="0"><code># ROLE assistant
+
+The following files are likely to contain user-facing changes as they mainly consist of UI components, hooks, and API functionalities.
+
+```
+file1.ts
+fil2.tsx
+file3.tsx
+...
+```
+Remember that this isn&#39;t a guarantee of whether there are user-facing changes, but just an indication of where they might be if there are any.
+</code></pre><p>Remember that this isn’t a guarantee of whether there are user-facing changes, but just an indication of where they might be if there are any.</p>
+<p>Giving the agent the tool <code>run-javascript-sandbox</code> allowed our agent to write a script to save the output for later.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/11/genai-series-13_f6.png" alt="genai series 13 f6" />
+  <figcaption>- genai series 13 f6</figcaption>
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 6: Folder called user-changes with files.txt.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>To check out the final prompt here, use our Gist.</p>
+<h2 id="expert-knowledge">Expert knowledge</h2>
+<p>This is a great start; however, we now need to inspect the files themselves for user-facing changes. When we started this, we realized that user-facing changes could manifest in a diverse set of “diff”s so we needed to include expert knowledge. We synced up with Mark Higson, a staff SWE currently working on the frontend platform here at Docker. Mark was able to help provide some key advice for what “user-facing” changes look like in many repos at Docker, so I baked the tips into the prompt.</p>
+<h3 id="straightforward-approaches">Straightforward approaches</h3>
+<p>Looking for changes in text nodes found in a JSX tree is the easiest example.</p>
+<h3 id="jsx-node-with-interpolation">JSX node with interpolation</h3>
+<pre tabindex="0"><code>&lt;div&gt;{functionReturningString()}&lt;/div&gt;
+</code></pre><p>If the result is a string, the result is probably user-facing, but the components that create the string could be elsewhere, so look for:</p>
+<h3 id="nuanced-indicators">Nuanced indicators</h3>
+<ul>
+<li><strong>Standard user-facing components.</strong> Example: notifications. If a notification’s props change, we can likely infer that it is a user-facing change.</li>
+<li><strong>Constructors for commonly used components.</strong> Example: errors. If an <code>Error()</code> is constructed with a different argument, we know that error could show up differently.</li>
+</ul>
+<p>The key for UI reviewers is the overall amount of text is changed, rather than layout.</p>
+<p>So, despite not being able to catch everything that could be rendered, we will be able to deliver value by focusing on these areas.</p>
+<h2 id="diffing-the-files">Diffing the files</h2>
+<p>There are a few approaches to finding changes in the files. To start, we’ll use <code>git</code> again.</p>
+<p>Before including expert advice, <code>git diff</code> was hallucinating changes that weren’t actually represented in the output. After the expert advice, we are seeing much more focused outputs from the LLM.</p>
+<p>Our second prompt just needs to read the user-facing files that we already saved, and then compare them to main. After a bit of trial and error with git, we found that a combination of <code>--no-color</code> and <code>--minimal</code> was able to give the LLM enough context without consuming too many tokens for each change.</p>
+<p>There’s a lot of buzz around generating and reading diffs with LLMs. The teams at Aider and Cursor are both focusing on fine-tuning LLM’s using speculative decoding:</p>
+<ul>
+<li><a href="https://github.com/Aider-AI/aider/issues/625">https://github.com/Aider-AI/aider/issues/625</a></li>
+<li><a href="https://arxiv.org/abs/2302.01318">https://arxiv.org/abs/2302.01318</a></li>
+</ul>
+<p>For our use cases, however, we found that the average “big” PR at Docker was not a problem for traditional LLMs when given good advice and the right tools.</p>
+<p>So here’s the second prompt:</p>
+<pre tabindex="0"><code>## User-facing content
+
+The following pieces of code are what we want to focus on for user-facing content:
+
+Text Nodes in any JSX or TSX files.
+
+Text Nodes in any HTML files.
+
+Standard user-facing components. Example: Definitions/Constructors for notifications, toasts, and errors.
+
+# prompt user
+
+Can you tell me if there are any user-facing changes in {{branch}}?
+</code></pre><p>To check out the full prompt here, use our Gist.</p>
+<p><strong>Output</strong></p>
+<p><em>Note: Some full paths, branches, and diffs are trimmed or replaced with placeholders for this article.</em></p>
+<pre tabindex="0"><code># ROLE assistant
+
+```json
+{
+  &#34;args&#34;: [&#34;checkout&#34;, &#34;branch&#34;]
+}
+```
+
+# ROLE tool (git)
+
+Already on &#39;branch&#39;
+Your branch is up to date with &#39;origin/branch&#39;.
+
+# ROLE assistant
+
+```json
+{
+  &#34;path&#34;: &#34;/thread/user-changes/files.txt&#34;
+}
+```
+
+*entering tool*
+
+# ROLE tool (read-file)
+
+path1
+path2
+path3
+...rest of paths
+
+# ROLE assistant
+
+```json
+{
+  &#34;args&#34;: [&#34;diff&#34;, &#34;main&#34;, &#34;--no-color&#34;, &#34;--minimal&#34;, path1 path2 path3...]
+}
+```
+
+*entering tool*
+
+# ROLE tool (git)
+
+&lt;Diff output truncated&gt;
+# ROLE assistant
+
+The following user-facing changes were detected between the &#34;main&#34; branch and the &#34;branch&#34; branch:
+
+1. In `File1.tsx` file, the text &#34;Sign In&#34; was modified to &#34;Sign in&#34;.
+
+2. In `File2.ts` file, titles &#34;Databases &amp; Storage&#34;, &#34;Monitoring &amp; Observability&#34;, &#34;Developer Tools&#34;, &#34;New Extensions&#34;, were changed to &#34;Databases &amp; storage&#34;, &#34;Monitoring &amp; observability&#34;, &#34;Developer tools&#34;, &#34;New extensions&#34; respectively.
+
+3. In `File3.rtl.test.tsx.snap` and `ImageHeader/index.tsx files`, the text &#34;Compressed Size &#34; was changed to &#34;Compressed size&#34;.
+
+4. In `File4.rtl.test.tsx` and `ImageDetail/index.tsx files`, a test-case previously checking for the existence of &#34;Compressed Size&#34; now looks for &#34;Compressed size&#34;.
+
+5. In `File5.tsx file`, the button text &#34;Add Collaborator&#34; has been changed to &#34;Add collaborator&#34;.
+
+6. In `route.tsx file`, the collaborators table title &#34;Current Collaborators&#34; was changed to &#34;Current collaborators&#34;.
+
+7. In `File6.tsx` file, the description was updated.
+
+8. In `File7.tsx`, `RepositoryOverview.tsx`, `RepositoryReadMe.tsx`, `TagsAndScans.tsx` files, the description when there is no category or description was updated.
+
+9. In `File8.rtl.test.tsx`, `DeleteRepo.tsx`, the text for confirming repo deletion and the delete button text was adjusted.
+
+10. In `route.tsx file`, the filter label &#34;Trusted Content&#34; was changed to &#34;Trusted content&#34;.
+
+11. In `File9.tsx`, the text &#34;Your Organizations&#34; has been changed to &#34;Your organizations&#34;.
+
+12. In `Component/index.tsx`, the search group label &#34;Trusted Content&#34; has been changed to &#34;Trusted content&#34;.
+
+13. In `file10.test.ts` file, a test-case was updated to check for the new text &#34;Sign in&#34;.
+```
+</code></pre><p>Overall, this was a positive result:</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/11/genai-series-13_f7.png" alt="genai series 13 f7" />
+  <figcaption>- genai series 13 f7</figcaption>
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 7: Mark’s response “Damn, that’s nice output (assuming it’s accurate).”</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Follow up:</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/11/genai-series-13_f8.png" alt="genai series 13 f8" />
+  <figcaption>- genai series 13 f8</figcaption>
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 8: Mark’s response, “I checked, it’s accurate.”</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Another example from a different PR:</p>
+<pre tabindex="0"><code>The changes in the `branch` branch compared to `main` include several modifications that affect user-facing content, particularly in JSX and TSX files. Here is a summary of the key changes:
+
+...
+
+These changes primarily involve simplification and refactoring of the existing UI logic, possibly to streamline the user interaction by removing complexities related to feature flags and reducing the use of modals or conditional rendering for specific purchasing flows.
+</code></pre><h3 id="try-it-yourself"><strong>Try it yourself</strong></h3>
+<p>Here is a markdown file that you can paste into VSCode to try these prompts on your own branch. In the last line, update <code>my-branch</code> to one of your local branches that you’d like to review: <a href="https://gist.github.com/ColinMcNeil/2e8f25e2d4092f3c7a0ce8992d2e197c#file-readme-md">https://gist.github.com/ColinMcNeil/2e8f25e2d4092f3c7a0ce8992d2e197c#file-readme-md</a></p>
+<h2 id="next-steps">Next steps</h2>
+<p>This is already a promising flow. For example, a tech writer could clone the git repo and run this prompt to inspect a branch for user-facing changes. From here, we might extend the functionality:</p>
+<ul>
+<li>Allow user input for PR to review without knowing the branch or git needing to use <code>git</code>.</li>
+<li>Automatic <code>git clone &amp; pull</code> with <code>auth</code>.</li>
+<li>Support for larger &gt;15 files changed PR by allowing agents to automate their tasks.</li>
+<li>“Baking” the final flow into CI/CD so that it can automatically assign reviewers to relevant PRs.</li>
+</ul>
+<p>If you’re interested in running this prompt on your own repo or just want to follow along with the code, watch our new public repo and reach out. We also appreciate your GitHub Stars.</p>
+<p>Everything we’ve discussed in this blog post is available for you to try out on your own projects. </p>
+<p>For more on what we’re doing at Docker, subscribe to our newsletter.</p>
+<h2 id="learn-more">Learn more</h2>
+<ul>
+<li>Subscribe to the Docker Newsletter. </li>
+<li>Learn about accelerating AI development with the Docker AI Catalog.</li>
+<li>Read the Docker Labs GenAI series.</li>
+<li>Get the latest release of Docker Desktop.</li>
+<li>Have questions? The Docker community is here to help.</li>
+<li>New to Docker? Get started.</li>
+</ul>
+<p>​Products, AI/ML, Docker Labs GenAI series, GenAI</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

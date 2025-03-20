@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Getting started with GitLab: How to import your projects to GitLab&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Getting started with GitLab: How to import your projects to GitLab&lt;/div&gt;</h1>
+			<b><time>29.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p><em>Welcome to our &ldquo;Getting started with GitLab&rdquo; series, where we help newcomers get familiar with the GitLab DevSecOps platform.</em></p>
+<p>Knowing how to import your projects to GitLab is an essential skill to make the most of the GitLab DevSecOps platform. You’ve set up your account, invited users, and organized them based on your use case or team structure. Now, you need to bring your existing projects into GitLab and start collaborating. These projects can be local files on your computer or hosted on a different source code management platform. Let&rsquo;s explore the options.</p>
+<h2 id="importing-local-project-files">Importing local project files</h2>
+<p>You don&rsquo;t want to start from scratch every time you import a project. Follow these steps to get into GitLab existing legacy projects or applications that exist without version control or use version control.</p>
+<h3 id="git-project">Git project</h3>
+<ol>
+<li>If Git is already initiated in your local project, create a new project in GitLab and obtain the SSH or HTTPS URL by clicking on the <strong>Code</strong> button in the top right corner of your project page.</li>
+</ol>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/JodhM2vA2zOXV51EXkseM/9f5bf272ec0f6dbce4268a9d3e475bc1/image8.png" alt="create a new project in GitLab with SSH/HTTPS URLs" />
+</figure>
+
+
+</p>
+<ol start="2">
+<li>Switch to your terminal and ensure you are in your project folder:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd /project_folder  
+</span></span></code></pre></div><ol start="3">
+<li>Backup your existing Git origin:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git remote rename origin old-origin
+</span></span></code></pre></div><ol start="4">
+<li>Add the GitLab remote URL for the new origin, when using SSH:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git remote add origin <span style="color:#f92672">[</span>git@gitlab.com<span style="color:#f92672">](</span>mailto:git@gitlab.com<span style="color:#f92672">)</span>:gitlab-da/playground/abubakar/new-test-repo.git  
+</span></span></code></pre></div><p>And for HTTPS:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git remote add origin https://gitlab.com/gitlab-da/playground/abubakar/new-test-repo.git  
+</span></span></code></pre></div><ol start="5">
+<li>Then push all existing branches and tags to GitLab:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git push --set-upstream origin --all  
+</span></span><span style="display:flex;"><span>git push --set-upstream origin --tags  
+</span></span></code></pre></div><p>All your file project files, branches, and tags will be pushed to GitLab and you can start collaborating.</p>
+<h3 id="non-git-project">Non-Git project</h3>
+<p>Alternatively, if you have not initiated Git in your project, you will need to initialize Git, commit existing files, and push to GitLab as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git init --initial-branch<span style="color:#f92672">=</span>main  
+</span></span><span style="display:flex;"><span>git remote add origin git@gitlab.com:gitlab-da/playground/abubakar/new-test-repo.git  
+</span></span><span style="display:flex;"><span>git add .  
+</span></span><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;Initial commit&#34;</span>  
+</span></span><span style="display:flex;"><span>git push --set-upstream origin main  
+</span></span></code></pre></div><h2 id="importing-from-online-sources">Importing from online sources</h2>
+<p>If you have your project on GitLab.com or other platforms and you want to move it to another GitLab instance (like a self-managed instance) or from another platform to GitLab.com, GitLab provides the import project feature when you want to create a new project.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/7wDEsJUuoNKGQ9GlfHfBOx/9e100dd74315db1ed5152ae8f94cff48/image7.png" alt="Create a new project screen" />
+</figure>
+
+
+</p>
+<p>Importing a project migrates the project files and some other components of the project depending on the source. You can import from different sources like Bitbucket, GitHub, Gitea, and a GitLab instance, among other sources. Import sources are enabled by default on GitLab.com, but they need to be enabled for self-managed by an administrator. We will look at a few of these sources in the following sections.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/KwAdfu5Bw1WMBIT2vcH61/8af69e5c7bc932bc85c3a07b7f490577/image6.png" alt="Import project from third-party sources" />
+</figure>
+
+
+</p>
+<h2 id="gitlab-sources">GitLab sources</h2>
+<p>You can export projects from GitLab.com and GitLab Self-Managed instances using the Export project feature in a project’s settings.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/2swSLi5u64N4woz9EPkZPK/98deb22fb2270870ffacad4c4d2cedc0/image9.png" alt="Export project screen" />
+</figure>
+
+
+</p>
+<p>To access it:</p>
+<ul>
+<li>Go to your project’s settings and click into the <strong>General</strong> area.</li>
+<li>Scroll to and <strong>Expand Advanced</strong> section.</li>
+<li>Select <strong>Export project</strong>.</li>
+<li>A notification will be shown stating: “Project export started. A download link will be sent by email and made available on this page.”</li>
+<li>After the export is generated, you can follow the link contained in the email or refresh the project settings page to reveal the “Download export” option.</li>
+</ul>
+<h3 id="importing-the-project">Importing the project</h3>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/5hX6PExmH217Tscr30pWRr/893e064239d2a186bce278d19a66d1d5/image10.png" alt="Import an exported GitLab project" />
+</figure>
+
+
+</p>
+<ul>
+<li>Click on the <strong>New project</strong> button in your target GitLab instance.</li>
+<li>Select <strong>Import project</strong> and click on <strong>GitLab Export</strong> in the list of import sources.</li>
+<li>Specify a project name and select the export file, then click <strong>Import project</strong>.</li>
+<li>An &ldquo;import in progress&rdquo; page will be shown and once complete, you will be redirected to the imported project.</li>
+</ul>
+<p>Depending on the size of your project, the import time may vary. It&rsquo;s important to note that not everything in a project might be exported and a few things might change after import. Review the documentation to understand the limitations. If you want to migrate a whole group instead of individual projects, the Direct Transfer method is recommended; this creates a copy of an entire group.</p>
+<h2 id="third-party-providers">Third-party providers</h2>
+<p>GitLab supports importing from Bitbucket Cloud, Bitbucket Server, FogBugz, Gitea, and GitHub. The import process is similar across all the supported third parties — the main difference is in the method of authentication. Let&rsquo;s look at a few of them.</p>
+<h3 id="github">GitHub</h3>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/6wYtslMUNeijb3XEWnY9FL/35b56843de91ec85f5ee279ac002b174/image3.png" alt="Authenticate with GitHub screen" />
+</figure>
+
+
+</p>
+<p>There are three methods to import GitHub projects in to GitLab:</p>
+<ul>
+<li>Using GitHub OAuth</li>
+<li>Using a GitHub personal access token</li>
+<li>Using the API</li>
+</ul>
+<p>Importing using GitHub OAuth and personal access token are similar. The difference lies in how your authorize GitLab to access your repositories. The OAuth method is easier because you only need to click on the “Authorize with GitHub” button and your are redirected to your GitHub account to authorize the connection. Then the list of your projects is loaded for you to pick those you want to import.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/XoEnB39K89NIGGnqnEDsX/ccd3fa8f263155316281c9881a5efff3/image2.png" alt="Import repositories from GitHub screen" />
+</figure>
+
+
+</p>
+<p>Alternatively, you will need to generate a GitHub personal access token, selecting the <code>repo</code> and <code>read:org</code> scopes, and then provide it on the &ldquo;Import&rdquo; page. For API imports, you can use the same personal access token with our Import REST API endpoints in your script or application.</p>
+<p>In this demo, GitLab Senior Developer Advocate Fernando Diaz explains how to import a project from GitHub using the OAuth method:</p>
+<!-- raw HTML omitted -->
+<p>You can learn about prerequisites, known issues, importing from GitHub Enterprise, and other valuable information from the GitLab import documentation.</p>
+<h3 id="bitbucket">Bitbucket</h3>
+<p>Importing projects from Bitbucket is similar to importing them from GitHub. While using OAuth is applicable to Bitbucket Cloud, the SaaS version of Bitbucket, you&rsquo;ll need to provide a URL, username, and personal access token for Bitbucket Server, the enterprise self-hosted version. Clicking on the Bitbucket Cloud option on the &ldquo;Import&rdquo; screen automatically takes you to Atlassian authentication for Bitbucket.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/5Eizn75bHBmfDM4yp1DAKD/7e5572d0a52cc8769b5b2940dc87a819/image4.png" alt="Import project from BitBucket" />
+</figure>
+
+
+</p>
+<p>You can also import Bitbucket projects using the GitLab Import API.</p>
+<h3 id="gitea">Gitea</h3>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/5pGzgxIDe6d8Y5evo2dxz8/bc1da0e107dca645a4d6d6db7b8c8f03/image5.png" alt="Import project from Gitea" />
+</figure>
+
+
+</p>
+<p>Importing projects from Gitea requires the creation of a personal access token on the Gitea platform and providing it along with the Gitea server URL on the GitLab import page. OAuth authentication is not supported.</p>
+<h3 id="generic-remote-git-repository">Generic remote Git repository</h3>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/7AHq1ELVMFWvPT3tpYwx2T/cba452487afc9acc6987f0426168e167/image1.png" alt="Import project from remote Git repository" />
+</figure>
+
+
+</p>
+<p>Where your Git provider is not supported or import is not possible using the supported methods, a repository can be imported using its accessible <code>https://</code> or <code>git://</code> URL. If it&rsquo;s not publicly accessible, you will provide the repository URL along with username and password (or access token where applicable due to multifactor authentication).</p>
+<p>This method can also be used for maintaining a copy of a remote project and keeping it in sync, i.e., mirroring. Mirroring allows you to maintain repositories across different platforms and keep them synced. This can be to separate private and public access to project while ensuring both ends have the same copy, which is useful when open-sourcing internal projects. It can also be used when working with contractors and both parties use different platforms, and access to codebase is necessary on both ends.</p>
+<h2 id="summary">Summary</h2>
+<p>Importing and migrating between GitLab instances and from other sources is an important process that needs to be planned to ensure the expectations are clear on what gets imported and with which method. While most third-party methods import project items, including files, issues, and merge requests, some methods have known issues and limitations. The GitLab import section of the documentation has detailed information on all the supported methods that can help you plan your migration.</p>
+<blockquote>
+<h4 id="want-to-take-your-learning-to-the-next-level-sign-up-for-gitlab-university-courses-or-you-can-get-going-right-away-with-a-free-60-day-trial-of-gitlab-ultimate">Want to take your learning to the next level? Sign up for GitLab University courses. Or you can get going right away with a free 60-day trial of GitLab Ultimate.</h4></blockquote>
+<p><em>Welcome to our &ldquo;Getting started with GitLab&rdquo; series, where we help newcomers get familiar with the GitLab DevSecOps platform.</em></p>
+<p>Knowing how to import your projects to GitLab is an essential skill to make the most of the GitLab DevSecOps platform. You’ve set up your account, invited users, and organized them based on your use case or team structure. Now, you need to bring your existing projects into GitLab and start collaborating. These projects can be local files on your computer or hosted on a different source code management platform. Let&rsquo;s explore the options.</p>
+<h2 id="importing-local-project-files-1">Importing local project files</h2>
+<p>You don&rsquo;t want to start from scratch every time you import a project. Follow these steps to get into GitLab existing legacy projects or applications that exist without version control or use version control.</p>
+<h3 id="git-project-1">Git project</h3>
+<ol>
+<li>If Git is already initiated in your local project, create a new project in GitLab and obtain the SSH or HTTPS URL by clicking on the <strong>Code</strong> button in the top right corner of your project page.</li>
+</ol>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/JodhM2vA2zOXV51EXkseM/9f5bf272ec0f6dbce4268a9d3e475bc1/image8.png" alt="create a new project in GitLab with SSH/HTTPS URLs" />
+</figure>
+
+
+</p>
+<ol start="2">
+<li>Switch to your terminal and ensure you are in your project folder:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd /project_folder  
+</span></span></code></pre></div><ol start="3">
+<li>Backup your existing Git origin:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git remote rename origin old-origin
+</span></span></code></pre></div><ol start="4">
+<li>Add the GitLab remote URL for the new origin, when using SSH:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git remote add origin <span style="color:#f92672">[</span>git@gitlab.com<span style="color:#f92672">](</span>mailto:git@gitlab.com<span style="color:#f92672">)</span>:gitlab-da/playground/abubakar/new-test-repo.git  
+</span></span></code></pre></div><p>And for HTTPS:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git remote add origin https://gitlab.com/gitlab-da/playground/abubakar/new-test-repo.git  
+</span></span></code></pre></div><ol start="5">
+<li>Then push all existing branches and tags to GitLab:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git push --set-upstream origin --all  
+</span></span><span style="display:flex;"><span>git push --set-upstream origin --tags  
+</span></span></code></pre></div><p>All your file project files, branches, and tags will be pushed to GitLab and you can start collaborating.</p>
+<h3 id="non-git-project-1">Non-Git project</h3>
+<p>Alternatively, if you have not initiated Git in your project, you will need to initialize Git, commit existing files, and push to GitLab as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git init --initial-branch<span style="color:#f92672">=</span>main  
+</span></span><span style="display:flex;"><span>git remote add origin git@gitlab.com:gitlab-da/playground/abubakar/new-test-repo.git  
+</span></span><span style="display:flex;"><span>git add .  
+</span></span><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;Initial commit&#34;</span>  
+</span></span><span style="display:flex;"><span>git push --set-upstream origin main  
+</span></span></code></pre></div><h2 id="importing-from-online-sources-1">Importing from online sources</h2>
+<p>If you have your project on GitLab.com or other platforms and you want to move it to another GitLab instance (like a self-managed instance) or from another platform to GitLab.com, GitLab provides the import project feature when you want to create a new project.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/7wDEsJUuoNKGQ9GlfHfBOx/9e100dd74315db1ed5152ae8f94cff48/image7.png" alt="Create a new project screen" />
+</figure>
+
+
+</p>
+<p>Importing a project migrates the project files and some other components of the project depending on the source. You can import from different sources like Bitbucket, GitHub, Gitea, and a GitLab instance, among other sources. Import sources are enabled by default on GitLab.com, but they need to be enabled for self-managed by an administrator. We will look at a few of these sources in the following sections.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/KwAdfu5Bw1WMBIT2vcH61/8af69e5c7bc932bc85c3a07b7f490577/image6.png" alt="Import project from third-party sources" />
+</figure>
+
+
+</p>
+<h2 id="gitlab-sources-1">GitLab sources</h2>
+<p>You can export projects from GitLab.com and GitLab Self-Managed instances using the Export project feature in a project’s settings.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/2swSLi5u64N4woz9EPkZPK/98deb22fb2270870ffacad4c4d2cedc0/image9.png" alt="Export project screen" />
+</figure>
+
+
+</p>
+<p>To access it:</p>
+<ul>
+<li>Go to your project’s settings and click into the <strong>General</strong> area.</li>
+<li>Scroll to and <strong>Expand Advanced</strong> section.</li>
+<li>Select <strong>Export project</strong>.</li>
+<li>A notification will be shown stating: “Project export started. A download link will be sent by email and made available on this page.”</li>
+<li>After the export is generated, you can follow the link contained in the email or refresh the project settings page to reveal the “Download export” option.</li>
+</ul>
+<h3 id="importing-the-project-1">Importing the project</h3>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/5hX6PExmH217Tscr30pWRr/893e064239d2a186bce278d19a66d1d5/image10.png" alt="Import an exported GitLab project" />
+</figure>
+
+
+</p>
+<ul>
+<li>Click on the <strong>New project</strong> button in your target GitLab instance.</li>
+<li>Select <strong>Import project</strong> and click on <strong>GitLab Export</strong> in the list of import sources.</li>
+<li>Specify a project name and select the export file, then click <strong>Import project</strong>.</li>
+<li>An &ldquo;import in progress&rdquo; page will be shown and once complete, you will be redirected to the imported project.</li>
+</ul>
+<p>Depending on the size of your project, the import time may vary. It&rsquo;s important to note that not everything in a project might be exported and a few things might change after import. Review the documentation to understand the limitations. If you want to migrate a whole group instead of individual projects, the Direct Transfer method is recommended; this creates a copy of an entire group.</p>
+<h2 id="third-party-providers-1">Third-party providers</h2>
+<p>GitLab supports importing from Bitbucket Cloud, Bitbucket Server, FogBugz, Gitea, and GitHub. The import process is similar across all the supported third parties — the main difference is in the method of authentication. Let&rsquo;s look at a few of them.</p>
+<h3 id="github-1">GitHub</h3>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/6wYtslMUNeijb3XEWnY9FL/35b56843de91ec85f5ee279ac002b174/image3.png" alt="Authenticate with GitHub screen" />
+</figure>
+
+
+</p>
+<p>There are three methods to import GitHub projects in to GitLab:</p>
+<ul>
+<li>Using GitHub OAuth</li>
+<li>Using a GitHub personal access token</li>
+<li>Using the API</li>
+</ul>
+<p>Importing using GitHub OAuth and personal access token are similar. The difference lies in how your authorize GitLab to access your repositories. The OAuth method is easier because you only need to click on the “Authorize with GitHub” button and your are redirected to your GitHub account to authorize the connection. Then the list of your projects is loaded for you to pick those you want to import.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/XoEnB39K89NIGGnqnEDsX/ccd3fa8f263155316281c9881a5efff3/image2.png" alt="Import repositories from GitHub screen" />
+</figure>
+
+
+</p>
+<p>Alternatively, you will need to generate a GitHub personal access token, selecting the <code>repo</code> and <code>read:org</code> scopes, and then provide it on the &ldquo;Import&rdquo; page. For API imports, you can use the same personal access token with our Import REST API endpoints in your script or application.</p>
+<p>In this demo, GitLab Senior Developer Advocate Fernando Diaz explains how to import a project from GitHub using the OAuth method:</p>
+<!-- raw HTML omitted -->
+<p>You can learn about prerequisites, known issues, importing from GitHub Enterprise, and other valuable information from the GitLab import documentation.</p>
+<h3 id="bitbucket-1">Bitbucket</h3>
+<p>Importing projects from Bitbucket is similar to importing them from GitHub. While using OAuth is applicable to Bitbucket Cloud, the SaaS version of Bitbucket, you&rsquo;ll need to provide a URL, username, and personal access token for Bitbucket Server, the enterprise self-hosted version. Clicking on the Bitbucket Cloud option on the &ldquo;Import&rdquo; screen automatically takes you to Atlassian authentication for Bitbucket.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/5Eizn75bHBmfDM4yp1DAKD/7e5572d0a52cc8769b5b2940dc87a819/image4.png" alt="Import project from BitBucket" />
+</figure>
+
+
+</p>
+<p>You can also import Bitbucket projects using the GitLab Import API.</p>
+<h3 id="gitea-1">Gitea</h3>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/5pGzgxIDe6d8Y5evo2dxz8/bc1da0e107dca645a4d6d6db7b8c8f03/image5.png" alt="Import project from Gitea" />
+</figure>
+
+
+</p>
+<p>Importing projects from Gitea requires the creation of a personal access token on the Gitea platform and providing it along with the Gitea server URL on the GitLab import page. OAuth authentication is not supported.</p>
+<h3 id="generic-remote-git-repository-1">Generic remote Git repository</h3>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/7AHq1ELVMFWvPT3tpYwx2T/cba452487afc9acc6987f0426168e167/image1.png" alt="Import project from remote Git repository" />
+</figure>
+
+
+</p>
+<p>Where your Git provider is not supported or import is not possible using the supported methods, a repository can be imported using its accessible <code>https://</code> or <code>git://</code> URL. If it&rsquo;s not publicly accessible, you will provide the repository URL along with username and password (or access token where applicable due to multifactor authentication).</p>
+<p>This method can also be used for maintaining a copy of a remote project and keeping it in sync, i.e., mirroring. Mirroring allows you to maintain repositories across different platforms and keep them synced. This can be to separate private and public access to project while ensuring both ends have the same copy, which is useful when open-sourcing internal projects. It can also be used when working with contractors and both parties use different platforms, and access to codebase is necessary on both ends.</p>
+<h2 id="summary-1">Summary</h2>
+<p>Importing and migrating between GitLab instances and from other sources is an important process that needs to be planned to ensure the expectations are clear on what gets imported and with which method. While most third-party methods import project items, including files, issues, and merge requests, some methods have known issues and limitations. The GitLab import section of the documentation has detailed information on all the supported methods that can help you plan your migration.</p>
+<blockquote>
+<h4 id="want-to-take-your-learning-to-the-next-level-sign-up-for-gitlab-university-courses-or-you-can-get-going-right-away-with-a-free-60-day-trial-of-gitlab-ultimate-1">Want to take your learning to the next level? Sign up for GitLab University courses. Or you can get going right away with a free 60-day trial of GitLab Ultimate.</h4></blockquote>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

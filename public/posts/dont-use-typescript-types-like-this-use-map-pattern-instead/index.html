@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Don&#39;t use TypeScript types like this. Use Map Pattern instead&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Don&#39;t use TypeScript types like this. Use Map Pattern instead&lt;/div&gt;</h1>
+			<b><time>29.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<h3 id="introduction">Introduction</h3>
+<p>While working on a real-life project, I came across a particular TypeScript implementation that was <em>functional</em> but lacked flexibility. In this blog, I&rsquo;ll walk you through the problem I encountered, and how I improved the design by making a more dynamic approach using the <strong>Map pattern</strong>.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol>
+<li>The problem</li>
+<li>The issue with this approach</li>
+<li>Solution</li>
+<li>Clean code</li>
+<li>More secure solution</li>
+<li>Visual representation</li>
+<li>Conslusion</li>
+</ol>
+<h2 id="the-problem">The problem</h2>
+<p>I came across this TypeScript type:</p>
+<pre tabindex="0"><code>// FinalResponse.ts
+import { Reaction } from &#39;./Reaction&#39;
+
+export type FinalResponse = {
+  totalScore: number
+  headingsPenalty: number
+  sentencesPenalty: number
+  charactersPenalty: number
+  wordsPenalty: number
+  headings: string[]
+  sentences: string[]
+  words: string[]
+  links: { href: string; text: string }[]
+  exceeded: {
+    exceededSentences: string[]
+    repeatedWords: { word: string; count: number }[]
+  }
+  reactions: {
+    likes: Reaction
+    unicorns: Reaction
+    explodingHeads: Reaction
+    raisedHands: Reaction
+    fire: Reaction
+  }
+}
+</code></pre><p>Additionally, this <code>Reaction</code> type was defined:</p>
+<pre tabindex="0"><code>// Reaction.ts
+export type Reaction = {
+  count: number
+  percentage: number
+}
+</code></pre><p>And this was being used in a function like so:</p>
+<pre tabindex="0"><code>// calculator.ts
+export const calculateScore = (
+  headings: string[],
+  sentences: string[],
+  words: string[],
+  totalPostCharactersCount: number,
+  links: { href: string; text: string }[],
+  reactions: {
+    likes: Reaction
+    unicorns: Reaction
+    explodingHeads: Reaction
+    raisedHands: Reaction
+    fire: Reaction
+  },
+): FinalResponse =&gt; {
+  // Score calculation logic...
+}
+</code></pre><h3 id="the-issue-with-this-approach">The Issue with This Approach</h3>
+<p>Now, imagine the scenario where the developer needs to add a new reaction (e.g., hearts, claps, etc.).<br>
+Given the current setup, they would have to:</p>
+<ul>
+<li>Modify the <code>FinalResponse.ts</code> file to add the new reaction type.</li>
+<li>Update the <code>Reaction.ts</code> type if necessary.</li>
+<li>Modify the <code>calculateScore</code> function to include the new reaction.</li>
+<li>Possibly update other parts of the application that rely on this structure.</li>
+</ul>
+<p>So instead of just adding the new reaction in one place, they end up making changes in <strong>three or more files</strong>, which increases the potential for errors and redundancy. This approach is <strong>tightly coupled</strong>.</p>
+<h3 id="solution">Solution</h3>
+<p>I came up with a cleaner solution by introducing a more flexible and reusable structure.</p>
+<pre tabindex="0"><code>// FinalResponse.ts
+import { Reaction } from &#39;./Reaction&#39;
+
+export type ReactionMap = Record&lt;string, Reaction&gt;
+
+export type FinalResponse = {
+  totalScore: number
+  headingsPenalty: number
+  sentencesPenalty: number
+  charactersPenalty: number
+  wordsPenalty: number
+  headings: string[]
+  sentences: string[]
+  words: string[]
+  links: { href: string; text: string }[]
+  exceeded: {
+    exceededSentences: string[]
+    repeatedWords: { word: string; count: number }[]
+  }
+  reactions: ReactionMap
+}
+</code></pre><p>Explanation:</p>
+<ul>
+<li><code>ReactionMap</code>: This type uses <code>Record&lt;string, Reaction&gt;</code>, which means any string can be a key, and the value will always be of type <code>Reaction</code>.</li>
+<li><code>FinalResponse</code>: Now, the reactions field in <code>FinalResponse</code> is of type <code>ReactionMap</code>, allowing you to add any reaction dynamically without having to modify multiple files.</li>
+</ul>
+<h3 id="clean-code">Clean code</h3>
+<p>In the <code>calculator.ts</code> file, the function now looks like this:</p>
+<pre tabindex="0"><code>// calculator.ts
+export const calculateScore = (
+  headings: string[],
+  sentences: string[],
+  words: string[],
+  totalPostCharactersCount: number,
+  links: { href: string; text: string }[],
+  reactions: ReactionMap,
+): FinalResponse =&gt; {
+  // Score calculation logic...
+}
+</code></pre><h3 id="but-wait-we-need-some-control">But Wait! We Need Some Control</h3>
+<p>Although the new solution provides flexibility, it also introduces the risk of adding unchecked reactions, meaning anyone could potentially add any string as a reaction. We definitely don&rsquo;t want that.</p>
+<p>To fix this, we can enforce stricter control over the allowed reactions.</p>
+<h3 id="more-secure-solution">More secure solution</h3>
+<p>Here’s the updated version where we restrict the reactions to a predefined set of allowed values:</p>
+<pre tabindex="0"><code>// FinalResponse.ts
+import { Reaction } from &#39;./Reaction&#39;
+
+type AllowedReactions =
+  | &#39;likes&#39;
+  | &#39;unicorns&#39;
+  | &#39;explodingHeads&#39;
+  | &#39;raisedHands&#39;
+  | &#39;fire&#39;
+
+export type ReactionMap = {
+  [key in AllowedReactions]: Reaction
+}
+
+export type FinalResponse = {
+  totalScore: number
+  headingsPenalty: number
+  sentencesPenalty: number
+  charactersPenalty: number
+  wordsPenalty: number
+  headings: string[]
+  sentences: string[]
+  words: string[]
+  links: { href: string; text: string }[]
+  exceeded: {
+    exceededSentences: string[]
+    repeatedWords: { word: string; count: number }[]
+  }
+  reactions: ReactionMap
+}
+</code></pre><h3 id="visual-representation">Visual representation</h3>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fv7fnvfkvsbpf8q07qhmd.png" alt="TypeScript Types" />
+</figure>
+
+
+</p>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fa2ow6meqh4gcfalyitme.png" alt="TypeScript Types" />
+</figure>
+
+
+</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>This approach strikes a balance between flexibility and control:</p>
+<ul>
+<li><strong>Flexibility</strong>: You can easily add new reactions by modifying just the <code>AllowedReactions</code> type.</li>
+<li><strong>Control</strong>: The use of a union type ensures that only the allowed reactions can be used, preventing the risk of invalid or unwanted reactions being added.</li>
+</ul>
+<p>With this pattern, we can easily extend the list of reactions without modifying too many files, while still maintaining strict control over what can be added.</p>
+<p>Hope you found this solution helpful! Thanks for reading. 😊</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

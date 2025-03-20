@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Kubernetes 1.31: Fine-grained SupplementalGroups control</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Kubernetes 1.31: Fine-grained SupplementalGroups control</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>This blog discusses a new feature in Kubernetes 1.31 to improve the handling of supplementary groups in containers within Pods.</p>
+<h2 id="motivation-implicit-group-memberships-defined-in-etcgroup-in-the-container-image">Motivation: Implicit group memberships defined in <code>/etc/group</code> in the container image</h2>
+<p>Although this behavior may not be popular with many Kubernetes cluster users/admins, kubernetes, by default, <em>merges</em> group information from the Pod with information defined in <code>/etc/group</code> in the container image.</p>
+<p>Let&rsquo;s see an example, below Pod specifies <code>runAsUser=1000</code>, <code>runAsGroup=3000</code> and <code>supplementalGroups=4000</code> in the Pod&rsquo;s security context.</p>
+<p><code>implicit-groups.yaml</code> 
+<figure>
+  <img src="https://kubernetes.io/images/copycode.svg" alt="" />
+  <figcaption>Copy implicit-groups.yaml to clipboard</figcaption>
+</figure>
+
+
+</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">name</span>: <span style="color:#ae81ff">implicit-groups</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">securityContext</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">runAsUser</span>: <span style="color:#ae81ff">1000</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">runAsGroup</span>: <span style="color:#ae81ff">3000</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">supplementalGroups</span>: [<span style="color:#ae81ff">4000</span>]
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">containers</span>:
+</span></span><span style="display:flex;"><span> - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ctr</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">image</span>: <span style="color:#ae81ff">registry.k8s.io/e2e-test-images/agnhost:2.45</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">command</span>: [ <span style="color:#e6db74">&#34;sh&#34;</span>, <span style="color:#e6db74">&#34;-c&#34;</span>, <span style="color:#e6db74">&#34;sleep 1h&#34;</span> ]
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">securityContext</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">allowPrivilegeEscalation</span>: <span style="color:#66d9ef">false</span>
+</span></span></code></pre></div><p>What is the result of <code>id</code> command in the <code>ctr</code> container?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span># Create the Pod:
+</span></span><span style="display:flex;"><span>$ kubectl apply -f https://k8s.io/blog/2024-08-22-Fine-grained-SupplementalGroups-control/implicit-groups.yaml
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span># Verify that the Pod<span style="color:#960050;background-color:#1e0010">&#39;</span>s Container is running:
+</span></span><span style="display:flex;"><span>$ kubectl get pod implicit-groups
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span># Check the id command
+</span></span><span style="display:flex;"><span>$ kubectl exec implicit-groups -- id
+</span></span></code></pre></div><p>Then, output should be similar to this:</p>
+<pre tabindex="0"><code class="language-none" data-lang="none">uid=1000 gid=3000 groups=3000,4000,50000
+</code></pre><p>Where does group ID <code>50000</code> in supplementary groups (<code>groups</code> field) come from, even though <code>50000</code> is not defined in the Pod&rsquo;s manifest at all? The answer is <code>/etc/group</code> file in the container image.</p>
+<p>Checking the contents of <code>/etc/group</code> in the container image should show below:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ kubectl exec implicit-groups -- cat /etc/group
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>user-defined-in-image:x:1000:
+</span></span><span style="display:flex;"><span>group-defined-in-image:x:50000:user-defined-in-image
+</span></span></code></pre></div><p>Aha! The container&rsquo;s primary user <code>1000</code> belongs to the group <code>50000</code> in the last entry.</p>
+<p>Thus, the group membership defined in <code>/etc/group</code> in the container image for the container&rsquo;s primary user is <em>implicitly</em> merged to the information from the Pod. Please note that this was a design decision the current CRI implementations inherited from Docker, and the community never really reconsidered it until now.</p>
+<h3 id="whats-wrong-with-it">What&rsquo;s wrong with it?</h3>
+<p>The <em>implicitly</em> merged group information from <code>/etc/group</code> in the container image may cause some concerns particularly in accessing volumes (see kubernetes/kubernetes#112879 for details) because file permission is controlled by uid/gid in Linux. Even worse, the implicit gids from <code>/etc/group</code> can not be detected/validated by any policy engines because there is no clue for the implicit group information in the manifest. This can also be a concern for Kubernetes security.</p>
+<h2 id="fine-grained-supplementalgroups-control-in-a-pod-supplementarygroupspolicy">Fine-grained SupplementalGroups control in a Pod: <code>SupplementaryGroupsPolicy</code></h2>
+<p>To tackle the above problem, Kubernetes 1.31 introduces new field <code>supplementalGroupsPolicy</code> in Pod&rsquo;s <code>.spec.securityContext</code>.</p>
+<p>This field provies a way to control how to calculate supplementary groups for the container processes in a Pod. The available policy is below:</p>
+<ul>
+<li>
+<p><em>Merge</em>: The group membership defined in <code>/etc/group</code> for the container&rsquo;s primary user will be merged. If not specified, this policy will be applied (i.e. as-is behavior for backword compatibility).</p>
+</li>
+<li>
+<p><em>Strict</em>: it only attaches specified group IDs in <code>fsGroup</code>, <code>supplementalGroups</code>, or <code>runAsGroup</code> fields as the supplementary groups of the container processes. This means no group membership defined in <code>/etc/group</code> for the container&rsquo;s primary user will be merged.</p>
+</li>
+</ul>
+<p>Let&rsquo;s see how <code>Strict</code> policy works.</p>
+<p><code>strict-supplementalgroups-policy.yaml</code> 
+<figure>
+  <img src="https://kubernetes.io/images/copycode.svg" alt="" />
+  <figcaption>Copy strict-supplementalgroups-policy.yaml to clipboard</figcaption>
+</figure>
+
+
+</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">name</span>: <span style="color:#ae81ff">strict-supplementalgroups-policy</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">securityContext</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">runAsUser</span>: <span style="color:#ae81ff">1000</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">runAsGroup</span>: <span style="color:#ae81ff">3000</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">supplementalGroups</span>: [<span style="color:#ae81ff">4000</span>]
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">supplementalGroupsPolicy</span>: <span style="color:#ae81ff">Strict</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">containers</span>:
+</span></span><span style="display:flex;"><span> - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ctr</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">image</span>: <span style="color:#ae81ff">registry.k8s.io/e2e-test-images/agnhost:2.45</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">command</span>: [ <span style="color:#e6db74">&#34;sh&#34;</span>, <span style="color:#e6db74">&#34;-c&#34;</span>, <span style="color:#e6db74">&#34;sleep 1h&#34;</span> ]
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">securityContext</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">allowPrivilegeEscalation</span>: <span style="color:#66d9ef">false</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span># Create the Pod:
+</span></span><span style="display:flex;"><span>$ kubectl apply -f https://k8s.io/blog/2024-08-22-Fine-grained-SupplementalGroups-control/strict-supplementalgroups-policy.yaml
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span># Verify that the Pod<span style="color:#960050;background-color:#1e0010">&#39;</span>s Container is running:
+</span></span><span style="display:flex;"><span>$ kubectl get pod strict-supplementalgroups-policy
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span># Check the process identity:
+</span></span><span style="display:flex;"><span>kubectl exec -it strict-supplementalgroups-policy -- id
+</span></span></code></pre></div><p>The output should be similar to this:</p>
+<pre tabindex="0"><code class="language-none" data-lang="none">uid=1000 gid=3000 groups=3000,4000
+</code></pre><p>You can see <code>Strict</code> policy can exclude group <code>50000</code> from <code>groups</code>!</p>
+<p>Thus, ensuring <code>supplementalGroupsPolicy: Strict</code> (enforced by some policy mechanism) helps prevent the implicit supplementary groups in a Pod.</p>
+<h4 id="note">Note:</h4>
+<p>Actually, this is not enough because container with sufficient privileges / capability can change its process identity. Please see the following section for details.</p>
+<h2 id="attached-process-identity-in-pod-status">Attached process identity in Pod status</h2>
+<p>This feature also exposes the process identity attached to the first container process of the container via <code>.status.containerStatuses[].user.linux</code> field. It would be helpful to see if implicit group IDs are attached.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">status</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">containerStatuses</span>:
+</span></span><span style="display:flex;"><span> - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ctr</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">user</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">linux</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">gid</span>: <span style="color:#ae81ff">3000</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">supplementalGroups</span>:
+</span></span><span style="display:flex;"><span> - <span style="color:#ae81ff">3000</span>
+</span></span><span style="display:flex;"><span> - <span style="color:#ae81ff">4000</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">uid</span>: <span style="color:#ae81ff">1000</span>
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><h4 id="note-1">Note:</h4>
+<p>Please note that the values in <code>status.containerStatuses[].user.linux</code> field is <em>the firstly attached</em> process identity to the first container process in the container. If the container has sufficient privilege to call system calls related to process identity (e.g. <code>setuid(2)</code>, <code>setgid(2)</code> or <code>setgroups(2)</code>, etc.), the container process can change its identity. Thus, the <em>actual</em> process identity will be dynamic.</p>
+<h2 id="feature-availability">Feature availability</h2>
+<p>To enable <code>supplementalGroupsPolicy</code> field, the following components have to be used:</p>
+<ul>
+<li>Kubernetes: v1.31 or later, with the <code>SupplementalGroupsPolicy</code> feature gate enabled. As of v1.31, the gate is marked as alpha.</li>
+<li>CRI runtime:
+<ul>
+<li>containerd: v2.0 or later</li>
+<li>CRI-O: v1.31 or later</li>
+</ul>
+</li>
+</ul>
+<p>You can see if the feature is supported in the Node&rsquo;s <code>.status.features.supplementalGroupsPolicy</code> field.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Node</span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">status</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">features</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">supplementalGroupsPolicy</span>: <span style="color:#66d9ef">true</span>
+</span></span></code></pre></div><h2 id="whats-next">What&rsquo;s next?</h2>
+<p>Kubernetes SIG Node hope - and expect - that the feature will be promoted to beta and eventually general availability (GA) in future releases of Kubernetes, so that users no longer need to enable the feature gate manually.</p>
+<p><code>Merge</code> policy is applied when <code>supplementalGroupsPolicy</code> is not specified, for backwards compatibility.</p>
+<h2 id="how-can-i-learn-more">How can I learn more?</h2>
+<ul>
+<li>Configure a Security Context for a Pod or Container for the further details of <code>supplementalGroupsPolicy</code></li>
+<li>KEP-3619: Fine-grained SupplementalGroups control</li>
+</ul>
+<h2 id="how-to-get-involved">How to get involved?</h2>
+<p>This feature is driven by the SIG Node community. Please join us to connect with the community and share your ideas and feedback around the above feature and beyond. We look forward to hearing from you!</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

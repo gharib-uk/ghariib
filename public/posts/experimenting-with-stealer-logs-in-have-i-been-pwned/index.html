@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Experimenting with Stealer Logs in Have I Been Pwned</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Experimenting with Stealer Logs in Have I Been Pwned</h1>
+			<b><time>15.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/secureyoursitetl">secureyoursitetl</a>
+        	       
+
+			<div>
+				<p><strong>Presently sponsored by:</strong> Report URI: Guarding you from rogue JavaScript! Don’t get pwned; get real-time alerts &amp; prevent breaches #SecureYourSite</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/download.jpeg" alt="Experimenting with Stealer Logs in Have I Been Pwned" />
+</figure>
+
+
+</p>
+<p><strong>TL;DR — Email addresses in stealer logs can now be queried in HIBP to discover which websites they&rsquo;ve had credentials exposed against. Individuals can see this by verifying their address using</strong> <strong>the notification service</strong> <strong>and organisations monitoring domains can</strong> <strong>pull a list back via a new API</strong>**.**</p>
+<p>Nasty stuff, stealer logs. I&rsquo;ve written about them and loaded them into Have I Been Pwned (HIBP) before but just as a recap, we&rsquo;re talking about the logs created by malware running on infected machines. You know that game cheat you downloaded? Or that crack for the pirated software product? Or the video of your colleague doing something that sounded crazy but you thought you&rsquo;d better download and run that executable program showing it just to be sure? That&rsquo;s just a few different ways you end up with malware on your machine that then watches what you&rsquo;re doing and logs it, just like this:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/image-4.png" alt="Experimenting with Stealer Logs in Have I Been Pwned" />
+</figure>
+
+
+</p>
+<p>These logs all came from the same person and each time the poor bloke visited a website and logged in, the malware snared the URL, his email address and his password. It&rsquo;s akin to a criminal looking over his shoulder and writing down the credentials for every service he&rsquo;s using, except rather than it being one shoulder-surfing bad guy, it&rsquo;s somewhat larger than that. We&rsquo;re talking about <em>billions</em> of records of stealer logs floating around, often published via Telegram where they&rsquo;re easily accessible to the masses. Check out Bitsight&rsquo;s piece titled Exfiltration over Telegram Bots: Skidding Infostealer Logs if you&rsquo;d like to get into the weeds of how and why this happens. Or, for a really quick snapshot, here&rsquo;s an example that popped up on Telegram as I was writing this post:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/image-9.png" alt="Experimenting with Stealer Logs in Have I Been Pwned" />
+</figure>
+
+
+</p>
+<p>As it relates to HIBP, stealer logs have always presented a bit of a paradox: they contain <em>huge</em> troves of personal information that by any reasonable measure constitute a data breach that victims would like to know about, but then what can they actually do about it? What are the websites listed against their email address? And what password was used? Reading the comments from the blog post in the first para, you can sense the frustration; people want more info and merely saying &ldquo;your email address appeared in stealer logs&rdquo; has left many feeling more frustrated than informed. I&rsquo;ve been giving that a lot of thought over recent months and today, we&rsquo;re going to take a big step towards addressing that concern:</p>
+<p><strong>The domains an email address appears next to in stealer logs can now be returned to authorised users.</strong></p>
+<p>This means the guy with the Gmail address from the screen grab above can now see that his address has appeared against Amazon, Facebook and H&amp;R Block. Further, his password is also searchable in Pwned Passwords so every piece of info we have from the stealer log is now accessible to him. Let me explain the mechanics of this:</p>
+<p>Firstly, the volumes of data we&rsquo;re talking about are immense. In the case of the most recent corpus of data I was sent, there are hundreds of text files with well over 100GB of data and <em>billions</em> of rows. Filtering it all down, we ended up with 220 million unique rows of email address and domain pairs covering 69 million of the total 71 million email addresses in the data. The gap is explained by a combination of email addresses that appeared against invalidly formed domains and in some cases, addresses that only appeared with a password and not a domain. Criminals aren&rsquo;t exactly renowned for dumping perfectly formed data sets we can seamlessly work with, and I hope folks that fall into that few percent gap understand this limitation.</p>
+<p>So, we now have 220 million records of email addresses against domains, how do we surface that information? Keeping in mind that &ldquo;experimental&rdquo; caveat in the title, the first decision we made is that it should only be accessible to the following parties:</p>
+<ol>
+<li>The person who owns the email address</li>
+<li>The company that owns the domain the email address is on</li>
+</ol>
+<p>At face value it might look like that first point deviates from the current model of just entering an email address on the front page of the site and getting back a result (and there are very good reasons why the service works this way). There are some important differences though, the first of which is that whilst your classic email address search on HIBP returns verified breaches of specific services, stealer logs contain a list of services that have <em>never</em> have been breached. It means we&rsquo;re talking about much larger numbers that build up far richer profiles; instead of a few breached services someone used, we&rsquo;re talking about potentially <em>hundreds</em> of them. Secondly, many of the services that appear next to email addresses in the stealer logs are precisely the sort of thing we flag as sensitive and hide from public view. There&rsquo;s a heap of Pornhub. There are health-related services. Religious one. Political websites. There are a lot of services there that merely by association constitute sensitive information, and we just don&rsquo;t want to take the risk of showing that info to the masses.</p>
+<p>The second point means that companies doing domain searches (for which they already need to prove control of the domain), can pull back the list of the websites people in their organisation have email addresses next to. When the company controls the domain, they also control the email addresses on that domain and by extension, have the <em>technical</em> ability to view messages sent to their mailbox. Whether they have policies prohibiting this is a different story but remember, your work email address is your work&rsquo;s email address! They can already see the services sending emails to their people, and in the case of stealer logs, this is likely to be <em>enormously</em> useful information as it relates to protecting the organisation. I ran a few big names through the data, and even I was shocked at the prevalence of corporate email addresses against services you wouldn&rsquo;t expect to be used in the workplace (then again, using the corp email address in places you definitely shouldn&rsquo;t be isn&rsquo;t exactly anything new). That in itself is an issue, then there&rsquo;s the question of whether these logs came from an infected corporate machine or from someone entering their work email address into their personal device.</p>
+<p>I started thinking more about what you can learn about an organisation&rsquo;s exposure in these logs, so I grabbed a well-known brand in the Fortune 500. Here are some of the highlights:</p>
+<ol>
+<li>2,850 unique corporate email addresses in the stealer logs</li>
+<li>3,159 instances of an address against a service they use, accompanied by a password (some email addresses appeared multiple times)</li>
+<li>The top domains included paypal.com, netflix.com, amazon.com and facebook.com (likely within the scope of acceptable corporate use)</li>
+<li>The top domains also included steamcommunity.com, roblox.com and battle.net (all gaming websites likely <em>not</em> within scope of acceptable use)</li>
+<li>Dozens of domains containing the words &ldquo;porn&rdquo;, &ldquo;adult&rdquo; or &ldquo;xxx&rdquo; (<em>definitely</em> not within scope!)</li>
+<li>Dozens more domains containing the corporate brand, either as subdomains of their primary domain or org-specific subdomains of other services including Udemy (online learning), Amplify (&ldquo;strategy execution platform&rdquo;), Microsoft Azure (the same cloud platform that HIBP runs on) and Salesforce (needs no introduction)</li>
+</ol>
+<p>That said, let me emphasise a critical point:</p>
+<p><strong>This data is prepared and sold by criminals who provide zero guarantees as to its accuracy. The only guarantee is that the presence of an email address next to a domain is precisely what&rsquo;s in the stealer log; the owner of the address may never have actually visited the indicated website.</strong></p>
+<p>Stealer logs are not like typical data breaches where it&rsquo;s a discrete incident leading to the dumping of customers of a specific service. I know that the presence of my personal email address in the LinkedIn and Dropbox data breaches, for example, is a near-ironclad indication that those services exposed my data. Stealer logs don&rsquo;t provide that guarantee, so please understand this when reviewing the data.</p>
+<p>The way we&rsquo;ve decided to implement these two use cases differs:</p>
+<ol>
+<li>Individuals who can verify they control their email address can use the free notification service. This is already how people can view sensitive data breaches against their address.</li>
+<li>Organisations monitoring domains can call a new API by email address. They&rsquo;ll need to have verified control of the domain the address is on and have an appropriately sized subscription (essentially what&rsquo;s already required to search the domain).</li>
+</ol>
+<p>We&rsquo;ll make the individual searches cleaner in the near future as part of the rebrand I&rsquo;ve recently been talking about. For now, here&rsquo;s what it looks like:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/image-3.png" alt="Experimenting with Stealer Logs in Have I Been Pwned" />
+</figure>
+
+
+</p>
+<p>Because of the recirculation of many stealer logs, we&rsquo;re not tracking which domains appeared against which breaches in HIBP. Depending on how this experiment with stealer logs goes, we&rsquo;ll likely add more in the future (and fill in the domain data for existing stealer logs in HIBP), but additional domains will only appear in the screen above if they haven&rsquo;t already been seen.</p>
+<p>We&rsquo;ve done the searches by domain owners via API as we&rsquo;re talking about potentially huge volumes of data that really don&rsquo;t scale well to the browser experience. Imagine a company with tens or hundreds of thousands of breached addresses and then a whole heap of those addresses have a bunch of stealer log entries against them. Further, by putting this behind a per-email address API rather than automatically showing it on domain search means it&rsquo;s easy for an org to <em>not</em> see these results, which I suspect some will elect to do for privacy reasons. The API approach was easiest while we explore this service then we can build on that based on feedback. I mentioned this was experimental, right? For now, it looks like this:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/image-10.png" alt="Experimenting with Stealer Logs in Have I Been Pwned" />
+</figure>
+
+
+</p>
+<p>Lastly, there&rsquo;s another opportunity altogether that loading stealer logs in this fashion opens up, and the penny dropped when I loaded that last one mentioned earlier. I was contacted by a couple of different organisations that explained how around the time the data I&rsquo;d loaded was circulating, they were seeing an uptick in account takeovers <em>&ldquo;and the attackers were getting the password right first go every time!&rdquo;</em> Using HIBP to try and understand where impacted customers might have been exposed, they posited that it was possible the same stealer logs I had were being used by criminals to extract every account that had logged onto their service. So, we started delving into the data and sure enough, all the other email addresses against their domain aligned with customers who were suffering from account takeover. We now have that data in HIBP, and it would be technically feasible to provide this to domain owners so that they can get an early heads up on which of their customers they probably have to rotate credentials for. I love the idea as it&rsquo;s a great preventative measure, perhaps that will be our next experiment.</p>
+<p>Onto the passwords and as mentioned earlier, these have all been extracted and added to the existing Pwned Passwords service. This service remains totally free and open source (both code and data), has a really cool anonymity model allowing you to hit the API without disclosing the password being searched for, and has become absolutely <em>MASSIVE!</em></p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/image-11.png" alt="Experimenting with Stealer Logs in Have I Been Pwned" />
+</figure>
+
+
+</p>
+<p>I thought that doing more than 10 <em>billion</em> requests a month was cool, but look at that data transfer - more than a quarter of a <em>petabyte</em> just last month! And it&rsquo;s in use at some pretty big name sites as well:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/image-13.png" alt="Experimenting with Stealer Logs in Have I Been Pwned" />
+</figure>
+
+
+
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/image-16.png" alt="Experimenting with Stealer Logs in Have I Been Pwned" />
+</figure>
+
+
+
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/image-15.png" alt="Experimenting with Stealer Logs in Have I Been Pwned" />
+</figure>
+
+
+</p>
+<p>That&rsquo;s just where the API is implemented client-side, and we can identify the source of the requests via the referrer header. Most implementations are done server-side, and by design, we have absolutely no idea who those folks are. Shoutout to Cloudflare while we&rsquo;re here for continuing to provide the service behind this for free to help make a more secure web.</p>
+<p>In terms of the passwords in this latest stealer log corpus, we found 167 million unique ones of which only 61 million were already in HIBP. That&rsquo;s a massive number, so we did some checks, and whilst there&rsquo;s always a bit of junk in these data sets (remember - criminals and formatting!) there&rsquo;s also a heap of new stuff. For example:</p>
+<ol>
+<li>Tryingtogetkangaroo</li>
+<li>Kangaroolover69</li>
+<li>fuckkangaroos</li>
+</ol>
+<p>And about 106M other non-kangaroo themed passwords. Admittedly, we did start to get a bit preoccupied looking at some of the creative ways people were creating previously unseen passwords:</p>
+<ol>
+<li>passwordtoavoidpwned13</li>
+<li>verygoodpassword</li>
+<li>AVerryGoodPasswordThatNooneCanGuess2.0</li>
+</ol>
+<p>And here&rsquo;s something especially ironic: check out these stealer log entries:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/image-8.png" alt="Experimenting with Stealer Logs in Have I Been Pwned" />
+</figure>
+
+
+</p>
+<p>People have been checking these passwords on HIBP&rsquo;s service whilst infected with malware that logged the search! None of those passwords were in HIBP&hellip; but they all are now 🙂</p>
+<p>Want to see something equally ironic? People using my Hack Yourself First website to learn about secure coding practices have also been infected with malware and ended up in stealer logs:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/image-12.png" alt="Experimenting with Stealer Logs in Have I Been Pwned" />
+</figure>
+
+
+</p>
+<p>So, that&rsquo;s the experiment we&rsquo;re trying with stealer logs, and that&rsquo;s how to see the websites exposed against an email address. Just one final comment as it comes up every single time we load data like this:</p>
+<p><strong>We cannot manually provide data on a per-individual basis.</strong></p>
+<p>Hopefully, there&rsquo;s less need to now given the new feature outlined above, and I hope the <em>massive</em> burden of looking up individual records when there are 71 million people impacted is evident. Do leave your comments below and help us improve this feature to become as useful as we can possibly make it.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

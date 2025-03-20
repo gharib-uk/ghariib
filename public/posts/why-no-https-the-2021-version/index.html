@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Why No HTTPS? The 2021 Version</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Why No HTTPS? The 2021 Version</h1>
+			<b><time>05.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/penetrationtesting">penetrationtesting</a>
+        	       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2021/08/i-dont-know-who-this-person-is-but-their-site-is-served-over-an-insecure-connection.png" alt="Why No HTTPS? The 2021 Version" />
+</figure>
+
+
+</p>
+<p>More than 3 years ago now, Scott Helme and I launched a little project called Why No HTTPS? It listed the world&rsquo;s largest websites that didn&rsquo;t properly redirect insecure requests to secure ones. We updated it December before last and pleasingly, noted that more websites than ever were doing the right thing and forcing browsers down the secure path. That&rsquo;s the good news, the bad news is that there are still some really wacky, unexplainable anti-HTTPS views out there, but those voices are increasingly less relevant as the browsers march forward:</p>
+<blockquote>
+<p>Beginning in M94, Chrome will offer HTTPS-First Mode, which will attempt to upgrade all page loads to HTTPS and display a full-page warning before loading sites that don’t support it.</p></blockquote>
+<p>That&rsquo;s next month and whilst it will be opt-in, I&rsquo;ve no doubt it&rsquo;s a glimpse into a future where browsers will do more <em>by default</em> to protect their users. Here&rsquo;s what a site that refuses to do HTTPS looks like in Chrome Canary with &ldquo;Always use secure connections&rdquo; turned on:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2021/08/i-dont-know-who-this-person-is-but-their-site-is-served-over-an-insecure-connection.png" alt="Why No HTTPS? The 2021 Version" />
+</figure>
+
+
+</p>
+<p>Those who push back with claims that Google is a guest on the web that&rsquo;s pointing a gun at it in a massive book-burning exercise that will destroy its history and it would be better to just send readers a zipped archive of websites (no, really, I&rsquo;m not making this up!) will be increasingly marginalised as everyone else becomes increasingly secure 🙂</p>
+<p>Moving on, let me give you a quick recap of where this data comes from and how to interpret the results.</p>
+<h3 id="crawlerninja">Crawler.ninja</h3>
+<p>For some years now, Scott has run a service at crawler.ninja which does a nightly aggregation of various security aspects on the top million websites. He crawls the sites from a US IP address using request headers that emulate a common browser. The top million is defined by Tranco and Scott uses it to produce 2 other lists which drive this little project:</p>
+<ol>
+<li>The top sites that redirect to HTTPS</li>
+<li>The top sites that <em>don&rsquo;t</em> redirect to HTTPS</li>
+</ol>
+<p>These lists don&rsquo;t add up to 1 million. There are various reasons for this, including that some sites simply won&rsquo;t respond to Scott&rsquo;s crawler. There are also sites that respond differently to Scott&rsquo;s crawler than they do to a normal web browser thus leading to inconsistent (and sometimes, unreproducible) results. This isn&rsquo;t an exact science not just because of gaps within the top million, but also because of how sites are assigned to countries. Let&rsquo;s drill down on that:</p>
+<h3 id="country-mappings">Country Mappings</h3>
+<p>This is a really, <em>really</em> imprecise approach but in short, it&rsquo;s a combination of TLD and Alexa definition. It&rsquo;s imprecise because of websites like Lush:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2021/08/image-2.png" alt="Why No HTTPS? The 2021 Version" />
+</figure>
+
+
+</p>
+<p>If I go to lush.com, I end up on a path which indicates I&rsquo;m on the UK version and I see a price represented in GBP. Even though we have Lush in Australia, I&rsquo;m seeing content obviously designed for the other side of the world. Hmmm&hellip; I wonder where Alexa says Lush is based, let&rsquo;s try this API: <a href="https://data.alexa.com/data?cli=10&amp;url=lush.com">https://data.alexa.com/data?cli=10&amp;url=lush.com</a></p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2021/08/image-3.png" alt="Why No HTTPS? The 2021 Version" />
+</figure>
+
+
+</p>
+<p>Huh, it&rsquo;s American. So I fire up Nord VPN and exit through a US node in an incognito window and I get&hellip; exactly the same UK page. But hey, why is Lush here in the first place when we&rsquo;re seeing a padlock in the browser? Let&rsquo;s drill down:</p>
+<h3 id="perceived-false-positives">(Perceived) False Positives</h3>
+<p>Here&rsquo;s what happens when I cURL <a href="http://lush.com">http://lush.com</a>:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2021/08/image-4.png" alt="Why No HTTPS? The 2021 Version" />
+</figure>
+
+
+</p>
+<p>I get an HTTP 200. The website responds over the insecure scheme (which is normal) but then <em>doesn&rsquo;t</em> redirect me with (ideally) an HTTP 301 &ldquo;Permanent Redirect&rdquo;. The difference in behaviour can be explained when looking at the response <em>body</em> instead of the headers:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2021/08/image-5.png" alt="Why No HTTPS? The 2021 Version" />
+</figure>
+
+
+</p>
+<p>This just isn&rsquo;t how to do redirects. Without a proper response code and location header, the client is left to interpret markup without the semantic intent provided by headers. That&rsquo;s why services such as HSTS Preload get very unhappy:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2021/08/image-6.png" alt="Why No HTTPS? The 2021 Version" />
+</figure>
+
+
+</p>
+<p>Obviously Lush doesn&rsquo;t <em>want</em> to be preloaded otherwise the directive would be specified in their HSTS response header (yes, they do have one), the point is that redirects need to be done right if the site doesn&rsquo;t want to make the list here.</p>
+<h3 id="reporting-false-positives">Reporting False Positives</h3>
+<p>There&rsquo;ll be a few. If you&rsquo;re confident there&rsquo;s a false positive such as a domain incorrectly associated to a country or a website definitely redirecting to HTTPS correctly (do try cURL&rsquo;ing it from the command line), leave a comment below and I can manually override the data. I&rsquo;ll fix any I agree with, but some of them may never be quite right. I mean, where does chinese-embassy.org.uk belong? The UK? China? And why is it the 31,443rd most popular site in the world and it just returns &ldquo;Not Found [CFN #0005]&rdquo;. I have absolutely no idea 🤷‍♂️</p>
+<h3 id="data-on-github">Data on GitHub</h3>
+<p>Finally, all the data that drives the site is available in a public GitHub repository. Feel free to go and check it out there, diff it with the last version and generally just do whatever you please with it. Actually, if there&rsquo;s one thing you could do that would nudge everything in the right direction, check out the top sites not doing HTTPS right in your country and give them a bit of a nudge. Point them here, send them to the whynohttps.com and maybe even prompt them to check out the resources on the bottom of the page. Help make the web a better place, one site at a time 😊</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Serializing an enum in a Spring Boot web application</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Serializing an enum in a Spring Boot web application</h1>
+			<b><time>08.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/un">un</a>
+        	       
+
+			<div>
+				<p>Enum is a good structure to define a set of limited and well defined values inside the domain of our application. They could help to prevent impossible states in our codebase.</p>
+<h2 id="the-scenario">The scenario</h2>
+<p>Let&rsquo;s use a note taking web application as an example to show the possible ways to serialize and deserialize an eum value.</p>
+<p>We are going to implement it using Spring Boot 3.3.x and MongoDB.</p>
+<p>We define a <code>Type</code> enum class to represent the permitted types of todos inside the application: events and activities.</p>
+<pre tabindex="0"><code>public enum Type {
+    EVENT(&#34;event&#34;),
+    ACTIVITY(&#34;activity&#34;);
+
+    private Type(String value) {
+       this.value = value;
+    }
+
+   public String getValue() {
+       return value;
+    }
+
+}
+</code></pre><p>Our <code>Todo</code> class</p>
+<pre tabindex="0"><code>public class Todo {
+
+    private String id;
+    private String name;
+    private boolean completed;
+
+    private Type type;
+
+    ...
+    ...
+
+}
+</code></pre><p>We are going to analyze enum serialization in these scenarios:</p>
+<ol>
+<li>Enum as query param.</li>
+<li>Enum as part of a JSON body request.</li>
+<li>Enum as a field of a MongoDB document.</li>
+</ol>
+<h3 id="enum-as-query-param">Enum as query param</h3>
+<p>In this scenario we need only a deserialize method because we are interested in transforming from a string value to the enum.</p>
+<p>Below a snippet of code representing the Controller method to read all todos by types, the type is passed as a query parameter.</p>
+<pre tabindex="0"><code> public Collection&lt;Todo&gt; read(@RequestParam(required = false) Type type) {
+     ...
+     ...
+ }
+</code></pre><p>The query parameter is a string so we have to define an appropriate <code>Converter</code> to transform it.<br>
+Inside the <code>convert</code> method we call <code>Type.fromString</code>, a static method created in the enum class, that will be used in other scenarios too. The code of <code>fromString</code> method is presented in the next scenario.</p>
+<pre tabindex="0"><code>public class StringToType implements Converter&lt;String, Type&gt; {
+
+    @Override
+    public Type convert(String source) {
+        return Type.fromString(source);
+    }
+
+}
+</code></pre><p>The converter must be registered in the application.</p>
+<pre tabindex="0"><code>@Configuration
+public class Config implements WebMvcConfigurer {
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new StringToType());
+        WebMvcConfigurer.super.addFormatters(registry);
+    }
+}
+</code></pre><p>Now when we will use <code>Type</code> as a <code>RequestParam</code> the <code>StringToType</code> converter will be used to try converting string values in our enum.</p>
+<h3 id="enum-as-part-of-json-body-request">Enum as part of JSON body request</h3>
+<p>To manage correctly the enum as a field of the JSON body content we should add some code to the enum <code>Type</code> class.</p>
+<p>We need to use the annotation <code>@JsonValue</code> to mark the field as the value to use for serializing the enum.<br>
+Then we should add a static map inside the enum to map the Type with the related string representation.</p>
+<pre tabindex="0"><code>public enum Type {
+    EVENT(&#34;event&#34;),
+    ACTIVITY(&#34;activity&#34;);
+
+    @JsonValue
+    private String value;
+
+    private static Map&lt;String, Type&gt; enumMap;
+
+    private Type(String value) {
+        this.value = value;
+    }
+
+    static {
+        enumMap = Stream.of(values()).collect(Collectors.toMap(t -&gt; t.value, t -&gt; t));
+    }
+
+    public static Type fromString(String value) {
+        return enumMap.get(value);
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+}
+</code></pre><h3 id="enum-as-a-field-of-a-mongodb-document">Enum as a field of a MongoDB document.</h3>
+<p>To manage the serialization/deserialization of a enum in a MongoDB document we have to use the <code>@ValueConverter</code> annotation that binds a field of the document with a specific <code>PropertyValueConverter</code> class.</p>
+<p>In the example the field <code>Type type</code> is bound with the <code>MongoEnumConverter</code> that provide <code>read</code> and <code>write</code> methods to manage the conversion.</p>
+<pre tabindex="0"><code>@Document(collection = &#34;todo&#34;)
+@TypeAlias(&#34;todo&#34;)
+public class Todo {
+
+    @Id
+    private String id;
+    private String name;
+    private boolean completed;
+
+    @ValueConverter(MongoEnumConverter.class)
+    private Type type;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+}
+</code></pre><p>In detail in the <code>read</code> method we call <code>Type.fromString</code> from the enum class to try to convert the string in a valid Type instance.</p>
+<pre tabindex="0"><code>public class MongoEnumConverter
+        implements PropertyValueConverter&lt;Type, String, ValueConversionContext&lt;?&gt;&gt; {
+
+    @Override
+    public Type read(String value, ValueConversionContext&lt;?&gt; context) {
+        return Type.fromString(value);
+    }
+
+    @Override
+    public String write(Type value, ValueConversionContext&lt;?&gt; context) {
+        return value.getValue();
+    }
+
+}
+</code></pre><h2 id="in-conclusion">In conclusion</h2>
+<p>In this article I presented some ways to manage the serialization/deserializion of a enum class in a typical Web scenario. Spring and the Jackson library provide some facilities to simplify this work.</p>
+<p>The code is publically available in this Gitlab repository.</p>
+<p>The code presented in this article are under CC0 license.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

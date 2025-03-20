@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>From Pwn2Own Automotive: More Autel Maxicharger Vulnerabilities</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>From Pwn2Own Automotive: More Autel Maxicharger Vulnerabilities</h1>
+			<b><time>04.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/cybersecurity">cybersecurity</a>
+        	       
+		           <a href="/tags/security">security</a>
+        	       
+		           <a href="/tags/zero_day">zero_day</a>
+        	       
+		           <a href="/tags/zeroday">zeroday</a>
+        	       
+
+			<div>
+				<p>This blog post highlights two additional vulnerabilities in the Autel Maxicharger that were exploited at Pwn2Own Automotive 2024. Details of the patches are also included.</p>
+<p>Autel has been informed and has deployed a firmware update (v1.35) to address both of these issues. If you want to read about other Autel bugs reported at Pwn2Own, you check out our earlier blog here.</p>
+<p><strong>The First Vulnerability: CVE-2024-23967 (ZDI-CAN-23230)</strong></p>
+<p>Researchers from Computest Sector 7 identified and exploited a stack-based buffer overflow in v1.32 of the Autel firmware. This vulnerability stems from the decoding of base64 encoded data that can be controlled by an attacker. The encoded data is decoded into a fixed-size stack buffer with no bounds checks, leading to a stack buffer overflow and remote code execution.</p>
+<p>The vulnerable function is responsible for handling ACMP messages received from a websockets server (that can be attacker-controlled). The exact meaning of “ACMP” is unknown but the researchers’ best guess is that it stands for something along the lines of “Autel Cloud Management Protocol” and does not appear to be related to Allen-Cahn Message Passing.</p>
+<p>Once the device receives an ACMP message, it is decoded as JSON and parsed with the help of the popular <code>cJSON</code> library. The JSON is expected to contain a nested key (named <code>data</code>) that contains a base64 encoded string. This encoded string is extracted from the JSON and passed to a custom base64 decoding function that decodes straight into a 1024-byte stack buffer (named <code>b64_decoded_buf</code>). As there are no length checks, the base64 decoding function can be exploited to trigger a stack buffer overflow.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/89c3e938-1a6a-4461-9dcc-6b1b8e676c44/1&#43;-&#43;p2o_2024_autel_b64_overflow.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>As the screenshot shows, <code>base64_decode()</code> doesn&rsquo;t take length into account.</p>
+<p><strong>The Patch</strong></p>
+<p>To validate the patch in the updated firmware, the Ghidra Version Tracking tool was used. Comparing v1.32 against the latest v1.35 highlights a simple change (the right side shows the patch):</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/4b75abc1-a724-4685-afcb-40dfc25a1462/2&#43;-&#43;p2o_2024_autel_b64_overflow_patch.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>An if statement has been added to check that the length of the attacker-controlled base64 encoded string is less than <code>0x556</code> (1366) bytes. If that check passes, the string is decoded into the 1024-byte stack buffer. This is a valid patch as the largest possible encoded string would be 1365 bytes in length, which, when base64 decoded, will output 1023 bytes, so that it fits into the stack buffer.</p>
+<p><strong>Observations</strong></p>
+<p>Even though the patch fixes the issue, it isn&rsquo;t an ideal solution. The if statement protects against a buffer overflow only in this specific function. Other code that may call <code>base64_decode()</code> could easily introduce another buffer overflow. In v1.35 there are no other references to <code>base64_decode()</code>, but that doesn&rsquo;t mean there won&rsquo;t be in the future. In its current state, the <code>base64_decode()</code> function takes the encoded input string and a pointer to an output buffer to hold the decoded string. A better implementation would take a third parameter that holds the length of the output buffer. This way, <code>base64_decode()</code> could internally check to ensure the number of bytes placed into the output buffer doesn&rsquo;t exceed the output buffer’s length. If it does, it could return an error. This would eliminate the need to place a length check before every invocation of <code>base64_decode()</code>.</p>
+<p>Interestingly, the <code>base64_encode()</code> function does account for the output buffer’s length, but for some reason, the corresponding decode function doesn&rsquo;t.</p>
+<p>Another solution would be to use the Mbed TLS base64 functions as both versions of the firmware already include the Mbed TLS library. These functions take length parameters to prevent buffer overflows.</p>
+<p><strong>The Second Vulnerability: CVE-2024-23957 (ZDI-CAN-23241)</strong></p>
+<p>The PHP Hooligans / Midnight Blue researchers also identified and exploited a stack buffer overflow in v1.32 of the Autel firmware. The overflow can be triggered when an attacker sends a large hex string, which is then decoded into a fixed-size stack buffer with no bounds checking.</p>
+<p>The vulnerable function is related to the Dynamic Load Balancing (DLB) protocol that distributes a power load between a network of EV chargers. As part of the initial inter-charger communications, each charger receives a shared AES-128 key inside a JSON RPC payload. The key is encoded as a hex string and passed as an argument to the called RPC function.</p>
+<p>The called function proceeds to extract the hex-encoded key from the JSON RPC parameters and then decodes it into a fixed-size stack buffer. The stack buffer is 16 bytes but takes up 20 bytes on the stack due to alignment. This is the correct size for an AES-128 key, however, since the attacker can supply a much longer string, a buffer overflow can occur.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/79971164-b691-4d88-8d30-445038928a01/3&#43;-&#43;p2o_2024_autel_hex_decoding.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>Unlike the previous <code>base64_decode()</code> issue, the <code>hex_decode()</code> function does take a length (the encoded key length), but this doesn&rsquo;t prevent the overflow as the length is never checked against the size of the buffer.</p>
+<p><strong>The Patch</strong></p>
+<p>Again, the Version Tracking tool was used to compare the vulnerable function to the patched function. The highlighted sections on the right side show the patch:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/253a5bd0-9cda-4cff-86f8-ed49466ead60/4&#43;-&#43;p2o_2024_autel_hex_decoding_patch.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>The screenshot shows an if statement has been added to ensure that <code>hex_encoded_key_len</code> is less than a certain value (<code>0x21</code>, or decimal 33) and is not equal to 0. The stack buffer is declared as 16 bytes, so this patch is valid, since a hex-encoded string of 32 bytes or less will successfully decode into a 16-byte buffer.</p>
+<p><strong>Observations</strong></p>
+<p>In a similar fashion to the first patch, the fix could be more effective. For the same reasons previously described, another buffer overflow vulnerability could be introduced if the <code>hex_decode()</code> function is used by another piece of code that doesn&rsquo;t check lengths with an explicit if statement. Currently, <code>hex_decode()</code> is only called by the patched function, but this may change with future releases.</p>
+<p>Ideally, the length of the output buffer should be passed to <code>hex_decode()</code> so it can internally ensure a buffer overflow cannot happen.</p>
+<p><strong>Conclusion</strong></p>
+<p>It is a positive sign that Autel has responded to the vulnerabilities and has released a patch to help protect its customers, even if the patches are not ideal.</p>
+<p>EV chargers are being deployed rapidly in homes around the world and represent safety risks when not secured. We are looking forward to Automotive Pwn2Own again in January 2025, and we will see if EV charger vendors have improved their product security. We hope to see you there.</p>
+<p>You can find me on Twitter @ByteInsight, and follow the team on Twitter, Mastodon, LinkedIn, or Bluesky for the latest in exploit techniques and security patches.</p>
+<p>This blog post highlights two additional vulnerabilities in the Autel Maxicharger that were exploited at Pwn2Own Automotive 2024. Details of the patches are also included.</p>
+<p>Autel has been informed and has deployed a firmware update (v1.35) to address both of these issues. If you want to read about other Autel bugs reported at Pwn2Own, you check out our earlier blog here.</p>
+<p><strong>The First Vulnerability: CVE-2024-23967 (ZDI-CAN-23230)</strong></p>
+<p>Researchers from Computest Sector 7 identified and exploited a stack-based buffer overflow in v1.32 of the Autel firmware. This vulnerability stems from the decoding of base64 encoded data that can be controlled by an attacker. The encoded data is decoded into a fixed-size stack buffer with no bounds checks, leading to a stack buffer overflow and remote code execution.</p>
+<p>The vulnerable function is responsible for handling ACMP messages received from a websockets server (that can be attacker-controlled). The exact meaning of “ACMP” is unknown but the researchers’ best guess is that it stands for something along the lines of “Autel Cloud Management Protocol” and does not appear to be related to Allen-Cahn Message Passing.</p>
+<p>Once the device receives an ACMP message, it is decoded as JSON and parsed with the help of the popular <code>cJSON</code> library. The JSON is expected to contain a nested key (named <code>data</code>) that contains a base64 encoded string. This encoded string is extracted from the JSON and passed to a custom base64 decoding function that decodes straight into a 1024-byte stack buffer (named <code>b64_decoded_buf</code>). As there are no length checks, the base64 decoding function can be exploited to trigger a stack buffer overflow.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/89c3e938-1a6a-4461-9dcc-6b1b8e676c44/1&#43;-&#43;p2o_2024_autel_b64_overflow.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>As the screenshot shows, <code>base64_decode()</code> doesn&rsquo;t take length into account.</p>
+<p><strong>The Patch</strong></p>
+<p>To validate the patch in the updated firmware, the Ghidra Version Tracking tool was used. Comparing v1.32 against the latest v1.35 highlights a simple change (the right side shows the patch):</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/4b75abc1-a724-4685-afcb-40dfc25a1462/2&#43;-&#43;p2o_2024_autel_b64_overflow_patch.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>An if statement has been added to check that the length of the attacker-controlled base64 encoded string is less than <code>0x556</code> (1366) bytes. If that check passes, the string is decoded into the 1024-byte stack buffer. This is a valid patch as the largest possible encoded string would be 1365 bytes in length, which, when base64 decoded, will output 1023 bytes, so that it fits into the stack buffer.</p>
+<p><strong>Observations</strong></p>
+<p>Even though the patch fixes the issue, it isn&rsquo;t an ideal solution. The if statement protects against a buffer overflow only in this specific function. Other code that may call <code>base64_decode()</code> could easily introduce another buffer overflow. In v1.35 there are no other references to <code>base64_decode()</code>, but that doesn&rsquo;t mean there won&rsquo;t be in the future. In its current state, the <code>base64_decode()</code> function takes the encoded input string and a pointer to an output buffer to hold the decoded string. A better implementation would take a third parameter that holds the length of the output buffer. This way, <code>base64_decode()</code> could internally check to ensure the number of bytes placed into the output buffer doesn&rsquo;t exceed the output buffer’s length. If it does, it could return an error. This would eliminate the need to place a length check before every invocation of <code>base64_decode()</code>.</p>
+<p>Interestingly, the <code>base64_encode()</code> function does account for the output buffer’s length, but for some reason, the corresponding decode function doesn&rsquo;t.</p>
+<p>Another solution would be to use the Mbed TLS base64 functions as both versions of the firmware already include the Mbed TLS library. These functions take length parameters to prevent buffer overflows.</p>
+<p><strong>The Second Vulnerability: CVE-2024-23957 (ZDI-CAN-23241)</strong></p>
+<p>The PHP Hooligans / Midnight Blue researchers also identified and exploited a stack buffer overflow in v1.32 of the Autel firmware. The overflow can be triggered when an attacker sends a large hex string, which is then decoded into a fixed-size stack buffer with no bounds checking.</p>
+<p>The vulnerable function is related to the Dynamic Load Balancing (DLB) protocol that distributes a power load between a network of EV chargers. As part of the initial inter-charger communications, each charger receives a shared AES-128 key inside a JSON RPC payload. The key is encoded as a hex string and passed as an argument to the called RPC function.</p>
+<p>The called function proceeds to extract the hex-encoded key from the JSON RPC parameters and then decodes it into a fixed-size stack buffer. The stack buffer is 16 bytes but takes up 20 bytes on the stack due to alignment. This is the correct size for an AES-128 key, however, since the attacker can supply a much longer string, a buffer overflow can occur.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/79971164-b691-4d88-8d30-445038928a01/3&#43;-&#43;p2o_2024_autel_hex_decoding.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>Unlike the previous <code>base64_decode()</code> issue, the <code>hex_decode()</code> function does take a length (the encoded key length), but this doesn&rsquo;t prevent the overflow as the length is never checked against the size of the buffer.</p>
+<p><strong>The Patch</strong></p>
+<p>Again, the Version Tracking tool was used to compare the vulnerable function to the patched function. The highlighted sections on the right side show the patch:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/253a5bd0-9cda-4cff-86f8-ed49466ead60/4&#43;-&#43;p2o_2024_autel_hex_decoding_patch.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>The screenshot shows an if statement has been added to ensure that <code>hex_encoded_key_len</code> is less than a certain value (<code>0x21</code>, or decimal 33) and is not equal to 0. The stack buffer is declared as 16 bytes, so this patch is valid, since a hex-encoded string of 32 bytes or less will successfully decode into a 16-byte buffer.</p>
+<p><strong>Observations</strong></p>
+<p>In a similar fashion to the first patch, the fix could be more effective. For the same reasons previously described, another buffer overflow vulnerability could be introduced if the <code>hex_decode()</code> function is used by another piece of code that doesn&rsquo;t check lengths with an explicit if statement. Currently, <code>hex_decode()</code> is only called by the patched function, but this may change with future releases.</p>
+<p>Ideally, the length of the output buffer should be passed to <code>hex_decode()</code> so it can internally ensure a buffer overflow cannot happen.</p>
+<p><strong>Conclusion</strong></p>
+<p>It is a positive sign that Autel has responded to the vulnerabilities and has released a patch to help protect its customers, even if the patches are not ideal.</p>
+<p>EV chargers are being deployed rapidly in homes around the world and represent safety risks when not secured. We are looking forward to Automotive Pwn2Own again in January 2025, and we will see if EV charger vendors have improved their product security. We hope to see you there.</p>
+<p>You can find me on Twitter @ByteInsight, and follow the team on Twitter, Mastodon, LinkedIn, or Bluesky for the latest in exploit techniques and security patches.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Spyware distributed through Amazon Appstore</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Spyware distributed through Amazon Appstore</h1>
+			<b><time>03.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://www.mcafee.com/blogs/wp-content/uploads/2024/09/300x200_Blog_042723.png" alt="" />
+</figure>
+
+
+</p>
+<p><em>Authored by Wenfeng Yu and ZePeng Chen</em></p>
+<p>As smartphones have become an integral part of our daily lives, malicious apps have grown increasingly deceptive and sophisticated. Recently, we uncovered a seemingly harmless app called “BMI CalculationVsn” on the Amazon App Store, which is secretly stealing the package name of installed apps and incoming SMS messages under the guise of a simple health tool. McAfee reported the discovered app to Amazon, which took prompt action, and the app is no longer available on Amazon Appstore.</p>
+<p>
+<figure>
+  <img src="https://www.mcafee.com/blogs/wp-content/uploads/2024/12/Figure1.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>Figure 1. Application published on Amazon Appstore</p>
+<h3 id="superficial-functionality-simple-bmi-calculation"><strong>Superficial Functionality: Simple BMI Calculation</strong></h3>
+<p>On the surface, this app appears to be a basic tool, providing a single page where users can input their weight and height to calculate their BMI. Its interface looks entirely consistent with a standard health application. However, behind this innocent appearance lies a range of malicious activities.</p>
+<p>
+<figure>
+  <img src="https://www.mcafee.com/blogs/wp-content/uploads/2024/12/Picture2.png" alt="" />
+</figure>
+
+
+</p>
+<p>Figure 2. Application MainActivity</p>
+<h3 id="malicious-activities-stealing-private-data"><strong>Malicious Activities: Stealing Private Data</strong></h3>
+<p>Upon further investigation, we discovered that this app engages in the following harmful behaviors:</p>
+<ol>
+<li><strong>Screen Recording:</strong> The app starts a background service to record the screen and when the user clicks the “Calculate” button, the Android system will pop up request screen recording permission message and start screen recording. This functionality is likely to capture gesture passwords or sensitive data from other apps. In the analysis of the latest existing samples, it was found that the developer was not ready for this function. The code did not upload the recorded mp4 file to the C2 server, and at the beginning of the startRecording() method, the developer added a code that directly returns and does not execute follow code.</li>
+</ol>
+<p>
+<figure>
+  <img src="https://www.mcafee.com/blogs/wp-content/uploads/2024/12/Picture3.png" alt="" />
+</figure>
+
+
+</p>
+<p>Figure 3. Screen Recorder Service Code</p>
+<p>When the recording starts, the permission request dialog will be displayed.</p>
+<p>
+<figure>
+  <img src="https://www.mcafee.com/blogs/wp-content/uploads/2024/12/Picture4.png" alt="" />
+</figure>
+
+
+</p>
+<p>Figure 4. Start Recording Request.</p>
+<ol start="2">
+<li><strong>Installed App Information:</strong> The app scans the device to retrieve a list of all installed applications. This data could be used to identify target users or plan more advanced attacks.</li>
+</ol>
+<p>
+<figure>
+  <img src="https://www.mcafee.com/blogs/wp-content/uploads/2024/12/Figure5-1.png" alt="" />
+</figure>
+
+
+</p>
+<p>Figure 5. Upload User Data</p>
+<ol start="3">
+<li><strong>SMS Messages:</strong> It intercepts and collects all SMS messages received on the device, potentially to capture one-time password (OTP), verification codes and sensitive information. The intercepted text messages will be added to Firebase (storage bucket: testmlwr-d4dd7.appspot.com).</li>
+</ol>
+<h3 id="malware-under-development"><strong>Malware under development:</strong></h3>
+<p>According to our analysis of historical samples, this malicious app is still under development and testing stage and has not reached a completed state. By searching for related samples on VirusTotal based on the malware’s package name (com.zeeee.recordingappz) revealed its development history. We can see that this malware was first developed in October 2024 and originally developed as a screen recording app, but midway through the app’s icon was changed to the BMI calculator, and the payload to steal SMS messages was added in the latest version.</p>
+<p>
+<figure>
+  <img src="https://www.mcafee.com/blogs/wp-content/uploads/2024/12/Figure6-1.png" alt="" />
+</figure>
+
+
+</p>
+<p>Figure 6. The Timeline of Application Development</p>
+<p>The address of the Firebase Installation API used by this app uses the character “testmlwr” which indicates that this app is still in the testing phase.</p>
+<h3 id="app-developer-information"><strong>App Developer Information:</strong></h3>
+<p>According to the detailed information about this app product on the Amazon page, the developer’s name is: “PT. Visionet Data Internasional”. The malware author tricked users by abusing the names of an enterprise IT management service provider in Indonesia to distribute this malware on Amazon Appstore. This fact suggests that the malware author may be someone with knowledge of Indonesia.</p>
+<p>
+<figure>
+  <img src="https://www.mcafee.com/blogs/wp-content/uploads/2024/12/Figure7.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>Figure 7. Developer Information</p>
+<h3 id="how-to-protect-yourself"><strong>How to Protect Yourself</strong></h3>
+<p>To avoid falling victim to such malicious apps, we recommend the following precautions:</p>
+<ol>
+<li>Install Trusted Antivirus Apps: Use reliable antivirus software to detect and prevent malicious apps before they can cause harm.</li>
+<li>Review Permission Requests: When installing an app, carefully examine the permissions it requests. Deny any permissions that seem unrelated to its advertised functionality. For instance, a BMI calculator has no legitimate reason to request access to SMS or screen recording.</li>
+<li>Stay Alert: Watch for unusual app behavior, such as reduced device performance, rapid battery drain, or a spike in data usage, which could indicate malicious activity running in the background.</li>
+</ol>
+<h3 id="conclusion"><strong>Conclusion</strong></h3>
+<p>As cybercrime continues to evolve, it is crucial to remain vigilant in protecting our digital lives. Apps like “BMI CalculationVsn” serve as a stark reminder that even the simplest tools can harbor hidden threats. By staying alert and adopting robust security measures, we can safeguard our privacy and data.</p>
+<h3 id="ioc"><strong>IoC</strong></h3>
+<p>Distribution website:</p>
+<ul>
+<li>hxxps://www.amazon.com/PT-Visionet-Data-Internasional-CalculationVsn/dp/B0DK1B7ZM5/</li>
+</ul>
+<p>C2 servers/Storage buckets:</p>
+<ul>
+<li>hxxps://firebaseinstallations.googleapis.com/v1/projects/testmlwr-d4dd7</li>
+<li>hxxps://6708c6e38e86a8d9e42ffe93.mockapi.io/</li>
+<li>testmlwr-d4dd7.appspot.com</li>
+</ul>
+<p>Sample Hash:</p>
+<ul>
+<li>8477891c4631358c9f3ab57b0e795e1dcf468d94a9c6b6621f8e94a5f91a3b6a</li>
+</ul>
+<p>The post Spyware distributed through Amazon Appstore appeared first on McAfee Blog.</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

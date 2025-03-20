@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Looking at the Attack Surfaces of the Kenwood DMX958XR IVI</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Looking at the Attack Surfaces of the Kenwood DMX958XR IVI</h1>
+			<b><time>04.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/cybersecurity">cybersecurity</a>
+        	       
+		           <a href="/tags/security">security</a>
+        	       
+		           <a href="/tags/zero_day">zero_day</a>
+        	       
+		           <a href="/tags/zeroday">zeroday</a>
+        	       
+
+			<div>
+				<p>In our previous Kenwood DMX958XR blog post, we detailed the internals of the Kenwood in-vehicle infotainment (IVI) head unit and provided annotated pictures of each PCB. In this post, we aim to outline the attack surface of the DMX958XR in the hopes of providing inspiration for vulnerability research.</p>
+<p>We will cover the main supported technologies that present potential attack surfaces, such as USB, Bluetooth, Android Auto, Apple CarPlay, Kenwood apps, and more. We also provide a list of the open-source components the DMX958XR claims to use.</p>
+<p>All information has been obtained through reverse engineering, experimenting, and combing through the following resources:</p>
+<p>·      Kenwood DMX958XR Product Page<br>
+·      Kenwood DMX958XR Instruction Manual [PDF]<br>
+·      Kenwood DMX958XR Quick Start Guide [PDF]<br>
+·      Kenwood Portal App<br>
+·      Kenwood Remote S App</p>
+<p><strong>USB</strong></p>
+<p>The DMX958XR is equipped with a single USB-C port that operates at USB 2.0 speeds and provides the necessary interface for wired Android Auto and Apple CarPlay. The USB port also supports playback of audio files from a USB flash drive. The supported audio filetypes and their associated extensions are:</p>
+<p>·      MP3 (.mp3)<br>
+·      WMA (.wma)<br>
+·      AAC-LC (.m4a)<br>
+·      WAV (.wav)<br>
+·      FLAC (.flac, .fla)<br>
+·      Vorbis (.ogg)</p>
+<p>Beyond just audio, a USB flash drive can also be used to play back video files. The supported video file types and their associated extensions are:</p>
+<p>·      MPEG-1 (.mpg, .mpeg)<br>
+·      MPEG-2 (.mpg, .mpeg)<br>
+·      H.264 / MPEG-4 (.mp4, .m4v, .avi, .flv, .f4v)<br>
+·      WMV (.wmv)<br>
+·      MKV (.mkv)</p>
+<p>Robustly parsing and decoding these file formats is notoriously complicated and error-prone, which makes for a potentially rewarding attack surface. USB flash drives must be formatted as either FAT16, FAT32, exFAT, or NTFS for the head unit to be able to read them.</p>
+<p><strong>Bluetooth</strong></p>
+<p>Bluetooth version 5 is supported by the head unit and is used for making phone calls, receiving calls, and playing audio from a paired mobile phone. The following Bluetooth profiles are implemented:</p>
+<p>·      Hands-Free Profile v1.7<br>
+·      Serial Port Profile<br>
+·      Phonebook Access Profile<br>
+·      Audio/Video Remote Control Profile (AVRCP) v1.6<br>
+·      Advanced Audio Distribution Profile (A2DP)   <br>
+·     Supporting codecs: SBC, AAC or LDAC</p>
+<p>Android Auto, Apple CarPlay, and the Kenwood apps all utilize Bluetooth in varying capacities. </p>
+<p><strong>Wi-Fi</strong></p>
+<p>The head unit provides a Wi-Fi access point, which is primarily used for wireless Android Auto and Apple CarPlay. There is no intention for the end user to directly connect to this access point, and there is no officially documented way of acquiring the password. However, internal research has discovered multiple methods to obtain the password. Once connected to the access point the following ports are listening:</p>
+<p>·      TCP: 7000, 8086<br>
+·      UDP: 67, 5353, 35917, 50002, 60794</p>
+<p>The two TCP ports and UDP port 50002 are of particular interest since they are running non-standard services.</p>
+<p><strong>Android Auto and Apple CarPlay</strong></p>
+<p>Both wired and wireless Android Auto and Apple CarPlay are supported without the need for a third-party application to be installed on the paired mobile phone. When using the wireless versions, the paired phone connects to the aforementioned Wi-Fi network to establish a high-bandwidth channel for data to be sent and received. When connecting using a USB cable, the Wi-Fi network isn&rsquo;t used by Android Auto or Apple CarPlay, but it is still active.</p>
+<p>Pwn2Own Automotive 2024 didn’t see any entries that leveraged Android Auto or Apple CarPlay functionality to compromise a head unit. We will have to wait and see if Pwn2Own Automotive 2025 does!</p>
+<p><strong>Kenwood Apps</strong></p>
+<p>Kenwood offers two Android/iOS apps to interface with the DMX958XR. The first app is the Kenwood Portal App, which allows users to transfer photos from a mobile phone to the head unit over Bluetooth. The transferred photos can then be viewed as a slideshow on the head unit or be used as wallpaper.</p>
+<p>This presents an interesting attack surface – especially if the DMX958XR itself performs any complex image handling tasks on the received images, such as resizing or converting between different image formats. The user-supplied images also need to be persisted in the head unit&rsquo;s filesystem, further expanding the attack surface.</p>
+<p>The second app is the Kenwood Remote S app, which connects to the head unit over Bluetooth and allows for multimedia control, such as selecting a radio station, skipping a track, and more. The Bluetooth Audio/Video Remote Control Profile (AVRCP) is designed for this task. However, no research was performed to confirm if the Remote S app takes advantage of AVRCP. There are a few other Kenwood apps available, but they are not listed as supported on the DMX958XR product page and therefore have not been explored.</p>
+<p><strong>Open Source Software</strong></p>
+<p>A list of open-source licenses can be viewed from the head unit by navigating to Menu -&gt; Settings -&gt; Special -&gt; Open Source Licenses. There is no guarantee these open-source projects are actually used, but a complete list of the projects is provided at the end of this blog post. Where available, the versions of the projects have also been included.</p>
+<p><strong>Summary</strong></p>
+<p>We hope that this blog post has provided enough information about the DMX958XR attack surface to guide vulnerability research. Not every attack surface has been mentioned and we encourage researchers to investigate further. The next post in this series will cover details of the DMX958XR firmware.</p>
+<p>We are looking forward to Automotive Pwn2Own, again to be held in January 2025 at the Automotive World conference in Tokyo. We will see if IVI vendors have improved their product security. Don’t wait until the last minute to ask questions or register! We hope to see you there.</p>
+<p>You can find me on Twitter at @ByteInsight, and follow the team on Twitter, Mastodon, LinkedIn, or Bluesky for the latest in exploit techniques and security patches.</p>
+<p><strong>Open Source Software List</strong></p>
+<p>Below is a complete list of all the open-source software the head unit claims to use:</p>
+<p>·      OpenSSL (2011)<br>
+·      SSLeay (1998)<br>
+·      ALSA<br>
+·      BusyBox<br>
+·      Cairo<br>
+·      D-Bus<br>
+·      dnsmasq (2014)<br>
+·      e2fsprogs (2007)<br>
+·      Freeware Advanced Audio Coder v1.36 (2009)<br>
+·      flac (2014)<br>
+·      fontconfig (2012)<br>
+·      GLIB (1997)<br>
+·      bashline (1993)<br>
+·      iconv (2011)<br>
+·      GNU MP (2007)<br>
+·      GNU readline (2005)<br>
+·      GNU tar (2006)<br>
+·      gstreamer (2000)<br>
+·      GdkPixbuf (1999)<br>
+·      GnuTLS (2012)<br>
+·      HarfBuzz (2012)<br>
+·      ICU (2015)<br>
+·      ImageMagick (2016)<br>
+·      iperf (2007)<br>
+·      libpng (2019)<br>
+·      libusb (2015)<br>
+·      xiph (2015)<br>
+·      libxml2 (2012)<br>
+·      libxslt (2002)<br>
+·      Naver fonts (2007)<br>
+·      GIO (2010)<br>
+·      OpenSSH<br>
+·      OpenSSL (2011)<br>
+·      PCI Utilities v3.3.1 (2015)<br>
+·      Qt (2013)<br>
+·      Bluetooth SBC library (2013)<br>
+·      Sysvinit (2004)<br>
+·      Info-ZIP (2007)<br>
+·      bzip2 v1.0.6 (2010)<br>
+·      cURL (2015)<br>
+·      dpkg (1995)<br>
+·      libffi (2014)<br>
+·      libjpeg v9a (2014)<br>
+·      XFree86 (2000)<br>
+·      libproxy (2006)<br>
+·      libX11 (2006)<br>
+·      soup-cache (2010)<br>
+·      nettle (2002)<br>
+·      libdpkg (1995)<br>
+·      pango (1999)<br>
+·      sysctl v1.0.1 (1999)<br>
+·      alloc (2002)<br>
+·      pslash (2006)<br>
+·      tslib (2001)<br>
+·      libudev (2011)<br>
+·      usbmisc (2003)<br>
+·      zlib v1.2.8<br>
+·      s-bios (2011)<br>
+·      devmem2 (2000)<br>
+·      hostapd (2015)<br>
+·      hidapi (2010)<br>
+·      wpa-supplicant (2015)<br>
+·      OpenMax (2008)<br>
+·      oRTP (2015)<br>
+·      unzip v1.1 (2010)<br>
+·      hts_engine (2011)<br>
+·      google-breakpad (2006)<br>
+·      boost v1.0 (2003)<br>
+·      SQLite (2001)<br>
+·      PCRE (2019)<br>
+·      OpenGL (2012)<br>
+·      base64 (2001)<br>
+·      mDNSResponder<br>
+·      RapidJSON (2015)<br>
+·      crc32 (2005)<br>
+·      zconf (2005)</p>
+<p>In our previous Kenwood DMX958XR blog post, we detailed the internals of the Kenwood in-vehicle infotainment (IVI) head unit and provided annotated pictures of each PCB. In this post, we aim to outline the attack surface of the DMX958XR in the hopes of providing inspiration for vulnerability research.</p>
+<p>We will cover the main supported technologies that present potential attack surfaces, such as USB, Bluetooth, Android Auto, Apple CarPlay, Kenwood apps, and more. We also provide a list of the open-source components the DMX958XR claims to use.</p>
+<p>All information has been obtained through reverse engineering, experimenting, and combing through the following resources:</p>
+<p>·      Kenwood DMX958XR Product Page<br>
+·      Kenwood DMX958XR Instruction Manual [PDF]<br>
+·      Kenwood DMX958XR Quick Start Guide [PDF]<br>
+·      Kenwood Portal App<br>
+·      Kenwood Remote S App</p>
+<p><strong>USB</strong></p>
+<p>The DMX958XR is equipped with a single USB-C port that operates at USB 2.0 speeds and provides the necessary interface for wired Android Auto and Apple CarPlay. The USB port also supports playback of audio files from a USB flash drive. The supported audio filetypes and their associated extensions are:</p>
+<p>·      MP3 (.mp3)<br>
+·      WMA (.wma)<br>
+·      AAC-LC (.m4a)<br>
+·      WAV (.wav)<br>
+·      FLAC (.flac, .fla)<br>
+·      Vorbis (.ogg)</p>
+<p>Beyond just audio, a USB flash drive can also be used to play back video files. The supported video file types and their associated extensions are:</p>
+<p>·      MPEG-1 (.mpg, .mpeg)<br>
+·      MPEG-2 (.mpg, .mpeg)<br>
+·      H.264 / MPEG-4 (.mp4, .m4v, .avi, .flv, .f4v)<br>
+·      WMV (.wmv)<br>
+·      MKV (.mkv)</p>
+<p>Robustly parsing and decoding these file formats is notoriously complicated and error-prone, which makes for a potentially rewarding attack surface. USB flash drives must be formatted as either FAT16, FAT32, exFAT, or NTFS for the head unit to be able to read them.</p>
+<p><strong>Bluetooth</strong></p>
+<p>Bluetooth version 5 is supported by the head unit and is used for making phone calls, receiving calls, and playing audio from a paired mobile phone. The following Bluetooth profiles are implemented:</p>
+<p>·      Hands-Free Profile v1.7<br>
+·      Serial Port Profile<br>
+·      Phonebook Access Profile<br>
+·      Audio/Video Remote Control Profile (AVRCP) v1.6<br>
+·      Advanced Audio Distribution Profile (A2DP)   <br>
+·     Supporting codecs: SBC, AAC or LDAC</p>
+<p>Android Auto, Apple CarPlay, and the Kenwood apps all utilize Bluetooth in varying capacities. </p>
+<p><strong>Wi-Fi</strong></p>
+<p>The head unit provides a Wi-Fi access point, which is primarily used for wireless Android Auto and Apple CarPlay. There is no intention for the end user to directly connect to this access point, and there is no officially documented way of acquiring the password. However, internal research has discovered multiple methods to obtain the password. Once connected to the access point the following ports are listening:</p>
+<p>·      TCP: 7000, 8086<br>
+·      UDP: 67, 5353, 35917, 50002, 60794</p>
+<p>The two TCP ports and UDP port 50002 are of particular interest since they are running non-standard services.</p>
+<p><strong>Android Auto and Apple CarPlay</strong></p>
+<p>Both wired and wireless Android Auto and Apple CarPlay are supported without the need for a third-party application to be installed on the paired mobile phone. When using the wireless versions, the paired phone connects to the aforementioned Wi-Fi network to establish a high-bandwidth channel for data to be sent and received. When connecting using a USB cable, the Wi-Fi network isn&rsquo;t used by Android Auto or Apple CarPlay, but it is still active.</p>
+<p>Pwn2Own Automotive 2024 didn’t see any entries that leveraged Android Auto or Apple CarPlay functionality to compromise a head unit. We will have to wait and see if Pwn2Own Automotive 2025 does!</p>
+<p><strong>Kenwood Apps</strong></p>
+<p>Kenwood offers two Android/iOS apps to interface with the DMX958XR. The first app is the Kenwood Portal App, which allows users to transfer photos from a mobile phone to the head unit over Bluetooth. The transferred photos can then be viewed as a slideshow on the head unit or be used as wallpaper.</p>
+<p>This presents an interesting attack surface – especially if the DMX958XR itself performs any complex image handling tasks on the received images, such as resizing or converting between different image formats. The user-supplied images also need to be persisted in the head unit&rsquo;s filesystem, further expanding the attack surface.</p>
+<p>The second app is the Kenwood Remote S app, which connects to the head unit over Bluetooth and allows for multimedia control, such as selecting a radio station, skipping a track, and more. The Bluetooth Audio/Video Remote Control Profile (AVRCP) is designed for this task. However, no research was performed to confirm if the Remote S app takes advantage of AVRCP. There are a few other Kenwood apps available, but they are not listed as supported on the DMX958XR product page and therefore have not been explored.</p>
+<p><strong>Open Source Software</strong></p>
+<p>A list of open-source licenses can be viewed from the head unit by navigating to Menu -&gt; Settings -&gt; Special -&gt; Open Source Licenses. There is no guarantee these open-source projects are actually used, but a complete list of the projects is provided at the end of this blog post. Where available, the versions of the projects have also been included.</p>
+<p><strong>Summary</strong></p>
+<p>We hope that this blog post has provided enough information about the DMX958XR attack surface to guide vulnerability research. Not every attack surface has been mentioned and we encourage researchers to investigate further. The next post in this series will cover details of the DMX958XR firmware.</p>
+<p>We are looking forward to Automotive Pwn2Own, again to be held in January 2025 at the Automotive World conference in Tokyo. We will see if IVI vendors have improved their product security. Don’t wait until the last minute to ask questions or register! We hope to see you there.</p>
+<p>You can find me on Twitter at @ByteInsight, and follow the team on Twitter, Mastodon, LinkedIn, or Bluesky for the latest in exploit techniques and security patches.</p>
+<p><strong>Open Source Software List</strong></p>
+<p>Below is a complete list of all the open-source software the head unit claims to use:</p>
+<p>·      OpenSSL (2011)<br>
+·      SSLeay (1998)<br>
+·      ALSA<br>
+·      BusyBox<br>
+·      Cairo<br>
+·      D-Bus<br>
+·      dnsmasq (2014)<br>
+·      e2fsprogs (2007)<br>
+·      Freeware Advanced Audio Coder v1.36 (2009)<br>
+·      flac (2014)<br>
+·      fontconfig (2012)<br>
+·      GLIB (1997)<br>
+·      bashline (1993)<br>
+·      iconv (2011)<br>
+·      GNU MP (2007)<br>
+·      GNU readline (2005)<br>
+·      GNU tar (2006)<br>
+·      gstreamer (2000)<br>
+·      GdkPixbuf (1999)<br>
+·      GnuTLS (2012)<br>
+·      HarfBuzz (2012)<br>
+·      ICU (2015)<br>
+·      ImageMagick (2016)<br>
+·      iperf (2007)<br>
+·      libpng (2019)<br>
+·      libusb (2015)<br>
+·      xiph (2015)<br>
+·      libxml2 (2012)<br>
+·      libxslt (2002)<br>
+·      Naver fonts (2007)<br>
+·      GIO (2010)<br>
+·      OpenSSH<br>
+·      OpenSSL (2011)<br>
+·      PCI Utilities v3.3.1 (2015)<br>
+·      Qt (2013)<br>
+·      Bluetooth SBC library (2013)<br>
+·      Sysvinit (2004)<br>
+·      Info-ZIP (2007)<br>
+·      bzip2 v1.0.6 (2010)<br>
+·      cURL (2015)<br>
+·      dpkg (1995)<br>
+·      libffi (2014)<br>
+·      libjpeg v9a (2014)<br>
+·      XFree86 (2000)<br>
+·      libproxy (2006)<br>
+·      libX11 (2006)<br>
+·      soup-cache (2010)<br>
+·      nettle (2002)<br>
+·      libdpkg (1995)<br>
+·      pango (1999)<br>
+·      sysctl v1.0.1 (1999)<br>
+·      alloc (2002)<br>
+·      pslash (2006)<br>
+·      tslib (2001)<br>
+·      libudev (2011)<br>
+·      usbmisc (2003)<br>
+·      zlib v1.2.8<br>
+·      s-bios (2011)<br>
+·      devmem2 (2000)<br>
+·      hostapd (2015)<br>
+·      hidapi (2010)<br>
+·      wpa-supplicant (2015)<br>
+·      OpenMax (2008)<br>
+·      oRTP (2015)<br>
+·      unzip v1.1 (2010)<br>
+·      hts_engine (2011)<br>
+·      google-breakpad (2006)<br>
+·      boost v1.0 (2003)<br>
+·      SQLite (2001)<br>
+·      PCRE (2019)<br>
+·      OpenGL (2012)<br>
+·      base64 (2001)<br>
+·      mDNSResponder<br>
+·      RapidJSON (2015)<br>
+·      crc32 (2005)<br>
+·      zconf (2005)</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

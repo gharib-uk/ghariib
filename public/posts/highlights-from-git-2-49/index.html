@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Highlights from Git 2.49</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Highlights from Git 2.49</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>The open source Git project just released Git 2.49. Here is GitHub’s look at some of the most interesting features and changes introduced since last time.</p>
+<p>The post Highlights from Git 2.49 appeared first on The GitHub Blog.</p>
+<p>The open source Git project just released Git 2.49 with features and bug fixes from over 89 contributors, 24 of them new. We last caught up with you on the latest in Git back when 2.48 was released.</p>
+<p>To celebrate this most recent release, here is GitHub’s look at some of the most interesting features and changes introduced since last time.</p>
+<h2 id="faster-packing-with-name-hash-v2">Faster packing with name-hash v2</h2>
+<p>Many times over this series of blog posts, we have talked about Git’s object storage model, where objects can be written individually (known as “loose” objects), or grouped together in packfiles. Git uses packfiles in a wide variety of functions, including local storage (when you repack or GC your repository), as well as when sending data to or from another Git repository (like fetching, cloning, or pushing).</p>
+<p>Storing objects together in packfiles has a couple of benefits over storing them individually as loose. One obvious benefit is that object lookups can be performed much more quickly in pack storage. When looking up a loose object, Git has to make multiple system calls to find the object you’re looking for, open it, read it, and close it. These system calls can be made faster using the operating system’s block cache, but because objects are looked up by a SHA-1 (or SHA-256) of their contents, this pseudo-random access isn’t very cache-efficient.</p>
+<p>But most interesting to our discussion is that since loose objects are stored individually, we can only compress their contents in isolation, and can’t store objects as deltas of other similar objects that already exist in your repository. For example, say you’re making a series of small changes to a large blob in your repository. When those objects are initially written, they are each stored individually and zlib compressed. But if the majority of the file’s content remains unchanged among edit pairs, Git can further compress these objects by storing successive versions as deltas of earlier ones. Roughly speaking, this allows Git to store the changes made to an object (relative to some other object) instead of multiple copies of nearly identical blobs.</p>
+<p>But how does Git figure out which pairs of objects are good candidates to store as delta-base pairs? One useful proxy is to compare objects that appear at similar paths. Git does this today by computing what it calls a “name hash”, which is effectively a sortable numeric hash that weights more heavily towards the final 16 non-whitespace characters in a filepath (source). This function comes from Linus all the way back in 2006, and excels at grouping functions with similar extensions (all ending in <code>.c</code>, <code>.h</code>, etc.), or files that were moved from one directory to another (<code>a/foo.txt</code> to <code>b/foo.txt</code>).</p>
+<p>But the existing name-hash implementation can lead to poor compression when there are many files that have the same basename but very different contents, like having many <code>CHANGELOG.md</code> files for different subsystems stored together in your repository. Git 2.49 introduces a new variant of the hash function that takes more of the directory structure into account when computing its hash. Among other changes, each layer of the directory hierarchy gets its own hash, which is downshifted and then XORed into the overall hash. This creates a hash function which is more sensitive to the whole path, not just the final 16 characters.</p>
+<p>This can lead to significant improvements both in packing performance, but also in the resulting pack’s overall size. For instance, using the new hash function was able to improve the time it took to repack <code>microsoft/fluentui</code> from ~96 seconds to ~34 seconds, and slimming down the resulting pack’s size from 439 MiB to just 160 MiB (source).</p>
+<p>While this feature isn’t (yet) compatible with Git’s reachability bitmaps feature, you can try it out for yourself using either <code>git repack</code>’s or <code>git pack-objects</code>’s new <code>--name-hash-version</code> flag via the latest release.</p>
+<p>[source]</p>
+<h2 id="backfill-historical-blobs-in-partial-clones">Backfill historical blobs in partial clones</h2>
+<p>Have you ever been working in a partial clone and gotten this unfriendly output?</p>
+<pre tabindex="0"><code>$ git blame README.md
+remote: Enumerating objects: 1, done.
+remote: Counting objects: 100% (1/1), done.
+remote: Total 1 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+Receiving objects: 100% (1/1), 1.64 KiB | 8.10 MiB/s, done.
+remote: Enumerating objects: 1, done.
+remote: Counting objects: 100% (1/1), done.
+remote: Total 1 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+Receiving objects: 100% (1/1), 1.64 KiB | 7.30 MiB/s, done.
+[...]
+</code></pre><p>What happened here? To understand the answer to that question, let’s work through an example scenario:</p>
+<p>Suppose that you are working in a partial clone that you cloned with <code>--filter=blob:none</code>. In this case, your repository is going to have all of its trees, commit, and annotated tag objects, but only the set of blobs which are immediately reachable from <code>HEAD</code>. Put otherwise, your local clone only has the set of blobs it needs to populate a full checkout at the latest revision, and loading any historical blobs will fault in any missing objects from wherever you cloned your repository.</p>
+<p>In the above example, we asked for a <code>blame</code> of the file at path <code>README.md</code>. In order to construct that blame, however, we need to see every historical version of the file in order to compute the diff at each layer to figure out whether or not a revision modified a given line. But here we see Git loading in each historical version of the object one by one, leading to bloated storage and poor performance.</p>
+<p>Git 2.49 introduces a new tool, <code>git backfill</code>, which can fault in any missing historical blobs from a <code>--filter=blob:none</code> clone in a small number of batches. These requests use the new path-walk API (also introduced in Git 2.49) to group together objects that appear at the same path, resulting in much better delta compression in the packfile(s) sent back from the server. Since these requests are sent in batches instead of one-by-one, we can easily backfill all missing blobs in only a few packs instead of one pack per blob.</p>
+<p>After running <code>git backfill</code> in the above example, our experience looks more like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ git clone --sparse --filter=blob:none git@github.com:git/git.git[...] # downloads historical commits/trees/tags
+</span></span><span style="display:flex;"><span>$ cd git
+</span></span><span style="display:flex;"><span>$ git sparse-checkout add builtin
+</span></span><span style="display:flex;"><span>[...] # downloads current contents of builtin/
+</span></span><span style="display:flex;"><span>$ git backfill --sparse
+</span></span><span style="display:flex;"><span>[...] # backfills historical contents of builtin/
+</span></span><span style="display:flex;"><span>$ git blame -- builtin/backfill.c
+</span></span><span style="display:flex;"><span>85127bcdeab (Derrick Stolee 2025-02-03 17:11:07 +0000   1) /* We need this macro to access core_apply_sparse_checkout */
+</span></span><span style="display:flex;"><span>85127bcdeab (Derrick Stolee 2025-02-03 17:11:07 +0000   2) #define USE_THE_REPOSITORY_VARIABLE
+</span></span><span style="display:flex;"><span>85127bcdeab (Derrick Stolee 2025-02-03 17:11:07 +0000   3)
+</span></span><span style="display:flex;"><span>[...]
+</span></span></code></pre></div><p>But running <code>git backfill</code> immediately after cloning a repository with <code>--filter=blob:none</code> doesn’t bring much benefit, since it would have been more convenient to simply clone the repository without an object filter enabled in the first place. When using the backfill command’s <code>--sparse</code> option (the default whenever the sparse checkout feature is enabled in your repository), Git will only download blobs that appear within your sparse checkout, avoiding objects that you wouldn’t checkout anyway.</p>
+<p>To try it out, run <code>git backfill</code> in any <code>--filter=blob:none</code> clone of a repository using Git 2.49 today!</p>
+<p>[source, source]</p>
+<hr>
+<ul>
+<li>
+<p>We discussed above that Git uses compression powered by zlib when writing loose objects, or individual objects within packs and so forth. zlib is an incredibly popular compression library, and has an emphasis on portability. Over the years, there have been a couple of popular forks (like intel/zlib and cloudflare/zlib) that contain optimizations not present in upstream zlib.</p>
+<p>The zlib-ng fork merges many of the optimizations made above, as well as removes dead code and workarounds for historical compilers from upstream zlib, placing a further emphasis on performance. For instance, zlib-ng has support for SIMD instruction sets (like SSE2, and AVX2) built-in to its core algorithms. Though zlib-ng is a drop-in replacement for zlib, the Git project needed to update its compatibility layer to accommodate zlib-ng.</p>
+<p>In Git 2.49, you can now build Git with zlib-ng by passing <code>ZLIB_NG</code> when building with the GNU Make, or the <code>zlib_backend</code> option when building with Meson. Early experimental results show a ~25% speed-up when printing the contents of all objects in the Git repository (from ~52.1 seconds down to ~40.3 seconds).</p>
+<p>[source]</p>
+</li>
+<li>
+<p>This release marks a major milestone in the Git project with the first pieces of Rust code being checked in. Specifically, this release introduces two Rust crates: libgit-sys, and libgit which are low- and high-level wrappers around a small portion of Git’s library code, respectively.</p>
+<p>The Git project has long been evolving its code to be more library-oriented, doing things like replacing functions that exit the program with ones that return an integer and let the caller decide to exit or, cleaning up memory leaks, etc. This release takes advantage of that work to provide a proof-of-concept Rust crate that wraps part of Git’s <code>config.h</code> API.</p>
+<p>This isn’t a fully-featured wrapper around Git’s entire library interface, and there is still much more work to be done throughout the project before that can become a reality, but this is a very exciting step along the way.</p>
+<p>[source]</p>
+</li>
+<li>
+<p>Speaking of the “libification” effort, there were a handful of other related changes that went into this release. The ongoing effort to move away from global variables like <code>the_repository</code> continues, and many more commands in this release use the provided <code>repository</code> instead of using the global one.</p>
+<p>This release also saw a lot of effort being put into squelching <code>-Wsign-compare</code> warnings, which occur when a signed value is compared against an unsigned one. This can lead to surprising behavior when comparing, say, negative signed values against unsigned ones, where a comparison like <code>-1 &lt; 2</code> (which should return true) ends up returning false instead.</p>
+<p>Hopefully you won’t notice these changes in your day-to-day use of Git, but they are important steps along the way to bringing the project closer to being able to be used as a standalone library.</p>
+<p>[source, source, source, source, source]</p>
+</li>
+<li>
+<p>Long-time readers might remember our coverage of Git 2.39 where we discussed <code>git repack</code>’s new <code>--expire-to</code> option. In case you’re new around here or could use a refresher, we’ve got you covered. The <code>--expire-to</code> option in <code>git repack</code> controls the behavior of unreachable objects which were pruned out of the repository. By default, pruned objects are simply deleted, but <code>--expire-to</code> allows you to move them off to the side in case you want to hold onto them for backup purposes, etc.</p>
+<p><code>git repack</code> is a fairly low-level command though, and most users will likely interact with Git’s garbage collection feature through <code>git gc</code>. In large part, <code>git gc</code> is a wrapper around functionality that is implemented in <code>git repack</code>, but up until this release, <code>git gc</code> didn’t expose its own command-line option to use <code>--expire-to</code>. That changed in Git 2.49, where you can now experiment with this behavior via <code>git gc --expire-to</code>!</p>
+<p>[source]</p>
+</li>
+<li>
+<p>You may have read that Git’s <code>help.autocorrect</code> feature is too fast for Formula One drivers. In case you haven’t, here are the details. If you’ve ever seen output like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ git psuh
+</span></span><span style="display:flex;"><span>git: &#39;psuh&#39; is not a git command. See &#39;git --help&#39;.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>The most similar command is
+</span></span><span style="display:flex;"><span>push
+</span></span></code></pre></div><p>…then you have used Git’s autocorrect feature. But its configuration options don’t quite match the convention of other, similar options. For instance, in other parts of Git, specifying values like “true”, “yes”, “on”, or “1” for boolean-valued settings all meant the same thing. But <code>help.autocorrect</code> deviates from that trend slightly: it has special meanings for “never”, “immediate”, and “prompt”, but interprets a numeric value to mean that Git should automatically run whatever command it suggests after waiting that many deciseconds.</p>
+<p>So while you might have thought that setting <code>help.autocorrect</code> to “1” would enable the autocorrect behavior, you’d be wrong: it will instead run the corrected command before you can even blink your eyes1. Git 2.49 changes the convention of <code>help.autocorrect</code> to interpret “1” like other boolean-valued commands, and positive numbers greater than 1 as it would have before. While you can’t specify that you want the autocorrect behavior in exactly 1 decisecond anymore, you probably never meant to anyway.</p>
+<p>[source, source]</p>
+</li>
+<li>
+<p>You might be aware of <code>git clone</code>’s <code>--branch</code> option, which allows you to clone a repository’s history leading up to a specific branch or tag instead of the whole thing. This option is often used in CI farms when they want to clone a specific branch or tag for testing.</p>
+<p>But what if you want to clone a specific revision that isn’t at any branch or tag in your repository, what do you do? Prior to Git 2.49, the only thing you could do is initialize an empty repository and fetch a specific revision after adding the repository you’re fetching from as a remote.</p>
+<p>Git 2.49 introduces a convenient alternative to round out <code>--branch</code>‘s functionality with a new <code>--revision</code> option, which fetches history leading up to the specified revision, regardless of whether or not there is a branch or tag pointing at it.</p>
+<p>[source]</p>
+</li>
+<li>
+<p>Speaking of remotes, you might know that the <code>git remote</code> command uses your repository’s configuration to store the list of remotes that it knows about. You might not know that there were actually two different mechanisms which preceded storing remotes in configuration files. In the very early days, remotes were configured via separate files in <code>$GIT_DIR/branches</code> (source). A couple of weeks later, the convention changed to use <code>$GIT_DIR/remote</code> instead of the <code>/branches</code> directory (source).</p>
+<p>Both conventions have long since been deprecated and replaced with the configuration-based mechanism we’re familiar with today (source, source). But Git has maintained support for them over the years as part of its backwards compatibility. When Git 3.0 is eventually released, these features will be removed entirely.</p>
+<p>If you want to learn more about Git’s upcoming breaking changes, you can read all about them in <code>Documentation/BreakingChanges.adoc</code>. If you really want to live on the bleeding edge, you can build Git with the <code>WITH_BREAKING_CHANGES</code> compile time switch, which compiles out features that will be removed in Git 3.0.</p>
+<p>[source, source]</p>
+</li>
+<li>
+<p>Last but not least, the Git project had two wonderful Outreachy interns that recently completed their projects! Usman Akinyemi worked on adding support to include uname information in Git’s user agent when making HTTP requests, and Seyi Kuforiji worked on converting more unit tests to use the Clar testing framework.</p>
+<p>You can learn more about their projects here and here. Congratulations, Usman and Seyi!</p>
+<p>[source, source, source, source]</p>
+</li>
+</ul>
+<h2 id="the-rest-of-the-iceberg">The rest of the iceberg</h2>
+<p>That’s just a sample of changes from the latest release. For more, check out the release notes for 2.49, or any previous version in the Git repository.</p>
+<hr>
+<ol>
+<li>It’s true. It takes humans about 100-150 milliseconds to blink their eyes, and setting <code>help.autocorrect</code> to “1” will run the suggested command after waiting only 100 milliseconds (1 decisecond). ↩</li>
+</ol>
+<p>The post Highlights from Git 2.49 appeared first on The GitHub Blog.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

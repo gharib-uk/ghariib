@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Effortless observability for Django applications</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Effortless observability for Django applications</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Observability is critical for web operations to ensure that the application is working as expected and to identify any potential issues. However, setting up observability has traditionally been challenging because it can take hours to set up all the infrastructure, instrument your code and enable observability in production. But now there is a better way using native support for Django in Charmcraft and Rockcraft which has observability built in and ready to go!</p>
+<p>In this post, we will start with a Django application built using the native support for Django in Rockcraft and Charmcraft and deployed with Juju, and add observability to it using just a few commands. This shows a key benefit of bringing the Juju ecosystem (which includes most of the plumbing you’d expect from a modern cloud, like observability, databases, ingressing and so on) to a web application using charms as we will be able to set up observability in a matter of minutes rather than hours. Rockcraft and Charmcraft also natively support Flask, FastAPI and Go and the following instructions will work similarly for those as well.</p>
+<p>We have set up a Django application by following the Write your first Kubernetes charm for a Django app tutorial, completing it up to finishing The development cycle section. By this stage, the Django app should be deployed, integrated with PostgreSQL and the Nginx ingress integrator, and should look something like this:</p>
+<pre tabindex="0"><code>$ juju status --relations
+
+Model               Controller      Cloud/Region        Version  SLA          Timestamp
+django-hello-world  dev-controller  microk8s/localhost  3.6.3    unsupported  00:52:54+11:00
+
+App                       Version  Status  Scale  Charm                     Channel        Rev  Address         Exposed  Message
+django-hello-world                 active      1  django-hello-world                         1  10.152.183.175  no       
+nginx-ingress-integrator  24.2.0   active      1  nginx-ingress-integrator  latest/stable  130  10.152.183.214  no       Ingress IP(s): 127.0.0.1
+postgresql-k8s            14.15    active      1  postgresql-k8s            14/stable      495  10.152.183.83   no       
+
+Unit                         Workload  Agent  Address      Ports  Message
+django-hello-world/0*        active    idle   10.1.157.79         
+nginx-ingress-integrator/0*  active    idle   10.1.157.78         Ingress IP(s): 127.0.0.1
+postgresql-k8s/0*            active    idle   10.1.157.77         Primary
+
+Integration provider                  Requirer                              Interface          Type     Message
+django-hello-world:secret-storage     django-hello-world:secret-storage     secret-storage     peer     
+nginx-ingress-integrator:ingress      django-hello-world:ingress            ingress            regular  
+nginx-ingress-integrator:nginx-peers  nginx-ingress-integrator:nginx-peers  nginx-instance     peer     
+postgresql-k8s:database               django-hello-world:postgresql         postgresql_client  regular  
+postgresql-k8s:database-peers         postgresql-k8s:database-peers         postgresql_peers   peer     
+postgresql-k8s:restart                postgresql-k8s:restart                rolling_op         peer     
+postgresql-k8s:upgrade                postgresql-k8s:upgrade                upgrade            peer
+</code></pre><p>At this point, if you send a request using <code>curl</code>, it should return <code>Hello, world!</code></p>
+<pre tabindex="0"><code>$ curl http://django-hello-world 
+    --resolve django-hello-world:80:127.0.0.1 
+Hello, world!
+</code></pre><p>The next step is to deploy observability and integrate it with your Django app. For that, we need to enable a load balancer on Microk8s which is required for Traefik which will serve as ingress for the Canonical observability stack:</p>
+<pre tabindex="0"><code>$ IPADDR=$(ip -4 -j route get 2.2.2.2 | jq -r &#39;.[] | .prefsrc&#39;)
+$ sudo microk8s enable metallb:$IPADDR-$IPADDR
+$ microk8s status --wait-ready
+</code></pre><p>Now we can deploy the Canonical Observability Stack which will deploy Grafana, Loki, Prometheus and Alertmanager as well as a catalogue to access all of the services and Traefik as an ingress:</p>
+<pre tabindex="0"><code>$ juju deploy cos-lite --trust
+$ juju integrate django-hello-world grafana
+$ juju integrate django-hello-world prometheus
+$ juju integrate django-hello-world loki
+</code></pre><p>We have just tasked Juju with quite a bit so let’s give it a few minutes to complete. Meanwhile, we can monitor the progress:</p>
+<pre tabindex="0"><code>$ juju status --watch 2s
+</code></pre><p>Once everything is in <code>active</code> and <code>idle</code>, let’s take a look at the dashboards that have been created. Run the following command to retrieve the observability endpoints:</p>
+<pre tabindex="0"><code>$ juju show-unit catalogue/0 | grep url
+$ juju run grafana/leader get-admin-password
+</code></pre><p>This will display a few URLs along with the default admin password. The one we are interested in has the <code>grafana</code> postfix and should look something like http://10.18.66.154/django-hello-world-grafana (your IP address will vary). To access the dashboards overview append the <code>/dashboards</code> postfix, then click General and select the Django Operator dashboard. You should see something like this:</p>
+<p>
+<figure>
+  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_2420,h_1172/https://ubuntu.com/wp-content/uploads/7999/Screenshot-2025-03-13-at-1.46.39%E2%80%AFpm.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>Since we haven’t made any requests yet, the dashboard is currently reporting no activity. Let’s send the following curl command a few times to generate traffic:</p>
+<pre tabindex="0"><code>$ curl http://django-hello-world --resolve django-hello-world:80:127.0.0.1 
+</code></pre><p>Over the next few minutes, the data will update and should look something like this:</p>
+<p>
+<figure>
+  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_2418,h_1168/https://ubuntu.com/wp-content/uploads/f12b/Screenshot-2025-03-13-at-1.47.14%E2%80%AFpm.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>So far, we have successfully deployed our app and the observability stack – getting dashboards without having to define them ourselves! We can also access the application logs. To view them, select  <code>django-hello-world</code> from the dropdown menu next to the Juju application filter at the top of the page:</p>
+<p>
+<figure>
+  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_2056,h_856/https://ubuntu.com/wp-content/uploads/e01e/Screenshot-2025-03-13-at-1.47.56%E2%80%AFpm.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>When you scroll down, you will see the logs of the application:</p>
+<p>
+<figure>
+  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_2418,h_406/https://ubuntu.com/wp-content/uploads/318a/Screenshot-2025-03-13-at-1.48.28%E2%80%AFpm.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>And that’s a wrap! We created a Django application and integrated it with observability. We explored the default dashboard giving us insights into how the application is being used, and also accessed the application logs. With a few commands we added a full suite of observability tools to our Django app without needing to manually handle the deployment and configuration of each of the apps. </p>
+<p>If you want to learn more about creating OCI images and charms for your Django apps, you can follow the Write your first Kubernetes charm for a Django app tutorial and take advantage of the complete Juju ecosystem. Feel free to reach out on our community matrix channel if you have any questions or would like to get in touch!</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

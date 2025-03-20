@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Maximizing Disk Imaging Speeds</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Maximizing Disk Imaging Speeds</h1>
+			<b><time>15.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/disk-imaging">disk-imaging</a>
+        	       
+		           <a href="/tags/ssd">ssd</a>
+        	       
+		           <a href="/tags/technology">technology</a>
+        	       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://blog.elcomsoft.com/wp-content/uploads/2024/08/sata-blocker.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>In the field of digital forensics, properly handling the task of disk imaging is crucial for preserving data integrity. Using write blockers ensures that no data is altered during the imaging process, a key requirement for maintaining the chain of custody. While there are many factors influencing the efficiency and speed of this process, this article offers advanced tips and considerations that can help achieve optimal performance.</p>
+<h2 id="a-brief-overview-of-write-blockers">A Brief Overview of Write Blockers</h2>
+<p>To recap, write blockers are software or hardware tools designed to prevent accidental modifications to the original evidence stored on disks being imaged. In this article, we will focus solely on SATA-based hardware write blockers. This type of write blockers act as intermediaries between the forensic expert’s computer and the storage device being imaged. We’ll focus on the latest generation of write blockers features a modern 10 Gbps chip that supports USB 3.2 Gen2 connectivity, while maintaining backward compatibility with older USB versions down to USB 2.0. We will test disk imaging performance for SATA storage devices in 2.5″/3.5″ and m.2 form factors.</p>
+<h2 id="does-imaging-speed-matter">Does Imaging Speed Matter?</h2>
+<p>The speed of disk imaging is important, yet it is not a critical or factor. While imaging speeds for magnetic hard drives don’t vary significantly across different write blockers, the performance difference is much more pronounced with faster solid-state drives (SSDs). Using a modern write blocker equipped with a last-generation chipset can substantially reduce the time required to extract data.</p>
+<h2 id="how-fast-is-fast">How Fast is Fast?</h2>
+<p>A high imaging speed is one that approaches the maximum read speed of the specific storage device, considering overhead and port limitations. For SSDs operating over the SATA protocol, a good speed is close to the interface speed minus overhead costs. For SATA3 SSDs connected to a USB3.2 Gen2 port, a good imaging speed would be around 450 MB/s, while an excellent speed is approximately 500 MB/s. Magnetic hard drive speeds vary widely. Due to the hardware design, maximum read speeds are achieved on the outer tracks in the beginning of the imaging process, while dropping significantly towards the end of the disk. Note that these maximum speeds are unattainable via legacy USB coonnections such as USB3.0, USB3.1 Gen1, or USB3.2 Gen1 due to overhead crippling data transfer rates.</p>
+<p>
+<figure>
+  <img src="https://blog.elcomsoft.com/wp-content/uploads/2024/08/osf.png" alt="" />
+</figure>
+
+
+</p>
+<h2 id="performance-comparison-of-imaging-tools-with-write-blockers">Performance Comparison of Imaging Tools with Write Blockers</h2>
+<p>In our testing process, we compared the performance of several imaging programs using the same disk and a 10 Gbps-capable hardware write blocker. Notably, enabling data compression may significantly affect the imaging speed, which will greatly depend on the compression type and the disk’s content.</p>
+<h4 id="test-setup">Test Setup:</h4>
+<ul>
+<li><strong>Workstation</strong>: ASUS Vivobook S16 S5606MA, Intel Core Ultra 9 185H, 32GB RAM, Samsung 990 Pro 2TB SSD, USB/Thunderbolt 4 ports.</li>
+<li><strong>Test Disk</strong>: SSD AMD Radeon R5 R5SL128G (128GB total capacity, 10GB free).</li>
+</ul>
+<p>We tested the imaging performance using OSForensics, FTK Imager, and X-Ways Imager, selecting various compression levels. The results are summarized in the table below.</p>
+<p>
+<figure>
+  <img src="https://blog.elcomsoft.com/wp-content/uploads/2024/08/bench-imaging-1.png" alt="" />
+</figure>
+
+
+</p>
+<h3 id="observations">Observations</h3>
+<ol>
+<li><strong>OSForensics</strong>:
+<ul>
+<li>Displays current speed during imaging, but the total time needs separate measurement.</li>
+<li>Best performance with RAW format (480 MB/s).</li>
+<li>Performance drops significantly with compression (87 MB/s and 79 MB/s for medium and maximum compression, respectively).</li>
+</ul>
+</li>
+<li><strong>FTK Imager</strong>:
+<ul>
+<li>Does not display current speed but records total imaging time.</li>
+<li>Serious performance drop with compression enabled.</li>
+<li>In RAW format, it performs slower than OSForensics (360 MB/s).</li>
+<li>Slight speed drop when imaging to E01 with no compression (267 MB/s compared to OSForensics’ 360 MB/s).</li>
+</ul>
+</li>
+<li><strong>X-Ways Imager</strong>:
+<ul>
+<li>Does not display current speed but records total time.</li>
+<li>Less compression-based performance drops compared to other tools.</li>
+<li>Does not reach peak speeds of OSForensics when imaging into a RAW file, but demonstrates solid results with compression.</li>
+</ul>
+</li>
+</ol>
+<p>When using compresion, X-Ways Imager generally outperformed other tools. However, when imaging into an uncompressed RAW, OSForensics demonstrated the best performance, reaching 480 MB/s. FTK Imager lagged behind slightly, particularly in uncompressed E01.</p>
+<h3 id="summary-of-performance">Summary of Performance</h3>
+<ul>
+<li><strong>RAW Format</strong>
+<ul>
+<li><strong>OSForensics</strong>: 480 MB/s</li>
+<li><strong>FTK Imager</strong>: 360 MB/s</li>
+<li><strong>X-Ways Imager</strong>: Consistently solid, though not as fast as OSForensics</li>
+</ul>
+</li>
+<li><strong>E01 Format (no compression)</strong>
+<ul>
+<li><strong>OSForensics</strong>: 360 MB/s</li>
+<li><strong>FTK Imager</strong>: 267 MB/s</li>
+</ul>
+</li>
+<li><strong>Compressed Formats</strong>
+<ul>
+<li><strong>OSForensics</strong>: Significant slowdown (87 MB/s and 79 MB/s)</li>
+<li><strong>FTK Imager</strong>: Solid but slower than RAW</li>
+<li><strong>X-Ways Imager</strong>: Best with medium compression</li>
+</ul>
+</li>
+</ul>
+<p>Our tests demonstrated that the choice of imaging tool and compression settings can greatly affect the imaging speed. If you aim for the fastest performance, particularly with uncompressed RAW data, OSForensics is the best choice. However, for better performance with compressed formats, X-Ways Imager is ahead. FTK Imager, while competent, tends to lag behind slightly in speed compared to the other tools.</p>
+<h2 id="maximizing-disk-imaging-performance">Maximizing Disk Imaging Performance</h2>
+<p>We ran multiple tests in both desktop and portable environments, across different generations of USB ports, and with various cables. Here are the key findings and tips for achieving maximum performance.</p>
+<h4 id="key-tips-for-maximum-performance">Key Tips for Maximum Performance</h4>
+<ol>
+<li><strong>Use a Powered Laptop</strong>
+<ul>
+<li>If you are using a laptop, ensure that it is plugged into a power outlet. Many laptops reduce USB power delivery and bus speeds when running on battery. Always perform disk imaging with the laptop connected to mains power to avoid this power-saving mode.</li>
+</ul>
+</li>
+<li><strong>Connect to the Fastest Available USB Port</strong>
+<ul>
+<li>Use the fastest available USB port, ideally USB 3.2 Gen 2 (10 Gbps) or faster. This ensures the highest data transfer speeds, saturating the SATA protocol’s 6 Gbps limit. Avoid using older USB 3.0 (5 Gbps) ports if possible.</li>
+</ul>
+</li>
+<li><strong>Use High-Quality Cables</strong>
+<ul>
+<li>Not every USB 3 cable supports speeds over 5 Gbps. Use cables certified for USB 3.1 Gen 2, USB 3.2 Gen 2, or higher, preferably with marked speed. Be cautious with fast-charge USB-C cables, many of which only supporting USB 2.0 speeds. Opt for certified USB/Thunderbolt 4 cables marked with their maximum speed, and pick shorter cables for better performance.</li>
+</ul>
+</li>
+<li><strong>Use a NVMe SSD as a Target</strong>
+<ul>
+<li>Use an NVMe SSD for the target drive, either seated in the M.2 slot or connected via a 10 Gbps or faster USB port. NVMe SSDs offer significantly higher <em>write</em> speeds compared to traditional hard drives and SATA SSDs, preventing the target drive from becoming a bottleneck.</li>
+</ul>
+</li>
+<li><strong>Ensure Ample Free Space on the Target Drive</strong>
+<ul>
+<li>Before imaging, ensure the target drive has ample free space. For SSDs, having sufficient free space is crucial as it allows for higher write speeds and avoids performance drops that occur when the drive is nearly full. Magnetic hard drives also benefit from more free space to avoid slowdown due to file system fragmentation.</li>
+</ul>
+</li>
+<li><strong>Allow Your Computer to Stabilize After Booting</strong>
+<ul>
+<li>Wait up to 10 minutes after turning on the computer for all background processes to complete and the system to stabilize.</li>
+</ul>
+</li>
+<li><strong>Minimize Background Disk Activity</strong>
+<ul>
+<li>Ensure there are no disk-intensive background tasks running, such as Windows updates, which can significantly reduce imaging speed.</li>
+</ul>
+</li>
+<li><strong>Pause Indexing and Antivirus Software</strong>
+<ul>
+<li>Windows search indexing has minimal impact on performance, but antivirus software can greatly slow down the process. We found that temporarily pausing the built-in Windows Defender during disk imaging helps bump imaging speeds on some systems.</li>
+</ul>
+</li>
+<li><strong>Beware of TRIM Commands on Source SSDs</strong>
+<ul>
+<li>Write blockers cannot prevent data loss resulting from the disks’s internal garbage collection and TRIM processing. While no new TRIM commands shall pass through a write blocker, background garbage collection is unavoidable. If an SSD was recently formatted or had lots of data deleted, avoid powering it up and instead use specialized access tools in factory mode to prevent further data loss.</li>
+</ul>
+</li>
+</ol>
+<h3 id="beyond-the-basics">Beyond the Basics</h3>
+<p>When it comes to using write blockers for imaging hard disks, there are a few additional considerations that can enhance performance, even if they aren’t strict requirements.</p>
+<h4 id="size-and-speed-considerations">Size and Speed Considerations</h4>
+<p>Currently, the most common SSD sizes are 1TB or 2TB. Using a modern write blocker, copying 2TB of data can take just over an hour. With an older write blocker or without following the optimal conditions, this process could easily take 2 or 3 hours. For magnetic hard drives (HDDs), the read speed is much slower, so the difference in performance between different write blockers or software should be minimal.</p>
+<p>Please note that smaller SSD drives will typically be slower than their higher-capacity counterparts due to decreased parallelism. In addition, SSDs with higher wear (greater write count) may demonstrate random slowdowns due to the overhead of the internal data correction algorithms. Finally, older SSD drives of equal capacity may be either faster or slower than their modern counterparts depending on the technology used (MLC, planar TLC, 3D TLC, or QLC NAND) and the number of NAND chips installed (which equals parallelism, which affects read and write speeds).</p>
+<h4 id="image-formats">Image Formats</h4>
+<p>In forensic imaging, the most commonly used format is .e01 with default compression settings. Compression helps a lot when one needs to store multiple disk images. The dd/raw format is less commonly used due to its lack of compression and the resulting large size.</p>
+<ul>
+<li><strong>RAW</strong>
+<ul>
+<li><strong>Use When You Need</strong>:
+<ul>
+<li>Maximum compatibility and versatility are needed.</li>
+<li>Maximum data extraction speed is required.</li>
+<li>The source disk is almost full.</li>
+<li>Compression is not required.</li>
+</ul>
+</li>
+<li><strong>Avoid When</strong>:
+<ul>
+<li>Using E01 us mandatory.</li>
+<li>Metadata in the file header is important.</li>
+<li>Compression required.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>E01</strong>
+<ul>
+<li><strong>Use When</strong>:
+<ul>
+<li>The source disk has plenty of free space or files compress well.</li>
+<li>Using E01 is mandatory.</li>
+<li>Metadata in the file header is crucial.</li>
+</ul>
+</li>
+<li><strong>Avoid When</strong>:
+<ul>
+<li>The source disk is nearly full, making compression ineffective and complicating image creation.</li>
+<li>Compression is not required.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>AFF4</strong>
+<ul>
+<li><strong>Use When</strong>:
+<ul>
+<li>You’re after a modern solution.</li>
+<li>More flexible metadata handling and improved performance are required.</li>
+</ul>
+</li>
+<li><strong>Avoid When</strong>:
+<ul>
+<li>Using E01 us mandatory.</li>
+<li>Your forensic analysis tool does not support AFF4.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>EWF Format</strong>:
+<ul>
+<li><strong>Avoid When</strong>:
+<ul>
+<li>This format is not widely supported and thus may limit usability.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="conclusion">Conclusion</h2>
+<p>Achieving maximum imaging speed requires adhering to several conditions and using proper equipment and software. Implementing these recommendations can significantly reduce the time  you’ll need to spend for disk imaging.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

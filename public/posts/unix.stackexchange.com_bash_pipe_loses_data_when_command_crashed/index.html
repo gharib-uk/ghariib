@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>bash pipe loses data when command crashed</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="http://localhost:1313/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>bash pipe loses data when command crashed</h1>
+			<b><time>03.12.2024 08:48</time></b>
+		       
+		           <a href="/tags/unix.stackexchange.com">unix.stackexchange.com</a>
+        	       
+
+			<div>
+				<h1 id="bash-pipe-loses-data-when-command-crashed">bash pipe loses data when command crashed</h1>
+<p><strong>Published on</strong>: 2024-12-03T08:48:45Z</p>
+<p><strong>Summary</strong>: Consider this simple program (abort.py) that writes some text to stdout and stderr and then crashed (abort()). import os import sys  print(&quot;end stdout&quot;) print(&quot;end stderr&quot;, file=sys.stderr) os.abort()  When I run it in terminal, both output to stdout and stderr are correctly produced. $ python3 abort.py  end stdout end stderr Aborted (core dumped)  However, if I were to redirect stdout and/or stderr to another program (perhaps for logging purpose), it doesnt work any more. $ python3 abort.py | cat end stderr  $ python3 abort.py |&amp; cat  $ python3 abort.py | tee -a logs end stderr  $ python3 abort.py |&amp; tee -a logs  # file <code>logs</code> is unchanged  In fact, if the program (abort.py) produce a lot of texts to stdout and stderr, only the last section of them is lost from the perspective of the receiving program on the other end of the pipe. I also tried running the program in a bash script and run that script, but the result is the same. Why is this happening and how should I fix it? Background The example above is obviously contrived. The real world scenario is that I was debugging a large program that occasionally crash (segfault or aborted) after running for days. It produces a lot of logs to both stdout and stderr, but the most important piece of information regarding its crash (such as stack trace) is printed in the end right before the crash happens. I have a logging pipeline setup in a bash script (involves some tee and gzip for example), but I found that last section of the log saved is always missing, which is frustrating.</p>
+<p>Read more: <a href="https://unix.stackexchange.com/questions/787563/bash-pipe-loses-data-when-command-crashed">bash pipe loses data when command crashed</a></p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/security.stackexchange.com_what_is_this_hacker_trying_to_do_by_accessing_stac/">What is this hacker trying to do by accessing stack exchange specific URLs on my site? [closed]</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_buffer_overflow_use_ebp_instead_of_esp_ebp&#43;4__re/">buffer overflow use ebp instead of esp (ebp&#43;4 = ret address)</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_character_escaping_xss_closed/">Character escaping xss [closed]</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_is_there_a_way_to_limit_browser_extension_internet/">Is there a way to limit browser extension internet access?</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_is_it_common_practice_to_remove_trusted_certificat/">Is it common practice to remove trusted certificate authorities (CA) located in untrusted countries?</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="http://localhost:1313/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

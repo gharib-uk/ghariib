@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Announcing upcoming changes to the AWS Security Token Service global endpoint</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Announcing upcoming changes to the AWS Security Token Service global endpoint</h1>
+			<b><time>29.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>AWS launched AWS Security Token Service (AWS STS) in August 2011 with a single global endpoint <code>(https://sts.amazonaws.com)</code>, hosted in the US East (N. Virginia) AWS Region. To reduce dependency on a single Region, STS launched AWS STS Regional endpoints (<code>https://sts.{Region_identifier}.{partition_domain}</code>) in February 2015. These Regional endpoints allow you to use STS in the same Region as your workloads, which improves both performance and reliability.</p>
+<p>However, many customers and third-party tools continue to call the STS global endpoint, and as a result, these customers don’t get the benefits of STS Regional endpoints. To help improve the resiliency and performance of your applications, we are making changes to the STS global endpoint, with no action required from customers. These changes will be released in the coming weeks.</p>
+<p>In this blog post, we discuss the upcoming changes to the STS global endpoint and their benefits, and provide our recommendation on which STS endpoint to use going forward.</p>
+<h2 id="upcoming-changes-to-the-sts-global-endpoint">Upcoming changes to the STS global endpoint</h2>
+<p>The changes being made to the STS global endpoint will help enhance resiliency and improve performance. Today, all the requests to the STS global endpoint are served by the US East (N. Virginia) Region. Starting in early 2025, requests to the STS global endpoint will be automatically served in the same Region as your AWS deployed workloads. For example, if your application calls <code>sts.amazonaws.com</code> from the US West (Oregon) Region, your calls will be served locally in the US West (Oregon) Region instead of being served by the US East (N. Virginia) Region.</p>
+<p>With this change, requests to the STS global endpoint will be served locally if your request originated from AWS Regions that are enabled by default.1 However, requests to the STS global endpoint will continue to be served in US East (N. Virginia) Region if your request originated from opt-in Regions or if you used STS from outside AWS, such as in your on-premises network or data centers.</p>
+<p>We will gradually roll out this change to AWS Regions that are enabled by default by mid-2025, starting with the Europe (Stockholm) Region.</p>
+<p>We’ve taken the following measures to help avoid disruptions to your existing processes:</p>
+<ul>
+<li>AWS CloudTrail logs for requests made to the STS global endpoints will be sent to the US East (N. Virginia) Region. CloudTrail logs for requests handled by STS Regional endpoints will continue to be logged to their respective Region in CloudTrail, even if the requests are served locally.</li>
+<li>CloudTrail logs for operations performed by the STS global and Regional endpoints will have the additional fields <code>endpointType</code> and <code>awsServingRegion</code> to clarify which endpoint and Region served the request.</li>
+<li>Requests made to the <code>sts.amazonaws.com</code> endpoints will have a value of <code>us-east-1</code> for the <code>aws:RequestedRegion</code> condition key, regardless of which Region served the request.</li>
+<li>Requests handled by the <code>sts.amazonaws.com</code> endpoints will not share a request quota with the Regional STS endpoints.</li>
+</ul>
+<p>1. In addition, for your requests to be served locally, your DNS request for <code>sts.amazonaws.com</code> must be handled by an Amazon DNS Server in Amazon Virtual Private Cloud (Amazon VPC).</p>
+<h2 id="our-recommendation">Our recommendation</h2>
+<p>We continue to recommend that you use the appropriate STS Regional endpoints whenever possible. If you’re using STS from outside AWS, such as in your on-premises networks or data centers, we recommend you use the STS Regional endpoint that is hosted in the same Region as the AWS resource that you need STS credentials to access. If you’re building in opt-in Regions such as Asia Pacific (Hong Kong) or Asia Pacific (Jakarta), we recommend that you use the STS endpoint from the opt-in Region that is hosting your workload. By following the steps in the blog post How to use Regional AWS STS endpoints, you can identify workloads that are still using the global STS endpoint and get insights into how to reconfigure them when required.</p>
+<p>If you have feedback about this blog post, submit comments in the <strong>Comments</strong> section below. If you have questions about this post, contact AWS Support.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2023/01/30/pkarora.jpg" alt="Palak Arora" />
+</figure>
+
+
+ Palak Arora<br>
+Palak is a Senior Product Manager at AWS Identity. She has over eight years of cybersecurity experience, with a specialization in the Identity and Access Management (IAM) domain. She has helped various customers across different sectors define their enterprise and customer IAM roadmaps and strategies, and improve their overall technology risk landscape.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2022/11/01/liwadman.jpg" alt="Liam Wadman" />
+</figure>
+
+
+ Liam Wadman<br>
+Liam is a Principal Solutions Architect with the AWS Identity team. When he’s not building exciting solutions on AWS or helping customers, he’s often found in the hills of British Columbia on his mountain bike. Liam points out that you cannot spell LIAM without IAM.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

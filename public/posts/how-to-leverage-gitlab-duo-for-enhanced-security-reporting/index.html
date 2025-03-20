@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;How to leverage GitLab Duo for enhanced security reporting&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;How to leverage GitLab Duo for enhanced security reporting&lt;/div&gt;</h1>
+			<b><time>03.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>Good security reporting is crucial to maintain a good security posture because it provides detailed insights into incidents. With this information, organizations can better understand vulnerabilities, improve defenses, and prevent similar threats in the future. At GitLab, the Security division has created use cases for GitLab Duo to improve reporting capabilities and enhance operational efficiency.</p>
+<h2 id="gitlab-duos-security-capabilities">GitLab Duo’s security capabilities</h2>
+<p>The GitLab Security division uses GitLab’s built-in incidents to manage and report on security incidents. Incidents are handled, documented, and resolved in GitLab, enabling the use of AI-driven GitLab Duo as an assistant when performing security operations like incident response.</p>
+<p>Particularly in incident analysis and reporting, GitLab Duo is highly efficient and accurate at creating proper documentation and is a great “pair programmer” when solving security incidents.</p>
+<h2 id="gitlab-duo-features-for-security-reporting">GitLab Duo features for security reporting</h2>
+<p>GitLab Duo offers many features that enhance security reporting:</p>
+<ul>
+<li><strong>Root Cause Analysis:</strong> GitLab Duo can explain vulnerabilities and understand the context of an incident issue, making it an excellent assistant for performing root cause analyses of security incidents.</li>
+<li><strong>Vulnerability Explanation:</strong> Provides detailed insights into identified vulnerabilities, including potential exploitation methods and remediation steps. This feature aids developers and security analysts in understanding and addressing security issues effectively.</li>
+<li><strong>Vulnerability Resolution:</strong> Assists in fixing vulnerabilities by generating merge requests that address the identified issues, streamlining the remediation process.</li>
+<li><strong>Code Explanation:</strong> Helps users comprehend specific code segments by offering clear explanations, which is particularly useful when dealing with complex or unfamiliar codebases.</li>
+<li><strong>Test Generation:</strong> Facilitates early bug detection by generating tests for selected code, ensuring that security vulnerabilities are identified and addressed promptly.</li>
+<li><strong>Refactor Code:</strong> Suggests improvements or refactoring for selected code to enhance its quality and maintainability, contributing to a more secure codebase.</li>
+<li><strong>Fix Code:</strong> Identifies and rectifies quality issues such as bugs or typos in the selected code, helping maintain a robust and secure codebase.</li>
+</ul>
+<h2 id="practical-use-cases">Practical use cases</h2>
+<p>For the purpose of demonstrating practical use cases, the Security Incident Response Team created a dummy incident with following limited information:</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/11oDN66YB8wqNRghFrAvNW/ebc585132780b51a43ec5e134c95155e/image6.png" alt="Incident report" />
+</figure>
+
+
+</p>
+<p>Several comments were added as the team would normally proceed:</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/6ysSZO7t9YuSJZbc6aeda5/8b4b0bfa2b1f01c6f4d95ad1940c2726/image1.png" alt="Comments added to report" />
+</figure>
+
+
+</p>
+<h3 id="incident-reporting">Incident reporting</h3>
+<p>GitLab Duo is able to comprehensively keep track of all information inside an incident issue, including the issue description, comments, and labels. When handling security incidents, information often is all over the place and can change over time. It can easily get lost or overlooked. GitLab Duo is excellent at finding relevant information again to create accurate incident reports.</p>
+<p>Navigate to your incident issue and open GitLab Duo Chat. You can engineer your prompt so that GitLab Duo takes your exact reporting requirements into account such as what sections you need and how they should be filled out. Here is an example of the prompt we use at GitLab Security:</p>
+<blockquote>
+<p>Required sections:</p>
+<ul>
+<li>Executive Summary - bottom-line-up-front that is adequate for an audience like senior leadership and CISO</li>
+<li>Mitigations &amp; Remediations</li>
+<li>Scope &amp; Impact (Environments, customers, team members)</li>
+<li>Cause</li>
+<li>Detection Capabilities</li>
+</ul>
+<p>Based on the issue and the required section, write the security incident report. Flag any missing information.</p></blockquote>
+<p>Below is GitLab Duo’s output that we can use to create our extensive incident report:</p>
+<p><!-- raw HTML omitted --> <!-- raw HTML omitted --></p>
+<h3 id="root-cause-analysis">Root Cause Analysis</h3>
+<p>GitLab Duo is able to explain vulnerabilities and can understand the context of an incident issue. These capabilities make GitLab Duo an excellent assistant to perform root cause analyses of security incidents.</p>
+<p>As seen above, GitLab Duo can write its own section on the cause of an incident based entirely on the issue contents. We can dig into this further with the assistance of GitLab Duo to identify several candidates for root cause(s).</p>
+<p>Our prompt is built as such:</p>
+<blockquote>
+<p>“The root cause of the incident was the exposure of a personal access token in CI job logs. The token was leaked in a project that was not included in the current list of projects for token detection, indicating a gap in the security monitoring process.” Name a few potential root causes for a PAT finding itself in CI job logs.</p></blockquote>
+<p>GitLab Duo’s response is the following:</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/2Zv4DEV3Gh1B1QZ3uFVVxx/c880d01bf6de22c0e08a51afbcdd7df5/image3.png" alt="GitLab Duo Root Cause Analysis response" />
+</figure>
+
+
+</p>
+<p>GitLab Duo Root Cause Analysis can help security teams identify avenues worth investigating. It has a pretty good grasp on security concepts and how Root Cause Analysis is led in general, so it can be a great assistant for these situations where the exact root of the problem is unclear.</p>
+<blockquote>
+<p>Learn more about GitLab Duo Root Cause Analysis.</p></blockquote>
+<h3 id="on-demand-updates">On-demand updates</h3>
+<p>Security incidents move fast and can be confusing, and information is constantly changing and shifting around. Higher severity incidents require a certain degree of thoroughness when it comes to reporting to senior leadership, especially when the audience is at the Director+ level. Engineers who are in the midst of a security incident can find it difficlut to condense the information such that it is digestable for executives.</p>
+<p>We saw above that GitLab Duo is capable of delivering a pretty good executive summary. When the incident is ongoing, we need to deliver regular updates to senior leadership on the incident status and next steps. GitLab Duo is a great help for that, as well. If information is scattered across the issue in the form of a description or comments, GitLab Duo can help reassemble this information into the “bottom-line-up-front,” or BLUF summary, we need for executive updates.</p>
+<p>We’ve taken the same incident right before token revocation and asked GitLab Duo for a BLUF summary where the audience is the Director of Security Operations.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/3C4tFAXNJN7cmkiX3OvH4s/747d0129f9bac0a3a8f11582ac52a08f/image4.png" alt="Executive Summary - GitLab Duo" />
+</figure>
+
+
+</p>
+<h2 id="getting-started-with-gitlab-duo-for-security">Getting started with GitLab Duo for security</h2>
+<p>GitLab Security has automated several parts of the reporting process with the help of GitLab Duo. But to get started, all you need is access to GitLab Duo Chat. GitLab Duo Chat can be your well-informed assistant for many security reporting cases and post-mortem analyses.</p>
+<h2 id="whats-next-for-gitlab-duo">What’s next for GitLab Duo?</h2>
+<p>GitLab is committed to continuously enhancing GitLab Duo’s capabilities. Future developments aim to integrate AI-driven features more deeply into the security workflow, providing proactive detection and resolution of vulnerabilities, streamlined incident management, and comprehensive reporting tools. These advancements will further empower security teams to maintain robust security postures and respond effectively to emerging threats.</p>
+<blockquote>
+<p>Try GitLab Duo for 60 days for free!</p></blockquote>
+<p>Good security reporting is crucial to maintain a good security posture because it provides detailed insights into incidents. With this information, organizations can better understand vulnerabilities, improve defenses, and prevent similar threats in the future. At GitLab, the Security division has created use cases for GitLab Duo to improve reporting capabilities and enhance operational efficiency.</p>
+<h2 id="gitlab-duos-security-capabilities-1">GitLab Duo’s security capabilities</h2>
+<p>The GitLab Security division uses GitLab’s built-in incidents to manage and report on security incidents. Incidents are handled, documented, and resolved in GitLab, enabling the use of AI-driven GitLab Duo as an assistant when performing security operations like incident response.</p>
+<p>Particularly in incident analysis and reporting, GitLab Duo is highly efficient and accurate at creating proper documentation and is a great “pair programmer” when solving security incidents.</p>
+<h2 id="gitlab-duo-features-for-security-reporting-1">GitLab Duo features for security reporting</h2>
+<p>GitLab Duo offers many features that enhance security reporting:</p>
+<ul>
+<li><strong>Root Cause Analysis:</strong> GitLab Duo can explain vulnerabilities and understand the context of an incident issue, making it an excellent assistant for performing root cause analyses of security incidents.</li>
+<li><strong>Vulnerability Explanation:</strong> Provides detailed insights into identified vulnerabilities, including potential exploitation methods and remediation steps. This feature aids developers and security analysts in understanding and addressing security issues effectively.</li>
+<li><strong>Vulnerability Resolution:</strong> Assists in fixing vulnerabilities by generating merge requests that address the identified issues, streamlining the remediation process.</li>
+<li><strong>Code Explanation:</strong> Helps users comprehend specific code segments by offering clear explanations, which is particularly useful when dealing with complex or unfamiliar codebases.</li>
+<li><strong>Test Generation:</strong> Facilitates early bug detection by generating tests for selected code, ensuring that security vulnerabilities are identified and addressed promptly.</li>
+<li><strong>Refactor Code:</strong> Suggests improvements or refactoring for selected code to enhance its quality and maintainability, contributing to a more secure codebase.</li>
+<li><strong>Fix Code:</strong> Identifies and rectifies quality issues such as bugs or typos in the selected code, helping maintain a robust and secure codebase.</li>
+</ul>
+<h2 id="practical-use-cases-1">Practical use cases</h2>
+<p>For the purpose of demonstrating practical use cases, the Security Incident Response Team created a dummy incident with following limited information:</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/11oDN66YB8wqNRghFrAvNW/ebc585132780b51a43ec5e134c95155e/image6.png" alt="Incident report" />
+</figure>
+
+
+</p>
+<p>Several comments were added as the team would normally proceed:</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/6ysSZO7t9YuSJZbc6aeda5/8b4b0bfa2b1f01c6f4d95ad1940c2726/image1.png" alt="Comments added to report" />
+</figure>
+
+
+</p>
+<h3 id="incident-reporting-1">Incident reporting</h3>
+<p>GitLab Duo is able to comprehensively keep track of all information inside an incident issue, including the issue description, comments, and labels. When handling security incidents, information often is all over the place and can change over time. It can easily get lost or overlooked. GitLab Duo is excellent at finding relevant information again to create accurate incident reports.</p>
+<p>Navigate to your incident issue and open GitLab Duo Chat. You can engineer your prompt so that GitLab Duo takes your exact reporting requirements into account such as what sections you need and how they should be filled out. Here is an example of the prompt we use at GitLab Security:</p>
+<blockquote>
+<p>Required sections:</p>
+<ul>
+<li>Executive Summary - bottom-line-up-front that is adequate for an audience like senior leadership and CISO</li>
+<li>Mitigations &amp; Remediations</li>
+<li>Scope &amp; Impact (Environments, customers, team members)</li>
+<li>Cause</li>
+<li>Detection Capabilities</li>
+</ul>
+<p>Based on the issue and the required section, write the security incident report. Flag any missing information.</p></blockquote>
+<p>Below is GitLab Duo’s output that we can use to create our extensive incident report:</p>
+<p><!-- raw HTML omitted --> <!-- raw HTML omitted --></p>
+<h3 id="root-cause-analysis-1">Root Cause Analysis</h3>
+<p>GitLab Duo is able to explain vulnerabilities and can understand the context of an incident issue. These capabilities make GitLab Duo an excellent assistant to perform root cause analyses of security incidents.</p>
+<p>As seen above, GitLab Duo can write its own section on the cause of an incident based entirely on the issue contents. We can dig into this further with the assistance of GitLab Duo to identify several candidates for root cause(s).</p>
+<p>Our prompt is built as such:</p>
+<blockquote>
+<p>“The root cause of the incident was the exposure of a personal access token in CI job logs. The token was leaked in a project that was not included in the current list of projects for token detection, indicating a gap in the security monitoring process.” Name a few potential root causes for a PAT finding itself in CI job logs.</p></blockquote>
+<p>GitLab Duo’s response is the following:</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/2Zv4DEV3Gh1B1QZ3uFVVxx/c880d01bf6de22c0e08a51afbcdd7df5/image3.png" alt="GitLab Duo Root Cause Analysis response" />
+</figure>
+
+
+</p>
+<p>GitLab Duo Root Cause Analysis can help security teams identify avenues worth investigating. It has a pretty good grasp on security concepts and how Root Cause Analysis is led in general, so it can be a great assistant for these situations where the exact root of the problem is unclear.</p>
+<blockquote>
+<p>Learn more about GitLab Duo Root Cause Analysis.</p></blockquote>
+<h3 id="on-demand-updates-1">On-demand updates</h3>
+<p>Security incidents move fast and can be confusing, and information is constantly changing and shifting around. Higher severity incidents require a certain degree of thoroughness when it comes to reporting to senior leadership, especially when the audience is at the Director+ level. Engineers who are in the midst of a security incident can find it difficlut to condense the information such that it is digestable for executives.</p>
+<p>We saw above that GitLab Duo is capable of delivering a pretty good executive summary. When the incident is ongoing, we need to deliver regular updates to senior leadership on the incident status and next steps. GitLab Duo is a great help for that, as well. If information is scattered across the issue in the form of a description or comments, GitLab Duo can help reassemble this information into the “bottom-line-up-front,” or BLUF summary, we need for executive updates.</p>
+<p>We’ve taken the same incident right before token revocation and asked GitLab Duo for a BLUF summary where the audience is the Director of Security Operations.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/3C4tFAXNJN7cmkiX3OvH4s/747d0129f9bac0a3a8f11582ac52a08f/image4.png" alt="Executive Summary - GitLab Duo" />
+</figure>
+
+
+</p>
+<h2 id="getting-started-with-gitlab-duo-for-security-1">Getting started with GitLab Duo for security</h2>
+<p>GitLab Security has automated several parts of the reporting process with the help of GitLab Duo. But to get started, all you need is access to GitLab Duo Chat. GitLab Duo Chat can be your well-informed assistant for many security reporting cases and post-mortem analyses.</p>
+<h2 id="whats-next-for-gitlab-duo-1">What’s next for GitLab Duo?</h2>
+<p>GitLab is committed to continuously enhancing GitLab Duo’s capabilities. Future developments aim to integrate AI-driven features more deeply into the security workflow, providing proactive detection and resolution of vulnerabilities, streamlined incident management, and comprehensive reporting tools. These advancements will further empower security teams to maintain robust security postures and respond effectively to emerging threats.</p>
+<blockquote>
+<p>Try GitLab Duo for 60 days for free!</p></blockquote>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+---
+title: "FIPS 140-3 certified modules now available for Ubuntu 22.04 LTS"
+date: 2025-02-06
+---
+
+We are pleased to announce that the cryptographic modules for Ubuntu 22.04 LTS (Jammy Jellyfish) have been certified by NIST’s CMVP and are now available for use. This is great news for anyone operating within the US Federal and Defense sectors or providing online services to the US Government.
+
+You can enable FIPS 140-3 using the Ubuntu Pro client. It’s available to Ubuntu Pro subscribers, whether you’re using it personally or for your organization. Ubuntu FIPS 140-3 images are also available as pre-built on the major public cloud platform marketplaces.
+
+![](https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_1280,h_720/https://ubuntu.com/wp-content/uploads/bb44/Three-logos-only-Dark.png)
+
+With FIPS 140-2 being phased out, this certification ensures that Ubuntu users can stay up to date with the latest standards. And we’re not stopping here—our team is already working to bring FIPS 140-3 certification to Ubuntu 24.04 LTS.
+
+## Modules and hardware platforms
+
+The following certified cryptographic modules are available with Ubuntu 22.04 LTS:
+
+- OpenSSL v3.0.5
+- Libgcrypt v1.9.4
+- GnuTLS v3.7.3
+- Linux kernel v5.15.0
+- StrongSwan v5.9.5
+
+These modules have been developed and tested on a range of hardware platforms:
+
+- Intel/AMD x86\_64
+- ARM64
+- IBM z15
+
+## Interim Validation
+
+In order to process the backlog of FIPS 140-3 modules awaiting validation, NIST introduced an interim validation scheme starting in June 2024. Under this scheme, NIST performed minimal validation of the modules, relying instead on the rigour of the CSTL lab tests. The interim certificates are valid for 2 years, and can be converted to full 5-year certificates with a further Security Policy update.
+
+Canonical’s FIPS certificates for Ubuntu 22.04 are currently interim certificates. We are working with our lab partner, atsec information security, to convert them to full 5-year ones. We’ll make an announcement as soon as this work is completed.
+
+## Customized kernels are available for all hyperscalers
+
+Canonical builds and maintains a large number of Linux kernels, each of which are tailored to specific hardware and operating environments. The generic kernel that ships with every standard version of Ubuntu supports a wide range of computers and hardware devices, and the FIPS kernel is based on this generic kernel. Essentially, we take the upstream kernel source code, apply the Ubuntu-specific packages to build the generic kernel, and then apply the FIPS patches to build the FIPS kernel.
+
+For cloud platforms – such as AWS, Microsoft Azure, Google Cloud – we know in advance whether certain hardware features will be available, and so we produce customized kernels for each cloud environment. These custom kernels are tailored to each unique hardware configuration in order to maximize performance and compatibility. The cloud-specific code is also applied as a set of patches that build on top of the generic kernel.
+
+We produce FIPS kernels for these cloud platforms, and the patches are applied as follows: start with the upstream kernel code, apply Ubuntu-specific patches to get to the generic configuration, apply cloud-specific patches to get to the cloud configuration, apply security fixes, and finally apply the FIPS patches. This means that the cloud FIPS kernels are derived from the generic kernel.
+
+## Derivative module certification pending
+
+As the cloud kernels are derivatives of the generic kernel, Canonical has previously taken the approach of certifying them for FIPS 140 using the “1-SUB” process. This is a lightweight validation step for cryptographic modules in instances where an existing module receives some non-crypto-related code changes but the cryptographic functionality remains unchanged. With this approach, minimal validation is undertaken, and the underlying security policies are updated to include the derivative modules.
+
+However, for the Ubuntu 22.04 FIPS modules and their interim validation status, there isn’t currently a mechanism to submit derivative modules using the “1-SUB” process. As such, the cloud kernels are not included in the Security Policy for the generic kernel.
+
+Canonical is building the cloud kernels nonetheless, and we are making these available to customers under the same guarantees as our updated FIPS modules. The FIPS patches for the cloud kernels are exactly the same as for the generic kernel, which has already undergone rigorous testing and validation. We are simply applying non-crypto-related hardware compatibility patches into the code.
+
+In a scenario where we could easily submit the derivative cloud kernels for the “1-SUB” update, the code would undergo only minimal further validation. Most of the process work for a “1-SUB” is related to updating the certificates and Security Policy. Therefore, the value of the derivative module certificate still lies within the validation work that was performed on the original module, in this case the generic kernel.
+
+As the cloud kernel customizations do not alter the crypto-related code which has been assessed for FIPS 140-3, we are able to make these available for use right now, through our Ubuntu Pro FIPS images, which are available from the cloud marketplaces. However, we’d always recommend that customers check the specific FIPS requirements with their auditors and validation partners.
+
+## Security patching
+
+We outlined in our FedRAMP updates blog that providing our customers with the fully patched modules is our top priority, and we will no longer be making unpatched modules available, as running code with known high-impact vulnerabilities is a security anti-pattern.
+
+## What should users on Ubuntu 16.04, 18.04 and 20.04 do now?
+
+Ubuntu LTS releases with an Ubuntu Pro subscription receive up to 12 years of security maintenance fixes for all packages within the distribution. As the FIPS modules are built on top of existing packages within Ubuntu, we will also provide security fixes to the FIPS modules (via “**fips-updates**”) for the lifetime of the distribution.
+
+NIST certificates are valid for 5 years (aside from the interim certificates for Ubuntu 22.04 which are valid for 2 years, before they are converted to full 5 year certificates). Canonical will periodically re-validate the FIPS modules and obtain new certificates to ensure that, going forward, the modules will be backed by current and valid certificates.
+
+However, for existing FIPS 140-2 modules – relevant to users of Ubuntu 16.04 (Xenial Xerus), 18.04 (Bionic Beaver), and 20.04 (Focal Fossa) – we can’t continue to renew these certificates against the older standard (as it is being phased out), and upgrading them to FIPS 140-3 is not commercially feasible. We will continue to provide security updates, and the CMVP Applicability of Validated Modules guidance allows you to continue to use modules with expired certificates for existing deployments, so there is no need to decommission systems containing FIPS 140-2 modules just yet. New deployments should take advantage of the new FIPS 140-3 certified modules available with Ubuntu 22.04 LTS.
+
+We recommend following Canonical’s LTS release cycle for your deployments. This brings up to 12 years of security patches, although with the delays in FIPS validation the usable time period will be slightly reduced for FIPS users. Ubuntu 16.04 will come to the end of the LTS standard 10 year support in 2026, so users of Ubuntu 16.04 should be planning to upgrade soon. Ubuntu Pro Legacy Support adds a further 2 years of security patching.
+
+![](https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_1200,h_400/https://ubuntu.com/wp-content/uploads/55ac/FIPS-140-3-webinar.png)
+
+## Conclusion
+
+Enterprise and government users have been asking for FIPS 140-3 certified crypto modules since the new standard was published, and we’re pleased to announce that these modules are now available with Ubuntu 22.04 LTS.  These FIPS 140-3 modules enable customers to deploy more up-to-date systems and stay ahead of security and compliance requirements for many years to come, and upgrade from systems still using the legacy 140-2 modules.
+
+The FIPS 140-3 modules are available now with Ubuntu Pro, both in the public cloud (look for “Ubuntu Pro FIPS” pre-built images published by Canonical), or on-premise (using the Pro client).
+
+To learn more about FIPS 140-3 and how to get up and running on Ubuntu 22.04 LTS, we are hosting a webinar on February 13, 2025 – this will also be available on-demand afterwards in case you missed it.
+
+If you have any questions, feel free to contact us here.
+
+Go to Source

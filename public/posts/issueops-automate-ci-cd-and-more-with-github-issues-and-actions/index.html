@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>IssueOps: Automate CI/CD (and more!) with GitHub Issues and Actions</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>IssueOps: Automate CI/CD (and more!) with GitHub Issues and Actions</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>A look into building IssueOps workflows on GitHub to do everything from CI/CD to handling approvals and more.</p>
+<p>The post IssueOps: Automate CI/CD (and more!) with GitHub Issues and Actions appeared first on The GitHub Blog.</p>
+<p>Software development is filled with repetitive tasks—managing issues, handling approvals, triggering CI/CD workflows, and more. But what if you could automate these types of tasks directly within GitHub Issues? That’s the promise of <strong>IssueOps</strong>, a methodology that turns GitHub Issues into a command center for automation.</p>
+<p>Whether you’re a solo developer or part of an engineering team, IssueOps helps you streamline operations without ever leaving your repository.</p>
+<p>In this article, I’ll explore the concept of IssueOps using state-machine terminology and strategies to help you work more efficiently on GitHub. After all, who doesn’t love automation?</p>
+<h2 id="what-is-issueops">What is IssueOps?</h2>
+<p>IssueOps is the practice of using GitHub Issues, GitHub Actions, and pull requests (PR) as an interface for automating workflows. Instead of switching between tools or manually triggering actions, you can use issue comments, labels, and state changes to kick off CI/CD pipelines, assign tasks, and even deploy applications.</p>
+<p>Much like the various other <em>*Ops</em> paradigms (ChatOps, ClickOps, and so on), IssueOps is a collection of tools, workflows, and concepts that, when applied to GitHub Issues, can automate mundane, repetitive tasks. The flexibility and power of issues, along with their relationship to pull requests, create a near limitless number of possibilities, such as managing approvals and deployments. All of this can really help to simplify your workflows on GitHub. I’m speaking from personal experience here.</p>
+<p>It’s important to note that IssueOps isn’t just a DevOps thing! Where DevOps offers a methodology to bring developers and operations into closer alignment, IssueOps is a workflow automation practice centered around GitHub Issues. IssueOps lets you run anything from complex CI/CD pipelines to a bed and breakfast reservation system. If you can interact with it via an API, there’s a good chance you can build it with IssueOps!</p>
+<h2 id="so-why-use-issueops">So, why use IssueOps?</h2>
+<p>There are lots of benefits to utilizing IssueOps. Here’s how it’s useful in practice:</p>
+<ul>
+<li>
+<p><strong>It’s event-driven, so you can automate the boring stuff:</strong> IssueOps lets you automate workflows directly from GitHub Issues and pull requests, turning everyday interactions—from kicking off a CI/CD pipeline and managing approvals to updating project boards—into powerful triggers for GitHub Actions.</p>
+</li>
+<li>
+<p><strong>It’s customizable, so you can tailor workflows to your needs:</strong> No two teams work the same way, and IssueOps is flexible enough to adapt. Whether you’re automating bug triage or triggering deployments, you can customize workflows based on event type and data provided.</p>
+</li>
+<li>
+<p><strong>It’s transparent, so you can keep a record:</strong> All actions taken on an issue are logged in its timeline, creating an easy-to-follow record of what happened and when.</p>
+</li>
+<li>
+<p><strong>It’s immutable, so you do an audit whenever you need:</strong> Because IssueOps uses GitHub Issues and pull requests as a source of truth, every action leaves a record. No more chasing approvals in Slack or manually triggering workflows: IssueOps keeps everything structured, automated, and auditable right inside GitHub.</p>
+</li>
+</ul>
+<p>Our quickstart guide to IssueOps</p>
+<ul>
+<li>
+<p><strong>Step 1: Define your triggers</strong><br>
+Identify the actions that should kick off your workflows—like opening an issue, adding a label, or merging a pull request. These events can serve as triggers for GitHub Actions.</p>
+</li>
+<li>
+<p><strong>Step 2: Configure GitHub Actions</strong></p>
+<p>Use GitHub Actions to define what happens when an event occurs. For example, if an issue is labeled deploy, you could trigger a deployment script. YAML never looked so good.</p>
+</li>
+<li>
+<p><strong>Step 3: Test and iterate</strong></p>
+<p>Like any good automation, IssueOps workflows should be tested and refined. Start small, see what works, and expand from there.</p>
+</li>
+</ul>
+<p><strong>Let’s go</strong>: Learn more in our repository.</p>
+<h2 id="defining-issueops-workflows-and-how-theyre-like-finite-state-machines">Defining IssueOps workflows and how they’re like finite-state machines</h2>
+<p>Most IssueOps workflows follow the same basic pattern:</p>
+<ol>
+<li>A user opens an issue and provides information about a request</li>
+<li>The issue is validated to ensure it contains the required information</li>
+<li>The issue is submitted for processing</li>
+<li>Approval is requested from an authorized user or team</li>
+<li>The request is processed and the issue is closed</li>
+</ol>
+<p>Suppose you’re an administrator of an organization and want to reduce the overhead of managing team members. In this instance, you could use IssueOps to build an automated membership request and approval process. Within a workflow like this, you’d have several core steps:</p>
+<ol>
+<li>A user creates a request to be added to a team</li>
+<li>The request is validated</li>
+<li>The request is submitted for approval</li>
+<li>An administrator approves or denies this request</li>
+<li>The request is processed
+<ol>
+<li>If <em>approved</em>, the user is added to the team</li>
+<li>If <em>denied</em>, the user is not added to the team</li>
+</ol>
+</li>
+<li>The user is notified of the outcome</li>
+</ol>
+<p>When designing your own IssueOps workflows, it can be very helpful to think of them as a finite-state machine: a model for how objects move through a series of states in response to external events. Depending on certain rules defined within the state machine, a number of different actions can take place in response to state changes. If this is a little too complex, you can also think of it like a flow chart.</p>
+<p>To apply this comparison to IssueOps, an issue is the <em>object</em> that is processed by a state machine. It changes <em>state</em> in response to <em>events</em>. As the object changes state, certain <em>actions</em> may be performed as part of a <em>transition</em>, provided any required conditions (<em>guards</em>) are met. Once an <em>end state</em> is reached, the issue can be closed.</p>
+<p>This breaks down into a few key concepts:</p>
+<ul>
+<li><strong>State</strong>: A point in an object’s lifecycle that satisfies certain condition(s).</li>
+<li><strong>Event</strong>: An external occurrence that triggers a state change.</li>
+<li><strong>Transition</strong>: A link between two states that, when traversed by an object, will cause certain action(s) to be performed.</li>
+<li><strong>Action</strong>: An atomic task that is performed when a transition is taken.</li>
+<li><strong>Guard</strong>: A condition that is evaluated when a trigger event occurs. A transition is taken only if all associated guard condition(s) are met.</li>
+</ul>
+<p>Here’s a simple state diagram for the example I discussed above.</p>
+<p>
+<figure>
+  <img src="https://github.blog/wp-content/uploads/2025/03/state-machine.png?resize=916%2C1588" alt="A state diagram featuring a request approval process driven by an IssueOps workflow on GitHub. This workflow uses a combination of GitHub Issues and GitHub Actions to automate how team members are added to a given project. " />
+</figure>
+
+
+</p>
+<p>Now, let’s dive into the state machine in more detail!</p>
+<h2 id="key-concepts-behind-state-machines">Key concepts behind state machines</h2>
+<p>The benefit of breaking your workflow down into these components is that you can look for edge cases, enforce conditions, and create a robust, reliable result.</p>
+<h3 id="states"><strong>States</strong></h3>
+<p>Within a state machine, a <em>state</em> defines the current status of an object. As the object transitions through the state machine, it will change states in response to external events. When building IssueOps workflows, common states for issues include opened, submitted, approved, denied, and closed.</p>
+<p>These should suffice as the core states to consider when building our workflows in our team membership example above.</p>
+<h3 id="events"><strong>Events</strong></h3>
+<p>In a state machine, an <em>event</em> can be any form of interaction with the object and its current state. When building your own IssueOps, you should consider events from both the user and GitHub points of view.</p>
+<p>In our team membership request example, there are several events that can trigger a change in state. The request can be created, submitted, approved, denied, or processed.</p>
+<p>In this example, a user interacting with an issue—such as adding labels, commenting, or updating milestones—can also change its state. In GitHub Actions, there are many events that can trigger your workflows (see events that trigger workflows).</p>
+<p>Here are a few interactions, or events, that would affect our example IssueOps workflow when it comes to managing team members:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left"><strong>Request</strong></th>
+          <th style="text-align: left"><strong>Event</strong></th>
+          <th style="text-align: left"><strong>State</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Request is created</td>
+          <td style="text-align: left"><code>issues</code></td>
+          <td style="text-align: left"><code>opened</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Request is approved</td>
+          <td style="text-align: left"><code>issue_comment</code></td>
+          <td style="text-align: left"><code>created</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Request is denied</td>
+          <td style="text-align: left"><code>issue_comment</code></td>
+          <td style="text-align: left"><code>created</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>As you can see, the same GitHub workflow trigger can apply to multiple events in our state machine. Because of this, validation is key. Within your workflows, you should check both the type of event and the information provided by the user. In this case, we can conditionally trigger different workflow steps based on the content of the <code>issue_comment</code> event.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>jobs:
+</span></span><span style="display:flex;"><span>  approve:
+</span></span><span style="display:flex;"><span>    name: Process Approval
+</span></span><span style="display:flex;"><span>    runs-on: ubuntu-latest
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    if: ${{ startsWith(github.event.comment.body, &#39;.approve&#39;) }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    # ...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  deny:
+</span></span><span style="display:flex;"><span>    name: Process Denial
+</span></span><span style="display:flex;"><span>    runs-on: ubuntu-latest
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    if: ${{ startsWith(github.event.comment.body, &#39;.deny&#39;) }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    # ...
+</span></span></code></pre></div><h3 id="transitions">Transitions</h3>
+<p>A <em>transition</em> is simply the change from one state to another. In our example, for instance, a transition occurs when someone opens an issue. When a request meets certain conditions, or guards, the change in state can take place. When the transition occurs, some actions or processing may take place, as well.</p>
+<p>With our example workflow, you can think of the transitions themselves as the lines connecting different nodes in the state diagram. Or the lines connecting boxes in a flow chart.</p>
+<h3 id="guards">Guards</h3>
+<p><em>Guards</em> are conditions that must be verified before an event can trigger a transition to a different state. In our case, we know the following guards must be in place:</p>
+<ul>
+<li>A request should not transition to an Approved state unless an administrator comments <code>.approve</code> on the issue.</li>
+<li>A request should not transition to a Denied state unless an administrator comments <code>.deny</code> on the issue.</li>
+</ul>
+<p>What about after the request is approved and the user is added to the team? This is referred to as an <em>unguarded transition</em>. There are no conditions that must be met, so the transition happens immediately!</p>
+<h3 id="actions"><strong>Actions</strong></h3>
+<p>Lastly, <em>actions</em> are specific tasks that are performed during a transition. They may affect the object itself, but this is not a requirement in our state machine. In our example, the following actions may take place at different times:</p>
+<ul>
+<li>Administrators are notified that a request has been submitted</li>
+<li>The user is added to the requested team</li>
+<li>The user is notified of the outcome</li>
+</ul>
+<h2 id="a-real-world-example-building-a-team-membership-workflow-with-issueops">A real-world example: Building a team membership workflow with IssueOps</h2>
+<p>Now that all of the explanation is out of the way, let’s dive into building our example! For reference, we’ll focus on the GitHub Actions workflows involved in building this automation. There are some additional repository and permissions settings involved that are discussed in more detail in these IssueOps docs.</p>
+<h3 id="step-1-issue-form-template">Step 1: Issue form template</h3>
+<p>GitHub issue forms let you create standardized, formatted issues based on a set of form fields. Combined with the issue-ops/parser action, you can get reliable, machine-readable JSON from issue body Markdown. For our example, we are going to create a simple form that accepts a single input: the team where we want to add the user.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>name: Team Membership Request
+</span></span><span style="display:flex;"><span>description: Submit a new membership request
+</span></span><span style="display:flex;"><span>title: New Team Membership Request
+</span></span><span style="display:flex;"><span>labels:
+</span></span><span style="display:flex;"><span>  - team-membership
+</span></span><span style="display:flex;"><span>body:
+</span></span><span style="display:flex;"><span>  - type: input
+</span></span><span style="display:flex;"><span>    id: team
+</span></span><span style="display:flex;"><span>    attributes:
+</span></span><span style="display:flex;"><span>      label: Team Name
+</span></span><span style="display:flex;"><span>      description: The team name you would like to join
+</span></span><span style="display:flex;"><span>      placeholder: my-team
+</span></span><span style="display:flex;"><span>    validations:
+</span></span><span style="display:flex;"><span>      required: true
+</span></span></code></pre></div><p>When issues are created using this form, they will be parsed into JSON, which can then be passed to the rest of the IssueOps workflow.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  &#34;team&#34;: &#34;my-team&#34;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="step-2-issue-validation">Step 2: Issue validation</h3>
+<p>With a machine-readable issue body, we can run additional validation checks to ensure the information provided follows any rules we might have in place. For example, we can’t automatically add a user to a team if the team doesn’t exist yet! That is where the issue-ops/validator action comes into play. Using an issue form template and a custom validation script, we can confirm the existence of the team ahead of time.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> (<span style="color:#a6e22e">field</span>) =&gt; {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">Octokit</span> } <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;@octokit/rest&#39;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">core</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;@actions/core&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">github</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Octokit</span>({
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">auth</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">core</span>.<span style="color:#a6e22e">getInput</span>(<span style="color:#e6db74">&#39;github-token&#39;</span>, { <span style="color:#a6e22e">required</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span> })
+</span></span><span style="display:flex;"><span>  })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Check if the team exists
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">core</span>.<span style="color:#a6e22e">info</span>(<span style="color:#e6db74">`Checking if team &#39;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">field</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#39; exists`</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">github</span>.<span style="color:#a6e22e">rest</span>.<span style="color:#a6e22e">teams</span>.<span style="color:#a6e22e">getByName</span>({
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">org</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">GITHUB_REPOSITORY_OWNER</span> <span style="color:#f92672">??</span> <span style="color:#e6db74">&#39;&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">team_slug</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">field</span>
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">core</span>.<span style="color:#a6e22e">info</span>(<span style="color:#e6db74">`Team &#39;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">field</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#39; exists`</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#39;success&#39;</span>
+</span></span><span style="display:flex;"><span>  } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">error</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">error</span>.<span style="color:#a6e22e">status</span> <span style="color:#f92672">===</span> <span style="color:#ae81ff">404</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// If the team does not exist, return an error message
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">core</span>.<span style="color:#a6e22e">error</span>(<span style="color:#e6db74">`Team &#39;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">field</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#39; does not exist`</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#e6db74">`Team &#39;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">field</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#39; does not exist`</span>
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// Otherwise, something else went wrong...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">throw</span> <span style="color:#a6e22e">error</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>When included in our IssueOps workflow, this adds any validation error(s) to the comment on the issue.</p>
+<h3 id="step-3-issue-workflows">Step 3: Issue workflows</h3>
+<p>The main “entrypoint” of this workflow occurs when a user creates or edits their team membership request issue. This workflow should focus heavily on validating any user inputs! For example, what should happen if the user inputs a team that does not exist?</p>
+<p>In our state machine, this workflow is responsible for handling everything up to the <em>opened</em> state. Any time an issue is created, edited, or updated, it will re-run validation to ensure the request is ready to be processed. In this case, an additional guard condition is introduced. Before the request can be submitted, the user must comment with <code>.submit</code> after validation has passed.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>name: Process Issue Open/Edit
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>on:
+</span></span><span style="display:flex;"><span>  issues:
+</span></span><span style="display:flex;"><span>    types:
+</span></span><span style="display:flex;"><span>      - opened
+</span></span><span style="display:flex;"><span>      - edited
+</span></span><span style="display:flex;"><span>      - reopened
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>permissions:
+</span></span><span style="display:flex;"><span>  contents: read
+</span></span><span style="display:flex;"><span>  id-token: write
+</span></span><span style="display:flex;"><span>  issues: write
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>jobs:
+</span></span><span style="display:flex;"><span>  validate:
+</span></span><span style="display:flex;"><span>    name: Validate Request
+</span></span><span style="display:flex;"><span>    runs-on: ubuntu-latest
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    # This job should only be run on issues with the `team-membership` label.
+</span></span><span style="display:flex;"><span>    if: ${{ contains(github.event.issue.labels.*.name, &#39;team-membership&#39;) }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    steps:
+</span></span><span style="display:flex;"><span>      # This is required to ensure the issue form template and any validation
+</span></span><span style="display:flex;"><span>      # scripts are included in the workspace.
+</span></span><span style="display:flex;"><span>      - name: Checkout
+</span></span><span style="display:flex;"><span>        id: checkout
+</span></span><span style="display:flex;"><span>        uses: actions/checkout@v4
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # Since this workflow includes custom validation scripts, we need to
+</span></span><span style="display:flex;"><span>      # install Node.js and any dependencies.
+</span></span><span style="display:flex;"><span>      - name: Setup Node.js
+</span></span><span style="display:flex;"><span>        id: setup-node
+</span></span><span style="display:flex;"><span>        uses: actions/setup-node@v4
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # Install dependencies from `package.json`.
+</span></span><span style="display:flex;"><span>      - name: Install Dependencies
+</span></span><span style="display:flex;"><span>        id: install
+</span></span><span style="display:flex;"><span>        run: npm install
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # GitHub App authentication is required if you want to interact with any
+</span></span><span style="display:flex;"><span>      # resources outside the scope of the repository this workflow runs in.
+</span></span><span style="display:flex;"><span>      - name: Get GitHub App Token
+</span></span><span style="display:flex;"><span>        id: token
+</span></span><span style="display:flex;"><span>        uses: actions/create-github-app-token@v1
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          app-id: ${{ vars.ISSUEOPS_APP_ID }}
+</span></span><span style="display:flex;"><span>          private-key: ${{ secrets.ISSUEOPS_APP_PRIVATE_KEY }}
+</span></span><span style="display:flex;"><span>          owner: ${{ github.repository_owner }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # Remove any labels and start fresh. This is important because the
+</span></span><span style="display:flex;"><span>      # issue may have been closed and reopened.
+</span></span><span style="display:flex;"><span>      - name: Remove Labels
+</span></span><span style="display:flex;"><span>        id: remove-label
+</span></span><span style="display:flex;"><span>        uses: issue-ops/labeler@v2
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          action: remove
+</span></span><span style="display:flex;"><span>          github_token: ${{ steps.token.outputs.token }}
+</span></span><span style="display:flex;"><span>          labels: |
+</span></span><span style="display:flex;"><span>            validated
+</span></span><span style="display:flex;"><span>            approved
+</span></span><span style="display:flex;"><span>            denied
+</span></span><span style="display:flex;"><span>          issue_number: ${{ github.event.issue.number }}
+</span></span><span style="display:flex;"><span>          repository: ${{ github.repository }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # Parse the issue body into machine-readable JSON, so that it can be
+</span></span><span style="display:flex;"><span>      # processed by the rest of the workflow.
+</span></span><span style="display:flex;"><span>      - name: Parse Issue Body
+</span></span><span style="display:flex;"><span>        id: parse
+</span></span><span style="display:flex;"><span>        uses: issue-ops/parser@v4
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          body: ${{ github.event.issue.body }}
+</span></span><span style="display:flex;"><span>          issue-form-template: team-membership.yml
+</span></span><span style="display:flex;"><span>          workspace: ${{ github.workspace }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # Validate early and often! Validation should be run any time an issue is
+</span></span><span style="display:flex;"><span>      # interacted with, to ensure that any changes to the issue body are valid.
+</span></span><span style="display:flex;"><span>      - name: Validate Request
+</span></span><span style="display:flex;"><span>        id: validate
+</span></span><span style="display:flex;"><span>        uses: issue-ops/validator@v3
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          add-comment: true
+</span></span><span style="display:flex;"><span>          github-token: ${{ steps.token.outputs.token }}
+</span></span><span style="display:flex;"><span>          issue-form-template: team-membership.yml
+</span></span><span style="display:flex;"><span>          issue-number: ${{ github.event.issue.number }}
+</span></span><span style="display:flex;"><span>          parsed-issue-body: ${{ steps.parse.outputs.json }}
+</span></span><span style="display:flex;"><span>          workspace: ${{ github.workspace }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # If validation passes, add the validated label to the issue.
+</span></span><span style="display:flex;"><span>      - if: ${{ steps.validate.outputs.result == &#39;success&#39; }}
+</span></span><span style="display:flex;"><span>        name: Add Validated Label
+</span></span><span style="display:flex;"><span>        id: add-label
+</span></span><span style="display:flex;"><span>        uses: issue-ops/labeler@v2
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          action: add
+</span></span><span style="display:flex;"><span>          github_token: ${{ steps.token.outputs.token }}
+</span></span><span style="display:flex;"><span>          labels: |
+</span></span><span style="display:flex;"><span>            validated
+</span></span><span style="display:flex;"><span>          issue_number: ${{ github.event.issue.number }}
+</span></span><span style="display:flex;"><span>          repository: ${{ github.repository }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # The `issue-ops/validator` action will automatically notify the user that
+</span></span><span style="display:flex;"><span>      # the request was validated. However, you can optionally add instruction
+</span></span><span style="display:flex;"><span>      # on what to do next.
+</span></span><span style="display:flex;"><span>      - if: ${{ steps.validate.outputs.result == &#39;success&#39; }}
+</span></span><span style="display:flex;"><span>        name: Notify User (Success)
+</span></span><span style="display:flex;"><span>        id: notify-success
+</span></span><span style="display:flex;"><span>        uses: peter-evans/create-or-update-comment@v4
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          issue-number: ${{ github.event.issue.number }}
+</span></span><span style="display:flex;"><span>          body: |
+</span></span><span style="display:flex;"><span>            Hello! Your request has been validated successfully!
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            Please comment with `.submit` to submit this request.
+</span></span></code></pre></div><h3 id="step-4-issue-comment-workflows">Step 4: Issue comment workflows</h3>
+<p>Once the issue is created, any further processing is triggered using issue comments—and this can be done with one workflow. However, to make things a bit easier to follow, we’ll break this into a few separate workflows.</p>
+<h4 id="submit-workflow">Submit workflow</h4>
+<p>The first workflow handles the user submitting the request. The main task it performs is validating the issue body against the form template to ensure it hasn’t been modified.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>name: Process Submit Comment
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>on:
+</span></span><span style="display:flex;"><span>  issue_comment:
+</span></span><span style="display:flex;"><span>    types:
+</span></span><span style="display:flex;"><span>      - created
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>permissions:
+</span></span><span style="display:flex;"><span>  contents: read
+</span></span><span style="display:flex;"><span>  id-token: write
+</span></span><span style="display:flex;"><span>  issues: write
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>jobs:
+</span></span><span style="display:flex;"><span>  submit:
+</span></span><span style="display:flex;"><span>    name: Submit Request
+</span></span><span style="display:flex;"><span>    runs-on: ubuntu-latest
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    # This job should only be run when the following conditions are true:
+</span></span><span style="display:flex;"><span>    #
+</span></span><span style="display:flex;"><span>    # - A user comments `.submit` on the issue.
+</span></span><span style="display:flex;"><span>    # - The issue has the `team-membership` label.
+</span></span><span style="display:flex;"><span>    # - The issue has the `validated` label.
+</span></span><span style="display:flex;"><span>    # - The issue does not have the `approved` or `denied` labels.
+</span></span><span style="display:flex;"><span>    # - The issue is open.
+</span></span><span style="display:flex;"><span>    if: |
+</span></span><span style="display:flex;"><span>      startsWith(github.event.comment.body, &#39;.submit&#39;) &amp;&amp;
+</span></span><span style="display:flex;"><span>      contains(github.event.issue.labels.*.name, &#39;team-membership&#39;) == true &amp;&amp;
+</span></span><span style="display:flex;"><span>      contains(github.event.issue.labels.*.name, &#39;approved&#39;) == false &amp;&amp;
+</span></span><span style="display:flex;"><span>      contains(github.event.issue.labels.*.name, &#39;denied&#39;) == false &amp;&amp;
+</span></span><span style="display:flex;"><span>      github.event.issue.state == &#39;open&#39;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    steps:
+</span></span><span style="display:flex;"><span>      # First, we are going to re-run validation. This is important because
+</span></span><span style="display:flex;"><span>      # the issue body may have changed since the last time it was validated.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # This is required to ensure the issue form template and any validation
+</span></span><span style="display:flex;"><span>      # scripts are included in the workspace.
+</span></span><span style="display:flex;"><span>      - name: Checkout
+</span></span><span style="display:flex;"><span>        id: checkout
+</span></span><span style="display:flex;"><span>        uses: actions/checkout@v4
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # Since this workflow includes custom validation scripts, we need to
+</span></span><span style="display:flex;"><span>      # install Node.js and any dependencies.
+</span></span><span style="display:flex;"><span>      - name: Setup Node.js
+</span></span><span style="display:flex;"><span>        id: setup-node
+</span></span><span style="display:flex;"><span>        uses: actions/setup-node@v4
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # Install dependencies from `package.json`.
+</span></span><span style="display:flex;"><span>      - name: Install Dependencies
+</span></span><span style="display:flex;"><span>        id: install
+</span></span><span style="display:flex;"><span>        run: npm install
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # GitHub App authentication is required if you want to interact with any
+</span></span><span style="display:flex;"><span>      # resources outside the scope of the repository this workflow runs in.
+</span></span><span style="display:flex;"><span>      - name: Get GitHub App Token
+</span></span><span style="display:flex;"><span>        id: token
+</span></span><span style="display:flex;"><span>        uses: actions/create-github-app-token@v1
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          app-id: ${{ vars.ISSUEOPS_APP_ID }}
+</span></span><span style="display:flex;"><span>          private-key: ${{ secrets.ISSUEOPS_APP_PRIVATE_KEY }}
+</span></span><span style="display:flex;"><span>          owner: ${{ github.repository_owner }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # Remove the validated label. This will be re-added if validation passes.
+</span></span><span style="display:flex;"><span>      - name: Remove Validated Label
+</span></span><span style="display:flex;"><span>        id: remove-label
+</span></span><span style="display:flex;"><span>        uses: issue-ops/labeler@v2
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          action: remove
+</span></span><span style="display:flex;"><span>          github_token: ${{ steps.token.outputs.token }}
+</span></span><span style="display:flex;"><span>          labels: |
+</span></span><span style="display:flex;"><span>            validated
+</span></span><span style="display:flex;"><span>          issue_number: ${{ github.event.issue.number }}
+</span></span><span style="display:flex;"><span>          repository: ${{ github.repository }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # Parse the issue body into machine-readable JSON, so that it can be
+</span></span><span style="display:flex;"><span>      # processed by the rest of the workflow.
+</span></span><span style="display:flex;"><span>      - name: Parse Issue Body
+</span></span><span style="display:flex;"><span>        id: parse
+</span></span><span style="display:flex;"><span>        uses: issue-ops/parser@v4
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          body: ${{ github.event.issue.body }}
+</span></span><span style="display:flex;"><span>          issue-form-template: team-membership.yml
+</span></span><span style="display:flex;"><span>          workspace: ${{ github.workspace }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # Validate early and often! Validation should be run any time an issue is
+</span></span><span style="display:flex;"><span>      # interacted with, to ensure that any changes to the issue body are valid.
+</span></span><span style="display:flex;"><span>      - name: Validate Request
+</span></span><span style="display:flex;"><span>        id: validate
+</span></span><span style="display:flex;"><span>        uses: issue-ops/validator@v3
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          add-comment: false # Don&#39;t add another validation comment.
+</span></span><span style="display:flex;"><span>          github-token: ${{ steps.token.outputs.token }}
+</span></span><span style="display:flex;"><span>          issue-form-template: team-membership.yml
+</span></span><span style="display:flex;"><span>          issue-number: ${{ github.event.issue.number }}
+</span></span><span style="display:flex;"><span>          parsed-issue-body: ${{ steps.parse.outputs.json }}
+</span></span><span style="display:flex;"><span>          workspace: ${{ github.workspace }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # If validation passed, add the validated and submitted labels to the issue.
+</span></span><span style="display:flex;"><span>      - if: ${{ steps.validate.outputs.result == &#39;success&#39; }}
+</span></span><span style="display:flex;"><span>        name: Add Validated Label
+</span></span><span style="display:flex;"><span>        id: add-label
+</span></span><span style="display:flex;"><span>        uses: issue-ops/labeler@v2
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          action: add
+</span></span><span style="display:flex;"><span>          github_token: ${{ steps.token.outputs.token }}
+</span></span><span style="display:flex;"><span>          labels: |
+</span></span><span style="display:flex;"><span>            validated
+</span></span><span style="display:flex;"><span>            submitted
+</span></span><span style="display:flex;"><span>          issue_number: ${{ github.event.issue.number }}
+</span></span><span style="display:flex;"><span>          repository: ${{ github.repository }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # If validation succeeded, alert the administrator team so they can
+</span></span><span style="display:flex;"><span>      # approve or deny the request.
+</span></span><span style="display:flex;"><span>      - if: ${{ steps.validate.outputs.result == &#39;success&#39; }}
+</span></span><span style="display:flex;"><span>        name: Notify Admin (Success)
+</span></span><span style="display:flex;"><span>        id: notify-success
+</span></span><span style="display:flex;"><span>        uses: peter-evans/create-or-update-comment@v4
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          issue-number: ${{ github.event.issue.number }}
+</span></span><span style="display:flex;"><span>          body: |
+</span></span><span style="display:flex;"><span>            👋 @issue-ops/admins! The request has been validated and is
+</span></span><span style="display:flex;"><span>            ready for your review. Please comment with `.approve` or `.deny`
+</span></span><span style="display:flex;"><span>            to approve or deny this request.
+</span></span></code></pre></div><h4 id="deny-workflow">Deny workflow</h4>
+<p>If the request is denied, the user should be notified and the issue should close.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>name: Process Denial Comment
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>on:
+</span></span><span style="display:flex;"><span>  issue_comment:
+</span></span><span style="display:flex;"><span>    types:
+</span></span><span style="display:flex;"><span>      - created
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>permissions:
+</span></span><span style="display:flex;"><span>  contents: read
+</span></span><span style="display:flex;"><span>  id-token: write
+</span></span><span style="display:flex;"><span>  issues: write
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>jobs:
+</span></span><span style="display:flex;"><span>  submit:
+</span></span><span style="display:flex;"><span>    name: Deny Request
+</span></span><span style="display:flex;"><span>    runs-on: ubuntu-latest
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    # This job should only be run when the following conditions are true:
+</span></span><span style="display:flex;"><span>    #
+</span></span><span style="display:flex;"><span>    # - A user comments `.deny` on the issue.
+</span></span><span style="display:flex;"><span>    # - The issue has the `team-membership` label.
+</span></span><span style="display:flex;"><span>    # - The issue has the `validated` label.
+</span></span><span style="display:flex;"><span>    # - The issue has the `submitted` label.
+</span></span><span style="display:flex;"><span>    # - The issue does not have the `approved` or `denied` labels.
+</span></span><span style="display:flex;"><span>    # - The issue is open.
+</span></span><span style="display:flex;"><span>    if: |
+</span></span><span style="display:flex;"><span>      startsWith(github.event.comment.body, &#39;.deny&#39;) &amp;&amp;
+</span></span><span style="display:flex;"><span>      contains(github.event.issue.labels.*.name, &#39;team-membership&#39;) == true &amp;&amp;
+</span></span><span style="display:flex;"><span>      contains(github.event.issue.labels.*.name, &#39;submitted&#39;) == true &amp;&amp;
+</span></span><span style="display:flex;"><span>      contains(github.event.issue.labels.*.name, &#39;validated&#39;) == true &amp;&amp;
+</span></span><span style="display:flex;"><span>      contains(github.event.issue.labels.*.name, &#39;approved&#39;) == false &amp;&amp;
+</span></span><span style="display:flex;"><span>      contains(github.event.issue.labels.*.name, &#39;denied&#39;) == false &amp;&amp;
+</span></span><span style="display:flex;"><span>      github.event.issue.state == &#39;open&#39;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    steps:
+</span></span><span style="display:flex;"><span>      # This time, we do not need to re-run validation because the request is
+</span></span><span style="display:flex;"><span>      # being denied. It can just be closed.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # However, we do need to confirm that the user who commented `.deny` is
+</span></span><span style="display:flex;"><span>      # a member of the administrator team.
+</span></span><span style="display:flex;"><span>      # GitHub App authentication is required if you want to interact with any
+</span></span><span style="display:flex;"><span>      # resources outside the scope of the repository this workflow runs in.
+</span></span><span style="display:flex;"><span>      - name: Get GitHub App Token
+</span></span><span style="display:flex;"><span>        id: token
+</span></span><span style="display:flex;"><span>        uses: actions/create-github-app-token@v1
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          app-id: ${{ vars.ISSUEOPS_APP_ID }}
+</span></span><span style="display:flex;"><span>          private-key: ${{ secrets.ISSUEOPS_APP_PRIVATE_KEY }}
+</span></span><span style="display:flex;"><span>          owner: ${{ github.repository_owner }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # Check if the user who commented `.deny` is a member of the
+</span></span><span style="display:flex;"><span>      # administrator team.
+</span></span><span style="display:flex;"><span>      - name: Check Admin Membership
+</span></span><span style="display:flex;"><span>        id: check-admin
+</span></span><span style="display:flex;"><span>        uses: actions/github-script@v7
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          github-token: ${{ steps.token.outputs.token }}
+</span></span><span style="display:flex;"><span>          script: |
+</span></span><span style="display:flex;"><span>            try {
+</span></span><span style="display:flex;"><span>              await github.rest.teams.getMembershipForUserInOrg({
+</span></span><span style="display:flex;"><span>                org: context.repo.owner,
+</span></span><span style="display:flex;"><span>                team_slug: &#39;admins&#39;,
+</span></span><span style="display:flex;"><span>                username: context.actor,
+</span></span><span style="display:flex;"><span>              })
+</span></span><span style="display:flex;"><span>              core.setOutput(&#39;member&#39;, &#39;true&#39;)
+</span></span><span style="display:flex;"><span>            } catch (error) {
+</span></span><span style="display:flex;"><span>              if (error.status === 404) {
+</span></span><span style="display:flex;"><span>                core.setOutput(&#39;member&#39;, &#39;false&#39;)
+</span></span><span style="display:flex;"><span>              }
+</span></span><span style="display:flex;"><span>              throw error
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # If the user is not a member of the administrator team, exit the
+</span></span><span style="display:flex;"><span>      # workflow.
+</span></span><span style="display:flex;"><span>      - if: ${{ steps.check-admin.outputs.member == &#39;false&#39; }}
+</span></span><span style="display:flex;"><span>        name: Exit
+</span></span><span style="display:flex;"><span>        run: exit 0
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # If the user is a member of the administrator team, add the denied label.
+</span></span><span style="display:flex;"><span>      - name: Add Denied Label
+</span></span><span style="display:flex;"><span>        id: add-label
+</span></span><span style="display:flex;"><span>        uses: issue-ops/labeler@v2
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          action: add
+</span></span><span style="display:flex;"><span>          github_token: ${{ steps.token.outputs.token }}
+</span></span><span style="display:flex;"><span>          labels: |
+</span></span><span style="display:flex;"><span>            denied
+</span></span><span style="display:flex;"><span>          issue_number: ${{ github.event.issue.number }}
+</span></span><span style="display:flex;"><span>          repository: ${{ github.repository }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # Notify the user that the request was denied.
+</span></span><span style="display:flex;"><span>      - name: Notify User
+</span></span><span style="display:flex;"><span>        id: notify
+</span></span><span style="display:flex;"><span>        uses: peter-evans/create-or-update-comment@v4
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          issue-number: ${{ github.event.issue.number }}
+</span></span><span style="display:flex;"><span>          body: |
+</span></span><span style="display:flex;"><span>            This request has been denied and will be closed.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # Close the issue as not planned.
+</span></span><span style="display:flex;"><span>      - name: Close Issue
+</span></span><span style="display:flex;"><span>        id: close
+</span></span><span style="display:flex;"><span>        uses: actions/github-script@v7
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          script: |
+</span></span><span style="display:flex;"><span>            await github.rest.issues.update({
+</span></span><span style="display:flex;"><span>              issue_number: ${{ github.event.issue.number }},
+</span></span><span style="display:flex;"><span>              owner: context.repo.owner,
+</span></span><span style="display:flex;"><span>              repo: context.repo.repo,
+</span></span><span style="display:flex;"><span>              state: &#39;closed&#39;,
+</span></span><span style="display:flex;"><span>              state_reason: &#39;not_planned&#39;
+</span></span><span style="display:flex;"><span>            })
+</span></span></code></pre></div><h4 id="approve-workflow">Approve workflow</h4>
+<p>Finally, we need to handle request approval. In this case, we need to add the user to the team, notify them, and close the issue.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>name: Process Approval Comment
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>on:
+</span></span><span style="display:flex;"><span>  issue_comment:
+</span></span><span style="display:flex;"><span>    types:
+</span></span><span style="display:flex;"><span>      - created
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>permissions:
+</span></span><span style="display:flex;"><span>  contents: read
+</span></span><span style="display:flex;"><span>  id-token: write
+</span></span><span style="display:flex;"><span>  issues: write
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>jobs:
+</span></span><span style="display:flex;"><span>  submit:
+</span></span><span style="display:flex;"><span>    name: Approve Request
+</span></span><span style="display:flex;"><span>    runs-on: ubuntu-latest
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    # This job should only be run when the following conditions are true:
+</span></span><span style="display:flex;"><span>    #
+</span></span><span style="display:flex;"><span>    # - A user comments `.approve` on the issue.
+</span></span><span style="display:flex;"><span>    # - The issue has the `team-membership` label.
+</span></span><span style="display:flex;"><span>    # - The issue has the `validated` label.
+</span></span><span style="display:flex;"><span>    # - The issue has the `submitted` label.
+</span></span><span style="display:flex;"><span>    # - The issue does not have the `approved` or `denied` labels.
+</span></span><span style="display:flex;"><span>    # - The issue is open.
+</span></span><span style="display:flex;"><span>    if: |
+</span></span><span style="display:flex;"><span>      startsWith(github.event.comment.body, &#39;.approve&#39;) &amp;&amp;
+</span></span><span style="display:flex;"><span>      contains(github.event.issue.labels.*.name, &#39;team-membership&#39;) == true &amp;&amp;
+</span></span><span style="display:flex;"><span>      contains(github.event.issue.labels.*.name, &#39;submitted&#39;) == true &amp;&amp;
+</span></span><span style="display:flex;"><span>      contains(github.event.issue.labels.*.name, &#39;validated&#39;) == true &amp;&amp;
+</span></span><span style="display:flex;"><span>      contains(github.event.issue.labels.*.name, &#39;approved&#39;) == false &amp;&amp;
+</span></span><span style="display:flex;"><span>      contains(github.event.issue.labels.*.name, &#39;denied&#39;) == false &amp;&amp;
+</span></span><span style="display:flex;"><span>      github.event.issue.state == &#39;open&#39;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    steps:
+</span></span><span style="display:flex;"><span>      # This time, we do not need to re-run validation because the request is
+</span></span><span style="display:flex;"><span>      # being approved. It can just be processed.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # This is required to ensure the issue form template is included in the
+</span></span><span style="display:flex;"><span>      # workspace.
+</span></span><span style="display:flex;"><span>      - name: Checkout
+</span></span><span style="display:flex;"><span>        id: checkout
+</span></span><span style="display:flex;"><span>        uses: actions/checkout@v4
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # We do need to confirm that the user who commented `.approve` is a member
+</span></span><span style="display:flex;"><span>      # of the administrator team. GitHub App authentication is required if you
+</span></span><span style="display:flex;"><span>      # want to interact with any resources outside the scope of the repository
+</span></span><span style="display:flex;"><span>      # this workflow runs in.
+</span></span><span style="display:flex;"><span>      - name: Get GitHub App Token
+</span></span><span style="display:flex;"><span>        id: token
+</span></span><span style="display:flex;"><span>        uses: actions/create-github-app-token@v1
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          app-id: ${{ vars.ISSUEOPS_APP_ID }}
+</span></span><span style="display:flex;"><span>          private-key: ${{ secrets.ISSUEOPS_APP_PRIVATE_KEY }}
+</span></span><span style="display:flex;"><span>          owner: ${{ github.repository_owner }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # Check if the user who commented `.approve` is a member of the
+</span></span><span style="display:flex;"><span>      # administrator team.
+</span></span><span style="display:flex;"><span>      - name: Check Admin Membership
+</span></span><span style="display:flex;"><span>        id: check-admin
+</span></span><span style="display:flex;"><span>        uses: actions/github-script@v7
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          github-token: ${{ steps.token.outputs.token }}
+</span></span><span style="display:flex;"><span>          script: |
+</span></span><span style="display:flex;"><span>            try {
+</span></span><span style="display:flex;"><span>              await github.rest.teams.getMembershipForUserInOrg({
+</span></span><span style="display:flex;"><span>                org: context.repo.owner,
+</span></span><span style="display:flex;"><span>                team_slug: &#39;admins&#39;,
+</span></span><span style="display:flex;"><span>                username: context.actor,
+</span></span><span style="display:flex;"><span>              })
+</span></span><span style="display:flex;"><span>              core.setOutput(&#39;member&#39;, &#39;true&#39;)
+</span></span><span style="display:flex;"><span>            } catch (error) {
+</span></span><span style="display:flex;"><span>              if (error.status === 404) {
+</span></span><span style="display:flex;"><span>                core.setOutput(&#39;member&#39;, &#39;false&#39;)
+</span></span><span style="display:flex;"><span>              }
+</span></span><span style="display:flex;"><span>              throw error
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # If the user is not a member of the administrator team, exit the
+</span></span><span style="display:flex;"><span>      # workflow.
+</span></span><span style="display:flex;"><span>      - if: ${{ steps.check-admin.outputs.member == &#39;false&#39; }}
+</span></span><span style="display:flex;"><span>        name: Exit
+</span></span><span style="display:flex;"><span>        run: exit 0
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      # Parse the issue body into machine-readable JSON, so that it can be
+</span></span><span style="display:flex;"><span>      # processed by the rest of the workflow.
+</span></span><span style="display:flex;"><span>      - name: Parse Issue body
+</span></span><span style="display:flex;"><span>        id: parse
+</span></span><span style="display:flex;"><span>        uses: issue-ops/parser@v4
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          body: ${{ github.event.issue.body }}
+</span></span><span style="display:flex;"><span>          issue-form-template: team-membership.yml
+</span></span><span style="display:flex;"><span>          workspace: ${{ github.workspace }}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      - name: Add to Team
+</span></span><span style="display:flex;"><span>        id: add
+</span></span><span style="display:flex;"><span>        uses: actions/github-script@v7
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          github-token: ${{ steps.token.outputs.token }}
+</span></span><span style="display:flex;"><span>          script: |
+</span></span><span style="display:flex;"><span>            const parsedIssue = JSON.parse(&#39;${{ steps.parse.outputs.json }}&#39;)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            await github.rest.teams.addOrUpdateMembershipForUserInOrg({
+</span></span><span style="display:flex;"><span>              org: context.repo.owner,
+</span></span><span style="display:flex;"><span>              team_slug: parsedIssue.team,
+</span></span><span style="display:flex;"><span>              username: &#39;${{ github.event.issue.user.login }}&#39;,
+</span></span><span style="display:flex;"><span>              role: &#39;member&#39;
+</span></span><span style="display:flex;"><span>            })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      - name: Notify User
+</span></span><span style="display:flex;"><span>        id: notify
+</span></span><span style="display:flex;"><span>        uses: peter-evans/create-or-update-comment@v4
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          issue-number: ${{ github.event.issue.number }}
+</span></span><span style="display:flex;"><span>          body: |
+</span></span><span style="display:flex;"><span>            This request has been processed successfully!
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      - name: Close Issue
+</span></span><span style="display:flex;"><span>        id: close
+</span></span><span style="display:flex;"><span>        uses: actions/github-script@v7
+</span></span><span style="display:flex;"><span>        with:
+</span></span><span style="display:flex;"><span>          script: |
+</span></span><span style="display:flex;"><span>            await github.rest.issues.update({
+</span></span><span style="display:flex;"><span>              issue_number: ${{ github.event.issue.number }},
+</span></span><span style="display:flex;"><span>              owner: context.repo.owner,
+</span></span><span style="display:flex;"><span>              repo: context.repo.repo,
+</span></span><span style="display:flex;"><span>              state: &#39;closed&#39;,
+</span></span><span style="display:flex;"><span>              state_reason: &#39;completed&#39;
+</span></span><span style="display:flex;"><span>            })
+</span></span></code></pre></div><h2 id="take-this-with-you">Take this with you</h2>
+<p>And there you have it! With a handful of standardized workflows, you have an end-to-end, issue-driven process in place to manage team membership. This can be extended as far as you want, including support for removing users, auditing access, and more. With IssueOps, the sky is the limit!</p>
+<p>Here’s the best thing about IssueOps: It brings another level of automation to a surface I’m constantly using—and that’s GitHub. By using issues and pull requests as control centers for workflows, teams can reduce friction, improve efficiency, and keep everything transparent. Whether you want to automate deployments, approvals, or bug triage, IssueOps makes it all possible, without ever leaving your repo.</p>
+<p>For more information and examples, check out the open source IssueOps documentation repository, and if you want a deeper dive, you can head over to the open source IssueOps documentation.</p>
+<p>In my experience, it’s always best to start small and experiment with what works best for you. With just a bit of time, you’ll see your workflows get smoother with every commit (I know I have). Happy coding! ✨</p>
+<p>The post IssueOps: Automate CI/CD (and more!) with GitHub Issues and Actions appeared first on The GitHub Blog.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

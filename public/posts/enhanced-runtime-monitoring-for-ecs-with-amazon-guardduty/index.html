@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Enhanced Runtime Monitoring for ECS with Amazon GuardDuty</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Enhanced Runtime Monitoring for ECS with Amazon GuardDuty</h1>
+			<b><time>25.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>With the majority of our applications now being cloud-native and containerized, ensuring security has become paramount. While static security measures, such as image scanning with Amazon Inspector, play a crucial role, monitoring container security during runtime is equally important. This is where ECS Runtime Monitoring with Amazon GuardDuty comes into play. GuardDuty Runtime Monitoring, now over a year in general availability, has proven its effectiveness in detecting runtime security threats across EC2 instances, ECS Clusters, and EKS Clusters. In this blog, we&rsquo;ll walk through enabling runtime monitoring for your ECS Cluster, generating GuardDuty findings, and setting up alerts for both runtime monitoring health and GuardDuty Findings to enhance your security posture.</p>
+<h2 id="enabling-the-fully-managed-guardduty-agent">Enabling the fully managed GuardDuty Agent</h2>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fku1aie6zl7964wdllkea.png" alt="Enabling the GuardDuty Agent" />
+</figure>
+
+
+</p>
+<p>When we deploy the GuardDuty security agent, GuardDuty will create a VPC Endpoint for the security agent to deliver runtime security events to GuardDuty. Alongside it will also create a new security group that will control the traffic that&rsquo;s allowed to reach the resources using inbound rules of the security group and will adapt to vpc cidr range changes.</p>
+<h2 id="ecs-cluster">ECS Cluster</h2>
+<p>I started with an existing ECS Cluster with a single task running on AWS Fargate.</p>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fxvi5kdbl9g3q06bz9bwl.png" alt="ECS Fargate Cluster" />
+</figure>
+
+
+</p>
+<p>Within the task configuration, you&rsquo;ll notice two containers running:</p>
+<ul>
+<li>Main Application Container</li>
+<li>Sidecar Container launched by AWS to run the Amazon GuardDuty agent</li>
+</ul>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fr1a26u422baj2v0prh3s.png" alt="ECS Task Configuration" />
+</figure>
+
+
+</p>
+<p><strong>GuardDuty actively monitoring the ECS Cluster</strong></p>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fscb24uw9ht39wpla1h1b.png" alt="GuardDuty Runtime Monitoring" />
+</figure>
+
+
+</p>
+<h2 id="guardduty-runtime-monitoring-alerts">GuardDuty Runtime Monitoring Alerts</h2>
+<p>It is essential to configure alerts for when GuardDuty Runtime Monitoring enters an unhealthy state or when a Runtime Monitoring Finding is detected.</p>
+<p>To achieve this, I have configured EventBridge rules with Amazon SNS as the target to trigger email notifications for both.</p>
+<p><strong>GuardDuty Runtime Monitoring Unhealthy State Alert</strong></p>
+<p>I manually scaled down the ECS service from 1 to 0, so that the GuardDuty agent is no longer able to communicate with Amazon GuardDuty and the Runtime Monitoring status is pushed to an unhealthy state.</p>
+<p>Event Pattern for Eventbridge Rule:</p>
+<pre tabindex="0"><code>{
+  &#34;source&#34;: [&#34;aws.guardduty&#34;],
+  &#34;detail-type&#34;: [&#34;GuardDuty Runtime Protection Unhealthy&#34;]
+}
+</code></pre><p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fybuc181938hfg9xuu83e.png" alt="Unhealthy GuardDuty Runtime Monitoring" />
+</figure>
+
+
+</p>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fe7mxm2mijffwv6mjxw14.png" alt="Unhealthy Runtime Monitoring Notification" />
+</figure>
+
+
+</p>
+<p><strong>GuardDuty Runtime Monitoring Findings Alert</strong></p>
+<p>I generated sample findings in GuardDuty to test and validate the alerting mechanism.</p>
+<p>Event Pattern for Eventbridge Rule:</p>
+<pre tabindex="0"><code>{
+  &#34;source&#34;: [&#34;aws.guardduty&#34;],
+  &#34;detail&#34;: {
+    &#34;type&#34;: [&#34;Backdoor:Runtime/C&amp;CActivity.B&#34;, &#34;PrivilegeEscalation:Runtime/DockerSocketAccessed&#34;]
+  }
+}
+</code></pre><p>You can find the full list of GuardDuty Runtime Monitoring Finding Types here.</p>
+<p><strong>Sample Findings Generated</strong></p>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2F7z6i21hoezffn6sxta4l.png" alt="Sample Findings" />
+</figure>
+
+
+</p>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fdgl303nxi0f2gjm6v0pq.png" alt="Alerts on Runtime Findings" />
+</figure>
+
+
+</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>I hope this blog serves as a great starting point for exploring this exciting feature. Below, I&rsquo;ve compiled a few additional resources that will help you dive deeper and make the most of it.</p>
+<ul>
+<li>Using Amazon GuardDuty ECS runtime monitoring with Fargate and Amazon EC2</li>
+<li>GuardDuty Alerting using Eventbridge</li>
+<li>GuardDuty Runtime Monitoring</li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

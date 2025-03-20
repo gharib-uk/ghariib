@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Merging multiple JSON data blocks into a single entity</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="http://localhost:1313/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Merging multiple JSON data blocks into a single entity</h1>
+			<b><time>13.12.2024 15:18</time></b>
+		       
+		           <a href="/tags/unix.stackexchange.com">unix.stackexchange.com</a>
+        	       
+
+			<div>
+				<h1 id="merging-multiple-json-data-blocks-into-a-single-entity">Merging multiple JSON data blocks into a single entity</h1>
+<p><strong>Published on</strong>: 2024-12-13T15:18:15Z</p>
+<p><strong>Summary</strong>: Im using an API (from SyncroMSP) that returns paginated JSON data. I can obtain the number of pages, and I can obtain the data with a tool such as curl. Each chunk is valid JSON but it only contains a subset of the total data that I need. Using jq or otherwise how can I merge the tickets[] elements of these paginated data chunks back into a single JSON document? Here are three example chunks. The tickets[] arrays are heavily edited for this question and in reality contain up to 25 entries, and each ticket entry contains many more elements including at least a couple of arrays. JSON example block 1 (part_1.json) {   &quot;tickets&quot;: [     {       &quot;number&quot;: 4445,       &quot;subject&quot;: &quot;Your mailbox is almost full&quot;     },     {       &quot;number&quot;: 4444,       &quot;subject&quot;: &quot;Cannot VPN&quot;     }   ],   &quot;meta&quot;: {       &quot;total_pages&quot;: 3,       &quot;page&quot;: 1   } }  JSON example block 2 (part_2.json) {   &quot;tickets&quot;: [     {       &quot;number&quot;: 4395,       &quot;subject&quot;: &quot;Trados Studio issue&quot;     },     {       &quot;number&quot;: 4394,       &quot;subject&quot;: &quot;Daily Backup Report(No Errors)&quot;     }   ],   &quot;meta&quot;: {       &quot;total_pages&quot;: 3,       &quot;page&quot;: 2   } }  JSON example block 3 (part_3.json) {   &quot;tickets&quot;: [     {       &quot;number&quot;: 4341,       &quot;subject&quot;: &quot;Daily Backup Report(No Errors)&quot;     },     {       &quot;number&quot;: 4340,       &quot;subject&quot;: &quot;Windows Updates on VMs&quot;     }   ],   &quot;meta&quot;: {       &quot;total_pages&quot;: 3,       &quot;page&quot;: 3   } }  In this case the expected result would be something like this: {   &quot;tickets&quot;: [     {       &quot;number&quot;: 4445,       &quot;subject&quot;: &quot;Your mailbox is almost full&quot;     },     {       &quot;number&quot;: 4444,       &quot;subject&quot;: &quot;Cannot VPN&quot;     },     {       &quot;number&quot;: 4395,       &quot;subject&quot;: &quot;Trados Studio issue&quot;     },     {       &quot;number&quot;: 4394,       &quot;subject&quot;: &quot;Daily Backup Report(No Errors)&quot;     },     {       &quot;number&quot;: 4341,       &quot;subject&quot;: &quot;Daily Backup Report(No Errors)&quot;     },     {       &quot;number&quot;: 4340,       &quot;subject&quot;: &quot;Windows Updates on VMs&quot;     }   ] }  The output could include the meta hash too, as Id just ignore it, and it wouldnt matter which meta.page value was carried forward. You can assume that tickets[].number is unique and that you do not need to preserve any ordering at that tickets[] level. Theres enough complexity in the real data that I dont want to have to declare the full JSON structure in any resulting code. This is my current attempt, but Im not particularly strong with jq. Is there a better way - for example, not calling jq twice, or being able to generalise the code so that I dont need to specify the name of the top level array (tickets)? cat part_{1,2,3}.json | jq .tickets[] | jq -n { tickets:[ inputs ] }</p>
+<p>Read more: <a href="https://unix.stackexchange.com/questions/788080/merging-multiple-json-data-blocks-into-a-single-entity">Merging multiple JSON data blocks into a single entity</a></p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/security.stackexchange.com_what_is_this_hacker_trying_to_do_by_accessing_stac/">What is this hacker trying to do by accessing stack exchange specific URLs on my site? [closed]</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_buffer_overflow_use_ebp_instead_of_esp_ebp&#43;4__re/">buffer overflow use ebp instead of esp (ebp&#43;4 = ret address)</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_character_escaping_xss_closed/">Character escaping xss [closed]</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_is_there_a_way_to_limit_browser_extension_internet/">Is there a way to limit browser extension internet access?</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_is_it_common_practice_to_remove_trusted_certificat/">Is it common practice to remove trusted certificate authorities (CA) located in untrusted countries?</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="http://localhost:1313/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

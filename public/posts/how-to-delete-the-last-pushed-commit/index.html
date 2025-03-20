@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How to Delete the Last Pushed Commit</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How to Delete the Last Pushed Commit</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Git push is a regular process used by developers to send changes to a remote repository. Recently, I noticed that I committed a few unnecessary files and pushed them to the remote Git repository. These files were not required and should have been excluded. To fix this, I plan to remove them from the repository and update the <code>.gitignore</code> file to avoid pushing such files in the future.</p>
+<p>To delete the last pushed commit, you can follow these steps. Make sure you understand the implications of rewriting commit history, especially if working in a shared repository.</p>
+<h2 id="steps-to-delete-the-last-pushed-commit">Steps to Delete the Last Pushed Commit</h2>
+<ol>
+<li>
+<p><strong>Check Current Commit History:</strong></p>
+<p>Run the following command to view your recent commit history:</p>
+<pre tabindex="0"><code>git log --oneline
+</code></pre><p>This will list the commits, starting with the most recent.</p>
+</li>
+<li>
+<p><strong>Remove the Last Commit Locally:</strong></p>
+<p>Use git reset to remove the last commit while keeping your changes (soft reset) or discard the changes (hard reset):</p>
+<ul>
+<li>
+<p>To keep the changes made in the last commit:</p>
+<pre tabindex="0"><code>git reset --soft HEAD~1
+</code></pre></li>
+<li>
+<p>To discard the changes made in the last commit:</p>
+<pre tabindex="0"><code>git reset --hard HEAD~1
+</code></pre></li>
+</ul>
+</li>
+<li>
+<p><strong>Force Push the Updated History:</strong></p>
+<p>Force-push the changes to the remote repository to remove the commit from the remote:</p>
+<pre tabindex="0"><code>git push origin --force
+</code></pre></li>
+</ol>
+<ul>
+<li>
+<p><strong>Impact of Force Push</strong>: Force pushing rewrites the history, which can disrupt collaborators if they have already fetched the commit you are removing.</p>
+</li>
+<li>
+<p><strong>Communicate with Team</strong>: If working in a shared repository, inform your team before force-pushing.</p>
+</li>
+</ul>
+<h2 id="add-the-files-to-gitignore">Add the Files to .gitignore</h2>
+<p>As a best practice, you should always add unnecessary files to the .gitignore file, which tells Git to stop tracking these files. To do this, open the <code>.gitignore</code> file in a text editor and add the file names or folder paths you want to exclude. For example:</p>
+<pre tabindex="0"><code class="language-gitignore" data-lang="gitignore">
+unnecessary_file.txt  
+folder_to_ignore/
+</code></pre><p>Save the file, and Git will ignore these files in future commits.</p>
+<p>If in case the new files are still showing in <code>git status</code>, it means they were already being tracked before you added them to <code>.gitignore</code>. To fix this, you need to untrack these files. Run the following command:</p>
+<pre tabindex="0"><code>git rm --cached &lt;file_name_or_folder
+</code></pre><p><strong>For example:</strong></p>
+<pre tabindex="0"><code>git rm --cached unnecessary_file.txt
+</code></pre><p>This will remove the files from the Git index but keep them in your local system. After that, you may need to commit the <code>.gitignore</code> changes:</p>
+<pre tabindex="0"><code>git commit -m &#34;Remove unnecessary files from tracking&#34; .gitignore
+</code></pre><p>Once done, the files will no longer appear in <code>git status</code>.</p>
+<h2 id="wrap-up">Wrap Up</h2>
+<p>This tutorial helped you to remove the last pushed commit from local and remote repository. Also by adding them to <code>.gitignore</code> prevents future tracking of the same files, while untracking already committed files ensures a clean and organized repository. These practices help you to maintain a clutter-free codebase and improve collaboration in team projects. Always review your commits before pushing to avoid including files that are not needed.</p>
+<p>The post How to Delete the Last Pushed Commit appeared first on TecAdmin.</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

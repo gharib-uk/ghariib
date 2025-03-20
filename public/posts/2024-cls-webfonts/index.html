@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Fixing layout shifts caused by web fonts&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Fixing layout shifts caused by web fonts&lt;/div&gt;</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>In 2020, Google introduced Core Web Vitals metrics to measure some aspects of real-world user experience on the web. This blog has consistently achieved good scores for two of these metrics: Largest Contentful Paint and Interaction to Next Paint. However, optimizing the third metric, Cumulative Layout Shift, which measures unexpected layout changes, has been more challenging. Let’s face it: optimizing for this metric is not really useful for a site like this one. But getting a better score is always a good distraction. 💯</p>
+<p>To prevent the “flash of invisible text” when using web fonts, developers should set the <code>font-display</code> property to <code>swap</code> in <code>@font-face</code> rules. This method allows browsers to initially render text using a fallback font, then replace it with the web font after loading. While this improves the LCP score, it causes content reflow and layout shifts if the fallback and web fonts are not metrically compatible. These shifts negatively affect the CLS score. CSS provides properties to address this issue by overriding font metrics when using fallback fonts: <code>size-adjust</code>, <code>ascent-override</code>, <code>descent-override</code>, and <code>line-gap-override</code>.</p>
+<p>Two comprehensive articles explain each property and their computation methods in detail: Creating Perfect Font Fallbacks in CSS and Improved font fallbacks.</p>
+<h1 id="interactive-tuning-tool">Interactive tuning tool</h1>
+<p>Instead of computing each property from font average metrics, I put together a tool for interactively tuning fallback fonts.1</p>
+<h2 id="instructions">Instructions</h2>
+<ol>
+<li>
+<p>Load your custom font.</p>
+</li>
+<li>
+<p>Select a fallback font to tune.</p>
+</li>
+<li>
+<p>Adjust the <code>size-adjust</code> property to match the width of your custom font with the fallback font. With a proportional font, it is not possible to achieve a perfect match.</p>
+</li>
+<li>
+<p>Fine-tune the <code>ascent-override</code> property. Aim to align the final dot of the last paragraph while monitoring the font’s baseline. For more precise adjustment, disable the “Set line height” option.</p>
+</li>
+<li>
+<p>Modify the <code>descent-override</code> property. The goal is to make the two boxes match. You may need to alternate between this and the previous property for optimal results.</p>
+</li>
+<li>
+<p>If necessary, adjust the <code>line-gap-override</code> property. This step is typically not required.</p>
+</li>
+</ol>
+<p>The process needs to be repeated for each fallback font. Some platforms may not include certain fonts. Notably, Android lacks most fonts found in other operating systems. It replaces <em>Georgia</em> with <em>Noto Serif</em>, which is not metrically-compatible.</p>
+<h2 id="tool">Tool</h2>
+<p>This tool is not available from the Atom feed.</p>
+<h2 id="results">Results</h2>
+<p>For the body text of this blog, I get the following CSS definition:</p>
+<pre tabindex="0"><code>@font-face {
+  font-family: Merriweather;
+  font-style: normal;
+  font-weight: 400;
+  src: url(&#34;../fonts/merriweather.woff2&#34;) format(&#34;woff2&#34;);
+  font-display: swap;
+}
+@font-face {
+  font-family: &#34;Fallback for Merriweather&#34;;
+  src: local(&#34;Noto Serif&#34;), local(&#34;Droid Serif&#34;);
+  size-adjust: 98.3%;
+  ascent-override: 99%;
+  descent-override: 27%;
+}
+@font-face {
+  font-family: &#34;Fallback for Merriweather&#34;;
+  src: local(&#34;Georgia&#34;);
+  size-adjust: 106%;
+  ascent-override: 90.4%;
+  descent-override: 27.3%;
+}
+
+font-family: Merriweather, &#34;Fallback for Merriweather&#34;, serif;
+</code></pre><p>After a month, the CLS metric improved to 0:</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://d2pzklc15kok91.cloudfront.net/images/core-web-vitals.d7a1858e4d5b4b.svg" alt="Core Web Vitals scores for vincent.bernat.ch showing all 6 metrics as green.
+Notably the Cumulative Layout Shift is 0." />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Recent Core Web Vitals scores for vincent.bernat.ch</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h1 id="about-custom-fonts">About custom fonts</h1>
+<p>Using safe web fonts or a modern font stack is often simpler. However, I prefer custom web fonts. Merriweather and Iosevka, which are used in this blog, enhance the reading experience. An alternative approach could be to use <em>Georgia</em> as a serif option. Unfortunately, most default monospace fonts are ugly.</p>
+<p>Furthermore, paragraphs that combine proportional and monospace fonts can create visual disruption. This occurs due to mismatched vertical metrics or weights. To address this issue, I adjust Iosevka’s metrics and weight to align with Merriweather’s characteristics.</p>
+<hr>
+<ol>
+<li>Similar tools already exist, like the Fallback Font Generator, but they were missing a few features, such as the ability to load the fallback font or to have decimals for the CSS properties. And no source code. ↩︎</li>
+</ol>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

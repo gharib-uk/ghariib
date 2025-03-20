@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Run Private Mastodon Instance</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Run Private Mastodon Instance</h1>
+			<b><time>10.09.2024 00:00</time></b>
+		       
+		           <a href="/tags/mastodon-federation">mastodon, federation</a>
+        	       
+
+			<div>
+				<p>This guide helps you to run a private Mastodon Instance.
+I personally prefer to use mastodon with docker and docker-compose to isolate my application from main server environment.
+The following docker compose yaml file helps you to deploy your instance. After that we try to modify the settings of our application to make it private instance (Personal Instance with just One Account).
+Put the content of the following docker-compose config into a seperate folder.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># This file is designed for production server deployment, not local development work</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># For a containerized local dev environment, see: https://github.com/mastodon/mastodon/blob/main/README.md#docker</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">db</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">restart</span>: <span style="color:#ae81ff">always</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">postgres:14-alpine</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">shm_size</span>: <span style="color:#ae81ff">256mb</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">internal_network</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">healthcheck</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">test</span>: [<span style="color:#e6db74">&#39;CMD&#39;</span>, <span style="color:#e6db74">&#39;pg_isready&#39;</span>, <span style="color:#e6db74">&#39;-U&#39;</span>, <span style="color:#e6db74">&#39;postgres&#39;</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./mastodon/postgres14:/var/lib/postgresql/data</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#39;POSTGRES_HOST_AUTH_METHOD=trust&#39;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#39;POSTGRES_USER=mastodon&#39;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#39;POSTGRES_DB=mastodon&#39;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#39;POSTGRES_PASSWORD=pasword&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">redis</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">restart</span>: <span style="color:#ae81ff">always</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">redis:7-alpine</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">internal_network</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">healthcheck</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">test</span>: [<span style="color:#e6db74">&#39;CMD&#39;</span>, <span style="color:#e6db74">&#39;redis-cli&#39;</span>, <span style="color:#e6db74">&#39;ping&#39;</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./mastodon/redis:/data</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># es:</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#   restart: always</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#   image: docker.elastic.co/elasticsearch/elasticsearch:7.17.4</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#   environment:</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#     - &#34;ES_JAVA_OPTS=-Xms512m -Xmx512m -Des.enforce.bootstrap.checks=true&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#     - &#34;xpack.license.self_generated.type=basic&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#     - &#34;xpack.security.enabled=false&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#     - &#34;xpack.watcher.enabled=false&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#     - &#34;xpack.graph.enabled=false&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#     - &#34;xpack.ml.enabled=false&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#     - &#34;bootstrap.memory_lock=true&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#     - &#34;cluster.name=es-mastodon&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#     - &#34;discovery.type=single-node&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#     - &#34;thread_pool.write.queue_size=1000&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#   networks:</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#      - external_network</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#      - internal_network</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#   healthcheck:</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#      test: [&#34;CMD-SHELL&#34;, &#34;curl --silent --fail localhost:9200/_cluster/health || exit 1&#34;]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#   volumes:</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#      - ./elasticsearch:/usr/share/elasticsearch/data</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#   ulimits:</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#     memlock:</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#       soft: -1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#       hard: -1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#     nofile:</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#       soft: 65536</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#       hard: 65536</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#   ports:</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#     - &#39;127.0.0.1:9200:9200&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">web</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># You can uncomment the following line if you want to not use the prebuilt image, for example if you have local code changes</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># build: .</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">ghcr.io/mastodon/mastodon:v4.2.12</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">restart</span>: <span style="color:#ae81ff">always</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">env_file</span>: <span style="color:#ae81ff">.env.production</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">command</span>: <span style="color:#ae81ff">bundle exec puma -C config/puma.rb</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">external_network</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">internal_network</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">healthcheck</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># prettier-ignore</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">test</span>: [<span style="color:#e6db74">&#39;CMD-SHELL&#39;</span>,<span style="color:#e6db74">&#34;curl -s --noproxy localhost localhost:3000/health | grep -q &#39;OK&#39; || exit 1&#34;</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#39;127.0.0.1:3000:3000&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">db</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">redis</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># - es</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./mastodon/public/system/:/mastodon/public/system</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">streaming</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># You can uncomment the following lines if you want to not use the prebuilt image, for example if you have local code changes</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># build:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#   dockerfile: ./streaming/Dockerfile</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#   context: .</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">ghcr.io/mastodon/mastodon-streaming:latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">restart</span>: <span style="color:#ae81ff">always</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">env_file</span>: <span style="color:#ae81ff">.env.production</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">command</span>: <span style="color:#ae81ff">node ./streaming/index.js</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">external_network</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">internal_network</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">healthcheck</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># prettier-ignore</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">test</span>: [<span style="color:#e6db74">&#39;CMD-SHELL&#39;</span>, <span style="color:#e6db74">&#34;curl -s --noproxy localhost localhost:4000/api/v1/streaming/health | grep -q &#39;OK&#39; || exit 1&#34;</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#39;127.0.0.1:4000:4000&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">db</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">redis</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">sidekiq</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>: <span style="color:#ae81ff">.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">ghcr.io/mastodon/mastodon:v4.2.12</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">restart</span>: <span style="color:#ae81ff">always</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">env_file</span>: <span style="color:#ae81ff">.env.production</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">command</span>: <span style="color:#ae81ff">bundle exec sidekiq</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">db</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">redis</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">external_network</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">internal_network</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">./mastodon/public/system/:/mastodon/public/system/</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">healthcheck</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">test</span>: [<span style="color:#e6db74">&#39;CMD-SHELL&#39;</span>, <span style="color:#e6db74">&#34;ps aux | grep &#39;[s]idekiq\ 6&#39; || false&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">## Uncomment to enable federation with tor instances along with adding the following ENV variables</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">## http_hidden_proxy=http://privoxy:8118</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">## ALLOW_ACCESS_TO_HIDDEN_SERVICE=true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># tor:</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#   image: sirboops/tor</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#   networks:</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#      - external_network</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#      - internal_network</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># privoxy:</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#   image: sirboops/privoxy</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#   volumes:</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#     - ./priv-config:/opt/config</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#   networks:</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#     - external_network</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">#     - internal_network</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">external_network</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">internal_network</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">internal</span>: <span style="color:#66d9ef">true</span>
+</span></span></code></pre></div><p>The <code>.env.prodution</code> file store critical information about your instance.
+It is better to use password with your redis instance.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>DB_HOST<span style="color:#f92672">=</span>db
+</span></span><span style="display:flex;"><span>DB_PORT<span style="color:#f92672">=</span><span style="color:#ae81ff">5432</span>
+</span></span><span style="display:flex;"><span>DB_NAME<span style="color:#f92672">=</span>mastodon
+</span></span><span style="display:flex;"><span>DB_USER<span style="color:#f92672">=</span>mastodon
+</span></span><span style="display:flex;"><span>DB_PASS<span style="color:#f92672">=</span>password
+</span></span><span style="display:flex;"><span>REDIS_HOST<span style="color:#f92672">=</span>redis
+</span></span><span style="display:flex;"><span>REDIS_PORT<span style="color:#f92672">=</span><span style="color:#ae81ff">6379</span>
+</span></span><span style="display:flex;"><span>REDIS_PASSWORD<span style="color:#f92672">=</span>
+</span></span></code></pre></div><p>Run <code>docker-compose run --rm web bundle exec rake mastodon:setup</code> in the folder which holds <code>docker-compose.yml</code> then follow the instructions and answer the questions.</p>
+<p>Run the following commands to create a user and make it admin.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>export RAILS_ENV<span style="color:#f92672">=</span>production tootctl accounts create --email EMAIL --confirmed --role Admin
+</span></span><span style="display:flex;"><span>export RAILS_ENV<span style="color:#f92672">=</span>production tootctl accounts modify USERNAME --approve
+</span></span><span style="display:flex;"><span>export RAILS_ENV<span style="color:#f92672">=</span>production tootctl accounts approve USERNAME
+</span></span></code></pre></div><p>The commands above give you the requirement information to login to your server.</p>
+<p>I prefer using nginx to expose my instance to the internet.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>map $http_upgrade $connection_upgrade <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  default upgrade;
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;&#39;</span>      close;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>upstream backend <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    server 127.0.0.1:3000 fail_timeout<span style="color:#f92672">=</span>0;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>upstream streaming <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Instruct nginx to send connections to the server with the least number of connections</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># to ensure load is distributed evenly.</span>
+</span></span><span style="display:flex;"><span>    least_conn;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    server 127.0.0.1:4000 fail_timeout<span style="color:#f92672">=</span>0;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Uncomment these lines for load-balancing multiple instances of streaming for scaling,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># this assumes your running the streaming server on ports 4000, 4001, and 4002:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># server 127.0.0.1:4001 fail_timeout=0;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># server 127.0.0.1:4002 fail_timeout=0;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>proxy_cache_path /var/cache/nginx levels<span style="color:#f92672">=</span>1:2 keys_zone<span style="color:#f92672">=</span>CACHE:10m inactive<span style="color:#f92672">=</span>7d max_size<span style="color:#f92672">=</span>1g;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>server <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  listen &lt;IP&gt;:80;
+</span></span><span style="display:flex;"><span>  server_name domain.com;
+</span></span><span style="display:flex;"><span>  root /var/www/mastodon/public;
+</span></span><span style="display:flex;"><span>  location /.well-known/acme-challenge/ <span style="color:#f92672">{</span> allow all; <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  location / <span style="color:#f92672">{</span> <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">301</span> https://$host$request_uri; <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>server <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  listen &lt;IP&gt;:443 ssl http2;
+</span></span><span style="display:flex;"><span>  server_name domain.com;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  ssl_protocols TLSv1.2 TLSv1.3;
+</span></span><span style="display:flex;"><span>  ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-CHACHA20-POLY1305;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  ssl_prefer_server_ciphers on;
+</span></span><span style="display:flex;"><span>  ssl_session_cache shared:SSL:10m;
+</span></span><span style="display:flex;"><span>  ssl_session_tickets off;
+</span></span><span style="display:flex;"><span>  access_log /var/log/nginx/mastodonaccess.log;
+</span></span><span style="display:flex;"><span>  error_log /var/log/nginx/mastodonerror.log warn;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  ssl_certificate /root/ghariib.ir.crt;
+</span></span><span style="display:flex;"><span>  ssl_certificate_key /root/ghariib.ir.key;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  keepalive_timeout 70;
+</span></span><span style="display:flex;"><span>  sendfile on;
+</span></span><span style="display:flex;"><span>  client_max_body_size 99m;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  root /var/www/mastodon/public;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  gzip on;
+</span></span><span style="display:flex;"><span>  gzip_disable <span style="color:#e6db74">&#34;msie6&#34;</span>;
+</span></span><span style="display:flex;"><span>  gzip_vary on;
+</span></span><span style="display:flex;"><span>  gzip_proxied any;
+</span></span><span style="display:flex;"><span>  gzip_comp_level 6;
+</span></span><span style="display:flex;"><span>  gzip_buffers <span style="color:#ae81ff">16</span> 8k;
+</span></span><span style="display:flex;"><span>  gzip_http_version 1.1;
+</span></span><span style="display:flex;"><span>  gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript image/svg+xml image/x-icon;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  location / <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    try_files $uri @proxy;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  location <span style="color:#f92672">=</span> /sw.js <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    add_header Cache-Control <span style="color:#e6db74">&#34;public, max-age=604800, must-revalidate&#34;</span>;
+</span></span><span style="display:flex;"><span>    add_header Strict-Transport-Security <span style="color:#e6db74">&#34;max-age=63072000; includeSubDomains&#34;</span>;
+</span></span><span style="display:flex;"><span>    try_files $uri <span style="color:#f92672">=</span>404;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  location ~ ^/assets/ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    add_header Cache-Control <span style="color:#e6db74">&#34;public, max-age=2419200, must-revalidate&#34;</span>;
+</span></span><span style="display:flex;"><span>    add_header Strict-Transport-Security <span style="color:#e6db74">&#34;max-age=63072000; includeSubDomains&#34;</span>;
+</span></span><span style="display:flex;"><span>    try_files $uri <span style="color:#f92672">=</span>404;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  location ~ ^/avatars/ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    add_header Cache-Control <span style="color:#e6db74">&#34;public, max-age=2419200, must-revalidate&#34;</span>;
+</span></span><span style="display:flex;"><span>    add_header Strict-Transport-Security <span style="color:#e6db74">&#34;max-age=63072000; includeSubDomains&#34;</span>;
+</span></span><span style="display:flex;"><span>    try_files $uri <span style="color:#f92672">=</span>404;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  location ~ ^/emoji/ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    add_header Cache-Control <span style="color:#e6db74">&#34;public, max-age=2419200, must-revalidate&#34;</span>;
+</span></span><span style="display:flex;"><span>    add_header Strict-Transport-Security <span style="color:#e6db74">&#34;max-age=63072000; includeSubDomains&#34;</span>;
+</span></span><span style="display:flex;"><span>    try_files $uri <span style="color:#f92672">=</span>404;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  location ~ ^/headers/ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    add_header Cache-Control <span style="color:#e6db74">&#34;public, max-age=2419200, must-revalidate&#34;</span>;
+</span></span><span style="display:flex;"><span>    add_header Strict-Transport-Security <span style="color:#e6db74">&#34;max-age=63072000; includeSubDomains&#34;</span>;
+</span></span><span style="display:flex;"><span>    try_files $uri <span style="color:#f92672">=</span>404;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  location ~ ^/packs/ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    add_header Cache-Control <span style="color:#e6db74">&#34;public, max-age=2419200, must-revalidate&#34;</span>;
+</span></span><span style="display:flex;"><span>    add_header Strict-Transport-Security <span style="color:#e6db74">&#34;max-age=63072000; includeSubDomains&#34;</span>;
+</span></span><span style="display:flex;"><span>    try_files $uri <span style="color:#f92672">=</span>404;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  location ~ ^/shortcuts/ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    add_header Cache-Control <span style="color:#e6db74">&#34;public, max-age=2419200, must-revalidate&#34;</span>;
+</span></span><span style="display:flex;"><span>    add_header Strict-Transport-Security <span style="color:#e6db74">&#34;max-age=63072000; includeSubDomains&#34;</span>;
+</span></span><span style="display:flex;"><span>    try_files $uri <span style="color:#f92672">=</span>404;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  location ~ ^/sounds/ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    add_header Cache-Control <span style="color:#e6db74">&#34;public, max-age=2419200, must-revalidate&#34;</span>;
+</span></span><span style="display:flex;"><span>    add_header Strict-Transport-Security <span style="color:#e6db74">&#34;max-age=63072000; includeSubDomains&#34;</span>;
+</span></span><span style="display:flex;"><span>    try_files $uri <span style="color:#f92672">=</span>404;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  location ~ ^/system/ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    root /root/mastodon/public/system;  # New root path for /system/</span>
+</span></span><span style="display:flex;"><span>    add_header Cache-Control <span style="color:#e6db74">&#34;public, max-age=2419200, immutable&#34;</span>;
+</span></span><span style="display:flex;"><span>    add_header Strict-Transport-Security <span style="color:#e6db74">&#34;max-age=63072000; includeSubDomains&#34;</span>;
+</span></span><span style="display:flex;"><span>    add_header X-Content-Type-Options nosniff;
+</span></span><span style="display:flex;"><span>    add_header Content-Security-Policy <span style="color:#e6db74">&#34;default-src &#39;none&#39;; form-action &#39;none&#39;&#34;</span>;
+</span></span><span style="display:flex;"><span>    try_files $uri <span style="color:#f92672">=</span>404;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  location ^~ /api/v1/streaming <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    proxy_set_header Host $host;
+</span></span><span style="display:flex;"><span>    proxy_set_header X-Real-IP $remote_addr;
+</span></span><span style="display:flex;"><span>    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+</span></span><span style="display:flex;"><span>    proxy_set_header X-Forwarded-Proto $scheme;
+</span></span><span style="display:flex;"><span>    proxy_set_header Proxy <span style="color:#e6db74">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    proxy_pass http://streaming;
+</span></span><span style="display:flex;"><span>    proxy_buffering off;
+</span></span><span style="display:flex;"><span>    proxy_redirect off;
+</span></span><span style="display:flex;"><span>    proxy_http_version 1.1;
+</span></span><span style="display:flex;"><span>    proxy_set_header Upgrade $http_upgrade;
+</span></span><span style="display:flex;"><span>    proxy_set_header Connection $connection_upgrade;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    add_header Strict-Transport-Security <span style="color:#e6db74">&#34;max-age=63072000; includeSubDomains&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    tcp_nodelay on;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  location @proxy <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    proxy_set_header Host $host;
+</span></span><span style="display:flex;"><span>    proxy_set_header X-Real-IP $remote_addr;
+</span></span><span style="display:flex;"><span>    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+</span></span><span style="display:flex;"><span>    proxy_set_header X-Forwarded-Proto $scheme;
+</span></span><span style="display:flex;"><span>    proxy_set_header Proxy <span style="color:#e6db74">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>    proxy_pass_header Server;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    proxy_pass http://backend;
+</span></span><span style="display:flex;"><span>    proxy_buffering on;
+</span></span><span style="display:flex;"><span>    proxy_redirect off;
+</span></span><span style="display:flex;"><span>    proxy_http_version 1.1;
+</span></span><span style="display:flex;"><span>    proxy_set_header Upgrade $http_upgrade;
+</span></span><span style="display:flex;"><span>    proxy_set_header Connection $connection_upgrade;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    proxy_cache CACHE;
+</span></span><span style="display:flex;"><span>    proxy_cache_valid <span style="color:#ae81ff">200</span> 7d;
+</span></span><span style="display:flex;"><span>    proxy_cache_valid <span style="color:#ae81ff">410</span> 24h;
+</span></span><span style="display:flex;"><span>    proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+</span></span><span style="display:flex;"><span>    add_header X-Cached $upstream_cache_status;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    tcp_nodelay on;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  error_page <span style="color:#ae81ff">404</span> <span style="color:#ae81ff">500</span> <span style="color:#ae81ff">501</span> <span style="color:#ae81ff">502</span> <span style="color:#ae81ff">503</span> <span style="color:#ae81ff">504</span> /500.html;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div>
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

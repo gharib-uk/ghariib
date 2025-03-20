@@ -1,0 +1,80 @@
+---
+title: "Peter Shor wins Breakthrough Prize in Fundamental Physics"
+date: 2025-01-06
+categories: 
+  - "cryptography"
+  - "cryptography-library"
+  - "cybersecurity"
+  - "cybersecurity-awareness"
+  - "encryption"
+  - "security"
+tags: 
+  - "algorithms"
+  - "computerscienceandartificialintelligencelaboratorycsail"
+  - "computerscienceandtechnology"
+  - "dataprivacy"
+  - "dataprotection"
+  - "mitschwarzmancollegeofcomputing"
+  - "physics"
+  - "quantumcomputing"
+---
+
+Peter Shor, the Morss Professor of Applied Mathematics at MIT, has been named a recipient of the 2023 Breakthrough Prize in Fundamental Physics. He shares the $3 million prize with three others for “foundational work in the field of quantum information”: David Deutsch at the University of Oxford, Charles Bennett at IBM Research, and Gilles Brassard of the University of Montreal.
+
+In announcing the award, the Breakthrough Prize Foundation highlighted Shor’s contributions to the quantum information field, including the eponymous Shor’s algorithm for factoring extremely large numbers, and for an algorithm to correct errors in quantum computers.
+
+“These ideas not only paved the way for today’s fast-developing quantum computers; they are now also at the frontiers of fundamental physics, especially in the study of metrology — the science of measurement — and of quantum gravity,” the award announcement reads.
+
+“I’m very grateful to see the prize going to quantum information and quantum computation theory this year,” Shor commented to _MIT News_. “My three co-winners were the most influential people in founding this field. I consider them friends, and they all clearly deserve it.”
+
+In addition, an MIT alumnus, Daniel A. Spielman PhD ’95, has won the 2023 Breakthrough Prize in Mathematics for “contributions to theoretical computer science and mathematics, including to spectral graph theory, the Kadison-Singer problem, numerical linear algebra, optimization, and coding theory.”
+
+“I am ecstatic to see both Peter Shor and Dan Spielman be recognized with Breakthrough Prizes in Fundamental Physics and Mathematics, respectively,” says Michel Goemans, the RSA Professor and head of MIT’s Department of Mathematics.  “Both would have been natural nominees of the Breakthrough Prize in Theoretical Computer Science, if such a prize existed. Peter and Dan are PhD graduates of our math department, both have held tenured appointments in our department and have been members of the theory group at CSAIL, and both have received the same prizes. It is a testimony of the importance of theoretical computer science across disciplines, in particular mathematics and physics.”
+
+**Quantum seeds**
+
+The first seeds of quantum computing’s potential were planted through the early algorithms derived by Deutsch, Bennett, Brassard, and Shor.  
+
+In the early 1980s, Deutsch began thinking of problems whose solutions could be sped up using quantum algorithms — formulas that were derived using the laws of quantum mechanics, rather than classical physics. He was the first to develop a quantum algorithm that could solve a simple, albeit contrived, problem far more efficiently than a classical algorithm.
+
+Meanwhile, Bennett and Brassard were also looking for uses of quantum information. In 1984, they developed the first quantum cryptography protocol, BB84. They put forth the idea that two distant parties could agree on a secret encryption key, which would be secure against eavesdroppers, based on a strange quantum principle in which the value of the encryption key would instantly be disturbed and therefore unreadable when measured.
+
+Their work demonstrated the first practical application of quantum information theory. It was also Shor’s first introduction to the field. The mathematician was working at AT&T Bell Labs at the time, and Bennett came to give a talk on his new quantum key encryption system. “Their work inspired me to do a little thinking and research on quantum information,” Shor recalls. “But I didn’t really get anywhere at the time.”
+
+A decade later, in 1994, Shor introduced his own landmark algorithm. Shor’s algorithm describes how a sufficiently large quantum computer could efficiently factorize extremely large numbers — a task that would take more than the age of the universe for the most powerful classical supercomputer to solve.
+
+Most data encryption schemes today rely on the difficulty of factorization to keep information secure. Shor’s algorithm was the first to show that, in theory, a quantum system could break through most modern data security walls. To do this practically, however, would require a system of many precisely controlled quantum bits. Even then, scientists assumed that the tiniest noise in the environment would disrupt the delicate qubits, and set off a ripple of errors in their calculations that could not be corrected without further disturbing the qubits.
+
+“When I first came up with this factoring algorithm, people thought it would remain theoretical forever because there was this argument that you could not correct errors on a quantum computer,” Shor says.
+
+Shortly thereafter, in 1995, Shor worked out another algorithm, this time on quantum error correction, which showed that errors in a quantum system could in fact be isolated and fixed without disturbing the qubit itself, thereby leaving the quantum computation intact. The vision of a practical quantum computer became immediately tangible.
+
+“With these two bombshell contributions, Peter set the stage for quantum computing to become the huge field that it is now,” says Alan Guth, the Victor F. Weisskopf Professor of Physics at MIT, who as a former recipient of the Breakthrough Prize, was the one who called Shor to deliver the news of this year’s award.
+
+“It was a real pleasure for me to be able to tell him that he is one of the winners,” Guth says. “His algorithms took the world by surprise, and ignited the field of quantum computing. And despite his spectacular contributions, Peter continues to be a warm, friendly, smiling colleague to all around him.”
+
+“Peter is a wonderful colleague and is totally unique,” adds Goemans. “His thought process seems to parallel the quantum algorithms he designs and invents: Out of entangled ideas and a superposition of states, a brilliant solution often emerges in a Eureka moment!”
+
+“One of the best things about MIT is that we have great students,” says Shor, who earned a PhD in applied mathematics from MIT in 1985. He then spent one year as a postdoc at the Mathematical Sciences Research Institute before moving on to work at AT&T Bell Labs, where he developed Shor’s algorithm. In 2003, he returned to MIT, where he has continued his research and teaching for the past 20 years.
+
+Today, he is working to formulate a theory of quantum information, which would describe how data can be stored and transmitted, using the principles of quantum physics. Will there come a day when quantum computers are advanced enough to break through our classical security systems?
+
+“In five or 10 years, we could be at the start of a Moore’s Law, where quantum computers will steadily improve every few years,” Shor predicts. “I suspect they’ll improve fast enough that within two or three decades we will get quantum computers that can do useful stuff. Hopefully by the time quantum computers are that large, we’ll be using different crypto systems that aren’t susceptible to quantum computers.”
+
+Shor credits his father with fostering his early interest in mathematics. As a young boy, would flip through his father’s issues of _Scientific American_, to find his favorite section.
+
+“Martin Gardner had a column, ‘Mathematical Games,’ which was really amazing,” Shor recalls. “It was sometimes a puzzle, sometimes a report on a new discovery in mathematics, and it was often at a level that I could understand. I looked forward to reading it every month, and that was something that turned me onto math early on.”
+
+**Beautiful breakthroughs**
+
+Daniel Spielman, this year’s recipient of the Breakthrough Prize in Mathematics, received a PhD in applied mathematics at MIT in 1995, for which he was advised by Michael Sipser, the Donner Professor of Mathematics and former dean of the MIT School of Science. Spielman then joined the math department and was on the MIT faculty until 2005, before moving on to Yale University, where he is currently the Sterling Professor of Computer Science, Mathematics, Statistics and Data Science.
+
+Spielman specializes in the design and analysis of algorithms, many of which have yielded insights “not only for mathematics, but for highly practical problems in computing, signal processing, engineering, and even the design of clinical trials,” notes the Breakthrough Foundation in their announcement today.
+
+“Dan has made a number of important and beautiful breakthroughs over the years, from expander-based error-correcting codes, to the smoothed analysis of algorithms, or spectral sparsifications of graphs, all characterized by innovative mathematics,” says Goemans.
+
+Among numerous discoveries, Spielman is best known for solving the Kadison-Singer problem, which for decades was thought to be unsolvable. The problem can be interpreted as posing a fundamental question for quantum physics: In a quantum system, can new information be deciphered, if only some of the system’s properties are observed or measured? The answer, most mathematicians agreed, was no.
+
+Over decades, the Kadison-Singer problem was reformulated and shown to be equivalent to problems across a wide range of mathematical fields. And in 2013, Spielman and his colleagues resolved one of these equivalent formulations involving linear algebra and matrices, proving the answer to be yes — indeed, it was possible to determine a quantum system’s sum from its parts.
+
+The Breakthrough Prizes are a set of international awards that recognize the achievements of scientists in three categories — fundamental physics, mathematics, and life sciences. The prizes were founded by Sergey Brin; Priscilla Chan and Mark Zuckerberg; Julia and Yuri Milner; and Anne Wojcicki, and have been sponsored by foundations established by them. The 2023 prizes will be presented at a gala award ceremony, and prize recipients will take part in lectures and discussions.

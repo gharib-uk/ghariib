@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Getting started with GitLab: How to manage users&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Getting started with GitLab: How to manage users&lt;/div&gt;</h1>
+			<b><time>15.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p><em>Welcome to our &ldquo;Getting started with GitLab&rdquo; series, where we help newcomers get familiar with the GitLab DevSecOps platform.</em></p>
+<p>Ensuring a safe, compliant, and collaborative environment starts with the most basic of tasks - managing users. In this tutorial, we show you how to establish project members, assign roles and permissions, and create groups and subgroups.</p>
+<p>Note: To follow along with this tutorial, you should have a GitLab account either through GitLab.com or your organization&rsquo;s self-managed instance. If you need help, visit our fundamentals area on GitLab University.</p>
+<p>Let&rsquo;s get started.</p>
+<p>When you create GitLab users, they only have access to their private projects, public projects, and projects set with internal visibility. For the purposes of this tutorial, your project is super secret and only invited members should have access to it – at varying permissions settings. To ensure this, you can invite users as members of the project.</p>
+<h2 id="project-members">Project members</h2>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/cTFRMv1Sg4raXl0m3kfXI/ba4fe32f2124dc47c0c4d5b29ab0884f/image1.png" alt="Project members screen" />
+</figure>
+
+
+</p>
+<p>GitLab users can be invited to a project and assigned a role, which determines what they can do in the project. The owner of a project can delegate administrative tasks to other users as maintainers, who can do almost everything an owner does, aside from changes to a project such as deleting, archiving, or transferring a project.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/oR5cVlHEhrdBCg40UbXMI/3785f62326eb938831b71365ce013c24/image2.png" alt="Invite members screen" />
+</figure>
+
+
+</p>
+<p>Maintainers of the project can invite other members as developers who have access to all the features to create, build, and deploy software. Users who are not developers but need project management access can be invited to the project as planners, reporters, and guests with varying levels of permissions. These roles can also be used to determine who can make changes to certain branches with protected branches.</p>
+<p>If you are working with contractors or your use requires user permissions to expire, you can set an expiry date after which the user loses access to the project. Project members can also be identified as direct or indirect members, based on their membership type. Direct members are invited directly into the project, whereas indirect members are often inherited from a GitLab group a project belongs to.</p>
+<p>Now, let&rsquo;s look at Group memberships.</p>
+<h2 id="group-memberships">Group memberships</h2>
+<p>Groups in GitLab can be a top level created at the root of a GitLab instance like the gitlab.com/gitlab-org. which is a parent group used to organize other subgroups like gitlab.com/gitlab-org/charts. Groups are useful even if you only have one project.</p>
+<p>Groups can be used for different reasons:</p>
+<ul>
+<li>organizing similar or related projects</li>
+<li>organizing users into groups for better team coordination</li>
+</ul>
+<p>When using groups to organize users, you can organize teams in groups and invite a group to a project with a specific role for an entire team. You can have a <code>dev</code> group for the developers of the team, <code>pm</code> group for the project managers and <code>leads</code> for team leads. When inviting the groups, <code>dev</code> can be assigned the Developer role, <code>pm</code> the Planner role, and <code>leads</code> the Maintainer role.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/6RHSZ4L42t5tmMynmYFTgN/2b14adbc253a07b7bef0d927d59c02b4/image3.png" alt="Invite a group screen" />
+</figure>
+
+
+</p>
+<p>Members of each group can be can be added or removed without needing to update project permissions. This is particularly useful when your team has grown to have several projects. However, it is important to observe best practices for using groups for collaboration.</p>
+<p>Another helpful aspect of having users organized in groups is that you can mention the entire group in issues, merge requests, or comments, which makes keeping an entire team informed easier.</p>
+<h3 id="create-subgroups">Create subgroups</h3>
+<p>Subgroups can be used to further organize users in a group and you can keep adding subgroups up to 20 nested levels. Users in a subgroup inherit the the permissions they have in a parent group. If you want to grant a user in a subgroup a role higher than what they inherited, you will need to invite them to the subgroup with the new higher role. Note: You can not give them a lower role in the subgroup.</p>
+<h3 id="manage-groups">Manage groups</h3>
+<p>Group Owners have several management options to determine how users function in a group. For instance, you can set how a user can request access to a group, enable/disable group mentions, restrict access, or moderate users, among other options. An exciting new feature, which is still under development at the time of this article&rsquo;s publication, is the automatic removal of dormant users after a minimum of 90 days and a maximum of five years. This will help keep groups clean and better manage the release of license seats.</p>
+<h2 id="learn-more">Learn more</h2>
+<p>Managing users on GitLab depends on your use case. If your organization is larger with more advanced workflows and user management, GitLab provides more advanced ways to manage enterprise users. You can also explore more options on how to manage your organization and with GitLab Ultimate, you get more granularity and compliance features.</p>
+<blockquote>
+<h4 id="want-to-take-your-learning-to-the-next-level-sign-up-for-gitlab-university-courses-or-you-can-get-going-right-away-with-a-free-60-day-trial-of-gitlab-ultimate">Want to take your learning to the next level? Sign up for GitLab University courses. Or you can get going right away with a free 60-day trial of GitLab Ultimate.</h4></blockquote>
+<p><em>Welcome to our &ldquo;Getting started with GitLab&rdquo; series, where we help newcomers get familiar with the GitLab DevSecOps platform.</em></p>
+<p>Ensuring a safe, compliant, and collaborative environment starts with the most basic of tasks - managing users. In this tutorial, we show you how to establish project members, assign roles and permissions, and create groups and subgroups.</p>
+<p>Note: To follow along with this tutorial, you should have a GitLab account either through GitLab.com or your organization&rsquo;s self-managed instance. If you need help, visit our fundamentals area on GitLab University.</p>
+<p>Let&rsquo;s get started.</p>
+<p>When you create GitLab users, they only have access to their private projects, public projects, and projects set with internal visibility. For the purposes of this tutorial, your project is super secret and only invited members should have access to it – at varying permissions settings. To ensure this, you can invite users as members of the project.</p>
+<h2 id="project-members-1">Project members</h2>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/cTFRMv1Sg4raXl0m3kfXI/ba4fe32f2124dc47c0c4d5b29ab0884f/image1.png" alt="Project members screen" />
+</figure>
+
+
+</p>
+<p>GitLab users can be invited to a project and assigned a role, which determines what they can do in the project. The owner of a project can delegate administrative tasks to other users as maintainers, who can do almost everything an owner does, aside from changes to a project such as deleting, archiving, or transferring a project.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/oR5cVlHEhrdBCg40UbXMI/3785f62326eb938831b71365ce013c24/image2.png" alt="Invite members screen" />
+</figure>
+
+
+</p>
+<p>Maintainers of the project can invite other members as developers who have access to all the features to create, build, and deploy software. Users who are not developers but need project management access can be invited to the project as planners, reporters, and guests with varying levels of permissions. These roles can also be used to determine who can make changes to certain branches with protected branches.</p>
+<p>If you are working with contractors or your use requires user permissions to expire, you can set an expiry date after which the user loses access to the project. Project members can also be identified as direct or indirect members, based on their membership type. Direct members are invited directly into the project, whereas indirect members are often inherited from a GitLab group a project belongs to.</p>
+<p>Now, let&rsquo;s look at Group memberships.</p>
+<h2 id="group-memberships-1">Group memberships</h2>
+<p>Groups in GitLab can be a top level created at the root of a GitLab instance like the gitlab.com/gitlab-org. which is a parent group used to organize other subgroups like gitlab.com/gitlab-org/charts. Groups are useful even if you only have one project.</p>
+<p>Groups can be used for different reasons:</p>
+<ul>
+<li>organizing similar or related projects</li>
+<li>organizing users into groups for better team coordination</li>
+</ul>
+<p>When using groups to organize users, you can organize teams in groups and invite a group to a project with a specific role for an entire team. You can have a <code>dev</code> group for the developers of the team, <code>pm</code> group for the project managers and <code>leads</code> for team leads. When inviting the groups, <code>dev</code> can be assigned the Developer role, <code>pm</code> the Planner role, and <code>leads</code> the Maintainer role.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/6RHSZ4L42t5tmMynmYFTgN/2b14adbc253a07b7bef0d927d59c02b4/image3.png" alt="Invite a group screen" />
+</figure>
+
+
+</p>
+<p>Members of each group can be can be added or removed without needing to update project permissions. This is particularly useful when your team has grown to have several projects. However, it is important to observe best practices for using groups for collaboration.</p>
+<p>Another helpful aspect of having users organized in groups is that you can mention the entire group in issues, merge requests, or comments, which makes keeping an entire team informed easier.</p>
+<h3 id="create-subgroups-1">Create subgroups</h3>
+<p>Subgroups can be used to further organize users in a group and you can keep adding subgroups up to 20 nested levels. Users in a subgroup inherit the the permissions they have in a parent group. If you want to grant a user in a subgroup a role higher than what they inherited, you will need to invite them to the subgroup with the new higher role. Note: You can not give them a lower role in the subgroup.</p>
+<h3 id="manage-groups-1">Manage groups</h3>
+<p>Group Owners have several management options to determine how users function in a group. For instance, you can set how a user can request access to a group, enable/disable group mentions, restrict access, or moderate users, among other options. An exciting new feature, which is still under development at the time of this article&rsquo;s publication, is the automatic removal of dormant users after a minimum of 90 days and a maximum of five years. This will help keep groups clean and better manage the release of license seats.</p>
+<h2 id="learn-more-1">Learn more</h2>
+<p>Managing users on GitLab depends on your use case. If your organization is larger with more advanced workflows and user management, GitLab provides more advanced ways to manage enterprise users. You can also explore more options on how to manage your organization and with GitLab Ultimate, you get more granularity and compliance features.</p>
+<blockquote>
+<h4 id="want-to-take-your-learning-to-the-next-level-sign-up-for-gitlab-university-courses-or-you-can-get-going-right-away-with-a-free-60-day-trial-of-gitlab-ultimate-1">Want to take your learning to the next level? Sign up for GitLab University courses. Or you can get going right away with a free 60-day trial of GitLab Ultimate.</h4></blockquote>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

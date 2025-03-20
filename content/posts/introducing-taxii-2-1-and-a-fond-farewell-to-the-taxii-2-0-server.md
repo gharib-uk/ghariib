@@ -1,0 +1,120 @@
+---
+title: "Introducing TAXII 2.1 and a fond farewell to the TAXII 2.0 Server"
+date: 2025-01-02
+categories: 
+  - "security"
+---
+
+![](https://cdn-images-1.medium.com/max/1024/1*0GQBfYbb0frVtyhYLi3yiA.png)
+
+As mentioned in our 2024 Roadmap and the v15 release blog, we’re excited to introduce our new TAXII server and the latest addition to the ATT&CK Workbench software suite: the MITRE ATT&CK Workbench TAXII 2.1 Server. We’ve open-sourced the TAXII 2.1 code on GitHub, allowing you to set up your own servers within your organization _and_ contribute to its improvement.
+
+While you’re diving into the new 2.1 server, don’t forget: our TAXII 2.0 server is retiring on **December 18.**
+
+**To continue receiving updated ATT&CK data, you’ll need to migrate from cti-taxii.mitre.org to attack-taxii.mitre.org. However, this migration may involve more than just a URL change. Given the transition from STIX 2.0 to STIX 2.1, the complexity of your migration will depend on how deeply your applications are integrated with STIX 2.0. We recommend assessing the impact on your systems and planning your migration accordingly.**
+
+**Getting Started with TAXII 2.1**
+
+Ready to explore the MITRE ATT&CK Workbench TAXII 2.1 server?
+
+- Visit our GitHub repository for the source code and detailed usage documentation.
+- Leverage the ATT&CK Workbench Deployment repository with Docker Compose templates to simplify setting up Workbench services and the TAXII 2.1 module (so you can pull the Docker images from GitHub and get started without building from source!).
+- Skip the source code and pull the TAXII 2.1 Docker image directly from the GitHub Container Registry.
+- Access the server Swagger interface and Bruno API Client definitions (Bruno, similar to Postman, provides an easy way to interact with REST APIs). You can find our Bruno files here.
+- Familiarize yourself with the OASIS TAXII 2.1 specification to enhance your integration prowess.
+- Experience issues? Submit specific requests or encounter issues on GitHub.
+
+**Why TAXII 2.1?**
+
+We know the ATT&CK community has relied on our public TAXII 2.0 server, but it had issues like frequent outages. The TAXII 2.1 server addresses these problems with a more reliable and smooth experience. It’s built for scalability and stress-tested with real-world benchmarks from TAXII 2.0, ensuring you’re less likely to face major outages. Additionally, the new server introduces pagination, which was missing in TAXII 2.0. This means you can fetch smaller chunks of data instead of the entire ~20 MB STIX collection, speeding up the process and reducing data transfer costs.
+
+A critical update to note is that our TAXII 2.1 server will exclusively host STIX 2.1 content moving forward. This change is part of our long-term strategy to shift away from STIX 2.0, aligning with the latest standards.
+
+The new TAXII 2.1 server is also more powerful and capable than the previous version. We designed it to smoothly integrate with Workbench, making CTI management as seamless as possible. If you’re already using the ATT&CK Workbench in your CTI workflows, you can easily edit and maintain CTI data without needing additional tools. The TAXII 2.1 server integrates with the ATT&CK Workbench software suite, and can automatically synch with the Workbench REST API (the Workbench “back end”).
+
+Workbench users can add objects, STIX collections, and bundles, and the TAXII 2.1 server will automatically make them available via its REST API. You don’t need to change your editor workflows — just bring the TAXII 2.1 server online in your Workbench container stack, and it will sync every 30 minutes by default (administrators can adjust this if needed). TAXII 2.1 is also optional, and you can continue using Workbench as usual without it.
+
+Of note, the TAXII 2.1 specification outlines two “sharing models” for TAXII server implementations:
+
+- The **Collection model**, where the TAXII server allows producers to host a set of CTI data that can be requested by consumers: TAXII Clients and Servers exchange information in a request-response model.
+- The **Channel model**, where the TAXII server uses the publish-subscribe pattern to allow producers to push data to many consumers and consumers to receive data from many producers.
+
+Given that Channels are still loosely defined in the TAXII specification, we decided to only implement the Collections model outlined in the TAXII 2.1 specification. However, we are open to adding support for a pub-sub model in future releases.
+
+**A Brief Guide to Accessing Threat Intelligence Data**
+
+With the new TAXII 2.1 server, you can still access your cyber threat intel in STIX format through the publicly accessible REST API, just like its predecessor (cti-taxii.mitre.org) that’s been around for over 6 years. Even though this server has some sophisticated functionality, querying it is actually pretty simple. This following guide will show you the basics and help you easily get the threat intelligence data you need.
+
+With TAXII 2.1 running on a RESTful API model and using standard HTTP requests, you can connect to the server using any HTTP client you like. This includes popular tools like curl, wget, httpie, or Postman. This flexibility allows you to seamlessly integrate TAXII 2.1 queries into your existing workflows and tools.
+
+Let’s dive into how to structure these requests and interpret the responses.
+
+Importantly, all TAXII 2.1 requests require a special Accept header:
+
+```
+GET /taxii2/ HTTP/1.1 Accept: application/taxii+json;version=2.1 Host: attack-taxii.mitre.org
+```
+
+Here is an example of setting the Accept header using the curl tool:
+
+```
+curl --request GET   --url https://attack-taxii.mitre.org/taxii2/   --header ‘Accept: application/taxii+json;version=2.1’
+```
+
+The request above sends a request to the TAXII server’s Discovery endpoint, which returns a list of available API roots that the TAXII server offers. Each API Root is the “root” URL of that particular instance of the TAXII API. Our TAXII server only hosts one API Root, which we can see clearly from the response body:
+
+```
+{   "title": "MITRE ATT&CK TAXII 2.1",   "description": "This API Root contains TAXII 2.1 REST API endpoints that serve MITRE ATT&CK STIX 2.1 data",   "default": "api/v21",   "api_roots": [     "api/v21"   ] } 
+```
+
+Great! Now that we have the API Root, let’s see if we can query for a list of available TAXII Collections:
+
+```
+curl --request GET       --url https://attack-taxii.mitre.org/api/v21/collections/       --header 'Accept: application/taxii+json;version=2.1' 
+```
+
+The response should look something like the following:
+
+```
+{  “collections”: [    {      “id”: “x-mitre-collection — 1f5f1533-f617–4ca8–9ab4–6a02367fa019”,      “title”: “Enterprise ATT&CK”,      “description”: “ATT&CK for Enterprise provides a knowledge base of real-world adversary behavior targeting traditional enterprise networks. ATT&CK for Enterprise covers the following platforms: Windows, macOS, Linux, PRE, Office 365, Google Workspace, IaaS, Network, and Containers.”,      “canRead”: true,      “canWrite”: false,      “mediaTypes”: [        “application/taxii+json;version=2.1”,        “application/taxii+json”      ]    },    {      id”: “x-mitre-collection — 90c00720–636b-4485-b342–8751d232bf09”,      “title”: “ICS ATT&CK”,      …    },    {      “id”: “x-mitre-collection — dac0d2d7–8653–445c-9bff-82f934c1e858”,      “title”: “Mobile ATT&CK”,      …    }  ]}
+```
+
+The response lists three objects that match the main ATT&CK domains: Enterprise, Mobile, and ICS. Of note, _TAXII Collections_ and _STIX Collections_ are different concepts — with TAXII Collections operating as versatile containers for CTI objects. For our MITRE ATT&CK TAXII server, we’ve mapped each TAXII Collection directly to an ATT&CK domain. This means querying a TAXII Collection from our server provides data from just one domain, simplifying the user experience and aligning with the ATT&CK framework. While this mapping isn’t required by the TAXII protocol and other servers may organize collections differently, we chose this method to make our server more intuitive for the ATT&CK community.
+
+Now that we have our API Root and the available TAXII Collections, we’re ready to retrieve some CTI objects:
+
+```
+curl --request GET   --url 'https://attack-taxii.mitre.org/api/v21/collections/x-mitre-collection--dac0d2d7-8653-445c-9bff-82f934c1e858/objects?limit=100'   --header ‘Accept: application/taxii+json;version=2.1’
+```
+
+This request sends a request for the first 100 objects from the Enterprise ATT&CK collection. The response should look something like this:
+
+```
+{  “more”: true,  “next”: “1”,  “objects”: [←100 →]}
+```
+
+If the ‘more’ property is set to true and the ‘next’ property is populated, then the client can paginate through the remaining records using the ‘next’ URL parameter along with the same original query options. So, we can request the second page of 100 objects by simply adding the ‘next=1’ query parameter to the original request:
+
+```
+curl --request GET       --url 'https://attack-taxii.mitre.org/api/v21/collections/x-mitre-collection--dac0d2d7-8653-445c-9bff-82f934c1e858/objects?limit=100&next=1'       --header 'Accept: application/taxii+json;version=2.1' 
+```
+
+**What’s Next for ATT&CK Workbench TAXII 2.1**
+
+We believe the release of the MITRE ATT&CK Workbench TAXII 2.1 server is a big step forward for threat intelligence sharing — and we have even more exciting integrations on our roadmap to make the TAXII experience even smoother:
+
+- Workbench UI indicators that signal whether an object or collection is actively being shared through TAXII;
+- Workbench UI toggles that allow users to pause (or enable) the sharing objects and collections with TAXII;
+- Workbench role-based access controls (RBAC) for TAXII administration.
+
+Stay tuned for more updates and enhancements as we continue to evolve our tools!
+
+©2024 The MITRE Corporation. ALL RIGHTS RESERVED. Approved for public release. Distribution unlimited 24–00195–2.
+
+![](https://medium.com/_/stat?event=post.clientViewed&referrerSource=full_rss&postId=d9fca6ce4c58)
+
+* * *
+
+Introducing TAXII 2.1 and a fond farewell to the TAXII 2.0 Server was originally published in MITRE ATT&CK® on Medium, where people are continuing the conversation by highlighting and responding to this story.
+
+Go to Source

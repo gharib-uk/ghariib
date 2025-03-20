@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How to use RHEL system roles in image mode</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How to use RHEL system roles in image mode</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Image mode for Red Hat Enterprise Linux (RHEL) is designed to simplify the experience of building, deploying, and managing Red Hat Enterprise Linux as a bootc container image. It reduces complexity across the enterprise by letting development, operations, and solution providers use the same container-native tools and techniques to manage everything from applications to the underlying OS. </p>
+<p>We&rsquo;ve written several articles detailing the experience of using image mode. We discussed the various use cases of image mode, creating automated CI/CD pipelines, managing containerized workloads, the full GitOps experience for sysadmins of RHEL, and how image mode facilitates building software appliances. There is plenty to talk about.</p>
+<p>In this article, we will focus on how to use RHEL system roles in image mode and how to migrate existing roles. The center of image mode for RHEL is a Containerfile. That is where we customize our RHEL system, install packages, set certain parameters and configuration settings, and more. It is a new paradigm of building, deploying, and provisioning RHEL. </p>
+<p>Many tasks and processes we used to provision our systems at run time can now be applied at build time of the bootc container image, including Ansible Roles. Fortunately, all RHEL system roles work on image mode. Image mode for RHEL uses the ostree file system which has been in use for over a decade on image-based systems with support for system roles.</p>
+<h2 id="rhel-system-roles">RHEL system roles</h2>
+<p>RHEL system roles are a collection of Ansible Roles that not only help automate the management and configuration of RHEL systems, but also provide consistent and repeatable configuration, reduce technical burdens, and streamline administration. There are numerous roles to tackle all kinds of tasks:</p>
+<ul>
+<li>An SELinux role to manage and configure SELinux on the system.</li>
+<li>A firewall role for automating the management of the RHEL firewall.</li>
+<li>A Cockpit role to configure the RHEL web console.</li>
+<li>SAP roles to assist in configuring the installation of SAP HANA and NetWeaver on RHEL.</li>
+<li>A Podman role to configure Podman and to run and manage containers.</li>
+</ul>
+<p>For a comprehensive list of roles, please refer to the Red Hat Customer Portal. The bottom line is that Ansible Roles are an integral part of how we automate, manage, and provision RHEL systems. Hence, it is critical to support the existing tooling and workflows on image mode for RHEL. But before showing you how to do that, let’s have a quick look at what makes image mode special.</p>
+<h2 id="immutability-of-image-mode">Immutability of image mode</h2>
+<p>An important attribute of image mode for RHEL is immutability. An immutable operating system follows a paradigm different from that of traditional package-based systems. Once deployed, the entire filesystem is mounted read-only, except for <code>/etc</code> and <code>/var</code>. This means that not even the root user has write privileges. Updates to the system are applied by downloading a new version of the bootc image from a container registry and then rebooting into the new state. It&rsquo;s a different way of approaching updates than using a package manager to update the system at runtime. It forces you to be intentional about changes to the operating system and gives you full control while increasing the security of the system.</p>
+<p>You might be wondering how immutability impacts a system role. It mostly means that dependencies cannot be installed at run time. Instead, we need to install dependencies at build time during the container build. All the remaining tasks such as configuring the system (e.g., in <code>/etc</code>), network management, managing Podman containers, and more can still be done at run time.</p>
+<h2 id="system-role-dependencies-in-a-container-build">System role dependencies in a container build</h2>
+<p>Each role provides a script called get_ostree_data.sh that you can use to get the list of packages needed for the role and any role dependencies. This facilitates the integration into a Containerfile tremendously, since all we need to do is install the roles we need along with the dependencies, execute the script, and <code>dnf -y install</code> the dependencies.</p>
+<p>The steps are as follows:</p>
+<ol>
+<li>Install Red Hat Ansible Automation Platform via <code>dnf -y install ansible-core</code>.</li>
+<li>Install the system roles via <code>ansible-galaxy collection install fedora.linux_system_roles</code> on CentOS and Fedora, and via <code>dnf install -y rhel-system-roles</code> on RHEL.</li>
+<li>List the dependencies via the get_ostree_data.sh script of roles we want to install.</li>
+<li>Install the listed dependencies via <code>dnf</code>.</li>
+</ol>
+<h3 id="multi-stage-build-containerfile">Multi-stage build Containerfile</h3>
+<p>Below you&rsquo;ll find a Containerfile to install the dependencies of the Podman system role. We make use of what we call a multi-stage build which allows for building a container image in multiple stages. We can copy and access data from a previous stage while only the contents of the final stage will be committed to the container image. This makes multi-stage builds a powerful tool to avoid having build artifacts leak into container images. </p>
+<p>In the following Containerfile, we use that technique to avoid the client-side system roles from leaking into the image:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>FROM quay.io/centos-bootc/centos-bootc:stream10 as ansible-stage
+</span></span><span style="display:flex;"><span>RUN dnf -y install ansible-core
+</span></span><span style="display:flex;"><span>RUN ansible-galaxy collection install fedora.linux_system_roles
+</span></span><span style="display:flex;"><span>RUN mkdir -p /deps
+</span></span><span style="display:flex;"><span>RUN /root/.ansible/collections/ansible_collections/fedora/linux_system_roles/roles/podman/.ostree/get_ostree_data.sh packages runtime centos-10 raw &gt; /deps/ansible.txt || true
+</span></span><span style="display:flex;"><span>FROM quay.io/centos-bootc/centos-bootc:stream10
+</span></span><span style="display:flex;"><span>RUN --mount=type=bind,from=ansible-stage,source=/deps/,target=/deps cat /deps/ansible.txt | xargs dnf -y install
+</span></span></code></pre></div><p>You may notice that we execute the get_ostree_data.sh in the install path of the Podman role. The same can be applied to any other role as well. The dependencies are written to <code>/deps/ansible.txt</code> which we then access in the final stage via <code>bind mount</code>. The important part here is the script to list dependencies. We propose using multi-stage builds, but there is no right or wrong way.</p>
+<p>Nothing else is needed. Once booted, you can run the Podman role against the system. </p>
+<h2 id="migrate-ansible-content">Migrate Ansible content</h2>
+<p>The following instructions apply only to Red Hat Ansible Automation Platform customers. For RHEL customers who are not Ansible Automation Platform customers, none of these use cases are supported. Instead, the Ansible Automation Platform content provided and supported by RHEL, such as RHEL system roles, should just work with image mode systems without the user needing to do anything.</p>
+<p>If you have existing content such as Ansible Playbooks and roles, you can make them work with image mode systems.</p>
+<p>The first consideration is figuring out which packages are needed to build the image. You will need to look at where you use the <code>package:</code> module directly, and figure out which packages you use. You will need to add those packages to your Containerfile or other image builder configuration.</p>
+<p>The next consideration is how to make the <code>package:</code> module work at run time. The ansible.posix collection provides two modules for this:</p>
+<ul>
+<li>The rhel_facts module works at fact gathering time. This will scan the managed node to see if it is an image mode system and configure the <code>package:</code> module to work for image mode systems (using the <code>pkg_mgr</code> fact).</li>
+<li>The rhel_rpm_ostree module is not used directly, but it is used by the <code>package:</code> module to check if the listed packages are installed on the image mode system.</li>
+</ul>
+<p>There are a couple of ways to use the <code>rhel_facts</code> module. Note that in both of these cases, the built-in setup module must be executed first, before <code>ansible.posix.rhel_facts</code>:</p>
+<ul>
+<li>Set the FACTS_MODULES configuration parameter or environment variable to use both the built-in setup module and the <code>rhel_facts</code> module. For example, <code>ANSIBLE_FACTS_MODULES=setup,ansible.posix.rhel_facts</code>.</li>
+<li>Or, change your playbook like this:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>- name: Playbook to use the package module on all RHEL footprints
+</span></span><span style="display:flex;"><span>  vars:
+</span></span><span style="display:flex;"><span>    ansible_facts_modules:
+</span></span><span style="display:flex;"><span>      - setup  # REQUIRED to be run before all other fact modules
+</span></span><span style="display:flex;"><span>      - ansible.posix.rhel_facts
+</span></span><span style="display:flex;"><span>  tasks:
+</span></span><span style="display:flex;"><span>    - name: Ensure packages are installed
+</span></span><span style="display:flex;"><span>      ansible.builtin.package:
+</span></span><span style="display:flex;"><span>        name: 
+</span></span><span style="display:flex;"><span>           - htop 
+</span></span><span style="display:flex;"><span>           - strace
+</span></span><span style="display:flex;"><span>  state: present
+</span></span></code></pre></div><p>The upper playbook snippet ensures that packages are managed correctly for both package mode and image mode systems.</p>
+<h2 id="summary">Summary</h2>
+<p>In this article, we outlined how to use RHEL system roles on image mode for RHEL and how to migrate existing Ansible Playbooks. Image mode introduces a new container-centric paradigm for how we can build, deploy, and manage RHEL systems. Yet, image mode builds on top of decades of experience and well-tested technologies. RHEL system roles are no exception and just work with the instructions in this article.</p>
+<p>The post How to use RHEL system roles in image mode appeared first on Red Hat Developer.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

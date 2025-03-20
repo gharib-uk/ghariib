@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Oh no! I have a wiped iPhone, now what?</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Oh no! I have a wiped iPhone, now what?</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>One of the most common questions I got asked during presentations and conferences is: &ldquo;<strong>During a search and seizure we found a wiped iPhone, what can we do next?</strong>&rdquo;</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi6xIfngOuvXrGpaenivhwwqQadArE3RoQ9MynGYodzJ1SjdkoYvo1KOqbz23sL8xmL9t7IAxSgrKELQZZ6NEBRYFJu3wWr1ZxBQOW3lBtjyCq5gtrLgBKemMqluauKuC5lvteSiMW7t1Y/w296-h640/image.png" alt="" />
+</figure>
+
+
+</p>
+<p>First and foremost: <strong>you cannot recover data stored on the device before wiping occurred</strong>.<br>
+The encryption keys you need to decrypt the data are gone forever.<br>
+Full stop :)</p>
+<p>If you are aware of any method, technique, tool or magic box that can do that, please let me know :)</p>
+<p>You have <strong>three options</strong> to recover data:</p>
+<ul>
+<li>
+<p><strong>Data stored on computer</strong>(s) (Windows or Mac)</p>
+</li>
+<li>
+<p>On Windows you can search for</p>
+</li>
+<li>
+<p>Lockdown certificates</p>
+</li>
+<li>
+<p>C:ProgramDataAppleLockdown</p>
+</li>
+<li>
+<p>iOS Backups </p>
+</li>
+<li>
+<p>C:Users<!-- raw HTML omitted -->AppDataRoamingApple ComputerMobileSyncBackup</p>
+</li>
+<li>
+<p>C:Users<!-- raw HTML omitted -->AppleMobileSyncBackup</p>
+</li>
+<li>
+<p>Synced CrashLogs</p>
+</li>
+<li>
+<p>C:Users<!-- raw HTML omitted -->AppDataRoamingApple ComputerLogsCrashReporterMobileDevice</p>
+</li>
+<li>
+<p>MediaStream</p>
+</li>
+<li>
+<p>C:Users<!-- raw HTML omitted -->AppDataRoamingApple ComputerMediaStream</p>
+</li>
+<li>
+<p>iPodDevices.xml</p>
+</li>
+<li>
+<p>C:Users<!-- raw HTML omitted -->AppDataLocalApple ComputeriTunesiPodDevices.xml</p>
+</li>
+<li>
+<p>Data stored on <strong>iCloud</strong></p>
+</li>
+<li>
+<p>iCloud backup</p>
+</li>
+<li>
+<p>Synced data (e.g. Contacts, Photos, Messages, and so on)</p>
+</li>
+<li>
+<p>Keychain</p>
+</li>
+<li>
+<p>Data stored on <strong>synced devices</strong>:</p>
+</li>
+<li>
+<p>iPad</p>
+</li>
+<li>
+<p>Apple Watch</p>
+</li>
+<li>
+<p>Apple TV</p>
+</li>
+<li>
+<p>Apple HomePod</p>
+</li>
+</ul>
+<p>In the past, I took some presentations and wrote articles on synced iOS devices. </p>
+<p>Here some references:</p>
+<ul>
+<li>&ldquo;Apple Watch Forensics: Is It Ever Possible, And What Is The Profit?&rdquo; at DFRWS EU 2019</li>
+<li>&ldquo;Apple Watch Forensic Analysis&rdquo; on Elcomsoft Blog</li>
+<li>&ldquo;Forensicating the Apple TV&rdquo; at DFRWS EU 2018</li>
+<li>&ldquo;Apple TV Forensic Analysis&rdquo; on Elcomsoft Blog</li>
+<li>&ldquo;A journey into IoT Forensics - Episode 5 - Analysis of the Apple HomePod and the Apple Home Kit Environment&rdquo; on our Blog</li>
+<li>&ldquo;Forensic Analysis of Apple HomePod &amp; Apple HomeKit Environment&rdquo; at the SANS DFIR Summit 2020</li>
+</ul>
+<p>Over the last couple of days, I tried answering those question:</p>
+<ul>
+<li>Is there any general method that I can use to <strong>extract some data</strong> from an iOS device in a reset state (&ldquo;Hello&rdquo; screen), before setting it up?</li>
+<li>Which <strong>kind of information can I recover</strong>?</li>
+</ul>
+<p>By connecting the device to a computer and by using various tools, you can extract <strong>basic device information</strong>, including:</p>
+<ul>
+<li>Product Type</li>
+<li>Sales Model</li>
+<li>Model Number</li>
+<li>IMEI</li>
+<li>Serial Number</li>
+<li>ECID</li>
+<li>iOS Version</li>
+<li>CPU</li>
+<li>Charge Times</li>
+<li>Battery Life</li>
+<li>Bluetooth Address</li>
+<li>Wi-Fi Address</li>
+<li>Cellular Address</li>
+<li>Disk size</li>
+<li>Disk Usage information</li>
+</ul>
+<p>If the device is checkm8-vulnerable, you can try to <strong>obtain a full file system by using a forensic tool or checkra1n</strong>.</p>
+<p>More in general, also with a non-checkm8-vulnerable device, while the device is in the &ldquo;Hello&rdquo; screen, <strong>you can start the generation of a &ldquo;sysdiagnose&rdquo; with the physical button combination</strong> (hold the two volume buttons and the side button for 1-1.5 seconds).</p>
+<p>I wrote the paper &ldquo;Using Apple Bug Reporting for forensic purposes&rdquo; with Heather Mahalik and Adrian Leong, also covering sysdiagnose.</p>
+<p>The generated sysdiagnose file can be extracted by using any tool able to extract crash logs. </p>
+<p>In picture, you can see crash logs and the sysdiagnose file extracted with idevicecrashreporter.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjQnjXEyv4JghKD6vabXRyYcnPp_EvDZgjR1cAg6lS98FJRKi_FKas1njHxdhXxQjOcpiTPTS_EI_z1pbNwpmFyUYb86hxcWkhwStsdMiWvWXC07NuRiV5JLT7TBfwrya0Esd5WXu2C4DA/w640-h182/image.png" alt="" />
+</figure>
+
+
+</p>
+<p>In the specific context of a wiped device, the most interesting files to analyze are:</p>
+<ul>
+<li>
+<p><strong>logsMobileInstallationmobile_installation.log.0 (or mobile_installation.log.1)</strong>: specifically search for the string &ldquo;<strong>Did not find last build info; we must be upgrading from pre-8.0 or this is an erase install.</strong>&rdquo;.</p>
+<p>The associated timestamp, in Pacific Timezone (Cupertino) corresponds to the time of wiping</p>
+</li>
+</ul>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi_CA_4CG8mp501UkVjcMrHkX9QPtw1CeQVkol_ZOZKr-e1DYkZrBFmZ6qjUz6jvK1M_h9BT6BFZee05jY9KfzunWmQeMPyJ5IQ_WY-yUbi1Gg68uTYA-_u0Wic9sx2Z5CiZX7nBz3uZiY/s16000/image.png" alt="" />
+</figure>
+
+
+</p>
+<ul>
+<li>
+<p><strong>logsMobileLockdownlockdown.log</strong>: specifically search for the string &ldquo;<strong>_load_dict: Failed to load /private/var/root/Library/Lockdown/data_ark.plist.</strong>&rdquo;.</p>
+<p>The associated timestamp, in Pacific Timezone (Cupertino) corresponds to the time of wiping</p>
+</li>
+</ul>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiPz6Cov2DAxP1ZOqPuqxqKUz1nbhYCpbjR6Ywxz0yfOQMdBctMlPaJ4al6NdpNEO6lBQOeD7_l8MjYK-AVsNKM9fP2ZU-m_ypNrvr9OKyueXVzSZZyTa6ZMothqCABXkoWQHUirRDzHCw/s16000/image.png" alt="" />
+</figure>
+
+
+</p>
+<ul>
+<li>
+<p><strong>logsMobileLockdownlockdown.log</strong>: specifically search for the string &ldquo;<strong>_load_dict: Failed to load /private/var/root/Library/Lockdown/data_ark.plist.</strong>&rdquo;.</p>
+<p>The associated timestamp, in Pacific Timezone (Cupertino) corresponds to the time of wiping</p>
+</li>
+</ul>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjQ3qHYjRjRUwfaV4lM1V8d0cNbJpCaD80H6JKWKRpsaPTDc2XBGoK05LP09azQwUvBjQ0_dnhaxL3JSlVIWO4cZEvJ5LMt1MP00LVqjvJNanoN2l4ZNAYActN1S0CNKHQg7alTXwsLa34/s16000/image.png" alt="" />
+</figure>
+
+
+</p>
+<ul>
+<li>
+<p><strong>logsMobileContainerManagercontainermanagerd.log.0</strong>: specifically search for the string &ldquo;<strong>containermanagerd performing first boot initialization</strong>&rdquo;.</p>
+<p>The associated timestamp, in Pacific Timezone (Cupertino) corresponds to the time of wiping</p>
+</li>
+</ul>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgC62EIUvF0uhvYwPWSTqAIIC_Qvb4oD7mJ4UGuDQO2MIjH2dqh9EDWIp5FX3YKgFtrSa_kScam30I-ccnA58xae_V1AghmuD-uxyyC6xKX2GkaDahAiRD7ItLrGZ33YF5Y63IPRHVT4bY/s16000/image.png" alt="" />
+</figure>
+
+
+</p>
+<ul>
+<li>
+<p><strong>logspowerlogspowerlog_YYY-MM-HH_MM_SS_XXXXXXXX.PLSQL</strong>, that has the internal structure of a PowerLog file (just rename it as CurrentPowerLog.PLSQL). It can contain, for example, information about Battery Level and so discover if and when the device was on charge</p>
+</li>
+<li>
+<p><strong>WiFiwifi_scan_cache.txt</strong>: containing Wi-Fi networks &ldquo;seen&rdquo; by the device. It includes SSID and BSSID.</p>
+</li>
+</ul>
+<p>In conclusion, you cannot recover user data, but you can at least understand precisely when the device was wiped and what happened on it before you generate the sysdiagnose. If you are lucky enough you could find SSID and BSSID in the WiFi cache.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

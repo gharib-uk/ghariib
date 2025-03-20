@@ -1,0 +1,71 @@
+---
+title: "Hype and confusion surrounding quantum computers in cryptography"
+date: 2025-01-19
+tags: 
+  - "cybersecurity"
+  - "data_breaches"
+  - "infostealers"
+  - "linux"
+  - "malware"
+  - "privacy"
+  - "security"
+  - "siem"
+---
+
+Who claimed quantum supremacy and decryption on quantum computers?
+
+Quantum computers remain a highly exotic technology, used by a very small number of companies for very specific computational tasks. But if you search for “quantum computer news”, you might get the impression that all the major IT players have already armed themselves with quantum technology, and that any day now hackers will start using it to crack encrypted communications and manipulate digital signatures. The reality is both less tense and more complex — but such nuances don’t make the headlines. So, who’s been making all the noise about quantum hacking?…
+
+## Mathematicians
+
+Although the respected American mathematician Peter Shor meant to create neither hype nor panic, it was he who, back in 1994, proposed the idea of an entire family of algorithms for solving computationally complex mathematical problems on a quantum computer. Chief among these was the problem of factoring into prime numbers. For sufficiently large numbers, a classical computer would need… centuries to find a solution — which serves as the foundation of cryptographic algorithms like RSA. However, a powerful quantum computer using Shor’s algorithm could solve this problem much faster. Although such a computer was still a dream in 1994, Shor’s idea captured the imagination of hackers, physicists, and of course, journalists. Shor recalls that when he first presented his idea at a conference in 1994, he hadn’t yet completely solved the factorization problem — the final version of his research was only published in 1995. Nevertheless, just five days after his presentation, people were confidently proclaiming that the factorization problem had been solved.
+
+## Startups
+
+For many years, the quantum threat was considered just a distant possibility. The number of quantum bits (qubits) required to break cryptography was estimated to be in the thousands or millions, while experimental quantum computers were still in single digits. The situation changed in 2007, when the Canadian company D-Wave Systems demonstrated the “first commercial quantum computer”, boasting 28 qubits, with a plans to scale up to 1024 qubits by the end of 2008. The company predicted that by 2009 it would be possible to rent quantum computers for cloud computations — using them for risk analysis in insurance, modeling in chemistry and materials science, as well as for “government and military needs”. By 2009, D-Wave expected to achieve quantum supremacy — when a quantum computer could solve a problem faster than a classical one.
+
+The quantum community had to spend years dealing with the company’s claims. The principle of quantum annealing, used in D-Wave systems, wasn’t even considered a quantum effect, and its existence was only proven in 2013 — albeit with serious reservations. Meanwhile, the magnitude (and even the existence) of quantum supremacy continued to be a subject of debate even longer. In any case, D-Wave systems can run neither Shor, nor Grover’s algorithms, making them unsuitable for cryptanalysis tasks. The company continues to build computers (or, rather, “quantum annealers”) with ever-increasing numbers of qubits, but their practical application remains very limited.
+
+## Cyber agencies
+
+When the U.S. National Security Agency (NSA) issues warnings and advice on a problem, it’s a good reason to take that problem seriously. That’s why the NSA’s 2015 recommendation urging companies and governments to begin transitioning to quantum-resistant encryption was taken as a signal that the arrival of practical quantum computers might just be round the corner. This warning came as a surprise: at the time, the largest number that had been factored using Shor’s algorithm on a quantum computer was… 21. This fueled speculation that the NSA knew something about quantum computers that the rest of the world didn’t.
+
+Now, nearly a decade later, we can be fairly confident that the NSA was sincere in its subsequent explanations, released six months later: they were simply warning of a potential danger ahead of time. After all, equipment purchased for government agencies tends to remain in service for decades, so systems should be upgraded well in advance to avoid future vulnerabilities. Around the same time, NIST announced a competition to develop a standardized set of quantum-resistant algorithms. In 2024, this new standard was adopted.
+
+## Internet giants
+
+Many major IT companies, such as Google and IBM, have shown interest in quantum computing — and invested in it. At the end of the 20th century, IBM labs created the first working quantum computer with two qubits. But it was Google that, in 2019, announced the long-awaited achievement of quantum supremacy. Their experimental 53-qubit computer, Sycamore, could reportedly solve a problem in not much over three minutes that would take a classical supercomputer 10,000 years. However, IBM disputed this claim, arguing that this problem was purely synthetic, designed for quantum computers specifically, and having no real-world application. For a supercomputer to solve the same problem, it would simply have to simulate a quantum one, which would be quite useless — not to mention slow. IBM further stated that with sufficient disk space, a classical supercomputer could solve the same problem with greater accuracy and in a relatively short time: no more than 2.5 days.
+
+Even the original creator of the term “quantum supremacy”, Professor John Preskill, criticized Google’s excessive use of the phrase, noting its popularity with journalists and marketers. As a result, its intended technical use has been obscured.
+
+## Governments
+
+Security experts, including the NSA, have repeatedly emphasized that the quantum threat is a reality — even in the absence of a practical quantum computer. One possible scenario is well-resourced malefactors storing an encrypted copy of valuable data today in order to decrypt it in the future when quantum computers become viable. Such an attack, known as harvest now, decrypt later, is often mentioned in the context of the “quantum race”, and in 2022, the U.S. government created quite a stir by claiming to already be facing SNDL attacks. Experts from the post-quantum security firm QuSecure also referred to SNDL attacks as a “common practice” in an article ominously titled Quantum apocalypse.
+
+Meanwhile, the White House coined the term CRQC (Cryptanalytically Relevant Quantum Computer) and ordered U.S. agencies to switch to post-quantum encryption algorithms no later than 2035.
+
+## Enthusiasts
+
+Quantum computers are complex, unique physical devices that often require extreme cooling. As a result, small firms and individual researchers have a hard time keeping up in the quantum race; however, that doesn’t stop some from trying. In 2023, statements from a researcher named Ed Gerck, founder of a company called Planalto Research, created a small buzz. According to Gerck, his company managed to perform quantum computations on a commercial Linux desktop with capital costs of less than a thousand dollars and without using cryogenics. The author claimed to have broken a 2048-bit RSA key despite these limitations. Interestingly, Gerck allegedly developed his own algorithm to do this, rather than using Shor’s. Cryptographers and developers of quantum computers have repeatedly demanded proof of Gerck’s claims but received only excuses in response. Gerck’s paper has in fact been published; however, experts note serious methodological flaws and speculative elements.
+
+## And, of course, the press
+
+A study by researchers at Shanghai University directly linking quantum computing to encryption cracking was published in China in September 2024. However, it only caused a splash worldwide after a November article in the South China Morning Post. This article claimed that the Chinese scientists had successfully broken “military-grade encryption”, and this headline was carelessly replicated by other media outlets.
+
+In fact, the authors of the study did target encryption, but solved a much more modest problem — they cracked 50-bit ciphers related to AES (Present, Gift-64, and Rectangle). Interestingly, they used one of the latest models from the very same D-Wave, using classical algorithms to compensate for its limitations compared to a full-fledged quantum computer. This study is scientifically novel, but its practicality in breaking real-world encryption is highly questionable. In addition to the deficit of qubits, the incredibly long classical pre-calculations required to crack real 128 or 256-bit keys remains an obstacle.
+
+This wasn’t the first time researchers have claimed success in breaking encryption, but an earlier, similar announcement in 2022 received little attention.
+
+## Internet giants (yes, again)
+
+A new round of speculation began with Google’s recent announcement of its Willow chip. The developers have claimed that they’ve managed to solve one of the key problems in scaling quantum computing — error correction. This problem arises because it’s extremely challenging to read the state of a qubit without making errors or disturbing its entanglement with other qubits. Therefore, calculations are often run multiple times, and many “noisy” physical qubits are combined into a single “perfect” logical one. Despite these measures, as the number of qubits increases, errors grow exponentially, making the system increasingly fragile. In contrast, the new chip demonstrates the opposite behavior — as the number of qubits increases, errors are reduced.
+
+Willow has 105 physical qubits. Of course, this is far from enough to break modern encryption. According to the Google researchers themselves, their computer would need millions of qubits to become a CRQC.
+
+But such trifles didn’t stop other researchers from declaring the imminent death of modern cryptography. For example, researchers at the University of Kent have estimated that advances in quantum computing could require the Bitcoin network to shut down for 300 days in order to update to quantum-resistant algorithms.
+
+## Welcome to reality
+
+Leaving the mathematical and technical aspects aside, it’s worth emphasizing that, as of right now, cracking modern encryption using quantum computers is still impossible, and this is unlikely to change in the near future. However, sensitive data that will remain valuable for years to come should be encrypted with quantum-resistant (post-quantum) algorithms today to avoid potential future risks. Several major IT regulators have already issued recommendations on transitioning to post-quantum cryptography, which should be studied and gradually implemented.
+
+Go to Source

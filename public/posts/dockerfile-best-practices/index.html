@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Dockerfile Best Practices</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Dockerfile Best Practices</h1>
+			<b><time>29.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<h2 id="dockerfile-best-practices-building-efficient-and-secure-images">Dockerfile Best Practices: Building Efficient and Secure Images</h2>
+<p><strong>Introduction:</strong> A well-crafted Dockerfile is crucial for creating efficient, secure, and reproducible container images. Following best practices ensures smaller image sizes, faster build times, and improved security. This article outlines key considerations for optimizing your Dockerfiles.</p>
+<p><strong>Prerequisites:</strong> Before starting, ensure you have Docker installed and a basic understanding of Docker concepts.</p>
+<p><strong>Advantages of Optimized Dockerfiles:</strong></p>
+<ul>
+<li><strong>Smaller Image Size:</strong> Reduced storage space and faster download times.</li>
+<li><strong>Faster Build Times:</strong> Optimized layers lead to quicker image creation.</li>
+<li><strong>Improved Security:</strong> Minimizing dependencies reduces potential vulnerabilities.</li>
+<li><strong>Reproducibility:</strong> Consistent builds across different environments.</li>
+</ul>
+<p><strong>Disadvantages of Poor Dockerfiles:</strong></p>
+<ul>
+<li><strong>Larger Image Size:</strong> Increased storage needs and slower deployments.</li>
+<li><strong>Slower Build Times:</strong> Inefficient layering significantly increases build duration.</li>
+<li><strong>Increased Security Risks:</strong> Unnecessary packages and outdated dependencies pose security threats.</li>
+</ul>
+<p><strong>Key Features &amp; Best Practices:</strong></p>
+<ul>
+<li><strong>Multi-Stage Builds:</strong> Utilize multiple stages to separate build dependencies from the runtime environment. This dramatically reduces the final image size.</li>
+</ul>
+<pre tabindex="0"><code># Stage 1: Build
+FROM golang:1.20 AS builder
+WORKDIR /app
+COPY . .
+RUN go build -o main .
+
+# Stage 2: Runtime
+FROM alpine:latest
+WORKDIR /app
+COPY --from=builder /app/main .
+CMD [&#34;./main&#34;]
+</code></pre><ul>
+<li><strong>Minimizing Dependencies:</strong> Only include necessary packages. Use a slim base image like <code>alpine</code> to reduce the image size.</li>
+<li><strong>Use <code>.dockerignore</code>:</strong> Exclude unnecessary files and directories from the image to speed up build times.</li>
+<li><strong>Caching:</strong> Leverage Docker&rsquo;s caching mechanism by ordering instructions logically. Place frequently unchanged commands earlier.</li>
+<li><strong>Maintainability:</strong> Use clear and concise instructions, and add comments for readability.</li>
+</ul>
+<p><strong>Conclusion:</strong> Following Dockerfile best practices is essential for creating high-quality container images. By optimizing your Dockerfiles for size, security, and build speed, you can significantly improve your development workflow and deployment efficiency. Remember to regularly review and update your Dockerfiles to leverage new features and address potential vulnerabilities.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

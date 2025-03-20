@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Introducing Annotated Logger: A Python package to aid in adding metadata to logs</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Introducing Annotated Logger: A Python package to aid in adding metadata to logs</h1>
+			<b><time>03.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>We’re open sourcing Annotated Logger, a Python package that helps make logs searchable with consistent metadata.</p>
+<p>The post Introducing Annotated Logger: A Python package to aid in adding metadata to logs appeared first on The GitHub Blog.</p>
+<h2 id="what-it-is">What it is</h2>
+<p>Annotated Logger is a Python package that allows you to decorate functions and classes, which then log when complete and can request a customized logger object, which has additional fields pre-added. GitHub’s Vulnerability Management team created this tool to make it easier to find and filter logs in Splunk.</p>
+<h2 id="why-we-made-it">Why we made it</h2>
+<p>We have several Python projects that have grown in complexity over the years and have used Splunk to ingest and search those logs. We have always sent our logs in via JSON, which makes it easy to add in extra fields. However, there were a number of fields, like what Git branch was deployed, that we also wanted to send, plus, there were fields, like the CVE name of the vulnerability being processed, that we wanted to add for messages in a given function. Both are possible with the base Python logger, but it’s a lot of manual work repeating the same thing over and over, or building and managing a dictionary of extra fields that are included in every log message.</p>
+<p>The Annotated Logger started out as a simple decorator in one of our repositories, but was extracted into a package in its own right as we started to use it in all of our projects. As we’ve continued to use it, its features have grown and been updated.</p>
+<h2 id="how-and-why-to-use-it">How and why to use it</h2>
+<p>Now that I’ve gotten a bit of the backstory out of the way, here’s what it does, why you should use it, and how to configure it for your specific needs. At its simplest, you decorate a function with <code>@annotate_logs()</code> and it will “just work.” If you’d like to dive right in and poke around, the example folder contains examples that fully exercise the features.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#a6e22e">@annotate_logs</span>()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">foo</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+</span></span></code></pre></div><pre tabindex="0"><code>&gt;&gt;&gt; foo()
+{&#34;created&#34;: 1733176439.5067494, &#34;levelname&#34;: &#34;DEBUG&#34;, &#34;name&#34;: &#34;annotated_logger.8fcd85f5-d47f-4925-8d3f-935d45ceeefc&#34;, &#34;message&#34;: &#34;start&#34;, &#34;action&#34;: &#34;__main__:foo&#34;, &#34;annotated&#34;: true}
+{&#34;created&#34;: 1733176439.506998, &#34;levelname&#34;: &#34;INFO&#34;, &#34;name&#34;: &#34;annotated_logger.8fcd85f5-d47f-4925-8d3f-935d45ceeefc&#34;, &#34;message&#34;: &#34;success&#34;, &#34;action&#34;: &#34;__main__:foo&#34;, &#34;success&#34;: true, &#34;run_time&#34;: &#34;0.0&#34;, &#34;annotated&#34;: true}
+True
+</code></pre><p>Here is a more complete example that makes use of a number of the features. Make sure to install the package: <code>pip install annotated-logger</code> first.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> annotated_logger <span style="color:#f92672">import</span> AnnotatedLogger
+</span></span><span style="display:flex;"><span>al <span style="color:#f92672">=</span> AnnotatedLogger(
+</span></span><span style="display:flex;"><span>    name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;annotated_logger.example&#34;</span>,
+</span></span><span style="display:flex;"><span>    annotations<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;branch&#34;</span>: os<span style="color:#f92672">.</span>environ<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;BRANCH&#34;</span>, <span style="color:#e6db74">&#34;unknown-branch&#34;</span>)}
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>annotate_logs <span style="color:#f92672">=</span> al<span style="color:#f92672">.</span>annotate_logs
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@annotate_logs</span>()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">split_username</span>(annotated_logger, username):
+</span></span><span style="display:flex;"><span>    annotated_logger<span style="color:#f92672">.</span>annotate(username<span style="color:#f92672">=</span>username)
+</span></span><span style="display:flex;"><span>    annotated_logger<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#34;This is a very important message!&#34;</span>, extra<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;important&#34;</span>: <span style="color:#66d9ef">True</span>})
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> list(username)
+</span></span></code></pre></div><pre tabindex="0"><code>&gt;&gt;&gt; split_username(&#34;crimsonknave&#34;)
+{&#34;created&#34;: 1733349907.7293086, &#34;levelname&#34;: &#34;DEBUG&#34;, &#34;name&#34;: &#34;annotated_logger.example.c499f318-e54b-4f54-9030-a83607fa8519&#34;, &#34;message&#34;: &#34;start&#34;, &#34;action&#34;: &#34;__main__:split_username&#34;, &#34;branch&#34;: &#34;unknown-branch&#34;, &#34;annotated&#34;: true}
+{&#34;created&#34;: 1733349907.7296104, &#34;levelname&#34;: &#34;INFO&#34;, &#34;name&#34;: &#34;annotated_logger.example.c499f318-e54b-4f54-9030-a83607fa8519&#34;, &#34;message&#34;: &#34;This is a very important message!&#34;, &#34;important&#34;: true, &#34;action&#34;: &#34;__main__:split_username&#34;, &#34;branch&#34;: &#34;unknown-branch&#34;, &#34;username&#34;: &#34;crimsonknave&#34;, &#34;annotated&#34;: true}
+{&#34;created&#34;: 1733349907.729843, &#34;levelname&#34;: &#34;INFO&#34;, &#34;name&#34;: &#34;annotated_logger.example.c499f318-e54b-4f54-9030-a83607fa8519&#34;, &#34;message&#34;: &#34;success&#34;, &#34;action&#34;: &#34;__main__:split_username&#34;, &#34;branch&#34;: &#34;unknown-branch&#34;, &#34;username&#34;: &#34;crimsonknave&#34;, &#34;success&#34;: true, &#34;run_time&#34;: &#34;0.0&#34;, &#34;count&#34;: 12, &#34;annotated&#34;: true}
+[&#39;c&#39;, &#39;r&#39;, &#39;i&#39;, &#39;m&#39;, &#39;s&#39;, &#39;o&#39;, &#39;n&#39;, &#39;k&#39;, &#39;n&#39;, &#39;a&#39;, &#39;v&#39;, &#39;e&#39;]
+&gt;&gt;&gt;
+&gt;&gt;&gt; split_username(1)
+{&#34;created&#34;: 1733349913.719831, &#34;levelname&#34;: &#34;DEBUG&#34;, &#34;name&#34;: &#34;annotated_logger.example.1c354f32-dc76-4a6a-8082-751106213cbd&#34;, &#34;message&#34;: &#34;start&#34;, &#34;action&#34;: &#34;__main__:split_username&#34;, &#34;branch&#34;: &#34;unknown-branch&#34;, &#34;annotated&#34;: true}
+{&#34;created&#34;: 1733349913.719936, &#34;levelname&#34;: &#34;INFO&#34;, &#34;name&#34;: &#34;annotated_logger.example.1c354f32-dc76-4a6a-8082-751106213cbd&#34;, &#34;message&#34;: &#34;This is a very important message!&#34;, &#34;important&#34;: true, &#34;action&#34;: &#34;__main__:split_username&#34;, &#34;branch&#34;: &#34;unknown-branch&#34;, &#34;username&#34;: 1, &#34;annotated&#34;: true}
+{&#34;created&#34;: 1733349913.7200255, &#34;levelname&#34;: &#34;ERROR&#34;, &#34;name&#34;: &#34;annotated_logger.example.1c354f32-dc76-4a6a-8082-751106213cbd&#34;, &#34;message&#34;: &#34;Uncaught Exception in logged function&#34;, &#34;exc_info&#34;: &#34;Traceback (most recent call last):n  File &#34;/home/crimsonknave/code/annotated-logger/annotated_logger/__init__.py&#34;, line 758, in wrap_functionn  result = wrapped(*new_args, **new_kwargs)  # pyright: ignore[reportCallIssue]n  File &#34;&lt;stdin&gt;&#34;, line 5, in split_usernamenTypeError: &#39;int&#39; object is not iterable&#34;, &#34;action&#34;: &#34;__main__:split_username&#34;, &#34;branch&#34;: &#34;unknown-branch&#34;, &#34;username&#34;: 1, &#34;success&#34;: false, &#34;exception_title&#34;: &#34;&#39;int&#39; object is not iterable&#34;, &#34;annotated&#34;: true}
+Traceback (most recent call last):
+  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
+  File &#34;&lt;makefun-gen-0&gt;&#34;, line 2, in split_username
+  File &#34;/home/crimsonknave/code/annotated-logger/annotated_logger/__init__.py&#34;, line 758, in wrap_function
+    result = wrapped(*new_args, **new_kwargs)  # pyright: ignore[reportCallIssue]
+  File &#34;&lt;stdin&gt;&#34;, line 5, in split_username
+TypeError: &#39;int&#39; object is not iterable
+</code></pre><p>There are a few things going on in this example. Let’s break it down piece by piece.</p>
+<ul>
+<li>The Annotated Logger requires a small amount of setup to use; specifically, you need to instantiate an instance of the <code>AnnotatedLogger</code> class. This class contains all of the configuration for the loggers.
+<ul>
+<li>Here we set the name of the logger. (You will need to update the logging config if your name does not start with <code>annotated_logger</code> or there will be nothing configured to log your messages.)</li>
+<li>We also set a <code>branch</code> annotation that will be sent with all log messages.</li>
+</ul>
+</li>
+<li>After that, we create an alias for the decorator. You don’t have to do this, but I find it’s easier to read than <code>@al.annotate_logs()</code>.</li>
+<li>Now, we decorate and define our method, but this time we’re going to ask the decorator to provide us with a logger object, <code>annotated_logger</code>. This <code>annotated_logger</code> variable can be used just like a standard <code>logger</code> object but has some extra features.
+<ul>
+<li>This <code>annotated_logger</code> argument is added by the decorator before calling the decorated method.</li>
+<li>The signature of the decorated method is adjusted so that it does not have an <code>annotated_logger</code> parameter (see how it’s called with just name).</li>
+<li>There are optional parameters to the decorator that allow type hints to correctly parse the modified signature.</li>
+</ul>
+</li>
+<li>We make use of one of those features right away by calling the <code>annotate method</code>, which will add whatever kwargs we pass to the <code>extra</code> field of all log messages that use the logger.
+<ul>
+<li>Any field added as an annotation will be included in each subsequent log message that uses that logger.</li>
+<li>You can override an annotation by annotating again with the same name</li>
+</ul>
+</li>
+<li>At last, we send a log message! In this message we also pass in a field that’s only for that log message, in the same way you would when using <code>logger</code>.</li>
+<li>In the second call, we passed an <code>int</code> to the name field and <code>list</code> threw an exception.
+<ul>
+<li>This exception is logged automatically and then re-raised.</li>
+<li>This makes it much easier to know if/when a method ended (unless the process was killed).</li>
+</ul>
+</li>
+</ul>
+<p>Let’s break down each of the fields in the log message:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Field</th>
+          <th>Source</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>created</td>
+          <td><code>logging</code></td>
+          <td>Standard <code>Logging</code> field.</td>
+      </tr>
+      <tr>
+          <td>levelname</td>
+          <td><code>logging</code></td>
+          <td>Standard <code>Logging</code> field.</td>
+      </tr>
+      <tr>
+          <td>name</td>
+          <td><code>annotated_logger</code></td>
+          <td>Logger name (set via class instantiation).</td>
+      </tr>
+      <tr>
+          <td>message</td>
+          <td><code>logging</code></td>
+          <td>Standard <code>Logging</code> field for log content.</td>
+      </tr>
+      <tr>
+          <td>action</td>
+          <td><code>annotated_logger</code></td>
+          <td>Method name the logger was created for.</td>
+      </tr>
+      <tr>
+          <td>branch</td>
+          <td><code>AnnotatedLogger()</code></td>
+          <td>Set from the configuration’s <code>branch</code> annotation.</td>
+      </tr>
+      <tr>
+          <td>annotated</td>
+          <td><code>annotated_logger</code></td>
+          <td>Boolean indicating if the message was sent via Annotated Logger.</td>
+      </tr>
+      <tr>
+          <td>important</td>
+          <td><code>annotated_logger.info</code></td>
+          <td>Annotation set for a specific log message.</td>
+      </tr>
+      <tr>
+          <td>username</td>
+          <td><code>annotated_logger.annotate</code></td>
+          <td>Annotation set by user.</td>
+      </tr>
+      <tr>
+          <td>success</td>
+          <td><code>annotated_logger</code></td>
+          <td>Indicates if the method completed successfully (True/False).</td>
+      </tr>
+      <tr>
+          <td>run_time</td>
+          <td><code>annotated_logger</code></td>
+          <td>Duration of the method execution.</td>
+      </tr>
+      <tr>
+          <td>count</td>
+          <td><code>annotated_logger</code></td>
+          <td>Length of the return value (if applicable).</td>
+      </tr>
+  </tbody>
+</table>
+<p>The <code>success</code>, <code>run_time</code> and <code>count</code> fields are added automatically to the message (“success”) that is logged after a decorated method is completed without an exception being raised.</p>
+<h2 id="under-the-covers">Under the covers</h2>
+<h3 id="how-its-implemented">How it’s implemented</h3>
+<p>The Annotated Logger interacts with <code>Logging</code> via two main classes: <code>AnnotatedAdapter</code> and <code>AnnotatedFilter</code>. <code>AnnotatedAdapter</code> is a subclass of <code>logging.LoggerAdapter</code> and is what all <code>annotated_logger</code> arguments are instances of. <code>AnnotatedFilter</code> is a subclass of <code>logging.Filter</code> and is where the annotations are actually injected into the log messages. As a user outside of config and plugins, the only part of the code you will only interact with are <code>AnnotatedAdapter</code> in methods and the decorator itself. Each instance of the <code>AnnotatedAdapter</code> class has an <code>AnnotatedFilter</code> instance—the <code>AnnotatedAdapter.annotate</code> method passes those annotations on to the filter where they are stored. When a message is logged, that filter will calculate all the annotations it should have and then update the existing <code>LogRecord</code> object with those annotations.</p>
+<p>Because each invocation of a method gets its own <code>AnnotatedAdapter</code> object it also has its own <code>AnnotatedFilter</code> object. This ensures that there is no leaking of annotations from one method call to another.</p>
+<h3 id="type-hinting">Type hinting</h3>
+<p>The Annotated Logger is fully type hinted internally and fully supports type hinting of decorated methods. But a little bit of additional detail is required in the decorator invocation. The <code>annotate_logs</code> method takes a number of optional arguments. For type hinting, <code>_typing_self</code>, <code>_typing_requested</code>, <code>_typing_class</code> and <code>provided</code> are relevant. The three arguments that start with <code>_typing</code> have no impact on the behavior of the decorator and are only used in method signature overrides for type hinting. Setting <code>provided</code> to <code>True</code> tells the decorator that the <code>annotated_logger</code> should not be created and will be provided by the caller (thus the signature shouldn’t be altered).</p>
+<p><code>_typing_self</code> defaults to <code>True</code> as that is how most of my code is written. <code>provided</code>, <code>_typing_class</code> and <code>_typing_requested</code> default to <code>False</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Example</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@annotate_logs</span>(_typing_requested<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">foo</span>(self, annotated_logger):
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>e <span style="color:#f92672">=</span> Example()
+</span></span><span style="display:flex;"><span>e<span style="color:#f92672">.</span>foo()
+</span></span></code></pre></div><h3 id="plugins">Plugins</h3>
+<p>There are a number of plugins that come packaged with the Annotated Logger. Plugins allow for the user to hook into two places: when an exception is caught by the decorator and when logging a message. You can create your own plugin by creating a class that defines the <code>filter</code> and <code>uncaught_exception</code> methods (or inherits from <code>annotated_logger.plugins.BasePlugin</code> which provides noop methods for both).</p>
+<p>The <code>filter</code> method of a plugin is called when a message is being logged. Plugins are called in the order they are set in the config. They are called by the AnnotatedFilter object of the AnnotatedAdapter and work like any <code>logging.Filter</code>. They take a record argument which is a <code>logging.LogRecord</code> object. They can manipulate that record in any way they want and those modifications will persist. Additionally, just like any logging filter, they can stop a message from being logged by returning <code>False</code>.</p>
+<p>The <code>uncaught_exception</code> method of a plugin is called when the decorator catches an exception in the decorated method. It takes two arguments, <code>exception</code> and <code>logger</code>. The <code>logger</code> argument is the <code>annotated_logger</code> for the decorated method. This allows the plugin to annotate the log message stating that there was an uncaught exception that is about to be logged once the plugins have all processed their <code>uncaught_exception</code> methods.</p>
+<p>Here is an example of a simple plugin. The plugin inherits from the <code>BasePlugin</code>, which isn’t strictly needed here since it implements both <code>filter</code> and <code>uncaught_exception</code>, but if it didn’t, inheriting from the BasePlugin means that it would fall back to the default noop methods. The plugin has an init so that it can take and store arguments. The <code>filter</code> and <code>uncaught_exception</code> methods will end up with the same result: <code>flagged=True</code> being set if a word matches. But they do it slightly differently, <code>filter</code> is called while a given log message is being processed and so the annotation it adds is directly to that record. While <code>uncaught_exception</code> is called if an exception is raised and not caught during the execution of the decorated method, so it doesn’t have a specific log record to interact with and set an annotation on the logger. The only difference in outcome would be if another plugin emitted a log message during its <code>uncaught_exception</code> method after <code>FlagWordPlugin</code>, in that case, the additional log message would also have <code>flagged=True</code> on it.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> annotated_logger.plugins <span style="color:#f92672">import</span> BasePlugin
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FlagWordPlugin</span>(BasePlugin):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;Plugin that flags any log message/exception that contains a word in a list.&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self, <span style="color:#f92672">*</span>wordlist):
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;Save the wordlist.&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>wordlist <span style="color:#f92672">=</span> wordlist
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">filter</span>(self, record):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;Add annotation if the message contains words in the wordlist.&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>wordlist:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> word <span style="color:#f92672">in</span> record<span style="color:#f92672">.</span>msg:
+</span></span><span style="display:flex;"><span>            record<span style="color:#f92672">.</span>flagged <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">uncaught_exception</span>(self, exception, logger):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;Add annotation if exception title contains words in the wordlist.&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>wordlist:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> word <span style="color:#f92672">in</span> str(exception)
+</span></span><span style="display:flex;"><span>            logger<span style="color:#f92672">.</span>annotate(flagged<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>AnnotatedLogger(plugins<span style="color:#f92672">=</span>[FlagWordPlugin(<span style="color:#e6db74">&#34;danger&#34;</span>, <span style="color:#e6db74">&#34;Will Robinson&#34;</span>)])
+</span></span></code></pre></div><p>Plugins are stored in a list and the order they are added can matter. The <code>BasePlugin</code> is always the first plugin in the list; any that are set in configuration are added after it.</p>
+<p>When a log message is being sent the <code>filter</code> methods of each plugin will be called in the order they appear in the list. Because the <code>filter</code> methods often modify the record directly, one filter can break another if, for example, one filter removed or renamed a field that another filter used. Conversely, one filter could expect another to have added or altered a field before its run and would fail if it was ahead of the other filter. Finally, just like in the <code>logging</code> module, the <code>filter</code> method can stop a log from being emitted by returning False. As soon as a filter does so the processing ends and any Plugins later in the list will not have their <code>filter</code> methods called.</p>
+<p>If the decorated method raises an exception that is not caught, then the plugins will again execute in order. The most common interaction is plugins attempting to set/modify the same annotation. The <code>BasePlugin</code> and <code>RequestsPlugin</code> both set the <code>exception_title</code> annotation. Since the <code>BasePlugin</code> is always first, the title it sets will be overridden. Other interactions would be one plugin setting an annotation before or after another plugin that emits a log message or sends data to a third-party. In both of those cases the order will impact if the annotation is present or not.</p>
+<p>Plugins that come with the Annotated Logger:</p>
+<ul>
+<li><code>GitHubActionsPlugin</code>—Set a level of log messages to also be emitted in actions notation (<code>notice::</code>).</li>
+<li><code>NameAdjusterPlugin</code>—Add a pre/postfix to a name to avoid collisions in any log processing software (<code>source</code> is a field in Splunk, but we often include it as a field and it’s just hidden).</li>
+<li><code>RemoverPlugin</code>—Remove a field. Exclude <code>password</code>/<code>key</code> fields and set an object’s attributes to the log if you want or ignore fields like <code>taskName</code> that are set when running async, but not sync.</li>
+<li><code>NestedRemoverPlugin</code>—Remove a field no matter how deep in a dictionary it is.</li>
+<li><code>RenamerPlugin</code>—Rename one field to another (don’t like <code>levelname</code> and want <code>level</code>, this is how you do that).</li>
+<li><code>RequestsPlugin</code>—Adds a title and status code to the annotations if the exception inherits from <code>requests.exceptions.HTTPError</code>.</li>
+<li><code>RuntimeAnnotationsPlugin</code>—Sets dynamic annotations.</li>
+</ul>
+<h3 id="dictconfig">dictconfig</h3>
+<p>When adding the Annotated Logger to an existing project, or one that uses other packages that log messages (flask, django, and so on), you can configure all of the Annotated Logger via <code>dictConfig</code> by supplying a <code>dictConfig</code> compliant dictionary as the <code>config</code> argument when initializing the Annotated Logger class. If, instead, you wish to do this yourself you can pass <code>config=False</code> and reference <code>annotated_logger.DEFAULT_LOGGING_CONFIG</code> to obtain the config that is used when none is provided and alter/extract as needed.</p>
+<p>There is one special case where the Annotated Logger will modify the config passed to it: if there is a filter named <code>annotated_filter</code> that entry will be replaced with a reference to a filter that is created by the instance of the Annotated Logger that’s being created. This allows any annotations or other options set to be applied to messages that use that filter. You can instead create a filter that uses the AnnotatedFilter class, but it won’t have any of the config the rest of your logs have.</p>
+<h4 id="notes">Notes</h4>
+<p><code>dictConfig</code> partly works when merging dictionaries. I have found that some parts of the config are not overwritten, but other parts seem to lose their references. So, I would encourage you to build up a logging config for everything and call it once only. If you pass <code>config</code>, the Annotated Logger will call <code>logging.config.dictConfig</code> on your config after it has the option to add/adjust the config.</p>
+<p>The <code>logging_config.py</code> example has a much more detailed breakdown and set of examples.</p>
+<h3 id="pytest-mock">Pytest mock</h3>
+<p>Included with the package is a pytest mock to assist in testing for logged messages. I know that there are some strong opinions about testing log messages, and I don’t suggest doing it extensively, or frequently, but sometimes it’s the easiest way to check a loop, or the log message is tied to an alert, and it is important how it’s formatted. In these cases, you can ask for the <code>annotated_logger_mock</code> fixture which will intercept, record and forward all log messages.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test_logs</span>(annotated_logger_mock):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> pytest<span style="color:#f92672">.</span>raises(<span style="color:#a6e22e">KeyError</span>):
+</span></span><span style="display:flex;"><span>        complicated_method()
+</span></span><span style="display:flex;"><span>    annotated_logger_mock<span style="color:#f92672">.</span>assert_logged(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;ERROR&#34;</span>,  <span style="color:#75715e"># Log level</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;That&#39;s not the right key&#34;</span>,  <span style="color:#75715e"># Log message</span>
+</span></span><span style="display:flex;"><span>        present<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;success&#34;</span>: <span style="color:#66d9ef">False</span>, <span style="color:#e6db74">&#34;key&#34;</span>: <span style="color:#e6db74">&#34;bad-key&#34;</span>},  <span style="color:#75715e"># annotations and their values that are required</span>
+</span></span><span style="display:flex;"><span>        absent<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;fake-annotations&#34;</span>],  <span style="color:#75715e"># annotations that are forbidden</span>
+</span></span><span style="display:flex;"><span>        count<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>  <span style="color:#75715e"># Number of times log messages should match</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span></code></pre></div><p>The <code>assert_logged</code> method makes use of pychoir for flexible matching. None of the parameters are required, so feel free to use whichever makes sense. Below is a breakdown of the default and valid values for each parameter.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Parameter</th>
+          <th>Default Value</th>
+          <th>Valid Values</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>level</td>
+          <td>Matches anything</td>
+          <td>String or string-based matcher</td>
+          <td>Log level to check (e.g., “ERROR”).</td>
+      </tr>
+      <tr>
+          <td>message</td>
+          <td>Matches anything</td>
+          <td>String or string-based matcher</td>
+          <td>Log message to check.</td>
+      </tr>
+      <tr>
+          <td>present</td>
+          <td>Empty dictionary</td>
+          <td>Dictionary with string keys and any value</td>
+          <td>Annotations required in the log.</td>
+      </tr>
+      <tr>
+          <td>absent</td>
+          <td>Empty set</td>
+          <td>`ALL`, set, or list of strings</td>
+          <td>Annotations that must not be present in the log.</td>
+      </tr>
+      <tr>
+          <td>count</td>
+          <td>All positive integers</td>
+          <td>Integer or integer-based matcher</td>
+          <td>Number of times the log message should match.</td>
+      </tr>
+  </tbody>
+</table>
+<p>The <code>present</code> key is often what makes the mock truly useful. It allows you to require the things you care about and ignore the things you don’t care about. For example, nobody wants their tests to fail because the <code>run_time</code> of a method went from <code>0.0</code> to <code>0.1</code> or fail because the hostname is different on different test machines. But both of those are useful things to have in the logs. This mock should replace everything you use the <code>caplog</code> fixture for and more.</p>
+<h2 id="other-features">Other features</h2>
+<h3 id="class-decorators-and-persist">Class decorators and persist</h3>
+<p>Classes can be decorated with <code>@annotate_logs</code> as well. These classes will have an <code>annotated_logger</code> attribute added after the init (I was unable to get it to work inside the <code>__init__</code>). Any decorated methods of that class will have an <code>annotated_logger</code> that’s based on the class logger. Calls to <code>annotate</code> that pass <code>persist=True</code> will set the annotations on the class Annotated Logger and so subsequent calls of any decorated method of that instance will have those annotations. The class instance’s <code>annotated_logger</code> will also have an annotation of <code>class</code> specifying which class the logs are coming from.</p>
+<h3 id="iterators">Iterators</h3>
+<p>The Annotated Logger also supports logging iterations of an <code>enumerable</code> object. <code>annotated_logger.iterator</code> will log the start, each step of the iteration, and when the iteration is complete. This can be useful for pagination in an API if your results object is enumerable, logging each time a page is fetched instead of sitting for a long time with no indication if the pages are hanging or there are simply many pages.</p>
+<p>By default the <code>iterator</code> method will log the value of each iteration, but this can be disabled by setting <code>value=False</code>. You can also specify the level to log the iterations at if you don’t want the default of <code>info</code>.</p>
+<h3 id="provided">Provided</h3>
+<p>Because each decorated method gets its own <code>annotated_logger</code> calls to other methods will not have any annotations from the caller. Instead of simply passing the <code>annotated_logger</code> object to the method being called, you can specify <code>provided=True</code> in the decorator invocation. This does two things: first, it means that this method won’t have an <code>annotated_logger</code> created and passed automatically, instead it requires that the first argument be an existing <code>annotated_logger</code>, which it will use as a basis for the <code>annotated_logger</code> object it creates for the function. Second, it adds the annotation of <code>subaction</code> and sets the decorated function’s name as its value, the <code>action</code> annotation is preserved as from the method that called and provided the <code>annotated_logger</code>. Annotations are not persisted from a method decorated with <code>provided=True</code> to the method that called it, unless the class of the calling method was decorated and the called action annotated with <code>persist=True</code>, in which case the annotation is set on the <code>annotated_logger</code> of the instance and shared with all methods as is normal for decorated classes.</p>
+<p>The most common use of this is with private methods, especially ones created during a refactor to extract some self contained logic. But other uses are for common methods that are called from a number of different places.</p>
+<h3 id="split-messages">Split messages</h3>
+<p>Long messages wreak havoc on log parsing tools. I’ve encountered cases where the HTML of a 500 error page was too long for Splunk to parse, causing the entire log entry to be discarded and its annotations to go unprocessed. Setting <code>max_length</code> when configuring the Annotated Logger will break long messages into multiple log messages each annotated with <code>split=True</code>, <code>split_complete=False</code>, <code>message_parts=#</code> and <code>message_part=#</code>. The last part of the long message will have <code>split_complete=True</code> when it is logged.</p>
+<p>Only messages can be split like this; annotations will not trigger the splitting. However, a plugin could truncate any values with a length over a certain size.</p>
+<h3 id="prepost-hooks">Pre/Post hooks</h3>
+<p>You can register hooks that are executed before and after the decorated method is called. The <code>pre_call</code> and <code>post_call</code> parameters of the decorator take a reference to a function and will call that function right before passing in the same arguments that the function will be/was called with. This allows the hooks to add annotations and/or log anything that is desired (assuming the decorated function requested an <code>annotated_logger</code>).</p>
+<p>Examples of this would be having a set of annotations that annotate fields on a model and a <code>pre_call</code> that sets them in a standard way. Or a <code>post_call</code> that logs if the function left a model in an unsaved state.</p>
+<h3 id="runtime-annotations">Runtime annotations</h3>
+<p>Most annotations are static, but sometimes you need something that’s dynamic. These are achieved via the <code>RuntimeAnnotationsPlugin</code> in the Annotated Logger config. The <code>RuntimeAnnotationsPlugin</code> takes a dict of names and references to functions. These functions will be called and passed the log record when the plugin’s filter method is invoked just before the log message is emitted. Whatever is returned by the function will be set as the value of the annotation of the log message currently being logged.</p>
+<p>A common use case is to annotate a request/correlation id, which identifies all of the log messages that were part of a given API request. For Django, one way to do this is via django-guid.</p>
+<h2 id="tips-tricks-and-gotchas">Tips, tricks and gotchas</h2>
+<ul>
+<li>When using the decorator in more than one file, it’s useful to do all of the configuration in a file like <code>log.py</code>. That allows you to <code>from project.log import annotate_logs</code> everywhere you want to use it and you know it’s all configured and everything will be using the same setup.</li>
+<li>Namespacing your loggers helps when there are two projects that both use the Annotated Logger (a package and a service that uses the package). If you are setting anything via <code>dictConfig</code> you will want to have a single config that has everything for all Annotated Loggers.</li>
+<li>In addition to setting a correlation id for the API request being processed, passing the correlation id of the caller and then annotating that will allow you to trace from the logs of service A to the specific logs in Service B that relate to a call made by service A.</li>
+<li>Plugins are very flexible. For example:
+<ul>
+<li>Send every <code>exception</code> log message to a service like Sentry.</li>
+<li>Suppress logs from another package, like Django, that you don’t want to see (assuming you’ve configured Django’s logs to use a filter for your Annotated Logger).</li>
+<li>Add annotations for extra information about specific types of exceptions (see the <code>RequestsPlugin</code>).</li>
+<li>Set run time annotations on a subset of messages (instead of all messages with <code>RuntimeAnnotationsPlugin</code>)</li>
+</ul>
+</li>
+</ul>
+<h2 id="questions-feedback-and-requests">Questions, feedback and requests</h2>
+<p>We’d love to hear any questions, comments or requests you might have in an issue. Pull requests welcome as well!</p>
+<p>The post Introducing Annotated Logger: A Python package to aid in adding metadata to logs appeared first on The GitHub Blog.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

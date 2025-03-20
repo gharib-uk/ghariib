@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Implement remediation strategies with Event-Driven Ansible</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Implement remediation strategies with Event-Driven Ansible</h1>
+			<b><time>10.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Event-Driven Ansible is a powerful extension to Red Hat Ansible Automation Platform that leverages the automation infrastructure to provide the ability to react to change or problems. In short, Event-Driven Ansible can trigger Ansible playbooks (or Ansible Automation Platform&rsquo;s Job Templates) if a certain event is detected.</p>
+<p>In this article, we will provide a series of examples on how to use Event-Driven Ansible to implement several remediation strategies based on activities in the environment. We&rsquo;ll use Red Hat JBoss Enterprise Application Platform (JBoss EAP), part of Red Hat Runtimes, as a reference implementation.</p>
+<h2 id="environment-set-up-podman">Environment set up: Podman</h2>
+<p>To keep it simple and easy to reproduce, we will set up our Ansible controller inside into a Podman container based on the latest Fedora release. As this instance will need to communicate with other instances, we&rsquo;ll start by creating a network for those containers to coexist:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ podman network create eda_red_hat_blog
+</span></span></code></pre></div><p>With this network created, we can set up our first container—the instance that we will use as an Ansible <strong>control node</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ podman run -it --name=control_node --rm --network eda_red_hat_blog registry.fedoraproject.org/fedora:latest /bin/bash
+</span></span></code></pre></div><h3 id="prepare-the-control-node">Prepare the control node</h3>
+<p>Once the container is running, Ansible can be installed:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span># dnf install ansible-core
+</span></span></code></pre></div><p>The Ansible collection for EAP is provided by Ansible automation hub. In order to use it as a content provider, you&rsquo;ll need to update the <code>ansible.cfg</code> of your project. For more information, refer to the Ansible automation hub documentation.</p>
+<p>Then, install the necessary Ansible collections: Ansible collection for Event-Driven Ansible and Ansible collection for EAP:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ ansible-galaxy collection install ansible.eda redhat.eap
+</span></span></code></pre></div><p><strong>Note</strong>: Of course, this control node set up is not required if an Ansible Automation Platform is available and is being used. The approach described within this article (using a Podman container and a Fedora distribution) is an easy way to reproduce the demo without such infrastructure at our fingertips.</p>
+<h3 id="target">Target</h3>
+<p>With the control node set up, a target node needs to be available. We&rsquo;ll use a UBI9 container to emulate a system running with Red Hat Enterprise Linux (RHEL) 9:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ podman run --rm -d --network eda_red_hat_blog --systemd=true --privileged=true --name=node registry.access.redhat.com/ubi9/ubi-init:latest
+</span></span></code></pre></div><p>Note that we use the <code>ubi-init</code> image, as this flavor of UBI9 is already preconfigured to run <code>systemd</code> and its services within the container.</p>
+<p>We&rsquo;ll need to install and activate SSHd so that our control node can connect to the container representing the node:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ podman exec -ti node /bin/bash
+</span></span><span style="display:flex;"><span># dnf install -y openssh-server
+</span></span><span style="display:flex;"><span># # for the demo, we&#39;ll authorize root login. Obviously don&#39;t do this for sensitive or production systems!!!
+</span></span><span style="display:flex;"><span># sed -i /etc/sshd/sshd_config -e &#39;/^.*PermitRootLogin.*$/PermitRootLogin yes/&#39;
+</span></span><span style="display:flex;"><span># systemctl start sshd
+</span></span></code></pre></div><p>Before going any further, let&rsquo;s check that the container representing the control node can indeed connect to the target. First, we need to create an inventory file for Ansible so that it can identify the target:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$  cat inventory
+</span></span><span style="display:flex;"><span>[all]
+</span></span><span style="display:flex;"><span>node
+</span></span></code></pre></div><p>Now, let&rsquo;s run Ansible and verify that it can connect to the remote host. In this case, we&rsquo;ll simply ask the automation tool to gather the available information (facts in Ansible parlance) about the remote system:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ ansible -m setup -i inventory all
+</span></span></code></pre></div><p>This command will return a lot of information about the target, structured as YAML content. At this stage, it’s enough to conclude that Ansible is properly configured and able to connect to the remote node.</p>
+<h2 id="set-up-jboss-eap">Set up JBoss EAP</h2>
+<p>We are now going to set up JBoss EAP as a service on the target using the automation provided by the Ansible Collection for EAP we installed earlier on the control node. This will provide a suitable service to monitor using Event-Driven Ansible.</p>
+<h3 id="credentials-to-download-eap">Credentials to download EAP</h3>
+<p>As JBoss EAP is a Red Hat product, we need to provide <code>service account</code> credentials to Ansible. This will allow the automation tool connect to the Red Hat Customer Portal and download the appropriate archive. To accomplish this task, the required information can be placed into a YAML file and referenced by Ansible at runtime:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>    ---
+</span></span><span style="display:flex;"><span>    rhn_username: &lt;service_account_username&gt;
+</span></span><span style="display:flex;"><span>    rhn_password: &lt;service_account_password&gt;
+</span></span></code></pre></div><p>For more information on how to obtain those credentials, please refer to the following documentation.</p>
+<h3 id="install-jboss-eap">Install JBoss EAP</h3>
+<p>Thanks to the Ansible Collection for EAP, the playbook to deploy this product is minimal:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">---</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">-</span> name: Ensure Wildfly <span style="color:#f92672">is</span> install <span style="color:#f92672">and</span> running <span style="color:#66d9ef">as</span> a service
+</span></span><span style="display:flex;"><span>  hosts: all
+</span></span><span style="display:flex;"><span>  collections:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span> redhat<span style="color:#f92672">.</span>eap
+</span></span><span style="display:flex;"><span>  roles:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span> eap_install
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span> eap_systemd
+</span></span></code></pre></div><p>We just need to provide Ansible the aforementioned credentials and, from there, the automation tool will take care of the rest:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ ansible-playbook -i inventory playbook.yml -e @service_acount.yml
+</span></span></code></pre></div><p><strong>Note</strong>: The collection will not download the JBoss EAP archive each time its content is executed. It will only download from Red Hat Customer Portal once and, from there, as long as the archive exists on the file system of the control node, the archive will no longer be downloaded.</p>
+<p>Once Ansible has finished running, we can check that the service was indeed installed and properly running by using <code>systemctl status eap</code> command. The playbook below can be used to perform this verification from the control node:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">---</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">-</span> name: Ensure EAP <span style="color:#f92672">is</span> installed <span style="color:#f92672">and</span> running <span style="color:#66d9ef">as</span> a service
+</span></span><span style="display:flex;"><span> hosts: all
+</span></span><span style="display:flex;"><span> gather_facts: false
+</span></span><span style="display:flex;"><span> tasks:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span> ansible<span style="color:#f92672">.</span>builtin<span style="color:#f92672">.</span>command: <span style="color:#e6db74">&#34;systemctl status eap&#34;</span>
+</span></span><span style="display:flex;"><span>     register: status_eap
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-</span> ansible<span style="color:#f92672">.</span>builtin<span style="color:#f92672">.</span>debug:
+</span></span><span style="display:flex;"><span>       var: status_eap
+</span></span><span style="display:flex;"><span>     when:
+</span></span><span style="display:flex;"><span>       <span style="color:#f92672">-</span> status_eap <span style="color:#f92672">is</span> defined <span style="color:#f92672">and</span> status_eap<span style="color:#f92672">.</span>stdout <span style="color:#f92672">is</span> defined
+</span></span></code></pre></div><h2 id="jboss-eaps-remediation-using-event-driven-ansible">JBoss EAP&rsquo;s remediation using Event-Driven Ansible</h2>
+<p>Now that we have our target node provisioned, we can start looking at Event-Driven Ansible a bit more closely.</p>
+<h3 id="install-ansible-rulebook-on-the-controller">Install ansible-rulebook on the controller</h3>
+<p>First, we&rsquo;ll need to install the <code>ansible-rulebook</code> command on the control node. Within the Fedora container, like the one we set up, we&rsquo;ll need to use <code>pip</code> to do so:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span># dnf install python3-pip.noarch
+</span></span><span style="display:flex;"><span># pip install ansible-rulebook
+</span></span><span style="display:flex;"><span># ansible-rulebook --version
+</span></span><span style="display:flex;"><span> # ansible-rulebook --version
+</span></span><span style="display:flex;"><span> 1.1.1
+</span></span><span style="display:flex;"><span>    Executable location = /usr/local/bin/ansible-rulebook
+</span></span><span style="display:flex;"><span>    Drools_jpy version = 0.3.9
+</span></span><span style="display:flex;"><span>    Java home = /usr/lib/jvm/java-17-openjdk-17.0.13.0.11-3.fc41.x86_64
+</span></span><span style="display:flex;"><span>    Java version = 17.0.13
+</span></span><span style="display:flex;"><span>     Python version = 3.13.0 (main, Oct  8 2024, 00:00:00) [GCC 14.2.1 20240912 (Red Hat 14.2.1-3)]
+</span></span></code></pre></div><p>Note that this step is not required if the user has, at their disposal, an Ansible Automation Platform instance (with Event-Driven Ansible installed).</p>
+<h3 id="use-case-1-restart-eap-if-service-is-down">Use case 1: Restart EAP if service is down</h3>
+<p>Now that Event-Driven Ansible is fully available on our control node, we can use it to detect if the JBoss EAP service on the target node is not running. When such an event occurs, Event-Driven Ansible will trigger automation in order to restart the service. It&rsquo;s a simple use case, but it&rsquo;s an excellent starting point to discover the capabilities of Event-Driven Ansible. If traditional Ansible automation uses playbooks to define its actions, Event-Driven Ansible uses rulebooks—both using the YAML syntax. Because of the similarities between the two, the content looks familiar to most Ansible users.</p>
+<p>A rulebook is split into two sections. The first one is labeled <code>sources</code> and provides, as its name implies, the source of events to potentially take action on. This is where we can integrate Event-Driven Ansible with numerous systems that supplied events (such as Apache Kafka, for instance). The second part, labeled <code>rules</code>, describes the actions to be executed if a particular event has been identified.</p>
+<p>In our case, we will use a built-in <code>source</code>, named <code>check_url</code>. As its name implies, it will simply monitor a URL, the web root context of JBoss EAP. If this is not reachable, then JBoss EAP is most likely down. As for the rule, we will execute the following playbook to ensure the service is (re)started:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>- name: Ensure EAP is installed and running as a service
+</span></span><span style="display:flex;"><span> hosts: node
+</span></span><span style="display:flex;"><span> gather_facts: false
+</span></span><span style="display:flex;"><span> tasks:
+</span></span><span style="display:flex;"><span>    - name: Restart EAP
+</span></span><span style="display:flex;"><span>       ansible.builtin.service:
+</span></span><span style="display:flex;"><span>           name: eap
+</span></span><span style="display:flex;"><span>               state: started
+</span></span></code></pre></div><p>Now, let&rsquo;s review the content of our first rulebook:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>- name: EAP remediation using EDA
+</span></span><span style="display:flex;"><span>  hosts: all
+</span></span><span style="display:flex;"><span>  sources:
+</span></span><span style="display:flex;"><span>    - ansible.eda.url_check:
+</span></span><span style="display:flex;"><span>          urls:
+</span></span><span style="display:flex;"><span>             - &#34;http://node:8080/&#34;
+</span></span><span style="display:flex;"><span>   rules:
+</span></span><span style="display:flex;"><span>      - name: Restart EAP if url is not reachable
+</span></span><span style="display:flex;"><span>        condition: event.url_check.status == &#34;down&#34;
+</span></span><span style="display:flex;"><span>        action:
+</span></span><span style="display:flex;"><span>          run_playbook:
+</span></span><span style="display:flex;"><span>            name: playbooks/restart_eap.yml
+</span></span></code></pre></div><p>Since the format is similar to a playbook, the content is pretty straightforward and easy to understand. The top portion of the rulebook mirrors that of a playbook, as it includes the name of the rulebook and the targets (hosts).</p>
+<p>As described previously, an entry for sources and one for rules is also included. The source included within this rulebook, provided by Event-Driven Ansible, checks that a URL is reachable and generates events based on the state of the remote system.</p>
+<p>The <code>rules</code> property includes the list of rules that may trigger actions based on events generated within the list of sources. The rule included in this rulebook will trigger a playbook to restart JBoss EAP if the exposed URL is no longer reachable.</p>
+<p>Pretty simple and neat!</p>
+<p>Now, let’s run this rulebook using the following command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ ansible-rulebook -r rulebooks/rulebook1.yml -i inventory
+</span></span></code></pre></div><p>Once started, the command will wait for an event to match one of the rules based on the conditions defined. The condition, where the URL fails to return a successful result, can be triggered by simply using the <code>systemctl stop eap</code> command on the target node.</p>
+<p>Then, we can see that Event-Driven Ansible picks up the event and attempts to remediate the situation by restarting the JBoss EAP service:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ ansible-rulebook -r rulebooks/rulebook1.yml -i inventory
+</span></span><span style="display:flex;"><span>PLAY [Ensure EAP is installed and running as a service] **************************
+</span></span><span style="display:flex;"><span>TASK [Restart EAP] *************************************************************
+</span></span><span style="display:flex;"><span>changed: [node]
+</span></span></code></pre></div><h3 id="use-case-2-restart-eap-in-case-of-out-of-memory-error">Use case 2: Restart EAP in case of Out of Memory error</h3>
+<p>Restarting a service is a rather simple use case. Now, we are going to review a more complex, real life use case. Let&rsquo;s imagine that one of the applications hosted on JBoss EAP sometimes throws an <code>Out of Memory error</code>. The developers have linked the problem to the database connection pool and a way to remediate the situation is to flush the idled connections within JBoss EAP.</p>
+<p>We are now going to use Event-Driven Ansible to automate this remediation strategy. We&rsquo;ll use one of the other event sources that is provided by Event-Driven Ansible: <code>journald</code>. This allows one to react to events logged in to <code>journald</code> on the target instance.</p>
+<p>As the Ansible Collection for EAP integrates the Java server into <code>systemd</code> during its installation, its own log entries are propagated into the system it is running within. So, we can use this source to detect the appearance of the infamous error message <code>java.lang.OutOfMemoryError</code>.</p>
+<p>Once this event is identified, Event-Driven Ansible will trigger another playbook called <code>flush_idle_conn.yml</code>. The playbook will leverage the capabilities of the Ansible Collection for EAP to interact with the Java server using its CLI feature.</p>
+<p>The following is the content of the <code>flush_idle_conn.yml</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>- name: &#34;Flus idle connection&#34;
+</span></span><span style="display:flex;"><span>  hosts: all
+</span></span><span style="display:flex;"><span>  collections:
+</span></span><span style="display:flex;"><span>    - redhat.eap
+</span></span><span style="display:flex;"><span>  tasks:
+</span></span><span style="display:flex;"><span>    - name: Flush idle connection
+</span></span><span style="display:flex;"><span>      ansible.builtin.include_role:
+</span></span><span style="display:flex;"><span>        name: wildfly_utils
+</span></span><span style="display:flex;"><span>        tasks_from: jboss_cli.yml
+</span></span><span style="display:flex;"><span>      vars:
+</span></span><span style="display:flex;"><span>        jboss_cli_query: &#34;/subsystem=datasources/data-source=ExampleDS:flush-idle-connection-in-pool()&#34;
+</span></span></code></pre></div><p>And here is our new rulebook:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>- name: Remediate Out of Memory error triggered by idle connection
+</span></span><span style="display:flex;"><span>   hosts: all
+</span></span><span style="display:flex;"><span>   sources:
+</span></span><span style="display:flex;"><span>     - ansible.eda.journald:
+</span></span><span style="display:flex;"><span>        match: ALL
+</span></span><span style="display:flex;"><span>   rules:
+</span></span><span style="display:flex;"><span>     - name: Match all on journald
+</span></span><span style="display:flex;"><span>       condition: event.journald.message is search(&#34;java.lang.OutOfMemoryError&#34;, ignorecase=false)
+</span></span><span style="display:flex;"><span>       action:
+</span></span><span style="display:flex;"><span>         run_playbook:
+</span></span><span style="display:flex;"><span>           name: playbooks/flush_idle_conn.yml.yml
+</span></span></code></pre></div><p>Since constructing this scenario goes beyond the scope of this discussion, the execution of this rulebook and the associated remediation will not be included. However, the concepts provide a glimpse into the types of strategies that can be incorporated within Event-Driven Ansible.</p>
+<h1 id="summary">Summary</h1>
+<p>As demonstrated in this article, Event-Driven Ansible is a powerful way to implement remediation strategies (or other events based operations) upon activities within the environment. In the case of the Red Hat Runtimes solutions, such as JBoss EAP, JWS, or even Red Hat Build of Keycloak, the available collections on Automation hub ensure an easy integration with both Ansible and Event-Driven Ansible.</p>
+<p>The post Implement remediation strategies with Event-Driven Ansible appeared first on Red Hat Developer.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

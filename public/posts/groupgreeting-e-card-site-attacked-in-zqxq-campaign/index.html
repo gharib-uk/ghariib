@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>GroupGreeting e-card site attacked in “zqxq” campaign</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>GroupGreeting e-card site attacked in “zqxq” campaign</h1>
+			<b><time>10.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p><em>This article was researched and written by Stefan Dasic, manager, research and response for ThreatDown, powered by Malwarebytes</em></p>
+<p>Malwarebytes recently uncovered a widespread cyberattack—referred to here as the “zqxq” campaign as it closely mirrors NDSW/NDSX-style malware behavior—that compromised GroupGreeting[.]com, a popular platform used by major enterprises to send digital greeting cards.  </p>
+<p>Upon learning of the attack, GroupGreeting quickly responded and resolved the threat.</p>
+<p>This attack is part of a broader malicious campaign that takes advantage of trusted websites with high traffic, especially those that could experience a spike in visitors during busy seasons like the winter holidays. That includes greeting card websites, like GroupGreeting[.]com, that allow users to send group e-cards for birthdays, retirements, weddings, and, of course, holidays like Christmas and New Year’s.  </p>
+<p>According to public data, over 2,800 websites have been hit with similar malicious code. The seasonal increase in user interactions with greeting card sites provides ample opportunities for cybercriminals to quietly inject malware and target unsuspecting visitors. </p>
+<h2 id="explaining-the-zqxq-malware"><strong>Explaining the “zqxq” malware</strong></h2>
+<p>Understanding this cybercriminal campaign requires a little bit of understanding of the web. Online today, nearly every single modern webpage uses a programming language called JavaScript. JavaScript allows developers to make interactive webpages, but it can also be vulnerable to attacks, as cybercriminals can “inject” pieces of JavaScript into a website that are not approved by the site’s developers. </p>
+<p>At the core of this breach is an obfuscated JavaScript snippet designed to blend in with legitimate site files. Hidden within themes, plugins, or other critical scripts, the malicious code uses scrambled variables (e.g., zqxq) and custom functions (HttpClient, rand, token) to evade detection and hamper analysis. </p>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/01/image.png" alt="" />
+</figure>
+
+
+</p>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/01/image_249e18.png" alt="" />
+</figure>
+
+
+</p>
+<p>Despite its complexity, the malware performs some very typical functions seen in large-scale JavaScript injection campaigns: </p>
+<ul>
+<li>
+<p><strong>Token generation and redirection</strong>. Generates random tokens (rand() + rand()) for queries or URLs, a technique often used in Traffic Direction Systems (TDS) to disguise malicious links. </p>
+</li>
+<li>
+<p><strong>Conditional checks and evasion</strong>. References properties in navigator, document, window, or screen to determine if the user has visited before, or to avoid re-infecting the same machine. This helps keep the campaign under the radar by reducing repeated alerts. </p>
+</li>
+<li>
+<p><strong>Remote payload retrieval</strong>. Uses an XMLHttpRequest (labeled as HttpClient in the code) to silently fetch further malicious scripts or to redirect visitors to exploit kits, phishing sites, or other malicious destinations. </p>
+</li>
+</ul>
+<h2 id="overlap-with-ndswndsx-and-tds-parrot-campaigns"><strong>Overlap with NDSW/NDSX and TDS Parrot campaigns</strong> </h2>
+<p>Though Malwarebytes recently discovered the attack on GroupGreeting[.]com, the malware campaign bears similarities to another malware injection campaign that is referred to as both “NDSW/NDSX” and “TDS Parrot.” </p>
+<p>According to security researchers from Sucuri, who label these attacks under the “NDSW/NDSX” moniker, this campaign accounted for 43,106 detections in 2024. Similar research was published by Unit 42, which refers to the campaign as “TDS Parrot.”  </p>
+<p>From these analyses, we can identify the following parallels to known <strong>NDSW/NDSX</strong> or <strong>TDS Parrot</strong> malware campaigns: </p>
+<ul>
+<li>
+<p><strong>Obfuscated redirect scripts</strong>. Much like NDSW/NDSX, the zqxq script deeply obfuscates its variables, methods, and flow. The layering of functions (Q, d, rand, token) and the repeated usage of base64-like decoding are standard indicators of TDS JavaScript-based threats. </p>
+</li>
+<li>
+<p><strong>Traffic Distribution System behavior</strong>. After running checks (e.g., domain name, cookies), these scripts funnel traffic to external pages hosting additional malware payloads or phishing sites. This is precisely how TDS Parrot campaigns divert user traffic across multiple malicious domains to maximize infection rates. </p>
+</li>
+<li>
+<p><strong>Large-scale website infections</strong>. Both NDSW/NDSX and the zqxq campaign have infected thousands of websites, suggesting a systematic approach—possibly automated—that exploits vulnerabilities in popular CMS platforms (like WordPress, Joomla, or Magento) or outdated plugins, similar to documented TDS Parrot behaviors. </p>
+</li>
+</ul>
+<h2 id="analysis-of-the-breach-and-why-groupgreeting-was-a-prime-target"><strong>Analysis of the breach and why GroupGreeting was a prime target</strong> </h2>
+<p>Cybercriminals hardly strike at random. Instead, the attack on GroupGreeting was likely coordinated because of its potential for success. Here are a few reasons why: </p>
+<ul>
+<li>
+<p><strong>High-profile site</strong>. GroupGreeting boasts over 25,000 workplace clients, including major brands like Airbnb, Coca-Cola, and eBay, making it a lucrative target. Visitors are more inclined to trust links from a service they deem reputable. </p>
+</li>
+<li>
+<p><strong>Seasonal traffic spikes</strong>. During holidays and other high-traffic periods, the site sees a surge in e-card use. Cybercriminals exploit this surge to maximize the spread of redirects and malware. </p>
+</li>
+<li>
+<p><strong>Sophisticated persistence</strong>. Malicious code can hide in multiple files or within the database. Deleting one infected file may not remove all traces, allowing reinfection to occur. </p>
+</li>
+<li>
+<p><strong>Potential consequences</strong>. Once the malware activates in a user’s browser, it typically redirects them to external domains that host secondary payloads. These payloads can range from phishing pages—designed to steal credentials—to more devastating forms of malware like info stealers or ransomware. Attackers often generate random or “tokenized” URLs, making it difficult for basic blocklists to keep pace. </p>
+</li>
+</ul>
+<h2 id="prevention-and-remediation"><strong>Prevention and remediation</strong> </h2>
+<ul>
+<li>
+<p><strong>Timely patching and updates</strong>. Attacks often succeed by exploiting vulnerabilities in outdated CMS installations or plugins, underscoring the importance of regular updates. </p>
+</li>
+<li>
+<p><strong>File integrity checks</strong>. Automated monitoring systems can detect and flag any unauthorized file changes, prompting swift action. </p>
+</li>
+<li>
+<p><strong>User training</strong>. Educate users on potential risks and signs of compromise—even “safe” or well-known websites can be hijacked. </p>
+</li>
+</ul>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/01/image_aef924.png" alt="" />
+</figure>
+
+
+</p>
+<hr>
+<p><strong>We don’t just report on threats—we remove them</strong></p>
+<p>Cybersecurity risks should never spread beyond a headline. Keep threats off your devices by downloading Malwarebytes today.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

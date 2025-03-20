@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>AMOS and Lumma stealers actively spread to Reddit users</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>AMOS and Lumma stealers actively spread to Reddit users</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>We were alerted to Mac and Windows stealers currently distributed via Reddit posts targeting users engaging in cryptocurrency trading. One of the common lures is a cracked software version of the popular trading platform TradingView.</p>
+<p>The crooks are posting links to both Windows and Mac installers which have been laced with Lumma Stealer and Atomic Stealer (AMOS) respectively.</p>
+<p>These two malware families have wreaked havoc, pillaging victims’ personal data and enabling their distributors to make substantial gains, mostly by taking over cryptocurrency wallets.</p>
+<h2 id="reddit-posts-target-crypto-enthusiasts">Reddit posts target crypto enthusiasts</h2>
+<p>Scammers are lurking on subreddits visited by cryptocurrency traders and posting about free access to TradingView, a web-based platform and social network that provides charting tools for analyzing financial markets, including stocks, forex, cryptocurrencies, and commodities.</p>
+<p>The offer claims that the programs are totally free and have been cracked directly from their official version, unlocking premium features.</p>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/03/image_19956d.png?w=962" alt="" />
+</figure>
+
+
+</p>
+<p>While the original post gives a heads-up that you are installing these files at your own risk, further down in the thread we can read comments from the OP such as “<em>a real virus on a Mac would be wild</em>“.</p>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/03/image_8d2f28.png?w=1024" alt="" />
+</figure>
+
+
+</p>
+<h2 id="downloads-hosted-on-unrelated-website">Downloads hosted on unrelated website</h2>
+<p>We checked both links and noticed that the website hosting the files belongs to a Dubai cleaning company. It’s not totally clear why the scammers didn’t choose a service like Mega or similar, unless they wanted the ability to upload and update their code directly via a server they control.</p>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/03/image_9ff5a0.png?w=1024" alt="" />
+</figure>
+
+
+</p>
+<p>Upon checking that website, we can see that it leaks its PHP version (7.3.33). It already reached its end of life in December 2021 and no longer receives official security updates, making it prone to exploitation and compromise.</p>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/03/image_e4e157.png?w=1024" alt="" />
+</figure>
+
+
+</p>
+<h2 id="double-zipped-malware">Double zipped malware</h2>
+<p>Both Mac and Windows files are double zipped, with the final zip being password protected. For comparison, a legitimate executable would not need to be distributed in such fashion.</p>
+<p>On Mac, the installer is a new variant of AMOS, a popular macOS stealer. In its latest iterations, the malicious code checks for the presence of virtual machines and exits with error code 42 if it detects any.</p>
+<pre tabindex="0"><code>osascript -e &#34;set memData to do shell script &#34;system_profiler SPMemoryDataType&#34;if memData contains &#34;QEMU&#34; or memData contains &#34;VMware&#34; then    do shell script &#34;exit 42&#34;else    do shell script &#34;exit 0&#34;end if&#34;
+</code></pre><p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/03/image_e5dd66.png?w=1024" alt="" />
+</figure>
+
+
+</p>
+<p>Analysis of the full script shows the function that exfiltrates user data via a POST request to 45.140.13.244, a server hosted in the Seychelles:</p>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/03/image_38203e.png" alt="" />
+</figure>
+
+
+</p>
+<p>On Windows, the payload is loaded via an obfuscated bat file (<em>Costs.tiff.bat</em>) that runs a malicious Autoit script (<em>Sad .com</em>):</p>
+<pre tabindex="0"><code>&#34;C:Windowssystem32cmd.exe&#34; /c expand Costs.tiff Costs.tiff.bat &amp; Costs.tiff.batcmd /c copy /b 701617Sad.com + Io + Thin + Experiment + Detect + Subsection + Meter + Well + Walls + Substantially + Mcdonald 701617Sad.com
+</code></pre><p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/03/image_b50702.png?w=1024" alt="" />
+</figure>
+
+
+</p>
+<p>The malware command and control server here is <em>cousidporke[.]icu</em>, registered about a week ago by someone in Russia.</p>
+<p>We have heard of victims whose crypto wallets had been emptied, and were subsequently impersonated by the criminals who sent phishing links to their contacts.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Cracked software has been prone to containing malware for decades, but clearly the lure of a free lunch is still very appealing. What’s interesting with this particular scheme is how involved the original poster is, going through the thread and being ‘helpful’ to users asking questions or reporting an issue.</p>
+<p>Here are some things to look out for and stay safe:</p>
+<ul>
+<li>
+<p>instructions to disable security software so the program can run (do not disable the antivirus that’s trying to protect you!)</p>
+</li>
+<li>
+<p>files that are password-protected (this is a common practice to thwart security scanners)</p>
+</li>
+<li>
+<p>files hosted on dubious online platforms</p>
+</li>
+</ul>
+<p>However, it is still easy to fall for these scams, especially if the recommendation came from a friend. Malwarebytes protects from both Mac and Windows payloads.</p>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/03/image_6551c2.png?w=1024" alt="" />
+</figure>
+
+
+</p>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/03/image_252212.png?w=1024" alt="" />
+</figure>
+
+
+</p>
+<hr>
+<p><strong>We don’t just report on threats—we remove them</strong></p>
+<p>Cybersecurity risks should never spread beyond a headline. Keep threats off your devices by downloading Malwarebytes today.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

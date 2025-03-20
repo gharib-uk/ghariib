@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Introducing a Managed Component for Maintaining Host Routes in Kubernetes&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Introducing a Managed Component for Maintaining Host Routes in Kubernetes&lt;/div&gt;</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Our new <strong>DOKS routing agent</strong> is a managed component for configuring static routes on Kubernetes worker nodes. It is a direct response to user feedback on its predecessor, the static route operator, and introduces new features to enhance routing flexibility. Despite being a managed component, the DOKS routing agent is included <strong>at no additional cost</strong> for users.</p>
+<h2 id="key-features-of-the-doks-routing-agent">Key Features of the DOKS Routing Agent</h2>
+<h3 id="1-static-route-management-via-custom-resources">1. Static Route Management via Custom Resources</h3>
+<p>The DOKS routing agent enables users to configure IP routes on their Kubernetes worker nodes using a dedicated Kubernetes Custom Resource. This is particularly useful for VPN setups or tunneling egress traffic through specific gateway nodes.</p>
+<h4 id="example-configuration">Example Configuration:</h4>
+<pre tabindex="0"><code>apiVersion: networking.doks.digitalocean.com/v1alpha1
+kind: Route
+metadata:
+  name: basic
+spec:
+  destinations:
+    - &#34;1.2.3.4/5&#34;  # Networks to be routed via the specified gateways
+  gateways:
+    - &#34;10.114.0.3&#34;  # Gateway IP
+</code></pre><h3 id="2-support-for-multiple-gateways-and-ecmp">2. Support for Multiple Gateways and ECMP</h3>
+<p>The routing agent supports multiple gateways and automatically configures ECMP (Equal-Cost Multi-Path) routing to distribute traffic across them.</p>
+<h4 id="example-configuration-1">Example Configuration:</h4>
+<pre tabindex="0"><code>apiVersion: networking.doks.digitalocean.com/v1alpha1
+kind: Route
+metadata:
+  name: basic
+spec:
+  destinations:
+    - &#34;1.2.3.4/5&#34;
+  gateways:
+    - &#34;10.114.0.3&#34;
+    - &#34;10.114.0.4&#34;
+</code></pre><p><strong>How ECMP Works:</strong></p>
+<ul>
+<li>ECMP distributes traffic across multiple gateways based on a hash of source/destination IP and port.</li>
+<li>If a gateway fails, the Linux kernel stops sending traffic to it.</li>
+<li>The routing agent pings gateways every 30 seconds to detect failures and restore traffic flow when a gateway recovers.</li>
+<li><strong>Note:</strong> Ensure that ICMP traffic is allowed on gateways for health checks to function properly.</li>
+</ul>
+<h3 id="3-overriding-default-routes">3. Overriding Default Routes</h3>
+<p>The routing agent allows users to override default routes without disrupting cluster connectivity—one of the most requested features.</p>
+<h4 id="example-configuration-2">Example Configuration:</h4>
+<pre tabindex="0"><code>apiVersion: networking.doks.digitalocean.com/v1alpha1
+kind: Route
+metadata:
+  name: basic
+spec:
+  destinations:
+    - &#34;0.0.0.0/0&#34;  # Default route
+  gateways:
+    - &#34;10.114.0.3&#34;
+    - &#34;10.114.0.4&#34;
+</code></pre><p>To prevent issues with Kubernetes components, the routing agent ensures that essential control plane endpoints, metadata services, and DNS servers maintain direct connectivity through the worker node Droplet’s default gateway.</p>
+<h3 id="4-node-selection-for-routes">4. Node Selection for Routes</h3>
+<p>Routes can be applied to specific nodes using Kubernetes label selectors, allowing for fine-grained control over network configurations.</p>
+<h4 id="example-configuration-3">Example Configuration:</h4>
+<pre tabindex="0"><code>apiVersion: networking.doks.digitalocean.com/v1alpha1
+kind: Route
+metadata:
+  name: basic
+spec:
+  destinations:
+    - &#34;1.2.3.4/5&#34;
+  gateways:
+    - &#34;10.114.0.3&#34;
+  nodeSelector:
+    nodeSelectorTerms:
+      - matchExpressions:
+          - key: doks.digitalocean.com/node-pool
+            operator: In
+            values:
+              - &#34;worker-pool&#34;
+</code></pre><h2 id="enabling-the-doks-routing-agent">Enabling the DOKS Routing Agent</h2>
+<p>The routing agent can be enabled or disabled using <strong>doctl</strong> or the <strong>DigitalOcean API</strong>.</p>
+<h3 id="example-commands">Example Commands:</h3>
+<pre tabindex="0"><code>doctl kubernetes cluster create --enable-routing-agent ...
+
+doctl kubernetes cluster update --enable-routing-agent ...
+</code></pre><p>For API users, the field structure is:</p>
+<pre tabindex="0"><code>{
+  &#34;name&#34;: &#34;prod-cluster-01&#34;,
+  &#34;region&#34;: &#34;nyc3&#34;,
+  &#34;routing_agent&#34;: {
+    &#34;enabled&#34;: true
+  }
+}
+</code></pre><h2 id="usage-for-static-egress-ip">Usage for Static Egress IP</h2>
+<p>With the DOKS routing agent and a self-managed VPC gateway Droplet, users can configure static egress IPs, ensuring outbound traffic from Kubernetes workloads originates from a predictable IP address.</p>
+<h3 id="why-this-matters">Why This Matters:</h3>
+<ul>
+<li><strong>Allow-listing:</strong> Secure external services by allow-listing known IPs.</li>
+<li><strong>Compliance:</strong> Maintain a consistent outbound IP for regulatory requirements.</li>
+</ul>
+<h3 id="coming-soon-fully-managed-nat-gateway">Coming Soon: Fully Managed NAT Gateway</h3>
+<p>We’re also working on a <strong>fully managed NAT gateway</strong>, which will offer a simpler solution for achieving static egress IPs. This feature is on our roadmap and will be available later this year.</p>
+<h2 id="simplify-static-route-management">Simplify Static Route Management</h2>
+<p><strong>The DOKS routing agent streamlines static route management in Kubernetes, providing:</strong></p>
+<ul>
+<li>Custom routes using Kubernetes Custom Resources</li>
+<li>Load distribution across multiple gateways with ECMP</li>
+<li>Default route overrides without disrupting cluster connectivity</li>
+<li>Node-specific routing with label selectors</li>
+</ul>
+<p>These features are especially useful for VPN setups, custom egress routing, and self-managed VPC gateways.</p>
+<h2 id="get-started-today">Get started today</h2>
+<ul>
+<li>
+<p>Explore our product documentation</p>
+</li>
+<li>
+<p>Visit our Managed Kubernetes homepage</p>
+</li>
+<li>
+<p>Log into your DigitalOcean account</p>
+</li>
+<li>
+<p>Access the release notes</p>
+</li>
+<li>
+<p>Check out the How-To Guide</p>
+</li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

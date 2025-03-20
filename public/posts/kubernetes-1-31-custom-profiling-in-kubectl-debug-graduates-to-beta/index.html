@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Kubernetes 1.31: Custom Profiling in Kubectl Debug Graduates to Beta</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Kubernetes 1.31: Custom Profiling in Kubectl Debug Graduates to Beta</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>There are many ways of troubleshooting the pods and nodes in the cluster. However, <code>kubectl debug</code> is one of the easiest, highly used and most prominent ones. It provides a set of static profiles and each profile serves for a different kind of role. For instance, from the network administrator&rsquo;s point of view, debugging the node should be as easy as this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ kubectl debug node/mynode -it --image<span style="color:#f92672">=</span>busybox --profile<span style="color:#f92672">=</span>netadmin
+</span></span></code></pre></div><p>On the other hand, static profiles also bring about inherent rigidity, which has some implications for some pods contrary to their ease of use. Because there are various kinds of pods (or nodes) that all have their specific necessities, and unfortunately, some can&rsquo;t be debugged by only using the static profiles.</p>
+<p>Take an instance of a simple pod consisting of a container whose healthiness relies on an environment variable:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">name</span>: <span style="color:#ae81ff">example-pod</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">containers</span>:
+</span></span><span style="display:flex;"><span> - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">example-container</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">image</span>: <span style="color:#ae81ff">customapp:latest</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">env</span>:
+</span></span><span style="display:flex;"><span> - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">REQUIRED_ENV_VAR</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#34;value1&#34;</span>
+</span></span></code></pre></div><p>Currently, copying the pod is the sole mechanism that supports debugging this pod in kubectl debug. Furthermore, what if user needs to modify the <code>REQUIRED_ENV_VAR</code> to something different for advanced troubleshooting?. There is no mechanism to achieve this.</p>
+<h2 id="custom-profiling">Custom Profiling</h2>
+<p>Custom profiling is a new functionality available under <code>--custom</code> flag, introduced in kubectl debug to provide extensibility. It expects partial <code>Container</code> spec in either YAML or JSON format. In order to debug the example-container above by creating an ephemeral container, we simply have to define this YAML:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># partial_container.yaml</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">env</span>:
+</span></span><span style="display:flex;"><span> - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">REQUIRED_ENV_VAR</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">value</span>: <span style="color:#ae81ff">value2</span>
+</span></span></code></pre></div><p>and execute:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl debug example-pod -it --image<span style="color:#f92672">=</span>customapp --custom<span style="color:#f92672">=</span>partial_container.yaml
+</span></span></code></pre></div><p>Here is another example that modifies multiple fields at once (change port number, add resource limits, modify environment variable) in JSON:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&#34;ports&#34;</span>: [
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&#34;containerPort&#34;</span>: <span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span> }
+</span></span><span style="display:flex;"><span> ],
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&#34;resources&#34;</span>: {
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&#34;limits&#34;</span>: {
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&#34;cpu&#34;</span>: <span style="color:#e6db74">&#34;0.5&#34;</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&#34;memory&#34;</span>: <span style="color:#e6db74">&#34;512Mi&#34;</span>
+</span></span><span style="display:flex;"><span> },
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&#34;requests&#34;</span>: {
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&#34;cpu&#34;</span>: <span style="color:#e6db74">&#34;0.2&#34;</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&#34;memory&#34;</span>: <span style="color:#e6db74">&#34;256Mi&#34;</span>
+</span></span><span style="display:flex;"><span> }
+</span></span><span style="display:flex;"><span> },
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&#34;env&#34;</span>: [
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;REQUIRED_ENV_VAR&#34;</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;value2&#34;</span>
+</span></span><span style="display:flex;"><span> }
+</span></span><span style="display:flex;"><span> ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="constraints">Constraints</h2>
+<p>Uncontrolled extensibility hurts the usability. So that, custom profiling is not allowed for certain fields such as command, image, lifecycle, volume devices and container name. In the future, more fields can be added to the disallowed list if required.</p>
+<h2 id="limitations">Limitations</h2>
+<p>The <code>kubectl debug</code> command has 3 aspects: Debugging with ephemeral containers, pod copying, and node debugging. The largest intersection set of these aspects is the container spec within a Pod That&rsquo;s why, custom profiling only supports the modification of the fields that are defined with <code>containers</code>. This leads to a limitation that if user needs to modify the other fields in the Pod spec, it is not supported.</p>
+<h2 id="acknowledgments">Acknowledgments</h2>
+<p>Special thanks to all the contributors who reviewed and commented on this feature, from the initial conception to its actual implementation (alphabetical order):</p>
+<ul>
+<li>Eddie Zaneski</li>
+<li>Maciej Szulik</li>
+<li>Lee Verberne</li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

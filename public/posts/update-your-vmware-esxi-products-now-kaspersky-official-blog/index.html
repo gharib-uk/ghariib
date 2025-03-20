@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Update your VMware ESXi products now | Kaspersky official blog</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Update your VMware ESXi products now | Kaspersky official blog</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+		           <a href="/tags/cybersecurity">cybersecurity</a>
+        	       
+		           <a href="/tags/data_breaches">data_breaches</a>
+        	       
+		           <a href="/tags/infostealers">infostealers</a>
+        	       
+		           <a href="/tags/linux">linux</a>
+        	       
+		           <a href="/tags/malware">malware</a>
+        	       
+		           <a href="/tags/privacy">privacy</a>
+        	       
+		           <a href="/tags/security">security</a>
+        	       
+		           <a href="/tags/siem">siem</a>
+        	       
+
+			<div>
+				<p>Why VM escape threatens large organizations, and how you can defend against the threat.</p>
+<p>On March 4, Broadcom released emergency updates to address three vulnerabilities — CVE-2025-22224, CVE-2025-22225 and CVE-2025-22226 — that affect several VMware products, including ESXi, Workstation, and Fusion. A note in the Broadcom advisory stated that at least one of these — CVE-2025-22224 — has been exploited in real-world attacks. The vulnerabilities allow for virtual machine escape — enabling attackers to execute code directly on the ESX hypervisor. Information available on VMware’s GitHub suggests that the Microsoft Threat Intelligence Center was the first to detect the exploit in the wild and notify Broadcom. Neither company has named the attacker or the victim.</p>
+<p>Broadcom reports that the vulnerabilities affect VMware ESXi 7.0–8.0, Workstation 17.x, vSphere 6.5–8, Fusion 13.x, Cloud Foundation 4.5–5.x, Telco Cloud Platform 2.x–5.x, and Telco Cloud Infrastructure 2.x–3.x. However, some experts suggest that the range of impacted products is potentially wider. In particular, older versions of ESXi, such as 5.5, should be vulnerable as well, but these unsupported versions are not getting patched. According to some assessments, more than 41,000 ESXi servers had been affected across the globe (mainly in China, France, the U.S., Germany, Iran and Brazil) as at the end of last week.</p>
+<h2 id="what-issues-vmware-has-fixed">What issues VMware has fixed</h2>
+<p>The most severe vulnerability in VMware ESXi and Workstation — CVE-2025-22224 — received a CVSS rating of 9.3. It’s related to a heap overflow in VMCI, and allows an attacker with local administrative privileges on the virtual machine to execute code as the VMX process on the host — the hypervisor.</p>
+<p>The CVE-2025-22225 vulnerability in VMware ESXi (CVSS 8.2) allows an attacker to perform an arbitrary kernel write, which also implies sandbox escape. CVE-2025-22226 — an HGFS information disclosure vulnerability (CVSS 7.1) — permits an attacker with guest VM administrative access to extract the contents of the VMX process memory. VMware ESXi, Workstation, and Fusion are affected by this vulnerability.</p>
+<h2 id="dangerous-exploitation-scenarios">Dangerous exploitation scenarios</h2>
+<p>The vulnerability descriptions indicate that exploitation requires an attacker to have already compromised the virtual machine and possess administrative privileges on it. This seems like a relatively high entry barrier, but in reality such a scenario can materialize quite easily. The primary danger of these vulnerabilities is that they drastically reduce the steps an attacker needs to take from compromising a single virtual machine to completely seizing control of the computing cluster. The trio of vulnerabilities allows the attacker to reach hypervisor level without conducting “noisy” network environment scans for servers, or having to circumvent network security measures. The following are typical enterprise scenarios where this could occur:</p>
+<ul>
+<li>VMware-based VDI workstations. A single employee makes a mistake by launching a malicious attachment on their virtual workstation. Instead of just one workstation being compromised, this leads to a large-scale incident.</li>
+<li>VMware-based hybrid and private clouds. A successful compromise of any server via a publicly accessible application vulnerability allows an attacker to rapidly propagate the attack across the entire network.</li>
+<li>Leasing virtual servers and workstations (prebuilt VMs) from an MSP. A client’s error leading to infection on a rented host will result in compromise of all MSP clients sharing resources within the same cluster.</li>
+</ul>
+<p>Some features of VMware clusters create further complexities in detecting and remediating such incidents. Once an attacker compromises the hypervisor level, they automatically gain access to all storage connected to the cluster. The attacker can then move freely throughout the VMware environment, and the configuration files available from the hypervisor permit their conducting extensive reconnaissance without raising security alerts.</p>
+<p>The hypervisor lacks an EDR agent, and security tools have very limited visibility into what’s happening at the cluster level. Hackers can sneak in and grab important information, such as Active Directory databases, without security teams noticing. All of these factors make the three VMware vulnerabilities a veritable goldmine for malicious actors — particularly ransomware groups. They’ve repeatedly conducted attacks on ESXi environments in the past: RansomExx, ESXiargs, Clop, and so on.</p>
+<h2 id="recommendations-for-organizational-security">Recommendations for organizational security</h2>
+<p>Luckily for businesses, proof-of-concept (PoC) code for exploiting these vulnerabilities has not yet been published, so widespread exploitation of the flaw has not begun. Nevertheless, such code could surface at any moment, so VMware products need to be updated quickly as a top priority. Since patching VMware environments can be complex, especially in high-availability infrastructures, organizations should leverage tools like vMotion to deploy patches without downtime.</p>
+<p>Patching is the only mitigation for these vulnerabilities. However, Broadcom also recommends reviewing your settings according to the vSphere Security Configuration &amp; Hardening guide. Among other things, you need to ensure that your VMware infrastructure is properly segmented to restrict access to the hypervisor management network.</p>
+<p>Be sure to use cloud security tools, including having an EDR agent properly installed and running on your virtual machines. This will allow for the detection and prevention of the initial infection stage — blocking attackers from obtaining the administrative access required to exploit the vulnerabilities.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

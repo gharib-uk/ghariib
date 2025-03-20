@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Make Steam App Look Modern &amp; Native in Ubuntu&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Make Steam App Look Modern &amp; Native in Ubuntu&lt;/div&gt;</h1>
+			<b><time>07.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2022/11/steam-logoicon-250x250.webp" alt="" />
+</figure>
+
+
+</p>
+<p>Want to beatify your Steam app window in Ubuntu or other Linux. Here’s a free open-source project to do the job in GNOME.</p>
+<p>It’s Adwaita for Steam, a skin to make Steam look more like a native GNOME app. With it, the title and tool bars will be merged into a compact GNOME Client-Side Decoration style header bar.</p>
+<p>Along with rounded window corners extension, it will look just like a native app.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/steam-yarutheme-700x440.webp" alt="" />
+</figure>
+
+
+</p>
+<p>Steam with Adwaita skin</p>
+<p>The skin support many different color themes, including Adwaita, Yaru, Pop, Kate, Breeze, Tokyo-Night, Metro, and more.</p>
+<p>It can also change the control buttons (maximize, minimize, and close buttons) to MacOS, Windows, and GNOME (Adwaita) Style, configure sidebar to always show or hover only, and show/hide the QR code at login.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/hover-sidebar-700x413.webp" alt="" />
+</figure>
+
+
+</p>
+<p>hover side-bar and macOS style control buttons</p>
+<h3 id="step-1-install-the-adwaita-for-steam-skin">Step 1: Install the Adwaita for Steam skin</h3>
+<p><strong>NOTE: The skin is tested and works in Ubuntu 24.04 with Steam Flatpak and Deb package. Not sure if it works for the Snap package.</strong></p>
+<p>The skin can be installed through either command line installer script or a graphical tool. Choose either way that you prefer.</p>
+<h4 id="option-1-use-the-python-installer">Option 1: Use the python installer</h4>
+<p>The project offers a Python installer to install the skin from command line.</p>
+<p>First, press <code>Ctrl+Alt+T</code> on keyboard to open up a terminal window. When it opens, run commands below one by one.</p>
+<ul>
+<li>
+<p>First, grab the source code by running command:</p>
+<pre tabindex="0"><code>git clone https://github.com/tkashkin/Adwaita-for-Steam
+</code></pre></li>
+<li>
+<p>Next, navigate to the source folder and run the python script:</p>
+<pre tabindex="0"><code>cd Adwaita-for-Steam
+</code></pre><pre tabindex="0"><code>./install.py
+</code></pre><p>Or you may run <code>./install.py</code> to list more script options.</p>
+</li>
+</ul>
+<p>The script will install the skin into either <code>~/.var/app/com.valvesoftware.Steam/.steam/steam/</code> or <code>~/.steam/steam</code> directory depends on which Steam package you installed.</p>
+<p>After installation, launch or re-launch the app to see changes. And, you may uninstall the skin at anytime by running the <code>./install.py uninstall</code> command from source folder.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/adwaita-forsteam.webp" alt="" />
+</figure>
+
+
+</p>
+<h4 id="option-2-use-graphical-tool">Option 2: Use Graphical Tool</h4>
+<p>For choice, you may run the 2 commands below one by one to install a Flatpak app called AdwSteamGTK, which offers graphical options to install the skin.</p>
+<ul>
+<li>
+<p>First open terminal (Ctrl+Alt+T) and run command to make sure Flatpak daemon installed:</p>
+<pre tabindex="0"><code>sudo apt install flatpak
+</code></pre></li>
+<li>
+<p>Then, install the app as Flatpak package:</p>
+<pre tabindex="0"><code>flatpak install https://dl.flathub.org/repo/appstream/io.github.Foldex.AdwSteamGtk.flatpakref
+</code></pre></li>
+</ul>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/flatpak-adwsteamgtk-700x505.webp" alt="" />
+</figure>
+
+
+</p>
+<p>Once installed, launch the app either by searching from GNOME Overview or by running command <code>flatpak run io.github.Foldex.AdwSteamGtk</code>.</p>
+<p>Then, choose the color theme, control button style, etc., and finally click “Apply” to install the skin.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/adwsteamgtk-530x700.webp" alt="" />
+</figure>
+
+
+</p>
+<h3 id="step-2-install-rounded-window-corners-extension">Step 2: Install Rounded Window Corners Extension</h3>
+<p>After installed the skin, you need to also install an extension to make the window corner rounded.</p>
+<p>For GNOME 40 ~ 44 (meaning Ubuntu 22.04, Debian 12, RHEL 9), choose the “Rounded Window Corners” extension. While GNOME 46/47 (Ubuntu 24.04, Fedora Workstaion, etc) may install “Rounded Window Corners Reborn” instead.</p>
+<p>Ubuntu users can first install “Extension Manager” from either App Center (filter by Debian package) or Ubuntu Software, then use it to search &amp; install the extension.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/rounded-corner-extension-700x467.webp" alt="" />
+</figure>
+
+
+</p>
+<p>Search &amp; install via Extension Manager</p>
+<p>While all others may go to extension web page in EGO:</p>
+<p><a href="https://extensions.gnome.org/extension/7048/rounded-window-corners-reborn/">https://extensions.gnome.org/extension/7048/rounded-window-corners-reborn/</a><br>
+<a href="https://extensions.gnome.org/extension/5237/rounded-window-corners/">https://extensions.gnome.org/extension/5237/rounded-window-corners/</a></p>
+<p>Then, use the ON/OFF toggle switch to install. Though you need to install browser extension (if it prompts) and refresh. And, Debian/Ubuntu needs to install agent package first, by running command in terminal:</p>
+<pre tabindex="0"><code>sudo apt install chrome-gnome-shell
+</code></pre><p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/rounded-border-reborn-web-700x444.webp" alt="" />
+</figure>
+
+
+</p>
+<p>After installed both skin and Gnome extension, <strong>restart Steam app</strong> to see the changes.</p>
+<h3 id="uninstall">Uninstall:</h3>
+<p>Both the <code>.install.py</code> and graphical AdwSteamGTK provide uninstall option.</p>
+<p>While, the app itself can by uninstalled by running command in a terminal window (Ctrl+Alt+T):</p>
+<pre tabindex="0"><code>flatpak uninstall --delete-data io.github.Foldex.AdwSteamGtk
+</code></pre><p>For the extension, either go to the EGO web-page again and turn off the toggle switch, or use “Extension Manager” or “Gnome Extensions” app to uninstall.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Difference Between `( ) =&gt; { }` and `( ) =&gt; ( )` Arrow Functions in JS with 10 Examples&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Difference Between `( ) =&gt; { }` and `( ) =&gt; ( )` Arrow Functions in JS with 10 Examples&lt;/div&gt;</h1>
+			<b><time>26.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<h2 id="difference-between------and------arrow-functions-in-javascript-with-10-real-life-examples">Difference Between <code>( ) =&gt; { }</code> and <code>( ) =&gt; ( )</code> Arrow Functions in JavaScript with 10 real life examples</h2>
+<p>Click to Read Complete This blog with GitHub repository</p>
+<p>Arrow functions are a popular feature in JavaScript introduced with ES6, simplifying the way functions are written. They come in two main syntaxes:</p>
+<ol>
+<li><strong>Block Body</strong>: <code>( ) =&gt; { }</code></li>
+<li><strong>Concise Body</strong>: <code>( ) =&gt; ( )</code></li>
+</ol>
+<p>Understanding the difference between these two syntaxes is crucial as they differ in behavior, readability, and use cases. Let’s dive into the details.</p>
+<h2 id="key-differences-between------and-----">Key Differences Between <code>( ) =&gt; { }</code> and <code>( ) =&gt; ( )</code></h2>
+<h3 id="1-block-body-">1. <strong>Block Body (<code>( ) =&gt; { }</code>)</strong></h3>
+<ul>
+<li>This syntax uses curly braces <code>{}</code> to enclose the function body.</li>
+<li>Explicitly requires a <code>return</code> statement if you need to return a value.</li>
+<li>Suitable for multiline logic or when multiple operations are needed.</li>
+</ul>
+<h3 id="2-concise-body-">2. <strong>Concise Body (<code>( ) =&gt; ( )</code>)</strong></h3>
+<ul>
+<li>This syntax directly returns an expression without curly braces.</li>
+<li>No need for an explicit <code>return</code> statement.</li>
+<li>Ideal for single-line computations or straightforward returns.</li>
+</ul>
+<h2 id="syntax-and-examples">Syntax and Examples</h2>
+<h3 id="block-body-example">Block Body Example:</h3>
+<pre tabindex="0"><code>const add = (a, b) =&gt; {
+  return a + b; // Explicit return
+};
+console.log(add(2, 3)); // Output: 5
+</code></pre><h3 id="concise-body-example">Concise Body Example:</h3>
+<pre tabindex="0"><code>const add = (a, b) =&gt; a + b; // Implicit return
+console.log(add(2, 3)); // Output: 5
+</code></pre><h2 id="key-differences-with-examples">Key Differences with Examples</h2>
+<p>Here are 10 detailed examples illustrating the differences:</p>
+<h3 id="1-return-behavior">1. <strong>Return Behavior</strong></h3>
+<ul>
+<li><strong>Block Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  const greet = (name) =&gt; {
+    return `Hello, ${name}!`;
+  };
+  console.log(greet(&#34;Alice&#34;)); // Output: Hello, Alice!
+</code></pre><ul>
+<li><strong>Concise Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  const greet = (name) =&gt; `Hello, ${name}!`;
+  console.log(greet(&#34;Alice&#34;)); // Output: Hello, Alice!
+</code></pre><h3 id="2-multiline-logic">2. <strong>Multiline Logic</strong></h3>
+<ul>
+<li><strong>Block Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  const calculateArea = (length, width) =&gt; {
+    const area = length * width;
+    return area;
+  };
+  console.log(calculateArea(5, 10)); // Output: 50
+</code></pre><ul>
+<li><strong>Concise Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  // Not suitable for multiline logic
+  const calculateArea = (length, width) =&gt; length * width;
+  console.log(calculateArea(5, 10)); // Output: 50
+</code></pre><h3 id="3-object-return">3. <strong>Object Return</strong></h3>
+<ul>
+<li><strong>Block Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  const getUser = () =&gt; {
+    return { name: &#34;Alice&#34;, age: 25 };
+  };
+  console.log(getUser()); // Output: { name: &#34;Alice&#34;, age: 25 }
+</code></pre><ul>
+<li><strong>Concise Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  const getUser = () =&gt; ({ name: &#34;Alice&#34;, age: 25 });
+  console.log(getUser()); // Output: { name: &#34;Alice&#34;, age: 25 }
+</code></pre><h3 id="4-no-explicit-return">4. <strong>No Explicit Return</strong></h3>
+<ul>
+<li><strong>Block Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  const square = (x) =&gt; {
+    x * x; // No return
+  };
+  console.log(square(4)); // Output: undefined
+</code></pre><ul>
+<li><strong>Concise Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  const square = (x) =&gt; x * x;
+  console.log(square(4)); // Output: 16
+</code></pre><h3 id="5-side-effects">5. <strong>Side Effects</strong></h3>
+<ul>
+<li><strong>Block Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  const logMessage = (message) =&gt; {
+    console.log(message);
+  };
+  logMessage(&#34;Hello!&#34;); // Output: Hello!
+</code></pre><ul>
+<li><strong>Concise Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  // Not suitable for side effects
+</code></pre><h3 id="6-chaining-functions">6. <strong>Chaining Functions</strong></h3>
+<ul>
+<li><strong>Concise Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  const double = (x) =&gt; x * 2;
+  const addTen = (x) =&gt; x + 10;
+  console.log(addTen(double(5))); // Output: 20
+</code></pre><ul>
+<li><strong>Block Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  const double = (x) =&gt; {
+    return x * 2;
+  };
+  const addTen = (x) =&gt; {
+    return x + 10;
+  };
+  console.log(addTen(double(5))); // Output: 20
+</code></pre><h3 id="7-arrow-function-as-callbacks">7. <strong>Arrow Function as Callbacks</strong></h3>
+<ul>
+<li><strong>Concise Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  [1, 2, 3].map((x) =&gt; x * 2); // Output: [2, 4, 6]
+</code></pre><ul>
+<li><strong>Block Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  [1, 2, 3].map((x) =&gt; {
+    return x * 2;
+  }); // Output: [2, 4, 6]
+</code></pre><h3 id="8-usage-with-ternary-operators">8. <strong>Usage with Ternary Operators</strong></h3>
+<ul>
+<li><strong>Concise Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  const isEven = (num) =&gt; (num % 2 === 0 ? &#34;Even&#34; : &#34;Odd&#34;);
+  console.log(isEven(3)); // Output: Odd
+</code></pre><ul>
+<li><strong>Block Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  const isEven = (num) =&gt; {
+    return num % 2 === 0 ? &#34;Even&#34; : &#34;Odd&#34;;
+  };
+  console.log(isEven(3)); // Output: Odd
+</code></pre><h3 id="9-returning-arrays">9. <strong>Returning Arrays</strong></h3>
+<ul>
+<li><strong>Concise Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  const getNumbers = () =&gt; [1, 2, 3];
+  console.log(getNumbers()); // Output: [1, 2, 3]
+</code></pre><ul>
+<li><strong>Block Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  const getNumbers = () =&gt; {
+    return [1, 2, 3];
+  };
+  console.log(getNumbers()); // Output: [1, 2, 3]
+</code></pre><h3 id="10-react-functional-components">10. <strong>React Functional Components</strong></h3>
+<ul>
+<li><strong>Concise Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  const Hello = () =&gt; &lt;h1&gt;Hello, World!&lt;/h1&gt;;
+</code></pre><ul>
+<li><strong>Block Body</strong>:</li>
+</ul>
+<pre tabindex="0"><code>  const Hello = () =&gt; {
+    return &lt;h1&gt;Hello, World!&lt;/h1&gt;;
+  };
+</code></pre><h2 id="use-cases">Use Cases</h2>
+<h3 id="block-body-----">Block Body <code>( ) =&gt; { }</code></h3>
+<ol>
+<li>Suitable for complex logic.</li>
+<li>Useful when explicit <code>return</code> improves readability.</li>
+<li>Preferred for functions with side effects like <code>console.log</code>.</li>
+</ol>
+<h3 id="concise-body-----">Concise Body <code>( ) =&gt; ( )</code></h3>
+<ol>
+<li>Ideal for one-liner functions.</li>
+<li>Great for short computations and inline callbacks.</li>
+<li>Enhances readability for simple expressions.</li>
+</ol>
+<h2 id="summary">Summary</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Feature</th>
+          <th><code>( ) =&gt; { }</code> (Block Body)</th>
+          <th><code>( ) =&gt; ( )</code> (Concise Body)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Syntax</strong></td>
+          <td><code>{ }</code> with <code>return</code></td>
+          <td><code>()</code> without <code>return</code></td>
+      </tr>
+      <tr>
+          <td><strong>Readability</strong></td>
+          <td>Better for complex logic</td>
+          <td>Cleaner for simple returns</td>
+      </tr>
+      <tr>
+          <td><strong>Return Statement</strong></td>
+          <td>Explicitly required</td>
+          <td>Implicit</td>
+      </tr>
+      <tr>
+          <td><strong>Multiline Logic</strong></td>
+          <td>Supported</td>
+          <td>Not suitable</td>
+      </tr>
+      <tr>
+          <td><strong>Side Effects</strong></td>
+          <td>Easily handled</td>
+          <td>Less commonly used</td>
+      </tr>
+      <tr>
+          <td><strong>Single-line Functions</strong></td>
+          <td>Verbose</td>
+          <td>Ideal</td>
+      </tr>
+  </tbody>
+</table>
+<p>Understanding these nuances allows you to choose the right arrow function syntax depending on your specific use case. Both syntaxes are powerful, and knowing when to use each one will make your JavaScript code more efficient and readable.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Part 1: Creating an Azure storage account and configuring basic settings for security and networking: A step by step guide.</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Part 1: Creating an Azure storage account and configuring basic settings for security and networking: A step by step guide.</h1>
+			<b><time>01.02.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Hey guys, I&rsquo;m really building some cloud muscles!! From creating a Microsoft Azure account to creating an Azure storage this week has been uttermost eventful. So, this week, here&rsquo;s what I&rsquo;ve learned.</p>
+<p>First off, What is Azure Storage? Simply put, an Azure storage is a Microsoft cloud service where you store things. Its more like a file cabinet where you can access from anywhere in the world.</p>
+<h2 id="so-how-do-we-create-an-azure-storage">So how do we create an Azure storage?</h2>
+<h3 id="step-1-create-and-deploy-a-resource-group-to-hold-all-your-project-resources">Step 1: Create and deploy a resource group to hold all your project resources.</h3>
+<ul>
+<li>In the Azure portal, search for and select Resource groups</li>
+</ul>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fdrtko0a4a2r597qyb2cn.jpg" alt="Resource group" />
+</figure>
+
+
+</p>
+<ul>
+<li>Select + Create</li>
+</ul>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fk76x7627psjpdyr41bo9.jpg" alt="Create" />
+</figure>
+
+
+</p>
+<ul>
+<li>Give your resource group a name</li>
+</ul>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fqicu8a1vk8ns597iy1xg.jpg" alt="Resource group name" />
+</figure>
+
+
+</p>
+<ul>
+<li>Select a region. Use this region throughout the project</li>
+</ul>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fv1whkoa7vy6p1rybr3o1.jpg" alt="Region" />
+</figure>
+
+
+</p>
+<ul>
+<li>Select Review and create to validate the resource group</li>
+</ul>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2F8bdheg8aq1wjzrxhuosh.jpg" alt="Review and create" />
+</figure>
+
+
+</p>
+<ul>
+<li>Select Create to deploy the resource group</li>
+</ul>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2F57d9nrjo8ltk6x8eo21b.jpg" alt="Create" />
+</figure>
+
+
+</p>
+<h3 id="step-2-create-and-deploy-a-storage-account-to-support-testing-and-training">Step 2: Create and deploy a storage account to support testing and training</h3>
+<ul>
+<li>In the Azure portal, search for and select Storage accounts.</li>
+</ul>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Ffv0dncqtdj2g4j5cs391.jpg" alt="Storage account" />
+</figure>
+
+
+</p>
+<ul>
+<li>Select + Create</li>
+</ul>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fgkfut222ye9p76b0famg.jpg" alt="Storage account" />
+</figure>
+
+
+</p>
+<ul>
+<li>On the Basics tab, select your Resource group and then provide a storage account name. The storage account name must be unique in Azure.</li>
+</ul>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Ffilqa8u6jpchauo150yw.jpg" alt="Storage name" />
+</figure>
+
+
+</p>
+<ul>
+<li>Set the Performance to Standard then click on Review, and then Create.</li>
+</ul>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fhxk3oedck2kmnkwnif1k.jpg" alt="Performance &amp; Standard" />
+</figure>
+
+
+</p>
+<ul>
+<li>Wait for the storage account to deploy and then Go to resource.</li>
+</ul>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2F5zqy6rndfnrlpzmkxx87.jpg" alt="Go to resource" />
+</figure>
+
+
+</p>
+<p>So we&rsquo;ve successfully created a resource group and a storage account. Follow me as we configure simple settings in the storage account in part two of this article.</p>
+<blockquote>
+<p>Don&rsquo;t forget to give a like, comment and share.</p></blockquote>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

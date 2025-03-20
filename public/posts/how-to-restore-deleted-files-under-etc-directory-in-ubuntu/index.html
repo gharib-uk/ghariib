@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How to Restore Deleted Files Under /etc Directory in Ubuntu</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How to Restore Deleted Files Under /etc Directory in Ubuntu</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/03/disk-icon-250x250.webp" alt="" />
+</figure>
+
+
+</p>
+<p>Messed up or mistakenly deleted configuration files under <code>/etc</code> directory, but no backup? Here’s how to restore the files just like they were originally installed.</p>
+<p>In Linux, the <code>/etc</code> directory is the location for storing system-wide configuration files. When installing a software package, it may create and/or read software specific config files under <code>/etc</code> directory for user custom configurations.</p>
+<p>To prevent overriding user custom configurations, re-install software packages by default will NOT replace the files under <code>/etc</code> directory, even when you deleted the files under that directory. Though, some packages will ask if keep or replace the old configurations during installation.</p>
+<p>If you mistakenly deleted files under <code>/etc</code> or just want to restore files under that directory to original, then this tutorial may help.</p>
+<p><strong>NOTE: NOT only for Ubuntu, this tutorial should works in all Debian based systems.</strong></p>
+<h3 id="step-1-find-out-which-package-includes-the-filefiles">Step 1: Find out which package includes the file/files</h3>
+<p>In Linux, many applications are built into separated packages. When installing software package <code>xxx</code>, it may also install <code>xxx-data</code>, <code>xxx-common</code>, or <code>xxx-plugins</code> etc. as dependencies. The file you want to restore may be included in either one of the packages.</p>
+<h4 id="option-1-use-dpkg-command">Option 1: use dpkg command:</h4>
+<p>To find out which package includes that file, either open terminal (<strong>Ctrl+Alt+T</strong>) or connect to Debian/Ubuntu server. Then, try <code>dpkg -S</code> command.</p>
+<p>For example, search which package includes <code>/etc/ssh/ssh_import_id</code>:</p>
+<pre tabindex="0"><code>dpkg -S /etc/ssh/ssh_import_id
+</code></pre><p>Or, you may search which package includes files under given folder (it MAY output multiple packages for single folder).</p>
+<pre tabindex="0"><code>dpkg -S /etc/ssh
+</code></pre><p>If you don’t even remember the file path, then just type filename instead. Even for file-name, you may use asterisk (*) for the part that you don’t remember.</p>
+<pre tabindex="0"><code>dpkg -S ssh_imp*
+</code></pre><p>The last command will search which package include the file with <code>ssh_imp</code> at the beginning of its name.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/03/dpkg-query-search-700x475.webp" alt="" />
+</figure>
+
+
+</p>
+<p>Tips: you may alternatively use <code>apt-file search</code> command do the similar job, though it seems that it does not support asterisk in search text.</p>
+<h4 id="option-2-use-ucfq-command">Option 2: use ucfq command:</h4>
+<p>The <code>dpkg -S</code> command sometimes does not work, because the packages you search may be handled by <code>ucf</code>（Update Configuration Files).</p>
+<p>In the case, you may use <code>ucfq</code> instead. For example, search which package include <code>/etc/ssh/sshd_config</code>:</p>
+<pre tabindex="0"><code>ucfq /etc/ssh/sshd_config
+</code></pre><p>The command needs to input full-path to the file you want to search. If you don’t remember, try command below to instead (replace <code>smb</code> according to what you want to search):</p>
+<pre tabindex="0"><code>grep smb /var/lib/ucf/registry
+</code></pre><p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/03/ucfq-search-700x313.webp" alt="" />
+</figure>
+
+
+</p>
+<h3 id="step-2-re-install-package--specify-to-re-create-non-exist-files">Step 2: Re-install package &amp; specify to re-create non-exist files</h3>
+<p>After finding out the which package includes the file you want to restore, then, run the command below to re-install and re-generate the missing user configuration file:</p>
+<pre tabindex="0"><code>sudo UCF_FORCE_CONFFMISS=1 apt -o Dpkg::Options::=--force-confmiss install --reinstall openssh-server
+</code></pre><p>In the command above, replace the package name <code>openssh-server</code> accordingly.</p>
+<p>Here both <code>UCF_FORCE_CONFFMISS=1</code> and <code>-o Dpkg::Options::=--force-confmiss</code> tell to re-generate installation files if they are NOT exist. You may skip the former one, if the package is NOT handled by <code>ucf</code>.</p>
+<p>In the output, you’ll see something look like “Recreating deleted config file … with new version, as asked”.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/03/reinstall-override-700x348.webp" alt="" />
+</figure>
+
+
+</p>
+<p>If it’s a local <code>.deb</code> package, and you want to use <code>dpkg</code> command to install, then run the command below will do the similar things:</p>
+<pre tabindex="0"><code>sudo UCF_FORCE_CONFFMISS=1 dpkg -i --force-confmiss package-name.deb
+</code></pre><p>According to ucf manpage, there are also <code>UCF_FORCE_CONFFNEW</code> and <code>--force-confnew</code> dpkg options to tell to always overwrite the installed destination file, though don’t know why it does NOT work in my test.</p>
+<p>via: this thread.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

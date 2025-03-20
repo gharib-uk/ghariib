@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Sports API System with Amazon ECS and API Gateway</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Sports API System with Amazon ECS and API Gateway</h1>
+			<b><time>26.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<h2 id="introduction">Introduction</h2>
+<p>This project demonstrates the creation of a containerized API management system for querying real-time sports data. The system uses Amazon ECS (Fargate) for container orchestration, Amazon API Gateway for RESTful endpoints, and integrates seamlessly with an external Sports API. The implementation emphasizes best practices in cloud computing, including API management, container orchestration, and secure AWS service integration.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p><strong>Sports API Key</strong></p>
+<p>Register for a free account at serpapi.com and obtain your API key for accessing sports data.</p>
+<p><strong>AWS Account</strong></p>
+<p>Ensure you have an active AWS account. Familiarity with ECS, API Gateway, Docker, and Python is recommended.</p>
+<p>*<em>AWS CLI<br>
+*</em><br>
+Install and configure the AWS CLI to enable programmatic interaction with AWS services.</p>
+<p>*<em>Docker CLI and Desktop<br>
+*</em><br>
+Install Docker CLI and Docker Desktop to build and push container images efficiently.</p>
+<p>Project Structure</p>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fh1kthn258fibbuonqwva.png" alt="Image description" />
+</figure>
+
+
+</p>
+<p>Now, let us begin</p>
+<p>create a new directory<br>
+<code>mkdir containerized-sports-api</code></p>
+<p>Move into the directory<br>
+<code>cd containerized-sports-api</code></p>
+<p>Clone my repository<br>
+<code>git clone https://github.com/Ayindejamiu/sportapiwithecs.git</code></p>
+<p>create ECR repository<br>
+<code>aws ecr create-repository --repository-name sports-api --region us-east-1</code></p>
+<p>Authenticate Build and Push the Docker Image<br>
+`aws ecr get-login-password &ndash;region us-east-1 | docker login &ndash;username AWS &ndash;password-stdin .dkr.ecr.us-east-1.amazonaws.com</p>
+<p>docker build &ndash;platform linux/amd64 -t sports-api .<br>
+docker tag sports-api:latest .dkr.ecr.us-east-1.amazonaws.com/sports-api:sports-api-latest<br>
+docker push .dkr.ecr.us-east-1.amazonaws.com/sports-api:sports-api-latest`</p>
+<p>Note: Replace with your AWS Account Id.</p>
+<p>After pushing, your screen should be like this</p>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2F0e7w2c4wl95p25ufmn7b.png" alt="Image description" />
+</figure>
+
+
+</p>
+<p><strong>Setup ECS Cluster with Fargate</strong></p>
+<p>Create an ECS Cluster:</p>
+<p>Go to the ECS Console → Clusters → Create Cluster</p>
+<p>Name your Cluster (sports-api-cluster)</p>
+<p>For Infrastructure, select Fargate, then create Cluster</p>
+<p>Create a Task definition</p>
+<p>Go to Task Definitions → Create New Task Definition</p>
+<p>Name your task definition (sports-api-task)</p>
+<p>For Infrastructure, select Fargate</p>
+<p>Add the container:</p>
+<p>Name your container (sports-api-container)</p>
+<p>Image URI: go to ECR and check out the private repo. You can find image URI over there.</p>
+<p>Container Port: 8080</p>
+<p>Protocol: TCP</p>
+<p>Port Name: Leave Blank</p>
+<p>App Protocol: HTTP</p>
+<p>Define Environment Variables:</p>
+<p>Key: SERP_API_KEY</p>
+<p>Value:</p>
+<p>*<em>Create task definition<br>
+*</em><br>
+Run the Service with an ALB</p>
+<p>Go to Clusters → Select Cluster → Service → Create.</p>
+<p>Capacity provider: Fargate</p>
+<p>Select Deployment configuration family (sports-api-task)</p>
+<p>Name your service (sports-api-service)</p>
+<p>Desired tasks: 2</p>
+<p>Networking: Create new security group</p>
+<p>Networking Configuration:</p>
+<p>Type: All TCP</p>
+<p>Source: Anywhere</p>
+<p>Load Balancing: Select Application Load Balancer (ALB).</p>
+<p>ALB Configuration:</p>
+<p>Create a new ALB:</p>
+<p>Name: sports-api-alb</p>
+<p>Target Group health check path: &ldquo;/sports&rdquo;</p>
+<p>Create service</p>
+<p>Test the ALB</p>
+<p>After deploying the ECS service, note the DNS name of the ALB (e.g., sports-api-alb-.us-east-1.elb.amazonaws.com)</p>
+<p>Confirm the API is accessible by visiting the ALB DNS name in your browser and adding /sports at end (e.g, <a href="http://sports-api-alb-.us-east-1.elb.amazonaws.com/sports">http://sports-api-alb-.us-east-1.elb.amazonaws.com/sports</a>)</p>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fuewfwx3qwsg253jy4xun.png" alt="Image description" />
+</figure>
+
+
+</p>
+<p><strong>Configure API Gateway</strong><br>
+Create a New REST API:<br>
+Go to API Gateway Console → Create API → REST API<br>
+Name the API (e.g., Sports API Gateway)<br>
+Set Up Integration:<br>
+Create a resource /sports<br>
+Create a GET method<br>
+Choose HTTP Proxy as the integration type<br>
+Enter the DNS name of the ALB that includes &ldquo;/sports&rdquo; (e.g. <a href="http://sports-api-alb-.us-east-1.elb.amazonaws.com/sports">http://sports-api-alb-.us-east-1.elb.amazonaws.com/sports</a><br>
+Deploy the API:<br>
+Deploy the API to a stage (e.g., dev)<br>
+Note the endpoint URL</p>
+<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2F91dfls4eu469q69tr2z1.png" alt="Image description" />
+</figure>
+
+
+</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

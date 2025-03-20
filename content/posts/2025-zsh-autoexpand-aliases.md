@@ -1,0 +1,67 @@
+---
+title: "<div>Auto-expanding aliases in Zsh</div>"
+date: 2025-03-19
+categories: 
+  - "general"
+---
+
+To avoid needless typing, the fish shell features command abbreviations to expand some words after pressing space. We can emulate such a feature with Zsh:
+
+```
+# Definition of abbrev-alias for auto-expanding aliases
+typeset -ga _vbe_abbrevations
+abbrev-alias() {
+    alias $1
+    _vbe_abbrevations+=(${1%%=*})
+}
+_vbe_zle-autoexpand() {
+    local -a words; words=(${(z)LBUFFER})
+    if (( ${​#_vbe_abbrevations[(r)${words[-1]}]} )); then
+        zle _expand_alias
+    fi
+    zle magic-space
+}
+zle -N _vbe_zle-autoexpand
+bindkey -M emacs " " _vbe_zle-autoexpand
+bindkey -M isearch " " magic-space
+
+# Correct common typos
+(( $+commands[git] )) && abbrev-alias gti=git
+(( $+commands[grep] )) && abbrev-alias grpe=grep
+(( $+commands[sudo] )) && abbrev-alias suod=sudo
+(( $+commands[ssh] )) && abbrev-alias shs=ssh
+
+# Save a few keystrokes
+(( $+commands[git] )) && abbrev-alias gls="git ls-files"
+(( $+commands[ip] )) && {
+  abbrev-alias ip6='ip -6'
+  abbrev-alias ipb='ip -brief'
+}
+
+# Hard to remember options
+(( $+commands[mtr] )) && abbrev-alias mtrr='mtr -wzbe'
+
+```
+
+Here is a demo where `gls` is expanded to `git ls-files` after pressing space:
+
+<figure>
+
+<figcaption>
+
+Auto-expanding `gls` to `git ls-files`
+
+</figcaption>
+
+</figure>
+
+I don’t auto-expand all aliases. I keep using regular aliases when slightly modifying the behavior of a command or for well-known abbreviations:
+
+```
+alias df='df -h'
+alias du='du -h'
+alias rm='rm -i'
+alias mv='mv -i'
+alias ll='ls -ltrhA'
+
+```

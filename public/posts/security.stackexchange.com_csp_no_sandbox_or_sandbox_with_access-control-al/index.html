@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>CSP: no sandbox, or sandbox with Access-Control-Allow-Origin: &#34;null&#34;?</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="http://localhost:1313/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>CSP: no sandbox, or sandbox with Access-Control-Allow-Origin: &#34;null&#34;?</h1>
+			<b><time>30.12.2024 10:16</time></b>
+		       
+		           <a href="/tags/security.stackexchange.com">security.stackexchange.com</a>
+        	       
+
+			<div>
+				<h1 id="csp-no-sandbox-or-sandbox-with-access-control-allow-origin-null">CSP: no sandbox, or sandbox with Access-Control-Allow-Origin: &quot;null&quot;?</h1>
+<p><strong>Published on</strong>: 2024-12-30T10:16:27Z</p>
+<p><strong>Summary</strong>: I host two public sites with WordPress, using different themes (but official ones, named &quot;twenty-something&quot;) on an Apache server (Debian Bookworm), and Im updating my CSP. If I enable sandbox, I get a bunch of (silently) failed requests for (local I guess) fonts files due to &quot;CORS Missing Allow Origin&quot;, because the origin of those requests becomes null due to the sandboxing. To prevent them, I can either disable sandbox, or enable it and add the header Access-Control-Allow-Origin: &quot;null&quot;. I also tried sandbox allow-same-origin but of course it doesnt work, since the origin is null and not my own sites. Note that WordPress is not the only web application to behave like this, I had similar problems with Nagios and phpMyadmin, but since theyre on a host in a private network, with other means of access control in place, I just removed sandbox from the CSP. With my public sites, Id prefer to be more careful. As a sysadmin, Im not that versed in web security, and I fail to see the implications of allowing origin null for all requests in terms of XSS attacks, but I somehow sense that those implications could go far beyond the initial goal of just avoiding a bunch of failed requests. So, my question is, which one is the most secure (or the less insecure), a CSP without sandbox, or one with sandbox and the header Access-Control-Allow-Origin: &quot;null&quot; ?</p>
+<p>Read more: <a href="https://security.stackexchange.com/questions/280024/csp-no-sandbox-or-sandbox-with-access-control-allow-origin-null">CSP: no sandbox, or sandbox with Access-Control-Allow-Origin: &quot;null&quot;?</a></p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/security.stackexchange.com_what_is_this_hacker_trying_to_do_by_accessing_stac/">What is this hacker trying to do by accessing stack exchange specific URLs on my site? [closed]</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_buffer_overflow_use_ebp_instead_of_esp_ebp&#43;4__re/">buffer overflow use ebp instead of esp (ebp&#43;4 = ret address)</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_character_escaping_xss_closed/">Character escaping xss [closed]</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_is_there_a_way_to_limit_browser_extension_internet/">Is there a way to limit browser extension internet access?</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_is_it_common_practice_to_remove_trusted_certificat/">Is it common practice to remove trusted certificate authorities (CA) located in untrusted countries?</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="http://localhost:1313/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>TryHackMe | Windows PowerShell | RSCyberTech</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>TryHackMe | Windows PowerShell | RSCyberTech</h1>
+			<b><time>03.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>➡️ <strong><em>By @RSCyberTech</em></strong></p>
+<ul>
+<li><em>Website: RSCyberTech.com</em></li>
+<li><em>LinkedIn: linkedin.com/in/ricardoams</em></li>
+</ul>
+<p>Platform: TryHackMe</p>
+<p>Learning Path: Cyber Security 101</p>
+<p>Room: Windows PowerShell</p>
+<h1 id="1-task1---introduction">1️⃣ Task 1 - Introduction</h1>
+<ul>
+<li>no answer needed</li>
+</ul>
+<h1 id="2-task2---what-is-powershell">2️⃣ Task 2 - What Is PowerShell</h1>
+<h2 id="what-do-we-call-the-advanced-approach-used-to-develop-powershell">What do we call the advanced approach used to develop PowerShell?</h2>
+<h3 id="answer-">Answer ✅</h3>
+<ul>
+<li><code>object-oriented</code></li>
+</ul>
+<h3 id="workflow--justification--source--steps--reasoning">Workflow / Justification / Source / Steps / Reasoning</h3>
+<ul>
+<li><em>“… Snover’s solution was to develop an object-oriented approach…”</em></li>
+<li>Mentioned in the section’s text.</li>
+</ul>
+<h1 id="3-task3---powershell-basics">3️⃣ Task 3 - PowerShell Basics</h1>
+<h2 id="how-would-you-retrieve-a-list-of-commands-thatstart-withthe-verbremove-for-the-sake-of-this-question-avoid-the-use-of-quotes--or--in-your-answer">How would you retrieve a list of commands that <strong>start with</strong> the verb <code>Remove</code>? [for the sake of this question, avoid the use of quotes (&quot; or &lsquo;) in your answer]</h2>
+<h3 id="answer--1">Answer ✅</h3>
+<ul>
+<li><code>Get-Command -Name Remove*</code></li>
+</ul>
+<h3 id="workflow--justification--source--steps--reasoning-1">Workflow / Justification / Source / Steps / Reasoning</h3>
+<ul>
+<li><em>“To list all available cmdlets, functions, aliases, and scripts that can be executed in the current PowerShell session, we can use <code>Get-Command</code>. It’s an essential tool for discovering what commands one can use. … or each <code>CommandInfo</code> object retrieved by the cmdlet, some essential information (properties) is displayed on the console. It’s possible to filter the list of commands based on displayed property values. For example, if we want to display only the available commands of type “function”, we can use <code>-CommandType &quot;Function&quot;</code>&quot;</em></li>
+<li>Mentioned in the section’s text.</li>
+<li>check help page of the <code>Get-Command</code> for more info, like the <code>-name</code> parameter</li>
+</ul>
+<h2 id="what-cmdlet-has-its-traditional-counterpartechoas-an-alias">What cmdlet has its traditional counterpart <code>echo</code> as an alias?</h2>
+<h3 id="answer--2">Answer ✅</h3>
+<ul>
+<li><code>Write-Output</code></li>
+</ul>
+<h3 id="workflow--justification--source--steps--reasoning-2">Workflow / Justification / Source / Steps / Reasoning</h3>
+<p>-</p>
+<pre tabindex="0"><code>PS C:Userscaptain&gt; get-help *alias*              
+Name                              Category  Module                    Synopsis
+---- -------- ------ --------
+Export-Alias                      Cmdlet    Microsoft.PowerShell.U... Exports information about currently defined aliases to a file.
+Get-Alias                         Cmdlet    Microsoft.PowerShell.U... Gets the aliases for the current session.
+Import-Alias                      Cmdlet    Microsoft.PowerShell.U... Imports an alias list from a file.
+New-Alias                         Cmdlet    Microsoft.PowerShell.U... Creates a new alias.
+Set-Alias                         Cmdlet    Microsoft.PowerShell.U... Creates or changes an alias for a cmdlet or other command in the current PowerShell session.
+about_Aliases                     HelpFile
+about_Alias_Provider              HelpFile
+</code></pre><p>-</p>
+<pre tabindex="0"><code>PS C:Userscaptain&gt; get-alias -Name echo
+CommandType     Name                                               Version    Source
+----------- ---- ------- ------
+Alias           echo -&gt; Write-Output
+</code></pre><h2 id="what-is-the-command-to-retrieve-some-example-usage-for-the-cmdletnew-localuser">What is the command to retrieve some example usage for the cmdlet <code>New-LocalUser</code>?</h2>
+<h3 id="answer--3">Answer ✅</h3>
+<ul>
+<li><code>Get-Help New-LocalUser -examples</code></li>
+</ul>
+<h3 id="workflow--justification--source--steps--reasoning-3">Workflow / Justification / Source / Steps / Reasoning</h3>
+<ul>
+<li><em>“Another essential cmdlet to keep in our tool belt is <code>Get-Help</code>: it provides detailed information about cmdlets, including usage, parameters, and examples. It’s the go-to cmdlet for learning how to use PowerShell commands.”</em></li>
+<li>Mentioned in the section’s text.</li>
+</ul>
+<h1 id="4-task4---navigating-the-file-system-and-working-with-files">4️⃣ Task 4 - Navigating the File System and Working with Files</h1>
+<h2 id="what-cmdlet-can-you-use-instead-of-the-traditional-windows-commandtype">What cmdlet can you use instead of the traditional Windows command <code>type</code>?</h2>
+<h3 id="answer--4">Answer ✅</h3>
+<ul>
+<li><code>Get-Content</code></li>
+</ul>
+<h3 id="workflow--justification--source--steps--reasoning-4">Workflow / Justification / Source / Steps / Reasoning</h3>
+<ul>
+<li><em>“Finally, to read and display the contents of a file, we can use the <code>Get-Content</code> cmdlet, which works similarly to the <code>type</code> command in Command Prompt (or <code>cat</code> in Unix-like systems).”</em></li>
+<li>Present in the text</li>
+</ul>
+<h2 id="what-powershell-command-would-you-use-to-display-the-content-of-the-cusers-directoryfor-the-sake-of-this-question-avoid-the-use-of-quotes--or-in-your-answer">What PowerShell command would you use to display the content of the &ldquo;C:Users&rdquo; directory? [for the sake of this question, avoid the use of quotes (&quot; or &lsquo;) in your answer]</h2>
+<h3 id="answer--5">Answer ✅</h3>
+<ul>
+<li><code>Get-ChildItem</code></li>
+</ul>
+<h3 id="workflow--justification--source--steps--reasoning-5">Workflow / Justification / Source / Steps / Reasoning</h3>
+<ul>
+<li><em>”…<code>Get-ChildItem</code> lists the files and directories in a location specified with the <code>-Path</code> parameter. It can be used to explore directories and view their contents…”</em></li>
+<li>Present in the text</li>
+</ul>
+<h2 id="how-many-items-are-displayed-by-the-command-described-in-the-previous-question">How many items are displayed by the command described in the previous question?</h2>
+<h3 id="answer--6">Answer ✅</h3>
+<ul>
+<li><code>4</code></li>
+</ul>
+<h3 id="workflow--justification--source--steps--reasoning-6">Workflow / Justification / Source / Steps / Reasoning</h3>
+<p>-</p>
+<pre tabindex="0"><code>PS C:Userscaptain&gt; ( Get-ChildItem -Path C:Users).count
+4
+</code></pre><h1 id="5-task5---piping-filtering-and-sorting-data">5️⃣ Task 5 - Piping, Filtering, and Sorting Data</h1>
+<h2 id="how-would-you-retrieve-the-items-in-the-current-directory-with-size-greater-than-100-for-the-sake-of-this-question-avoid-the-use-of-quotes--or-in-your-answer">How would you retrieve the items in the current directory with size greater than 100? [for the sake of this question, avoid the use of quotes (&quot; or &lsquo;) in your answer]</h2>
+<h3 id="answer--7">Answer ✅</h3>
+<ul>
+<li><code>Get-ChildItem | Where-Object -Property Length -gt 100</code></li>
+</ul>
+<h3 id="workflow--justification--source--steps--reasoning-7">Workflow / Justification / Source / Steps / Reasoning</h3>
+<ul>
+<li>Crafted from the examples in the text</li>
+</ul>
+<h1 id="6-task6---system-and-network-information">6️⃣ Task 6 - System and Network Information</h1>
+<h2 id="other-than-your-current-user-and-the-default-administrator-account-what-other-user-is-enabled-on-the-target-machine">Other than your current user and the default &ldquo;Administrator&rdquo; account, what other user is enabled on the target machine?</h2>
+<h3 id="answer--8">Answer ✅</h3>
+<ul>
+<li><code>p1r4t3</code></li>
+</ul>
+<h3 id="workflow--justification--source--steps--reasoning-8">Workflow / Justification / Source / Steps / Reasoning</h3>
+<p>-</p>
+<pre tabindex="0"><code>```
+PS C:Userscaptain&gt; Get-LocalUser
+Name               Enabled Description
+---- ------- -----------
+Administrator      True    Built-in account for administering the computer/domain
+captain            True    The beloved captain of this pirate ship.
+DefaultAccount     False   A user account managed by the system.
+Guest              False   Built-in account for guest access to the computer/domain
+p1r4t3             True    A merry life and a short one.
+WDAGUtilityAccount False   A user account managed and used by the system for Windows Defender Application Guard scenarios.
+```
+</code></pre><h2 id="this-lad-has-hidden-his-account-among-the-others-with-no-regard-for-our-beloved-captain-what-is-the-motto-he-has-so-bluntly-put-as-his-accounts-description">This lad has hidden his account among the others with no regard for our beloved captain! What is the motto he has so bluntly put as his account&rsquo;s description?</h2>
+<h3 id="answer--9">Answer ✅</h3>
+<ul>
+<li><code>A merry life and a short one.</code></li>
+</ul>
+<h3 id="workflow--justification--source--steps--reasoning-9">Workflow / Justification / Source / Steps / Reasoning</h3>
+<p>-</p>
+<pre tabindex="0"><code>PS C:Userscaptain&gt; Get-LocalUser
+Name               Enabled Description
+---- ------- -----------
+Administrator      True    Built-in account for administering the computer/domain
+captain            True    The beloved captain of this pirate ship.
+DefaultAccount     False   A user account managed by the system.
+Guest              False   Built-in account for guest access to the computer/domain
+p1r4t3             True    A merry life and a short one.
+WDAGUtilityAccount False   A user account managed and used by the system for Windows Defender Application Guard scenarios.
+</code></pre><h2 id="now-a-small-challenge-to-put-it-all-together-this-shady-lad-that-we-just-found-hidden-among-the-local-users-has-his-own-home-folder-in-the-cusers-directory-can-you-navigate-the-filesystem-and-find-the-hidden-treasure-inside-this-pirates-home">Now a small challenge to put it all together. This shady lad that we just found hidden among the local users has his own home folder in the &ldquo;C:Users&rdquo; directory. Can you navigate the filesystem and find the hidden treasure inside this pirate&rsquo;s home?</h2>
+<h3 id="answer--10">Answer ✅</h3>
+<ul>
+<li><code>THM{p34rlInAsh3ll}</code></li>
+</ul>
+<h3 id="workflow--justification--source--steps--reasoning-10">Workflow / Justification / Source / Steps / Reasoning</h3>
+<p>-</p>
+<pre tabindex="0"><code>PS C:Userscaptain&gt; cat ..p1r4t3hidden-treasure-chestbig-treasure.txt
+            ___
+        .-&#34;; ! ;&#34;-.
+      .&#39;!  : | :  !`.
+     /  ! : ! : !  /
+    / |  ! :|: !  | /
+   (    ; :!: ; / /  )
+  ( `.  | !:|:! | / .&#39; )
+  (`.   !:|:!/ / / .&#39;)
+    `.`. |!|! |/,&#39;.&#39; /
+    `._`.\!!!// .&#39;_.&#39;
+       `.`.\|//.&#39;.&#39;
+        |`._`n&#39;_.&#39;|  hjw
+        &#34;----^----&#34;
+FLAG: THM{p34rlInAsh3ll}
+</code></pre><h1 id="7-task7---real-time-system-analysis">7️⃣ Task 7 - Real-Time System Analysis</h1>
+<h2 id="in-the-previous-task-you-found-a-marvellous-treasure-carefully-hidden-in-the-target-machine-what-is-the-hash-of-the-file-that-contains-it">In the previous task, you found a marvellous treasure carefully hidden in the target machine. What is the hash of the file that contains it?</h2>
+<h3 id="answer--11">Answer ✅</h3>
+<ul>
+<li><code>71FC5EC11C2497A32F8F08E61399687D90ABE6E204D2964DF589543A613F3E08</code></li>
+</ul>
+<h3 id="workflow--justification--source--steps--reasoning-11">Workflow / Justification / Source / Steps / Reasoning</h3>
+<pre tabindex="0"><code>PS C:Userscaptain&gt; get-filehash ..p1r4t3hidden-treasure-chestbig-treasure.txt   
+Algorithm       Hash                                                                   Path
+--------- ---- ----
+SHA256          71FC5EC11C2497A32F8F08E61399687D90ABE6E204D2964DF589543A613F3E08       C:Usersp1r4t3hidden-treasure-chestbig-treasure.txt
+</code></pre><h2 id="what-property-retrieved-by-default-byget-nettcpconnectioncontains-information-about-the-process-that-has-started-the-connection">What property retrieved by default by <code>Get-NetTCPConnection</code> contains information about the process that has started the connection?</h2>
+<h3 id="answer--12">Answer ✅</h3>
+<ul>
+<li><code>OwningProcess</code></li>
+</ul>
+<h3 id="workflow--justification--source--steps--reasoning-12">Workflow / Justification / Source / Steps / Reasoning</h3>
+<p>-</p>
+<pre tabindex="0"><code>PS C:Userscaptain&gt; Get-NetTCPConnection | get-member | sort name | where {$_.name -imatch &#34;process&#34;}   
+   TypeName: Microsoft.Management.Infrastructure.CimInstance#ROOT/StandardCimv2/MSFT_NetTCPConnection
+Name          MemberType Definition
+---- ---------- ----------
+OwningProcess Property   uint32 OwningProcess {get;}
+</code></pre><h2 id="its-time-for-another-small-challenge-some-vital-service-has-been-installed-on-this-pirate-ship-to-guarantee-that-the-captain-can-always-navigate-safely-but-something-isnt-working-as-expected-and-the-captain-wonders-why-investigating-they-find-out-the-truth-at-last-the-service-has-been-tampered-with-the-shady-lad-from-before-has-modified-the-servicedisplaynameto-reflect-his-very-own-motto-the-same-that-he-put-in-his-user-description-with-this-information-and-the-powershell-knowledge-you-have-built-so-far-can-you-find-the-service-name">It&rsquo;s time for another small challenge. Some vital service has been installed on this pirate ship to guarantee that the captain can always navigate safely. But something isn&rsquo;t working as expected, and the captain wonders why. Investigating, they find out the truth, at last: the service has been tampered with! The shady lad from before has modified the service <code>DisplayName</code> to reflect his very own motto, the same that he put in his user description. With this information and the PowerShell knowledge you have built so far, can you find the service name?</h2>
+<h3 id="answer--13">Answer ✅</h3>
+<ul>
+<li><code>p1r4t3-s-compass</code></li>
+</ul>
+<h3 id="workflow--justification--source--steps--reasoning-13">Workflow / Justification / Source / Steps / Reasoning</h3>
+<p>-</p>
+<pre tabindex="0"><code>PS C:Userscaptain&gt; Get-Service | sort name | where {$_.DisplayName -imatch &#34;A merry life and a short one&#34;}
+Status   Name               DisplayName
+------ ---- -----------
+Running  p1r4t3-s-compass   A merry life and a short one.
+</code></pre><h1 id="8-task8---scripting">8️⃣ Task 8 - Scripting</h1>
+<h2 id="what-is-the-syntax-to-execute-the-commandget-serviceon-a-remote-computer-named-royalfortune-assume-you-dont-need-to-provide-credentials-to-establish-the-connection-for-the-sake-of-this-question-avoid-the-use-of-quotes--or--in-your-answer">What is the syntax to execute the command <code>Get-Service</code> on a remote computer named &ldquo;RoyalFortune&rdquo;? Assume you don&rsquo;t need to provide credentials to establish the connection. [for the sake of this question, avoid the use of quotes (&quot; or &lsquo;) in your answer]</h2>
+<h3 id="answer--14">Answer ✅</h3>
+<ul>
+<li><code>Invoke-Command -ComputerName RoyalFortune -ScriptBlock { Get-Service }</code></li>
+</ul>
+<h3 id="workflow--justification--source--steps--reasoning-14">Workflow / Justification / Source / Steps / Reasoning</h3>
+<ul>
+<li>crafted from the text examples</li>
+</ul>
+<h1 id="9-task9---conclusion">9️⃣ Task 9 - Conclusion</h1>
+<ul>
+<li>no answer needed</li>
+</ul>
+<p>➡️ <strong><em>By @RSCyberTech</em></strong></p>
+<ul>
+<li><em>Website: RSCyberTech.com</em></li>
+<li><em>LinkedIn: linkedin.com/in/ricardoams</em></li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

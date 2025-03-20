@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How to Create and Use an AI Git Agent</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How to Create and Use an AI Git Agent</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p><em>This ongoing</em> <em>Docker Labs GenAI series</em> <em>explores the exciting space of AI developer tools. At Docker, we believe there is a vast scope to explore, openly and without the hype. We will share our explorations and collaborate with the developer community in real time. Although developers have adopted autocomplete tooling like GitHub Copilot and use chat, there is significant potential for AI tools to assist with more specific tasks and interfaces throughout the entire software lifecycle. Therefore, our exploration will be broad. We will be releasing software as open source so you can play, explore, and hack with us, too.</em></p>
+<p>In our past experiments, we started our work from the assumption that we had a project ready to work on. That means someone like a UI tech writer would need to understand Git operations in order to use the tools we built for them. Naturally, because we have been touching on Git so frequently, we wanted to try getting a Git agent started. Then, we want to use this Git agent to understand PR branches for a variety of user personas — without anyone needing to know the ins and outs of Git.</p>
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/06/2400x1260_docker-labs-genai-1110x583.png" alt="2400x1260 docker labs genai" />
+  <figcaption>- 2400x1260 docker labs genai</figcaption>
+</figure>
+
+
+</p>
+<h2 id="git-as-an-agent">Git as an agent</h2>
+<p>We are exploring the idea that tools are agents. So, what would a Git agent do? </p>
+<p>Let’s tackle our UI use case prompt. </p>
+<p>Previously:</p>
+<pre tabindex="0"><code>You are at $PWD of /project, which is a git repo.
+Force checkout {{branch}}
+Run a three-dot diff of the files changed in {{branch}} compared to main using --name-only.
+</code></pre><p>A drawback that isn’t shown here, is that there is no authentication. So, if you haven’t fetched that branch or pulled commits already, this prompt at best will be unreliable and more than likely will fail (Figure 1):</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/12/F1-no-auth-1110x221.png" alt="Screenshot of Logs showing failure to authenticate." />
+  <figcaption>Screenshot of Logs showing failure to authenticate. - F1 no auth</figcaption>
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p><strong>Figure 1:</strong> No authentication occurs.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Now:</p>
+<pre tabindex="0"><code>You are a helpful assistant that checks a PR for user-facing changes.
+1. Fetch everything and get on latest main.
+2. Checkout the PR branch and pull latest.
+3. Run a three-dot git diff against main for just files. Write the output to /thread/diff.txt.
+</code></pre><p>This time around, you can see that we are being less explicit about the Git operations, we have the ability to export outputs to the conversation thread and, most importantly, we have authentication with a new prompt!</p>
+<h2 id="preparing-github-authentication">Preparing GitHub authentication</h2>
+<p><strong>Note:</strong> These prompts should be easily adaptable to other Git providers, but we use GitHub at Docker.</p>
+<p>Before we can do anything with GitHub, we have to authenticate. There are several ways to do this, but for this post we’ll focus on SSH-based auth rather than using HTTPS through the CLI. Without getting too deep into the Git world, we will be authenticating with keys on our machine that are associated with our account. These keys and configurations are commonly located at <code>~/.ssh</code> on Linux/Mac. Furthermore, users commonly maintain Git config at <code>~/.gitconfig</code>. </p>
+<p>The <code>.gitconfig</code> file is particularly useful because it lets us specify carriage return rules — something that can easily cause Git to fail when running in a Linux container. We will also need to modify our SSH config to remove UseKeychain. We found these changes are enough to authenticate using SSH in Alpine/Git. But we, of course, don’t want to modify any host configuration.</p>
+<p>We came up with a fairly simple flow that lets us prepare to use Git in a container without messing with any host SSH configs.</p>
+<ol>
+<li>Readonly mounts: Git config and SSH keys are stored on specific folders on the host machine. We need to mount those in.<br>
+a. Mount <code>~/.ssh</code> into a container as <code>/root/.ssh-base readonly</code>.<br>
+b. Mount <code>~/.gitconfig</code> into the same container as <code>/root/.gitconfig</code>.</li>
+<li>Copy <code>/root/.ssh-base</code> to <code>/root/.ssh</code> and make the new file readwrite.</li>
+<li>Make necessary changes to config.</li>
+<li>For the LLM, we also need it to verify the config is in the thread and the changes were made to it. In the event that it fails to make the right changes, the LLM can self-correct.</li>
+<li>Copy the <code>.ssh</code> directory and <code>.gitconfig</code> to <code>/thread</code>.</li>
+</ol>
+<p>All of this is baked in a prompt you can find and run on GitHub. Simply replace <code>&lt;username&gt;</code> with your system username (Figure 2).</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/12/F2-mounts-1110x195.png" alt="Screenshot of mounts, showing storage of Git config and SSH keys." />
+  <figcaption>Screenshot of mounts, showing storage of Git config and SSH keys. - F2 mounts</figcaption>
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p><strong>Figure 2:</strong> Readonly mounts.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>If you’re using the default behavior in our extension for VSCode, then the <code>/thread/</code> volume is ephemeral, so you would need to make sure your agent runs it before any Git tools. However, if you use the <code>Set prompt thread ID</code> command in VSCode, you can keep the <code>/thread</code> volume around under your own tag (Figure 3). </p>
+<p>Tagging the thread persists everything after the prompt completes, so you would only need to run the prompt once before going on to develop your Git tools.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/12/F3-set-thread-1110x101.png" alt="Screenshot of setting the prompt thread ID.
+" />
+  <figcaption>Screenshot of setting the prompt thread ID. - F3 set thread</figcaption>
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p><strong>Figure 3:</strong> Set the prompt thread ID.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>If you opt to persist the thread, then this prompt would only need to be run once and the Git credentials will stick around (Figure 4).</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/12/F4-Git-credentials-1110x316.png" alt="Screenshot showing the stored configuration info." />
+  <figcaption>Screenshot showing the stored configuration info. - F4 Git credentials</figcaption>
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p><strong>Figure 4:</strong> Stored credential data.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Now that we have our credentials ready, we need our Git tool to pick up on them.</p>
+<pre tabindex="0"><code>container:
+   image: alpine/git
+   entrypoint:
+     - /bin/sh
+     - -c
+   command:
+     - &#34;cp -r /thread/.ssh /root/.ssh &amp;&amp; cp -r /thread/.gitconfig /root/.gitconfig &amp;&amp; git --no-pager {{args|safe}}&#34; 
+</code></pre><p>Our container definition copies the SSH credentials and <code>.gitconfig</code> files to the correct directory before running Git commands.</p>
+<pre tabindex="0"><code>Unpacking objects:  90% (9/10)
+Unpacking objects: 100% (10/10)
+Unpacking objects: 100% (10/10), 4.14 KiB | 141.00 KiB/s, done.
+From github.com:docker/repo
+   abcd123..abcd123  main           -&gt; origin/main
+ * [new tag]           branch/v2982.0.0 -&gt; branch/v2982.0.0
+# ROLE assistant
+I have fetched all origin branches. The latest updates have been applied to your local repository, and any new tags have been downloaded.
+```
+Now, we can see our Git tool is authenticated as if it were us.
+Running the agent now, it can:
+## ROLE assistant
+I have run the git fetch --all command, which retrieves updates from all remotes. If you need further assistance with your Git repository, feel free to ask!
+```
+
+# ROLE assistant
+```json
+{&#34;request&#34;:&#34;checkout main&#34;}
+```
+
+## ROLE assistant
+```json
+{&#34;args&#34;:&#34;checkout main&#34;}
+```
+
+## ROLE assistant
+You are already on the &#39;main&#39; branch, and it is up to date with &#39;origin/main&#39;.
+```
+
+# ROLE assistant
+```json
+{&#34;request&#34;:&#34;checkout the branch branch and pull latest changes.&#34;}
+```
+
+...
+## ROLE assistant
+The branch branch has been successfully checked out, and it&#39;s already up to date with the latest changes.
+...
+
+# ROLE assistant
+```json
+{&#34;request&#34;:&#34;Run a three-dot git diff against main and write the output for just files to /thread/diff.txt.&#34;}
+```
+
+...
+
+## ROLE assistant
+```json
+{&#34;args&#34;:&#34;diff main... --name-only&#34;,&#34;outfile&#34;:&#34;/thread/diff.txt&#34;}
+```
+
+*entering tool*
+
+## ROLE tool (git)
+file1.tsx
+file2.tsx
+...
+## ROLE assistant
+
+The three-dot Git diff against the main branch has been executed, and the output has been saved to /thread/diff.txt. This includes the names of files that have differences.
+``
+</code></pre><p>With the new Git agent, we have enabled our assistant to fetch new information from upstream, switch branches, and pull in new code to review. If we provide our agent with credentials that are limited to read-only access, this agent could be used by someone that does not have a local git install.</p>
+<p>For more on what we’re doing at Docker, subscribe to our newsletter.</p>
+<h2 id="learn-more">Learn more</h2>
+<ul>
+<li>Subscribe to the Docker Newsletter. </li>
+<li>Learn about accelerating AI development with the Docker AI Catalog.</li>
+<li>Read the Docker Labs GenAI series.</li>
+<li>Get the latest release of Docker Desktop.</li>
+<li>Have questions? The Docker community is here to help.</li>
+<li>New to Docker? Get started.</li>
+</ul>
+<p>​Products, AI/ML, Docker Labs GenAI series, GenAI Stack</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

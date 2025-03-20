@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How we built a dynamic Kubernetes API Server for the API Aggregation Layer in Cozystack</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How we built a dynamic Kubernetes API Server for the API Aggregation Layer in Cozystack</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Hi there! I&rsquo;m Andrei Kvapil, but you might know me as @kvaps in communities dedicated to Kubernetes and cloud-native tools. In this article, I want to share how we implemented our own extension api-server in the open-source PaaS platform, Cozystack.</p>
+<p>Kubernetes truly amazes me with its powerful extensibility features. You&rsquo;re probably already familiar with the controller concept and frameworks like kubebuilder and operator-sdk that help you implement it. In a nutshell, they allow you to extend your Kubernetes cluster by defining custom resources (CRDs) and writing additional controllers that handle your business logic for reconciling and managing these kinds of resources. This approach is well-documented, with a wealth of information available online on how to develop your own operators.</p>
+<p>However, this is not the only way to extend the Kubernetes API. For more complex scenarios such as implementing imperative logic, managing subresources, and dynamically generating responses—the Kubernetes API <em>aggregation layer</em> provides an effective alternative. Through the aggregation layer, you can develop a custom extension API server and seamlessly integrate it within the broader Kubernetes API framework.</p>
+<p>In this article, I will explore the API aggregation layer, the types of challenges it is well-suited to address, cases where it may be less appropriate, and how we utilized this model to implement our own extension API server in Cozystack.</p>
+<h2 id="what-is-the-api-aggregation-layer">What Is the API Aggregation Layer?</h2>
+<p>First, let&rsquo;s get definitions straight to avoid any confusion down the road. The API aggregation layer is a feature in Kubernetes, while an extension api-server is a specific implementation of an API server for the aggregation layer. An extension API server is just like the standard Kubernetes API server, except it runs separately and handles requests for your specific resource types.</p>
+<p>So, the aggregation layer lets you write your own extension API server, integrate it easily into Kubernetes, and directly process requests for resources in a certain group. Unlike the CRD mechanism, the extension API is registered in Kubernetes as an APIService, telling Kubernetes to consider this new API server and acknowledge that it serves certain APIs.</p>
+<p>You can execute this command to list all registered apiservices:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl get apiservices.apiregistration.k8s.io
+</span></span></code></pre></div><p>Example APIService:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>NAME SERVICE AVAILABLE AGE
+</span></span><span style="display:flex;"><span>v1alpha1.apps.cozystack.io cozy-system/cozystack-api True 7h29m
+</span></span></code></pre></div><p>As soon as the Kubernetes api-server receives requests for resources in the group <code>v1alpha1.apps.cozystack.io</code>, it redirects all those requests to our extension api-server, which can handle them based on the business logic we&rsquo;ve built into it.</p>
+<h2 id="when-to-use-the-api-aggregation-layer">When to use the API Aggregation Layer</h2>
+<p>The API Aggregation Layer helps solve several issues where the usual CRD mechanism might not enough. Let&rsquo;s break them down.</p>
+<h3 id="imperative-logic-and-subresources">Imperative Logic and Subresources</h3>
+<p>Besides regular resources, Kubernetes also has something called subresources.</p>
+<p>In Kubernetes, subresources are additional actions or operations you can perform on primary resources (like Pods, Deployments, Services) via the Kubernetes API. They provide interfaces to manage specific aspects of resources without affecting the entire object.</p>
+<p>A simple example is <code>status</code>, which is traditionally exposed as a separate subresource that you can access independently from the parent object. The <code>status</code> field isn&rsquo;t meant to be changed</p>
+<p>But beyond <code>/status</code>, Pods in Kubernetes also have subresources like <code>/exec</code>, <code>/portforward</code>, and <code>/log</code>. Interestingly, instead of the usual declarative resources in Kubernetes, these represent endpoints for imperative operations like viewing logs, proxying connections, executing commands in a running container, and so on.</p>
+<p>To support such imperative commands on your own API, you need implement an extension API and an extension API server. Here are some well-known examples:</p>
+<ul>
+<li><strong>KubeVirt</strong>: An add-on for Kubernetes that extends its API capabilities to run traditional virtual machines. The extension api-server created as part of KubeVirt handles subresources like <code>/restart</code>, <code>/console</code>, and <code>/vnc</code> for virtual machines.</li>
+<li><strong>Knative</strong>: A Kubernetes add-on that extends its capabilities for serverless computing, implementing the <code>/scale</code> subresource to set up autoscaling for its resource types.</li>
+</ul>
+<p>By the way, even though subresource logic in Kubernetes can be <em>imperative</em>, you can manage access to them <em>declaratively</em> using Kubernetes standard RBAC model.</p>
+<p>For example this way you can control access to the <code>/log</code> and <code>/exec</code> subresources of the Pod kind:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Role</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">default</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">name</span>: <span style="color:#ae81ff">pod-and-pod-logs-reader</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">rules</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">apiGroups</span>: [<span style="color:#e6db74">&#34;&#34;</span>]
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">resources</span>: [<span style="color:#e6db74">&#34;pods&#34;</span>, <span style="color:#e6db74">&#34;pods/log&#34;</span>]
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">verbs</span>: [<span style="color:#e6db74">&#34;get&#34;</span>, <span style="color:#e6db74">&#34;list&#34;</span>]
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">apiGroups</span>: [<span style="color:#e6db74">&#34;&#34;</span>]
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">resources</span>: [<span style="color:#e6db74">&#34;pods/exec&#34;</span>]
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">verbs</span>: [<span style="color:#e6db74">&#34;create&#34;</span>]
+</span></span></code></pre></div><h3 id="youre-not-tied-to-use-etcd">You&rsquo;re not tied to use etcd</h3>
+<p>Usually, the Kubernetes API server uses etcd for its backend. However, implementing your own API server doesn&rsquo;t lock you into using only etcd. If it doesn&rsquo;t make sense to store your server&rsquo;s state in etcd, you can store information in any other system and generate responses on the fly. Here are a few cases to illustrate:</p>
+<ul>
+<li>
+<p>metrics-server is a standard extension for Kubernetes which allows you to view real-time metrics of your nodes and pods. It defines alternative Pod and Node kinds in its own metrics.k8s.io API. Requests to these resources are translated into metrics directly from Kubelet. So when you run <code>kubectl top node</code> or <code>kubectl top pod</code>, metrics-server fetches metrics from cAdvisor in real-time. It then returns these metrics to you. Since the information is generated in real-time and is only relevant at the moment of the request, there is no need to store it in etcd. This approach saves resources.</p>
+</li>
+<li>
+<p>If needed, you can use a backend other than etcd. You can even implement a Kubernetes-compatible API for it. For example, if you use Postgres, you can create a transparent representation of its entities in the Kubernetes API. Eg. databases, users, and grants within Postgres would appear as regular Kubernetes resources, thanks to your extension API server. You could manage them using <code>kubectl</code> or any other Kubernetes-compatible tool. Unlike controllers, which implement business logic using custom resources and reconciliation methods, an extension API server eliminates the need for separate controllers for every kind. This means you don&rsquo;t have to sync state between the Kubernetes API and your backend.</p>
+</li>
+</ul>
+<h3 id="one-time-resources">One-Time resources</h3>
+<ul>
+<li>
+<p>Kubernetes has a special API used to provide users with information about their permissions. This is implemented using the SelfSubjectAccessReview API. One unusual detail of these resources is that you can&rsquo;t view them using <strong>get</strong> or <strong>list</strong> verbs. You can only create them (using the <strong>create</strong> verb) and receive output with information about what you have access to at that moment.</p>
+<p>If you try to run <code>kubectl get selfsubjectaccessreviews</code> directly, you&rsquo;ll just get an error like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>Error from server (MethodNotAllowed): the server does not allow this method on the requested resource
+</span></span></code></pre></div><p>The reason is that the Kubernetes API server doesn&rsquo;t support any other interaction with this type of resource (you can only CREATE them).</p>
+<p>The SelfSubjectAccessReview API supports commands such as:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl auth can-i create deployments --namespace dev
+</span></span></code></pre></div><p>When you run the command above, <code>kubectl</code> creates a SelfSubjectAccessReview using the Kubernetes API. This allows Kubernetes to fetch a list of possible permissions for your user. Kubernetes then generates a personalized response to your request in real-time. This logic is different from a scenario where this resource is simply stored in etcd.</p>
+</li>
+<li>
+<p>Similarly, in KubeVirt&rsquo;s CDI (Containerized Data Importer) extension, which allows file uploads into a PVC from a local machine using the <code>virtctl</code> tool, a special token is required before the upload process begins. This token is generated by creating an UploadTokenRequest resource via the Kubernetes API. Kubernetes routes (proxies) all UploadTokenRequest resource creation requests to the CDI extension API server, which generates and returns the token in response.</p>
+</li>
+</ul>
+<h3 id="full-control-over-conversion-validation-and-output-formatting">Full control over conversion, validation, and output formatting</h3>
+<ul>
+<li>
+<p>Your own API server can have all the capabilities of the vanilla Kubernetes API server. The resources you create in your API server can be validated immediately on the server side without additional webhooks. While CRDs also support server-side validation using Common Expression Language (CEL) for declarative validation and ValidatingAdmissionPolicies without the need for webhooks, a custom API server allows for more complex and tailored validation logic if needed.</p>
+<p>Kubernetes allows you to serve multiple API versions for each resource type, traditionally <code>v1alpha1</code>, <code>v1beta1</code> and <code>v1</code>. Only one version can be specified as the storage version. All requests to other versions must be automatically converted to the version specified as storage version. With CRDs, this mechanism is implemented using conversion webhooks. Whereas in an extension API server, you can implement your own conversion mechanism, choose to mix up different storage versions (one object might be serialized as <code>v1</code>, another as <code>v2</code>), or rely on an external backing API.</p>
+</li>
+<li>
+<p>Directly implementing the Kubernetes API lets you format table output however you like and doesn&rsquo;t force you to follow the <code>additionalPrinterColumns</code> logic in CRDs. Instead, you can write your own formatter that formats the table output and custom fields in it. For example, when using <code>additionalPrinterColumns</code>, you can display field values only following the JSONPath logic. In your own API server, you can generate and insert values on the fly, formatting the table output as you wish.</p>
+</li>
+</ul>
+<h3 id="dynamic-resource-registration">Dynamic resource registration</h3>
+<ul>
+<li>The resources served by an extension api-server don&rsquo;t need to be pre-registered as CRDs. Once your extension API server is registered using an APIService, Kubernetes starts polling it to discover APIs and resources it can serve. After receiving a discovery response, the Kubernetes API server automatically registers all available types for this API group. Although this isn&rsquo;t considered common practice, you can implement logic that dynamically registers the resource types you need in your Kubernetes cluster.</li>
+</ul>
+<h2 id="when-not-to-use-the-api-aggregation-layer">When not to use the API Aggregation Layer</h2>
+<p>There are some anti-patterns where using the API Aggregation Layer isn&rsquo;t recommended. Let&rsquo;s go through them.</p>
+<h3 id="unstable-backend">Unstable backend</h3>
+<p>If your API server stops responding for some reason due to an unavailable backend or other issues it may block some Kubernetes functionality. For example, when deleting namespaces, Kubernetes will wait for a response from your API server to see if there are any remaining resources. If the response doesn&rsquo;t come, the namespace deletion will be blocked.</p>
+<p>Also, you might have encountered a situation where, when the metrics-server is unavailable, an extra message appears in stderr after every API request (even unrelated to metrics) stating that <code>metrics.k8s.io</code> is unavailable. This is another example of how using the API Aggregation Layer can lead to problems when the api-server handling requests is unavailable.</p>
+<h3 id="slow-requests">Slow requests</h3>
+<p>If you can&rsquo;t guarantee an instant response for user requests, it&rsquo;s better to consider using a CustomResourceDefinition and controller. Otherwise, you might make your cluster less stable. Many projects implement an extension API server only for a limited set of resources, particularly for imperative logic and subresources. This recommendation is also mentioned in the official Kubernetes documentation.</p>
+<h2 id="why-we-needed-it-in-cozystack">Why we needed it in Cozystack</h2>
+<p>As a reminder, we&rsquo;re developing the open-source PaaS platform Cozystack, which can also be used as a framework for building your own private cloud. Therefore, the ability to easily extend the platform is crucial for us.</p>
+<p>Cozystack is built on top of FluxCD. Any application is packaged into its own Helm chart, ready for deployment in a tenant namespace. Deploying any application on the platform is done by creating a HelmRelease resource, specifying the chart name and parameters for the application. All the rest logic is handled by FluxCD. This pattern allows us to easily extend the platform with new applications and provide the ability to create new applications that just need to be packaged into the appropriate Helm chart.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://kubernetes.io/blog/2024/11/21/dynamic-kubernetes-api-server-for-cozystack/cozystack.png" alt="Interface of the Cozystack platform" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Interface of the Cozystack platform</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>So, in our platform, everything is configured as HelmRelease resources. However, we ran into two problems: limitations of the RBAC model and the need for a public API. Let&rsquo;s delve into these</p>
+<h3 id="limitations-of-the-rbac-model">Limitations of the RBAC model</h3>
+<p>The widely-deployed RBAC system in Kubernetes doesn&rsquo;t allow you to restrict access to a list of resources of the same kind based on labels or specific fields in the spec. When creating a role, you can limit access across the resources in the same kind only by specifying specific resource names in <code>resourceNames</code>. For verbs like <strong>get</strong> or <strong>update</strong> it will work. However, filtering by <code>resourceNames</code> using <strong>list</strong> verb doesn&rsquo;t work like that. Thus you can limit listing certain resources by kind but not by name.</p>
+<ul>
+<li>Kubernetes has a special API used to provide users with information about their permissions. This is implemented using the SelfSubjectAccessReview API. One unusual detail of these resources is that you can&rsquo;t view them using <strong>get</strong> or <strong>list</strong> verbs. You can only create them (using the <strong>create</strong> verb) and receive output with information about what you have access to at that moment.</li>
+</ul>
+<p>So, we decided to introduce new resource types based on the names of the Helm charts they use and generate the list of available kinds dynamically at runtime in our extension api-server. This way, we can reuse Kubernetes standard RBAC model to manage access to specific resource types.</p>
+<h3 id="need-for-a-public-api">Need for a public API</h3>
+<p>Since our platform provides capabilities for deploying various managed services, we want to organize public access to the platform&rsquo;s API. However, we can&rsquo;t allow users to interact directly with resources like HelmRelease because that would let them specify arbitrary names and parameters for Helm charts to deploy, potentially compromising our system.</p>
+<p>We wanted to give users the ability to deploy a specific service simply by creating the resource with corresponding kind in Kubernetes. The type of this resource should be named the same as the chart from which it&rsquo;s deployed. Here are some examples:</p>
+<ul>
+<li><code>kind: Kubernetes</code> → <code>chart: kubernetes</code></li>
+<li><code>kind: Postgres</code> → <code>chart: postgres</code></li>
+<li><code>kind: Redis</code> → <code>chart: redis</code></li>
+<li><code>kind: VirtualMachine</code> → <code>chart: virtual-machine</code></li>
+</ul>
+<p>Moreover, we don&rsquo;t want to have to add a new type to codegen and recompile our extension API server every time we add a new chart for it to start being served. The schema update should be done dynamically or provided via a ConfigMap by the administrator.</p>
+<h3 id="two-way-conversion">Two-Way conversion</h3>
+<p>Currently, we already have integrations and a dashboard that continue to use HelmRelease resources. At this stage, we didn&rsquo;t want to lose the ability to support this API. Considering that we&rsquo;re simply translating one resource into another, support is maintained and it works both ways. If you create a HelmRelease, you&rsquo;ll get a custom resource in Kubernetes, and if you create a custom resource in Kubernetes, it will also be available as a HelmRelease.</p>
+<p>We don&rsquo;t have any additional controllers that synchronize state between these resources. All requests to resources in our extension API server are transparently proxied to HelmRelease and vice versa. This eliminates intermediate states and the need to write controllers and synchronization logic.</p>
+<h2 id="implementation">Implementation</h2>
+<p>To implement the Aggregation API, you might consider starting with the following projects:</p>
+<ul>
+<li>apiserver-builder: Currently in alpha and hasn&rsquo;t been updated for two years. It works like kubebuilder, providing a framework for creating an extension API server, allowing you to sequentially create a project structure and generate code for your resources.</li>
+<li>sample-apiserver: A ready-made example of an implemented API server, based on official Kubernetes libraries, which you can use as a foundation for your project.</li>
+</ul>
+<p>For practical reasons, we chose the second project. Here&rsquo;s what we needed to do:</p>
+<h3 id="disable-etcd-support">Disable etcd support</h3>
+<p>In our case, we don&rsquo;t need it since all resources are stored directly in the Kubernetes API.</p>
+<p>You can disable etcd options by passing nil to <code>RecommendedOptions.Etcd</code>:</p>
+<ul>
+<li>Disabling etcd options</li>
+</ul>
+<h3 id="generate-a-common-resource-kind">Generate a common resource kind</h3>
+<p>We called it Application, and it looks like this:</p>
+<ul>
+<li>Application type definition</li>
+</ul>
+<p>This is a generic type used for any application type, and its handling logic is the same for all charts.</p>
+<h3 id="configure-configuration-loading">Configure configuration loading</h3>
+<p>Since we want to configure our extension api-server via a config file, we formed the config structure in Go:</p>
+<ul>
+<li>Config type definition</li>
+</ul>
+<p>We also modified the resource registration logic so that the resources we create are registered in scheme with different <code>Kind</code> values:</p>
+<ul>
+<li>Dynamic resource registration</li>
+</ul>
+<p>As a result, we got a config where you can pass all possible types and specify what they should map to:</p>
+<ul>
+<li>ConfigMap example</li>
+</ul>
+<h3 id="implement-our-own-registry">Implement our own registry</h3>
+<p>To store state not in etcd but translate it directly into Kubernetes HelmRelease resources (and vice versa), we wrote conversion functions from Application to HelmRelease and from HelmRelease to Application:</p>
+<ul>
+<li>Conversion functions</li>
+</ul>
+<p>We implemented logic to filter resources by chart name, <code>sourceRef</code>, and prefix in the HelmRelease name:</p>
+<ul>
+<li>Filtering functions</li>
+</ul>
+<p>Then, using this logic, we implemented the methods <code>Get()</code>, <code>Delete()</code>, <code>List()</code>, <code>Create()</code>.</p>
+<p>You can see the full example here:</p>
+<ul>
+<li>Registry Implementation</li>
+</ul>
+<p>At the end of each method, we set the correct <code>Kind</code> and return an <code>unstructured.Unstructured{}</code> object so that Kubernetes serializes the object correctly. Otherwise, it would always serialize them with <code>kind: Application</code>, which we don&rsquo;t want.</p>
+<h2 id="what-did-we-achieve">What did we achieve?</h2>
+<p>In Cozystack, all our types from the ConfigMap are now available in Kubernetes as-is:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl api-resources | grep cozystack
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>buckets apps.cozystack.io/v1alpha1 true Bucket
+</span></span><span style="display:flex;"><span>clickhouses apps.cozystack.io/v1alpha1 true ClickHouse
+</span></span><span style="display:flex;"><span>etcds apps.cozystack.io/v1alpha1 true Etcd
+</span></span><span style="display:flex;"><span>ferretdb apps.cozystack.io/v1alpha1 true FerretDB
+</span></span><span style="display:flex;"><span>httpcaches apps.cozystack.io/v1alpha1 true HTTPCache
+</span></span><span style="display:flex;"><span>ingresses apps.cozystack.io/v1alpha1 true Ingress
+</span></span><span style="display:flex;"><span>kafkas apps.cozystack.io/v1alpha1 true Kafka
+</span></span><span style="display:flex;"><span>kuberneteses apps.cozystack.io/v1alpha1 true Kubernetes
+</span></span><span style="display:flex;"><span>monitorings apps.cozystack.io/v1alpha1 true Monitoring
+</span></span><span style="display:flex;"><span>mysqls apps.cozystack.io/v1alpha1 true MySQL
+</span></span><span style="display:flex;"><span>natses apps.cozystack.io/v1alpha1 true NATS
+</span></span><span style="display:flex;"><span>postgreses apps.cozystack.io/v1alpha1 true Postgres
+</span></span><span style="display:flex;"><span>rabbitmqs apps.cozystack.io/v1alpha1 true RabbitMQ
+</span></span><span style="display:flex;"><span>redises apps.cozystack.io/v1alpha1 true Redis
+</span></span><span style="display:flex;"><span>seaweedfses apps.cozystack.io/v1alpha1 true SeaweedFS
+</span></span><span style="display:flex;"><span>tcpbalancers apps.cozystack.io/v1alpha1 true TCPBalancer
+</span></span><span style="display:flex;"><span>tenants apps.cozystack.io/v1alpha1 true Tenant
+</span></span><span style="display:flex;"><span>virtualmachines apps.cozystack.io/v1alpha1 true VirtualMachine
+</span></span><span style="display:flex;"><span>vmdisks apps.cozystack.io/v1alpha1 true VMDisk
+</span></span><span style="display:flex;"><span>vminstances apps.cozystack.io/v1alpha1 true VMInstance
+</span></span><span style="display:flex;"><span>vpns apps.cozystack.io/v1alpha1 true VPN
+</span></span></code></pre></div><p>We can work with them just like regular Kubernetes resources.</p>
+<p>Listing S3 Buckets:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl get buckets.apps.cozystack.io -n tenant-kvaps
+</span></span></code></pre></div><p>Example output:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>NAME READY AGE VERSION
+</span></span><span style="display:flex;"><span>foo True 22h 0.1.0
+</span></span><span style="display:flex;"><span>testaasd True 27h 0.1.0
+</span></span></code></pre></div><p>Listing Kubernetes Clusters:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl get kuberneteses.apps.cozystack.io -n tenant-kvaps
+</span></span></code></pre></div><p>Example output:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>NAME READY AGE VERSION
+</span></span><span style="display:flex;"><span>abc False 19h 0.14.0
+</span></span><span style="display:flex;"><span>asdte True 22h 0.13.0
+</span></span></code></pre></div><p>Listing Virtual Machine Disks:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl get vmdisks.apps.cozystack.io -n tenant-kvaps
+</span></span></code></pre></div><p>Example output:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>NAME READY AGE VERSION
+</span></span><span style="display:flex;"><span>docker True 21d 0.1.0
+</span></span><span style="display:flex;"><span>test True 18d 0.1.0
+</span></span><span style="display:flex;"><span>win2k25-iso True 21d 0.1.0
+</span></span><span style="display:flex;"><span>win2k25-system True 21d 0.1.0
+</span></span></code></pre></div><p>Listing Virtual Machine Instances:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl get vminstances.apps.cozystack.io -n tenant-kvaps
+</span></span></code></pre></div><p>Example output:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>NAME READY AGE VERSION
+</span></span><span style="display:flex;"><span>docker True 21d 0.1.0
+</span></span><span style="display:flex;"><span>test True 18d 0.1.0
+</span></span><span style="display:flex;"><span>win2k25 True 20d 0.1.0
+</span></span></code></pre></div><p>We can create, modify, and delete each of them, and any interaction with them will be translated into HelmRelease resources, while also applying the resource structure and prefix in the name.</p>
+<p>To see all related Helm releases:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl get helmreleases -n tenant-kvaps -l cozystack.io/ui
+</span></span></code></pre></div><p>Example output:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>NAME AGE READY
+</span></span><span style="display:flex;"><span>bucket-foo 22h True
+</span></span><span style="display:flex;"><span>bucket-testaasd 27h True
+</span></span><span style="display:flex;"><span>kubernetes-abc 19h False
+</span></span><span style="display:flex;"><span>kubernetes-asdte 22h True
+</span></span><span style="display:flex;"><span>redis-test 18d True
+</span></span><span style="display:flex;"><span>redis-yttt 12d True
+</span></span><span style="display:flex;"><span>vm-disk-docker 21d True
+</span></span><span style="display:flex;"><span>vm-disk-test 18d True
+</span></span><span style="display:flex;"><span>vm-disk-win2k25-iso 21d True
+</span></span><span style="display:flex;"><span>vm-disk-win2k25-system 21d True
+</span></span><span style="display:flex;"><span>vm-instance-docker 21d True
+</span></span><span style="display:flex;"><span>vm-instance-test 18d True
+</span></span><span style="display:flex;"><span>vm-instance-win2k25 20d True
+</span></span></code></pre></div><h2 id="next-steps">Next Steps</h2>
+<p>We don’t intend to stop here with our API. In the future, we plan to add new features:</p>
+<ul>
+<li>Add validation based on an OpenAPI spec generated directly from Helm charts.</li>
+<li>Develop a controller that collects release notes from deployed releases and shows users access information for specific services.</li>
+<li>Revamp our dashboard to work directly with the new API.</li>
+</ul>
+<h2 id="conclusion">Conclusion</h2>
+<p>The API Aggregation Layer allowed us to quickly and efficiently solve our problem by providing a flexible mechanism for extending the Kubernetes API with dynamically registered resources and converting them on the fly. Ultimately, this made our platform even more flexible and extensible without the need to write code for each new resource.</p>
+<p>You can test the API yourself in the open-source PaaS platform Cozystack, starting from version v0.18.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

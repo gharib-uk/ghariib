@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Guide to fulfilling SOC 2 security requirements with GitLab&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Guide to fulfilling SOC 2 security requirements with GitLab&lt;/div&gt;</h1>
+			<b><time>22.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>For businesses that handle sensitive customer information, achieving SOC 2 (System and Organization Controls 2) compliance is not just a good practice — it&rsquo;s often a necessity. SOC 2 is a rigorous auditing standard developed by the American Institute of Certified Public Accountants that assesses a service organization&rsquo;s controls related to security, availability, processing integrity, confidentiality, and privacy.</p>
+<p>While SOC 2 is not legally mandated, it has become increasingly important, in part due to breaches consistently seen in news headlines. Obtaining SOC 2 compliance allows customers to build trust with service organizations because they know their data is being properly stored and security controls have been assessed by a third party.</p>
+<p>In this guide, we&rsquo;ll review the requirements for obtaining SOC 2 compliance and how GitLab can help your organization meet the highest standards for application security.</p>
+<h2 id="what-requirements-are-set-by-soc-2">What requirements are set by SOC 2</h2>
+<p>The compliance process involves an audit by an independent auditor who evaluates the design and operating effectiveness of an organization&rsquo;s controls. This process can be very costly, and many organizations are not sufficiently prepared before an audit. With the SOC 2 audit process typically taking close to a year, it is important to establish an efficient pre-audit process.</p>
+<p>To obtain SOC 2 compliance, an organization must meet requirements based on the Trust Services Criteria:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Criteria</th>
+          <th>Requirements</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Security</td>
+          <td>- Implement controls to protect against unauthorized access <!-- raw HTML omitted --> - Establish procedures for identifying and mitigating risks<!-- raw HTML omitted --> - Set up systems for detecting and addressing security incidents</td>
+      </tr>
+      <tr>
+          <td>Availability</td>
+          <td>- Ensure systems are accessible for operation as agreed<!-- raw HTML omitted --> - Monitor current usage and capacity <!-- raw HTML omitted --> - Identify and address environmental threats that could affect system availability</td>
+      </tr>
+      <tr>
+          <td>Process integrity</td>
+          <td>- Maintain accurate records of system inputs and outputs <!-- raw HTML omitted --> - Implement procedures to quickly identify and correct system errors <!-- raw HTML omitted --> - Define processing activities to ensure products and services meet specifications</td>
+      </tr>
+      <tr>
+          <td>Confidentiality</td>
+          <td>- Identify and protect confidential information <!-- raw HTML omitted --> - Establish policies for data retention periods <!-- raw HTML omitted --> - Implement secure methods for destroying confidential data after retention periods expire</td>
+      </tr>
+      <tr>
+          <td>Privacy</td>
+          <td>- Obtain consent before collecting sensitive personal information <!-- raw HTML omitted --> - Communicate privacy policies clearly and in plain language <!-- raw HTML omitted --> - Collect data only through legal means and from reliable sources</td>
+      </tr>
+  </tbody>
+</table>
+<!-- raw HTML omitted -->
+<p>Note that these requirements are not one-time achievements, but rather a continuous process. Auditors will require control effectiveness over time.</p>
+<h2 id="how-to-achieve-and-maintain-the-security-requirements">How to achieve and maintain the security requirements</h2>
+<p>GitLab provides several features off the board to get you started with assuring SOC 2 security needs are met:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Security Requirement</th>
+          <th>Addressing Feature</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Implement controls to protect against unauthorized access</td>
+          <td>- Confidential Issues and Merge Requests <!-- raw HTML omitted --> - Custom Roles and Granular Permissions <!-- raw HTML omitted --> - Security Policies <!-- raw HTML omitted --> - Verified Commit <!-- raw HTML omitted --> - Signed Container Images <!-- raw HTML omitted --> - CodeOwners <!-- raw HTML omitted --> - Protected Branches</td>
+      </tr>
+      <tr>
+          <td>Set up systems for detecting and addressing security incidents</td>
+          <td>- Vulnerability Scanning <!-- raw HTML omitted --> - Merge Request Security Widget <!-- raw HTML omitted --> - Vulnerability Insights Compliance Center <!-- raw HTML omitted --> - Audit Events <!-- raw HTML omitted --> - Vulnerability Report Dependency List <!-- raw HTML omitted --> - AI: Vulnerability Explanation <!-- raw HTML omitted --> - AI: Vulnerability Resolution</td>
+      </tr>
+      <tr>
+          <td>Establish procedures for identifying and mitigating risks</td>
+          <td>All the above tools can be used by a security team to establish a procedure around what to do when security vulnerabilities are identified and how they are mitigated.</td>
+      </tr>
+  </tbody>
+</table>
+<p><!-- raw HTML omitted --> Let’s go through each section and highlight the security features that address these requirements. Note that a GitLab Ultimate subscription and the correct Role and Permissions are required to access many of the features listed. Be sure to check out the appropriate documentation for more information.</p>
+<h2 id="implement-controls-to-protect-against-unauthorized-access">Implement controls to protect against unauthorized access</h2>
+<p>Implementing robust access controls is essential for protecting an organization&rsquo;s assets, ensuring regulatory compliance, maintaining operational continuity, and fostering trust. GitLab allows you to implement controls to follow the principle of least privilege, securing against unauthorized access. I will briefly cover:</p>
+<ul>
+<li>Security policies</li>
+<li>Custom roles and granular permissions</li>
+<li>Branch protections and CodeOwners</li>
+<li>Verified commits</li>
+</ul>
+<h3 id="security-policies">Security policies</h3>
+<p>GitLab&rsquo;s security policies, known as guardrails, enable security and compliance teams to implement consistent controls across their organization, helping prevent security incidents, maintain compliance standards, and reduce risk by automatically enforcing security best practices at scale.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/6eeeYUhQCWbxA1zCCYujUK/874b6ed29e5b87c783f1ac53226d66a4/merge_request_approval_policy.png" alt="Merge request approval policy in action" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>The following policy types are available:</p>
+<ul>
+<li>Scan execution policy: Enforce security scans, either as part of the pipeline or on a specified schedule</li>
+<li>Merge request approval policy: Enforce project-level settings and approval rules based on scan results</li>
+<li>Pipeline execution policy: Enforce CI/CD jobs as part of project pipelines</li>
+<li>Vulnerability management policy: Automate vulnerability management workflows</li>
+</ul>
+<p>Here is an example of ensuring compliance with the pipeline execution policy:</p>
+<ol>
+<li>Create a project that houses multiple compliance jobs. An example of a job can be to check permissions of files that are deployed. These jobs should be generic enough that they can be applied to multiple applications.</li>
+<li>Limit the project&rsquo;s permissions to only security/compliance officers; don’t allow developers to remove jobs. This allows for separation of duties.</li>
+<li>Inject the compliance jobs in batch to the projects where they are required. Force them to run no matter what, but allow approval from team lead to not block development. This will ensure compliance jobs are always run and cannot be removed by developers, and that your environment remains compliant.</li>
+</ol>
+<blockquote>
+<h5 id="learn-how-to-create-security-policies-with-our-security-policy-documentation">Learn how to create security policies with our security policy documentation.</h5></blockquote>
+<h3 id="custom-roles-and-granular-permissions">Custom roles and granular permissions</h3>
+<p>Custom permissions in GitLab allow organizations to create fine-grained access controls beyond the standard role-based permissions, providing benefits such as:</p>
+<ul>
+<li>more precise access control</li>
+<li>better security compliance</li>
+<li>reduced risk of accidental access</li>
+<li>streamlined user management</li>
+<li>support for complex organizational structures</li>
+</ul>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/4Zq69D23nKPRQsSCjgdTVb/7e45abfb4e4aa89abfa4a9e3766b29b0/custom_roles.png" alt="GitLab custom roles" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<blockquote>
+<h5 id="learn-how-to-create-custom-roles-with-granular-permissions-using-our-custom-role-documentation">Learn how to create custom roles with granular permissions using our custom role documentation.</h5></blockquote>
+<h3 id="branch-protections-and-codeowners">Branch protections and CodeOwners</h3>
+<p>GitLab helps you further control who can change your code using two key features:</p>
+<ul>
+<li>Branch Protection, which lets you set rules about who can update specific branches – like requiring approval before merging changes.</li>
+<li>Code Ownership, which automatically finds the right people to review code changes by matching files to their designated owners.</li>
+</ul>
+<p>Together, these features help keep your code secure and high-quality by making sure the right people review and approve changes.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/5Lsb14Hwz4lkJNZ7rUnNEl/aa053f241269ecf6f81850f1f5428ca3/protected_branches.png" alt="Protected branches" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<blockquote>
+<h5 id="learn-how-to-create-protected-branches-along-with-codeowners-using-protected-branch-and-codeowner-documentation">Learn how to create protected branches along with CodeOwners using protected branch and codeowner documentation.</h5></blockquote>
+<h3 id="verified-commits">Verified commits</h3>
+<p>When you sign your commits digitally, you prove they really came from you, not someone pretending to be you. Think of a digital signature like a unique stamp that only you can create. When you upload your public GPG key to GitLab, it can check this stamp. If the stamp matches, GitLab marks your commit as <code>Verified</code>. You can then set up rules to reject commits that aren&rsquo;t signed, or block all commits from users who haven&rsquo;t verified their identity.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/2RdOPNvcc4SqZUGuqcybUu/844a772878785f024dc0a37f6b9f82a9/signed_commit.png" alt="Commit signed with verified signature" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Commits can be signed with:</p>
+<ul>
+<li>SSH key</li>
+<li>GPG key</li>
+<li>Personal x.509 certificate</li>
+</ul>
+<blockquote>
+<h5 id="learn-more-about-verified-commits-with-our-signed-commits-documentation">Learn more about verified commits with our signed commits documentation.</h5></blockquote>
+<h2 id="set-up-systems-for-detecting-and-addressing-security-incidents">Set up systems for detecting and addressing security incidents</h2>
+<p>Setting up systems for detecting and addressing security incidents is vital for maintaining a robust security posture, ensuring regulatory compliance, minimizing potential damages, and enabling organizations to respond effectively to the ever-evolving threat landscape.</p>
+<p>GitLab provides security scanning and vulnerability management for the complete application lifecycle. I will briefly cover:</p>
+<ul>
+<li>Security scanning and vulnerability management</li>
+<li>Software bill of materials</li>
+<li>System auditing and security posture review</li>
+<li>Compliance and security posture oversight</li>
+</ul>
+<h3 id="security-scanning-and-vulnerability-management">Security scanning and vulnerability management</h3>
+<p>GitLab provides a variety of different security scanners that cover the complete lifecycle of your application:</p>
+<ul>
+<li>Static Application Security Testing (SAST)</li>
+<li>Dynamic Application Security Testing (DAST)</li>
+<li>Container Scanning</li>
+<li>Dependency Scanning</li>
+<li>Infrastructure as Code (IaC) Scanning</li>
+<li>Coverage-guided Fuzzing</li>
+<li>Web API Fuzzing</li>
+</ul>
+<p>These scanners can be added to your pipeline via the use of templates. For example, to run SAST and dependency scanning jobs in the test stage, simply add the following to your .gitlab-ci.yml:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">stages</span>:  
+</span></span><span style="display:flex;"><span>   - <span style="color:#ae81ff">test</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">include</span>:  
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">template</span>: <span style="color:#ae81ff">Jobs/Dependency-Scanning.gitlab-ci.yml  </span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">template</span>: <span style="color:#ae81ff">Jobs/SAST.gitlab-ci.yml  </span>
+</span></span></code></pre></div><p>These jobs are fully configurable via environment variables and using GitLab job syntax. Once a pipeline kicks off, the security scanners run and detect vulnerabilities in the diff between the current branch and the target branch. The vulnerability can be seen in a merge request (MR), providing detailed oversight before the code is merged to the target branch. The MR will provide the following information on a vulnerability:</p>
+<ul>
+<li>description</li>
+<li>status</li>
+<li>severity</li>
+<li>evidence</li>
+<li>identifiers</li>
+<li>URL (if applicable)</li>
+<li>request/response (if applicable)</li>
+<li>reproduction assets (if applicable)</li>
+<li>training (if applicable)</li>
+<li>code flow (if using advanced SAST)</li>
+</ul>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/1mM8zpMefwW1qbeOIqVKZU/729876d542d2d64e07c101415d7faec2/no_sql_injection_vulnerability_mr_view.png" alt="MR view of introduced vulnerability" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Developers can use this data to remediate vulnerabilities without slowing down security team workflows. Developers can dismiss a vulnerability with reasoning, speeding up the review process, or they can create a confidential issue to track the vulnerability.</p>
+<p>If the code in an MR is merged to the default (usually production-level) branch, then the vulnerability report is populated with the security scanner results. These results can be used by security teams to manage and triage the vulnerabilities found in production.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/V0kPVOQF8jLWvssjNLBPZ/76a1682bacad671bc8280ec11beb29cc/vulnerability_report.png" alt="Vulnerability report with Batch Status setting" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>When clicking on a vulnerability description within the vulnerability report, you are provided with the vulnerability page, which contains the same vulnerability data as the MR, allowing for a single source of truth when assessing impact and performing remediation. From the vulnerability page, GitLab Duo AI features can be used to explain the vulnerability and also create an MR to remediate, speeding up resolution time.</p>
+<blockquote>
+<h5 id="learn-more-about-the-security-scanners-included-with-gitlab-and-how-to-manage-vulnerabilities-in-our-application-security-documentation">Learn more about the security scanners included with GitLab and how to manage vulnerabilities in our application security documentation.</h5></blockquote>
+<h3 id="software-bill-of-materials">Software bill of materials</h3>
+<p>GitLab can create a detailed list of everything your software uses – kind of like an ingredients list for your code. This list, called a software bill of materials (SBOM), shows you all the external code your project depends on, including the parts you directly use and their own dependencies. For each item, you can see which version you&rsquo;re using, what license it has, and whether it has any known security problems. This helps you keep track of what&rsquo;s in your software and spot potential risks.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/5X0bnBp5LTImtOy9slzrpu/d1406a24b689d59ba51303264d181697/sbom.png" alt="Group-level dependency list (SBOM)" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<blockquote>
+<h5 id="learn-how-to-access-and-use-the-dependency-list-with-our-dependency-list-documentation">Learn how to access and use the dependency list with our dependency list documentation.</h5></blockquote>
+<h3 id="system-auditing-and-security-posture-review">System auditing and security posture review</h3>
+<p>GitLab keeps track of everything that happens in your system such as who made changes, what they changed, and when they did it. Think of it like a security camera for your code. This record helps you:</p>
+<ul>
+<li>spot any suspicious activity</li>
+<li>show regulators you&rsquo;re following the rules</li>
+<li>figure out what happened if something goes wrong</li>
+<li>see how people are using GitLab</li>
+</ul>
+<p>All of this information is stored in one place, making it easy to review and investigate when needed. For example, you can use audit events to track:</p>
+<ul>
+<li>who changed the permission level of a particular user for a GitLab project, and when</li>
+<li>who added a new user or removed a user, and when</li>
+</ul>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/hpQAvhw3ISPZgwkQ37SmB/d563efcb5172a88d37caa904030e5fcb/audit_events.png" alt="Project-level audit events" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<blockquote>
+<h5 id="learn-more-about-audit-events-see-the-audit-events-documentation">Learn more about audit events, see the audit events documentation.</h5></blockquote>
+<h2 id="compliance-and-security-posture-oversight">Compliance and security posture oversight</h2>
+<p>GitLab&rsquo;s Security Dashboard works like a control room that shows you all your security risks in one place. Instead of checking different security tools separately, you can see all their findings together on one screen. This makes it easy to spot and fix security problems across all your projects.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/5HVQCPFr2qHgto8bMQqmXq/854fe9b40d0b00c7b35248ab3750f68e/security_dashboard.png" alt="Group-level Security Dashboard" />
+</figure>
+
+
+ <!-- raw HTML omitted --><!-- raw HTML omitted -->Group-level security dashboard<!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<blockquote>
+<h5 id="learn-more-about-security-dashboards-with-our-security-dashboard-documentation">Learn more about security dashboards with our security dashboard documentation.</h5></blockquote>
+<h2 id="establish-procedures-for-identifying-and-mitigating-risks">Establish procedures for identifying and mitigating risks</h2>
+<p>Vulnerabilities go through a specific lifecycle. For example, a part of the procedure can be to require approval for any vulnerable code to be merged to protected branches using security policies. Then the procedure can state that vulnerable code detected in production must be prioritized, assessed, remediated, and then validated:</p>
+<ul>
+<li>The criteria for prioritization can be by the severity of the vulnerability provided by GitLab scanners.</li>
+<li>The assessment can be done using exploitation details provided by the AI: Vulnerability Explanation.</li>
+<li>Once the vulnerability is remediated, then it can be validated using built-in GitLab regression tests and scanners.</li>
+</ul>
+<p>While every organization&rsquo;s needs are different, leveraging GitLab as a platform, risks can be quickly identified and addressed with reduced risk when compared to using a sprawl of disparate tools.</p>
+<h3 id="best-practices-for-soc-2-compliance">Best practices for SOC 2 compliance</h3>
+<ul>
+<li>Establish a strong security culture: Foster a culture of security awareness and accountability throughout your organization.</li>
+<li>Document everything: Maintain thorough documentation of policies, procedures, and controls.</li>
+<li>Automate where possible: Use automation tools to streamline compliance processes and reduce errors.</li>
+<li>Communicate effectively: Keep stakeholders informed about your compliance efforts.</li>
+<li>Seek expert guidance: Consider partnering with a qualified consultant to assist with your SOC 2 journey.</li>
+</ul>
+<p>Achieving SOC 2 compliance is a significant undertaking, but the benefits are undeniable. By demonstrating your commitment to application security and operational excellence, you can build trust with customers, enhance your reputation, and gain a competitive edge in the marketplace.</p>
+<h2 id="read-more">Read more</h2>
+<p>To learn more about GitLab and how we can help achieve SOCv2 compliance while enhancing your security posture, check out the following resources:</p>
+<ul>
+<li>GitLab Ultimate</li>
+<li>GitLab Security and Compliance Solutions</li>
+<li>GitLab Application Security Documentation</li>
+<li>GitLab DevSecOps Tutorial Project</li>
+</ul>
+<p>For businesses that handle sensitive customer information, achieving SOC 2 (System and Organization Controls 2) compliance is not just a good practice — it&rsquo;s often a necessity. SOC 2 is a rigorous auditing standard developed by the American Institute of Certified Public Accountants that assesses a service organization&rsquo;s controls related to security, availability, processing integrity, confidentiality, and privacy.</p>
+<p>While SOC 2 is not legally mandated, it has become increasingly important, in part due to breaches consistently seen in news headlines. Obtaining SOC 2 compliance allows customers to build trust with service organizations because they know their data is being properly stored and security controls have been assessed by a third party.</p>
+<p>In this guide, we&rsquo;ll review the requirements for obtaining SOC 2 compliance and how GitLab can help your organization meet the highest standards for application security.</p>
+<h2 id="what-requirements-are-set-by-soc-2-1">What requirements are set by SOC 2</h2>
+<p>The compliance process involves an audit by an independent auditor who evaluates the design and operating effectiveness of an organization&rsquo;s controls. This process can be very costly, and many organizations are not sufficiently prepared before an audit. With the SOC 2 audit process typically taking close to a year, it is important to establish an efficient pre-audit process.</p>
+<p>To obtain SOC 2 compliance, an organization must meet requirements based on the Trust Services Criteria:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Criteria</th>
+          <th>Requirements</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Security</td>
+          <td>- Implement controls to protect against unauthorized access <!-- raw HTML omitted --> - Establish procedures for identifying and mitigating risks<!-- raw HTML omitted --> - Set up systems for detecting and addressing security incidents</td>
+      </tr>
+      <tr>
+          <td>Availability</td>
+          <td>- Ensure systems are accessible for operation as agreed<!-- raw HTML omitted --> - Monitor current usage and capacity <!-- raw HTML omitted --> - Identify and address environmental threats that could affect system availability</td>
+      </tr>
+      <tr>
+          <td>Process integrity</td>
+          <td>- Maintain accurate records of system inputs and outputs <!-- raw HTML omitted --> - Implement procedures to quickly identify and correct system errors <!-- raw HTML omitted --> - Define processing activities to ensure products and services meet specifications</td>
+      </tr>
+      <tr>
+          <td>Confidentiality</td>
+          <td>- Identify and protect confidential information <!-- raw HTML omitted --> - Establish policies for data retention periods <!-- raw HTML omitted --> - Implement secure methods for destroying confidential data after retention periods expire</td>
+      </tr>
+      <tr>
+          <td>Privacy</td>
+          <td>- Obtain consent before collecting sensitive personal information <!-- raw HTML omitted --> - Communicate privacy policies clearly and in plain language <!-- raw HTML omitted --> - Collect data only through legal means and from reliable sources</td>
+      </tr>
+  </tbody>
+</table>
+<!-- raw HTML omitted -->
+<p>Note that these requirements are not one-time achievements, but rather a continuous process. Auditors will require control effectiveness over time.</p>
+<h2 id="how-to-achieve-and-maintain-the-security-requirements-1">How to achieve and maintain the security requirements</h2>
+<p>GitLab provides several features off the board to get you started with assuring SOC 2 security needs are met:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Security Requirement</th>
+          <th>Addressing Feature</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Implement controls to protect against unauthorized access</td>
+          <td>- Confidential Issues and Merge Requests <!-- raw HTML omitted --> - Custom Roles and Granular Permissions <!-- raw HTML omitted --> - Security Policies <!-- raw HTML omitted --> - Verified Commit <!-- raw HTML omitted --> - Signed Container Images <!-- raw HTML omitted --> - CodeOwners <!-- raw HTML omitted --> - Protected Branches</td>
+      </tr>
+      <tr>
+          <td>Set up systems for detecting and addressing security incidents</td>
+          <td>- Vulnerability Scanning <!-- raw HTML omitted --> - Merge Request Security Widget <!-- raw HTML omitted --> - Vulnerability Insights Compliance Center <!-- raw HTML omitted --> - Audit Events <!-- raw HTML omitted --> - Vulnerability Report Dependency List <!-- raw HTML omitted --> - AI: Vulnerability Explanation <!-- raw HTML omitted --> - AI: Vulnerability Resolution</td>
+      </tr>
+      <tr>
+          <td>Establish procedures for identifying and mitigating risks</td>
+          <td>All the above tools can be used by a security team to establish a procedure around what to do when security vulnerabilities are identified and how they are mitigated.</td>
+      </tr>
+  </tbody>
+</table>
+<p><!-- raw HTML omitted --> Let’s go through each section and highlight the security features that address these requirements. Note that a GitLab Ultimate subscription and the correct Role and Permissions are required to access many of the features listed. Be sure to check out the appropriate documentation for more information.</p>
+<h2 id="implement-controls-to-protect-against-unauthorized-access-1">Implement controls to protect against unauthorized access</h2>
+<p>Implementing robust access controls is essential for protecting an organization&rsquo;s assets, ensuring regulatory compliance, maintaining operational continuity, and fostering trust. GitLab allows you to implement controls to follow the principle of least privilege, securing against unauthorized access. I will briefly cover:</p>
+<ul>
+<li>Security policies</li>
+<li>Custom roles and granular permissions</li>
+<li>Branch protections and CodeOwners</li>
+<li>Verified commits</li>
+</ul>
+<h3 id="security-policies-1">Security policies</h3>
+<p>GitLab&rsquo;s security policies, known as guardrails, enable security and compliance teams to implement consistent controls across their organization, helping prevent security incidents, maintain compliance standards, and reduce risk by automatically enforcing security best practices at scale.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/6eeeYUhQCWbxA1zCCYujUK/874b6ed29e5b87c783f1ac53226d66a4/merge_request_approval_policy.png" alt="Merge request approval policy in action" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>The following policy types are available:</p>
+<ul>
+<li>Scan execution policy: Enforce security scans, either as part of the pipeline or on a specified schedule</li>
+<li>Merge request approval policy: Enforce project-level settings and approval rules based on scan results</li>
+<li>Pipeline execution policy: Enforce CI/CD jobs as part of project pipelines</li>
+<li>Vulnerability management policy: Automate vulnerability management workflows</li>
+</ul>
+<p>Here is an example of ensuring compliance with the pipeline execution policy:</p>
+<ol>
+<li>Create a project that houses multiple compliance jobs. An example of a job can be to check permissions of files that are deployed. These jobs should be generic enough that they can be applied to multiple applications.</li>
+<li>Limit the project&rsquo;s permissions to only security/compliance officers; don’t allow developers to remove jobs. This allows for separation of duties.</li>
+<li>Inject the compliance jobs in batch to the projects where they are required. Force them to run no matter what, but allow approval from team lead to not block development. This will ensure compliance jobs are always run and cannot be removed by developers, and that your environment remains compliant.</li>
+</ol>
+<blockquote>
+<h5 id="learn-how-to-create-security-policies-with-our-security-policy-documentation-1">Learn how to create security policies with our security policy documentation.</h5></blockquote>
+<h3 id="custom-roles-and-granular-permissions-1">Custom roles and granular permissions</h3>
+<p>Custom permissions in GitLab allow organizations to create fine-grained access controls beyond the standard role-based permissions, providing benefits such as:</p>
+<ul>
+<li>more precise access control</li>
+<li>better security compliance</li>
+<li>reduced risk of accidental access</li>
+<li>streamlined user management</li>
+<li>support for complex organizational structures</li>
+</ul>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/4Zq69D23nKPRQsSCjgdTVb/7e45abfb4e4aa89abfa4a9e3766b29b0/custom_roles.png" alt="GitLab custom roles" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<blockquote>
+<h5 id="learn-how-to-create-custom-roles-with-granular-permissions-using-our-custom-role-documentation-1">Learn how to create custom roles with granular permissions using our custom role documentation.</h5></blockquote>
+<h3 id="branch-protections-and-codeowners-1">Branch protections and CodeOwners</h3>
+<p>GitLab helps you further control who can change your code using two key features:</p>
+<ul>
+<li>Branch Protection, which lets you set rules about who can update specific branches – like requiring approval before merging changes.</li>
+<li>Code Ownership, which automatically finds the right people to review code changes by matching files to their designated owners.</li>
+</ul>
+<p>Together, these features help keep your code secure and high-quality by making sure the right people review and approve changes.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/5Lsb14Hwz4lkJNZ7rUnNEl/aa053f241269ecf6f81850f1f5428ca3/protected_branches.png" alt="Protected branches" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<blockquote>
+<h5 id="learn-how-to-create-protected-branches-along-with-codeowners-using-protected-branch-and-codeowner-documentation-1">Learn how to create protected branches along with CodeOwners using protected branch and codeowner documentation.</h5></blockquote>
+<h3 id="verified-commits-1">Verified commits</h3>
+<p>When you sign your commits digitally, you prove they really came from you, not someone pretending to be you. Think of a digital signature like a unique stamp that only you can create. When you upload your public GPG key to GitLab, it can check this stamp. If the stamp matches, GitLab marks your commit as <code>Verified</code>. You can then set up rules to reject commits that aren&rsquo;t signed, or block all commits from users who haven&rsquo;t verified their identity.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/2RdOPNvcc4SqZUGuqcybUu/844a772878785f024dc0a37f6b9f82a9/signed_commit.png" alt="Commit signed with verified signature" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Commits can be signed with:</p>
+<ul>
+<li>SSH key</li>
+<li>GPG key</li>
+<li>Personal x.509 certificate</li>
+</ul>
+<blockquote>
+<h5 id="learn-more-about-verified-commits-with-our-signed-commits-documentation-1">Learn more about verified commits with our signed commits documentation.</h5></blockquote>
+<h2 id="set-up-systems-for-detecting-and-addressing-security-incidents-1">Set up systems for detecting and addressing security incidents</h2>
+<p>Setting up systems for detecting and addressing security incidents is vital for maintaining a robust security posture, ensuring regulatory compliance, minimizing potential damages, and enabling organizations to respond effectively to the ever-evolving threat landscape.</p>
+<p>GitLab provides security scanning and vulnerability management for the complete application lifecycle. I will briefly cover:</p>
+<ul>
+<li>Security scanning and vulnerability management</li>
+<li>Software bill of materials</li>
+<li>System auditing and security posture review</li>
+<li>Compliance and security posture oversight</li>
+</ul>
+<h3 id="security-scanning-and-vulnerability-management-1">Security scanning and vulnerability management</h3>
+<p>GitLab provides a variety of different security scanners that cover the complete lifecycle of your application:</p>
+<ul>
+<li>Static Application Security Testing (SAST)</li>
+<li>Dynamic Application Security Testing (DAST)</li>
+<li>Container Scanning</li>
+<li>Dependency Scanning</li>
+<li>Infrastructure as Code (IaC) Scanning</li>
+<li>Coverage-guided Fuzzing</li>
+<li>Web API Fuzzing</li>
+</ul>
+<p>These scanners can be added to your pipeline via the use of templates. For example, to run SAST and dependency scanning jobs in the test stage, simply add the following to your .gitlab-ci.yml:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">stages</span>:  
+</span></span><span style="display:flex;"><span>   - <span style="color:#ae81ff">test</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">include</span>:  
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">template</span>: <span style="color:#ae81ff">Jobs/Dependency-Scanning.gitlab-ci.yml  </span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">template</span>: <span style="color:#ae81ff">Jobs/SAST.gitlab-ci.yml  </span>
+</span></span></code></pre></div><p>These jobs are fully configurable via environment variables and using GitLab job syntax. Once a pipeline kicks off, the security scanners run and detect vulnerabilities in the diff between the current branch and the target branch. The vulnerability can be seen in a merge request (MR), providing detailed oversight before the code is merged to the target branch. The MR will provide the following information on a vulnerability:</p>
+<ul>
+<li>description</li>
+<li>status</li>
+<li>severity</li>
+<li>evidence</li>
+<li>identifiers</li>
+<li>URL (if applicable)</li>
+<li>request/response (if applicable)</li>
+<li>reproduction assets (if applicable)</li>
+<li>training (if applicable)</li>
+<li>code flow (if using advanced SAST)</li>
+</ul>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/1mM8zpMefwW1qbeOIqVKZU/729876d542d2d64e07c101415d7faec2/no_sql_injection_vulnerability_mr_view.png" alt="MR view of introduced vulnerability" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Developers can use this data to remediate vulnerabilities without slowing down security team workflows. Developers can dismiss a vulnerability with reasoning, speeding up the review process, or they can create a confidential issue to track the vulnerability.</p>
+<p>If the code in an MR is merged to the default (usually production-level) branch, then the vulnerability report is populated with the security scanner results. These results can be used by security teams to manage and triage the vulnerabilities found in production.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/V0kPVOQF8jLWvssjNLBPZ/76a1682bacad671bc8280ec11beb29cc/vulnerability_report.png" alt="Vulnerability report with Batch Status setting" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>When clicking on a vulnerability description within the vulnerability report, you are provided with the vulnerability page, which contains the same vulnerability data as the MR, allowing for a single source of truth when assessing impact and performing remediation. From the vulnerability page, GitLab Duo AI features can be used to explain the vulnerability and also create an MR to remediate, speeding up resolution time.</p>
+<blockquote>
+<h5 id="learn-more-about-the-security-scanners-included-with-gitlab-and-how-to-manage-vulnerabilities-in-our-application-security-documentation-1">Learn more about the security scanners included with GitLab and how to manage vulnerabilities in our application security documentation.</h5></blockquote>
+<h3 id="software-bill-of-materials-1">Software bill of materials</h3>
+<p>GitLab can create a detailed list of everything your software uses – kind of like an ingredients list for your code. This list, called a software bill of materials (SBOM), shows you all the external code your project depends on, including the parts you directly use and their own dependencies. For each item, you can see which version you&rsquo;re using, what license it has, and whether it has any known security problems. This helps you keep track of what&rsquo;s in your software and spot potential risks.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/5X0bnBp5LTImtOy9slzrpu/d1406a24b689d59ba51303264d181697/sbom.png" alt="Group-level dependency list (SBOM)" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<blockquote>
+<h5 id="learn-how-to-access-and-use-the-dependency-list-with-our-dependency-list-documentation-1">Learn how to access and use the dependency list with our dependency list documentation.</h5></blockquote>
+<h3 id="system-auditing-and-security-posture-review-1">System auditing and security posture review</h3>
+<p>GitLab keeps track of everything that happens in your system such as who made changes, what they changed, and when they did it. Think of it like a security camera for your code. This record helps you:</p>
+<ul>
+<li>spot any suspicious activity</li>
+<li>show regulators you&rsquo;re following the rules</li>
+<li>figure out what happened if something goes wrong</li>
+<li>see how people are using GitLab</li>
+</ul>
+<p>All of this information is stored in one place, making it easy to review and investigate when needed. For example, you can use audit events to track:</p>
+<ul>
+<li>who changed the permission level of a particular user for a GitLab project, and when</li>
+<li>who added a new user or removed a user, and when</li>
+</ul>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/hpQAvhw3ISPZgwkQ37SmB/d563efcb5172a88d37caa904030e5fcb/audit_events.png" alt="Project-level audit events" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<blockquote>
+<h5 id="learn-more-about-audit-events-see-the-audit-events-documentation-1">Learn more about audit events, see the audit events documentation.</h5></blockquote>
+<h2 id="compliance-and-security-posture-oversight-1">Compliance and security posture oversight</h2>
+<p>GitLab&rsquo;s Security Dashboard works like a control room that shows you all your security risks in one place. Instead of checking different security tools separately, you can see all their findings together on one screen. This makes it easy to spot and fix security problems across all your projects.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/5HVQCPFr2qHgto8bMQqmXq/854fe9b40d0b00c7b35248ab3750f68e/security_dashboard.png" alt="Group-level Security Dashboard" />
+</figure>
+
+
+ <!-- raw HTML omitted --><!-- raw HTML omitted -->Group-level security dashboard<!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<blockquote>
+<h5 id="learn-more-about-security-dashboards-with-our-security-dashboard-documentation-1">Learn more about security dashboards with our security dashboard documentation.</h5></blockquote>
+<h2 id="establish-procedures-for-identifying-and-mitigating-risks-1">Establish procedures for identifying and mitigating risks</h2>
+<p>Vulnerabilities go through a specific lifecycle. For example, a part of the procedure can be to require approval for any vulnerable code to be merged to protected branches using security policies. Then the procedure can state that vulnerable code detected in production must be prioritized, assessed, remediated, and then validated:</p>
+<ul>
+<li>The criteria for prioritization can be by the severity of the vulnerability provided by GitLab scanners.</li>
+<li>The assessment can be done using exploitation details provided by the AI: Vulnerability Explanation.</li>
+<li>Once the vulnerability is remediated, then it can be validated using built-in GitLab regression tests and scanners.</li>
+</ul>
+<p>While every organization&rsquo;s needs are different, leveraging GitLab as a platform, risks can be quickly identified and addressed with reduced risk when compared to using a sprawl of disparate tools.</p>
+<h3 id="best-practices-for-soc-2-compliance-1">Best practices for SOC 2 compliance</h3>
+<ul>
+<li>Establish a strong security culture: Foster a culture of security awareness and accountability throughout your organization.</li>
+<li>Document everything: Maintain thorough documentation of policies, procedures, and controls.</li>
+<li>Automate where possible: Use automation tools to streamline compliance processes and reduce errors.</li>
+<li>Communicate effectively: Keep stakeholders informed about your compliance efforts.</li>
+<li>Seek expert guidance: Consider partnering with a qualified consultant to assist with your SOC 2 journey.</li>
+</ul>
+<p>Achieving SOC 2 compliance is a significant undertaking, but the benefits are undeniable. By demonstrating your commitment to application security and operational excellence, you can build trust with customers, enhance your reputation, and gain a competitive edge in the marketplace.</p>
+<h2 id="read-more-1">Read more</h2>
+<p>To learn more about GitLab and how we can help achieve SOCv2 compliance while enhancing your security posture, check out the following resources:</p>
+<ul>
+<li>GitLab Ultimate</li>
+<li>GitLab Security and Compliance Solutions</li>
+<li>GitLab Application Security Documentation</li>
+<li>GitLab DevSecOps Tutorial Project</li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

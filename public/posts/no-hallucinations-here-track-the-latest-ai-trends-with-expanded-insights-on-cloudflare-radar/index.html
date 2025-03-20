@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>No hallucinations here: track the latest AI trends with expanded insights on Cloudflare Radar</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>No hallucinations here: track the latest AI trends with expanded insights on Cloudflare Radar</h1>
+			<b><time>06.02.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>During 2024’s Birthday Week, we launched an AI bot &amp; crawler traffic graph on Cloudflare Radar that provides visibility into which bots and crawlers are the most aggressive and have the highest volume of requests, which crawl on a regular basis, and more. Today, we are launching a new dedicated “AI Insights” page on Cloudflare Radar that incorporates this graph and builds on it with additional metrics that you can use to understand AI-related trends from multiple perspectives. In addition to the traffic trends, the new section includes a view into the relative popularity of publicly available Generative AI services based on 1.1.1.1 DNS resolver traffic, the usage of robots.txt directives to restrict AI bot access to content, and open source model usage as seen by Cloudflare Workers AI.</p>
+<p>Below, we’ll review each section of the new AI Insights page in more detail.</p>
+<h3 id="ai-bots-and-crawlers-traffic-trends">AI bots and crawlers traffic trends</h3>
+<p>Tracking traffic trends for AI bots can help us better understand their activity over time. Initially launched in September 2024 on Radar’s Traffic page, the <strong>AI bot &amp; crawler traffic</strong> graph has moved to the AI Insights page and provides visibility into traffic trends gathered globally over the selected time period for the top five most active AI bots &amp; crawlers. The associated list of user agents tracked here is based on the ai.robots.txt list, and will be updated with new entries as they are identified. The time series and summary data for this graph is available from the Radar API, and traffic trends for the full set of AI bots &amp; crawlers we see traffic from can be viewed in the Data Explorer.</p>
+<p>
+<figure>
+  <img src="https://cf-assets.www.cloudflare.com/zkvhlag99gkb/6EicYZIfSdeRMBCIID5Fbr/0213b9501e22033ac5315bbef48c5a7a/image3.png" alt="" />
+</figure>
+
+
+</p>
+<h3 id="popularity-of-generative-ai-services">Popularity of Generative AI services</h3>
+<p>Over the last several years, the Cloudflare Radar Year in Review has analyzed request traffic data from our 1.1.1.1 DNS resolver to present rankings of the most popular Internet services, both generally and across several categories. In both 2023 and 2024, this section included rankings for publicly-available Generative AI services, with ChatGPT topping the list both years. While an accompanying blog post provides a more detailed look at how the rankings shifted over the course of the year, it too is looking through the rearview mirror. That is, it doesn’t provide visibility into the changes as they are occurring. The new <strong>Generative AI services popularity</strong> graph shows the relative rankings of these services and platforms based on DNS request traffic for domains associated with these services aggregated at a daily level. The underlying time series data is available through the Radar API, using the <code>serviceCategory=Generative%20AI</code> parameter.</p>
+<p>The graph below shows that as of the end of January 2025, the top five services were fairly stable over the preceding four weeks, but there was regular movement among those ranked #6-10. We expect that the rankings will continue to change over time. DeepSeek, a Generative AI service that took the industry by storm at the end of January, can be seen making its initial appearance at #9 on January 26, rising rapidly to #3 on January 29, just three days later. </p>
+<p>
+<figure>
+  <img src="https://cf-assets.www.cloudflare.com/zkvhlag99gkb/fzh8oz8ZhybkKlJXBE0qq/4f695ddd38dd676c3b418d5ceac939fb/image5.png" alt="" />
+</figure>
+
+
+</p>
+<h3 id="analysis-of-robotstxt-files">Analysis of robots.txt files</h3>
+<p>Content providers can attempt to control access to their full site, or specific portions of it, through the use of Allow or Disallow directives in a robots.txt file. However, successful access control is dependent on the bots respecting the listed directives. Cloudflare&rsquo;s AI Audit gives you visibility and control into how AI bots are interacting with your website, and now Cloudflare Radar gives you insights into how other sites are handling them.</p>
+<p>On a weekly basis, we analyze Radar’s top 10,000 domains to determine which associated sites publish robots.txt files, as well as aggregating the AI-specific directives within those files. In our new <strong>AI user agents found in robots.txt</strong> graph, seen below, we are now providing insights into actions that these top sites are taking with respect to AI bots. These actions are specified by directives that allow or disallow access by a given user agent (bot identifier) for either all content on the site (Fully Allowed/Disallowed) or certain sections (Partially Allowed/Disallowed).</p>
+<p>
+<figure>
+  <img src="https://cf-assets.www.cloudflare.com/zkvhlag99gkb/16U4GdEyxsUlzqjKd4Y1jH/25535296e710ae31aa8658b4c338296e/image6.png" alt="" />
+</figure>
+
+
+</p>
+<p>In addition, we have also organized these domains by category (for example, Ecommerce or News &amp; Media), highlighting the specific bots that the sites within those categories have listed in their directives. For example, the News &amp; Media domain category graph shown below illustrates that these types of sites almost universally fully disallow access to their sites by AI user agents.</p>
+<p>
+<figure>
+  <img src="https://cf-assets.www.cloudflare.com/zkvhlag99gkb/7i1a23p2FfasbJvrS65S7l/0f476352a9573f9822b5ca9d351795d7/image4.png" alt="" />
+</figure>
+
+
+</p>
+<p>Changing the directive to “Allow” shows a much smaller set of user agents, with a drastically smaller set of sites explicitly allowing full or partial access. (Note that if a user agent is not listed in a robots.txt file, and a wildcard “*” user agent is not specified, then access is fully allowed by default.)</p>
+<p>
+<figure>
+  <img src="https://cf-assets.www.cloudflare.com/zkvhlag99gkb/5I7OgW10PrX8wKVtRRWmnQ/193d5be5f5211b32c29b8c4601ee38ba/image2.png" alt="" />
+</figure>
+
+
+</p>
+<p>In addition to appearing on the AI Insights page, the underlying data is available for further exploration and analysis through the Radar API and the Data Explorer. </p>
+<h3 id="popularity-of-models-and-tasks-on-workers-ai">Popularity of models and tasks on Workers AI</h3>
+<p>The AI model landscape is rapidly evolving, with providers regularly releasing more powerful models, capable of tasks like text and image generation, speech recognition, and image classification. Cloudflare works closely with AI model providers to ensure that Workers AI supports these models as soon as possible following their release. On the new AI Insights page, Radar now provides visibility into the popularity of publicly available supported models (<strong>Workers AI model popularity</strong>) as well as the types of tasks (<strong>Workers AI task popularity</strong>) that these models perform, based on customer account share. Extended insights, including share trends and summary shares for the full list of models and tasks, as well as the ability to compare model and task shares across time periods, are available through the Data Explorer. The underlying model popularity and task popularity data is also available through API endpoints.</p>
+<p>
+<figure>
+  <img src="https://cf-assets.www.cloudflare.com/zkvhlag99gkb/5c7YE87EdMsoN4bYELM4Rw/556abd2ebb70cbc7839fa98c653e816d/image7.png" alt="" />
+</figure>
+
+
+</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>The AI space is extremely dynamic, with new platforms, services, and models regularly appearing. In some cases, these new entrants even have the power to upset the market as they see rapid growth in interest and usage. And over two years since ChatGPT was announced, there continues to be tension between content providers and AI platforms about scraping content for model training. The new “AI Insights” page on Cloudflare Radar provides timely trends and information about this dynamic space, enabling industry observers and participants to better understand how it is changing and evolving over time.</p>
+<p>If you share AI Insights graphs on social media, be sure to tag us: @CloudflareRadar (X), noc.social/@cloudflareradar (Mastodon), and radar.cloudflare.com (Bluesky). You can also reach out on social media, or contact us via email, with suggestions for AI metrics that we can explore adding to the page in the future.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

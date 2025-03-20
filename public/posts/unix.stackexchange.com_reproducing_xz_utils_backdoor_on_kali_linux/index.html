@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Reproducing XZ Utils backdoor on Kali Linux</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="http://localhost:1313/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Reproducing XZ Utils backdoor on Kali Linux</h1>
+			<b><time>24.12.2024 16:27</time></b>
+		       
+		           <a href="/tags/unix.stackexchange.com">unix.stackexchange.com</a>
+        	       
+
+			<div>
+				<h1 id="reproducing-xz-utils-backdoor-on-kali-linux">Reproducing XZ Utils backdoor on Kali Linux</h1>
+<p><strong>Published on</strong>: 2024-12-24T16:27:16Z</p>
+<p><strong>Summary</strong>: I want to learn about the XZ Utils backdoor by following the xzbot exploit demo and setting up the environment. I know version 5.6.1 of xz-utils should have the backdoor, but I cant manage to install this compromised package. Starting with a clean Kali Linux 2024.4 environment, it has liblzma 5.6.3 and sshd does not seem to depend on libsystemd and liblzma. Apparently neither stock or portable OpenSSH comes with systemd support. Im confused by all the guides expecting sshd to be already linked to liblzma, while it just isnt for me. $ dpkg -l | grep liblzma5 ii  liblzma5:amd64                                 5.6.3-1+b1                               amd64        XZ-format compression library  $ ldconfig -p | grep liblzma         liblzma.so.5 (libc6,x86-64) =&gt; /lib/x86_64-linux-gnu/liblzma.so.5  $ sshd -V OpenSSH_9.9p1 Debian-3, OpenSSL 3.3.2 3 Sep 2024  $ ldd $(which sshd)         linux-vdso.so.1 (0x00007fc3de0b8000)         libselinux.so.1 =&gt; /lib/x86_64-linux-gnu/libselinux.so.1 (0x00007fc3ddfde000)         libcrypto.so.3 =&gt; /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007fc3dda00000)         libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007fc3dd80a000)         libpcre2-8.so.0 =&gt; /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x00007fc3dd768000)         /lib64/ld-linux-x86-64.so.2 (0x00007fc3de0ba000)         libz.so.1 =&gt; /lib/x86_64-linux-gnu/libz.so.1 (0x00007fc3ddfbe000)         libzstd.so.1 =&gt; /lib/x86_64-linux-gnu/libzstd.so.1 (0x00007fc3dd6a7000)  When downgrading to the liblzma 5.6.1 package and checking ldd again, nothing appears to have changed. $ wget <a href="https://snapshot.debian.org/archive/debian/20240328T025657Z/pool/main/x/xz-utils/liblzma5_5.6.1-1_amd64.deb">https://snapshot.debian.org/archive/debian/20240328T025657Z/pool/main/x/xz-utils/liblzma5_5.6.1-1_amd64.deb</a>              2024-12-24 00:45:29 (4.72 MB/s) - liblzma5_5.6.1-1_amd64.deb saved [252188/252188]  $ sudo dpkg -i ./liblzma5_5.6.1-1_amd64.deb dpkg: warning: downgrading liblzma5:amd64 from 5.6.3-1+b1 to 5.6.1-1 (Reading database &hellip; 425071 files and directories currently installed.) Preparing to unpack ./liblzma5_5.6.1-1_amd64.deb &hellip; Unpacking liblzma5:amd64 (5.6.1-1) over (5.6.3-1+b1) &hellip; Setting up liblzma5:amd64 (5.6.1-1) &hellip; Processing triggers for libc-bin (2.40-3) &hellip;  $ dpkg -l | grep liblzma5 ii  liblzma5:amd64                                 5.6.1-1                                  amd64        XZ-format compression library                                                                                            $ sudo systemctl restart ssh  $ ldd $(which sshd)                                                                                                        linux-vdso.so.1 (0x00007f705e59b000)         libselinux.so.1 =&gt; /lib/x86_64-linux-gnu/libselinux.so.1 (0x00007f705e4c1000)         libcrypto.so.3 =&gt; /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007f705de00000)         libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007f705dc0a000)         libpcre2-8.so.0 =&gt; /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x00007f705e41f000)         /lib64/ld-linux-x86-64.so.2 (0x00007f705e59d000)         libz.so.1 =&gt; /lib/x86_64-linux-gnu/libz.so.1 (0x00007f705e3ff000)         libzstd.so.1 =&gt; /lib/x86_64-linux-gnu/libzstd.so.1 (0x00007f705db49000)  Then I tried to build OpenSSH 9.7p1 since that is before the backdoor became public, if that would maybe help. This required a restart before sshd -V showed 9.7p1 wget <a href="https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-9.7p1.tar.gz">https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-9.7p1.tar.gz</a> tar -xvf openssh-9.7p1.tar.gz cd openssh-9.7p1 sudo apt install libssl-dev ./configure make sudo make install   But both libsystemd and liblzma were still not linked to sshd.  At this point Im clueless how to even install or build the vulnerable xz-utils package. I had similar problems when trying the same steps with Ubuntu 24.04</p>
+<p>Read more: <a href="https://unix.stackexchange.com/questions/788637/reproducing-xz-utils-backdoor-on-kali-linux">Reproducing XZ Utils backdoor on Kali Linux</a></p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/security.stackexchange.com_what_is_this_hacker_trying_to_do_by_accessing_stac/">What is this hacker trying to do by accessing stack exchange specific URLs on my site? [closed]</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_buffer_overflow_use_ebp_instead_of_esp_ebp&#43;4__re/">buffer overflow use ebp instead of esp (ebp&#43;4 = ret address)</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_character_escaping_xss_closed/">Character escaping xss [closed]</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_is_there_a_way_to_limit_browser_extension_internet/">Is there a way to limit browser extension internet access?</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_is_it_common_practice_to_remove_trusted_certificat/">Is it common practice to remove trusted certificate authorities (CA) located in untrusted countries?</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="http://localhost:1313/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Debuginfod project update 2024</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Debuginfod project update 2024</h1>
+			<b><time>15.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/comprehensive">comprehensive</a>
+        	       
+
+			<div>
+				<p>It has been five years since we first introduced <code>debuginfod</code>, a tool for distributing debugging resources such as executables, debug information, and source files. Since then we have continued to improve <code>debuginfod</code> as well as tools that make use of <code>debuginfod</code>, such as GDB and Valgrind.</p>
+<p>In this article we&rsquo;ll review some of the notable updates and enhancements to <code>debuginfod</code> over the past year as well as the scale at which public <code>debuginfod</code> servers are operating.</p>
+<p>First I will briefly describe what debug info is and how <code>debuginfod</code> helps. Debug info is needed for mapping the binary contents of executables, shared libraries, and core files back to source code. Debug info enables tools to provide detailed information such as the function name, source file, and line number corresponding to binary instructions in an executable that trigger a crash. Debug info is very useful but acquiring and managing it can be tedious. Traditional methods require manual installation of debug RPM packages along with root access. Debug info for large executables or shared libraries can get quite large, making storage a concern. For example, <code>libwebkitgtk.so</code> debug info is over 3GB. Additionally, matching the exact versions of debug info for older binaries or remote processes can be difficult.</p>
+<p><code>debuginfod</code> addresses these challenges by serving as an HTTP client and server for distributing executables, debug info, and source files. It automates access to debugging resources, eliminating the need for manual installations and ensuring that tools fetch only the exact versions needed. By leveraging build IDs—unique identifiers for specific builds—<code>debuginfod</code> simplifies the debugging process for developers.</p>
+<p>Setting up a <code>debuginfod</code> server involves indexing directories for ELF binaries and archives (RPN, DEB, etc.), with options for custom file types. Servers can federate, querying each other for missing files. Developers can interact with <code>debuginfod</code> via commands like <code>debuginfo-find</code> or APIs provided by <code>libdebuginfod</code>. Requested files are downloaded into a local cache, helping speed up repeated queries.</p>
+<h2 id="metrics-and-scale-of-debuginfod-servers">Metrics and scale of debuginfod servers</h2>
+<p><code>debuginfod</code>’s web API provides access to server metrics in the Prometheus format, which can be viewed at the <code>/metrics</code> endpoint of any server. For example, see this resource. These metrics are monitored by the <code>debuginfod</code> developers using a Red Hat internal Grafana instance in order to analyze server activity.</p>
+<p>Fedora’s official <code>debuginfod</code> server is the leader in terms of data served, handling 4.5 TB of data weekly. Arch Linux follows with 2.75 TB per week. Corpus size, which represents the total size of all indexed debugging files, is similarly impressive. Fedora’s staging server manages 25.7 TB, while its main server closely follows with 25.6 TB. Ubuntu’s server also hosts a substantial 18.9 TB. In terms of database index size, Ubuntu leads with 297 GB, while Fedora’s servers each maintain indices of 157 GB.</p>
+<p>To enhance performance, servers maintain a file descriptor cache for recently extracted files. Fedora’s public server has the largest cache among public servers at 98 GB, with Debian close behind at 94.8 GB.</p>
+<h2 id="new-tools-and-features-in-debuginfod">New tools and features in debuginfod</h2>
+<p>An addition to the ecosystem of tools supporting <code>debuginfod</code> is <code>eu-srcfiles</code>, part of the elfutils project. This tool allows developers to list source files and Compilation Unit (CU) names associated with an ELF binary, shared library, or core dump. It can also process a running process’s ID to identify relevant files.</p>
+<p>Beyond listing, <code>eu-srcfiles</code> can download all source files related to an ELF binary or process, ensuring exact matches using build IDs. The downloaded files are organized into a directory tree and packaged as a zip archive for convenience. This functionality is particularly useful for replicating the exact development environment needed for debugging.</p>
+<p>Another enhancement is the introduction of metadata queries. Servers can now provide JSON-formatted data about files matching specific paths or patterns. This makes it easy for tools to map source file names to build IDs. The debugging tool SystemTap uses metadata queries in order to easily acquiring debug info for multiple versions of a library or executable, which facilitates live-patching a range of binaries known to have a security bug, for example.</p>
+<h2 id="ima-verification-support">IMA verification support</h2>
+<p><code>debuginfod</code> now optionally supports per-file Integrity Measurement Architecture (IMA) verification. IMA is a Linux kernel feature that detects file tampering. Fedora has recently introduced support for per-file IMA verification, adding an extra layer of security for users. <code>debuginfod</code> can now take advantage of Fedora&rsquo;s per-file signature in order to help verify the integrity of downloaded files. This feature can be controlled via the <code>DEBUGINFOD_URLS</code> environment variable (see the <code>debuginfod-find</code> man page for more information), with options to enforce verification (<code>ima:enforcing</code>) or bypass it (<code>ima:ignore</code>).</p>
+<h2 id="addressing-kernel-vdso-extraction-bottlenecks">Addressing kernel VDSO extraction bottlenecks</h2>
+<p>Performance issues with kernel virtual dynamic shared object (vDSO) extraction were a longstanding challenge. These shared libraries are automatically loaded into user-space processes and are frequently queried by tools like GDB. Previously, extracting <code>vdso.debug</code> from kernel debug archives could take over 60 seconds on Fedora’s <code>debuginfod</code> server.</p>
+<p>The root of the problem lay in the compression format used. Kernel debug RPM and DEB archives use XZ compression, which supports random access with multithreaded compression. By implementing random access functionality in <code>debuginfod</code>, the extraction process was significantly optimized. The time required to extract <code>vdso.debug</code> was reduced to under a second, a 200-fold improvement. For more information see Omar Sandoval&rsquo;s blog post on this topic. Omar is the author of this vDSO extraction optimization.</p>
+<h2 id="lazy-debug-info-downloading-in-valgrind-and-gdb">Lazy debug info downloading in Valgrind and GDB</h2>
+<p>Both Valgrind and GDB have implemented or are in the process of implementing lazy downloading, which postpones fetching unnecessary debug info until it is required. This approach addresses the inefficiency of downloading large volumes of debug info that may not be used during a debugging session.</p>
+<p>In Valgrind, lazy downloading reduces the amount of debug info downloaded at startup. Previously, Valgrind downloaded all debug info for shared libraries during the program’s initialization phase, leading to delays. With lazy downloading, debug info is fetched only when needed, such as during backtrace generation. Testing has shown best-case reductions of up to 90% in downloaded debug info, with overall runtime improving by approximately 25%. Valgrind lazy debuginfo support is available in Fedora 37+ and Red Hat Enterprise Linux (RHEL) 8+.</p>
+<p>GDB’s approach to lazy downloading is still under development. It focuses on downloading only the <code>gdb_index</code> initially. This section provides enough information to set breakpoints and resolve symbols without fetching the full debug info file (see this resource for more information on <code>gdb_index</code>). For scenarios where source file information is needed, GDB downloads additional sections like <code>debug_line</code> or <code>debug_line_str</code>, which are much smaller compared to full debug info files. The combined sizes of <code>gdb_index</code>, <code>debug_line</code>, and <code>debug_line_str</code> average about 8% of the size of the full debug info file. The lazy method ensures efficient downloading while maintaining the flexibility required for comprehensive debugging. GDB lazy debuginfo downloading is currently under development.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Recent updates to <code>debuginfod</code> highlight its growing role in simplifying debugging workflows and addressing performance challenges. From tools like <code>eu-srcfiles</code> to features like IMA verification and lazy downloading, <code>debuginfod</code> continues to adapt to the needs of developers working on complex projects. As these improvements are adopted across tools and distributions, they promise to make debugging a more streamlined and efficient process.</p>
+<p>The post Debuginfod project update 2024 appeared first on Red Hat Developer.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

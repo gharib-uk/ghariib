@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Auto-adaptive thresholds for AI-driven quality gating</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Auto-adaptive thresholds for AI-driven quality gating</h1>
+			<b><time>07.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/davis-ai">davis-ai</a>
+        	       
+		           <a href="/tags/dynatrace">dynatrace</a>
+        	       
+		           <a href="/tags/dynatrace-version-1-293">dynatrace-version-1-293</a>
+        	       
+		           <a href="/tags/forcasting">forcasting</a>
+        	       
+		           <a href="/tags/regression-testing">regression-testing</a>
+        	       
+		           <a href="/tags/site-reliability-guardian">site-reliability-guardian</a>
+        	       
+		           <a href="/tags/srg">srg</a>
+        	       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://dt-cdn.net/wp-content/uploads/2024/06/Blog_-OTP-0146_-high-res-version-300x169.png" alt="auto-adaptive thresholds" />
+</figure>
+
+
+</p>
+<p>The latest release of the Site Reliability Guardian incorporates assistance from Dynatrace Davis® AI to automatically derive appropriate threshold targets and adjust them over time to protect your quality improvements. This process, known as auto-adaptive thresholding, eliminates the need to define a static threshold upfront. Instead, it derives the suitable thresholds from previous validation results.</p>
+<h2 id="build-an-umbrella-for-development-and-operations">Build an umbrella for Development and Operations</h2>
+<p>In modern software engineering, the discipline of platform engineering delivers DevSecOps practices to developers to bridge the gaps between development, security, and operations and enhance the developer experience. A key element in platform engineering is the establishment of fast feedback cycles regarding the quality and security measures of new software releases. To provide automated feedback for developers, the concept of quality gates for static code analysis in continuous integration is widely adopted throughout the industry. However, this perspective differs in the continuous deployment practices of various organizations, where the feedback is either delayed or not returned to the developer.</p>
+<p>While receiving no feedback on the quality or security of new features leaves developers uncertain about feature performance, delayed feedback also increases a developer’s cognitive load. The developer must pause their current engineering work to address the reported issue and consider the code changes they worked on a few days or weeks prior.</p>
+<p>To reduce developers’ cognitive load by providing timely information, platform engineers must create tools that allow validations to be run in the early phases of development, with direct and fast feedback loops. Ideally, this should be a self-service offering that enables individual adoption by teams. While platform engineers can build and prepare the necessary infrastructure and templates for self-adoption, developers must still provide some customization. For example, the team must establish specific thresholds for desired service performance behavior. Setting these thresholds upfront can be challenging because the team might not know how a service will behave in its environment.</p>
+<h2 id="how-we-define-auto-adaptive-thresholds-at-dynatrace">How we define auto-adaptive thresholds at Dynatrace</h2>
+<p>This blog post explores how Dynatrace leveraged the Site Reliability Guardian to establish a fast feedback loop for Davis AI model improvements. The conducted validations avoided regression within the models, and the outcomes were immediately fed back to the data science team when deviations were detected. While the data science team appreciated the quick insights and validations of their improvements, they initially struggled with the setup. Consequently, this blog post highlights the new capability of the Site Reliability Guardian to define auto-adaptive thresholds that tackle the challenge of configuring static thresholds and protect your quality and security investments with relative comparisons to previous validations.</p>
+<h2 id="fast-feedback-cycles-on-model-improvements">Fast feedback cycles on model improvements</h2>
+<p>While the Site Reliability Guardian was originally designed to validate new software releases, Dynatrace has internally extended its application area to include validation of models for Davis AI.</p>
+<p>The Dynatrace data science team continuously improves the machine learning models used by Davis AI, for example, by adding new features to forecasting or refining mathematical calculations. A single change can influence multiple models, as features are often used across several models. To ensure that model changes don’t lead to regressions, the data scientists set up Site Reliability Guardian, which is automatically triggered whenever a change is made in the codebase via CI/CD pipelines.</p>
+<p>A series of models are continuously trained on Dynatrace tenants to effectively set objectives. The training times and other quality metrics, such as the RMSE (Root Mean Squared Error), SMAPE (Scaled Mean Absolute Percentage Error), and coverage probability, are monitored using Dynatrace. Our data scientists utilize metrics and events to store these quality metrics. However, other data formats, like logs, can also be employed. The quality metrics can then be easily queried using DQL and utilized for the objectives of a guardian. Validations are automatically triggered when a change is committed to the code base via the Dynatrace API. This helps data scientists quickly respond to recently introduced regressions. For instance, if an objective is violated, they’re immediately notified, for example, through a Slack channel.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://dt-cdn.net/wp-content/uploads/2024/06/forecaster_srg.png" alt="Validation history" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 1. Validation history</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>One difficulty encountered when setting up objectives in the guardians was selecting an appropriate threshold for the quality metrics, as this is typically heavily dependent on the data.</p>
+<h2 id="leverage-davis-ai-to-quickly-start-validating">Leverage Davis AI to quickly start validating</h2>
+<p>To address the challenge of defining a static threshold for an objective, the Site Reliability Guardian enables switching objective thresholds to auto-adaptive mode, as depicted in the screenshot below.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://dt-cdn.net/wp-content/uploads/2024/06/activate_auto_adaptive_thresholds.png" alt="Activating an auto-adaptive threshold for the response time objective" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 2. Activating an auto-adaptive threshold for the response time objective</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Davis AI controls auto-adaptive thresholds. It analyzes the next five validations to derive this objective’s proper warning and failure thresholds. Once the learning phase is complete, all subsequent validation results are fed into Davis AI to fine-tune the thresholds based on changed behavior.</p>
+<p>Considering previous validation results, the latest validation is always relative to the past, protecting quality and security improvements. If, for example, recent performance improvements change a service’s response time from 200 ms to 175 ms, the auto-adaptive threshold is adjusted to reflect the new behavior. Nevertheless, the Site Reliability Guardian detects sudden behavior changes by reporting a warning or failure if response time returns to 200 ms or above.</p>
+<h3 id="learning-phase">Learning phase</h3>
+<p>Unless an objective has been validated five times, it’s still in the learning phase. During this phase, the measured values are informative, allowing observation of the objective’s development without affecting deployment or delivery processes. The Site Reliability Guardian denotes the learning phase of an objective with a loading symbol on the heatmap and in the objective details.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://dt-cdn.net/wp-content/uploads/2024/06/detailed_analysis.png" alt="Representation of the learning phase of an auto-adaptive threshold" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 3. Representation of the learning phase of an auto-adaptive threshold</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>The warning and failure thresholds will be automatically set if sufficient validations are available to establish a solid baseline for an objective’s auto-adaptive thresholds. Consequently, the next objective validation will impact the overall validation result.</p>
+<h3 id="auto-adaptive-thresholds-as-code">Auto-adaptive thresholds as code</h3>
+<p>To enhance the developer’s experience in adopting the Site Reliability Guardian in a self-service manner, the configuration for a guardian and its workflow can be provided in a configuration-as-code fashion. This enables the management of the configuration within the service’s code repository. Incorporating the new capability of auto-adaptive thresholds into configuration-as-code is as simple as adding the <code>autoAdaptiveThresholdEnabled</code> flag to an objective.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://dt-cdn.net/wp-content/uploads/2024/06/config_as_code_snippet.png" alt="Configuration-as-code example for activating an auto-adaptive threshold" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 4. Configuration-as-code example for activating an auto-adaptive threshold</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Before concluding, we wish to announce the change of the Site Reliability Guardian icon from purple to shiny golden. This new appearance enhances the icon’s geometry while preserving its core values. Therefore, the icon continues to feature the infinity loop as a symbol for the DevSecOps loop and the fast forward sign to expedite delivery while ensuring quality and security standards.</p>
+<h2 id="the-new-and-shiny-appearance-of-site-reliability-guardian">The new and shiny appearance of Site Reliability Guardian</h2>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://dt-cdn.net/wp-content/uploads/2024/06/srg_icon.png" alt="Evolution of the Site Reliability Guardian icon" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 5. Evolution of the Site Reliability Guardian icon</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h2 id="whats-next">What’s next</h2>
+<p>The new auto-adaptive thresholds capability is now available in Site Reliability Guardian. Open the app and switch from static to auto-adaptive thresholds for those objectives where Davis AI should derive the thresholds for you. For full details, see Dynatrace Documentation.</p>
+<p>If you haven’t used Site Reliability Guardian yet, try it out in the Dynatrace Playground or watch the latest app spotlight recording.</p>
+<p>Explore Site Reliability Guardian</p>
+<p>The post Auto-adaptive thresholds for AI-driven quality gating appeared first on Dynatrace news.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Challenging devChallenges.io with SvelteKit</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Challenging devChallenges.io with SvelteKit</h1>
+			<b><time>06.02.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Before we get into it, I would like to thank whatever powers that be who selected my previous post as top 7 featured of the week. I&rsquo;m quite proud of that, and now I&rsquo;m motivated to do more writing, so let&rsquo;s get into it!</p>
+<p>After seeing that a certain company in my area (70-ish miles away, close enough) was looking for experience in SvelteKit, I decided to try it out. Most of my experience is in PHP frameworks utilizing Timber/Twig, but I want to get more familiar with JavaScript frameworks. What better way to learn than diving in? What I&rsquo;ve chosen to do is hop on devChallenges, pick a project which comes fully loaded with a design, and go to town. I chose Simple Coffee Listing as my first since it seemed simple enough.</p>
+<h2 id="challenges-overcame-while-challenging-devchallenges">Challenges overcame while Challenging devChallenges</h2>
+<p>It took me a few days to complete this one page project, and most of that time was spent setting up a development environment on Windows 10, and figuring out how to build a toggle component. I would like to state that ever since my first internship position, I learned that documentation is my best friend. Svelte&rsquo;s documentation and tutorials are excellent, and without them I&rsquo;d still be figuring out how to build a toggle component.</p>
+<p>Looking at the design I could tell I was going to need a Card component and a Toggle component. The Toggle was built with radio buttons. To have an option checked by default I had to set initial state for the bind:value to the first radio option value. Let&rsquo;s look at the code!</p>
+<h2 id="pagesvelte">+page.svelte</h2>
+<pre tabindex="0"><code>&lt;script&gt;
+    import Card from &#39;$lib/components/Card/Card.svelte&#39;;
+    import Toggle from &#39;$lib/components/Toggle/Toggle.svelte&#39;;
+
+    let {data} = $props(); //data is coming from +page.server.js
+
+    let fullCatalog = Array.from(data.item); //Array.from since we are receiving an object full of objects.
+    let filteredCatalog = fullCatalog.filter(coffee =&gt; coffee.id !== 5); 
+
+    const options = [{
+        value: &#39;all-products&#39;,
+        label: &#39;All Products&#39;,
+    }, {
+        value: &#39;available-now&#39;,
+        label: &#39;Available Now&#39;,
+    }, ]
+
+    let radioValue = $state(options[0].value); //default radio choice
+
+&lt;/script&gt;
+</code></pre><p>The main page where I import the UI components Card and Toggle, pulling in data from +page.server.js, and then form 2 separate arrays from that data. Initially I attempted to loop through the data array and use skip or continue when faced with the item that was supposed to be filtered, but apparently there is no equivalent to those keywords when looping with svelte&rsquo;s {#each}. That is why I opted to create two arrays, though I would have preferred having only one.</p>
+<p>The next relevant piece of code is</p>
+<pre tabindex="0"><code> &lt;Toggle {options} bind:userChoice={radioValue}/&gt;
+</code></pre><p>We&rsquo;re using options to help build the radio buttons inside of Toggle, and bind is used to pass data from the child () to the parent (+page.svelte).</p>
+<h2 id="togglesvelte">Toggle.svelte</h2>
+<pre tabindex="0"><code>&lt;script&gt;
+    let { options, userChoice = $bindable(options[0].value) } = $props();
+
+    const slugify = (str = &#34;&#34;) =&gt; str.toLowerCase().replace(/ /g, &#34;-&#34;).replace(/./g, &#34;&#34;);
+
+    const uniqueID = Math.floor(Math.random() * 100)
+
+    console.log(options[0])
+&lt;/script&gt;
+
+&lt;div role=&#34;radiogroup&#34; aria-labelledby={`label-${uniqueID}`} class=&#34;productFilterWrapper mx-auto max-w-96 flex justify-center gap-6 pb-8&#34; &gt;
+
+    {#each options as { value, label }}
+
+        &lt;input bind:group={userChoice} value={value} type=&#34;radio&#34; id={slugify(label)} class=&#34;hidden-toggles__input hidden&#34;&gt;
+        &lt;label for={slugify(label)} class=&#34;hidden-toggles__label p-4 rounded-xl&#34;&gt;{label}&lt;/label&gt;
+
+     {/each}
+
+&lt;/div&gt;
+</code></pre><p>From Svelte:</p>
+<blockquote>
+<p>If you have multiple type=&ldquo;radio&rdquo; or type=&ldquo;checkbox&rdquo; inputs relating to the same value, you can use bind:group along with the value attribute. Radio inputs in the same group are mutually exclusive; checkbox inputs in the same group form an array of selected values.</p></blockquote>
+<p>While there are only two options to iterate through with each, I want to leave the possibility for more options to be included, and would work just as well with 2 or 200 (please do not have 200 radio buttons for any reason ever). Now that I have the functionality to filter our results from our api call based on which radio button is selected, HOW are we going to present this information? Glad you asked. Back to +page.svelte!</p>
+<p>Below toggle, we have this logic</p>
+<pre tabindex="0"><code>&lt;div class=&#34;CardGrid w-full max-md:mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6&#34;&gt;
+        {#if radioValue === &#34;&#34; || radioValue === &#39;all-products&#39;}
+            {#each fullCatalog
+                as { id, name, image, popular, price, rating, votes }}
+
+                &lt;Card
+                    coffeeId={id}
+                    coffeeName={name}
+                    coffeeImg={image}
+                    coffeePopular={popular}
+                    coffeePrice={price}
+                    coffeeRating={rating}
+                    coffeeVotes={votes}
+
+                /&gt;  
+            {/each}
+        {:else}
+            {#each filteredCatalog
+                as { id, name, image, popular, price, rating, votes }}
+
+                &lt;Card
+                    coffeeId={id}
+                    coffeeName={name}
+                    coffeeImg={image}
+                    coffeePopular={popular}
+                    coffeePrice={price}
+                    coffeeRating={rating}
+                    coffeeVotes={votes}
+
+                /&gt;  
+            {/each}    
+        {/if}
+    &lt;/div&gt;
+</code></pre><p>We set up a container Grid and based on the value passed in by Toggle, we iterate one of our arrays. Each array item has an object which gets destructured into a list corresponding with their properties.</p>
+<h2 id="cardsvelte">Card.svelte</h2>
+<pre tabindex="0"><code>&lt;script&gt;
+    let {coffeeId, coffeeName, coffeeImg,  coffeePopular, coffeePrice, coffeeRating, coffeeVotes } = $props();
+
+&lt;/script&gt;
+
+&lt;div class=&#34;cardWrapper&#34;&gt;
+    &lt;div class=&#34;cardImgWrapper&#34;&gt;
+        {#if coffeePopular === true}
+            &lt;p class=&#34;absolute mx-2 my-2 px-2 py-1 bg-yellow-400 rounded-xl text-black text-xs font-medium&#34;&gt;Popular&lt;/p&gt;
+        {/if}
+        &lt;img class=&#34;rounded-xl w-full&#34; alt=&#34;&#34; src=&#34;{coffeeImg}&#34; /&gt;
+    &lt;/div&gt;
+    &lt;div class=&#34;cardPriceWrapper flex justify-between pt-2&#34;&gt;
+        &lt;p class=&#34;text-white font-medium&#34;&gt;{coffeeName}&lt;/p&gt;
+        &lt;span class=&#34;text-black bg-[#FEF7EE] rounded-md px-2 py-1 font-medium text-sm h-min&#34;&gt;{coffeePrice}&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class=&#34;cardRatingWrapper flex items-center justify-between&#34;&gt;
+        &lt;div class=&#34;score-votes flex items-center&#34;&gt;
+            {#if coffeeVotes}
+                &lt;img alt=&#34;&#34; src=&#34;/img/Star_fill.svg&#34; /&gt;
+                &lt;p class=&#34;text-md font-medium&#34;&gt;{coffeeRating} &lt;span class=&#34;text-[#4d5562] pl-1&#34;&gt;({coffeeVotes} votes)&lt;/span&gt;&lt;/p&gt;
+            {:else if !coffeeVotes}
+                &lt;img alt=&#34;&#34; src=&#34;/img/Star.svg&#34; /&gt;
+                &lt;p class=&#34;text-[#4d5562] text-small&#34;&gt;No Ratings&lt;/p&gt;
+            {:else}
+                &lt;p&gt;No Data&lt;/p&gt;
+            {/if}
+        &lt;/div&gt;
+
+        {#if coffeeId===5}
+            &lt;p id=&#34;sold-out&#34; class=&#34;text-[#ED735D] font-medium text-sm&#34;&gt;Sold Out&lt;/p&gt;
+        {/if}
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre><p>All we have to do is place the data to their assigned seats, and make it look nice with TailwindCSS.</p>
+<h2 id="room-for-improvement">Room for Improvement</h2>
+<p>I&rsquo;m not certain what $bindable does in Toggle, as +page.svelte is already setting that value to the same thing. Last time I tried to remove it, things stopped working so I may be causing an error somewhere else.<br>
+While there was no private API key for this project, I still would like to practice with keeping one hidden and I think I know just the project to work on that!<br>
+I also want to take options out of the script inside of the main page, but since it&rsquo;s only two items it&rsquo;s fine as is. Though I feel I would prefer it in its own file if it were any larger.<br>
+Next Project, I&rsquo;m going to try and set up a basic layout so that there are better and defined boundaries. Some animations to create visual interest wouldn&rsquo;t hurt either.</p>
+<p>I believe that is all for this particular project, and there will definitely be another as I would like to do more with Svelte. I found it to be pleasant, daresay fun to work with. If there is anything you&rsquo;ve seen that can be improved or corrected, please do tell. Thank you for reading and I hope you had something to take away!</p>
+<h3 id="helpful-links--references">Helpful Links / References</h3>
+<p>Radio Button Playground 1<br>
+Radio Button Playground 2<br>
+My devChallenge solution hosted by Netlify<br>
+My GitHub Repo for Coffee Listing<br>
+Reddit: The differences between +page.js, +page.server.js, and +server.js</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

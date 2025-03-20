@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>The Data Breach Disclosure Conundrum</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>The Data Breach Disclosure Conundrum</h1>
+			<b><time>05.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/penetrationtesting">penetrationtesting</a>
+        	       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2024/09/ezgif-5-d90db32a91.jpg" alt="The Data Breach Disclosure Conundrum" />
+</figure>
+
+
+</p>
+<p>The conundrum I refer to in the title of this post is the one faced by a breached organisation: disclose or suppress? And let me be even more specific: should they disclose to <em>impacted individuals,</em> or simply never let them know? I&rsquo;m writing this after many recent such discussions with breached organisations where I&rsquo;ve found myself wishing I had this blog post to point them to, so, here it is.</p>
+<p>Let&rsquo;s start with tackling what is often a fundamental misunderstanding about disclosure obligations, and that is <em>the legal necessity to disclose</em>. Now, as soon as we start talking about legal things, we run into the problem of it being different all over the world, so I&rsquo;ll pick a few examples to illustrate the point. As it relates to the UK GDPR, there are two essential concepts to understand, and they&rsquo;re the first two bulleted items in their personal data breaches guide:</p>
+<blockquote>
+<p>The UK GDPR introduces a duty on all organisations to report certain personal data breaches to the relevant supervisory authority. You must do this within 72 hours of becoming aware of the breach, where feasible.</p></blockquote>
+<blockquote>
+<p>If the breach is likely to result in a high risk of adversely affecting individuals’ rights and freedoms, you must also inform those individuals without undue delay.</p></blockquote>
+<p>On the first point, &ldquo;certain&rdquo; data breaches must be reported to &ldquo;the relevant supervisory authority&rdquo; within 72 hours of learning about it. When we talk about disclosure, often (not just under GDPR), that term refers to the responsibility to report it to the <em>regulator</em>, not the <em>individuals</em>. And even then, read down a bit, and you&rsquo;ll see the carveout of the incident needing to expose personal data that is <em>likely</em> to present a &ldquo;risk to people’s rights and freedoms&rdquo;.</p>
+<p>This brings me to the second point that has this massive carveout as it relates to disclosing to the individuals, namely that the breach has to present &ldquo;a high risk of adversely affecting individuals’ rights and freedoms&rdquo;. We have a similar carveout in Australia where the obligation to report to individuals is predicated on the likelihood of causing &ldquo;serious harm&rdquo;.</p>
+<p>This leaves us with the fact that in many data breach cases, organisations may decide they don&rsquo;t need to notify individuals whose personal information they&rsquo;ve inadvertently disclosed. Let me give you an example from smack bang in the middle of GDPR territory: Deezer, the French streaming media service that went into HIBP early January last year:</p>
+<!-- raw HTML omitted -->
+<p>229M records is a <em>substantial</em> incident, and there&rsquo;s no argument about the personally identifiable nature of attributes such as email address, name, IP address, and date of birth. However, at least initially (more on that soon), Deezer chose not to disclose to impacted individuals:</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>This situation understandably upset many people, with many cries of &ldquo;but GDPR!&rdquo; quickly following. And they did know <em>way</em> before I loaded it into HIBP too, almost two months earlier, in fact (courtesy of archive.org):</p>
+<blockquote>
+<p>This information came to light November 8 2022 as a result of our ongoing efforts to ensure the security and integrity of our users’ personal information</p></blockquote>
+<p>They knew, yet they chose not to contact impacted people. And they&rsquo;re also confident that position didn&rsquo;t violate any data protection regulations (current version of the same page):</p>
+<blockquote>
+<p>Deezer has not violated any data protection regulations</p></blockquote>
+<p>And based on the carveouts discussed earlier, I can see how they drew that conclusion. Was the disclosed data likely to lead to &ldquo;a high risk of adversely affecting individuals’ rights and freedoms&rdquo;? You can imagine lawyers arguing that it wouldn&rsquo;t. Regardless, people were <em>pissed,</em> and if you read through those respective Twitter threads, you&rsquo;ll get a good sense of the public reaction to their handling of the incident. HIBP sent 445k notifications to our own individual subscribers and another 39k to those monitoring domains with email addresses in the breach, and if I were to hazard a guess, that may have been what led to this:</p>
+<!-- raw HTML omitted -->
+<p>So, they know about the breach in Nov, and they told people in Feb. It took them a quarter of a year to tell their customers they&rsquo;d been breached, and if my understanding of their position and the regulations they were adhering to is correct, they never needed to send the notice at all.</p>
+<p>I appreciate that&rsquo;s a very long-winded introduction to this post, but it sets the scene and illustrates the conundrum perfectly: an organisation may not need to disclose to individuals, but if they don&rsquo;t, they risk a backlash that may eventually force their hand.</p>
+<p>In my past dealing with organisations that were reticent to disclose to their customers, their positions were often that the data was relatively benign. Email addresses, names, and some other identifiers of minimal consequence. It&rsquo;s often clear that the organisation is leaning towards the &ldquo;uh, maybe we just don&rsquo;t say anything&rdquo; angle, and if it&rsquo;s not already obvious, that&rsquo;s not a position I&rsquo;d encourage. Let&rsquo;s go through all the reasons:</p>
+<h3 id="whose-data-is-it-anyway">Whose Data is it Anyway?</h3>
+<p>I ask this question because the defence I&rsquo;ve often heard from organisations choosing the non-disclosure path is that the data is <em>theirs</em> - the company&rsquo;s. I have a fundamental issue with this, and it&rsquo;s not one with any legal basis (but I can imagine it being argued by lawyers in favour of that position), rather the commonsense position that someone&rsquo;s email address, for example, is theirs. If my email address appears in a data breach, then that&rsquo;s <em>my</em> email address and I entrusted the organisation in question to look after it. Whether there&rsquo;s a legal basis for the argument or not, the assertion that personally identifiable attributes become the property of another party will buy you absolutely no favours with the individual who provided them to you when you don&rsquo;t let them know you&rsquo;ve leaked it.</p>
+<h3 id="the-determination-of-rights-freedoms-and-serious-harm">The Determination of Rights, Freedoms, and Serious Harm</h3>
+<p>Picking those terms from earlier on, if my gender, sexuality, ethnicity, and, in my case, even my entire medical history were to be made public, I would suffer no serious harm. You&rsquo;d learn nothing of any consequence that you don&rsquo;t already know about me, and personally, I would not feel that I suffered as a result. However&hellip;</p>
+<p>For some people, simply the association of their email address to their name may have a tangible impact on their life, and using the term from above jeopardises their rights and freedoms. Some people choose to keep their IRL identities completely detached from their email address, only providing the two together to a handful of trusted parties. If you&rsquo;re handling a data breach for your organisation, do you know if any of your impacted customers are in that boat? No, of course not; how could you?</p>
+<p>Further, let&rsquo;s imagine there is nothing more than email addresses and passwords exposed on a cat forum. Is that likely to cause harm to people? Well, it&rsquo;s just cats; how bad could it be? Now, ask that question - how bad could it be? - with the prevalence of password reuse in mind. This isn&rsquo;t just a cat forum; it is a repository of credentials that will unlock social media, email, and financial services. Of course, it&rsquo;s not the fault of the breached service that people reuse their passwords, but their breach could lead to serious harm via the compromise of accounts on totally unrelated services.</p>
+<p>Let&rsquo;s make it even more benign: what if it&rsquo;s just email addresses? Nothing else, just addresses and, of course, the association to the breached service. Firstly, the victims of that breach may not want their association with the service to be publicly known. Granted, there&rsquo;s a spectrum and weaponising someone&rsquo;s presence in Ashley Madison is a very different story from pointing out that they&rsquo;re a LinkedIn user. But conversely, the association is <em>enormously</em> useful phishing material; it helps scammers build a more convincing narrative when they can construct their messages by repeating accurate facts about their victim: &ldquo;Hey, it&rsquo;s Acme Corp here, we know you&rsquo;re a loyal user, and we&rsquo;d like to make you a special offer&rdquo;. You get the idea.</p>
+<h3 id="who-is-non-disclosure-actually-protecting">Who is Non-disclosure <em>Actually</em> Protecting?</h3>
+<p>I&rsquo;ll start this one in the complete opposite direction to what it sounds like it should be because this is what I&rsquo;ve previously heard from breached organisations:</p>
+<blockquote>
+<p>We don&rsquo;t want to disclose in order to protect our customers</p></blockquote>
+<p>Uh, you sure about that? And yes, you did read that paraphrasing correctly. In fact, here&rsquo;s a copy paste from a recent discussion about disclosure where there was an argument against any public discussion of the incident:</p>
+<blockquote>
+<p>Our concern is that your public notification would direct bad actors to search for the file, which can potentially do harm to both the business and our mutual users.</p></blockquote>
+<p>The fundamental issue of this clearly being an attempt to suppress news of the incident aside, in this particular case, the data was already on a popular clear web hacking forum, and the incident has appeared in multiple tweets viewed by thousands of people. The argument makes no sense whatsoever; the bad guys - <em>lots of them</em> - already have the data. And the good guys (the customers) don&rsquo;t know about it.</p>
+<p>I&rsquo;ll quote precisely from another company who took a similar approach around non-disclosure:</p>
+<blockquote>
+<p>[company name] is taking steps to notify regulators and data subjects where it is legally required to do so, based on advice from external legal counsel.</p></blockquote>
+<p>By now, I don&rsquo;t think I need to emphasise the caveat that they inevitably relied on to suppress the incident, but just to be clear: <em>&ldquo;where it is legally required to do so&rdquo;</em>. I can say with a very high degree of confidence that they never notified the 8-figure number of customers exposed in this incident because they didn&rsquo;t have to. (I hear about it pretty quickly when disclosure notices are sent out, and I regularly share these via my X feed).</p>
+<p>Non-disclosure is intended to protect the brand and by extension, the shareholders, <em>not</em> the customers.</p>
+<h3 id="non-disclosure-creates-a-vacuum-that-will-be-filled-by-others">Non-Disclosure Creates a Vacuum That <em>Will</em> be Filled by Others</h3>
+<p>Usually, after being sent a data breach, the first thing I do is search for &ldquo;[company name] data breach&rdquo;. Often, the only results I get are for a listing on a popular hacking forum (again, on the clear web) where their data was made available for download, complete with a description of the incident. Often, that description is wrong (turns out hackers like to embellish their accomplishments). Incorrect conclusions are drawn and publicised, and <em>they&rsquo;re</em> the ones people find when searching for the incident.</p>
+<p>When a company doesn&rsquo;t have a public position on a breach, the vacuum it creates is filled by others. Obviously, those with nefarious intent, but also by journalists, and many of those don&rsquo;t have the facts right either. Public disclosure allows the breached organisation to set the narrative, assuming they&rsquo;re forthcoming and transparent and don&rsquo;t water it down such that there&rsquo;s no substance in the disclosure, of course.</p>
+<h3 id="the-truth-is-in-the-data-and-it-will-be-set-free">The Truth is in the Data, and it Will be Set Free</h3>
+<p>All the way back in 2017, I wrote about The 5 Stages of Data Breach Grief as I watched The AA in the UK dig themselves into an ever-deepening hole. They were doubling down on bullshit, and there was simply <em>no way</em> the truth wasn&rsquo;t going to come out. It was such a predictable pattern that, just like with Kübler-Ross&rsquo; stages of personal grief, it was very clear how this was going to play out.</p>
+<p>If you choose not to disclose a breach - for whatever reason - how long will it be until your &ldquo;truth&rdquo; comes out? Tomorrow? Next month? <em>Years from now?!</em> You&rsquo;ll be looking over your shoulder until it happens, and if it does one day go public, how will you be judged? Which brings me to the next point:</p>
+<h3 id="the-backlash-of-non-disclosure">The Backlash of Non-disclosure</h3>
+<p>I can&rsquo;t put any precise measure on it, but I feel we reached a turning point in 2017. I even remember where I was when it dawned on me, sitting in a car on the way to the airport to testify before US Congress on the impact of data breaches. News had recently broken that Uber had attempted to cover up its breach of the year before by passing it off as a bug bounty and, of course, not notifying impacted customers. What dawned on me at that moment of reflection was that by now, there had been so many data breaches that we were judging organisations not by whether they&rsquo;d been breached but <em>how they&rsquo;d handled</em> the breach. Uber was getting raked over the coals not for the breach itself but because they tried to conceal it. (Their CTO was also later convicted of federal charges for some of the shenanigans pulled under his watch.)</p>
+<h3 id="just-plain-simple-decency">Just Plain, Simple Decency</h3>
+<p>This is going to feel like I&rsquo;m talking to my kids after they&rsquo;ve done something wrong, but here goes anyway: If people entrusted you with your data and you &ldquo;lost&rdquo; it (had it disclosed to unauthorised parties), the only decent thing to do is own up and acknowledge it. It doesn&rsquo;t matter if it was your organisation directly or, as with the Deezer situation, a third party you entrusted with the data; you are the coalface to your customers, and you&rsquo;re the one who is accountable for their data.</p>
+<p>I am yet to see any valid reasons not to disclose that are in the best interests of the impacted customers (the <em>delay</em> in the AT&amp;T breach announcement at the request of the FBI due to national security interests is the closest I can come to justifying non-disclosure). It&rsquo;s undoubtedly the customers&rsquo; expectation, and increasingly, it&rsquo;s the governments&rsquo; expectations too; I&rsquo;ll leave you with a quote from our previous Cyber Security Minister Clare O&rsquo;Neil in a recent interview:</p>
+<blockquote>
+<p>But the real people who feel pain here are Australians when their information that they gave in good faith to that company is breached in a cyber incident, and the focus is not on those customers from the very first moment. The people whose data has been stolen are the real victims here. And if you focus on them and put their interests first every single day, you will get good outcomes. Your customers and your clients will be respectful of it, and the Australian government will applaud you for it.</p></blockquote>
+<p>I&rsquo;m presently on a whirlwind North America tour, visiting government and law enforcement agencies to understand more about their challenges and where we can assist with HIBP. As I spend more time with these agencies around the world, I keep hearing that data breach victim notification is an essential piece of the cybersecurity story, and I&rsquo;m making damn sure to highlight the deficiencies I&rsquo;ve written about here. We&rsquo;re going to keep pushing for <em>all</em> data breach victims to be notified when their data is exposed, and my hope in writing this is that when it&rsquo;s read in future by other organisations I&rsquo;ve disclosed to, they respect their customers and disclose promptly. Check out Data breach disclosure 101: How to succeed after you&rsquo;ve failed for guidance and how to do this.</p>
+<p><strong>Edit (a couple of days later):</strong> I&rsquo;m adding an addendum to this post given how relevant it is. I just saw the following from Ruben van Well of the Dutch Police, someone who has invested a lot of effort in victim notification and we had the pleasure of spending time with last year in Rotterdam:</p>
+<!-- raw HTML omitted -->
+<p>To translate the key section:</p>
+<blockquote>
+<p>Reporting and transparency around incidents is important. Of the companies that fall victim, between 8 and 10% report this, whether or not out of fear of reputational damage. I assume that your image will be more damaged if you do not report an incident and it does come out later.</p></blockquote>
+<p>It echos my sentiments from above precisely, and I hope that message has an impact on anyone considering whether or not to disclose.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Why I switched from VMware to OpenShift Virtualization</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Why I switched from VMware to OpenShift Virtualization</h1>
+			<b><time>06.02.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>I have been using VMware Core products for the last fifteen years—nine of those years as a VMware Administrator. I went from building basic virtual machines (VMs) to being a VMware Administrator, starting with vSphere/ESXi then handling the other VMware Core products vRealize Operations (Aria Ops), Aria Logs, Site Recovery Manager, and Network and Security (NSX). </p>
+<p>Last year, I discovered Red Hat OpenShift Virtualization. When I was first introduced to the product, I realized there were many options that would allow me to customize it to my specific environment. OpenShift Virtualization also offered more free rein than VMware. This article explores OpenShift Virtualization as an alternative to VMware.</p>
+<h2 id="installing-the-openshift-virtualization-operator">Installing the OpenShift Virtualization Operator</h2>
+<p>When I set up my first lab environment I decided to use the Red Hat Hybrid Cloud Console to perform an interactive installation with the Assisted Installer. I took three systems and loaded the custom ISO image that I downloaded from the console and used it to boot the nodes. Each node took roughly 40 minutes to load the Red Hat Enterprise Linux CoreOS operating system and a start agent. Once all three nodes were loaded they would show up in the cluster page of the Hybrid Cloud Console. </p>
+<p>Once all hosts are online and ready, you will be able to configure the networking for the cluster (see this quick Arcade). When everything is ready to go, you can click <strong>Install Cluster</strong>, and your new cluster will take roughly 45 minutes to complete the installation. When the cluster is up and running, you can install the OpenShift Virtualization Operator. Then, after you install the  OpenShift Virtualization Operator, you will have to install the HyperConverged custom resource. After the Virtualization Operator is installed I created a project to build my virtual machines. </p>
+<p>Listed below are the operators I installed in my cluster to give it a VMware-like experience.</p>
+<ul>
+<li>
+<p>Operators:</p>
+<ul>
+<li>
+<p>Storage:</p>
+<ul>
+<li>
+<p>Install Red Hat OpenShift Data Foundation. This is also used for local storage for HyperConverged.</p>
+</li>
+<li>
+<p>Install Local Storage operator which is only needed if you&rsquo;re using local storage.</p>
+</li>
+<li>
+<p>Any other CSI driver depends on external storage.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>DRS-equivalent:</p>
+<ul>
+<li>
+<p>Node Health Check Operator: Hardware Health Checker, will need access to hardware remote management such as Integrated Lights-Out (ILO) or Integrated Dell Remote Access Controller (iDRAC).</p>
+</li>
+<li>
+<p>Kube Descheduler Operator: New Descheduler for pods/virtual machines.</p>
+</li>
+<li>
+<p>Fence Agents Remediation Operator: Used with Node Health Check Operator to evict unhealthy nodes.</p>
+</li>
+<li>
+<p>Red Hat Advanced Cluster Management for Kubernetes: Multi-cluster hub to manage multiple clusters.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Migration from VMware:</p>
+<ul>
+<li>Migration toolkit for virtualization Operator: Migrate VMs from VMware to OpenShift Virtualization.</li>
+</ul>
+</li>
+<li>
+<p>Nice to have:</p>
+<ul>
+<li>Web terminal: Opens a terminal window to operate the cluster.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>When I installed all of the desired operators, I accepted the defaults for each of them. The installation time took no more than five minutes. Doing this interactively by hand was easy in a small environment. However, doing this on a larger scale would be better suited for automation with the help of Advanced Cluster Management to keep the cluster uniform. Once I had the desired operators installed, I started to create test virtual machines.  </p>
+<p>I left everything as default in the Descheduler operator. It requires installation in a specific project. Once the operator is created, you can create a new Kube Descheduler resource that you can customize to your desired configuration.</p>
+<h2 id="learn-more">Learn more</h2>
+<p>At first glance, OpenShift Virtualization has substantial customization for different use cases. Further diving into it gives you the building blocks to create clusters with all of the best for the production workloads you plan to run that will be repeatable on a large scale. I am still getting used to the various terminology and how everything functions together. But overall, I think it functions better than VMware. </p>
+<p>Red Hat released the OpenShift Virtualization Engine to run your virtualization. Please reach out to your sales representative for more information. Try this learning path in the meantime: Learning OpenShift Virtualization concepts as a vSphere admin.</p>
+<p>The post Why I switched from VMware to OpenShift Virtualization appeared first on Red Hat Developer.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

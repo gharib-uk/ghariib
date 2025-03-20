@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta name="generator" content="Hugo 0.145.0">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Gharib Personal Blog</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Gharib Personal Blog">
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2023-08-27-skiffcom-emails-various-privacy-failure/">Skiffcom Emails Various Privacy Failures</a></h1>
+	<b><time>27.08.2023 15:43</time></b>
+	
+	<div>
+		<h1 id="skiffcom-emails-various-privacy-failures">Skiffcom Emails Various Privacy Failures</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h3 id="a-bad-default">A Bad Default</h3>
+<p>One of the first things I noticed after signing up for a free account with Skiff, is that they have the standard “Block Remote Content” option which pretty much all email providers and clients have, but that the option is disabled by default. This default didn’t strike me as matching their “Privacy-first” claim. If privacy is important enough to be the first thing you mention on your website, then blocking remote content should be enabled by default.</p>
+		
+			<a href="https://ghariib.ir/posts/2023-08-27-skiffcom-emails-various-privacy-failure/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2021-11-10-self-building-and-executing-dockerfiles/">Self Building and Executing Dockerfiles</a></h1>
+	<b><time>10.11.2021 20:30</time></b>
+	
+	<div>
+		<h1 id="self-building-and-executing-dockerfiles">Self Building and Executing Dockerfiles</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre tabindex="0"><code>#!/usr/bin/env -S bash -c &#34;podman run --rm -w /x -v &#34;\$PWD:/x&#34; \$(podman build -q - &lt; \$0) \${@:1}&#34;
+FROM python:3-slim
+RUN python3 -m pip --no-cache-dir install yt-dlp
+ENTRYPOINT [&#34;yt-dlp&#34;]
+</code></pre><p>It is a valid Dockerfile, but if I run it, it will build an image using podman containing the fork of youtube-dl that I want to use (yt-dlp), and then run that image, with the args I supplied. In the above example it mounts my working directory into the container so that downloaded files reach the host.</p>
+		
+			<a href="https://ghariib.ir/posts/2021-11-10-self-building-and-executing-dockerfiles/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2020-10-25-sandbox-rust-development-with-rust-anal/">Sandbox Rust Development with Rust Analyzer</a></h1>
+	<b><time>25.10.2020 12:47</time></b>
+	
+	<div>
+		<h1 id="sandbox-rust-development-with-rust-analyzer">Sandbox Rust Development with Rust Analyzer</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>To be honest, I haven’t done much Rust development since then, so there are probably a bunch of pain points that I’ve not handled. I’m starting a new project though, and thought I’d try out the language server <a href="https://github.com/rust-analyzer/rust-analyzer">rust-analyzer</a> as I’ve heard good things about it.</p>
+<p>Ordinarily with <a href="https://code.visualstudio.com/">Visual Studio Code</a> (my IDE of choice), you can just install the rust-analyzer extension and begin. However, in my case as I don’t have rust installed directly on my host, there were a few extra steps to take.</p>
+		
+			<a href="https://ghariib.ir/posts/2020-10-25-sandbox-rust-development-with-rust-anal/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2020-10-17-manage-firewall-from-dockerised-nodejs/">Manage Firewall from Dockerised NodeJS</a></h1>
+	<b><time>17.10.2020 14:25</time></b>
+	
+	<div>
+		<h1 id="manage-firewall-from-dockerised-nodejs">Manage Firewall from Dockerised NodeJS</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>First of all, there are official NodeJS images on <a href="https://hub.docker.com/_/node">Docker Hub</a>. These images don’t contain iptables, so I needed to create my own image based off one of these. Here’s the Dockerfile:</p>
+<pre tabindex="0"><code>FROM node:14-buster-slim
+RUN apt-get update \
+ &amp;&amp; apt-get -y install iptables \
+ &amp;&amp; rm -rf /var/lib/apt/lists/*
+RUN chmod u+s /usr/sbin/xtables-nft-multi
+</code></pre><p>You’ll notice that as well as installing iptables, I had to add the setuid bit to the xtables-nft-multi binary. Without this, only the root user can run it.</p>
+		
+			<a href="https://ghariib.ir/posts/2020-10-17-manage-firewall-from-dockerised-nodejs/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2019-10-04-nginx-restic-backend/">Nginx Restic Backend</a></h1>
+	<b><time>04.10.2019 17:50</time></b>
+	
+	<div>
+		<h1 id="nginx-restic-backend">Nginx Restic Backend</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>I thought to myself, if it’s just a simple REST API, why do I need to learn/install/manage a new piece of software? I already use <a href="https://nginx.org/">Nginx</a> all over the place. Can I just use Nginx for this? The answer was yes.</p>
+<p>I have configured two nginx vhosts, and run them on different ports. One of the vhosts is to be accessed by hosts which are backing themselves up. It doesn’t allow them to delete objects (other than lock files), or overwrite them either. Meaning it is an “append-only” backup solution. The other vhost allows deletion, and exists for administrative tasks like pruning old backups.</p>
+		
+			<a href="https://ghariib.ir/posts/2019-10-04-nginx-restic-backend/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2018-12-24-twitter-to-rss-with-google-cloud-functi/">Twitter to RSS with Google Cloud Function</a></h1>
+	<b><time>24.12.2018 13:41</time></b>
+	
+	<div>
+		<h1 id="twitter-to-rss-with-google-cloud-function">Twitter to RSS with Google Cloud Function</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<hr>
+<p>I don’t like having to install additional software to follow people/organisations on Twitter. I already have an RSS client. Why should I have to install a Twitter client too?</p>
+<p>There are services like <a href="https://www.twitrss.me/">https://www.twitrss.me/</a> which gate Twitter to RSS, but they sometimes get ratelimited, as you’re sharing an API with many other people.</p>
+<p>So I’ve created and released <a href="https://gitlab.com/mikecardwell/functwitter">funcTwitter</a> (GPL-3.0). It’s a simple NodeJS application that gates Twitter to RSS. It can be deployed as a <a href="https://cloud.google.com/functions/">Google Cloud Function</a>, meaning you don’t need to run any special software on your own host. Google Cloud offers a generous permanent free tier for Cloud Functions, so you can easily do this for free for personal use.</p>
+		
+			<a href="https://ghariib.ir/posts/2018-12-24-twitter-to-rss-with-google-cloud-functi/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2017-10-03-gpg-agent-forwarding/">GPG Agent Forwarding</a></h1>
+	<b><time>03.10.2017 06:27</time></b>
+	
+	<div>
+		<h1 id="gpg-agent-forwarding">GPG Agent Forwarding</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>In Debian Stretch, systemd is involved with running gpg-agent and sockets are automatically created in /run/user/$UID/gnupg/ where $UID is the uid of the user you’re using. So when I want to forward my gpg-agent to “server.example.com”, I just add the following to my ~/.ssh/config file:</p>
+<pre tabindex="0"><code>Host server server.example.com
+    RemoteForward /run/user/$REMOTE_UID/gnupg/S.gpg-agent /run/user/$LOCAL_UID/gnupg/S.gpg-agent.extra
+</code></pre><p>Replacing $REMOTE_UID with the uid of my user on the remote system, and $LOCAL_UID with the uid of the user on my local system. If you want to figure out your current uid, just run “id -u”.</p>
+		
+			<a href="https://ghariib.ir/posts/2017-10-03-gpg-agent-forwarding/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2017-08-05-keybase-browser-extension-insecure/">Keybase Browser Extension Insecure</a></h1>
+	<b><time>05.08.2017 10:26</time></b>
+	
+	<div>
+		<h1 id="keybase-browser-extension-insecure">Keybase Browser Extension Insecure</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>If you are lucky enough to discover the extension by visiting <a href="https://keybase.io/docs/extension">https://keybase.io/docs/extension</a> and by actually reading the content of the page, you will come across this little bit of information:</p>
+<blockquote>
+<p>“The Keybase extension uses a compose box inside your browser. If you fear your browser or the social network site’s JavaScript has been compromised – say by another extension or even the social network acting fishy – then just compose the message inside the Keybase app directly. Or send a quick hello note through the extension and save the jucier private details for inside the app.”</p>
+		
+			<a href="https://ghariib.ir/posts/2017-08-05-keybase-browser-extension-insecure/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2011-09-14-dropping-executables-with-powershell/">Dropping Executables with Powershell</a></h1>
+	<b><time>14.09.2011 18:51</time></b>
+	
+	<div>
+		Scenario: You find yourself in a limited Windows user environment without the ability to transfer binary files over the network for one reason or another. So this rules out using a browser, ftp.exe, mspaint (yes, mspaint can be used to transfer binaries), etc. for file transfer. Suppose this workstation isn&rsquo;t
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2011-08-29-targeted-heap-spraying-0x0c0c0c0c-is-a-/">Targeted Heap Spraying 0x0c0c0c0c is a Thing of the Past</a></h1>
+	<b><time>29.08.2011 11:01</time></b>
+	
+	<div>
+		Normal 0 false false false EN-US X-NONE
+		
+	</div>
+</article>
+
+		
+		<div>
+
+	<a href="/page/494/">Previous Page</a>
+
+495 of 496
+
+	<a href="/page/496/">Next Page</a>
+
+</div>
+
+	</main>
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

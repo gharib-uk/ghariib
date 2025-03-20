@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Targeted Heap Spraying 0x0c0c0c0c is a Thing of the Past</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Targeted Heap Spraying 0x0c0c0c0c is a Thing of the Past</h1>
+			<b><time>29.08.2011 11:01</time></b>
+		       
+
+			<div>
+				<h1 id="targeted-heap-spraying-0x0c0c0c0c-is-a-thing-of-the-past">Targeted Heap Spraying 0x0c0c0c0c is a Thing of the Past</h1>
+<!-- raw HTML omitted -->
+<p>Traditionally, heap spraying has relied upon spraying with 0x0C0C0C0C followed by shellcode which serves as both an address in the heap and a series of nops. This however is not extremely reliable. You have to be lucky enough to not land on a heap header or somewhere in your shellcode. Additionally, the latest version of EMET now prevents the execution of address 0x0C0C0C0C or any other arbitrary address specified in the registry. While this is a futile attempt to prevent heap spraying, it will require another method to reliably execute shellcode in the heap. Rather, there is a method that allows you to reliably allocate shellcode that is both in a predictable location and memory page-aligned (64K-aligned).</p>
+<p>It turns out that allocations in Javascript of at least 512K are allocated using VirtualAlloc, which returns addresses that are page aligned (i.e. in the form of 0xXXXX0000). I credit Alexander Sotirov with this discovery as I learned this technique from him. There are many ways to place shellcode in the heap but string allocations are the tried and true heap allocation primitive in javascript. The format of a javascript string on the heap is as follows:</p>
+<p>[string length - 4 bytes][Unicode encoded string][\x00\x00]</p>
+<p>The following diagram illustrates a string’s layout in memory:</p>
+<p><a href="http://4.bp.blogspot.com/-xM3evabUguA/TlulZu6npaI/AAAAAAAAAB0/afhXWHrFcd0/s1600/spray_diagram.png">
+<figure>
+  <img src="http://4.bp.blogspot.com/-xM3evabUguA/TlulZu6npaI/AAAAAAAAAB0/afhXWHrFcd0/s1600/spray_diagram.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Therefore, any javascript string will be 6 bytes long plus the length of the Unicode encoded string. Also, heap chunks allocated with VirtualAlloc are 0x20 bytes in length. As a result, shellcode allocated through VirtualAlloc will always reside at offset 0x24. Also, because each allocation results in a 64K-aligned address, we can make a series of string allocations that equal exactly 64K. That way, the start of our shellcode will always be located at an address of the form (0xXXXX0024).</p>
+<p>The following javascript code takes advantage of these concepts by allocating an array of sixteen 64K strings (i.e. 1 megabyte).  Note the sixteenth allocation accounts for the size of the heap header and string length so that exactly one megabyte gets allocated. The resultant array is then allocated one hundred times resulting in an allocation of exactly 100MB.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Run the javascript code above and follow along with the following analysis in WinDbg. Start by viewing the addresses of the heaps in Internet Explorer:</p>
+<p>!heap -stat</p>
+<p>_HEAP 00360000</p>
+<p>     Segments            00000001</p>
+<p>         Reserved  bytes 00100000</p>
+<p>         Committed bytes 000f1000</p>
+<p>     VirtAllocBlocks     00000001</p>
+<p>         VirtAlloc bytes 035f0000</p>
+<p>_HEAP 035b0000</p>
+<p>     Segments            00000001</p>
+<p>         Reserved  bytes 00040000</p>
+<p>         Committed bytes 00019000</p>
+<p>     VirtAllocBlocks     00000000</p>
+<p>         VirtAlloc bytes 00000000</p>
+<p>_HEAP 00750000</p>
+<p>     Segments            00000001</p>
+<p>         Reserved  bytes 00040000</p>
+<p>         Committed bytes 00012000</p>
+<p>     VirtAllocBlocks     00000000</p>
+<p>         VirtAlloc bytes 00000000</p>
+<p>_HEAP 00270000</p>
+<p>     Segments            00000001</p>
+<p>         Reserved  bytes 00010000</p>
+<p>         Committed bytes 00010000</p>
+<p>     VirtAllocBlocks     00000000</p>
+<p>         VirtAlloc bytes 00000000</p>
+<p>_HEAP 02e20000</p>
+<p>     Segments            00000001</p>
+<p>         Reserved  bytes 00040000</p>
+<p>         Committed bytes 00001000</p>
+<p>     VirtAllocBlocks     00000000</p>
+<p>         VirtAlloc bytes 00000000</p>
+<p>_HEAP 00010000</p>
+<p>     Segments            00000001</p>
+<p>         Reserved  bytes 00010000</p>
+<p>         Committed bytes 00001000</p>
+<p>     VirtAllocBlocks     00000000</p>
+<p>         VirtAlloc bytes 00000000</p>
+<p>Look at the “VirtAlloc bytes” field for a heap with a large allocation. The heap address we’re interested in is the first one – “_HEAP 00360000”</p>
+<p>Next, view the allocation statistics for that heap handle:</p>
+<p>!heap -stat -h 00360000</p>
+<p> heap @ 00360000</p>
+<p>group-by: TOTSIZE max-display: 20</p>
+<p>    size     #blocks     total     ( %) (percent of total busy bytes)</p>
+<p>    fffe0 65 - 64ff360  (99.12)</p>
+<p>    40010 1 - 40010  (0.25)</p>
+<p>    1034 10 - 10340  (0.06)</p>
+<p>    20 356 - 6ac0  (0.03)</p>
+<p>    494 16 - 64b8  (0.02)</p>
+<p>    5ba0 1 - 5ba0  (0.02)</p>
+<p>    5e4 b - 40cc  (0.02)</p>
+<p>    4010 1 - 4010  (0.02)</p>
+<p>    3980 1 - 3980  (0.01)</p>
+<p>    d0 3e - 3260  (0.01)</p>
+<p>    460 b - 3020  (0.01)</p>
+<p>    1800 2 - 3000  (0.01)</p>
+<p>    800 6 - 3000  (0.01)</p>
+<p>    468 a - 2c10  (0.01)</p>
+<p>    2890 1 - 2890  (0.01)</p>
+<p>    78 52 - 2670  (0.01)</p>
+<p>    10 215 - 2150  (0.01)</p>
+<p>    1080 2 - 2100  (0.01)</p>
+<p>    2b0 c - 2040  (0.01)</p>
+<p>    2010 1 - 2010  (0.01)</p>
+<p>Our neat and tidy allocations really stand out here. There are exactly 0x65 (101 decimal) allocations of size 0xfffe0 (1 MB minus the 20 byte heap header).</p>
+<p>A nice feature of WinDbg is that you can view heap chunks of a particular size. The following command lists all the heaps chunks of size 0xfffe0.</p>
+<p>!heap -flt s fffe0</p>
+<p>    _HEAP @ 360000</p>
+<p>      HEAP_ENTRY Size Prev Flags    UserPtr UserSize - state</p>
+<p>        037f0018 1fffc fffc  [00]   037f0020    fffe0 - (busy VirtualAlloc)</p>
+<p>        038f0018 1fffc fffc  [00]   038f0020    fffe0 - (busy VirtualAlloc)</p>
+<p>        039f0018 1fffc fffc  [00]   039f0020    fffe0 - (busy VirtualAlloc)</p>
+<p>        03af0018 1fffc fffc  [00]   03af0020    fffe0 - (busy VirtualAlloc)</p>
+<p>        03bf0018 1fffc fffc  [00]   03bf0020    fffe0 - (busy VirtualAlloc)</p>
+<p>        05e80018 1fffc fffc  [00]   05e80020    fffe0 - (busy VirtualAlloc)</p>
+<p>        05f80018 1fffc fffc  [00]   05f80020    fffe0 - (busy VirtualAlloc)</p>
+<p>        06080018 1fffc fffc  [00]   06080020    fffe0 - (busy VirtualAlloc)</p>
+<p>        06180018 1fffc fffc  [00]   06180020    fffe0 - (busy VirtualAlloc)</p>
+<p>        …</p>
+<p>        0aa80018 1fffc fffc  [00]   0aa80020    fffe0 - (busy VirtualAlloc)</p>
+<p>        0ab80018 1fffc fffc  [00]   0ab80020    fffe0 - (busy VirtualAlloc)</p>
+<p>        0ac80018 1fffc fffc  [00]   0ac80020    fffe0 - (busy VirtualAlloc)</p>
+<p>        0ad80018 1fffc fffc  [00]   0ad80020    fffe0 - (busy VirtualAlloc)</p>
+<p>        0ae80018 1fffc fffc  [00]   0ae80020    fffe0 - (busy VirtualAlloc)</p>
+<p>        0af80018 1fffc fffc  [00]   0af80020    fffe0 - (busy VirtualAlloc)</p>
+<p>        0b080018 1fffc fffc  [00]   0b080020    fffe0 - (busy VirtualAlloc)</p>
+<p>        0b180018 1fffc fffc  [00]   0b180020    fffe0 - (busy VirtualAlloc)</p>
+<p>        0b280018 1fffc fffc  [00]   0b280020    fffe0 - (busy VirtualAlloc)</p>
+<p>        0b380018 1fffc fffc  [00]   0b380020    fffe0 - (busy VirtualAlloc)</p>
+<p>    _HEAP @ 10000</p>
+<p>    _HEAP @ 270000</p>
+<p>    _HEAP @ 750000</p>
+<p>    _HEAP @ 2e20000</p>
+<p>    _HEAP @ 35b0000</p>
+<p>Note how each allocation is allocated in sequential order.</p>
+<p>Now that we have the addresses of each heap chunk we can start to inspect memory for our 0x41’s:</p>
+<p>0:007&gt; db 06b80000</p>
+<p>06b80000  00 00 c8 06 00 00 a8 06-00 00 00 00 00 00 00 00  &hellip;&hellip;&hellip;&hellip;&hellip;.</p>
+<p>06b80010  00 00 10 00 00 00 10 00-61 65 15 29 00 00 00 04  &hellip;&hellip;..ae.)&hellip;.</p>
+<p>06b80020  da ff 0f 00 41 41 41 41-41 41 41 41 41 41 41 41  &hellip;.AAAAAAAAAAAA</p>
+<p>06b80030  41 41 41 41 41 41 41 41-41 41 41 41 41 41 41 41  AAAAAAAAAAAAAAAA</p>
+<p>06b80040  41 41 41 41 41 41 41 41-41 41 41 41 41 41 41 41  AAAAAAAAAAAAAAAA</p>
+<p>06b80050  41 41 41 41 41 41 41 41-41 41 41 41 41 41 41 41  AAAAAAAAAAAAAAAA</p>
+<p>06b80060  41 41 41 41 41 41 41 41-41 41 41 41 41 41 41 41  AAAAAAAAAAAAAAAA</p>
+<p>06b80070  41 41 41 41 41 41 41 41-41 41 41 41 41 41 41 41  AAAAAAAAAAAAAAAA</p>
+<p>You can clearly see the string length at offset 0x20 – 000fffda which is the length of the string minus the null terminator.</p>
+<p>Another way to analyze your heap allocations is through the fragmentation view of VMmap – one of many incredibly useful tools in the Sysinternals suite. The following image shows an allocation of 1000MB. Within the fragmentation view you can zoom in and click on individual allocations and confirm that each heap allocation (in orange) begins at an address in the form of 0xXXXX0000.</p>
+<p><a href="http://3.bp.blogspot.com/-yZBvHmUyRLs/Tlumwynul5I/AAAAAAAAAB4/JuJFYqp3c2g/s1600/fragmentation.png">
+<figure>
+  <img src="http://3.bp.blogspot.com/-yZBvHmUyRLs/Tlumwynul5I/AAAAAAAAAB4/JuJFYqp3c2g/s640/fragmentation.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>So why is this technique so useful? This method of heap spraying is perfect when exploiting use-after-free vulnerabilities where an attacker can craft fake objects and vtable structures. A fake vtable pointer can then point to an address in the heap range – 0x11F50024 just as an example. Thus, there is no need to rely upon nops and no need to worry about EMET’s arbitrary prevention of executing 0x0C0C0C0C-style addresses. For all intents and purposes, you’ve completely bypassed ASLR protections.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/tracker/6052198192158185644-5391545886505722735?l=exploit-monday.com" alt="" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Self Building and Executing Dockerfiles</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Self Building and Executing Dockerfiles</h1>
+			<b><time>10.11.2021 20:30</time></b>
+		       
+
+			<div>
+				<h1 id="self-building-and-executing-dockerfiles">Self Building and Executing Dockerfiles</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre tabindex="0"><code>#!/usr/bin/env -S bash -c &#34;podman run --rm -w /x -v &#34;\$PWD:/x&#34; \$(podman build -q - &lt; \$0) \${@:1}&#34;
+FROM python:3-slim
+RUN python3 -m pip --no-cache-dir install yt-dlp
+ENTRYPOINT [&#34;yt-dlp&#34;]
+</code></pre><p>It is a valid Dockerfile, but if I run it, it will build an image using podman containing the fork of youtube-dl that I want to use (yt-dlp), and then run that image, with the args I supplied. In the above example it mounts my working directory into the container so that downloaded files reach the host.</p>
+<p>Of course, I could have made a shell script as follows instead:</p>
+<pre tabindex="0"><code>#!/usr/bin/env bash
+podman build -q -t &#34;localhost/youtube-dl&#34; -&lt;&lt;EOF &amp;&gt;/dev/null
+FROM python:3-slim
+RUN python3 -m pip --no-cache-dir install yt-dlp
+ENTRYPOINT [&#34;yt-dlp&#34;]
+EOF
+
+podman run --rm -w /x -v &#34;$PWD:/x&#34; -w /x &#34;localhost/youtube-dl&#34; &#34;$@&#34;
+</code></pre><p>Some might even argue that it’s more readable. But then I have to worry about escaping parts of the inline Dockerfile, and I lose my IDE’s Dockerfile linting support too.</p>
+<h4 id="source"><a href="https://www.grepular.com/Self_Building_and_Executing_Dockerfiles">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

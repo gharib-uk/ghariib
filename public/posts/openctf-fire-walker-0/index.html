@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>OpenCTF : fire walker 0</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>OpenCTF : fire walker 0</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p><strong>Category:</strong> Network</p>
+<p><strong>Points:</strong> 50</p>
+<p><strong>Description:</strong></p>
+<pre tabindex="0"><code>Flag: http://172.31.2.97:20621/flag-d12bb978.txt Firewall rules: https://scoreboard.openctf.com/firewalker_0-acaceaa807e20591173451a7a824a23f2728563b
+</code></pre><p><strong>File Download:</strong> firewalker_0-acaceaa807e20591173451a7a824a23f2728563b</p>
+<p>The goal of the fire walker challenges is straight-forward, download the flag file from the provided http URL. The trick is, there are firewall rules that will prevent you from simply running wget, curl, or opening the URL in your favorite web browser. So let’s take a look at the firewall rules:</p>
+<pre tabindex="0"><code>$ cat port_20621_rules.txt 
+Chain PORT_20621 (1 references)
+target     prot opt source               destination         
+REJECT     tcp  -- anywhere             anywhere             tcp spts:1024:65535 reject-with icmp-admin-prohibited
+</code></pre><p>So what these rules are describing, is that if the source port is in the range of 1024-65535, the packet will be rejected. For those new to networking, every TCP connection has a source port and a destination port. You are likely already aware of common destination port number used for servers, for example, HTTP uses port <code>80</code> by default. In this challenge, port <code>20621</code> is the destination port for our HTTP traffic. However, the source port is randomly selected by your client. And because ports under 1024 generally require elevated privellages, most, if not all, programs will never select a port below 1024. However, both <code>nc</code> and <code>curl</code> allow you to manually specify the port number. I decided to use <code>curl</code> because this allowed me to avoid manually building the HTTP GET request. Be sure to run the command with <code>sudo</code>.</p>
+<pre tabindex="0"><code>$ sudo curl --local-port 22 http://172.31.2.97:20621/flag-d12bb978.txt &gt; flag-d12bb978.txt
+$ cat flag-d12bb978.txt 
+pr1vil3ge_h4s_its_privile9e5
+</code></pre><h1 id="flag">Flag</h1>
+<p><strong>pr1vil3ge_h4s_its_privile9e5</strong></p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

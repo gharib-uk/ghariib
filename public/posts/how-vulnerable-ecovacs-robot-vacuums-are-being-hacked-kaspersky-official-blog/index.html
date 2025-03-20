@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How vulnerable Ecovacs robot vacuums are being hacked | Kaspersky official blog</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How vulnerable Ecovacs robot vacuums are being hacked | Kaspersky official blog</h1>
+			<b><time>10.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/cybersecurity">cybersecurity</a>
+        	       
+		           <a href="/tags/data_breaches">data_breaches</a>
+        	       
+		           <a href="/tags/infostealers">infostealers</a>
+        	       
+		           <a href="/tags/linux">linux</a>
+        	       
+		           <a href="/tags/malware">malware</a>
+        	       
+		           <a href="/tags/privacy">privacy</a>
+        	       
+		           <a href="/tags/security">security</a>
+        	       
+		           <a href="/tags/siem">siem</a>
+        	       
+
+			<div>
+				<p>How cyberhooligans are hacking vulnerable Ecovacs robot vacuums and lawnmowers to spy on their owners and rain misery upon them.</p>
+<p>Imagine: you get up in the night for a glass of water, walk across the unlit landing, when out of the darkness a voice starts yelling at you. Not nice, you’d surely agree. But that’s the new reality for owners of vulnerable robot vacuums, which can be commanded by hackers to turn from domestic servants into foul-mouthed louts. And that’s not all: hackers can also control the robot remotely and access its live camera feed.</p>
+<p>The danger is clear and present: recently, cases of cyberhooligans hijacking vulnerable robot vacuums to prank people (and worse) have been seen in the wild. Read on for the details…</p>
+<h2 id="how-a-robot-vacuum-works">How a robot vacuum works</h2>
+<p>Let’s start with the fact that a modern robot vacuum is a full-fledged computer on wheels, usually running on Linux. It comes with a powerful multi-core ARM processor, a solid chunk of RAM, a capacious flash drive, Wi-Fi, and Bluetooth.</p>
+<p>
+<figure>
+  <img src="https://media.kasperskydaily.com/wp-content/uploads/sites/92/2025/01/09045456/ecovacs-robot-vacuums-hacked-in-real-life-1.jpeg" alt="Schematic of a typical robot vacuum " />
+</figure>
+
+
+</p>
+<p>Today’s robot vacuum is a full-fledged computer on wheels Source</p>
+<p>And of course, the modern robot vacuum has sensors everywhere: infrared, lidar, motion, camera (often several of each), and some models also have microphones for voice control.</p>
+<p>
+<figure>
+  <img src="https://media.kasperskydaily.com/wp-content/uploads/sites/92/2025/01/09045406/ecovacs-robot-vacuums-hacked-in-real-life-2.jpeg" alt="Camera and microphones in the Ecovacs DEEBOT X1 " />
+</figure>
+
+
+</p>
+<p>The Ecovacs DEEBOT X1 has not only a camera, but an array of microphones Source</p>
+<p>And naturally, all modern robot vacuums are permanently online and hooked up to the vendor’s cloud infrastructure. In most cases, they communicate aplenty with this cloud — uploading piles upon piles of data collected during operation.</p>
+<h2 id="vulnerabilities-in-ecovacs-robot-vacuums-and-lawn-mowers">Vulnerabilities in Ecovacs robot vacuums and lawn mowers</h2>
+<p>The first report of vulnerabilities in Ecovacs robot vacuums and lawnmowers surfaced in August 2024, when security researchers Dennis Giese (known for hacking a Xiaomi robot vacuum) and Braelynn Luedtke gave a talk at DEF CON 32 on reverse engineering and hacking Ecovacs robots.</p>
+<p>
+<figure>
+  <img src="https://media.kasperskydaily.com/wp-content/uploads/sites/92/2025/01/09045314/ecovacs-robot-vacuums-hacked-in-real-life-3.jpeg" alt="Ecovacs GOAT G1 robot lawnmower " />
+</figure>
+
+
+</p>
+<p>The Ecovacs GOAT G1 can also be equipped with GPS, LTE and a long-range Bluetooth module Source</p>
+<p>In their talk, Giese and Luedtke described several methods for hacking Ecovacs robot vacuums and the mobile app that owners use to control them. In particular, they found that a potential hacker could access the feed from the robot’s built-in camera and microphone.</p>
+<p>This is possible for two reasons. First, if the app is used on an insecure network, attackers can intercept the authentication token and communicate with the robot. Second, although in theory the PIN code set by the device owner secures the video feed, in practice it gets verified on the app side — so it can be bypassed.</p>
+<p>
+<figure>
+  <img src="https://media.kasperskydaily.com/wp-content/uploads/sites/92/2025/01/09045158/ecovacs-robot-vacuums-hacked-in-real-life-4.jpeg" alt="Attackers accessing the video feed from an Ecovacs robot vacuum " />
+</figure>
+
+
+</p>
+<p>The PIN code for securing the video feed from an Ecovacs robot vacuum is verified on the app side, which makes the mechanism extremely vulnerable Source</p>
+<p>The researchers also managed to gain root access to the robot’s operating system. They found it was possible to send a malicious payload to the robot via Bluetooth, which in some Ecovacs models gets turned on after a scheduled reboot, while in others it’s on all the time. In theory, encryption should protect against this, but Ecovacs uses a static key that’s the same for all devices.</p>
+<p>Armed with this knowledge, an intruder can get root privileges in the operating system of any vulnerable Ecovacs robot and hack it at a distance of up to 50 meters (~165 feet) — which is precisely what the researchers did. As for robot lawnmowers, these models are hackable at more than 100 meters (~330 feet) away, since they’ve got more powerful Bluetooth capabilities.</p>
+<p>Add to that that, as mentioned already, today’s robot vacuums are full-fledged Linux-based computers, and you can see how attackers can use one infected robot as a means to hack others nearby. In theory, hackers can even create a network-worm to automatically infect robots anywhere in the world.</p>
+<p>
+<figure>
+  <img src="https://media.kasperskydaily.com/wp-content/uploads/sites/92/2025/01/09044705/ecovacs-robot-vacuums-hacked-in-real-life-5.jpeg" alt="Bluetooth vulnerability could potentially be used to create a worm " />
+</figure>
+
+
+</p>
+<p>Bluetooth vulnerability in Ecovacs robots could lead to a chain of infection Source</p>
+<p>Giese and Luedtke informed Ecovacs about the vulnerabilities they found, but received no response. The company did try to close some of the holes, say the researchers, but with little success and ignoring the most serious vulnerabilities.</p>
+<h2 id="how-the-ecovacs-robot-vacuums-were-hacked-for-real">How the Ecovacs robot vacuums were hacked for real</h2>
+<p>It appears that the DEF CON talk generated great interest in the hacker community — so much so that someone seems to have taken the attack a step further and deployed it on Ecovacs robot vacuums out in the real world. According to recent reports, owners in several U.S. cities had been hit by hackers and made to suffer abuse from their robot servants.</p>
+<p>In one incident in Minnesota, an Ecovacs DEEBOT X2 started moving by itself and making strange noises. Alarmed, its owner went into the Ecovacs app and saw that someone was accessing the video feed and remote-control feature. Writing it off as a software glitch, he changed the password, rebooted the robot and sat down on the couch to watch TV with his wife and son.</p>
+<p>But the robot kicked back into life almost straight away — this time emitting a continuous stream of racial slurs from its speakers. Not knowing what to do, the owner turned off the robot, took it into the garage and left it there. Despite this ordeal, he is grateful that the hackers made their presence so obvious. Far worse, he says, would have been if they’d simply secretly monitored his family through the robot without revealing themselves.</p>
+<p>
+<figure>
+  <img src="https://media.kasperskydaily.com/wp-content/uploads/sites/92/2025/01/09044430/ecovacs-robot-vacuums-hacked-in-real-life-6.jpeg" alt=" Video feed from an Ecovacs robot vacuum " />
+</figure>
+
+
+</p>
+<p>Hijacking a live video feed of an Ecovacs robot vacuum Source</p>
+<p>In a similar case, this time in California, another Ecovacs DEEBOT X2 chased a dog around the house, again shouting obscenities. And a third case was reported from Texas, where, you guessed it, an Ecovacs robot vacuum went walkabout and hurled abuse at its owners.</p>
+<p>The exact number of hacks of Ecovacs robot vacuums is unknown. One reason for this, alluded to above, is that the owners may not be aware of it: the hackers may be quietly observing their daily lives through the built-in camera.</p>
+<h2 id="how-to-guard-against-robot-vacuum-hacking">How to guard against robot vacuum hacking?</h2>
+<p>The short answer is: you can’t. Unfortunately, there’s no universal method of protecting against robot vacuum hacking that covers all bases. For some models, in theory, there’s the option of hacking it yourself, getting root access, and unlinking the machine from the vendor’s cloud. But this is a complex and time-consuming procedure that the average owner won’t consider attempting.</p>
+<p>A serious problem with IoT devices is that many vendors, sadly, still pay insufficient attention to security. And they often prefer to bury their heads in the sand — even declining to respond to researchers who helpfully report such issues.</p>
+<p>To reduce the risks, try do your own research on the security practices of the vendor in question before purchasing. Some actually do a pretty good job of keeping their products safe. And, of course, always install firmware updates: new versions usually remove at least some of the vulnerabilities that hackers can exploit to gain control over your robot.</p>
+<p>And remember that a robot connected to home Wi-Fi, if hacked, can become a launchpad for an attack on other devices connected to the same network — smartphones, computers, smart TVs, and so on. So it’s always a good idea to move IoT devices (in particular, robot vacuums) to a guest network, and install reliable protection on all devices where possible.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

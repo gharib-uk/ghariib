@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ifdef on Gharib Personal Blog</title>
+    <link>https://ghariib.ir/tags/ifdef/</link>
+    <description>Recent content in Ifdef on Gharib Personal Blog</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <copyright>Alireza Gharib. All right reserved</copyright>
+    <lastBuildDate>Wed, 15 Jan 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://ghariib.ir/tags/ifdef/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Mind the Patch Gap: Exploiting an io_uring Vulnerability in Ubuntu</title>
+      <link>https://ghariib.ir/posts/mind-the-patch-gap-exploiting-an-io_uring-vulnerability-in-ubuntu/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/mind-the-patch-gap-exploiting-an-io_uring-vulnerability-in-ubuntu/</guid>
+      <description>&lt;p&gt;By Oriol Castejón&lt;/p&gt;&#xA;&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;&#xA;&lt;p&gt;This post discusses a use-after-free vulnerability, CVE-2024-0582, in io_uring in the Linux kernel. Despite the vulnerability being patched in the stable kernel in December 2023, it wasn’t ported to Ubuntu kernels for over two months, making it an easy 0day vector in Ubuntu during that time.&lt;/p&gt;&#xA;&lt;p&gt;In early January 2024, a Project Zero issue for a recently fixed &lt;code&gt;io_uring&lt;/code&gt; use-after-free (UAF) vulnerability (CVE-2024-0582) was made public. It was apparent that the vulnerability allowed an attacker to obtain read and write access to a number of previously freed &lt;em&gt;pages&lt;/em&gt;. This seemed to be a very powerful primitive: usually a UAF gets you access to a freed kernel &lt;em&gt;object&lt;/em&gt;, not a whole page – or even better, multiple pages. As the Project Zero issue also described, it was clear that this vulnerability should be easily exploitable: if an attacker has total access to free pages, once these pages are returned to a slab cache to be reused, they will be able to modify any contents of any object allocated within these pages. In the more common situation, the attacker can modify only a certain type of object, and possibly only at certain offsets or with certain values.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

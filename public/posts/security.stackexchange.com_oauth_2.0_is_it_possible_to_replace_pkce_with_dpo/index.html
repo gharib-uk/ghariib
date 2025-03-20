@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>OAuth 2.0: Is it possible to replace PKCE with DPoP-like proof-of-possession?</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="http://localhost:1313/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>OAuth 2.0: Is it possible to replace PKCE with DPoP-like proof-of-possession?</h1>
+			<b><time>31.12.2024 03:38</time></b>
+		       
+		           <a href="/tags/security.stackexchange.com">security.stackexchange.com</a>
+        	       
+
+			<div>
+				<h1 id="oauth-20-is-it-possible-to-replace-pkce-with-dpop-like-proof-of-possession">OAuth 2.0: Is it possible to replace PKCE with DPoP-like proof-of-possession?</h1>
+<p><strong>Published on</strong>: 2024-12-31T03:38:20Z</p>
+<p><strong>Summary</strong>: So Im currently learning about Demonstrating Proof-of-Possession (DPoP) in Oauth after previously learnt about Proof Key for Code Exchange (PKCE). one interesting idea ive been thinking is, is it possible to replace the challenge/verifier keypair in PKCE with a challenge/signature strategy (possibily with the same keypair as the one used in DPoP)? so in PKCE we usually does it like:  client generate random verifier, hash with sha256 into a challenge code, send it along Oauth inital request after resource provider redirect back to client along with authorization code, send the auth code along with verifier code to exchange with access token.  if we go by the above idea, it would be like:  client generate public-private keypair for DPoP. send public key along with OAuth initial request after resource provider redirect back to client along with authorization code, send the auth code along with random string+signature to exchange with access token. or event the whole request could be encapsulated inside JWT and signed with the previous keypair.  I know this is more about protocol design instead of implementation details, but I think this could possibly simplify the flow as we only need to focus on 1 type of cryptographic operations instead several (asymmetric signature + hashing). so is this flow sensible? is there any particular issue asides from deviating from OAuth standards?</p>
+<p>Read more: <a href="https://security.stackexchange.com/questions/280032/oauth-2-0-is-it-possible-to-replace-pkce-with-dpop-like-proof-of-possession">OAuth 2.0: Is it possible to replace PKCE with DPoP-like proof-of-possession?</a></p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/security.stackexchange.com_what_is_this_hacker_trying_to_do_by_accessing_stac/">What is this hacker trying to do by accessing stack exchange specific URLs on my site? [closed]</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_buffer_overflow_use_ebp_instead_of_esp_ebp&#43;4__re/">buffer overflow use ebp instead of esp (ebp&#43;4 = ret address)</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_character_escaping_xss_closed/">Character escaping xss [closed]</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_is_there_a_way_to_limit_browser_extension_internet/">Is there a way to limit browser extension internet access?</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_is_it_common_practice_to_remove_trusted_certificat/">Is it common practice to remove trusted certificate authorities (CA) located in untrusted countries?</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="http://localhost:1313/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

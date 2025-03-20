@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Phishing Campaigns Targeting Higher Education Institutions</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Phishing Campaigns Targeting Higher Education Institutions</h1>
+			<b><time>24.02.2025 14:00</time></b>
+		       
+
+			<div>
+				<h1 id="phishing-campaigns-targeting-higher-education-institutions">Phishing Campaigns Targeting Higher Education Institutions</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<hr>
+<h2 id="overview">Overview</h2>
+<p>Beginning in August 2024, Mandiant observed a notable increase in phishing attacks targeting the education industry, specifically U.S.-based universities. A separate investigation conducted by the Google’s Workspace Trust and Safety team identified a long-term campaign spanning from at least October 2022, with a noticeable pattern of shared filenames, targeting thousands of educational institution users per month.</p>
+<p>These attacks exploit trust within academic institutions to deceive students, faculty, and staff, and have been timed to coincide with key dates in the academic calendar. The beginning of the school year, with its influx of new and returning students combined with a barrage of administrative tasks, as well as financial aid deadlines, can create opportunities for attackers to carry out phishing attacks. In these investigations, three distinct campaigns have emerged, attempting to take advantage of these factors. </p>
+<p>In one campaign, attackers leveraged phishing campaigns utilizing compromised educational institutions to host Google Forms. At this time, Mandiant has observed at least 15 universities targeted in these phishing campaigns. In this case, the malicious forms were reported and subsequently removed. As such, at this time none of the phishing forms identified are currently active. Another campaign involved scraping university login pages and re-hosting them on the attacker-controlled infrastructure. Both campaigns exhibited tactics to obfuscate malicious activity while increasing their perceived legitimacy, ultimately to perform payment redirection attacks. These phishing methods employ various tactics to trick victims into revealing login credentials and financial information, including requests for school portal login verification, financial aid disbursement, refund verification, account deactivation, and urgent responses to campus medical inquiries.</p>
+<p>Google takes steps to <a href="https://support.google.com/docs/answer/148505">protect users from misuse of its products</a>, and create an overall positive experience. However, awareness and education play a big role in staying secure online. To better protect yourself and others, be sure to <a href="https://support.google.com/docs/answer/2463296">report abuse</a>.  </p>
+<h2 id="case-study-1-google-forms-phishing-campaign">Case Study 1: Google Forms Phishing Campaign</h2>
+<p>The first observed campaign involved a two-pronged phishing campaign. Attackers distributed phishing emails that contained a link to a malicious Google Form. These emails and their respective forms were designed to mimic legitimate university communications, but requested sensitive information, including login credentials and financial details.</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/images/phishing-higher-ed-fig1.max-1000x1000.png" alt="Example phish email" />
+</figure>
+
+
+</p>
+<p>Figure 1: Example phishing email</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/images/phishing-higher-ed-fig2.max-1000x1000.png" alt="Example phishing email 2" />
+</figure>
+
+
+</p>
+<p>Figure 2: Another example phishing email</p>
+<p>The email is just the initial stage of the attack. While there are legitimate URLs contained within the phish, there is also a request to visit an external link to provide “urgent” information. This external link leads victims to a Google Form that has been tailored to the targeted university, including a color scheme in the school colors, a header with the logo or mascot, and references to the university name. Mandiant has observed the creation and staging of several different Google Forms, all with different methods employed to trick victims into providing sensitive information. In one instance, the social engineering pretext is that a student’s account is “associated with logins from two separate university portals”, a conflict which, if not resolved, will lead to interruption in service at both universities.</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/images/phishing-higher-ed-fig3.max-1000x1000.png" alt="Example Google Form phish" />
+</figure>
+
+
+</p>
+<p>Figure 3: Example Google Form phish</p>
+<p>These Google Forms phishing campaigns are not just limited to targeting login credentials. In several instances, Mandiant observed threat actors attempting to obtain financial institution details.</p>
+<pre tabindex="0"><code>Your school has collaborated with &lt;redacted&gt; to streamline fund 
+distribution to students. &lt;redacted&gt; ensures the quickest, most 
+dependable, and secure method for disbursing Emergency Grants 
+to eligible students. Unfortunately, we&#39;ve identified an outstanding 
+issue regarding the distribution of your financial aid through &lt;redacted&gt;. 
+We kindly request that you review and, if necessary, update your 
+&lt;redacted&gt; information within the net 24 hours. Failing to address 
+this promptly may result in delays in receiving your funds.
+</code></pre><p>Figure 4: Example Google Form phish</p>
+<p>After successfully compromising and propagating additional phishes using the compromised environment, the threat actor then uses the victim’s infrastructure to host a similar campaign targeting future victims. In some cases, the Google Form link was shut down and then repurposed to further the attacker’s objectives.</p>
+<h2 id="case-study-2-website-cloning-and-redirection">Case Study 2: Website Cloning and Redirection</h2>
+<p>This campaign involves a sophisticated phishing attack where threat actors cloned a university website, mimicking the legitimate login portal. However, this cloned website involved a series of redirects, specifically targeting mobile devices. </p>
+<p>The embedded JavaScript performs a “mobile check” and user-agent string verification and performed the following hex-encoded redirect:</p>
+<pre tabindex="0"><code>if (window.mobileCheck()) { 	
+window.location.href=&#34;\x68\x74\x74\x70\x3a\x2f\x2f\x63\x75\x74
+\x6c\x79\x2e\x74\x6f\x64\x61\x79\x2f\x4a\x4e\x78\x30\x72\x37&#34;; 		}
+</code></pre><p>Figure 5: JavaScript Hex-encoded redirect</p>
+<p>This JavaScript checks to determine if the user is on a mobile device. If they are, it redirects them to one of several possible follow-on URLs. These are two examples:</p>
+<ul>
+<li><code>hxxp://cutly[.]today/JNx0r7</code></li>
+<li><code>hxxp://kutly[.]win/Nyq0r4</code></li>
+</ul>
+<h2 id="case-study-3-two-step-phishing-campaign-targeting-staff-and-students">Case Study 3: Two-Step Phishing Campaign Targeting Staff and Students</h2>
+<p>Google’s Workspace Trust and Safety team also observed a two-step phishing campaign targeting staff and students. First, attackers send a phishing email to faculty and staff. The emails are designed to entice faculty and staff to provide their login credentials in order to view a document about a raise or bonus.</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/images/phishing-higher-ed-fig6.max-1000x1000.png" alt="Example of phishing email targeting faculty and staff" />
+</figure>
+
+
+</p>
+<p>Figure 6: Example of phishing email targeting faculty and staff</p>
+<p>Next, attackers use login credentials provided by faculty and staff to hijack their account and email phishing forms to students. These forms are designed to look like job applications, and phish for personal and financial information.</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/images/phishing-higher-ed-fig7.max-1000x1000.png" alt="Example of phishing form emailed to students" />
+</figure>
+
+
+</p>
+<p>Figure 7: Example of phishing form emailed to students</p>
+<h2 id="understanding-payment-redirection-attacks">Understanding Payment Redirection Attacks</h2>
+<p>Payment redirection attacks via Business Email Compromise (BEC) are a sophisticated form of financial fraud. In these attacks, cyber threat actors gain unauthorized access to a business email account and exploit it to redirect payments meant for legitimate recipients into their own accounts. While these attacks often involve the diversion of large transfers, there have been instances where attackers divert small amounts (typically 5-10%) to lower the likelihood of detection. This outlier tactic allows them to steal funds gradually, making it more challenging to detect unauthorized transactions.</p>
+<p>
+<figure>
+  <img src="https://storage.googleapis.com/gweb-cloudblog-publish/original_images/phishing-higher-ed-fig8.gif" alt="Payment redirection attacks" />
+</figure>
+
+
+</p>
+<p>Figure 8: Payment redirection attacks</p>
+<p><strong>Initial Compromise:</strong> Attackers often begin by gaining access to a legitimate email account through phishing, social engineering, or exploiting vulnerabilities. A common phishing technique involves using online surveys or other similar platforms to create convincing but fraudulent login pages or forms. When unsuspecting employees enter their credentials, attackers capture them and gain unauthorized access.  </p>
+<p><strong>Reconnaissance:</strong> Once they have access to the email account, attackers closely monitor communications to understand the organization’s financial processes, the relationships with vendors, and the typical language used in financial transactions. This reconnaissance phase is crucial for the attackers to craft convincing fraudulent emails that appear authentic to their victims.  </p>
+<p><strong>Impersonation and Execution:</strong> Armed with the information gathered during reconnaissance, attackers impersonate the compromised user or create look-alike email addresses. The TA then sends emails to employees, vendors, or clients, instructing them to change payment details for an upcoming transaction. Believing these requests to be legitimate, recipients comply, and the funds are redirected to accounts controlled by the attackers.  </p>
+<p><strong>Withdrawal and Laundering:</strong> After the funds are diverted, attackers quickly withdraw or move the money across multiple accounts to make recovery difficult. The types of funds being stolen can vary widely and include financial aid such as FAFSA, refunds, scholarships, payroll, and other large transactions like vendor payments or grants. This diversity in targeted funds complicates efforts by organizations and law enforcement to trace and recover the stolen money, as each category may involve different institutions and processes.  </p>
+<h2 id="the-impact-of-payment-redirection-attacks">The Impact of Payment Redirection Attacks</h2>
+<p>The consequences of a successful payment redirection attack can be severe:</p>
+<ul>
+<li>
+<p><strong>Financial Losses:</strong> Organizations may lose substantial amounts of money, potentially running into millions of dollars, depending on the size of the transactions. </p>
+</li>
+<li>
+<p><strong>Reputational Damage:</strong> Clients and partners affected by these attacks may lose trust in the organization, which can harm long-term business relationships and brand reputation.  </p>
+</li>
+<li>
+<p><strong>Operational Disruption:</strong> The aftermath of an attack often involves extensive investigations, coordination with financial institutions and law enforcement, and implementing enhanced security measures, all of which can disrupt normal business operations.  </p>
+</li>
+</ul>
+<h2 id="mitigating-payment-redirection-attacks">Mitigating Payment Redirection Attacks</h2>
+<p>To protect against payment redirection attacks, Mandiant recommends a multi-layered approach focusing on prevention, detection, and response:</p>
+<ul>
+<li>
+<p><strong>Implement Multi-Factor Authentication (MFA):</strong> Requiring MFA for accessing email accounts adds an additional layer of security. Even if an attacker obtains a user’s credentials, they would still need the second factor to gain access, significantly reducing the risk of account compromise. Mandiant has observed many universities, which require MFA for current faculty/staff/students, but not for alumni accounts. While alumni accounts aren’t necessarily at risk of payment redirection attacks, Mandiant has identified instances where alumni accounts have been leveraged to access other user accounts in the environment.</p>
+</li>
+<li>
+<p><strong>Conduct Employee Training:</strong> Regular training sessions can help employees recognize phishing attempts and suspicious emails. Training should emphasize vigilance against phishing forms hosted on platforms like Google Forms, and stress the importance of verifying unusual requests, especially those involving financial transactions or changes in payment details. If a Google Forms page seems suspicious, report it as phishing.</p>
+</li>
+<li>
+<p><strong>Establish Payment Verification Protocols:</strong> Organizations should have strict procedures for verifying changes in payment information. For example, a policy that requires confirmation of changes via a known phone number or a separate communication channel can help ensure that any alterations are legitimate.  </p>
+</li>
+<li>
+<p><strong>Use Canary Tokens for Detection:</strong> Deploying canary tokens, which are unique identifiers embedded in web pages or documents, can serve as an early warning system. If attackers scrape legitimate web pages to host them maliciously on their infrastructure, these tokens trigger alerts, notifying security teams of potential compromise or unauthorized data access.  </p>
+</li>
+<li>
+<p><strong>Use Advanced Email Security Solutions:</strong> Deploying advanced email filtering and monitoring solutions can help detect and block malicious emails. These tools can analyze email metadata, check for domain anomalies, and identify patterns indicative of BEC attempts.</p>
+</li>
+<li>
+<p>Built-in Protections with Gmail: Employs AI, threat signals, and Safe Browsing to block 99.9% of spam, phishing, and malware, while also detecting more malware than traditional antivirus and preventing suspicious account sign-ins.</p>
+</li>
+<li>
+<p><strong>Develop a robust Incident Response Plan:</strong> A well-defined incident response plan specifically addressing BEC scenarios enables organizations to act swiftly when an attack is detected. This plan should include procedures for containing the breach, notifying affected parties, and collaborating with financial institutions and law enforcement to recover lost funds.  </p>
+</li>
+<li>
+<p><strong>Limit the number of emails a standard user can send in a day:</strong> Implementing a policy that restricts the number of emails a standard user can send daily provides additional safeguards in preventing the mass dissemination of phishing emails or malicious content from compromised accounts. This limit can act as a safety net, reducing the potential impact of a compromised account and making it harder for attackers to carry out large-scale phishing campaigns. </p>
+</li>
+<li>
+<p><strong>Context-Aware Access Monitoring:</strong> Utilize context-aware access monitoring to enhance security by analyzing the context of each login attempt. This includes  evaluating factors such as the user&rsquo;s location, device, and behavior patterns. If an access attempt deviates from established norms, such as an unusual login location or device, additional verification steps can be triggered. This helps detect and prevent unauthorized access, particularly in cases where credentials may have been compromised.</p>
+</li>
+</ul>
+<h2 id="detection">Detection</h2>
+<p>To assist the wider community in hunting and identifying activity outlined in this blog post, we have included a subset of these indicators of compromise (IOCs) in this post, and in a <a href="https://www.virustotal.com/gui/collection/3d63c3becd21c1869de40e0efb45fbae0a76f2ec5cd437a444ff5c35c09d8000/summary">GTI Collection</a> for registered users.</p>
+<h4 id="source"><a href="https://cloud.google.com/blog/topics/threat-intelligence/phishing-targeting-higher-education/">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

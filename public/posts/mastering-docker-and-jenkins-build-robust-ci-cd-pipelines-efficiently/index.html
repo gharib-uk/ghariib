@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Mastering Docker and Jenkins: Build Robust CI/CD Pipelines Efficiently</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Mastering Docker and Jenkins: Build Robust CI/CD Pipelines Efficiently</h1>
+			<b><time>16.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Hey there, fellow engineers and tech enthusiasts! I’m excited to share one of my favorite strategies for modern software delivery: combining Docker and Jenkins to power up your CI/CD pipelines. </p>
+<p>Throughout my career as a Senior DevOps Engineer and Docker Captain, I’ve found that these two tools can drastically streamline releases, reduce environment-related headaches, and give teams the confidence they need to ship faster.</p>
+<p>In this post, I’ll walk you through what Docker and Jenkins are, why they pair perfectly, and how you can build and maintain efficient pipelines. My goal is to help you feel right at home when automating your workflows. Let’s dive in.</p>
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/07/2400x1260_evergreen-docker-blog_g-1110x583.png" alt="2400x1260 evergreen docker blog g" />
+  <figcaption>- 2400x1260 evergreen docker blog g</figcaption>
+</figure>
+
+
+</p>
+<h2 id="brief-overview-of-continuous-integration-and-continuous-delivery">Brief overview of continuous integration and continuous delivery</h2>
+<p>Continuous integration (CI) and continuous delivery (CD) are key pillars of modern development. If you’re new to these concepts, here’s a quick rundown:</p>
+<ul>
+<li><strong>Continuous integration (CI):</strong> Developers frequently commit their code to a shared repository, triggering automated builds and tests. This practice prevents conflicts and ensures defects are caught early.</li>
+<li><strong>Continuous delivery (CD):</strong> With CI in place, organizations can then confidently automate releases. That means shorter release cycles, fewer surprises, and the ability to roll back changes quickly if needed.</li>
+</ul>
+<p>Leveraging CI/CD can dramatically improve your team’s velocity and quality. Once you experience the benefits of dependable, streamlined pipelines, there’s no going back.</p>
+<h2 id="why-combine-docker-and-jenkins-for-cicd">Why combine Docker and Jenkins for CI/CD?</h2>
+<p>Docker allows you to containerize your applications, creating consistent environments across development, testing, and production. Jenkins, on the other hand, helps you automate tasks such as building, testing, and deploying your code. I like to think of Jenkins as the tireless “assembly line worker,” while Docker provides identical “containers” to ensure consistency throughout your project’s life cycle.</p>
+<p>Here’s why blending these tools is so powerful:</p>
+<ul>
+<li><strong>Consistent environments:</strong> Docker containers guarantee uniformity from a developer’s laptop all the way to production. This consistency reduces errors and eliminates the dreaded “works on my machine” excuse.</li>
+<li><strong>Speedy deployments and rollbacks:</strong> Docker images are lightweight. You can ship or revert changes at the drop of a hat — perfect for short delivery process cycles where minimal downtime is crucial.</li>
+<li><strong>Scalability:</strong> Need to run 1,000 tests in parallel or support multiple teams working on microservices? No problem. Spin up multiple Docker containers whenever you need more build agents, and let Jenkins orchestrate everything with Jenkins pipelines.</li>
+</ul>
+<p>For a DevOps junkie like me, this synergy between Jenkins and Docker is a dream come true.</p>
+<h2 id="setting-up-your-cicd-pipeline-with-docker-and-jenkins">Setting up your CI/CD pipeline with Docker and Jenkins</h2>
+<p>Before you roll up your sleeves, let’s cover the essentials you’ll need:</p>
+<ul>
+<li>Docker Desktop (or a Docker server environment) installed and running. You can get Docker for various operating systems.</li>
+<li>Jenkins downloaded from Docker Hub or installed on your machine. These days, you’ll want <code>jenkins/jenkins:lts</code> (the long-term support image) rather than the deprecated <code>library/jenkins</code> image.</li>
+<li>Proper permissions for Docker commands and the ability to manage Docker images on your system.</li>
+<li>A GitHub or similar code repository where you can store your Jenkins pipeline configuration (optional, but recommended).</li>
+</ul>
+<p><strong>Pro tip:</strong> If you’re planning a production setup, consider a container orchestration platform like Kubernetes. This approach simplifies scaling Jenkins, updating Jenkins, and managing additional Docker servers for heavier workloads.</p>
+<h2 id="building-a-robust-cicd-pipeline-with-docker-and-jenkins">Building a robust CI/CD pipeline with Docker and Jenkins</h2>
+<p>After prepping your environment, it’s time to create your first Jenkins-Docker pipeline. Below, I’ll walk you through common steps for a typical pipeline — feel free to modify them to fit your stack.</p>
+<h3 id="1-install-necessary-jenkins-plugins">1. Install necessary Jenkins plugins</h3>
+<p>Jenkins offers countless plugins, so let’s start with a few that make configuring Jenkins with Docker easier:</p>
+<ul>
+<li>Docker Pipeline Plugin</li>
+<li>Docker</li>
+<li>CloudBees Docker Build and Publish</li>
+</ul>
+<p>How to install plugins:</p>
+<ol>
+<li>Open <strong>Manage Jenkins</strong> &gt; <strong>Manage Plugins</strong> in Jenkins.</li>
+<li>Click the <strong>Available</strong> tab and search for the plugins listed above.</li>
+<li>Install them (and restart Jenkins if needed).</li>
+</ol>
+<p>Code example (plugin installation via CLI):</p>
+<pre tabindex="0"><code># Install plugins using Jenkins CLI
+java -jar jenkins-cli.jar -s http://&lt;jenkins-server&gt;:8080/ install-plugin docker-pipeline
+java -jar jenkins-cli.jar -s http://&lt;jenkins-server&gt;:8080/ install-plugin docker
+java -jar jenkins-cli.jar -s http://&lt;jenkins-server&gt;:8080/ install-plugin docker-build-publish
+</code></pre><p><strong>Pro tip (advanced approach):</strong> If you’re aiming for a fully infrastructure-as-code setup, consider using Jenkins configuration as code (JCasC). With JCasC, you can declare all your Jenkins settings — including plugins, credentials, and pipeline definitions — in a YAML file. This means your entire Jenkins configuration is version-controlled and reproducible, making it effortless to spin up fresh Jenkins instances or apply consistent settings across multiple environments. It’s especially handy for large teams looking to manage Jenkins at scale.</p>
+<p><strong>Reference:</strong></p>
+<ul>
+<li>Jenkins Plugin Installation Guide.</li>
+<li>Jenkins Configuration as Code Plugin.</li>
+</ul>
+<h3 id="2-set-up-your-jenkins-pipeline">2. Set up your Jenkins pipeline</h3>
+<p>In this step, you’ll define your pipeline. A Jenkins “pipeline” job uses a <code>Jenkinsfile</code> (stored in your code repository) to specify the steps, stages, and environment requirements.</p>
+<p>Example Jenkinsfile:</p>
+<pre tabindex="0"><code>pipeline {
+    agent any
+    stages {
+        stage(&#39;Checkout&#39;) {
+            steps {
+                git branch: &#39;main&#39;, url: &#39;https://github.com/your-org/your-repo.git&#39;
+            }
+        }
+        stage(&#39;Build&#39;) {
+            steps {
+                script {
+                    dockerImage = docker.build(&#34;your-org/your-app:${env.BUILD_NUMBER}&#34;)
+                }
+            }
+        }
+        stage(&#39;Test&#39;) {
+            steps {
+                sh &#39;docker run --rm your-org/your-app:${env.BUILD_NUMBER} ./run-tests.sh&#39;
+            }
+        }
+        stage(&#39;Push&#39;) {
+            steps {
+                script {
+                    docker.withRegistry(&#39;https://index.docker.io/v1/&#39;, &#39;dockerhub-credentials&#39;) {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre><p>Let’s look at what’s happening here:</p>
+<ol>
+<li><strong>Checkout</strong>: Pulls your repository.</li>
+<li><strong>Build</strong>: Creates a built docker image (<code>your-org/your-app</code>) with the build number as a tag.</li>
+<li><strong>Test</strong>: Runs your test suite inside a fresh container, ensuring Docker containers create consistent environments for every test run.</li>
+<li><strong>Push</strong>: Pushes the image to your Docker registry (e.g., Docker Hub) if the tests pass.</li>
+</ol>
+<p><strong>Reference:</strong> Jenkins Pipeline Documentation.</p>
+<h3 id="3-configure-jenkins-for-automated-builds">3. Configure Jenkins for automated builds</h3>
+<p>Now that your pipeline is set up, you’ll want Jenkins to run it automatically:</p>
+<ul>
+<li><strong>Webhook triggers</strong>: Configure your source control (e.g., GitHub) to send a webhook whenever code is pushed. Jenkins will kick off a build immediately.</li>
+<li><strong>Poll SCM</strong>: Jenkins periodically checks your repo for new commits and starts a build if it detects changes.</li>
+</ul>
+<p>Which trigger method should you choose?</p>
+<ul>
+<li><strong>Webhook triggers</strong> are ideal if you want near real-time builds. As soon as you push to your repo, Jenkins is notified, and a new build starts almost instantly. This approach is typically more efficient, as Jenkins doesn’t have to continuously check your repository for updates. However, it requires that your source control system and network environment support webhooks.</li>
+<li><strong>Poll SCM</strong> is useful if your environment can’t support incoming webhooks — for example, if you’re behind a corporate firewall or your repository isn’t configured for outbound hooks. In that case, Jenkins routinely checks for new commits on a schedule you define (e.g., every five minutes), which can add a small delay and extra overhead but may simplify setup in locked-down environments.</li>
+</ul>
+<p><strong>Personal experience</strong>: I love webhook triggers because they keep everything as close to real-time as possible. Polling works fine if webhooks aren’t feasible, but you’ll see a slight delay between code pushes and build starts. It can also generate extra network traffic if your polling interval is too frequent.</p>
+<h3 id="4-build-test-and-deploy-with-docker-containers">4. Build, test, and deploy with Docker containers</h3>
+<p>Here comes the fun part — automating the entire cycle from build to deploy:</p>
+<ol>
+<li><strong>Build Docker image</strong>: After pulling the code, Jenkins calls <code>docker.build</code> to create a new image.</li>
+<li><strong>Run tests</strong>: Automated or automated acceptance testing runs inside a container spun up from that image, ensuring consistency.</li>
+<li><strong>Push</strong> to registry: Assuming tests pass, Jenkins pushes the tagged image to your Docker registry — this could be Docker Hub or a private registry.</li>
+<li><strong>Deploy</strong>: Optionally, Jenkins can then deploy the image to a remote server or a container orchestrator (Kubernetes, etc.).</li>
+</ol>
+<p>This streamlined approach ensures every step — build, test, deploy — lives in one cohesive pipeline, preventing those “where’d that step go?” mysteries.</p>
+<h3 id="5-optimize-and-maintain-your-pipeline">5. Optimize and maintain your pipeline</h3>
+<p>Once your pipeline is up and running, here are a few maintenance tips and enhancements to keep everything running smoothly:</p>
+<ul>
+<li><strong>Clean up images:</strong> Routine cleanup of Docker images can reclaim space and reduce clutter.</li>
+<li><strong>Security updates:</strong> Stay on top of updates for Docker, Jenkins, and any plugins. Applying patches promptly helps protect your CI/CD environment from vulnerabilities.</li>
+<li><strong>Resource monitoring:</strong> Ensure Jenkins nodes have enough memory, CPU, and disk space for builds. Overworked nodes can slow down your pipeline and cause intermittent failures.</li>
+</ul>
+<p><strong>Pro tip:</strong> In large projects, consider separating your build agents from your Jenkins controller by running them in ephemeral Docker containers (also known as Jenkins agents). If an agent goes down or becomes stale, you can quickly spin up a fresh one — ensuring a clean, consistent environment for every build and reducing the load on your main Jenkins server.</p>
+<h3 id="why-use-declarative-pipelines-for-cicd"><strong>Why use Declarative Pipelines for CI/CD?</strong></h3>
+<p>Although Jenkins supports multiple pipeline syntaxes, Declarative Pipelines stand out for their clarity and resource-friendly design. Here’s why:</p>
+<ul>
+<li><strong>Simplified, opinionated syntax:</strong> Everything is wrapped in a single <code>pipeline { ... }</code> block, which minimizes “scripting sprawl.” It’s perfect for teams who want a quick path to best practices without diving deeply into Groovy specifics.</li>
+<li><strong>Easier resource allocation:</strong> By specifying an <code>agent</code> at either the pipeline level or within each stage, you can offload heavyweight tasks (builds, tests) onto separate worker nodes or Docker containers. This approach helps prevent your main Jenkins controller from becoming overloaded.</li>
+<li><strong>Parallelization and matrix builds:</strong> If you need to run multiple test suites or support various OS/browser combinations, Declarative Pipelines make it straightforward to define parallel stages or set up a matrix build. This tactic is incredibly handy for microservices or large test suites requiring different environments in parallel.</li>
+<li><strong>Built-in “escape hatch”:</strong> Need advanced Groovy features? Just drop into a <code>script</code> block. This lets you access Scripted Pipeline capabilities for niche cases, while still enjoying Declarative’s streamlined structure most of the time.</li>
+<li><strong>Cleaner parameterization:</strong> Want to let users pick which tests to run or which Docker image to use? The <code>parameters</code> directive makes your pipeline more flexible. A single Jenkinsfile can handle multiple scenarios — like unit vs. integration testing — without duplicating stages.</li>
+</ul>
+<h3 id="declarative-pipeline-examples"><strong>Declarative Pipeline examples</strong></h3>
+<p>Below are sample pipelines to illustrate how declarative syntax can simplify resource allocation and keep your Jenkins controller healthy.</p>
+<p><strong>Example 1: Basic Declarative Pipeline</strong></p>
+<pre tabindex="0"><code>pipeline {
+    agent any
+    stages {
+        stage(&#39;Build&#39;) {
+            steps {
+                echo &#39;Building...&#39;
+            }
+        }
+        stage(&#39;Test&#39;) {
+            steps {
+                echo &#39;Testing...&#39;
+            }
+        }
+    }
+}
+</code></pre><ul>
+<li>Runs on any available Jenkins agent (worker).</li>
+<li>Uses two stages in a simple sequence.</li>
+</ul>
+<p><strong>Example 2: Stage-level agents for resource isolation</strong></p>
+<pre tabindex="0"><code>pipeline {
+    agent none  // Avoid using a global agent at the pipeline level
+    stages {
+        stage(&#39;Build&#39;) {
+            agent { docker &#39;maven:3.9.3-eclipse-temurin-17&#39; }
+            steps {
+                sh &#39;mvn clean package&#39;
+            }
+        }
+        stage(&#39;Test&#39;) {
+            agent { docker &#39;openjdk:17-jdk&#39; }
+            steps {
+                sh &#39;java -jar target/my-app-tests.jar&#39;
+            }
+        }
+    }
+}
+</code></pre><ul>
+<li>Each stage runs in its own container, preventing any single node from being overwhelmed.</li>
+<li><code>agent none</code> at the top ensures no global agent is allocated unnecessarily.</li>
+</ul>
+<p><strong>Example 3: Parallelizing test stages</strong></p>
+<pre tabindex="0"><code>pipeline {
+    agent none
+    stages {
+        stage(&#39;Test&#39;) {
+            parallel {
+                stage(&#39;Unit Tests&#39;) {
+                    agent { label &#39;linux-node&#39; }
+                    steps {
+                        sh &#39;./run-unit-tests.sh&#39;
+                    }
+                }
+                stage(&#39;Integration Tests&#39;) {
+                    agent { label &#39;linux-node&#39; }
+                    steps {
+                        sh &#39;./run-integration-tests.sh&#39;
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre><ul>
+<li>Splits tests into two parallel stages.</li>
+<li>Each stage can run on a different node or container, speeding up feedback loops.</li>
+</ul>
+<p><strong>Example 4: Parameterized pipeline</strong></p>
+<pre tabindex="0"><code>pipeline {
+    agent any
+
+    parameters {
+        choice(name: &#39;TEST_TYPE&#39;, choices: [&#39;unit&#39;, &#39;integration&#39;, &#39;all&#39;], description: &#39;Which test suite to run?&#39;)
+    }
+
+    stages {
+        stage(&#39;Build&#39;) {
+            steps {
+                echo &#39;Building...&#39;
+            }
+        }
+        stage(&#39;Test&#39;) {
+            when {
+                expression { return params.TEST_TYPE == &#39;unit&#39; || params.TEST_TYPE == &#39;all&#39; }
+            }
+            steps {
+                echo &#39;Running unit tests...&#39;
+            }
+        }
+        stage(&#39;Integration&#39;) {
+            when {
+                expression { return params.TEST_TYPE == &#39;integration&#39; || params.TEST_TYPE == &#39;all&#39; }
+            }
+            steps {
+                echo &#39;Running integration tests...&#39;
+            }
+        }
+    }
+}
+</code></pre><ul>
+<li>Lets you choose which tests to run (unit, integration, or both).</li>
+<li>Only executes relevant stages based on the chosen parameter, saving resources.</li>
+</ul>
+<p><strong>Example 5: Matrix builds</strong></p>
+<pre tabindex="0"><code>pipeline {
+    agent none
+
+    stages {
+        stage(&#39;Build and Test Matrix&#39;) {
+            matrix {
+                agent {
+                    label &#34;${PLATFORM}-docker&#34;
+                }
+                axes {
+                    axis {
+                        name &#39;PLATFORM&#39;
+                        values &#39;linux&#39;, &#39;windows&#39;
+                    }
+                    axis {
+                        name &#39;BROWSER&#39;
+                        values &#39;chrome&#39;, &#39;firefox&#39;
+                    }
+                }
+                stages {
+                    stage(&#39;Build&#39;) {
+                        steps {
+                            echo &#34;Build on ${PLATFORM} with ${BROWSER}&#34;
+                        }
+                    }
+                    stage(&#39;Test&#39;) {
+                        steps {
+                            echo &#34;Test on ${PLATFORM} with ${BROWSER}&#34;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre><ul>
+<li>Defines a matrix of PLATFORM x BROWSER, running each combination in parallel.</li>
+<li>Perfect for testing multiple OS/browser combinations without duplicating pipeline logic.</li>
+</ul>
+<p><strong>Additional resources</strong>:</p>
+<ul>
+<li>Jenkins Pipeline Syntax: Official reference for sections, directives, and advanced features like matrix, parallel, and post conditions.</li>
+<li>Jenkins Pipeline Steps Reference: Comprehensive list of steps you can call in your Jenkinsfile.</li>
+<li>Jenkins Configuration as Code Plugin (JCasC): Ideal for version-controlling your Jenkins configuration, including plugin installations and credentials.</li>
+</ul>
+<p>Using Declarative Pipelines helps ensure your CI/CD setup is easier to maintain, scalable, and secure. By properly configuring agents — whether Docker-based or label-based — you can spread workloads across multiple worker nodes, minimize resource contention, and keep your Jenkins controller humming along happily.</p>
+<h3 id="best-practices-for-cicd-with-docker-and-jenkins">Best practices for CI/CD with Docker and Jenkins</h3>
+<p>Ready to supercharge your setup? Here are a few tried-and-true habits I’ve cultivated:</p>
+<ul>
+<li><strong>Leverage Docker’s layer caching:</strong> Optimize your Dockerfiles so stable (less frequently changing) layers appear early. This drastically reduces build times.</li>
+<li><strong>Run tests in parallel:</strong> Jenkins can run multiple containers for different services or microservices, letting you test them side by side. Declarative Pipelines make it easy to define parallel stages, each on its own agent.</li>
+<li><strong>Shift left on security:</strong> Integrate security checks early in the pipeline. Tools like Docker Scout let you scan images for vulnerabilities, while Jenkins plugins can enforce compliance policies. Don’t wait until production to discover issues.</li>
+<li><strong>Optimize resource allocation:</strong> Properly configure CPU and memory limits for Jenkins and Docker containers to avoid resource hogging. If you’re scaling Jenkins, distribute builds across multiple worker nodes or ephemeral agents for maximum efficiency.</li>
+<li><strong>Configuration management:</strong> Store Jenkins jobs, pipeline definitions, and plugin configurations in source control. Tools like Jenkins Configuration as Code simplify versioning and replicating your setup across multiple Docker servers.</li>
+</ul>
+<p>With these strategies — plus a healthy dose of Declarative Pipelines — you’ll have a lean, high-octane CI/CD pipeline that’s easier to maintain and evolve.</p>
+<h2 id="troubleshooting-docker-and-jenkins-pipelines">Troubleshooting Docker and Jenkins Pipelines</h2>
+<p>Even the best systems hit a snag now and then. Here are a few hurdles I’ve seen (and conquered):</p>
+<ul>
+<li><strong>Handling environment variability:</strong> Keep Docker and Jenkins versions synced across different nodes. If multiple Jenkins nodes are in play, standardize Docker versions to avoid random build failures.</li>
+<li><strong>Troubleshooting build failures:</strong> Use <code>docker logs -f &lt;container-id&gt;</code> to see exactly what happened inside a container. Often, the logs reveal missing dependencies or misconfigured environment variables.</li>
+<li><strong>Networking challenges:</strong> If your containers need to talk to each other — especially across multiple hosts — make sure you configure Docker networks or an orchestration platform properly. Read Docker’s networking documentation for details, and check out the Jenkins diagnosing issues guide for more troubleshooting tips.</li>
+</ul>
+<h2 id="conclusion">Conclusion</h2>
+<p>Pairing Docker and Jenkins offers a nimble, robust approach to CI/CD. Docker locks down consistent environments and lightning-fast rollouts, while Jenkins automates key tasks like building, testing, and pushing your changes to production. When these two are in harmony, you can expect shorter release cycles, fewer integration headaches, and more time to focus on developing awesome features.</p>
+<p>A healthy pipeline also means your team can respond quickly to user feedback and confidently roll out updates — two crucial ingredients for any successful software project. And if you’re concerned about security, there are plenty of tools and best practices to keep your applications safe.</p>
+<p>I hope this guide helps you build (and maintain) a high-octane CI/CD pipeline that your team will love. If you have questions or need a hand, feel free to reach out on the community forums, join the conversation on Slack, or open a ticket on GitHub issues. You’ll find plenty of fellow Docker and Jenkins enthusiasts who are happy to help.</p>
+<p>Thanks for reading, and happy building!</p>
+<h2 id="learn-more">Learn more</h2>
+<ul>
+<li>Subscribe to the Docker Newsletter. </li>
+<li>Take a deeper dive in Docker’s official Jenkins integration documentation.</li>
+<li>Explore Docker Business for comprehensive CI/CD security at scale.</li>
+<li>Get the latest release of Docker Desktop.</li>
+<li>Have questions? The Docker community is here to help.</li>
+<li>New to Docker? Get started.</li>
+</ul>
+<p>​Products, CI/CD, Docker Desktop, Docker Hub, Popular Topics</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

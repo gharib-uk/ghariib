@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>IntelliJ IDEA 2025.1 EAP 2: Containerfile Support and Updates for Dockerfiles</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>IntelliJ IDEA 2025.1 EAP 2: Containerfile Support and Updates for Dockerfiles</h1>
+			<b><time>23.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/dev">dev</a>
+        	       
+		           <a href="/tags/developers">developers</a>
+        	       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/jetbrains">jetbrains</a>
+        	       
+		           <a href="/tags/linux">linux</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>IntelliJ IDEA 2025.1 EAP 2 is out! With a focus on improving workflows for environments like Docker containers and other remote solutions, this build introduces updates that simplify setup and enhance productivity in these scenarios. You can now download this version from our website, update directly from within the IDE, use the free Toolbox App, […]</p>
+<p>IntelliJ IDEA 2025.1 EAP 2 is out!</p>
+<p>With a focus on improving workflows for environments like Docker containers and other remote solutions, this build introduces updates that simplify setup and enhance productivity in these scenarios.</p>
+<p>You can now download this version from our website, update directly from within the IDE, use the free Toolbox App, or install it via snap packages for Ubuntu. </p>
+<p>Download IntelliJ IDEA 2025.1 EAP 2</p>
+<p>Try the new updates delivered with the second EAP build for yourself! </p>
+<h2 id="remote-development-environments">Remote development environments </h2>
+<h3 id="containerfile-support">Containerfile support </h3>
+<p>Container ecosystems have been evolving beyond Docker-centric workflows, with tools like Podman and Buildah favoring Containerfile as a neutral alternative. However, IDE support, which is typically tied to Dockerfile, often lagged behind. That created friction, forcing developers to either rename Containerfile to Dockerfile, lose Podman-specific best practices, or just plow through with basic text editing. </p>
+<p>Now, JetBrains IDEs come with built-in Containerfile recognition. This might seem like a relatively minor enhancement, but it really contributes to a smooth developer experience for anyone juggling Docker, Podman, and Buildah in the same environment.</p>
+<p>It is no longer necessary to keep separate versions of your build files just so your IDE doesn’t treat them as plain text. And for new hires or open-source contributors using Podman straight from the get-go, it provides enhanced clarity.</p>
+<p>Syntax highlighting, linting, and snippet suggestions are fully supported, reducing errors, speeding up debugging, and improving clarity – especially for new hires or contributors using Podman. Now, it doesn’t matter if you switch engines or if half the team uses Docker while the other half uses Podman – everyone can work with the same file, recognized by the same tools.</p>
+<p>
+<figure>
+  <img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXfOPB05M_qJxC8Zxv-0AwdRIRx1NQa_3u5oELJ4miKnEXWs7fs6Y2GGRBbLUQM7lOikq_RjgZ-eIrDWAD4PAAj8PP-XtouH4PGdVij4om6B5WaQezNYN6qjS0gy55KL9WbRkDTfdA?key=W3y1-U-bXo4mtQ_gY7TGf7nc" alt="image.png" />
+</figure>
+
+
+</p>
+<h3 id="support-for-lowercase-instructions-in-dockerfiles">Support for lowercase instructions in Dockerfiles </h3>
+<p>IntelliJ IDEA 2025.1 EAP 2 brings enhanced Dockerfile support, allowing you to write directives in lowercase in addition to the conventional uppercase. Previously, the IDE recognized commands like <code>FROM</code>, <code>RUN</code>, and <code>COPY</code> primarily as Dockerfile instructions. Now, you’re also free to use the lowercase <code>from</code>, <code>run</code>, and <code>copy</code>, too.</p>
+<p>Although Docker itself is case-insensitive with regard to instructions, uppercase has historically been used to improve readability and to distinguish instructions from arguments. However, alternative casing styles might be preferred to accommodate specific commands, plugins, corporate standards, or personal preferences. With this update, you can adhere to your preferred conventions without risking missing highlights or encountering misleading warnings from the IDE.</p>
+<p>
+<figure>
+  <img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXfZLAC84YXFVcLGtALThkrEo5omPUz_kfz8ijnR8UWo5ceyxQt80ijTLdb4UEXG5f9_wRrL22ZhB96Pra8OG5h0-AUNOic_ICLbSmLIzkrE7cdTKJ_CPPwRC-HOfwbkcSW_zSCd?key=W3y1-U-bXo4mtQ_gY7TGf7nc" alt="image.png" />
+</figure>
+
+
+</p>
+<h3 id="new-inspection-for-reliable-entrypoint-initialization-with-exec">New inspection for reliable <code>ENTRYPOINT</code> initialization with exec</h3>
+<p>We’ve introduced a new Dockerfile inspection that ensures your <code>ENTRYPOINT</code> is correctly initiated with <code>exec</code>. Using <code>exec</code> allows signals sent via <code>docker stop</code> to reach the main process directly, preventing lingering or improperly terminated processes. If you omit <code>exec</code>, your application may run as a child process and fail to receive signals like <code>SIGTERM</code>, making shutdown unreliable. This inspection highlights incorrect <code>ENTRYPOINT</code> usage and guides you toward best practices, helping you maintain cleaner Dockerfiles and more robust container lifecycles.</p>
+<p>
+<figure>
+  <img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXfLwUkTZQmg3eBuqu7Ujbhjkzh9_-wxKxlLssfyum8ERUAG2G6cY-cIRwsSZY1bQG-PSfw0uAwGhykJD5-OQfC80uSMRfFpdCw995TfiZsBvErPWic5KUiq-dX8Dbzg9pB7fyu7?key=W3y1-U-bXo4mtQ_gY7TGf7nc" alt="image1.png" />
+</figure>
+
+
+</p>
+<p>These are the key updates for this week. For the complete list of changes, refer to the release notes.</p>
+<p>We’d love for you to explore the new features and share your feedback. Let us know your thoughts and ideas in the comments below, or get in touch with us on X. If you encounter any issues, please report them through our issue tracker.</p>
+<p>Happy developing!</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

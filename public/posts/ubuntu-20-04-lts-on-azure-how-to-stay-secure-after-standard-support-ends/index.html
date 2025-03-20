@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Ubuntu 20.04 LTS on Azure: how to stay secure after standard support ends</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Ubuntu 20.04 LTS on Azure: how to stay secure after standard support ends</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>As Ubuntu 20.04 LTS (Focal Fossa) approaches its planned May 31, 2025 end of standard support, Azure users must proactively evaluate their options to maintain security and regulatory compliance.</p>
+<h2 id="what-this-means-for-you">What this means for you</h2>
+<p>After May 31, 2025, Ubuntu 20.04 LTS instances on Azure will no longer receive critical security updates through standard channels, potentially affecting compliance with standards like PCI-DSS, SOC 2, or GDPR.</p>
+<h2 id="your-options">Your options</h2>
+<h3 id="option-1-upgrade-to-a-newer-ubuntu-lts-version">Option 1: Upgrade to a newer Ubuntu LTS Version</h3>
+<p>Ubuntu 22.04 LTS (Jammy Jellyfish) and 24.04 LTS (Noble Numbat) are currently maintained under standard support by Canonical until 2027 and 2029, respectively. You can upgrade via:</p>
+<ul>
+<li><strong>Deploying a Fresh Instance</strong>: Launch a new instance from the Azure Marketplace or CLI, then redeploy and test your application. For automation, update your base image.<br>
+For Ubuntu 24.04 LTS: <code>az vm create --name vm-name --resource-group myRG --image Canonical:0001-com-ubuntu-server-noble:24_04-lts:latest</code></li>
+<li><strong>Upgrading the OS Version</strong>: Use the `<code>do-release-upgrade</code>` command to update your existing installation. Be aware that there is no rollback option, and packages from external repositories might require manual reinstallation. Given cloud instance flexibility and ease of automation, we strongly recommend deploying a fresh instance for migrations rather than performing in-place upgrades. Learn more in the official documentation.</li>
+</ul>
+<p><strong>Note:</strong> Before proceeding with either upgrade method, ensure compatibility of your applications and dependencies with the target Ubuntu version, as some packages or configurations may have changed or been deprecated.</p>
+<h3 id="option-2-extend-support-with-ubuntu-pro">Option 2: Extend support with Ubuntu Pro</h3>
+<p>If you rely on specific application compatibility, hardware stability, or have enterprise constraints that make upgrading difficult, extending your support to Ubuntu Pro may be preferable. </p>
+<p>Ubuntu Pro extends security maintenance for 5 years beyond standard support (until 2030), offering:</p>
+<ul>
+<li>ESM-infra: Security fixes for high and critical CVEs.</li>
+<li>ESM-apps: Patches for over 25,000 open-source applications.</li>
+<li>Kernel Livepatch: Security updates without reboots.</li>
+<li>Ubuntu Security Guide: Hardening for industry standards such as FedRAMP, CIS, STIG, and more</li>
+<li>FIPS Support: Compliance with federal security standards for cryptographic modules.</li>
+<li>Optional phone and ticket support (Contact us)</li>
+<li>Optional Legacy Support: Providing extended security and maintenance through 2032</li>
+</ul>
+<p>To learn more about Ubuntu Pro’s offerings, see <a href="https://ubuntu.com/azure/pro">https://ubuntu.com/azure/pro</a> </p>
+<p>As Andy Parker, Engineering Manager at TIM, explains: </p>
+<blockquote>
+<p><em>“ESM has given us the space to plan what comes next. It’s helping us get into a position where we can have a more sustainable infrastructure.”</em></p></blockquote>
+<p><strong>How to enable Ubuntu Pro on Azure:</strong></p>
+<ul>
+<li><strong>Deploy a Fresh Ubuntu Pro Instance:</strong> Launch a new Ubuntu Pro 20.04 instance and redeploy your application. For automation, switch to the Pro image.<br>
+<code>az vm create --name pro-vm --resource-group myRG --image Canonical:0001-com-ubuntu-pro-focal:pro-20_04-lts:latest</code></li>
+<li><strong>Enable Ubuntu Pro on an Existing Instance:</strong> Attach a subscription to your current Ubuntu 20.04 LTS instance:</li>
+</ul>
+<ol>
+<li>Update the VM license: <code>az vm update --resource-group myRG --name myVM --license-type UBUNTU_PRO</code></li>
+<li>Install and attach the subscription: <code>sudo pro auto-attach</code></li>
+<li>Verify activation: <code>pro status # Should display subscription details</code> </li>
+</ol>
+<h2 id="take-action-now">Take action now</h2>
+<p>Ensure your Azure deployments remain secure by evaluating your migration or upgrade strategy well before May 31, 2025. Whether upgrading to a newer LTS or enabling Ubuntu Pro, early planning ensures a smooth transition. For assistance, contact Ubuntu experts from Canonical at <a href="https://ubuntu.com/azure/contact-us">https://ubuntu.com/azure/contact-us</a>.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

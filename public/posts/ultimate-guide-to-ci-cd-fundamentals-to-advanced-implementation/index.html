@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Ultimate guide to CI/CD: Fundamentals to advanced implementation&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Ultimate guide to CI/CD: Fundamentals to advanced implementation&lt;/div&gt;</h1>
+			<b><time>07.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>Continuous integration/continuous delivery (CI/CD) has revolutionized how software teams create value for their users. Gone are the days of manual deployments and integration headaches — modern development demands automation, reliability, and speed.</p>
+<p>At its core, CI/CD is about creating a seamless pipeline that takes code from a developer&rsquo;s environment all the way to production and incorporates feedback in real time. CI helps teams catch issues early — before they become costly problems — by ensuring that code changes are frequently merged into a shared repository, automatically tested, and validated. CD extends this by automating the deployment process, making releases predictable and stress-free.</p>
+<p>Rather than relying on manual processes and complex toolchains for software development, teams can use a robust CI/CD pipeline to build, test, and deploy software. And AI can streamline the process even further, automatically engineering CI/CD pipelines for consistent quality, compliance, and security checks.</p>
+<p>This guide explains modern CI/CD pipelines, from basic principles to best practices to advanced strategies. You&rsquo;ll also discover how leading organizations use CI/CD for impactful results. What you learn in this guide will help you scale your DevSecOps environment to develop and deliver software in an agile, automated, and efficient manner.</p>
+<p>What you&rsquo;ll learn:</p>
+<ul>
+<li>What is continuous integration?</li>
+<li>What is continuous delivery?</li>
+<li>How source code management relates to CI/CD</li>
+<li>The benefits of CI/CD in modern software development
+<ul>
+<li>Key differences between CI/CD and traditional development</li>
+</ul>
+</li>
+<li>Understanding CI/CD fundamentals
+<ul>
+<li>What is a CI/CD pipeline?</li>
+</ul>
+</li>
+<li>Best practices for CI/CD implementation and management
+<ul>
+<li>CI best practices</li>
+<li>CD best practices</li>
+</ul>
+</li>
+<li>How to get started with CI/CD</li>
+<li>Security, compliance, and CI/CD</li>
+<li>CI/CD and the cloud</li>
+<li>Advanced CI/CD
+<ul>
+<li>Reuse and automation in CI/CD</li>
+<li>Troubleshooting pipelines with AI</li>
+</ul>
+</li>
+<li>How to migrate to GitLab CI/CD</li>
+<li>Lessons from leading organizations</li>
+<li>CI/CD tutorials</li>
+</ul>
+<h2 id="what-is-continuous-integration">What is continuous integration?</h2>
+<p>Continuous integration (CI) is the practice of integrating all your code changes into the main branch of a shared source code repository early and often, automatically testing changes when you commit or merge them, and automatically kicking off a build. With continuous integration, teams can identify and fix errors and security issues more easily and much earlier in the development process.</p>
+<h2 id="what-is-continuous-delivery">What is continuous delivery?</h2>
+<p>Continuous delivery (CD) – sometimes called <em>continuous deployment</em> – enables organizations to deploy their applications automatically, allowing more time for developers to focus on monitoring deployment status and assure success. With continuous delivery, DevSecOps teams set the criteria for code releases ahead of time and when those criteria are met and validated, the code is deployed into the production environment. This allows organizations to be more nimble and get new features into the hands of users faster.</p>
+<h2 id="how-source-code-management-relates-to-cicd">How source code management relates to CI/CD</h2>
+<p>Source code management (SCM) and CI/CD form the foundation of modern software development practices. SCM systems like Git provide a centralized way to track changes, manage different versions of code, and facilitate collaboration among team members. When developers work on new features or bug fixes, they create branches from the main codebase, make their changes, and then merge them through merge requests. This branching strategy allows multiple developers to work simultaneously without interfering with each other&rsquo;s code, while maintaining a stable main branch that always contains production-ready code.</p>
+<p>CI/CD takes the code managed by SCM systems and automatically builds, tests, and validates it whenever changes are pushed. When a developer submits their code changes, the CI/CD system automatically retrieves the latest code, combines it with the existing codebase, and runs through a series of automated checks. These typically include compiling the code, running unit tests, performing static code analysis, and checking code coverage. If any of these steps fail, the team is immediately notified, allowing them to address issues before they impact other developers or make their way to production. This tight integration between source control and continuous integration creates a feedback loop that helps maintain code quality and prevents integration problems from accumulating.</p>
+<h2 id="the-benefits-of-cicd-in-modern-software-development">The benefits of CI/CD in modern software development</h2>
+<p>CI/CD brings transformative benefits to modern software development by dramatically reducing the time and risk associated with delivering new features and fixes. The continuous feedback loop gives DevSecOps teams confidence their changes are automatically validated against the entire codebase. The result is higher quality software, faster delivery times, and more frequent releases that can quickly respond to user needs and market demands.</p>
+<p>Perhaps most importantly, CI/CD fosters a culture of collaboration and transparency within software development teams. When everyone can see the status of builds, tests, and deployments in real time, it becomes easier to identify and resolve bottlenecks in the delivery process. The automation provided by CI/CD also reduces the cognitive load on developers, freeing them to focus on writing code rather than managing manual deployment processes. This leads to improved developer satisfaction and productivity, while also reducing the risk traditionally associated with the entire software release process. Teams can experiment more freely knowing rapid code reviews are part of the process and they can quickly roll back changes if needed, which encourages innovation and continuous improvement.</p>
+<h3 id="key-differences-between-cicd-and-traditional-development">Key differences between CI/CD and traditional development</h3>
+<p>CI/CD differs from traditional software development in many ways, including:</p>
+<p><strong>Frequent code commits</strong></p>
+<p>Developers often work independently and infrequently upload their code to a main codebase, causing merge conflicts and other time-consuming issues. With CI/CD, developers push commits throughout the day, ensuring that conflicts are caught early and the codebase remains up to date.</p>
+<p><strong>Reduced risk</strong></p>
+<p>Lengthy testing cycles and extensive pre-release planning are hallmarks of traditional software development. This is done to minimize risk but often hinders the ability to find and fix problems. Risk is managed in CI/CD by applying small, incremental changes that are closely monitored and easily reverted.</p>
+<p><strong>Automated and continuous testing</strong></p>
+<p>In traditional software development, testing is done once development is complete. However, this causes problems, including delayed delivery and costly bug fixes. CI/CD supports automated testing that occurs continuously throughout development, sparked by each code commit. Developers also receive feedback they can take fast action on.</p>
+<p><strong>Automated, repeatable, and frequent deployments</strong></p>
+<p>With CI/CD, deployments are automated processes that reduce the typical stress and effort associated with big software rollouts. The same deployment process can be repeated across environments, which saves time and reduces errors and inconsistencies.</p>
+<h2 id="understanding-cicd-fundamentals">Understanding CI/CD fundamentals</h2>
+<p>CI/CD serves as a framework for building scalable, maintainable delivery processes, so it&rsquo;s critical for DevSecOps teams to firmly grasp its core concepts. A solid understanding of CI/CD principles enables teams to adapt strategies and practices as technology evolves, rather than being tied to legacy approaches. Here are some of the basics.</p>
+<h3 id="what-is-a-cicd-pipeline">What is a CI/CD pipeline?</h3>
+<p>A CI/CD pipeline is a series of steps, such as build, test, and deploy, that automate and streamline the software delivery process. Each stage serves as a quality gate, ensuring that only validated code moves forward. Early stages typically handle basic checks like compilation and unit testing, while later stages may include integration testing, performance testing, compliance testing, and staged deployments to various environments.</p>
+<p>The pipeline can be configured to require manual approvals at critical points, such as before deploying to production, while automating routine tasks and providing quick feedback to developers about the health of their changes. This structured approach ensures consistency, reduces human error, and provides a clear audit trail of how code changes move from development to production. Modern pipelines are often implemented as code, allowing them to be version controlled, tested, and maintained just like application code.</p>
+<p>These are other terms associated with CI/CD that are important to know:</p>
+<ul>
+<li><strong>Commit:</strong> a code change</li>
+<li><strong>Job:</strong> instructions a runner has to execute</li>
+<li><strong>Runner:</strong> an agent or server that executes each job individually that can spin up or down as needed</li>
+<li><strong>Stages:</strong> a keyword that defines certain job stages, such as &ldquo;build&rdquo; and &ldquo;deploy.&rdquo; Jobs of the same stage are executed in parallel. Pipelines are configured using a version-controlled YAML file, <code>.gitlab-ci.yml</code>, at the root level of a project.</li>
+</ul>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/3IWoIXqmaabGr2JwGy0Pxi/7dfe5f608d2427d4ec5ea409a72efaed/1690824533476.png" alt="CI/CD pipeline diagram" />
+</figure>
+
+
+</p>
+<h2 id="best-practices-for-cicd-implementation-and-management">Best practices for CI/CD implementation and management</h2>
+<p>How successful you are with CI/CD depends greatly on the best practices you implement.</p>
+<h4 id="ci-best-practices">CI best practices</h4>
+<ul>
+<li>Commit early, commit often.</li>
+<li>Optimize pipeline stages.</li>
+<li>Make builds fast and simple.</li>
+<li>Use failures to improve processes.</li>
+<li>Make sure the test environment mirrors production.</li>
+</ul>
+<h4 id="cd-best-practices">CD best practices</h4>
+<ul>
+<li>Start where you are – you can always iterate.</li>
+<li>Understand the best continuous delivery is done with minimal tools.</li>
+<li>Track what’s happening so issues and merge requests don&rsquo;t get out of hand.</li>
+<li>Streamline user acceptance testing and staging with automation.</li>
+<li>Manage the release pipeline through automation.</li>
+<li>Implement monitoring for visibility and efficiency.</li>
+</ul>
+<blockquote>
+<h3 id="bookmark-this">Bookmark this!</h3>
+<p>Watch our &ldquo;Intro to CI/CD&rdquo; webinar!</p></blockquote>
+<h2 id="how-to-get-started-with-cicd">How to get started with CI/CD</h2>
+<p>Getting started with CI/CD begins with identifying a simple but representative project to serve as your pilot. Choose a straightforward application with basic testing requirements, as this allows you to focus on learning the pipeline mechanics rather than dealing with complex deployment scenarios. Begin by ensuring your code is in version control and has some basic automated tests — even a few unit tests will suffice. The goal is to create a minimal pipeline that you can gradually enhance as your understanding grows.</p>
+<p>For GitLab specifically, the process starts with creating a <code>.gitlab-ci.yml</code> file in your project&rsquo;s root directory. This YAML file defines your pipeline stages (basic ones like build, test, and deploy) and jobs. A simple pipeline might look like this: The build stage compiles your code and creates artifacts, the test stage runs your unit tests, and the deploy stage pushes your application to a staging environment. GitLab will automatically detect this file and start running your pipeline whenever changes are pushed to your repository. The platform provides built-in runners to execute your pipeline jobs, though you can also set up your own runners for more control.</p>
+<p>As you become comfortable with the basics, gradually add more sophisticated elements to your pipeline. This might include adding code quality checks, security scanning, or automated deployment to production. GitLab&rsquo;s DevSecOps platform includes features like compliance management, deployment variables, and manual approval gates that you can incorporate as your pipeline matures. Pay attention to pipeline execution time and look for opportunities to run jobs in parallel where possible. Remember to add proper error handling and notifications so team members are promptly alerted of any pipeline failures. Start documenting common issues and solutions as you encounter them — this will become invaluable as your team grows.</p>
+<blockquote>
+<h3 id="want-to-learn-more-about-getting-started-with-cicd-register-for-a-free-cicd-course-on-gitlab-university">Want to learn more about getting started with CI/CD? Register for a free CI/CD course on GitLab University.</h3></blockquote>
+<h2 id="security-compliance-and-cicd">Security, compliance, and CI/CD</h2>
+<p>One of the greatest advantages of CI/CD is the ability to embed security and compliance checks early and often in the software development lifecycle. In GitLab, teams can use the <code>.gitlab-ci.yml</code> configuration to automatically trigger security scans at multiple stages, from initial code commit to production deployment. The platform&rsquo;s container scanning, dependency scanning, and security scanning capabilities (Dynamic Application Security Testing and Advanced SAST) can be configured to run automatically with each code change, checking for vulnerabilities, compliance violations, and security misconfigurations. The platform&rsquo;s API enables integration with external security tools, while the test coverage features ensure security tests meet required thresholds.</p>
+<p>GitLab&rsquo;s security test reports provide detailed information about findings, enabling quick remediation of security issues before they reach production. The Security Dashboard provides a centralized view of vulnerabilities across projects, while security policies can be enforced through merge request approvals and pipeline gates. In addition, GitLab provides multiple layers of secrets management to protect sensitive information throughout the CI/CD process, audit logs to track access to secrets, and role-based access control (RBAC) to ensure only authorized users can view or modify sensitive configuration data.</p>
+<p>GitLab also supports software bill of materials (SBOM) generation, providing a comprehensive inventory of all software components, dependencies, and licenses in an application and enabling teams to quickly identify and respond to vulnerabilities and comply with regulatory mandates.</p>
+<h2 id="cicd-and-the-cloud">CI/CD and the cloud</h2>
+<p>GitLab&rsquo;s CI/CD platform provides robust integration with major cloud providers including Amazon Web Services, Google Cloud Platform, and Microsoft Azure, enabling teams to automate their cloud deployments directly from their pipelines. Through GitLab&rsquo;s cloud integrations, teams can manage cloud resources, deploy applications, and monitor cloud services all within the GitLab interface. The platform&rsquo;s built-in cloud deployment templates and Auto DevOps features significantly reduce the complexity of cloud deployments, allowing teams to focus on application development rather than infrastructure management. For organizations that want to automate their IT infrastructure using GitOps, GitLab has a Flux CD integration.</p>
+<p>GitLab&rsquo;s cloud capabilities extend beyond basic deployment automation. The platform&rsquo;s Kubernetes integration enables teams to manage container orchestration across multiple cloud providers, while the cloud native GitLab installation options allow the platform itself to run in cloud environments. Through GitLab&rsquo;s cloud-native features, teams can implement auto-scaling runners that dynamically provision cloud resources for pipeline execution, optimizing costs and performance. The platform&rsquo;s integration with cloud provider security services ensures that security and compliance requirements are met throughout the deployment process.</p>
+<p>For multi-cloud environments, GitLab provides consistent workflows and tooling regardless of the underlying cloud provider. Teams can use GitLab&rsquo;s environment management features to handle different cloud configurations across development, staging, and production environments. The platform&rsquo;s infrastructure as code support, particularly its native integration with Terraform, enables teams to version control and automate their cloud infrastructure provisioning. GitLab&rsquo;s monitoring and observability features integrate with cloud provider metrics, providing comprehensive visibility into application and infrastructure health across cloud environments.</p>
+<h2 id="advanced-cicd">Advanced CI/CD</h2>
+<p>CI/CD has evolved far beyond simple build and deploy pipelines. In advanced implementations, CI/CD involves sophisticated orchestration of automated testing, security scanning, infrastructure provisioning, AI, and more. Here are a few advanced CI/CD strategies that can help engineering teams scale their pipelines and troubleshoot issues even as architectural complexity grows.</p>
+<h3 id="reuse-and-automation-in-cicd">Reuse and automation in CI/CD</h3>
+<p>GitLab is transforming how development teams create and manage CI/CD pipelines with two major innovations: the CI/CD Catalog and CI/CD steps, a new programming language for DevSecOps automation currently in experimental phase. The CI/CD Catalog is a centralized platform where developers can discover, reuse, and contribute CI/CD components. Components function as reusable, single-purpose building blocks that simplify pipeline configuration — similar to Lego pieces for CI/CD workflows. Meanwhile, CI/CD steps support complex workflows by allowing developers to compose inputs and outputs for a CI/CD job. With the CI/CD Catalog and CI/CD steps, DevSecOps teams can easily standardize CI/CD and its components, simplifying the process of developing and maintaining CI/CD pipelines.</p>
+<blockquote>
+<p>Learn more in our CI/CD Catalog FAQ and CI/CD steps documentation.</p></blockquote>
+<h3 id="troubleshooting-pipelines-with-ai">Troubleshooting pipelines with AI</h3>
+<p>While CI/CD pipelines can and do break, troubleshooting the issue quickly can minimize the impact. GitLab Duo Root Cause Analysis, part of a suite of AI-powered features, removes the guesswork by determining the root cause for a failed CI/CD pipeline. When a pipeline fails, GitLab provides detailed job logs, error messages, and execution traces that show exactly where and why the failure occurred. Root Cause Analysis then uses AI to suggest a fix. Watch GitLab Duo Root Cause Analysis in action:</p>
+<h2 id="how-to-migrate-to-gitlab-cicd">How to migrate to GitLab CI/CD</h2>
+<p>Migrating to the DevSecOps platform and its built-in CI/CD involves a systematic approach of analyzing your existing pipeline configurations, dependencies, and deployment processes to map them to GitLab&rsquo;s equivalent features and syntax. Use these guides to help make the move.</p>
+<ul>
+<li>How to migrate from Bamboo to GitLab CI/CD</li>
+<li>Jenkins to GitLab: The ultimate guide to modernizing your CI/CD environment</li>
+<li>GitHub to GitLab migration the easy way</li>
+</ul>
+<h2 id="lessons-from-leading-organizations">Lessons from leading organizations</h2>
+<p>These leading organizations migrated to GitLab and are enjoying the myriad benefits of CI/CD. Read their stories.</p>
+<ul>
+<li>Lockheed Martin</li>
+<li>Indeed</li>
+<li>CARFAX</li>
+<li>HackerOne</li>
+<li>Betstudios</li>
+<li>Thales and Carrefour</li>
+</ul>
+<h2 id="cicd-tutorials">CI/CD tutorials</h2>
+<p>Become a CI/CD expert with these easy-to-follow tutorials.</p>
+<ul>
+<li>Basics of CI: How to run jobs sequentially, in parallel, or out of order</li>
+<li>How to set up your first GitLab CI/CD component</li>
+<li>Building a GitLab CI/CD pipeline for a monorepo the easy way</li>
+<li>Using child pipelines to continuously deploy to five environments</li>
+<li>CI/CD automation: Maximize &lsquo;deploy freeze&rsquo; impact across GitLab groups</li>
+<li>Refactoring a CI/CD template to a CI/CD component</li>
+<li>Annotate container images with build provenance using Cosign in GitLab CI/CD</li>
+</ul>
+<blockquote>
+<h4 id="get-started-with-gitlab-cicd-sign-up-for-gitlab-ultimate-and-try-the-ai-powered-devsecops-platform-free-for-60-days">Get started with GitLab CI/CD. Sign up for GitLab Ultimate and try the AI-powered DevSecOps platform free for 60 days.</h4></blockquote>
+<p>Continuous integration/continuous delivery (CI/CD) has revolutionized how software teams create value for their users. Gone are the days of manual deployments and integration headaches — modern development demands automation, reliability, and speed.</p>
+<p>At its core, CI/CD is about creating a seamless pipeline that takes code from a developer&rsquo;s environment all the way to production and incorporates feedback in real time. CI helps teams catch issues early — before they become costly problems — by ensuring that code changes are frequently merged into a shared repository, automatically tested, and validated. CD extends this by automating the deployment process, making releases predictable and stress-free.</p>
+<p>Rather than relying on manual processes and complex toolchains for software development, teams can use a robust CI/CD pipeline to build, test, and deploy software. And AI can streamline the process even further, automatically engineering CI/CD pipelines for consistent quality, compliance, and security checks.</p>
+<p>This guide explains modern CI/CD pipelines, from basic principles to best practices to advanced strategies. You&rsquo;ll also discover how leading organizations use CI/CD for impactful results. What you learn in this guide will help you scale your DevSecOps environment to develop and deliver software in an agile, automated, and efficient manner.</p>
+<p>What you&rsquo;ll learn:</p>
+<ul>
+<li>What is continuous integration?</li>
+<li>What is continuous delivery?</li>
+<li>How source code management relates to CI/CD</li>
+<li>The benefits of CI/CD in modern software development
+<ul>
+<li>Key differences between CI/CD and traditional development</li>
+</ul>
+</li>
+<li>Understanding CI/CD fundamentals
+<ul>
+<li>What is a CI/CD pipeline?</li>
+</ul>
+</li>
+<li>Best practices for CI/CD implementation and management
+<ul>
+<li>CI best practices</li>
+<li>CD best practices</li>
+</ul>
+</li>
+<li>How to get started with CI/CD</li>
+<li>Security, compliance, and CI/CD</li>
+<li>CI/CD and the cloud</li>
+<li>Advanced CI/CD
+<ul>
+<li>Reuse and automation in CI/CD</li>
+<li>Troubleshooting pipelines with AI</li>
+</ul>
+</li>
+<li>How to migrate to GitLab CI/CD</li>
+<li>Lessons from leading organizations</li>
+<li>CI/CD tutorials</li>
+</ul>
+<h2 id="what-is-continuous-integration-1">What is continuous integration?</h2>
+<p>Continuous integration (CI) is the practice of integrating all your code changes into the main branch of a shared source code repository early and often, automatically testing changes when you commit or merge them, and automatically kicking off a build. With continuous integration, teams can identify and fix errors and security issues more easily and much earlier in the development process.</p>
+<h2 id="what-is-continuous-delivery-1">What is continuous delivery?</h2>
+<p>Continuous delivery (CD) – sometimes called <em>continuous deployment</em> – enables organizations to deploy their applications automatically, allowing more time for developers to focus on monitoring deployment status and assure success. With continuous delivery, DevSecOps teams set the criteria for code releases ahead of time and when those criteria are met and validated, the code is deployed into the production environment. This allows organizations to be more nimble and get new features into the hands of users faster.</p>
+<h2 id="how-source-code-management-relates-to-cicd-1">How source code management relates to CI/CD</h2>
+<p>Source code management (SCM) and CI/CD form the foundation of modern software development practices. SCM systems like Git provide a centralized way to track changes, manage different versions of code, and facilitate collaboration among team members. When developers work on new features or bug fixes, they create branches from the main codebase, make their changes, and then merge them through merge requests. This branching strategy allows multiple developers to work simultaneously without interfering with each other&rsquo;s code, while maintaining a stable main branch that always contains production-ready code.</p>
+<p>CI/CD takes the code managed by SCM systems and automatically builds, tests, and validates it whenever changes are pushed. When a developer submits their code changes, the CI/CD system automatically retrieves the latest code, combines it with the existing codebase, and runs through a series of automated checks. These typically include compiling the code, running unit tests, performing static code analysis, and checking code coverage. If any of these steps fail, the team is immediately notified, allowing them to address issues before they impact other developers or make their way to production. This tight integration between source control and continuous integration creates a feedback loop that helps maintain code quality and prevents integration problems from accumulating.</p>
+<h2 id="the-benefits-of-cicd-in-modern-software-development-1">The benefits of CI/CD in modern software development</h2>
+<p>CI/CD brings transformative benefits to modern software development by dramatically reducing the time and risk associated with delivering new features and fixes. The continuous feedback loop gives DevSecOps teams confidence their changes are automatically validated against the entire codebase. The result is higher quality software, faster delivery times, and more frequent releases that can quickly respond to user needs and market demands.</p>
+<p>Perhaps most importantly, CI/CD fosters a culture of collaboration and transparency within software development teams. When everyone can see the status of builds, tests, and deployments in real time, it becomes easier to identify and resolve bottlenecks in the delivery process. The automation provided by CI/CD also reduces the cognitive load on developers, freeing them to focus on writing code rather than managing manual deployment processes. This leads to improved developer satisfaction and productivity, while also reducing the risk traditionally associated with the entire software release process. Teams can experiment more freely knowing rapid code reviews are part of the process and they can quickly roll back changes if needed, which encourages innovation and continuous improvement.</p>
+<h3 id="key-differences-between-cicd-and-traditional-development-1">Key differences between CI/CD and traditional development</h3>
+<p>CI/CD differs from traditional software development in many ways, including:</p>
+<p><strong>Frequent code commits</strong></p>
+<p>Developers often work independently and infrequently upload their code to a main codebase, causing merge conflicts and other time-consuming issues. With CI/CD, developers push commits throughout the day, ensuring that conflicts are caught early and the codebase remains up to date.</p>
+<p><strong>Reduced risk</strong></p>
+<p>Lengthy testing cycles and extensive pre-release planning are hallmarks of traditional software development. This is done to minimize risk but often hinders the ability to find and fix problems. Risk is managed in CI/CD by applying small, incremental changes that are closely monitored and easily reverted.</p>
+<p><strong>Automated and continuous testing</strong></p>
+<p>In traditional software development, testing is done once development is complete. However, this causes problems, including delayed delivery and costly bug fixes. CI/CD supports automated testing that occurs continuously throughout development, sparked by each code commit. Developers also receive feedback they can take fast action on.</p>
+<p><strong>Automated, repeatable, and frequent deployments</strong></p>
+<p>With CI/CD, deployments are automated processes that reduce the typical stress and effort associated with big software rollouts. The same deployment process can be repeated across environments, which saves time and reduces errors and inconsistencies.</p>
+<h2 id="understanding-cicd-fundamentals-1">Understanding CI/CD fundamentals</h2>
+<p>CI/CD serves as a framework for building scalable, maintainable delivery processes, so it&rsquo;s critical for DevSecOps teams to firmly grasp its core concepts. A solid understanding of CI/CD principles enables teams to adapt strategies and practices as technology evolves, rather than being tied to legacy approaches. Here are some of the basics.</p>
+<h3 id="what-is-a-cicd-pipeline-1">What is a CI/CD pipeline?</h3>
+<p>A CI/CD pipeline is a series of steps, such as build, test, and deploy, that automate and streamline the software delivery process. Each stage serves as a quality gate, ensuring that only validated code moves forward. Early stages typically handle basic checks like compilation and unit testing, while later stages may include integration testing, performance testing, compliance testing, and staged deployments to various environments.</p>
+<p>The pipeline can be configured to require manual approvals at critical points, such as before deploying to production, while automating routine tasks and providing quick feedback to developers about the health of their changes. This structured approach ensures consistency, reduces human error, and provides a clear audit trail of how code changes move from development to production. Modern pipelines are often implemented as code, allowing them to be version controlled, tested, and maintained just like application code.</p>
+<p>These are other terms associated with CI/CD that are important to know:</p>
+<ul>
+<li><strong>Commit:</strong> a code change</li>
+<li><strong>Job:</strong> instructions a runner has to execute</li>
+<li><strong>Runner:</strong> an agent or server that executes each job individually that can spin up or down as needed</li>
+<li><strong>Stages:</strong> a keyword that defines certain job stages, such as &ldquo;build&rdquo; and &ldquo;deploy.&rdquo; Jobs of the same stage are executed in parallel. Pipelines are configured using a version-controlled YAML file, <code>.gitlab-ci.yml</code>, at the root level of a project.</li>
+</ul>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/3IWoIXqmaabGr2JwGy0Pxi/7dfe5f608d2427d4ec5ea409a72efaed/1690824533476.png" alt="CI/CD pipeline diagram" />
+</figure>
+
+
+</p>
+<h2 id="best-practices-for-cicd-implementation-and-management-1">Best practices for CI/CD implementation and management</h2>
+<p>How successful you are with CI/CD depends greatly on the best practices you implement.</p>
+<h4 id="ci-best-practices-1">CI best practices</h4>
+<ul>
+<li>Commit early, commit often.</li>
+<li>Optimize pipeline stages.</li>
+<li>Make builds fast and simple.</li>
+<li>Use failures to improve processes.</li>
+<li>Make sure the test environment mirrors production.</li>
+</ul>
+<h4 id="cd-best-practices-1">CD best practices</h4>
+<ul>
+<li>Start where you are – you can always iterate.</li>
+<li>Understand the best continuous delivery is done with minimal tools.</li>
+<li>Track what’s happening so issues and merge requests don&rsquo;t get out of hand.</li>
+<li>Streamline user acceptance testing and staging with automation.</li>
+<li>Manage the release pipeline through automation.</li>
+<li>Implement monitoring for visibility and efficiency.</li>
+</ul>
+<blockquote>
+<h3 id="bookmark-this-1">Bookmark this!</h3>
+<p>Watch our &ldquo;Intro to CI/CD&rdquo; webinar!</p></blockquote>
+<h2 id="how-to-get-started-with-cicd-1">How to get started with CI/CD</h2>
+<p>Getting started with CI/CD begins with identifying a simple but representative project to serve as your pilot. Choose a straightforward application with basic testing requirements, as this allows you to focus on learning the pipeline mechanics rather than dealing with complex deployment scenarios. Begin by ensuring your code is in version control and has some basic automated tests — even a few unit tests will suffice. The goal is to create a minimal pipeline that you can gradually enhance as your understanding grows.</p>
+<p>For GitLab specifically, the process starts with creating a <code>.gitlab-ci.yml</code> file in your project&rsquo;s root directory. This YAML file defines your pipeline stages (basic ones like build, test, and deploy) and jobs. A simple pipeline might look like this: The build stage compiles your code and creates artifacts, the test stage runs your unit tests, and the deploy stage pushes your application to a staging environment. GitLab will automatically detect this file and start running your pipeline whenever changes are pushed to your repository. The platform provides built-in runners to execute your pipeline jobs, though you can also set up your own runners for more control.</p>
+<p>As you become comfortable with the basics, gradually add more sophisticated elements to your pipeline. This might include adding code quality checks, security scanning, or automated deployment to production. GitLab&rsquo;s DevSecOps platform includes features like compliance management, deployment variables, and manual approval gates that you can incorporate as your pipeline matures. Pay attention to pipeline execution time and look for opportunities to run jobs in parallel where possible. Remember to add proper error handling and notifications so team members are promptly alerted of any pipeline failures. Start documenting common issues and solutions as you encounter them — this will become invaluable as your team grows.</p>
+<blockquote>
+<h3 id="want-to-learn-more-about-getting-started-with-cicd-register-for-a-free-cicd-course-on-gitlab-university-1">Want to learn more about getting started with CI/CD? Register for a free CI/CD course on GitLab University.</h3></blockquote>
+<h2 id="security-compliance-and-cicd-1">Security, compliance, and CI/CD</h2>
+<p>One of the greatest advantages of CI/CD is the ability to embed security and compliance checks early and often in the software development lifecycle. In GitLab, teams can use the <code>.gitlab-ci.yml</code> configuration to automatically trigger security scans at multiple stages, from initial code commit to production deployment. The platform&rsquo;s container scanning, dependency scanning, and security scanning capabilities (Dynamic Application Security Testing and Advanced SAST) can be configured to run automatically with each code change, checking for vulnerabilities, compliance violations, and security misconfigurations. The platform&rsquo;s API enables integration with external security tools, while the test coverage features ensure security tests meet required thresholds.</p>
+<p>GitLab&rsquo;s security test reports provide detailed information about findings, enabling quick remediation of security issues before they reach production. The Security Dashboard provides a centralized view of vulnerabilities across projects, while security policies can be enforced through merge request approvals and pipeline gates. In addition, GitLab provides multiple layers of secrets management to protect sensitive information throughout the CI/CD process, audit logs to track access to secrets, and role-based access control (RBAC) to ensure only authorized users can view or modify sensitive configuration data.</p>
+<p>GitLab also supports software bill of materials (SBOM) generation, providing a comprehensive inventory of all software components, dependencies, and licenses in an application and enabling teams to quickly identify and respond to vulnerabilities and comply with regulatory mandates.</p>
+<h2 id="cicd-and-the-cloud-1">CI/CD and the cloud</h2>
+<p>GitLab&rsquo;s CI/CD platform provides robust integration with major cloud providers including Amazon Web Services, Google Cloud Platform, and Microsoft Azure, enabling teams to automate their cloud deployments directly from their pipelines. Through GitLab&rsquo;s cloud integrations, teams can manage cloud resources, deploy applications, and monitor cloud services all within the GitLab interface. The platform&rsquo;s built-in cloud deployment templates and Auto DevOps features significantly reduce the complexity of cloud deployments, allowing teams to focus on application development rather than infrastructure management. For organizations that want to automate their IT infrastructure using GitOps, GitLab has a Flux CD integration.</p>
+<p>GitLab&rsquo;s cloud capabilities extend beyond basic deployment automation. The platform&rsquo;s Kubernetes integration enables teams to manage container orchestration across multiple cloud providers, while the cloud native GitLab installation options allow the platform itself to run in cloud environments. Through GitLab&rsquo;s cloud-native features, teams can implement auto-scaling runners that dynamically provision cloud resources for pipeline execution, optimizing costs and performance. The platform&rsquo;s integration with cloud provider security services ensures that security and compliance requirements are met throughout the deployment process.</p>
+<p>For multi-cloud environments, GitLab provides consistent workflows and tooling regardless of the underlying cloud provider. Teams can use GitLab&rsquo;s environment management features to handle different cloud configurations across development, staging, and production environments. The platform&rsquo;s infrastructure as code support, particularly its native integration with Terraform, enables teams to version control and automate their cloud infrastructure provisioning. GitLab&rsquo;s monitoring and observability features integrate with cloud provider metrics, providing comprehensive visibility into application and infrastructure health across cloud environments.</p>
+<h2 id="advanced-cicd-1">Advanced CI/CD</h2>
+<p>CI/CD has evolved far beyond simple build and deploy pipelines. In advanced implementations, CI/CD involves sophisticated orchestration of automated testing, security scanning, infrastructure provisioning, AI, and more. Here are a few advanced CI/CD strategies that can help engineering teams scale their pipelines and troubleshoot issues even as architectural complexity grows.</p>
+<h3 id="reuse-and-automation-in-cicd-1">Reuse and automation in CI/CD</h3>
+<p>GitLab is transforming how development teams create and manage CI/CD pipelines with two major innovations: the CI/CD Catalog and CI/CD steps, a new programming language for DevSecOps automation currently in experimental phase. The CI/CD Catalog is a centralized platform where developers can discover, reuse, and contribute CI/CD components. Components function as reusable, single-purpose building blocks that simplify pipeline configuration — similar to Lego pieces for CI/CD workflows. Meanwhile, CI/CD steps support complex workflows by allowing developers to compose inputs and outputs for a CI/CD job. With the CI/CD Catalog and CI/CD steps, DevSecOps teams can easily standardize CI/CD and its components, simplifying the process of developing and maintaining CI/CD pipelines.</p>
+<blockquote>
+<p>Learn more in our CI/CD Catalog FAQ and CI/CD steps documentation.</p></blockquote>
+<h3 id="troubleshooting-pipelines-with-ai-1">Troubleshooting pipelines with AI</h3>
+<p>While CI/CD pipelines can and do break, troubleshooting the issue quickly can minimize the impact. GitLab Duo Root Cause Analysis, part of a suite of AI-powered features, removes the guesswork by determining the root cause for a failed CI/CD pipeline. When a pipeline fails, GitLab provides detailed job logs, error messages, and execution traces that show exactly where and why the failure occurred. Root Cause Analysis then uses AI to suggest a fix. Watch GitLab Duo Root Cause Analysis in action:</p>
+<h2 id="how-to-migrate-to-gitlab-cicd-1">How to migrate to GitLab CI/CD</h2>
+<p>Migrating to the DevSecOps platform and its built-in CI/CD involves a systematic approach of analyzing your existing pipeline configurations, dependencies, and deployment processes to map them to GitLab&rsquo;s equivalent features and syntax. Use these guides to help make the move.</p>
+<ul>
+<li>How to migrate from Bamboo to GitLab CI/CD</li>
+<li>Jenkins to GitLab: The ultimate guide to modernizing your CI/CD environment</li>
+<li>GitHub to GitLab migration the easy way</li>
+</ul>
+<h2 id="lessons-from-leading-organizations-1">Lessons from leading organizations</h2>
+<p>These leading organizations migrated to GitLab and are enjoying the myriad benefits of CI/CD. Read their stories.</p>
+<ul>
+<li>Lockheed Martin</li>
+<li>Indeed</li>
+<li>CARFAX</li>
+<li>HackerOne</li>
+<li>Betstudios</li>
+<li>Thales and Carrefour</li>
+</ul>
+<h2 id="cicd-tutorials-1">CI/CD tutorials</h2>
+<p>Become a CI/CD expert with these easy-to-follow tutorials.</p>
+<ul>
+<li>Basics of CI: How to run jobs sequentially, in parallel, or out of order</li>
+<li>How to set up your first GitLab CI/CD component</li>
+<li>Building a GitLab CI/CD pipeline for a monorepo the easy way</li>
+<li>Using child pipelines to continuously deploy to five environments</li>
+<li>CI/CD automation: Maximize &lsquo;deploy freeze&rsquo; impact across GitLab groups</li>
+<li>Refactoring a CI/CD template to a CI/CD component</li>
+<li>Annotate container images with build provenance using Cosign in GitLab CI/CD</li>
+</ul>
+<blockquote>
+<h4 id="get-started-with-gitlab-cicd-sign-up-for-gitlab-ultimate-and-try-the-ai-powered-devsecops-platform-free-for-60-days-1">Get started with GitLab CI/CD. Sign up for GitLab Ultimate and try the AI-powered DevSecOps platform free for 60 days.</h4></blockquote>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

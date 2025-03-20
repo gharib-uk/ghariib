@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Fodcha Is Coming Back, Raising A Wave of Ransom  DDoS</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Fodcha Is Coming Back, Raising A Wave of Ransom  DDoS</h1>
+			<b><time>19.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/chakey">chakey</a>
+        	       
+		           <a href="/tags/ddos">ddos</a>
+        	       
+		           <a href="/tags/md5">md5</a>
+        	       
+
+			<div>
+				<h1 id="background">Background</h1>
+<p>On April 13, 2022, 360Netlab first disclosed the <code>Fodcha</code> botnet. After our article was published, Fodcha suffered a crackdown from the relevant authorities, and its authors quickly responded by leaving <code>&quot;Netlab pls leave me alone I surrender&quot;</code> in an updated sample.No surprise, Fodcha&rsquo;s authors didn&rsquo;t really stop updating after the fraudulent surrender, and soon a new version was released.</p>
+<p>In the new version, the authors of Fodcha redesigned the communication protocol and started to use <code>xxtea</code> and <code>chacha20</code> algorithms to encrypt sensitive resources and network communications to avoid detection at the file &amp; traffic level; at the same time, a dual-C2 scheme with <code>OpenNIC domain</code> as the primary C2 and <code>ICANN domain</code> as the backup C2 was adopted.</p>
+<p>Relying on the strong N-day vulnerability integration capabilities, the comeback of Focha is just as strong as the previous ones. In our data view, in terms of scale, Fodcha has once again developed into a massive botnet with more than <code>60K</code> daily active bots and <code>40+ C2 IPs</code>, we also observed it can easily launch more than 1Tbps DDos traffic; in terms of attacks, Fodcha has an average of <code>100+</code> daily attack targets and more than <code>20,000</code> cumulative attacks, on October 11, Fodcha hit its record and attacked <code>1,396</code> unique targets in that single day.</p>
+<p>While Fodcha was busy attacking various targets, it has not forgot to mess with us, we saw it using <code>N3t1@bG@Y</code> in one of it scan payload.</p>
+<h1 id="timeline">Timeline</h1>
+<p>Backed by our <code>BotMon</code> systems, we have kept good track of Fodcha&rsquo;s sample evolution and DDoS attack instructions, and below are the sample evolution and some important DDoS attack events we have seen. (Note: The Fodcha sample itself does not have a specific flag to indicate its version, this is the version number we use internally for tracking purposes)</p>
+<ul>
+<li>
+<p>On January 12, 2022, the first Fodcha botnet sample was captured.</p>
+</li>
+<li>
+<p>April 13, 2022, Disclosure of the Fodcha botnet, containing versions V1, V2.</p>
+</li>
+<li>
+<p>April 19, 2022, captured version V2.x, using <code>OpenNIC's TLDs</code> style C2</p>
+</li>
+<li>
+<p>April 24, 2022, version V3, using xxtea algorithm to encrypt configuration information, adding <code>ICANN's TLDs</code> style C2, adding <code>anti-sandbox</code> &amp; <code>anti-debugging</code> mechanism.</p>
+</li>
+<li>
+<p>June 5, 2022, version V4, using structured configuration information, <code>anti-sandboxing</code> &amp; <code>anti-debugging</code> mechanism were removed.</p>
+</li>
+<li>
+<p>July 7, 2022, version V4.x with an additional set of <code>ICANN C2</code>.</p>
+</li>
+<li>
+<p>On September 21, 2022, a well-known cloud service provider was attacked with traffic exceeding <code>1Tbps</code>.</p>
+</li>
+</ul>
+<h1 id="botnet-size">Botnet Size</h1>
+<p>In April, we confirmed that the number of Fodcha&rsquo;s global daily live bots was about <code>60,000</code> (refer to our other article). We don’t have accurate number of the current size, but suspect that the number of current active bots has not dropped, maybe more than <code>60,000</code> now.</p>
+<p>There is a positive relationship between the size of a botnet and the number of C2 IPs, and the most parsimonious view is that &ldquo;the larger the botnet, the more C2 infrastructure it requires. In April, there were <code>10 c2s</code> to control the <code>60,000</code> bots; After that, we observed that the IPs corresponding to its C2 domains continued to increase. Using a simple dig command to query the latest C2 domain name <code>yellowchinks.dyn</code>, we can see it resolves to <code>44 IPs</code>.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_c2infras.png" alt="" />
+</figure>
+
+
+</p>
+<p>One likely reason for this is that their botnet is so large that they need to invest more IP resources in order to have a reasonable ratio between Bots and C2s to achieve load balancing.</p>
+<h1 id="ddos-statistics">DDoS Statistics</h1>
+<p>More C2 IPs cost more money, and it seems that the business is good as it has been very active launching ddos attacks.We have excerpted the data from June 29, 2022 to the present, and the attack trends and target area distribution are as follows.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/image.min-1.png" alt="" />
+</figure>
+
+
+</p>
+<p>We can see that the ddos attacks has been non-stop, and China and US have the most targets.</p>
+<p>The time distribution of the attack instructions within 7 days is shown below, which shows that Fodcha launched DDoS attacks throughout 7 * 24 hours, without any obvious working time zone.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_instimezone.png" alt="" />
+</figure>
+
+
+</p>
+<h1 id="sample-analysis">Sample Analysis</h1>
+<p>We have divided the captured samples into four major versions, of which V1and <code>V2</code> have been analyzed in the previous blog, here we select the latest <code>V4</code> series samples as the main object of analysis, their basic information is shown below.</p>
+<pre tabindex="0"><code>MD5: ea7945724837f019507fd613ba3e1da9
+ELF 32-bit LSB executable, ARM, version 1, dynamically linked (uses shared libs), stripped
+LIB: uclibc
+PACKER: None
+version: V4
+
+MD5: 899047ddf6f62f07150837aef0c1ebfb
+ELF 32-bit LSB executable, ARM, version 1 (SYSV), statically linked, stripped
+Lib: uclibc
+Packer: None
+Version: V4.X
+</code></pre><p>When Fodcha&rsquo;s Bot executes, it will first check <code>the operating parameters</code>, <code>network connectivity</code>, <code>whether the &quot;LD_PRELOAD&quot; environment variable is set</code>, and <code>whether it is debugged</code>. These checks can be seen as a simple countermeasure to the typical emulator &amp; sandbox.</p>
+<p>When the requirements are met, it first decrypts the configuration information and print “snow slide” on the Console, then there are some common host behaviors, such as single instance, process name masquerading, manipulating watchdog, terminating specific port processes, reporting specific process information, etc. The following will focus on the decryption of configuration information, network communication, DDoS attacks and other aspects of Fodcha.</p>
+<h2 id="decrypting-configuration-information-config">Decrypting configuration information (Config)</h2>
+<p>Fodcha uses a side-by-side Config organization in <code>V2.X</code> and <code>V3</code>, and a structured Config organization in <code>V4</code> and <code>V4.X</code>. The following figure clearly shows the difference.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_disconfig.png" alt="" />
+</figure>
+
+
+</p>
+<p>Although the organization of Config is different, their encryption methods are the same. As we can see by the constants referenced in the code snippet below, they use the xxtea algorithm with the key <code>PJbiNbbeasddDfsc</code>.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_xxtea.png" alt="" />
+</figure>
+
+
+</p>
+<p>After inversion, we wrote the following <code>IDAPYTHON</code> script to decrypt the configuration information.</p>
+<pre tabindex="0"><code># md5: ea7945724837f019507fd613ba3e1da9
+# requirement: pip install xxtea-py
+# test: ida7.6_python3
+
+import ida_bytes
+import xxtea
+
+BufBase=0x1F2B0
+ConfBase=0x0001F1A0
+key=b&#34;PJbiNbbeasddDfsc&#34;
+for i in range(17):
+    offset=ida_bytes.get_word(i*16+ConfBase+2)
+    leng=ida_bytes.get_word(i*16+ConfBase+4)-offset
+    buf=ida_bytes.get_bytes(BufBase+offset,leng)
+    print(&#34;index:%d, %s&#34; %(i,xxtea.decrypt(buf,key)))
+</code></pre><p>The decrypted Config information is shown in the following table. You can see that index 11 still retains the aforementioned &ldquo;surrender&rdquo; egg, index 12 is worth mentioning, as it is the reporter server address to which Fodcha reports some process-specific information.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Index</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>0</td>
+          <td>snow slide</td>
+      </tr>
+      <tr>
+          <td>1</td>
+          <td>/proc/</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>/stat</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>/proc/self/exe</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td>/cmdline</td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td>/maps</td>
+      </tr>
+      <tr>
+          <td>6</td>
+          <td>/exe</td>
+      </tr>
+      <tr>
+          <td>7</td>
+          <td>/lib</td>
+      </tr>
+      <tr>
+          <td>8</td>
+          <td>/usr/lib</td>
+      </tr>
+      <tr>
+          <td>9</td>
+          <td>.ri</td>
+      </tr>
+      <tr>
+          <td>10</td>
+          <td>GET /geoip/?res=10&amp;r HTTP/1.1rnHost: 1.1.1.1rnConnection: Closernrn</td>
+      </tr>
+      <tr>
+          <td>11</td>
+          <td>Netlab pls leave me alone I surrender</td>
+      </tr>
+      <tr>
+          <td>12</td>
+          <td>kvsolutions.ru</td>
+      </tr>
+      <tr>
+          <td>13</td>
+          <td>api.opennicproject.org</td>
+      </tr>
+      <tr>
+          <td>14</td>
+          <td>watchdog</td>
+      </tr>
+      <tr>
+          <td>15</td>
+          <td>/dev/</td>
+      </tr>
+      <tr>
+          <td>16</td>
+          <td>TSource Engine Query</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="network-communication">Network communication</h2>
+<p>Fodcha&rsquo;s network communication has a very fixed feature at the code level: a perpetual While loop, with switch-case processing at each stage, so that the CFG graphs generated by each version of Fodcha&rsquo;s network protocol processing functions are highly similar in IDA.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_cfg.png" alt="" />
+</figure>
+
+
+</p>
+<p>In summary, Fodcha&rsquo;s network communication goes through the following four steps.</p>
+<ol>
+<li>Decryption C2</li>
+<li>DNS query</li>
+<li>Establishing communication</li>
+<li>Execute the command</li>
+</ol>
+<h3 id="0x1-decrypting-c2">0x1: Decrypting C2</h3>
+<p>Different versions of Fodcha support different types of C2. V2.X has only 1 group of OpenNIC C2; V3 &amp; V4 have 1 group of OpenNIC C2 and 1 group of ICANN C2; and V4.X has the most, 1 group of OpenNIC C2 and 2 groups of ICANN C2, the following diagram shows the difference very clearly.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_c2_dis.png" alt="" />
+</figure>
+
+
+</p>
+<p>Although the types &amp; numbers of C2 are different, their processing logic is almost the same as shown in the figure below.</p>
+<p>Firstly, a C2 domain name is obtained through the C2_GET function, and then the corresponding IP of C2 is obtained through the DNS_QUERY function, where the first parameter of C2_GET is the C2 ciphertext data, and the second parameter is the length, while the second parameter of DNS_QUERY implies the type of C2.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/FODCHA_c2compose.png" alt="" />
+</figure>
+
+
+</p>
+<p>A valid C2 domain name can be obtained through C2_GET, and its internal implementation can be divided into 2 steps.</p>
+<ul>
+<li>First, the C2 ciphertext data must be decrypted.</li>
+<li>Then they are constructed into a legitimate domain name.</li>
+</ul>
+<h3 id="decrypting-c2-ciphertext-data">Decrypting C2 ciphertext data</h3>
+<p>The C2 ciphertext data uses the same encryption method as the configuration information, i.e. xxtea, and the key is also</p>
+<p><code>PJbiNbbeasddDfsc</code>. The OpenNic C2 data can be decrypted by the following simple IDAPYTHON script.</p>
+<pre tabindex="0"><code>#md5: 899047DDF6F62F07150837AEF0C1EBFB
+import xxtea
+import ida_bytes
+import hexdump
+key=b&#34;PJbiNbbeasddDfsc&#34;
+buf=ida_bytes.get_bytes(0x0001CA6C,1568)  # Ciphertext of OpenNic C2
+plaintext=xxtea.decrypt(buf,key)
+print(plaintext)
+</code></pre><p>The decrypted C2 data is shown below, you can see that the C2 data consists of 2 parts, the front is the domain names, the back is the TLDs, they are separated by the &ldquo;<strong>/</strong>&rdquo; symbol in the red box.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_c2plaintext.png" alt="" />
+</figure>
+
+
+</p>
+<h3 id="constructing-a-domain-name">Constructing a domain name</h3>
+<p>Fodcha has a specific domain name construction method, and the equivalent Python implementation is shown below.</p>
+<pre tabindex="0"><code># md5: 899047ddf6f62f07150837aef0c1ebfb
+# requirement: pip install xxtea-py
+# test: ida7.6_python3
+
+import xxtea
+import ida_bytes
+
+def getcnt(length):
+    cnt=1
+    while True:
+        cnt +=1
+        calc=2
+        
+        for i in range(1,cnt):
+            calc+=2+12*i%cnt
+                    
+        if calc +cnt==length-1:
+            return cnt
+
+                        
+key=b&#34;PJbiNbbeasddDfsc&#34;
+buf=ida_bytes.get_bytes(0x0001CA6C,1568)  # Ciphertext of OpenNic C2
+plaintext=xxtea.decrypt(buf,key)
+
+domains,tlds=plaintext.split(b&#39;/&#39;)
+domainList=domains.split(b&#39;,&#39;)
+tldList=tlds.split(b&#39;,&#39;)
+
+cnt=getcnt(len(domainList))
+
+print(&#34;------------There&#39;re %d C2------------&#34; %cnt)
+coff=2
+for i in range(0,cnt):
+    if i ==0:
+        c2Prefix=domainList[i+coff]
+    else:
+        coff+=12*i %cnt+2
+        c2Prefix=domainList[i+coff]
+    c2Tld=tldList[(cnt-i-1)*3]
+    print(c2Prefix + b&#39;.&#39; + c2Tld)
+</code></pre><p>Taking the C2 data obtained above as input, the following 14 OpenNIC C2s are finally constructed.</p>
+<pre tabindex="0"><code>techsupporthelpars.oss
+yellowchinks.geek
+yellowchinks.dyn
+wearelegal.geek
+funnyyellowpeople.libre
+chinksdogeaters.dyn
+blackpeeps.dyn
+pepperfan.geek
+chinkchink.libre
+peepeepoo.libre
+respectkkk.geek
+bladderfull.indy
+tsengtsing.libre
+obamalover.pirate
+</code></pre><p>Readers familiar with the ICANN domain name system may think at first glance that our decryption is wrong, because the ICANN domain name system does not support these TLDs, they would be &ldquo;unresolvable&rdquo;, but in fact they are the domain names under the OpenNIC system, OpenNIC is independent of the OpenNIC, which supports the TLDs shown in the figure below. The domain names of OpenNIC cannot be resolved by common DNS (such as <code>8.8.8.8</code>, <code>101.198.198.198</code>) and must use the specified NameServer. Readers can check out OpenNIC’s official website for more details.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_opennic.png" alt="" />
+</figure>
+
+
+</p>
+<p>Using the same method, we can get the following 4 ICANN C2s.</p>
+<pre tabindex="0"><code>cookiemonsterboob[.]com
+forwardchinks[.]com
+doodleching[.]com
+milfsfors3x[.]com
+</code></pre><h3 id="0x2-dns-lookup">0X2: DNS lookup</h3>
+<p>When the C2 domain name is successfully obtained, Bot performs the domain name resolution through the function <code>DNS_QUERY</code>, its 2nd parameter is a FLAG, which implies the different processing of OpenNIC/ICANN C2, and the corresponding code snippet is shown below.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_disdns.png" alt="" />
+</figure>
+
+
+</p>
+<p>It can be seen that there are 2 options for the resolution of OpenNIC C2.</p>
+<ul>
+<li>Option 1: Request from <code>api.opennicproject.org</code> through API interface to get nameserver dynamically</li>
+</ul>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_resolvns.png" alt="" />
+</figure>
+
+
+</p>
+<ul>
+<li>Option 2: Use the hard-coded nameserver shown in the figure below</li>
+</ul>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_opennicHard.png" alt="" />
+</figure>
+
+
+</p>
+<p>For ICANN C2, there is only one option, i.e., use the hard-coded nameserver shown in the figure below.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_iccanHard.png" alt="" />
+</figure>
+
+
+</p>
+<p>The actual resolution of C2 <code>techsupporthelpars.oss</code>, for example, is reflected in the network traffic as follows.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_opendnsexample.png" alt="" />
+</figure>
+
+
+</p>
+<h3 id="why-use-opennic--icann-dual-c2">Why use OpenNIC / ICANN dual C2?</h3>
+<p>Fodcha&rsquo;s author has built a redundant OpenNIC / ICANN dual-C2 architecture, why did he do so?</p>
+<p>From a C2 infrastructure perspective, after Fodcha was exposed, its C2 was added to various security lists. <code>Quad9DNS (9.9.9.9)</code>, for example, had sent a tweet about Fodcha domain traffic spike</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_quad.png" alt="" />
+</figure>
+
+
+</p>
+<p>After Fodcha was cracked down, its author, when reselecting the C2 infrastructure, looked at the <code>DNS Neutrality</code> feature touted by OpenNIC to eliminate the possibility of C2 being regulated &amp; taken over.</p>
+<p>At the same time, OpenNIC based C2 has it own problems, such as the NameServer of OpenNIC may not be accessible in some regions, or there are efficiency or stability problems in domain name resolution. For the sake of robustness, Fodcha authors re-added ICANN C2 as the backup C2 after V3 to form a redundant structure with the main C2.</p>
+<h3 id="0x3-establishing-communication">0x3: Establishing communication</h3>
+<p>Fodcha Bot establishes a connection to C2 through the following code snippet, which has a total of 22 ports.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_establishConn.png" alt="" />
+</figure>
+
+
+</p>
+<p>Once the connection with C2 is successfully established, the Bot and C2 must go through 3 phases of interaction before communication is actually established.</p>
+<ul>
+<li>
+<p>Stage 1: Bot requests the key&amp;nonce of the chacha20 encryption algorithm from C2.</p>
+</li>
+<li>
+<p>Stage 2: Bot and C2 use the key&amp;nonce from stage 1 for identity confirmation.</p>
+</li>
+<li>
+<p>Stage 3: Bot sends the encrypted upline &amp; group information to C2.</p>
+</li>
+</ul>
+<p>To aid in the analysis, we ran the Bot sample within a restricted environment and used <code>fsdsaD</code> as the packet string to generate the network traffic shown in the figure below, and the details of how this traffic was generated are described below.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_prapacket.png" alt="" />
+</figure>
+
+
+</p>
+<h4 id="stage-1-bot--c2-formatted-as-head7-bytes--body-random-20-40-bytes">Stage 1: Bot &mdash;&gt; C2 ,formatted as head(7 bytes) + body( random 20-40 bytes)</h4>
+<p>Bot actively sends an initialization message with <code>netstage=6</code> to C2, this message has the format of head+body, and the meaning of each field is shown below.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_netStageOneb2c.png" alt="" />
+</figure>
+
+
+</p>
+<h4 id="head">head</h4>
+<p>The length of head is 7 bytes, and the format is shown below.</p>
+<pre tabindex="0"><code>06     		----&gt;netstage,1byte,06 means init
+f0 70       ----&gt;tcpip checksum, 2byte, 
+00 16		----&gt;length of body, 2 bytes
+</code></pre><h4 id="checksum">checksum</h4>
+<p>checksum<br>
+The checksum in head uses the tcp/ip checksum, which is calculated for the whole payload, and the original value of the checksum offset is <code>x00x00</code>, and the python implementation of the checksum is as follows.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">checksum</span>(data):
+</span></span><span style="display:flex;"><span>    s <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    n <span style="color:#f92672">=</span> len(data) <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>, len(data)<span style="color:#f92672">-</span>n, <span style="color:#ae81ff">2</span>):
+</span></span><span style="display:flex;"><span>        s<span style="color:#f92672">+=</span> ord(data[i]) <span style="color:#f92672">+</span> (ord(data[i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>]) <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> n:
+</span></span><span style="display:flex;"><span>        s<span style="color:#f92672">+=</span> ord(data[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> (s <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">16</span>):
+</span></span><span style="display:flex;"><span>        s <span style="color:#f92672">=</span> (s <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFFFF</span>) <span style="color:#f92672">+</span> (s <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">16</span>)
+</span></span><span style="display:flex;"><span>        s <span style="color:#f92672">=</span> <span style="color:#f92672">~</span>s <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xffff</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> s
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>buf<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;x06x00x00x00x00x00x16x36x93x93xb7x27x5cx9ax2ax16x09xd8x13x32x01xd2x69x1dx25xf3x42x00x32&#34;</span>
+</span></span><span style="display:flex;"><span>print(hex(checksum(buf)))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#hex(checksum(buf))</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#0x70f0</span>
+</span></span></code></pre></div><h4 id="body">body</h4>
+<p>body is a randomly generated content, meaningless.</p>
+<pre tabindex="0"><code>00000000  36 93 93 b7 27 5c 9a 2a 16 09 d8 13 32 01 d2 69
+00000010  1d 25 f3 42 00 32
+</code></pre><h4 id="stage-1-c2bot-2-rounds">Stage 1: C2&ndash;&gt;Bot, 2 rounds</h4>
+<p>When C2 receives the message <code>netstage=6</code> from Bot, it will send 2 rounds of data to BOT.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_netStageOne.png" alt="" />
+</figure>
+
+
+</p>
+<ul>
+<li>
+<p>The first round, 36 bytes , the original message is encrypted by xxtea and decrypted as the key of chacha20, with the length of 32bytes</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> hexdump
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> xxtea
+</span></span><span style="display:flex;"><span>key<span style="color:#f92672">=</span><span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;PJbiNbbeasddDfsc&#34;</span>
+</span></span><span style="display:flex;"><span>keyBuf<span style="color:#f92672">=</span>bytes<span style="color:#f92672">.</span>fromhex(<span style="color:#e6db74">&#34;806d8806cd5460d8996339fbf7bac34ba1e20f792872ba0e05d096ad92a5535e60e55b8d&#34;</span>)
+</span></span><span style="display:flex;"><span>chaKey<span style="color:#f92672">=</span>xxtea<span style="color:#f92672">.</span>decrypt(keyBuf,key)
+</span></span><span style="display:flex;"><span>hexdump<span style="color:#f92672">.</span>hexdump(chaKey)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#chaKey</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000000</span>: E6 <span style="color:#ae81ff">7</span>B <span style="color:#ae81ff">1</span>A E3 A4 <span style="color:#ae81ff">4</span>B <span style="color:#ae81ff">13</span> <span style="color:#ae81ff">7</span>F  <span style="color:#ae81ff">14</span> <span style="color:#ae81ff">15</span> <span style="color:#ae81ff">5</span>E <span style="color:#ae81ff">99</span> <span style="color:#ae81ff">31</span> F2 <span style="color:#ae81ff">5</span>E <span style="color:#ae81ff">3</span>A
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000010</span>: D7 <span style="color:#ae81ff">7</span>B AB <span style="color:#ae81ff">0</span>A <span style="color:#ae81ff">4</span>D <span style="color:#ae81ff">5</span>F <span style="color:#ae81ff">00</span> EF  <span style="color:#ae81ff">0</span>C <span style="color:#ae81ff">01</span> <span style="color:#ae81ff">9</span>F <span style="color:#ae81ff">86</span> <span style="color:#ae81ff">94</span> A4 <span style="color:#ae81ff">9</span>D <span style="color:#ae81ff">4</span>B
+</span></span></code></pre></div></li>
+<li>
+<p>Second round, 16 bytes , the original message is encrypted by xxtea, decrypted as the nonce of chacha20, length 12bytes</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> hexdump
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> xxtea
+</span></span><span style="display:flex;"><span>key<span style="color:#f92672">=</span><span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;PJbiNbbeasddDfsc&#34;</span>
+</span></span><span style="display:flex;"><span>nonBuf<span style="color:#f92672">=</span>bytes<span style="color:#f92672">.</span>fromhex(<span style="color:#e6db74">&#34;22c803bb310c5b2512e76a472418f9ee&#34;</span>)
+</span></span><span style="display:flex;"><span>chaNonce<span style="color:#f92672">=</span>xxtea<span style="color:#f92672">.</span>decrypt(nonBuf,key)
+</span></span><span style="display:flex;"><span>hexdump<span style="color:#f92672">.</span>hexdump(chaNonce)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#chaNonce</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">00000000</span>: <span style="color:#ae81ff">98</span> <span style="color:#ae81ff">79</span> <span style="color:#ae81ff">59</span> <span style="color:#ae81ff">57</span> A8 BA <span style="color:#ae81ff">7</span>E <span style="color:#ae81ff">13</span>  <span style="color:#ae81ff">59</span> <span style="color:#ae81ff">9</span>F <span style="color:#ae81ff">59</span> <span style="color:#ae81ff">6</span>F
+</span></span></code></pre></div></li>
+</ul>
+<h4 id="stage-2-botc2-chacha20-encryption">Stage 2: Bot&mdash;&gt;C2, chacha20 encryption</h4>
+<p>Once Bot receives the key and nonce of chacha20, it sends the message <code>netstage=4</code> to C2, this time the message is encrypted using chacha20, the key&amp;nonce is obtained from the previous stage, the number of rounds encrypted is 1.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_netStageTwob2c.png" alt="" />
+</figure>
+
+
+</p>
+<p>We can decrypt the above traffic using the following python code that</p>
+<pre tabindex="0"><code>from Crypto.Cipher import ChaCha20
+cha=ChaCha20.new(key=chaKey,nonce=chaNonce)
+cha.seek(64)
+tmp=bytes.fromhex(&#39;dc23c56943431018b61262481ce5a219da9480930f08714e017edc56bf903d32ac5daeb8314f1bf7e6&#39;)
+rnd3=cha.decrypt(tmp)
+</code></pre><p>The decrypted traffic is shown below, it still has the format of head (7 bytes) + body as described before, where the value of the netstage field of head is 04, which represents the authentication.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_netplainb2c.png" alt="" />
+</figure>
+
+
+</p>
+<h4 id="stage-2-c2--bot-chacha20-encryption">Stage 2: C2 &mdash;&gt; Bot, chacha20 encryption</h4>
+<p>After receiving the authentication message from Bot, C2 also sends a message with <code>netstage=4</code> to Bot&rsquo;s data, also using chacha20 encryption, and the key,nonce,round number is the same as that used by Bot.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_netStageTwoc2b.png" alt="" />
+</figure>
+
+
+</p>
+<p>Using the same code as Bot to decrypt the traffic, we can see that its format is also head+body, and the value of netstage is also 04.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_netplainc2b.png" alt="" />
+</figure>
+
+
+</p>
+<p>After Bot and C2 send each other the message <code>netstage=4</code>, the chacha20 key&amp;nonce representing stage 1 is recognized by both parties, and the authentication of each other is completed, and Bot enters the next stage to prepare to go online.</p>
+<h4 id="stage-3-botc2-2-rounds-chacha-encryption">Stage 3: Bot&mdash;&gt;C2, 2 rounds, chacha encryption</h4>
+<p>Bot sends netstage=5 message to C2 to indicate that it is ready to go online, and then reports its own grouping information to C2, these 2 rounds of messages also use chacha20 encryption.</p>
+<ul>
+<li>
+<p>First round<br>
+
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_netStageThrReg.png" alt="" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p>Second round</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_netStageThrGroup.png" alt="" />
+</figure>
+
+
+</p>
+</li>
+</ul>
+<p>After the above two rounds of data decryption, we can see that the content of the group is exactly the preset <code>fsdsaD</code>, which means our analysis is correct, so the Bot is successfully online and starts to wait for the execution of the command sent by C2.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_netplainb2cReg.png" alt="" />
+</figure>
+
+
+</p>
+<h3 id="0x4-execute-command">0x4: Execute command</h3>
+<p>Bot successfully online, support the netstage number, as shown in the figure below, the most important is the <code>netstage = 1</code> on behalf of the DDoS task, Fodcha reuse a large number of Mirai attack code, a total of <code>17</code> kinds of attack methods are supported.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_afterreg.png" alt="" />
+</figure>
+
+
+</p>
+<p>Take the following <code>DDos_Task</code> traffic <code>(netstage=01)</code> as an example.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_taskddos.png" alt="" />
+</figure>
+
+
+</p>
+<p>The attack instructions are still encrypted using <code>chacha20</code>, and the decrypted instructions are shown below, which might ring a bell for readers who are familiar with <code>Mirai</code>.</p>
+<pre tabindex="0"><code>00000000: 00 00 00 3C 07 01 xx 14  93 01 20 02 00 00 02 01
+00000010: BB 01 00 02 00 01
+</code></pre><p>The format and parsing of the above attack instructions are shown in the following table.</p>
+<table>
+  <thead>
+      <tr>
+          <th>offset</th>
+          <th>len (bytes)</th>
+          <th>value</th>
+          <th>meaning</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>0x00</td>
+          <td>4</td>
+          <td>00 00 00 3c</td>
+          <td>Duration</td>
+      </tr>
+      <tr>
+          <td>0x04</td>
+          <td>1</td>
+          <td>07</td>
+          <td>Attack Vector，07</td>
+      </tr>
+      <tr>
+          <td>0x05</td>
+          <td>1</td>
+          <td>1</td>
+          <td>Attack Target Cnt</td>
+      </tr>
+      <tr>
+          <td>0x06</td>
+          <td>4</td>
+          <td>xx 14 93 01</td>
+          <td>Attack Target，xx.20.147.1</td>
+      </tr>
+      <tr>
+          <td>0x0a</td>
+          <td>1</td>
+          <td>20</td>
+          <td>Netmask</td>
+      </tr>
+      <tr>
+          <td>0x0b</td>
+          <td>1</td>
+          <td>02</td>
+          <td>Option Cnt</td>
+      </tr>
+      <tr>
+          <td>0x0c</td>
+          <td>5</td>
+          <td>00 00 02 01 bb</td>
+          <td>OptionId 0，len 2, value 0x01bb &mdash;&gt; (port 443)</td>
+      </tr>
+      <tr>
+          <td>0x11</td>
+          <td>5</td>
+          <td>01 00 02 00 01</td>
+          <td>OptionId 1, len 2, value 0x0001&mdash;&gt; (payload len 1 byte)</td>
+      </tr>
+  </tbody>
+</table>
+<p>When Bot receives the above instruction, it will use the tcp message with a payload of 1 byte to conduct a DDoS attack on the target <code>xx.20.147.1:443</code>, which corresponds to the actual packet capture traffic.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_ddospacket.png" alt="" />
+</figure>
+
+
+</p>
+<h1 id="misc">Misc</h1>
+<h3 id="0x01-racism">0x01: Racism</h3>
+<p>From some of the OpenNIC C2 constructs, it seems that the author of Fodcha is more hostile to people from some regions.</p>
+<pre tabindex="0"><code>yellowchinks.geek
+wearelegal.geek
+funnyyellowpeople.libre
+chinksdogeaters.dyn
+blackpeeps.dyn
+bladderfull.indy
+
+wehateyellow
+</code></pre><h3 id="0x02-ransom-ddos">0x02: Ransom DDoS</h3>
+<p>Fodcha had the following string attached to the UDP attack command it issued.</p>
+<pre tabindex="0"><code>send 10 xmr to 49UnJhpvRRxDXJHYczoUEiK3EKCQZorZWaV6HD7axKGQd5xpUQeNp7Xg9RATFpL4u8dzPfAnuMYqs2Kch1soaf5B5mdfJ1b or we will shutdown your business
+</code></pre><p>The corresponding attack traffic is shown below, the wallet address appears to be illegal, perhaps the operators behind Fodcha are experimenting with the attack-as-ransom business model, we will see how it evolve.</p>
+<p>
+<figure>
+  <img src="https://blog.netlab.360.com/content/images/2022/10/fodcha_ddosransom.png" alt="" />
+</figure>
+
+
+</p>
+<h1 id="contact-us">Contact us</h1>
+<p>Readers are always welcomed to reach us on twitter or email us to netlab[at]360.cn.</p>
+<h1 id="ioc">IoC</h1>
+<h3 id="c2">C2</h3>
+<pre tabindex="0"><code>v1,v2:
+folded[.]in
+fridgexperts[.]cc
+
+ICANN C2:
+forwardchinks[.]com
+doodleching[.]com
+cookiemonsterboob[.]com
+milfsfors3x[.]com
+
+OpenNIC C2:
+
+yellowchinks.geek
+yellowchinks.dyn
+wearelegal.geek
+tsengtsing.libre
+techsupporthelpars.oss
+respectkkk.geek
+pepperfan.geek
+peepeepoo.libre
+obamalover.pirate
+funnyyellowpeople.libre
+chinksdogeaters.dyn
+chinkchink.libre
+bladderfull.indy
+blackpeeps.dyn
+91.206.93.243
+91.149.232.129
+91.149.232.128
+91.149.222.133
+91.149.222.132
+67.207.84.82
+54.37.243.73
+51.89.239.122
+51.89.238.199
+51.89.176.228
+51.89.171.33
+51.161.98.214
+46.17.47.212
+46.17.41.79
+45.88.221.143
+45.61.139.116
+45.41.240.145
+45.147.200.168
+45.140.169.122
+45.135.135.33
+3.70.127.241
+3.65.206.229
+3.122.255.225
+3.121.234.237
+3.0.58.143
+23.183.83.171
+207.154.206.0
+207.154.199.110
+195.211.96.142
+195.133.53.157
+195.133.53.148
+194.87.197.3
+194.53.108.94
+194.53.108.159
+194.195.117.167
+194.156.224.102
+194.147.87.242
+194.147.86.22
+193.233.253.93
+193.233.253.220
+193.203.12.157
+193.203.12.156
+193.203.12.155
+193.203.12.154
+193.203.12.151
+193.203.12.123
+193.124.24.42
+192.46.225.170
+185.45.192.96
+185.45.192.227
+185.45.192.212
+185.45.192.124
+185.45.192.103
+185.198.57.95
+185.198.57.105
+185.183.98.205
+185.183.96.7
+185.143.221.129
+185.143.220.75
+185.141.27.238
+185.141.27.234
+185.117.75.45
+185.117.75.34
+185.117.75.119
+185.117.73.52
+185.117.73.147
+185.117.73.115
+185.117.73.109
+18.185.188.32
+18.136.209.2
+178.62.204.81
+176.97.210.176
+172.105.59.204
+172.105.55.131
+172.104.108.53
+170.187.187.99
+167.114.124.77
+165.227.19.36
+159.65.158.148
+159.223.39.133
+157.230.15.82
+15.204.18.232
+15.204.18.203
+15.204.128.25
+149.56.42.246
+139.99.166.217
+139.99.153.49
+139.99.142.215
+139.162.69.4
+138.68.10.149
+137.74.65.164
+13.229.98.186
+107.181.160.173
+107.181.160.172
+</code></pre><h3 id="reporter">Reporter</h3>
+<pre tabindex="0"><code>kvsolutions[.]ru
+icarlyfanss[.]com
+</code></pre><h3 id="samples">Samples</h3>
+<pre tabindex="0"><code>ea7945724837f019507fd613ba3e1da9
+899047ddf6f62f07150837aef0c1ebfb
+0f781868d4b9203569357b2dbc46ef10
+</code></pre><p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Unlocking Kubernetes Power with RKE Cluster, MetalLB, and Rook-Ceph&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Unlocking Kubernetes Power with RKE Cluster, MetalLB, and Rook-Ceph&lt;/div&gt;</h1>
+			<b><time>03.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Enterprises are increasingly turning to Kubernetes for container orchestration, drawn by its promise of scalability, agility, and portability. While cloud-based Kubernetes solutions have gained traction, on-premises deployments remain a compelling option for organizations seeking greater control, security, and cost-efficiency. In this blog post, we’ll explore how to set up a Kubernetes cluster on bare metal using Rancher Kubernetes Engine (RKE2). Plus, we will configure MetalLB as a load balancer and integrate Rook-Ceph as a storage orchestrator for persistent storage.</p>
+<p>Let’s begin with understanding Rancher Kubernetes Engine 2 (RKE2).</p>
+<h2 id="what-is-rancher-kubernetes-engine-2-rke2">What is Rancher Kubernetes Engine 2 (RKE2)</h2>
+<p>RKE2, affectionately dubbed RKE Government, stands as Rancher’s pioneering Kubernetes distribution, embodying the next evolution in container orchestration solutions. Engineered with a steadfast commitment to fortifying security and ensuring compliance, RKE2 emerges as a fully conformant Kubernetes distribution tailored to the stringent demands of the U.S. Federal Government sector.</p>
+<p>Here’s how RKE2 raises the bar over other bare-metal setups:</p>
+<ol>
+<li>
+<p><strong>Strategic default configurations</strong>: RKE2 arrives equipped with meticulously crafted defaults and configuration options, meticulously curated to align with the CIS Kubernetes Benchmark v1.6 or v1.23 standards. These out-of-the-box settings minimize the need for operators to intervene manually, streamlining the path to compliance without compromising security.</p>
+</li>
+<li>
+<p><strong>FIPS 140-2 compliance</strong>: Recognizing the paramount importance of cryptographic standards, RKE2 empowers organizations to achieve FIPS 140-2 compliance effortlessly. By seamlessly integrating FIPS 140-2 validated cryptographic modules, RKE2 ensures data integrity and confidentiality in line with government regulations.</p>
+</li>
+<li>
+<p><strong>Continuous vulnerability monitoring</strong>: In an era defined by ever-evolving threat landscapes, RKE2 remains vigilant. Leveraging advanced scanning mechanisms, RKE2 conducts regular assessments of its components for Common Vulnerabilities and Exposures (CVEs) using Trivy in its robust build pipeline. This proactive approach enables timely detection and remediation of potential security vulnerabilities, fortifying the resilience of Kubernetes clusters.</p>
+</li>
+</ol>
+<p>In essence, RKE2 redefines the paradigm of Kubernetes distributions, combining cutting-edge technology with security and compliance. With RKE2 at the helm, organizations operating within the U.S. Federal Government sector can confidently navigate the complexities of containerized environments, assured of a solution that not only meets but exceeds the most stringent regulatory requirements.</p>
+<h2 id="how-is-rke2-different-from-rke-or-k3s">How is RKE2 different from RKE or K3s?</h2>
+<p>RKE2, the latest iteration of Rancher Kubernetes Engine (RKE), serves as a testament to the evolution of Kubernetes distributions, combining the strengths of its predecessors, RKE1, and K3s, while introducing novel approaches to deployment and management.</p>
+<p><strong>Inheriting simplicity and usability from K3s</strong>: From K3s, RKE2 inherits a user-friendly experience marked by simplicity and ease of operation. The deployment model, renowned for its lightweight footprint and streamlined setup process, ensures that even novice users can deploy Kubernetes clusters effortlessly.</p>
+<p><strong>Maintaining alignment with upstream Kubernetes</strong>: RKE2 goes beyond mere simplicity by maintaining close alignment with upstream Kubernetes, a trait inherited from RKE1. While K3s diverge from upstream Kubernetes in certain areas to optimize for edge deployments, RKE1 and RKE2 stay closely aligned, ensuring compatibility and conformity with the broader Kubernetes ecosystem.</p>
+<p><strong>Shift away from Docker dependency</strong>: One of the most notable departures from RKE1 lies in RKE2’s approach to containerization. While RKE1 relied on Docker for deploying and managing control plane components, along with the Kubernetes container runtime, RKE2 took a different route. It leverages containers and launches control plane components as static pods managed by the kubelet. This shift not only reduces dependencies but also enhances stability and reliability.</p>
+<h2 id="precautions-before-installing-rke-2-metallb-and-rook-ceph">Precautions before installing RKE 2, MetalLB, and Rook-Ceph</h2>
+<p>As we now understand why RKE 2 is a better option than RKE and K3s, we will install RKE 2. Then, we can add MetalLB and set up Rook-Ceph. However, when following the official documentation for these installations, you may expect issues related to storage and memory. Basically, a lack of proper storage and memory can cause the master to become unavailable. The solution is to select the correct configuration for the master.</p>
+<p>For the RKE2 cluster, select 4 GB memory along with a minimum of 50 GB storage. Sometimes, you can see your master is up with 2 GB, and the next moment, after restarting or configuring another master, you might find that the master is not up. You may have no answers as to why the master is not up and running, so it is always advisable to use correct memory and storage to avoid such issues. You can test the RKE2 setup on a cloud VM, but make sure to open the API port on master in the security group/firewall, depending on the cloud. You do not need to think of a port if you are testing it on VirtualBox.</p>
+<p>For MetalLB, the first thing we need to keep in mind is that it doesn’t support most of the cloud providers like AWS, Azure, and GCP because these cloud providers do not support the networking protocols that MetalLB requires. Even if they offer dedicated servers it does not work well with BGP (Border Gateway Protocol) or L2 mode. If you are going with VirtualBox, you can use the CIDR range provided for nodes, or you can provide a range of IP addresses from Host-only-networks so that you can hit allocated IP to services in your browser to test.</p>
+<p>If you are configuring the Rook-Ceph cluster on VirtualBox, you must configure extra raw disk for nodes. Then, you can use these blocks as specified in the Rook-Ceph installation step.You can follow the Rook-Ceph section if you are trying to achieve this on bare metal. You can configure Rook-Ceph in a cloud environment by using cluster configurations file and changing the storage class in manifest depending on the cloud provider.</p>
+<p>With tailored solutions in hand to navigate common challenges in RKE 2. MetalLB, and Rook-Ceph installation, let’s move to the next step, ensuring a smooth and efficient deployment process.</p>
+<h2 id="installing-rke2-cluster">Installing RKE2 cluster</h2>
+<p>We will now move with the installation of RKE2 on Ubuntu 20.04 Operating System. For our setup, we have used 1 master and 2 workers. You can use more than 1 master node but it should be in odd numbers. An odd number is needed to maintain a quorum. You can refer to the official document for more details to achieve high availability.</p>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>Bare metal servers or virtual machines (VMs) with a supported Linux distribution (e.g., Ubuntu, CentOS).</li>
+<li>SSH access to the servers.</li>
+<li>Helm and kubectl installed on your local machine.</li>
+<li>Installation process should run as the root user.</li>
+<li>For RKE2 versions 1.21 and higher, if the host kernel supports AppArmor, the AppArmor tools (usually available via the apparmor-parser package) must also be present prior to installing RKE2.</li>
+</ul>
+<h3 id="server-node-installation">Server node installation</h3>
+<p>RKE2 provides an installation script for a convenient way to install it as a service.</p>
+<ol>
+<li>
+<p>Run installer script</p>
+<pre tabindex="0"><code>curl -sfL https://get.rke2.io | sh -
+</code></pre></li>
+<li>
+<p>Enable rke2-server.service</p>
+<pre tabindex="0"><code>systemctl enable rke2-server.service
+</code></pre></li>
+<li>
+<p>Start the service</p>
+<pre tabindex="0"><code>systemctl start rke2-server.service
+</code></pre></li>
+<li>
+<p>Get the logs</p>
+<pre tabindex="0"><code>journalctl -u rke2-server -f
+</code></pre></li>
+</ol>
+<p>After all the steps are successfully executed, you can see your application running. Your services will restart automatically after node reboots.</p>
+<p>A kubeconfig file is written to <code>/etc/rancher/rke2/rke2.yaml</code>.</p>
+<p>A token that will be used later to configure the worker with a master can be found at <code>/var/lib/rancher/rke2/server/node-token</code>.</p>
+<p>You can run the command <code>export KUBECONFIG=/etc/rancher/rke2/rke2.yaml</code> to configure your kube-config file.</p>
+<p>Remember to install kubectl depending on your Linux distribution. We are using Ubuntu systems so to install kubectl, you can run <code>snap install kubectl –classic</code> command.</p>
+<p>Once your master server is ready, run <code>kubectl get nodes</code> command:</p>
+<pre tabindex="0"><code>root@master4:/home/master4# kubectl get nodes
+NAME      STATUS   ROLES                       AGE   VERSION
+master4   Ready    control-plane,etcd,master   12d   v1.26.12+rke2r1
+worker6   Ready    &lt;none&gt;                      12d   v1.26.12+rke2r1
+</code></pre><p><strong>Note</strong>: You cannot run kubectl commands until master is ready. It can take some time to become ready after node restarts.</p>
+<p>Run the below command to save the above credentials in the kube-config file.</p>
+<pre tabindex="0"><code>
+mkdir ~/.kube
+touch ~/.kube/config
+cp /etc/rancher/rke2/rke2.yaml ~/.kube/config
+</code></pre><h3 id="linux-worker-node-installation">Linux Worker node installation</h3>
+<ol>
+<li>
+<p>Run Worker Installation Command</p>
+<pre tabindex="0"><code>curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE=&#34;agent&#34; sh -
+</code></pre></li>
+<li>
+<p>Enable rke2-agent.service</p>
+<pre tabindex="0"><code>systemctl enable rke2-agent.service
+</code></pre></li>
+<li>
+<p>Configure rke2-agent service</p>
+<pre tabindex="0"><code>mkdir -p /etc/rancher/rke2/
+vim /etc/rancher/rke2/config.yaml
+</code></pre><p>Content for config.yaml:</p>
+<pre tabindex="0"><code>server: https://&lt;server&gt;:9345
+token: &lt;token from server node&gt;
+</code></pre><ul>
+<li>
+<p><strong>Server</strong>: private IP of master server, you can get this with <strong>ifconfig</strong> command.</p>
+</li>
+<li>
+<p><strong>Token</strong>: can be found by cat <code>/var/lib/rancher/rke2/server/node-token</code></p>
+</li>
+</ul>
+<p><strong>Note</strong>: rke2-server listens on port 9345 for new nodes to register. Kubernetes API runs on 6443 normally.</p>
+</li>
+<li>
+<p>Start rke2-agent service</p>
+<pre tabindex="0"><code>systemctl start rke2-agent.service
+</code></pre></li>
+<li>
+<p>Follow the logs after the above command to check if it’s running.</p>
+<pre tabindex="0"><code>journalctl -u rke2-agent -f
+</code></pre></li>
+</ol>
+<p><strong>Note</strong>: Each machine must have a unique hostname. If your machines do not have unique hostnames, set the node-name parameter in the config.yaml file and provide a value with a valid and unique hostname for each node.</p>
+<h4 id="optional-step-with-script">Optional step with script</h4>
+<p>If you need to create multiple worker nodes, instead of doing these steps manually, just run the bash script mentioned below by replacing the token and server IP.</p>
+<pre tabindex="0"><code>#!/bin/bash
+sudo apt-get update
+sudo su root
+curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE=&#34;agent&#34; sh -
+systemctl enable rke2-agent.service
+mkdir -p /etc/rancher/rke2/
+touch /etc/rancher/rke2/config.yaml
+
+yaml_file=&#34;/etc/rancher/rke2/config.yaml&#34;
+server_value=&#34;https://10.0.2.250:9345&#34; # Replace IP with your master node IP
+token_value=&#34;K103d03052bf787164d1kce1b158708b5eb644b0a804a859c7f7553ea7f9a50993c::server:09f67c5eb986a4f6349h9ag9827j975b&#34; # Replace with your token
+
+# Check if the file exists
+if [ -f &#34;$yaml_file&#34; ]; then
+   # Append values to the YAML file
+   echo &#34;server: $server_value&#34; &gt;&gt; &#34;$yaml_file&#34;
+   echo &#34;token: $token_value&#34; &gt;&gt; &#34;$yaml_file&#34;
+
+   echo &#34;Values added to $yaml_file&#34;
+else
+   echo &#34;Error: File not found at $yaml_file&#34;
+fi
+systemctl start rke2-agent.service
+</code></pre><h2 id="adding-metallb-load-balancer-to-rke-2">Adding MetalLB Load Balancer to RKE 2</h2>
+<p>In traditional cloud environments, load balancers are often provided as managed services. However, when deploying Kubernetes on bare metal, there is no native load balancing solution out of the box. This can pose challenges for applications that need to be exposed to external users and load distribution.</p>
+<p>MetalLB fills the gap by offering a straightforward, software-based load balancing solution for bare metal Kubernetes clusters. It allows you to expose services externally by allocating external IP addresses and distributing traffic across the nodes in the cluster. According to official documentation, MetalLB cannot create IP addresses out of thin air, so you do have to give it pools of IP addresses it can use. It will take care of assigning and unassigning individual addresses as services come and go, but it will only ever hand out IPs that are part of its configured pools.</p>
+<p>MetalLB supports two primary modes: Layer 2 mode and BGP mode. In Layer 2 mode, MetalLB assigns IP addresses from a predefined pool to services. BGP mode, on the other hand, allows MetalLB to dynamically announce the service IPs using the Border Gateway Protocol, making it suitable for more complex networking setups.</p>
+<p>We are going to configure MetalLB with a manifest file. You can choose the Helm or Kustomize option from official documents to install MetalLB.</p>
+<h3 id="install-by-manifest">Install by manifest</h3>
+<pre tabindex="0"><code>kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.2/config/manifests/metallb-native.yaml
+</code></pre><p><strong>Note</strong>: We are using the 0.14.2 version, which might change in the future. To get the latest release, you can follow the official install MetalLB for the manifest section or refer to their GitHub Repo.</p>
+<p>This will deploy MetalLB to your cluster under the metallb-system namespace. The components in the manifest are:</p>
+<ul>
+<li>The <code>metallb-system/controller</code> deployment. This is the cluster-wide controller that handles IP address assignments.</li>
+<li>The <code>metallb-system/speaker daemonset</code>. This component speaks to the protocol(s) of your choice to make the services reachable.</li>
+<li>Service accounts for the controller and speaker, along with the RBAC permissions that the components need to function.</li>
+</ul>
+<p>This does not include configuration files, so components will start but remain idle.</p>
+<pre tabindex="0"><code>NAME                          READY   STATUS    RESTARTS        AGE
+controller-586bfc6b59-6gdrh   1/1     Running   9 (61m ago)     11d
+speaker-cf9zv                 1/1     Running   24 (61m ago)    12d
+speaker-qnhct                 1/1     Running   8 (2m45s ago)   12d
+</code></pre><h3 id="defining-ip-to-load-balancer-services">Defining IP to Load Balancer services</h3>
+<p>To assign IP to services, MetalLB must provide with an IPAddressPool that will be used to assign IP to services. Save this file with the name ip.yaml and run <code>kubectl apply -f ip.yaml</code>.</p>
+<pre tabindex="0"><code>apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: first-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.56.20-192.168.56.30
+</code></pre><p>Save this file with the name ip.yaml and run <code>kubectl apply -f ip.yaml</code> and you have your IPAddressPool ready in the cluster.</p>
+<pre tabindex="0"><code>root@master4:/home/master4# kubectl get IPAddressPool -A
+NAMESPACE        NAME         AUTO ASSIGN   AVOID BUGGY IPS   ADDRESSES
+metallb-system   first-pool   true          false             [&#34;192.168.56.20-192.168.56.30&#34;]
+</code></pre><p>Here, we are using a range of IPs which is being used to SSH these servers as well. You can also use the range of IP that has been assigned to your nodes or CIDR range. To learn more, you can follow the documentation for L2 configuration.</p>
+<h3 id="using-layer-2-configuration">Using Layer 2 configuration</h3>
+<p>Layer 2 mode is the simplest to configure: in many cases, you don’t need any protocol-specific configuration, only IP addresses.</p>
+<p>Layer 2 mode does not require the IPs to be bound to the network interfaces of your worker nodes. It works by responding to ARP requests on your local network directly, to give the machine’s MAC address to clients.</p>
+<p>To advertise the IP coming from an <code>IPAddressPool</code>, an <code>L2Advertisement</code> instance must be associated with the <code>IPAddressPool</code>. To learn more, follow the documentation for L2 configuration.</p>
+<pre tabindex="0"><code>apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: example
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - first-pool
+</code></pre><p>Save the file with the name L2.yaml and run <code>kubectl apply -f L2.yaml</code>.</p>
+<pre tabindex="0"><code>root@master4:/home/master4# kubectl get L2Advertisement -A
+NAMESPACE        NAME      IPADDRESSPOOLS   IPADDRESSPOOL SELECTORS   INTERFACES
+metallb-system   example   [&#34;first-pool&#34;]  
+</code></pre><h3 id="test-by-exposing-a-service">Test by exposing a service</h3>
+<pre tabindex="0"><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
+</code></pre><p>Save this as nginx-deploy.yaml and run <code>kubectl apply -f nginx-deploy.yaml</code>.</p>
+<p>Run <code>kubectl get svc</code> to get External IP:</p>
+<pre tabindex="0"><code>root@master4:/home/master4# kubectl get svc
+NAME            TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)        AGE
+nginx-service   LoadBalancer   10.43.102.163   192.168.56.21   80:32310/TCP   4m24s
+</code></pre><p>Now run curl -v {external-IP} like curl -v <code>192.168.56.21</code> or copy and paste the IP to your browser, and you can see the Nginx welcome page.</p>
+<h2 id="setting-up-rook-ceph-cluster-to-rke-2">Setting up Rook-Ceph cluster to RKE 2</h2>
+<p>Storage is a critical component in any Kubernetes environment, and Rook-Ceph emerges as a game-changer in this domain. Rook is an open source cloud native storage orchestrator, providing the platform, framework, and support for Ceph storage to integrate natively with cloud native environments.</p>
+<p><strong>Ceph</strong> is a distributed storage system that provides file, block, and object storage and is deployed in large-scale production clusters.</p>
+<p><strong>Rook</strong> automates deployment and management of Ceph to provide self-managing, self-scaling, and self-healing storage services. The Rook operator does this by building on Kubernetes resources to deploy, configure, provision, scale, upgrade, and monitor Ceph.</p>
+<h3 id="prerequisites-1">Prerequisites</h3>
+<p>To configure the Ceph storage cluster, at least one of these local storage types is required: You should have one extra raw partition to be attached. Filesystems attached during creation won’t work for Ceph Cluster.</p>
+<ul>
+<li>Raw devices (no partitions or formatted filesystems)</li>
+<li>Raw partitions (no formatted filesystem)</li>
+<li>LVM Logical Volumes (no formatted filesystem)</li>
+<li>Persistent Volumes available from a storage class in block mode</li>
+</ul>
+<p><strong>Ceph OSDs (Object Storage Daemon)</strong> have a dependency on LVM in the following scenarios:</p>
+<ul>
+<li>If encryption is enabled (encryptedDevice: “true” in the cluster CR)</li>
+<li>A metadata device is specified</li>
+<li>osdsPerDevice is greater than 1</li>
+</ul>
+<p><strong>LVM</strong> is not required for OSDs in these scenarios:</p>
+<ul>
+<li>OSDs are created on raw devices or partitions</li>
+<li>OSDs are created on PVCs using the storageClassDeviceSets</li>
+</ul>
+<h3 id="install-rook-operator">Install Rook Operator</h3>
+<p>First, we will clone the repo and install the Rook Operator:</p>
+<pre tabindex="0"><code>git clone --single-branch --branch master https://github.com/rook/rook.git
+
+cd rook/deploy/examples
+
+kubectl create -f crds.yaml -f common.yaml -f operator.yaml
+</code></pre><p>You can also install Rook Operator with different approaches by following the documentation of Quickstart - Rook Ceph. Verify that the Rook Operator is up and running by command <code>kubectl -n rook-ceph get pod</code>.</p>
+<h3 id="configure-cluster">Configure Cluster</h3>
+<p>There are several types of Ceph clusters depending on your environment like bare-metal, cloud, test, and production level. Different manifests are provided for different types of installation. We are going with 1 node in this setup. If you want to learn more, you can find various examples in example configurations document.</p>
+<pre tabindex="0"><code>apiVersion: ceph.rook.io/v1
+kind: CephCluster
+metadata:
+  name: my-cluster
+  namespace: rook-ceph # namespace:cluster
+spec:
+  dataDirHostPath: /var/lib/rook
+  cephVersion:
+    image: quay.io/ceph/ceph:v18
+    allowUnsupported: true
+  mon:
+    count: 1
+    allowMultiplePerNode: true
+  mgr:
+    count: 1
+    allowMultiplePerNode: true
+  dashboard:
+    enabled: true
+  crashCollector:
+    disable: true
+  storage:
+    useAllNodes: true
+    useAllDevices: true
+    #deviceFilter:
+  monitoring:
+    enabled: false
+  healthCheck:
+    daemonHealth:
+      mon:
+        interval: 45s
+        timeout: 600s
+  priorityClassNames:
+    all: system-node-critical
+    mgr: system-cluster-critical
+  disruptionManagement:
+    managePodBudgets: true
+  cephConfig:
+    global:
+      osd_pool_default_size: &#34;1&#34;
+      mon_warn_on_pool_no_redundancy: &#34;false&#34;
+      bdev_flock_retry: &#34;20&#34;
+      bluefs_buffered_io: &#34;false&#34;
+      mon_data_avail_warn: &#34;10&#34;
+---
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: builtin-mgr
+  namespace: rook-ceph # namespace:cluster
+spec:
+  name: .mgr
+  replicated:
+    size: 1
+    requireSafeReplicaSize: false
+</code></pre><p>Save the file with the name cluster-test.yml and run <code>kubectl apply -f cluster-test.yaml</code>.</p>
+<p>Check all your pods are running by <code>kubectl get pods -n rook-ceph</code>. Make sure your OSD and ceph-mon are up.</p>
+<pre tabindex="0"><code>NAME                                            READY   STATUS      RESTARTS       AGE
+csi-cephfsplugin-ld862                          2/2     Running     24 (15m ago)   7d23h
+csi-cephfsplugin-nk2m4                          2/2     Running     17 (12m ago)   7d23h
+csi-cephfsplugin-provisioner-744b68955d-8xj69   5/5     Running     45 (15m ago)   7d23h
+csi-cephfsplugin-provisioner-744b68955d-vqj7k   5/5     Running     11 (12m ago)   18h
+csi-rbdplugin-7x2b2                             2/2     Running     24 (15m ago)   7d23h
+csi-rbdplugin-7xkjj                             2/2     Running     16 (12m ago)   7d23h
+csi-rbdplugin-provisioner-54c58c7d4c-2zkzz      5/5     Running     45 (15m ago)   7d23h
+csi-rbdplugin-provisioner-54c58c7d4c-nsvq7      5/5     Running     12 (12m ago)   18h
+rook-ceph-exporter-master4-65bd589b7-82xdr      1/1     Running     16 (15m ago)   6d17h
+rook-ceph-exporter-worker6-86c5477549-lbs9w     1/1     Running     2 (12m ago)    18h
+rook-ceph-mgr-a-765cc75d8c-rq9cw                1/1     Running     50 (11m ago)   7d13h
+rook-ceph-mon-a-5c55b57784-pnxvh                1/1     Running     2 (12m ago)    18h
+rook-ceph-operator-7bc5dfd788-bll7p             1/1     Running     11 (15m ago)   11d
+rook-ceph-osd-0-6b76cbdc46-95wtr                1/1     Running     3 (33m ago)    6d17h
+rook-ceph-osd-1-94f7d466b-xwktl                 1/1     Running     1 (27m ago)    18h
+rook-ceph-osd-prepare-master4-6hbh7             0/1     Completed   0              11m
+rook-ceph-osd-prepare-worker6-xzq5h             0/1     Completed   0              11m
+rook-ceph-tools-6d6d694fb9-l65f2                1/1     Running     8 (15m ago)    7d13h
+</code></pre><h3 id="configure-storage-class">Configure storage-class</h3>
+<p>Depending on your cluster type, we will configure storageclass. We are going with 1 node, so we will use storageclass-test.yaml. Run below command to configure storage <code>kubectl apply -f https://raw.githubusercontent.com/rook/rook/master/deploy/examples/csi/rbd/storageclass-test.yaml</code>. Now, check storage is created with the command <code>kubectl get storageclass</code></p>
+<h3 id="configure-rook-toolbox">Configure Rook toolbox</h3>
+<p>The Rook toolbox is a container with common tools used for Rook debugging and testing. You can use it to run as Ceph CLI for all the queries and information related to Ceph cluster. Run “kubectl apply -f <a href="https://raw.githubusercontent.com/rook/rook/master/deploy/examples/toolbox.yaml">https://raw.githubusercontent.com/rook/rook/master/deploy/examples/toolbox.yaml</a>” . To learn more, read the Toolbox documentation.</p>
+<p>Once your deployment is ready, run below command to connect with the Toolbox:</p>
+<pre tabindex="0"><code>kubectl -n rook-ceph exec -it deploy/rook-ceph-tools -- bash
+</code></pre><p>Now run <strong>ceph status</strong> to check the status of ceph cluster, you should get output similar to this.</p>
+<pre tabindex="0"><code>bash-4.4$ ceph status
+  cluster:
+    id:     96f59e8f-06ec-4806-ac7a-38d32d6a7e4e
+    health: HEALTH_OK
+ 
+  services:
+    mon: 1 daemons, quorum a (age 31m)
+    mgr: a(active, since 31m)
+    osd: 2 osds: 2 up (since 31m), 2 in (since 6d)
+ 
+  data:
+    pools:   1 pools, 32 pgs
+    objects: 16 objects, 3.2 MiB
+    usage:   65 MiB used, 55 GiB / 55 GiB avail
+    pgs:     32 active+clean
+</code></pre><p>Now, run ceph <strong>osd status</strong>, and output should look similar to this.</p>
+<pre tabindex="0"><code>bash-4.4$ ceph osd status
+ID  HOST      USED  AVAIL  WR OPS  WR DATA  RD OPS  RD DATA  STATE      
+ 0  master4  32.3M  24.9G      0        0       0        0   exists,up  
+ 1  worker6  32.9M  29.9G      0        0       0        0   exists,up 
+</code></pre><p><strong>Note</strong>: The term OSD here represents the number of raw volumes you have attached in each node. In my case, you can see 2 OSD because two raw volumes are attached i.e one for master and one for worker.</p>
+<p>Now, our cluster is ready along with storageclass and ceph cluster.</p>
+<h3 id="test-ceph-cluster">Test Ceph Cluster</h3>
+<p>Once everything is up and running, let’s create a pod, pvc, and attach pvc with that pod.<br>
+Create a file with the name pod.yaml and save the below manifest. Run <code>kubectl apply -f pod.yaml</code>.</p>
+<pre tabindex="0"><code>apiVersion: v1
+kind: Pod
+metadata:
+ name: nginx-pod
+spec:
+ containers:
+ - name: nginx-container
+   image: nginx:latest
+   volumeMounts:
+   - name: nginx-pvc-mount
+     mountPath: /usr/share/nginx/html
+ volumes:
+ - name: nginx-pvc-mount
+   persistentVolumeClaim:
+     claimName: nginx-pvc  # Replace with your PVC name
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ name: nginx-pvc   # Replace with your PVC name
+spec:
+ accessModes:
+   - ReadWriteOnce
+ storageClassName: rook-ceph-block   # Replace with your storage class name
+ resources:
+   requests:
+     storage: 1Gi   # Replace with your desired storage size
+</code></pre><p>Now, you can see your pod running and run <code>kubectl get pvc and kubectl get pv</code> command to see pv getting bound to pvc.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>In this blog post, we learned how to set up an on-prem cluster using RKE, MetalLB for load balancing, and Rook-Ceph for storage orchestration. This architecture provides a robust foundation for deploying and scaling containerized applications in a bare metal environment. We also discussed common challenges faced while setting up the RKE2 cluster.</p>
+<p>I hope this article was informative to you. I would like to hear your thoughts on this post. If you wish to share your opinion about this article, let’s connect and start a conversation on LinkedIn.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

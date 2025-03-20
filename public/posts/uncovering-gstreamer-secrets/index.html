@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Uncovering GStreamer secrets</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Uncovering GStreamer secrets</h1>
+			<b><time>03.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>In this post, I’ll walk you through the vulnerabilities I uncovered in the GStreamer library and how I built a custom fuzzing generator to target MP4 files.</p>
+<p>The post Uncovering GStreamer secrets appeared first on The GitHub Blog.</p>
+<p>In this blog post, I’ll show the results of my recent security research on GStreamer, the open source multimedia framework at the core of GNOME’s multimedia functionality.</p>
+<p>I’ll also go through the approach I used to find some of the most elusive vulnerabilities, generating a custom input corpus from scratch to enhance fuzzing results.</p>
+<h2 id="gstreamer">GStreamer</h2>
+<p>GStreamer is an open source multimedia framework that provides extensive capabilities, including audio and video decoding, subtitle parsing, and media streaming, among others. It also supports a broad range of codecs, such as MP4, MKV, OGG, and AVI.</p>
+<p>GStreamer is distributed by default on any Linux distribution that uses GNOME as the desktop environment, including Ubuntu, Fedora, and openSUSE. It provides multimedia support for key applications like Nautilus (Ubuntu’s default file browser), GNOME Videos, and Rhythmbox. It’s also used by tracker-miners, the Ubuntu’s metadata indexer–an application that my colleague, Kev, was able to exploit last year.</p>
+<p>This makes GStreamer a very interesting target from a security perspective, as critical vulnerabilities in the library can open numerous attack vectors. That’s why I picked it as a target for my security research.</p>
+<p>It’s worth noting that GStreamer is a large library that includes more than 300 different sub-modules. For this research, I decided to focus on only the “Base” and “Good” plugins, which are included by default in the Ubuntu distribution.</p>
+<h2 id="results">Results</h2>
+<p>During my research I found a total of 29 new vulnerabilities in GStreamer, most of them in the MKV and MP4 formats.</p>
+<p>Below you can find a summary of the vulnerabilities I discovered:</p>
+<table>
+  <thead>
+      <tr>
+          <th>GHSL</th>
+          <th>CVE</th>
+          <th>DESCRIPTION</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>GHSL-2024-094</td>
+          <td>CVE-2024-47537</td>
+          <td>OOB-write in isomp4/qtdemux.c</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-115</td>
+          <td>CVE-2024-47538</td>
+          <td>Stack-buffer overflow in vorbis_handle_identification_packet</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-116</td>
+          <td>CVE-2024-47607</td>
+          <td>Stack-buffer overflow in gst_opus_dec_parse_header</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-117</td>
+          <td>CVE-2024-47615</td>
+          <td>OOB-Write in gst_parse_vorbis_setup_packet</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-118</td>
+          <td>CVE-2024-47613</td>
+          <td>OOB-Write in gst_gdk_pixbuf_dec_flush</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-166</td>
+          <td>CVE-2024-47606</td>
+          <td>Memcpy parameter overlap in qtdemux_parse_theora_extension leading to OOB-write</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-195</td>
+          <td>CVE-2024-47539</td>
+          <td>OOB-write in convert_to_s334_1a</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-197</td>
+          <td>CVE-2024-47540</td>
+          <td>Uninitialized variable in gst_matroska_demux_add_wvpk_header leading to function pointer ovewriting</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-228</td>
+          <td>CVE-2024-47541</td>
+          <td>OOB-write in subparse/gstssaparse.c</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-235</td>
+          <td>CVE-2024-47542</td>
+          <td>Null pointer dereference in id3v2_read_synch_uint</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-236</td>
+          <td>CVE-2024-47543</td>
+          <td>OOB-read in qtdemux_parse_container</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-238</td>
+          <td>CVE-2024-47544</td>
+          <td>Null pointer dereference in qtdemux_parse_sbgp</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-242</td>
+          <td>CVE-2024-47545</td>
+          <td>Integer underflow in FOURCC_strf parsing leading to OOB-read</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-243</td>
+          <td>CVE-2024-47546</td>
+          <td>Integer underflow in extract_cc_from_data leading to OOB-read</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-244</td>
+          <td>CVE-2024-47596</td>
+          <td>OOB-read in FOURCC_SMI_ parsing</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-245</td>
+          <td>CVE-2024-47597</td>
+          <td>OOB-read in qtdemux_parse_samples</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-246</td>
+          <td>CVE-2024-47598</td>
+          <td>OOB-read in qtdemux_merge_sample_table</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-247</td>
+          <td>CVE-2024-47599</td>
+          <td>Null pointer dereference in gst_jpeg_dec_negotiate</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-248</td>
+          <td>CVE-2024-47600</td>
+          <td>OOB-read in format_channel_mask</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-249</td>
+          <td>CVE-2024-47601</td>
+          <td>Null pointer dereference in gst_matroska_demux_parse_blockgroup_or_simpleblock</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-250</td>
+          <td>CVE-2024-47602</td>
+          <td>Null pointer dereference in gst_matroska_demux_add_wvpk_header</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-251</td>
+          <td>CVE-2024-47603</td>
+          <td>Null pointer dereference in gst_matroska_demux_update_tracks</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-258</td>
+          <td>CVE-2024-47778</td>
+          <td>OOB-read in gst_wavparse_adtl_chunk</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-259</td>
+          <td>CVE-2024-47777</td>
+          <td>OOB-read in gst_wavparse_smpl_chunk</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-260</td>
+          <td>CVE-2024-47776</td>
+          <td>OOB-read in gst_wavparse_cue_chunk</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-261</td>
+          <td>CVE-2024-47775</td>
+          <td>OOB-read in parse_ds64</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-262</td>
+          <td>CVE-2024-47774</td>
+          <td>OOB-read in gst_avi_subtitle_parse_gab2_chunk</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-263</td>
+          <td>CVE-2024-47835</td>
+          <td>Null pointer dereference in parse_lrc</td>
+      </tr>
+      <tr>
+          <td>GHSL-2024-280</td>
+          <td>CVE-2024-47834</td>
+          <td>Use-After-Free read in Matroska CodecPrivate</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="fuzzing-media-files-the-problem">Fuzzing media files: The problem</h2>
+<p>Nowadays, coverage-guided fuzzers have become the “de facto” tools for finding vulnerabilities in C/C++ projects. Their ability to discover rare execution paths, combined with their ease of use, has made them the preferred choice among security researchers.</p>
+<p>The most common approach is to start with an initial input corpus, which is then successively mutated by the different mutators. The standard method to create this initial input corpus is to gather a large collection of sample files that provide a good representative coverage of the format you want to fuzz.</p>
+<p>But with multimedia files, this approach has a major drawback: media files are typically very large (often in the range of megabytes or gigabytes). So, using such large files as the initial input corpus greatly slows down the fuzzing process, as the fuzzer usually goes over every byte of the file.</p>
+<p>There are various minimization approaches that try to reduce file size, but they tend to be quite simplistic and often yield poor results. And, in the case of complex file formats, they can even break the file’s logic.</p>
+<p>It’s for this reason that for my GStreamer fuzzing journey, I opted for “generating” an initial input corpus from scratch.</p>
+<h2 id="the-alternative-corpus-generators">The alternative: corpus generators</h2>
+<p>An alternative to gathering files is to create an input corpus from scratch. Or in other words, without using any preexisting files as examples.</p>
+<p>To do this, we need a way to transform the target file format into a program that generates files compliant with that format. Two possible solutions arise:</p>
+<ol>
+<li>Use a grammar-based generator. This category of generators makes use of formal grammars to define the file format, and subsequently generate the input corpus. In this category, we can mention tools like Grammarinator, an open source grammar-based fuzzer that creates test cases according to an input ANTLR v4 grammar. In this past blog post, I also explained how I used AFL++ Grammar-Mutator for fuzzing Apache HTTP server.</li>
+<li>To create a generator specifically for the target software. In this case, we rely on analyzing how the software parses the file format to create a compatible input generator.</li>
+</ol>
+<p>Of course, the second solution is more time-consuming, as we need not only to understand the file format structure but also to analyze how the target software works.</p>
+<p>But at the same time, it solves two problems in one shot:</p>
+<ul>
+<li>On one hand, we’ll generate much smaller files, drastically speeding up the fuzzing process speed.</li>
+<li>On the other hand, these “custom” files are likely to produce better code coverage and potentially uncover more vulnerabilities.</li>
+</ul>
+<p>This is the method I opted for and it allowed me to find some of the most interesting vulnerabilities in the MP4 and MKV parsers–vulnerabilities that until then, had not been detected by the fuzzer.</p>
+<h2 id="implementing-an-input-corpus-generator-for-mp4">Implementing an input corpus generator for MP4</h2>
+<p>In this section, I will explain how I created an input corpus generator for the MP4 format. I used the same approach for fuzzing the MKV format as well.</p>
+<h3 id="mp4-format">MP4 format</h3>
+<p>To start, I will show a brief description of the MP4 format.</p>
+<p>MP4, officially known as MPEG-4 Part 14, is one of the most widely used multimedia container formats today, due to its broad compatibility and widespread support across various platforms and devices. It supports packaging of multiple media types such as video, audio, images, and complex metadata.</p>
+<p>MP4 is basically an evolution of Apple’s QuickTime media format, which was standardized by ISO as MPEG-4. The .mp4 container format is specified by the “MPEG-4 Part 14: MP4 file format” section.</p>
+<p>MP4 files are structured as a series of “boxes” (or “atoms”), each containing specific multimedia data needed to construct the media. Each box has a designated type that describes its purpose.</p>
+<p>These boxes can also contain other nested boxes, creating a modular and hierarchical structure that simplifies parsing and manipulation.</p>
+<p>Each <strong>box/atom</strong> includes the following fields:</p>
+<ul>
+<li><strong>Size</strong>: A 32-bit integer indicating the total size of the box in bytes, including the header and data.</li>
+<li><strong>Type</strong>: A 4-character code (FourCC) that identifies the box’s purpose.</li>
+<li><strong>Data</strong>: The actual content or payload of the box.</li>
+</ul>
+<p>Some boxes may also include:</p>
+<ul>
+<li><strong>Extended size</strong>: A 64-bit integer that allows for boxes larger than 4GB.</li>
+<li><strong>User type</strong>: A 16-byte (128-bit) UUID that enables the creation of custom boxes without conflicting with standard types.</li>
+</ul>
+<p>
+<figure>
+  <img src="https://github.blog/wp-content/uploads/2024/12/image1-4.png?w=730&amp;resize=730%2C574" alt="Mp4 box structure" />
+</figure>
+
+
+</p>
+<p>An MP4 file is typically structured in the following way:</p>
+<ul>
+<li><strong>ftyp</strong> (File Type Box): Indicates the file type and compatibility.</li>
+<li><strong>mdat</strong> (Media Data Box): Contains the actual media data (for example, audio and video frames).</li>
+<li><strong>moov</strong> (Movie Box): Contains metadata for the entire presentation, including details about tracks and their structures:</li>
+<li><strong>trak</strong> (Track Box): Represents individual tracks (for example, video, audio) within the file.</li>
+<li><strong>udta</strong> (User Data Box): Stores user-defined data that may include additional metadata or custom information.</li>
+</ul>
+<p>
+<figure>
+  <img src="https://github.blog/wp-content/uploads/2024/12/image2-3.png?w=1024&amp;resize=1024%2C441" alt="Common MP4 file structure" />
+</figure>
+
+
+</p>
+<p>Once we understand how an MP4 file is structured, we might ask ourselves, “Why are fuzzers not able to successfully mutate an MP4 file?”</p>
+<p>To answer this question, we need to take a look at how coverage-guided fuzzers mutate input files. Let’s take AFL–one of the most widely used fuzzers out there–as an example. AFL’s default mutators can be summarized as follows:</p>
+<ul>
+<li>Bit/Bytes mutators: These mutators flip some bits or bytes within the input file. They don’t change the file size.</li>
+<li>Block insertion/deletion: These mutators insert new data blocks or delete sections from the input file. They modify the file size.</li>
+</ul>
+<p>The main problem lies in the latter category of mutators. As soon as the fuzzer modifies the data within an mp4 box, the size field of the box should be also updated to reflect the new size. Furthermore, if the size of a box changes, the size fields of all its parent boxes must also be recalculated and updated accordingly.</p>
+<p>Implementing this functionality as a simple mutator can be quite complex, as it requires the fuzzer to track and update the implicit structure of the MP4 file.</p>
+<h3 id="generator-implementation">Generator implementation</h3>
+<p>The algorithm I used for implementing my generator follows these steps:</p>
+<h4 id="step-1-generating-unlabelled-trees">Step 1: Generating unlabelled trees</h4>
+<p>Structurally, an MP4 file can be visualized as a tree-like structure, where each node corresponds to an MP4 box. Thus, the first step in our generator implementation involves creating a set of unlabelled trees.</p>
+<p>In this phase, we create trees with empty nodes that do not yet have a tag assigned. Each node represents a potential MP4 box. To make sure we have a variety of input samples, we generate trees with various structures and different node counts.</p>
+<p>
+<figure>
+  <img src="https://github.blog/wp-content/uploads/2024/12/image3-3.png?w=1024&amp;resize=1024%2C255" alt="3 different 9-node unlabelled trees" />
+</figure>
+
+
+</p>
+<p>In the following code snippet, we see the constructor of the <code>RandomTree class</code>, which generates a random tree structure with a specified total nodes (<code>total_nodes</code>):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>RandomTree<span style="color:#f92672">::</span>RandomTree(<span style="color:#66d9ef">uint32_t</span> total_nodes){
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">uint32_t</span> curr_level <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//Root node
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>new_node(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, curr_level);
+</span></span><span style="display:flex;"><span>curr_level<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">uint32_t</span> rem_nodes <span style="color:#f92672">=</span> total_nodes <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">uint32_t</span> current_node <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span>(rem_nodes <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>){
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">uint32_t</span> num_children <span style="color:#f92672">=</span> rand_uint32(<span style="color:#ae81ff">1</span>, rem_nodes);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">uint32_t</span> min_value <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">-&gt;</span>levels[curr_level<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>].front();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">uint32_t</span> max_value <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">-&gt;</span>levels[curr_level<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>].back();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>; i<span style="color:#f92672">&lt;</span>num_children; i<span style="color:#f92672">++</span>){
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">uint32_t</span> parent_id <span style="color:#f92672">=</span> rand_uint32(min_value, max_value);
+</span></span><span style="display:flex;"><span>new_node(parent_id, curr_level);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>curr_level<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>rem_nodes <span style="color:#f92672">-=</span> num_children;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This code traverses the tree level by level (Level Order Traversal), adding a random number (<code>rand_uint32</code>) of children nodes (<code>num_children</code>). This approach of assigning a random number of child nodes to each parent node will generate highly diverse tree structures.</p>
+<p>
+<figure>
+  <img src="https://github.blog/wp-content/uploads/2024/12/Image3_2.png?w=1024&amp;resize=1024%2C456" alt="Random generation of child nodes" />
+</figure>
+
+
+</p>
+<p>After all children are added for the current level, <code>curr_level</code> is incremented to move to the next level.</p>
+<p>Once <code>rem_nodes</code> is 0, the <code>RandomTree</code> generation is complete, and we move on to generate another new <code>RandomTree</code>.</p>
+<h4 id="step-2-assigning-tags-to-nodes">Step 2: Assigning tags to nodes</h4>
+<p>Once we have a set of unlabelled trees, we proceed to assign random <code>tags</code> to each node.</p>
+<p>These tags correspond to the four-character codes (FOURCCs) used to identify the types of MP4 boxes, such as <code>moov</code>, <code>trak</code>, or <code>mdat</code>.</p>
+<p>In the following code snippet, we see two different <code>fourcc_info</code> structs: <code>FOURCC_LIST</code> which represents the leaf nodes of the tree, and <code>CONTAINER_LIST</code> which represents the rest of the nodes.</p>
+<p>The <code>fourcc_info</code> struct includes the following fields:</p>
+<ul>
+<li><em>fourcc</em>: A 4-byte FourCC ID</li>
+<li><em>description</em>: A string describing the FourCC</li>
+<li><em>minimum_size</em>: The minimum size of the data associated with this FourCC</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> fourcc_info CONTAINER_LIST[] <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>{FOURCC_moov, <span style="color:#e6db74">&#34;movie&#34;</span>, <span style="color:#ae81ff">0</span>,},
+</span></span><span style="display:flex;"><span>{FOURCC_vttc, <span style="color:#e6db74">&#34;VTTCueBox 14496-30&#34;</span>, <span style="color:#ae81ff">0</span>},
+</span></span><span style="display:flex;"><span>{FOURCC_clip, <span style="color:#e6db74">&#34;clipping&#34;</span>, <span style="color:#ae81ff">0</span>,},
+</span></span><span style="display:flex;"><span>{FOURCC_trak, <span style="color:#e6db74">&#34;track&#34;</span>, <span style="color:#ae81ff">0</span>,},
+</span></span><span style="display:flex;"><span>{FOURCC_udta, <span style="color:#e6db74">&#34;user data&#34;</span>, <span style="color:#ae81ff">0</span>,},
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">…</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> fourcc_info FOURCC_LIST[] <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>{FOURCC_crgn, <span style="color:#e6db74">&#34;clipping region&#34;</span>, <span style="color:#ae81ff">0</span>,},
+</span></span><span style="display:flex;"><span>{FOURCC_kmat, <span style="color:#e6db74">&#34;compressed matte&#34;</span>, <span style="color:#ae81ff">0</span>,},
+</span></span><span style="display:flex;"><span>{FOURCC_elst, <span style="color:#e6db74">&#34;edit list&#34;</span>, <span style="color:#ae81ff">0</span>,},
+</span></span><span style="display:flex;"><span>{FOURCC_load, <span style="color:#e6db74">&#34;track load settings&#34;</span>, <span style="color:#ae81ff">0</span>,},
+</span></span></code></pre></div><p>Then, the <code>MP4_labeler</code> constructor takes a <code>RandomTree</code> instance as input, iterates through its nodes, and assigns a label to each node based on whether it is a leaf (no children) or a container (has children):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">…</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>MP4_labeler<span style="color:#f92672">::</span>MP4_labeler(RandomTree <span style="color:#f92672">*</span>in_tree) {
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">…</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">-&gt;</span>tree<span style="color:#f92672">-&gt;</span>size(); i<span style="color:#f92672">++</span>){
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Node <span style="color:#f92672">&amp;</span>node <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">-&gt;</span>tree<span style="color:#f92672">-&gt;</span>get_node(i);
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">…</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(node.children().size() <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>){
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//LEAF
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">uint32_t</span> random <span style="color:#f92672">=</span> rand_uint32(<span style="color:#ae81ff">0</span>, FOURCC_LIST_SIZE<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>fourcc <span style="color:#f92672">=</span> FOURCC_LIST[random].fourcc;
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">…</span>
+</span></span><span style="display:flex;"><span>}<span style="color:#66d9ef">else</span>{
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//CONTAINER
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">uint32_t</span> random <span style="color:#f92672">=</span> rand_uint32(<span style="color:#ae81ff">0</span>, CONTAINER_LIST_SIZE<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>fourcc <span style="color:#f92672">=</span> CONTAINER_LIST[random].fourcc;
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">…</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">…</span>
+</span></span><span style="display:flex;"><span>node.set_label(label);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>After this stage, all nodes will have an assigned tag:</p>
+<p>
+<figure>
+  <img src="https://github.blog/wp-content/uploads/2024/12/image4-3.png?w=811&amp;resize=811%2C1024" alt="Labeled trees with MP4 box tags" />
+</figure>
+
+
+</p>
+<h4 id="step-3-adding-random-size-data-fields">Step 3: Adding random-size data fields</h4>
+<p>The next step is to add a random-size data field to each node. This data simulates the content within each MP4 box.<br>
+In the following code, at first we set the minimum size (<code>min_size</code>) of the padding specified in the selected <code>fourcc_info</code> from <code>FOURCC_LIST</code>. Then, we append <code>padding</code> number of null bytes (x00) to the label:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(node.children().size() <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>){
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//LEAF
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">…</span>
+</span></span><span style="display:flex;"><span>padding <span style="color:#f92672">=</span> FOURCC_LIST[random].min_size;
+</span></span><span style="display:flex;"><span>random_data <span style="color:#f92672">=</span> rand_uint32(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">16</span>);
+</span></span><span style="display:flex;"><span>}<span style="color:#66d9ef">else</span>{
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//CONTAINER
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">…</span>
+</span></span><span style="display:flex;"><span>padding <span style="color:#f92672">=</span> CONTAINER_LIST[random].min_size;
+</span></span><span style="display:flex;"><span>random_data <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">…</span>
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>string label <span style="color:#f92672">=</span> uint32_to_string(fourcc);
+</span></span><span style="display:flex;"><span>label <span style="color:#f92672">+=</span> std<span style="color:#f92672">::</span>string(padding, <span style="color:#960050;background-color:#1e0010">&#39;</span>x00<span style="color:#960050;background-color:#1e0010">&#39;</span>);
+</span></span><span style="display:flex;"><span>label <span style="color:#f92672">+=</span> std<span style="color:#f92672">::</span>string(random_data, <span style="color:#960050;background-color:#1e0010">&#39;</span>x41<span style="color:#960050;background-color:#1e0010">&#39;</span>);
+</span></span></code></pre></div><p>By varying the data sizes, we make sure the fuzzer has sufficient space to inject data into the box data sections, without needing to modify the input file size.</p>
+<h4 id="step-4-calculating-box-sizes">Step 4: Calculating box sizes</h4>
+<p>Finally, we calculate the size of each box and recursively update the tree accordingly.</p>
+<p>The <code>traverse</code> method recursively traverses the tree structure serializing the node data and calculating the resulting size box (<code>size)</code>. Then, it propagates size updates up the tree (<code>traverse(child)</code>) so that parent boxes include the sizes of their child boxes:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>std<span style="color:#f92672">::</span>string MP4_labeler<span style="color:#f92672">::</span>traverse(Node <span style="color:#f92672">&amp;</span>node){
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">…</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> node.children().size(); i<span style="color:#f92672">++</span>){ Node <span style="color:#f92672">&amp;</span>child <span style="color:#f92672">=</span> tree<span style="color:#f92672">-&gt;</span>get_node(node.children()[i]);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>output <span style="color:#f92672">+=</span> traverse(child);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">uint32_t</span> size;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(node.get_id() <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>){
+</span></span><span style="display:flex;"><span>size <span style="color:#f92672">=</span> <span style="color:#ae81ff">20</span>;
+</span></span><span style="display:flex;"><span>}<span style="color:#66d9ef">else</span>{
+</span></span><span style="display:flex;"><span>size <span style="color:#f92672">=</span> node.get_label().size() <span style="color:#f92672">+</span> output.size() <span style="color:#f92672">+</span> <span style="color:#ae81ff">4</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>string label <span style="color:#f92672">=</span> node.get_label();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">uint32_t</span> label_size <span style="color:#f92672">=</span> label.size();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>output <span style="color:#f92672">=</span> uint32_to_string_BE(size) <span style="color:#f92672">+</span> label <span style="color:#f92672">+</span> output;
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">…</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The number of generated input files can vary depending on the time and resources you can dedicate to fuzzing. In my case, I generated an input corpus of approximately 4 million files.</p>
+<h3 id="code">Code</h3>
+<p>You can find my C++ code example here.</p>
+<h2 id="acknowledgments">Acknowledgments</h2>
+<p>A big thank you to the GStreamer developer team for their collaboration and responsiveness, and especially to Sebastian Dröge for his quick and effective bug fixes.</p>
+<p>I would also like to thank my colleague, Jonathan Evans, for managing the CVE assignment process.</p>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://www.mpeg.org/standards/MPEG-4/14/">https://www.mpeg.org/standards/MPEG-4/14/</a></li>
+<li><a href="https://gstreamer.freedesktop.org/">https://gstreamer.freedesktop.org/</a></li>
+</ul>
+<p>The post Uncovering GStreamer secrets appeared first on The GitHub Blog.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

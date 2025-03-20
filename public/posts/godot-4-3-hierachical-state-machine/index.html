@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Godot 4.3&#43; Hierachical State Machine</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Godot 4.3&#43; Hierachical State Machine</h1>
+			<b><time>22.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<blockquote>
+<p>In this post I am assuming you have basic knowledge of how a State Machine Works</p></blockquote>
+<h2 id="this-is-a-hierarchical-finite-state-machine">This is a Hierarchical Finite State Machine!</h2>
+<p>This means it is setup in the editor as custom nodes!</p>
+<h3 id="the-state-class">The State Class</h3>
+<p>In this state machine, each state will extend from the <code>State</code> class below. Transitions between states can be called with this nice function I made called <code>transition_to()</code>. When using this state machine treat the <code>update</code> and <code>physics_update</code> like <code>_process</code> and <code>_physics_process</code> respectively.</p>
+<pre tabindex="0"><code>class_name State
+extends Node
+
+signal transitioned(state: State, new_state_name: String)
+
+var player: CharacterBody2D
+@onready var sprite: AnimatedSprite2D = %AnimatedSprite2D
+
+func enter() -&gt; void:
+    pass
+
+func exit() -&gt; void:
+    pass
+
+func update(delta: float) -&gt; void:
+    pass
+
+func physics_update(delta: float) -&gt; void:
+    pass
+
+func transition_to(new_state_name: String) -&gt; void:
+    transitioned.emit(self, new_state_name)
+</code></pre><h3 id="the-state-machine">The State Machine</h3>
+<p>The State Machine node is where we will be adding our State nodes to as children. The state machine mostly takes care of transitions, keeping track of current state, and executes the code of the states.<br>
+<strong>Must be a child of a CharacterBody2D (Aka your player)</strong></p>
+<pre tabindex="0"><code>
+class_name StateMachine
+extends Node
+
+@export var initial_state: State
+var current_state: State
+var states: Dictionary = {}
+
+func _ready() -&gt; void:
+    _initialize_states()
+    _set_initial_state()
+
+func _initialize_states() -&gt; void:
+    for child in get_children():
+        if child is State:
+            states[child.name.to_lower()] = child
+            child.transitioned.connect(_on_state_transition)
+
+func _set_initial_state() -&gt; void:
+    if initial_state:
+        _assign_player_reference(initial_state)
+        initial_state.enter()
+        current_state = initial_state
+    else:
+        push_warning(&#34;No initial state set for StateMachine in &#34; + owner.name)
+
+func _process(delta: float) -&gt; void:
+    if current_state:
+        current_state.update(delta)
+
+func _physics_process(delta: float) -&gt; void:
+    if current_state:
+        current_state.physics_update(delta)
+
+func _on_state_transition(state: State, new_state_name: String) -&gt; void:
+    if state != current_state:
+        return
+
+    var new_state = states.get(new_state_name.to_lower())
+    if not new_state:
+        push_warning(&#34;State &#39;&#34; + new_state_name + &#34;&#39; not found in StateMachine&#34;)
+        return
+
+    _transition_to_new_state(new_state)
+
+func _transition_to_new_state(new_state: State) -&gt; void:
+    current_state.exit()
+    current_state = new_state
+    _assign_player_reference(new_state)
+    new_state.enter()
+
+func _assign_player_reference(state: State) -&gt; void:
+    var parent = get_parent()
+    if parent is CharacterBody2D:
+        state.player = parent
+    else:
+        push_warning(&#34;StateMachine&#39;s parent must be CharacterBody2D&#34;)
+</code></pre><h2 id="example-states-and-proper-usage">Example States and proper usage:</h2>
+<blockquote>
+<p>Write code necessary only for that state.</p></blockquote>
+<pre tabindex="0"><code>
+class_name IdleState
+extends State
+
+@export_range(120, 420) var friction: float
+
+func enter() -&gt; void:
+    print(&#34;Entered Idle&#34;)
+    sprite.play(&#34;idle&#34;)
+
+func exit() -&gt; void:
+    print(&#34;Exited Idle&#34;)
+
+func update(delta: float) -&gt; void:
+    if Input.get_axis(&#34;ui_left&#34;, &#34;ui_right&#34;) != 0:
+        transition_to(&#34;Walk&#34;)
+    if not player.is_on_floor():
+        transition_to(&#34;Fall&#34;)
+
+func physics_update(delta: float) -&gt; void:
+    if player.velocity.x != 0:
+        player.velocity.x = lerp(player.velocity.x, 0, friction * delta)
+</code></pre><p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

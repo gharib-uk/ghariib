@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Building a Smart Heater Controller with Python, Docker, and Bluetooth #5</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Building a Smart Heater Controller with Python, Docker, and Bluetooth #5</h1>
+			<b><time>10.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="chapter-5-exposing-the-python-script-through-an-api-to-control-heaters-from-home-assistant">Chapter 5: Exposing the Python Script Through an API to Control Heaters From Home Assistant</h1>
+<p>In this chapter, I’ll walk you through how I exposed my Python script via an API, allowing it to be controlled directly from Home Assistant (HA). We’ll detail the steps taken to build the API, integrate it with HA, and expand functionality with Zigbee USB devices in a Dockerized environment.</p>
+<p><strong>😺 Python git project</strong><br>
+Feel free to fork and improve ! Git hub</p>
+<p><strong>🎥 HA Overview video</strong><br>
+
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fvwqr8e73ffgm6hovi8ze.jpg" alt="HA Overview video" />
+</figure>
+
+
+</p>
+<h4 id="section-1-building-the-api-for-the-python-script">Section 1: Building the API for the Python Script</h4>
+<p>To enable control of the heaters, I implemented a RESTful API with the following:</p>
+<ul>
+<li>
+<p><strong>Framework Selection</strong>: I used Flask to create the API due to its simplicity and compatibility with the existing Python script.</p>
+</li>
+<li>
+<p><strong>API Endpoint</strong>:</p>
+<ul>
+<li><strong>POST /set-temp</strong>: This endpoint allows setting the temperature of a heater. The payload includes the room name and the target temperature, e.g., <code>{&quot;room&quot;: &quot;kitchen&quot;, &quot;temp&quot;: 22}</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Dockerizing the API</strong>:</p>
+<ul>
+<li>The Flask app was containerized using Docker.</li>
+<li>The <code>Dockerfile</code> was configured to expose port 5000 for the API.</li>
+<li>Used <code>docker run</code> to grant access to the network and expose the API locally:</li>
+</ul>
+<pre tabindex="0"><code>    docker run -d --net=host --privileged -v /var/run/dbus:/var/run/dbus --name heater-controller
+</code></pre></li>
+<li>
+<p><strong>Testing the API</strong>:</p>
+<ul>
+<li>Used Postman and <code>curl</code> to test the <code>/set-temp</code> endpoint.</li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>curl --location &#39;http://raspberrypi.local:5000/set-temp&#39; 
+--header &#39;Content-Type: application/json&#39; 
+--data &#39;{
+    &#34;temperature&#34;: 60,
+    &#34;room&#34;:&#34;living_room&#34;
+}&#39;
+</code></pre><ul>
+<li>Ensured proper error handling for invalid room names or temperatures outside acceptable ranges.</li>
+</ul>
+<h4 id="section-2-plugging-home-assistant-into-the-local-api">Section 2: Plugging Home Assistant Into the Local API</h4>
+<p>With the API running, I connected it to HA to enable heater control:</p>
+<ul>
+<li>
+<p><strong>Configuration in HA</strong>:</p>
+<ul>
+<li>Edited <code>configuration.yaml</code> to create REST commands for the API:</li>
+</ul>
+<pre tabindex="0"><code>rest_command:
+  set_heater_temp:
+    url: &#34;http://localhost:5000/set-temp&#34;
+    method: POST
+    headers:
+      Content-Type: application/json
+    payload: &#39;{&#34;room&#34;: &#34;{{ room }}&#34;, &#34;temp&#34;: {{ temp | float }}}&#39;
+</code></pre></li>
+<li>
+<p><strong>Common Errors and Fixes</strong>:</p>
+<ul>
+<li><strong>Floats Sent as Strings</strong>: Adjusted templates in HA to ensure temperatures were sent as numbers.</li>
+<li><strong>Timeout Issues</strong>: Increased the API timeout in HA to handle slower network responses.</li>
+</ul>
+</li>
+</ul>
+<h4 id="section-3-controlling-heaters-from-home-assistant">Section 3: Controlling Heaters From Home Assistant</h4>
+<p>After integrating the API, I added controls in HA to manage heaters effectively:</p>
+<ul>
+<li>
+<p><strong>Helpers</strong>:</p>
+<ul>
+<li>Set up <code>input_number</code> helpers for each room to adjust target temperatures.</li>
+</ul>
+</li>
+<li>
+<p><strong>Automation Scripts</strong>:</p>
+<ul>
+<li>Created scripts to send temperature updates to the API when a helper value changes.</li>
+</ul>
+<pre tabindex="0"><code>- id: update_heater_temp
+  alias: Update Heater Temperature
+  trigger:
+    - platform: state
+      entity_id: input_number.kitchen_temp
+  action:
+    - service: rest_command.set_heater_temp
+      data:
+        room: &#34;kitchen&#34;
+        temp: &#34;{{ states(&#39;input_number.kitchen_temp&#39;) | float }}&#34;
+</code></pre></li>
+<li>
+<p><strong>UI Enhancements</strong>:</p>
+<ul>
+<li>Configured a Lovelace dashboard to show sliders for each room’s temperature control.</li>
+<li>Included feedback on current heater temperatures retrieved via sensors.</li>
+</ul>
+</li>
+</ul>
+<h4 id="section-4-using-zigbee-in-a-dockerized-ha-instance">Section 4: Using Zigbee in a Dockerized HA Instance</h4>
+<p>I extended the system by adding Zigbee functionality for further automation:</p>
+<ul>
+<li>
+<p><strong>USB Port Exposure</strong>:</p>
+<ul>
+<li>Updated Docker Compose to pass through the Zigbee USB coordinator:</li>
+</ul>
+<pre tabindex="0"><code>devices:
+  - &#34;/dev/ttyUSB0:/dev/ttyUSB0&#34;
+</code></pre></li>
+<li>
+<p><strong>Zigbee2MQTT Integration</strong>:</p>
+<ul>
+<li>Installed Zigbee2MQTT to manage Zigbee devices using a Conbee II USB coordinator.</li>
+<li>Added Zigbee sensors (e.g., window sensors) to HA.</li>
+</ul>
+</li>
+<li>
+<p><strong>Automation with Zigbee Sensors</strong>:</p>
+<ul>
+<li>Linked Zigbee sensors to heater control via automation scripts.</li>
+<li>Example: Turn off a room’s heater when its window sensor reports it is open.</li>
+</ul>
+</li>
+</ul>
+<h3 id="final-thoughts">Final Thoughts</h3>
+<p>By exposing the Python script as an API and integrating it with HA, I created a reliable system for controlling heaters. The addition of Zigbee functionality further enhanced the system, enabling seamless automation. This setup demonstrates the flexibility and scalability achievable with Docker, APIs, and smart home integrations.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

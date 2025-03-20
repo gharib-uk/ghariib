@@ -1,0 +1,64 @@
+---
+title: "S Ventures Invests in poolside, Next Generation AI for Software Engineering"
+date: 2025-01-08
+tags: 
+  - "bug"
+  - "ict"
+  - "innovation"
+  - "programming"
+  - "tech"
+---
+
+S Ventures invests in poolside, one of the most watched and highest valued startups in generative AI for software engineering today.
+
+In October 2024, SentinelOne’s venture arm, S Ventures, made a strategic investment in poolside as part of the AI assistive coding startup’s $500 million Series B round. It was one of S Ventures notable recent investments in generative AI (GenAI) start-ups following similar investments in leading foundational and enterprise LLM platforms such as Anthropic and Cohere, as well as Scale, a startup focused on the development and tooling layer of AI, and Galileo, a leading evaluation intelligence platform for AI teams.
+
+The round included Bain Capital Ventures, Citi Ventures, NVIDIA, and several other marquee venture and investment firms. So, what is it that makes poolside one of the most watched and highest valued startups in GenAI?
+
+![](https://www.sentinelone.com/wp-content/uploads/2024/11/S-Ventures-poolside.jpg)
+
+## The Market Opportunity for poolside
+
+The demand for software continues to surpass the supply of skilled developers, and worse, many coding tasks today are repetitive and time-consuming, taking valuable time away from already stretched developers – time that could and should be focused on strategic problem solving and innovation. So, it’s no surprise that many are suggesting this is a natural opportunity to use AI as a force multiplier, dramatically speeding up innovation and scaling dev teams.
+
+The world of AI is rapidly evolving with the quality and volume of the training data that feeds it at the center. This data is key in defining how effectively AI models perform, particularly in complex areas such as software development. But, this is easier said than done. Like all things GenAI, effectiveness, especially in complex areas like software development, is dependent on the quality, volume and types of data that feeds the underlying models.
+
+## Reinforcement Learning | poolside’s Unique Approach
+
+poolside’s philosophy is simple yet powerful: Effective AI for developing software must be built on high-quality, specialized training data and a deep understanding of how code functions in the real world. By designing its curation pipelines and strategies in-house, poolside is setting a new benchmark for AI-driven software innovation.
+
+Today, most AI models are only capable of understanding code. In contrast, poolside’s models are trained to write code autonomously, transforming the traditional developer-AI dynamic into one that goes beyond typical coding assistants offering rote suggestions. This commitment to internal development has led to a novel training methodology known as Reinforcement Learning from Code Execution Feedback (RLCEF).
+
+RLCEF works by exposing models to real-world coding challenges found within extensive codebases. Rather than just learning from static examples, the models receive execution-based feedback characteristic of actual programming environments. Reinforcement learning (RL) comes into play through poolside’s large-scale, off-policy framework where the company is optimizing model training. Models continuously learn from the outcomes of executed code to improve their ability to deliver both functional and efficient solutions.
+
+## Not Just a Technology | poolside’s AI-Driven Suite of Products
+
+Since software development reflects a significant milestone for neural networks, poolside AI is paving the way for achieving capabilities that are beginning to rival human-level intelligence. poolside factors in the structured nature of programming languages – centered on syntax, compile-time checks, and executable outcomes – and uses it to train their AI models. The result? Data is well-defined, verifiable, and precise. High quality data allows poolside’s AI to comprehend complex program structures, meaning developers can truly scale their problem solving.
+
+poolside has built a family of products, each catering to different users’ needs across the software development lifecycle. poolside Assistant allows developers to integrate seamlessly into coding environments while assisting in writing, debugging, and maintaining software – the ultimate virtual team member. AI solution customization is covered by poolside Enterprise where users can dictate what data sources (repositories and knowledge bases, for example) the model should learn from. This keeps all tasks tightly aligned with specific business goals and security policies. To drive the development side of things, the poolside Platform API allows users to build applications leveraging poolside’s many AI models.
+
+## A Deep Commitment to Continuous Improvement
+
+poolside AI models are underpinned by the company’s commitment to continuous improvement, investing in scaling their models, data, and infrastructure simultaneously. Training is completed using high-performance GPUs, which are pushing the boundaries of what’s possible in today’s AI coding capabilities.
+
+In terms of data sources, poolside combines exclusive internet crawls with CommonCrawl data that amount to over 50 trillion tokens. This goes hand in hand with more than 350 million code repositories indexed by poolside, including platforms like GitHub, GitLab, and Bitbucket. Data here is enriched with metadata and is fed through a rigorous cleaning pipeline to remove low-quality code, secrets, and personal information. Finally, only high-caliber examples are used during the process for generating synthetic data. This helps scale the training set, ensuring that poolside models are only working with the best quality tokens needed for training.
+
+Fueling continuous improvement at poolside is a team of makers dedicated to empowering development teams globally. Co-founders Jason Warner (CEO at poolside) and Eiso Kant (CTO at poolside) share decades of industry and company-building expertise between them, having seeded innovative solutions previously for GitHub, Ubuntu and created Athenian, a data-enabled engineering platform and source{d}, the world’s first company applying AI code and software, respectively.
+
+Today, the poolside team is 35 strong, blending unique talents across applied research focused on LLMs, reinforcement learning with LLMs for planning and reasoning, as well as large-scale data pipeline construction.
+
+## A Shared Vision for How AI Will Scale Human Innovation
+
+As a global leader in AI-powered cybersecurity, SentinelOne recognizes how artificial general intelligence (AGI) can be harnessed to reach human-level capabilities in software development. Seeing poolside exploring innovative solutions for millions of tasks across 130,000 real-world code bases (and counting), we share their drive for moving technology forward and match their vision of leveraging AI to report real productivity gains and empower users to reach further.
+
+SentinelOne congratulates poolside on their recent funding round, allowing them to scale their training clusters to 10,000 GPUs.
+
+We believe that poolside’s relentless focus on building frontier models in-house and offering features such as on-premise delivery, agentic behaviors, and larger context windows sets them apart from others in the industry. By working towards AI-led solutions to advance software development, poolside is positioned to lead the next era in coding innovation. SentinelOne looks forward to seeing poolside continue to shape coding from a labor-intensive task into a streamlined, AI-enhanced process.
+
+S Ventures
+
+Investing in the next generation of category-defining security and data companies.
+
+Learn More
+
+Go to Source

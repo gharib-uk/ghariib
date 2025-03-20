@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Issue With IAM Supporting Multiple MFA Devices</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Issue With IAM Supporting Multiple MFA Devices</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p><strong>Initial Publication Date: 04/25/2023 10:00AM EST</strong></p>
+<p>A security researcher recently reported an issue with AWS’s recently-released (November 16th, 2022) support for multiple multi-factor authentication (MFA) devices for IAM user principals. The reported issue could have potentially arisen only when the following three conditions were met: (1) An IAM user had possession of long-term access key (AK)/secret key (SK) credentials, (2) that IAM user had the privilege to add an MFA to their own identity without using an MFA, and (3) that IAM user’s overall access privileges beyond console sign-in had been configured by an administrator to be greater after adding the MFA. Under those narrow conditions, possession of AK/SK alone was equivalent to possession of AK/SK and a previously configured MFA.</p>
+<p>While IAM users with the ability to add or delete an MFA device associated with their own identity have always been able to do so solely with AK/SK credentials, an issue arose when the new feature was combined with the self-management by IAM users of their own MFA devices, with restricted access prior to an MFA being added by the user. This self-management pattern was documented <strong>here</strong>, and that page included a sample IAM policy for implementing the pattern. The combination of the new multi-MFA feature created an inconsistency with that approach. Given the new feature, a user with only AK/SK credentials could add an additional MFA without using a previously-configured MFA, thus allowing possession of AK/SK alone without a previously configured MFA to potentially gain broader access than expected by customers using the sample policy.</p>
+<p>This issue did not affect AWS Management Console-based access, since an existing MFA is always required at sign-in. Nor did it affect federated principals, who manage MFA through their identity provider.</p>
+<p>As of April 21, 2023, the identified issue has been remediated by requiring that IAM users who already have one or more MFAs and who use AK/SK credentials to manage their own MFA devices to first use sts:GetSessionToken and an existing MFA to obtain MFA-enabled temporary credentials to sign their CLI commands or API requests prior to enabling or disabling MFA devices for themselves. We have directly notified a very small number of customers via their Personal Health Dashboard who had previously associated an additional MFA device using a mechanism other than the AWS Management Console. We recommended that those notified customers confirm the correctness of their MFA configurations. No further customer action is required.</p>
+<p>We would like to thank researchers at MWR Cybersec for identifying and responsibly disclosing this issue to AWS. Security-related questions or concerns can be brought to our attention via <strong><a href="mailto:aws-security@amazon.com">aws-security@amazon.com</a></strong>.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

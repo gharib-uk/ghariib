@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Monolith, Modular Monolith, and Microservices: A Comparison</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Monolith, Modular Monolith, and Microservices: A Comparison</h1>
+			<b><time>06.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Software architecture plays a pivotal role in the success of any application. Among the most frequently discussed architectural models are monoliths, modular monoliths, and microservices. Choosing the right model depends on factors such as system complexity, scalability requirements, and maintenance considerations. In this article, we gonna view a quick introduction of each concept with some examples.</p>
+<h2 id="monolith">Monolith</h2>
+<p>The monolith is the most traditional architectural model, where the entire application is built as a single unit. All components (interface, business logic, and database) are integrated and interact directly within the same project.</p>
+<p>A typical example of monolithic architecture is ERP systems used by small businesses or startups. These systems centralize all functionality within a single application, benefiting from simplicity and faster implementation during the initial stages.</p>
+<h3 id="characteristics">Characteristics</h3>
+<ul>
+<li><strong>Highly coupled</strong>: All components have direct dependencies. For example, the authentication logic, requests, and products are integrated, without clear boundaries between responsibilities.</li>
+<li><strong>Overlapping responsibilities</strong>: It&rsquo;s common to find duplicated or merged code fragments, like validation of products combined with exhibition logic or authentication. Even with some basic organization, generally there is not a robust logical split between the layers.</li>
+<li><strong>Example file structure</strong>:</li>
+</ul>
+<pre tabindex="0"><code>- app/
+    - controllers/
+        - UsersController
+        - ProductsController
+    - models/
+        - User
+        - Product
+    - services/
+        - OrderService
+        - EmailService
+</code></pre><h3 id="common-scenario">Common Scenario</h3>
+<p>In a typical scenario of a monolith, all application components are centralized in a single project:</p>
+<ul>
+<li><strong>Server</strong>: A virtual machine hosting all application processes.</li>
+<li><strong>API</strong>: A Rails or Laravel server managing the client interface and business logic.</li>
+<li><strong>Background processes</strong>: A manager like Sidekiq handles asynchronous tasks, such as sending emails or processing data.</li>
+<li><strong>Database</strong>: A PostgreSQL server centralized, directly integrated into the application.</li>
+<li><strong>Development flow</strong>: The API, Sidekiq, and database migration codes are maintained in the same repository, being developed and deployed together.</li>
+</ul>
+<h3 id="advantages">Advantages:</h3>
+<ul>
+<li><strong>Simplicity</strong>: Ideal for starting a project, because of the ease of project development and deployment.</li>
+<li><strong>Performance</strong>: Enables fast communication between components since they operate within the same project.</li>
+<li><strong>Consolidated tools</strong>: Most frameworks were developed to support monolithic applications.</li>
+</ul>
+<h3 id="disadvantages">Disadvantages:</h3>
+<ul>
+<li><strong>Limited Scalability</strong>: Horizontal scalability is less efficient because it requires the replication of the entire monolith.</li>
+<li>Low flexibility: A minimal modification in a part of the system can affect the entire application, increasing risks.</li>
+</ul>
+<h2 id="modular-monolith">Modular Monolith</h2>
+<p>A common example of this approach is SaaS applications in expansion, like a marketplace that splits product lists, payments, and users into internal modules. This format facilitates a future transition to a microservices architecture by establishing clear boundaries between features.</p>
+<h3 id="characteristics-1">Characteristics</h3>
+<ul>
+<li><strong>Responsibilities Separation</strong>: Each module (e.g., “Users”, “Requests”, “Payments”) wraps its logic and data. Interactions between modules happen using defined interfaces or services (UserService, PaymentService…), avoiding direct access to models, helpers, etc. Here, each application feature is wrapped in its own module, promoting organization and scalability.</li>
+<li><strong>Less Dependencies</strong>: The internal coupling is reduced because modules have clear boundaries and their interface for communication.</li>
+<li>Preparation of Microservices: Internal modularity makes it possible to split modules into independent services in the future if necessary.</li>
+<li><strong>Example file structure</strong>:</li>
+</ul>
+<pre tabindex="0"><code>- app/
+    - modules/
+        - users/
+            - controllers/
+                - UsersController
+            - models/
+                - User
+            - services/
+                - UserService
+        - products/
+            - controllers/
+                - ProductsController
+            - models/
+                - Product
+            - services/
+                - ProductService
+</code></pre><h3 id="common-scenario-1">Common Scenario</h3>
+<p>In a modular monolith, the main project is implemented as a single unit, but organized into different modules:</p>
+<ul>
+<li><strong>Application Server</strong>: A backend like Spring Boot or Django, where each module manages a functionality (e.g., users, products, or payments).</li>
+<li><strong>Background Jobs</strong>: A task manager like Celery, integrated through specific configurations of modules.</li>
+<li><strong>Shared Database</strong>: An example is a MongoDB database with separate collections for each module or functionality.</li>
+<li><strong>Reusable Modules</strong>: Each module can be developed and tested separately, but the system works as a single application.</li>
+</ul>
+<h3 id="advantages-1">Advantages</h3>
+<ul>
+<li><strong>Better organization</strong>: Modularity makes the code more legible and easier to maintain.</li>
+<li><strong>Ease of transition</strong>: It can serve as an intermediate step for a future migration to microservices.</li>
+<li><strong>Preserved performance</strong>: Like the traditional monolith, communication occurs within the same process.</li>
+</ul>
+<h3 id="disadvantages-1">Disadvantages</h3>
+<ul>
+<li><strong>Internal dependencies</strong>: Coupling issues can still arise, especially if the interfaces aren’t well defined.</li>
+<li><strong>Monolithic deployment</strong>: Despite modularity, the system is still deployed as a single package.</li>
+<li><strong>Boundaries management</strong>: Requires development discipline to maintain clearly defined responsibilities between modules.</li>
+</ul>
+<h2 id="microservices">Microservices</h2>
+<p>Microservices represent a distributed architectural approach, where the application is composed of many independent services. Each service is responsible for specific functionalities and can be developed, deployed, and scaled independently.</p>
+<p>Large-scale platforms such as Uber utilize this approach to separate critical functionalities, including geolocation, ride management, payments, and real-time communications.</p>
+<h3 id="microservices-characteristics">Microservices Characteristics</h3>
+<ul>
+<li><strong>Independent services</strong>: Each functionality is isolated in a microservice, which has its own life cycle and can be developed or deployed without directly depending on other services.</li>
+<li><strong>Technological flexibility</strong>: It is possible to use different technologies and programming languages for each microservice, depending on the specific needs of each functionality.</li>
+<li><strong>Distributed communication</strong>: Services communicate through REST APIs, gRPC, or asynchronous messages (e.g., RabbitMQ, Kafka). This approach allows for uncoupling functionalities but adds the necessity to manage latency and reliability.</li>
+</ul>
+<h3 id="common-scenario-2">Common Scenario</h3>
+<p>In a microservice-based application, services work autonomously but are orchestrated to create a coherent system:</p>
+<ul>
+<li>
+<p><strong>Independent services</strong>:</p>
+<ul>
+<li>A microservice for authentication developed in Python with Flask.</li>
+<li>Another microservice for payments, using Node.js and integrated with a gateway like Stripe.</li>
+<li>A microservice for product recommendations, implemented in Go with support for machine learning models.</li>
+</ul>
+</li>
+<li>
+<p><strong>Orchestration</strong>:</p>
+<ul>
+<li>Solutions such as Kubernetes or Docker Compose are used to manage containers and ensure communication between services.</li>
+</ul>
+</li>
+<li>
+<p><strong>Distributed Databases</strong>:</p>
+<ul>
+<li>
+<p>Each microservice manages its own database to meet its needs:</p>
+<ul>
+<li>MySQL for the authentication service.</li>
+<li>PostgreSQL for payments.</li>
+<li>MongoDB for recommendations.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="advantages-2">Advantages</h3>
+<ul>
+<li><strong>Scalability</strong>: Allows for the individual scaling of each service, optimizing resource usage.</li>
+<li><strong>Resilience</strong>: Problems in one service are isolated, reducing the impact on the entire application.</li>
+<li><strong>Technological flexibility</strong>: Each service can adopt the most suitable technology for its functionality.</li>
+</ul>
+<h3 id="disadvantages-2">Disadvantages</h3>
+<ul>
+<li><strong>Complexity</strong>: Managing communication, orchestration, and monitoring between services requires robust tools and a high level of discipline.</li>
+<li><strong>Infrastructure Overhead</strong>: Maintenance costs increase due to the necessity of separate environments for each service.</li>
+<li><strong>Latency</strong>: Communication over the network between services introduces delays and potential additional failure points.</li>
+</ul>
+<h2 id="sources">Sources:</h2>
+<ul>
+<li>Como criar um sistema monolítico modular de verdade</li>
+<li>Design Monolitos Modulares parte 1</li>
+<li>What is a modular monolith</li>
+<li>What are microservices</li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

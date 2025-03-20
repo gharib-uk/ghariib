@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;TS1103: &#39;for await&#39; loops are only allowed within async functions and at the top levels of modules&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;TS1103: &#39;for await&#39; loops are only allowed within async functions and at the top levels of modules&lt;/div&gt;</h1>
+			<b><time>15.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="ts1103-for-await-loops-are-only-allowed-within-async-functions-and-at-the-top-levels-of-modules">TS1103: &lsquo;for await&rsquo; loops are only allowed within async functions and at the top levels of modules</h1>
+<p>TypeScript is a powerful programming language that builds on JavaScript by adding static types. It allows developers to specify the data types of variables, function parameters, and return values, which can help catch errors early in the development process. But what are types? In programming, types are classifications that specify what kind of value a variable can hold—like numbers, strings, or objects. TypeScript’s type system helps in defining these classifications, providing better tooling and error checking.</p>
+<p>If you&rsquo;re eager to dive deeper into TypeScript or learn to code using AI tools like gpteach, consider subscribing or following my blog for more insightful content!</p>
+<h2 id="understanding-for-await-loops-in-typescript">Understanding &lsquo;for await&rsquo; Loops in TypeScript</h2>
+<p>The error message TS1103: &lsquo;for await&rsquo; loops are only allowed within async functions and at the top levels of modules arises due to inappropriate use of <code>for await...of</code> loops. Let&rsquo;s break this down.</p>
+<h3 id="what-are-for-await-loops">What are &lsquo;for await&rsquo; Loops?</h3>
+<p>The <code>for await...of</code> loop is a special construct in TypeScript (and JavaScript) that allows you to asynchronously iterate over asynchronous iterable objects (e.g., Promises or async generators). This means each iteration can wait for a Promise to resolve before moving to the next iteration, which is very useful when you&rsquo;re dealing with sequences of asynchronous operations.</p>
+<h3 id="causes-of-ts1103-error">Causes of TS1103 Error</h3>
+<p>The TS1103 error occurs when you attempt to use a <code>for await...of</code> loop outside of an asynchronous context. Specifically, you can only use this loop within:</p>
+<ol>
+<li>An <code>async</code> function.</li>
+<li>The top level of an ECMAScript module.</li>
+</ol>
+<p>Let&rsquo;s look at a code example that would trigger this error:</p>
+<pre tabindex="0"><code>// This will cause TS1103
+const asyncIterable = {
+  [Symbol.asyncIterator]: async function* () {
+    yield Promise.resolve(1);
+    yield Promise.resolve(2);
+  }
+};
+
+for await (const num of asyncIterable) { // Error: TS1103
+  console.log(num);
+}
+</code></pre><h3 id="fixing-the-error">Fixing the Error</h3>
+<p>To resolve the TS1103 error, wrap your <code>for await...of</code> loop in an <code>async</code> function. Here&rsquo;s how you can fix it:</p>
+<pre tabindex="0"><code>const asyncIterable = {
+  [Symbol.asyncIterator]: async function* () {
+    yield Promise.resolve(1);
+    yield Promise.resolve(2);
+  }
+};
+
+async function processAsyncIterable() {
+  for await (const num of asyncIterable) {
+    console.log(num);
+  }
+}
+
+processAsyncIterable(); // This works correctly!
+</code></pre><p>By placing the loop inside the <code>async</code> function <code>processAsyncIterable</code>, you adhere to the rules dictated by the TS1103 constraint.</p>
+<h2 id="important-things-to-know-about-ts1103">Important Things to Know about TS1103</h2>
+<ol>
+<li><strong>Async Functions:</strong> All code that uses <code>for await...of</code> needs to be inside an async function. Async functions are functions that return a Promise and can be awaited.</li>
+<li><strong>Top-Level Statements:</strong> You may use <code>for await...of</code> at the top level if your code is written in an ECMAScript module format (i.e., using <code>import</code> and <code>export</code>).</li>
+<li><strong>Error Checking:</strong> TypeScript&rsquo;s static type checking means that these errors can be caught at compile time, helping prevent runtime issues.</li>
+</ol>
+<h2 id="faqs">FAQ&rsquo;s</h2>
+<p><strong>Q: What happens if I forget to use async for &lsquo;for await&rsquo;?</strong></p>
+<p>A: You will encounter the TS1103 error, as the loop is embedded outside the required async context.</p>
+<p><strong>Q: Can I use &lsquo;for await&rsquo; in regular functions?</strong></p>
+<p>A: No, &lsquo;for await&rsquo; loops can only be used in async functions or at the module level.</p>
+<p><strong>Q: How do I create an async iterable object?</strong></p>
+<p>A: You can create an async iterable object by implementing the <code>Symbol.asyncIterator</code> method and yielding Promises.</p>
+<p>In conclusion, understanding TS1103: &lsquo;for await&rsquo; loops are only allowed within async functions and at the top levels of modules is crucial for writing effective and error-free asynchronous code in TypeScript. By adhering to these rules and organizing your code properly, you&rsquo;ll be able to leverage the power of asynchronous programming effectively.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

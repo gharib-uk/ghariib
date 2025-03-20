@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Automating Agile workflows with the gitlab-triage gem&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Automating Agile workflows with the gitlab-triage gem&lt;/div&gt;</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p><em>Welcome to our &ldquo;Getting started with GitLab&rdquo; series, where we help newcomers get familiar with the GitLab DevSecOps platform.</em></p>
+<p>This post dives into the <code>gitlab-triage</code> gem, a powerful tool that lets you create bots to automate your Agile workflow. Say goodbye to manual tasks and hello to streamlined efficiency.</p>
+<h2 id="why-automate-your-workflow">Why automate your workflow?</h2>
+<p>Efficiency is key in software development. Automating repetitive tasks like triaging issues and merge requests frees up valuable time for your team to focus on what matters most: building amazing software.</p>
+<p>With <code>gitlab-triage</code>, you can:</p>
+<ul>
+<li><strong>Ensure consistency:</strong> Apply labels and assign issues automatically based on predefined rules.</li>
+<li><strong>Improve response times:</strong> Get immediate feedback on new issues and merge requests.</li>
+<li><strong>Reduce manual effort:</strong> Eliminate the need for manual triage and updates.</li>
+<li><strong>Boost productivity:</strong> Free up your team to focus on coding and innovation.</li>
+</ul>
+<h2 id="introducing-the-gitlab-triage-gem">Introducing the <code>gitlab-triage</code> gem</h2>
+<p>The <code>gitlab-triage</code> gem is a Ruby library that allows you to create bots that interact with your GitLab projects. These bots can automatically perform a wide range of actions, including:</p>
+<ul>
+<li><strong>Labeling:</strong> Automatically categorize issues and merge requests.</li>
+<li><strong>Commenting:</strong> Provide updates, request information, or give feedback.</li>
+<li><strong>Assigning:</strong> Assign issues and merge requests to the appropriate team members.</li>
+<li><strong>Closing:</strong> Close stale or resolved issues and merge requests.</li>
+<li><strong>Creating:</strong> Generate new issues based on specific events or conditions.</li>
+<li><strong>And much more!</strong></li>
+</ul>
+<p>Check out the <code>gitlab-triage</code> gem repository.</p>
+<h2 id="setting-up-your-triage-bot">Setting up your triage bot</h2>
+<p>Let&rsquo;s get your first triage bot up and running!</p>
+<ol>
+<li>Install the gem. (Note: The gem command is available with Ruby programming language installed.)</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gem install gitlab-triage
+</span></span></code></pre></div><ol start="2">
+<li>Get your GitLab API token.</li>
+</ol>
+<ul>
+<li>Go to your GitLab profile settings.</li>
+<li>Navigate to <strong>Access Tokens</strong>.</li>
+<li>Create a new token with the <code>api</code> scope.</li>
+<li><strong>Keep your token secure and set an expiration date for it based on when you will be done with this walkthrough!</strong></li>
+</ul>
+<ol start="3">
+<li>Define your triage policies.</li>
+</ol>
+<p>Create a file named <code>.triage-policies.yml</code> in your project&rsquo;s root directory. This file will contain the rules that govern your bot&rsquo;s behavior. Here&rsquo;s a simple example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;Apply &#39;WIP&#39; label&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">condition</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">draft</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">action</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">status::wip</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;Request more information on old issue&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">condition</span>:
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">date</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">attribute</span>: <span style="color:#ae81ff">updated_at</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">older_than</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">interval_type</span>: <span style="color:#ae81ff">months</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">interval</span>: <span style="color:#ae81ff">12</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">action</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">comment</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      {GitLab} This issue has been open for more than 12 months, is this still an issue?</span>
+</span></span></code></pre></div><p>This configuration defines two policies:</p>
+<ul>
+<li>The first policy applies the <code>status::wip</code> label to any issue that is in draft.</li>
+<li>The second policy adds a comment to an issue that the issue has not been updated in 12 months.</li>
+</ul>
+<ol start="4">
+<li>Run your bot.</li>
+</ol>
+<p>You can run your bot manually using the following command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gitlab-triage -t &lt;your_api_token&gt; -p &lt;your_project_id&gt;
+</span></span></code></pre></div><p>Replace <code>&lt;your_api_token&gt;</code> with your GitLab API token and <code>&lt;your_project_id&gt;</code> with the ID of your GitLab project. If you would like to see the impact of actions before they are taken, you can add the <code>-n</code> or <code>--dry-run</code> to test out the policies first.</p>
+<h2 id="automating-with-gitlab-cicd">Automating with GitLab CI/CD</h2>
+<p>To automate the execution of your triage bot, integrate it with GitLab CI/CD. Here&rsquo;s an example <code>.gitlab-ci.yml</code> configuration:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">triage</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">gem install gitlab-triage</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">gitlab-triage -t $GITLAB_TOKEN -p $CI_PROJECT_ID</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">only</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">schedules</span>
+</span></span></code></pre></div><p>This configuration defines a job named &ldquo;triage&rdquo; that installs the <code>gitlab-triage</code> gem and runs the bot using the <code>$GITLAB_TOKEN</code> (a predefined CI/CD variable) and the <code>$CI_PROJECT_ID</code> variable. The <code>only: schedules</code> clause ensures that the job runs only on a schedule.</p>
+<p>To create a schedule, go to your project&rsquo;s <strong>CI/CD</strong> settings and navigate to <strong>Schedules</strong>. Create a new schedule and define the frequency at which you want your bot to run (e.g., daily, hourly).</p>
+<h2 id="advanced-triage-policies">Advanced triage policies</h2>
+<p><code>gitlab-triage</code> offers a range of advanced features for creating more complex triage policies:</p>
+<ul>
+<li><strong>Regular expressions:</strong> Use regular expressions for more powerful pattern matching.</li>
+<li><strong>Summary policies:</strong> Consolidate related issues into a single summary issue.</li>
+<li><strong>Custom actions:</strong> Define custom actions using Ruby code blocks to perform more complex operations using the GitLab API.</li>
+</ul>
+<p>Here are two advanced real-world examples from the triage bot used by the Developer Advocacy team at GitLab. You can view the full policies in this file.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Issues where DA team member is an assignee outside DA-Meta project i.e. DevRel-Influenced</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">conditions</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">assignee_member</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">source</span>: <span style="color:#ae81ff">group</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">member_of</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">source_id</span>: <span style="color:#ae81ff">1008</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">state</span>: <span style="color:#ae81ff">opened</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ruby</span>: <span style="color:#ae81ff">get_project_id != 18 </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">forbidden_labels</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">developer-advocacy</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">actions</span>:   
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">developer-advocacy</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">DevRel-Influenced</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">DA-Bot::Skip</span>
+</span></span></code></pre></div><p>This example for issues across a group, excluding those in the project with the ID of 18, have assignees who are members of the group with ID of 1008 and do not have the label <code>developer-advocacy</code> on them. This policy helps the Developer Advocacy team at GitLab to find issues members of the team are assigned to but are not in their team’s project. This helps the team identify and keep track of contributions made outside of the team by adding the teams’ labels.</p>
+<pre tabindex="0"><code>- name: Missing Due Dates
+  conditions:
+    ruby: missing_due_date
+    state: opened
+    labels:
+      - developer-advocacy
+    forbidden_labels:
+      - DA-Due::N/A
+      - DA-Bot::Skip
+      - DA-Status::FYI
+      - DA-Status::OnHold
+      - CFP
+      - DA-Bot::Triage
+  actions:
+    labels:
+      - DA-Bot-Auto-Due-Date
+    comment: |
+      /due #{get_current_quarter_last_date}
+</code></pre><p>This second example checks for all issues with the <code>developer-advocacy</code> label, which do not include labels in the forbidden labels list and when their due dates have passed. It updates the due dates automatically by commenting on the issue with a slash command and a date that is generated using Ruby.</p>
+<p>The Ruby scripts used in the policies are defined in a separate file as shown below. This feature allows you to be flexible in working with your filters and actions. You can see functions are created for different Ruby commands that we used in our policies.</p>
+<pre tabindex="0"><code>require &#39;json&#39;
+require &#39;date&#39;
+require &#34;faraday&#34;
+require &#39;dotenv/load&#39;
+
+module DATriagePlugin
+  def last_comment_at
+    conn = Faraday.new(
+      url: notes_url+&#34;?sort=desc&amp;order_by=created_at&amp;pagination=keyset&amp;per_page=1&#34;,
+      headers: {&#39;PRIVATE-TOKEN&#39; =&gt; ENV.fetch(&#34;PRIV_KEY&#34;), &#39;Content-Type&#39; =&gt; &#39;application/json&#39; }
+    )
+
+    response = conn.get()
+    if response.status == 200
+      jsonData = JSON.parse(response.body)
+      if jsonData.length &gt; 0
+        Date.parse(jsonData[0][&#39;created_at&#39;])
+      else
+        Date.parse(resource[:created_at])
+      end
+    else
+      Date.parse(resource[:created_at])
+    end
+  end
+
+  def notes_url
+    resource[:_links][:notes]
+  end
+
+  def get_project_id
+    resource[:project_id]
+  end
+
+  def get_current_quarter_last_date()
+    yr = Time.now.year
+    case Time.now.month
+    when 2..4
+      lm = 4
+    when 5..7
+      lm = 7
+    when 8..10
+      lm = 10
+    when 11..12
+      lm = 1
+      yr = yr + 1
+    else
+      lm = 1    
+    end
+
+    return Date.new(yr, lm, -1) 
+  end
+
+  def one_week_to_due_date
+    if(resource[:due_date] == nil)
+      false
+    else
+      days_to_due = (Date.parse(resource[:due_date]) - Date.today).to_i
+      if(days_to_due &gt; 0 &amp;&amp; days_to_due &lt; 7)
+        true
+      else
+        false
+      end
+    end
+  end
+
+  def due_date_past
+    if(resource[:due_date] == nil)
+      false
+    else
+      Date.today &gt; Date.parse(resource[:due_date])
+    end
+  end
+
+  def missing_due_date
+    if(resource[:due_date] == nil)
+      true
+    else
+      false
+    end
+  end
+
+end
+
+Gitlab::Triage::Resource::Context.include DATriagePlugin
+</code></pre><p>The triage bot is executed using the command:</p>
+<pre tabindex="0"><code>`gitlab-triage -r ./triage_bot/issue_triage_plugin.rb --debug --token $PRIV_KEY --source-id gitlab-com --source groups`  
+</code></pre><ul>
+<li><code>-r</code>: Passes in a file of requirements for the performing triage. In this case we are passing in our Ruby functions.</li>
+<li><code>--debug</code>: Prints debugging information as part of the output.</li>
+<li><code>--token</code>: Is used to pass in a valid GitLab API token.</li>
+<li><code>--source</code>: Specifies if the sources of the issues it will search is within a group or a project.</li>
+<li><code>--source-id</code>: Takes in the ID of the selected source type – in this case, a group.</li>
+</ul>
+<p>The GitLab triage-ops project is another another real-world example that is more complex and you can learn how to build your own triage bot.</p>
+<h2 id="best-practices">Best practices</h2>
+<ul>
+<li><strong>Start simple:</strong> Begin with basic policies and gradually increase complexity as needed.</li>
+<li><strong>Test thoroughly:</strong> Test your policies in a staging environment before deploying them to production.</li>
+<li><strong>Monitor regularly:</strong> Monitor your bot&rsquo;s activity to ensure it&rsquo;s behaving as expected.</li>
+<li><strong>Use descriptive names:</strong> Give your policies clear and descriptive names for easy maintenance.</li>
+<li><strong>Be mindful of the scope of your filters:</strong> You might be tempted to filter issues across groups where thousands of issues exist. However, this can slow down the triage and also make the process fail due to rate limitations against the GitLab API.</li>
+<li><strong>Prioritize using labels for triages:</strong> To avoid spamming other users, labels are a good way to perform triages without cluttering comments and issues.</li>
+</ul>
+<h2 id="take-control-of-your-workflow">Take control of your workflow</h2>
+<p>With the <code>gitlab-triage</code> gem, you can automate your GitLab workflow and unlock new levels of efficiency. Start by creating simple triage bots and gradually explore the more advanced features. You&rsquo;ll be amazed at how much time and effort you can save!</p>
+<h2 id="getting-started-with-gitlab-series">Getting started with GitLab series</h2>
+<p>Check out more articles in our &ldquo;Getting Started with GitLab&rdquo; series below:</p>
+<ul>
+<li>
+<p>How to manage users</p>
+</li>
+<li>
+<p>How to import your projects to GitLab</p>
+</li>
+<li>
+<p>Mastering project management</p>
+</li>
+</ul>
+<p><em>Welcome to our &ldquo;Getting started with GitLab&rdquo; series, where we help newcomers get familiar with the GitLab DevSecOps platform.</em></p>
+<p>This post dives into the <code>gitlab-triage</code> gem, a powerful tool that lets you create bots to automate your Agile workflow. Say goodbye to manual tasks and hello to streamlined efficiency.</p>
+<h2 id="why-automate-your-workflow-1">Why automate your workflow?</h2>
+<p>Efficiency is key in software development. Automating repetitive tasks like triaging issues and merge requests frees up valuable time for your team to focus on what matters most: building amazing software.</p>
+<p>With <code>gitlab-triage</code>, you can:</p>
+<ul>
+<li><strong>Ensure consistency:</strong> Apply labels and assign issues automatically based on predefined rules.</li>
+<li><strong>Improve response times:</strong> Get immediate feedback on new issues and merge requests.</li>
+<li><strong>Reduce manual effort:</strong> Eliminate the need for manual triage and updates.</li>
+<li><strong>Boost productivity:</strong> Free up your team to focus on coding and innovation.</li>
+</ul>
+<h2 id="introducing-the-gitlab-triage-gem-1">Introducing the <code>gitlab-triage</code> gem</h2>
+<p>The <code>gitlab-triage</code> gem is a Ruby library that allows you to create bots that interact with your GitLab projects. These bots can automatically perform a wide range of actions, including:</p>
+<ul>
+<li><strong>Labeling:</strong> Automatically categorize issues and merge requests.</li>
+<li><strong>Commenting:</strong> Provide updates, request information, or give feedback.</li>
+<li><strong>Assigning:</strong> Assign issues and merge requests to the appropriate team members.</li>
+<li><strong>Closing:</strong> Close stale or resolved issues and merge requests.</li>
+<li><strong>Creating:</strong> Generate new issues based on specific events or conditions.</li>
+<li><strong>And much more!</strong></li>
+</ul>
+<p>Check out the <code>gitlab-triage</code> gem repository.</p>
+<h2 id="setting-up-your-triage-bot-1">Setting up your triage bot</h2>
+<p>Let&rsquo;s get your first triage bot up and running!</p>
+<ol>
+<li>Install the gem. (Note: The gem command is available with Ruby programming language installed.)</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gem install gitlab-triage
+</span></span></code></pre></div><ol start="2">
+<li>Get your GitLab API token.</li>
+</ol>
+<ul>
+<li>Go to your GitLab profile settings.</li>
+<li>Navigate to <strong>Access Tokens</strong>.</li>
+<li>Create a new token with the <code>api</code> scope.</li>
+<li><strong>Keep your token secure and set an expiration date for it based on when you will be done with this walkthrough!</strong></li>
+</ul>
+<ol start="3">
+<li>Define your triage policies.</li>
+</ol>
+<p>Create a file named <code>.triage-policies.yml</code> in your project&rsquo;s root directory. This file will contain the rules that govern your bot&rsquo;s behavior. Here&rsquo;s a simple example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;Apply &#39;WIP&#39; label&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">condition</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">draft</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">action</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">status::wip</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;Request more information on old issue&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">condition</span>:
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">date</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">attribute</span>: <span style="color:#ae81ff">updated_at</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">older_than</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">interval_type</span>: <span style="color:#ae81ff">months</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">interval</span>: <span style="color:#ae81ff">12</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">action</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">comment</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      {GitLab} This issue has been open for more than 12 months, is this still an issue?</span>
+</span></span></code></pre></div><p>This configuration defines two policies:</p>
+<ul>
+<li>The first policy applies the <code>status::wip</code> label to any issue that is in draft.</li>
+<li>The second policy adds a comment to an issue that the issue has not been updated in 12 months.</li>
+</ul>
+<ol start="4">
+<li>Run your bot.</li>
+</ol>
+<p>You can run your bot manually using the following command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gitlab-triage -t &lt;your_api_token&gt; -p &lt;your_project_id&gt;
+</span></span></code></pre></div><p>Replace <code>&lt;your_api_token&gt;</code> with your GitLab API token and <code>&lt;your_project_id&gt;</code> with the ID of your GitLab project. If you would like to see the impact of actions before they are taken, you can add the <code>-n</code> or <code>--dry-run</code> to test out the policies first.</p>
+<h2 id="automating-with-gitlab-cicd-1">Automating with GitLab CI/CD</h2>
+<p>To automate the execution of your triage bot, integrate it with GitLab CI/CD. Here&rsquo;s an example <code>.gitlab-ci.yml</code> configuration:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">triage</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">gem install gitlab-triage</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">gitlab-triage -t $GITLAB_TOKEN -p $CI_PROJECT_ID</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">only</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">schedules</span>
+</span></span></code></pre></div><p>This configuration defines a job named &ldquo;triage&rdquo; that installs the <code>gitlab-triage</code> gem and runs the bot using the <code>$GITLAB_TOKEN</code> (a predefined CI/CD variable) and the <code>$CI_PROJECT_ID</code> variable. The <code>only: schedules</code> clause ensures that the job runs only on a schedule.</p>
+<p>To create a schedule, go to your project&rsquo;s <strong>CI/CD</strong> settings and navigate to <strong>Schedules</strong>. Create a new schedule and define the frequency at which you want your bot to run (e.g., daily, hourly).</p>
+<h2 id="advanced-triage-policies-1">Advanced triage policies</h2>
+<p><code>gitlab-triage</code> offers a range of advanced features for creating more complex triage policies:</p>
+<ul>
+<li><strong>Regular expressions:</strong> Use regular expressions for more powerful pattern matching.</li>
+<li><strong>Summary policies:</strong> Consolidate related issues into a single summary issue.</li>
+<li><strong>Custom actions:</strong> Define custom actions using Ruby code blocks to perform more complex operations using the GitLab API.</li>
+</ul>
+<p>Here are two advanced real-world examples from the triage bot used by the Developer Advocacy team at GitLab. You can view the full policies in this file.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Issues where DA team member is an assignee outside DA-Meta project i.e. DevRel-Influenced</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">conditions</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">assignee_member</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">source</span>: <span style="color:#ae81ff">group</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">condition</span>: <span style="color:#ae81ff">member_of</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">source_id</span>: <span style="color:#ae81ff">1008</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">state</span>: <span style="color:#ae81ff">opened</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ruby</span>: <span style="color:#ae81ff">get_project_id != 18 </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">forbidden_labels</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">developer-advocacy</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">actions</span>:   
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">developer-advocacy</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">DevRel-Influenced</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">DA-Bot::Skip</span>
+</span></span></code></pre></div><p>This example for issues across a group, excluding those in the project with the ID of 18, have assignees who are members of the group with ID of 1008 and do not have the label <code>developer-advocacy</code> on them. This policy helps the Developer Advocacy team at GitLab to find issues members of the team are assigned to but are not in their team’s project. This helps the team identify and keep track of contributions made outside of the team by adding the teams’ labels.</p>
+<pre tabindex="0"><code>- name: Missing Due Dates
+  conditions:
+    ruby: missing_due_date
+    state: opened
+    labels:
+      - developer-advocacy
+    forbidden_labels:
+      - DA-Due::N/A
+      - DA-Bot::Skip
+      - DA-Status::FYI
+      - DA-Status::OnHold
+      - CFP
+      - DA-Bot::Triage
+  actions:
+    labels:
+      - DA-Bot-Auto-Due-Date
+    comment: |
+      /due #{get_current_quarter_last_date}
+</code></pre><p>This second example checks for all issues with the <code>developer-advocacy</code> label, which do not include labels in the forbidden labels list and when their due dates have passed. It updates the due dates automatically by commenting on the issue with a slash command and a date that is generated using Ruby.</p>
+<p>The Ruby scripts used in the policies are defined in a separate file as shown below. This feature allows you to be flexible in working with your filters and actions. You can see functions are created for different Ruby commands that we used in our policies.</p>
+<pre tabindex="0"><code>require &#39;json&#39;
+require &#39;date&#39;
+require &#34;faraday&#34;
+require &#39;dotenv/load&#39;
+
+module DATriagePlugin
+  def last_comment_at
+    conn = Faraday.new(
+      url: notes_url+&#34;?sort=desc&amp;order_by=created_at&amp;pagination=keyset&amp;per_page=1&#34;,
+      headers: {&#39;PRIVATE-TOKEN&#39; =&gt; ENV.fetch(&#34;PRIV_KEY&#34;), &#39;Content-Type&#39; =&gt; &#39;application/json&#39; }
+    )
+
+    response = conn.get()
+    if response.status == 200
+      jsonData = JSON.parse(response.body)
+      if jsonData.length &gt; 0
+        Date.parse(jsonData[0][&#39;created_at&#39;])
+      else
+        Date.parse(resource[:created_at])
+      end
+    else
+      Date.parse(resource[:created_at])
+    end
+  end
+
+  def notes_url
+    resource[:_links][:notes]
+  end
+
+  def get_project_id
+    resource[:project_id]
+  end
+
+  def get_current_quarter_last_date()
+    yr = Time.now.year
+    case Time.now.month
+    when 2..4
+      lm = 4
+    when 5..7
+      lm = 7
+    when 8..10
+      lm = 10
+    when 11..12
+      lm = 1
+      yr = yr + 1
+    else
+      lm = 1    
+    end
+
+    return Date.new(yr, lm, -1) 
+  end
+
+  def one_week_to_due_date
+    if(resource[:due_date] == nil)
+      false
+    else
+      days_to_due = (Date.parse(resource[:due_date]) - Date.today).to_i
+      if(days_to_due &gt; 0 &amp;&amp; days_to_due &lt; 7)
+        true
+      else
+        false
+      end
+    end
+  end
+
+  def due_date_past
+    if(resource[:due_date] == nil)
+      false
+    else
+      Date.today &gt; Date.parse(resource[:due_date])
+    end
+  end
+
+  def missing_due_date
+    if(resource[:due_date] == nil)
+      true
+    else
+      false
+    end
+  end
+
+end
+
+Gitlab::Triage::Resource::Context.include DATriagePlugin
+</code></pre><p>The triage bot is executed using the command:</p>
+<pre tabindex="0"><code>`gitlab-triage -r ./triage_bot/issue_triage_plugin.rb --debug --token $PRIV_KEY --source-id gitlab-com --source groups`  
+</code></pre><ul>
+<li><code>-r</code>: Passes in a file of requirements for the performing triage. In this case we are passing in our Ruby functions.</li>
+<li><code>--debug</code>: Prints debugging information as part of the output.</li>
+<li><code>--token</code>: Is used to pass in a valid GitLab API token.</li>
+<li><code>--source</code>: Specifies if the sources of the issues it will search is within a group or a project.</li>
+<li><code>--source-id</code>: Takes in the ID of the selected source type – in this case, a group.</li>
+</ul>
+<p>The GitLab triage-ops project is another another real-world example that is more complex and you can learn how to build your own triage bot.</p>
+<h2 id="best-practices-1">Best practices</h2>
+<ul>
+<li><strong>Start simple:</strong> Begin with basic policies and gradually increase complexity as needed.</li>
+<li><strong>Test thoroughly:</strong> Test your policies in a staging environment before deploying them to production.</li>
+<li><strong>Monitor regularly:</strong> Monitor your bot&rsquo;s activity to ensure it&rsquo;s behaving as expected.</li>
+<li><strong>Use descriptive names:</strong> Give your policies clear and descriptive names for easy maintenance.</li>
+<li><strong>Be mindful of the scope of your filters:</strong> You might be tempted to filter issues across groups where thousands of issues exist. However, this can slow down the triage and also make the process fail due to rate limitations against the GitLab API.</li>
+<li><strong>Prioritize using labels for triages:</strong> To avoid spamming other users, labels are a good way to perform triages without cluttering comments and issues.</li>
+</ul>
+<h2 id="take-control-of-your-workflow-1">Take control of your workflow</h2>
+<p>With the <code>gitlab-triage</code> gem, you can automate your GitLab workflow and unlock new levels of efficiency. Start by creating simple triage bots and gradually explore the more advanced features. You&rsquo;ll be amazed at how much time and effort you can save!</p>
+<h2 id="getting-started-with-gitlab-series-1">Getting started with GitLab series</h2>
+<p>Check out more articles in our &ldquo;Getting Started with GitLab&rdquo; series below:</p>
+<ul>
+<li>
+<p>How to manage users</p>
+</li>
+<li>
+<p>How to import your projects to GitLab</p>
+</li>
+<li>
+<p>Mastering project management</p>
+</li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

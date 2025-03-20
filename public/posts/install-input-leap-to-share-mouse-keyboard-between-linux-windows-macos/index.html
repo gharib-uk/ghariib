@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Install Input Leap to share Mouse / Keyboard between Linux, Windows &amp; macOS&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Install Input Leap to share Mouse / Keyboard between Linux, Windows &amp; macOS&lt;/div&gt;</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/03/input-leap-icon-250x250.webp" alt="" />
+</figure>
+
+
+</p>
+<p>Got multiple computers/laptops but only one mouse &amp; keyboard? Without buying a KVM switch, here’s a software can do the job sharing them between your computers.</p>
+<p>It’s Input Leap a free open-source application forked from Barrier, allowing to use single mouse and keyboard to control multiple computers in same local network.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2021/06/multi-machines-600x335.jpg" alt="" />
+</figure>
+
+
+</p>
+<h3 id="relationship-between-barrier-and-input-leap">Relationship between Barrier and Input Leap</h3>
+<p><strong>Input Leap is a fork of barrier, by barrier’s active maintainers.</strong></p>
+<p>One of the core Barrier developer has not been active for a few years, and other maintainers do not have enough administrative access to maintain the project. So, the active maintainers of Barrier created the new Input Leap fork.</p>
+<p><strong>Barrier is considered unmaintained currently, though Input Leap intends to maintain compatibility with older versions of Barrier.</strong></p>
+<h3 id="step-1-install-input-leap">Step 1: Install Input Leap:</h3>
+<p>Input Leap has been made into many Linux Distributions’ system repositories, including Arch Linux, Fedora, Manjaro, and Solus.</p>
+<p>For <strong>Debian 12</strong>, <strong>Ubuntu 22.04</strong>, <strong>Ubuntu 24.04</strong>, and <strong>Ubuntu 24.10</strong>, as well as Windows 10/11, and macOS 10.12 and newer, it provides official packages through the Github releases page:</p>
+<p>Download Input Leap (under ‘Assets’)</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/03/download-inputleap-700x359.webp" alt="" />
+</figure>
+
+
+</p>
+<p>Just select download the package for your operating system, then double-click to install.</p>
+<p>For Ubuntu, download the <code>.deb</code> package, then either click open it with App Center (or Ubuntu Software) to install, or open terminal (Ctrl+Alt+T) and run command:</p>
+<pre tabindex="0"><code>sudo apt install drag-and-drop-deb-package-here
+</code></pre><p>For other Linux, Input Leap is available to install as Flatpak package that runs in sandbox environment.</p>
+<p><strong>NOTE 1: Input Leap seems NOT working on Wayland, and it even crashes the system in my case. Ubuntu 24.04 and higher need to switch to “Ubuntu on Xorg” session from login screen.</strong></p>
+<p><strong>NOTE 2: You need to install Input Leap on all the computers want to share/use the mouse &amp; keyboard.</strong></p>
+<h3 id="step-2-setup-input-leap-in-server--computer-connected-with-mouse--keyboard">Step 2: Setup Input Leap in Server – Computer connected with Mouse &amp; Keyboard</h3>
+<p>Input Leap works in 2 modes:</p>
+<ul>
+<li><strong>Server mode</strong> – for computer with mouse and keyboard physically connected.</li>
+<li><strong>Client mode</strong> – for computers want to use the mouse &amp; keyboard from server computer.</li>
+</ul>
+<p>At the first launch of the app, it will ask to select language and choose either “Server” or “Client” mode. Though, you may easily change them later.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/03/inputleap-lang-mode-700x580.webp" alt="" />
+</figure>
+
+
+</p>
+<p>Choose language and working mode at first launch</p>
+<p>On server computer, choose the “Sever” mode, then you need to click “Configure Server …” button to add client computers.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/03/inputleap-serverwindow.webp" alt="" />
+</figure>
+
+
+</p>
+<p>In the Server Configuration dialog, do following steps one by one to add and configure client computers, who want to use keyboard &amp; mouse on this computer.</p>
+<ul>
+<li>Drag and drop the computer icon (monitor icon) into grid to add a client, to the left, right, top, or bottom of the center one.</li>
+<li>Then, double-click the client you just added in grid to edit it.</li>
+<li>In the pop-up dialog, input the Screen Name of client computer and click OK.</li>
+<li>Re-do the steps above to add more client computers.</li>
+</ul>
+<p><strong>NOTE: the client Screen Name must be same to the one you set in client computer.</strong></p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/03/inputleap-addclient-700x544.webp" alt="" />
+</figure>
+
+
+</p>
+<p>By default, moving mouse cursor to hit screen edge (to the right in my case as screenshot above shows) will directly switch into client computer screens, but you may set “Dead corners” to prevent from the switch. And, you may set Hotkeys to do the switch via keyboard press, as well as other settings under Advanced tab.</p>
+<p>When done configuring server, click on “<strong>Start</strong>” in bottom right. If everything goes well, it should display “InputLeap is running” in the app bottom.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/03/inputleap-serverunning.webp" alt="" />
+</figure>
+
+
+</p>
+<h3 id="step-3-setup-input-leap-in-clients--computers-want-to-use-server-computers-mouse--keyboard">Step 3: Setup Input Leap in Clients – Computers want to use server computer’s Mouse &amp; Keyboard</h3>
+<p>Similarly, in first launch of the app in client computers, you may set language and working mode to Client.</p>
+<p>Then, either enable “<strong>Auto config</strong>” (need to install Bonjour by following pop-up dialog), or manually input the Server Computer’s IP address. Finally, click “Start” button. As well, it should display “InputLeap is running” in the app bottom.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/03/inputleap-client1.webp" alt="" />
+</figure>
+
+
+</p>
+<p><strong>Tips: the Screen name can be changed by Settings dialog (press F4 to open) if it’s different to the one you set in server side. And, you may disable SSL in both Server &amp; Client if it does not work for you.</strong></p>
+<p>When everything’s done, you may try moving mouse cursor to server computer screen edge, or press the keyboard shortcut (if set) to see if the cursor and keyboard switched to client computers.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

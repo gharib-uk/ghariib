@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Hunting for malicious domains with VT Intelligence</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Hunting for malicious domains with VT Intelligence</h1>
+			<b><time>05.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Please note that this blogpost is part of our #VTMondays series, check out our collection of past publications here.</p>
+<p>Many cyberattacks begin by victims visiting compromised websites that host malware or phishing scams, threat actors use domains for different malicious purposes as part of their infrastructure, and malware communicates with external sites for command and control and exfiltration. Detecting suspicious domains and preemptively feeding corporate security systems can disrupt attacks before they happen, with VT Intelligence being the perfect platform to early detect them and monitor malicious campaigns’ evolution.</p>
+<p>Let’s start by searching for domains <strong>(“entity:domain”)</strong> that use self-signed certificates <strong>(“tag:self-signed”)</strong>. The use of these certificates raise some suspicion as they are unverified. This means anyone can create and issue a certificate for any domain, making it easier for malicious actors to impersonate legitimate websites. We will look for domains created no more than a week ago <strong>(“creation_date:7d+”)</strong> according to their whois information. Finally, we want samples with more than 5 detections to avoid false positives, however this is completely at your discretion.</p>
+<p>entity:domain tag:self-signed creation_date:7d+ p:5+</p>
+<p>Moving to the next stage, let’s look for C2 domains <strong>(“category:command and control”)</strong>. Malware periodically contacts C2 servers to receive instructions, that’s why it is worth investigating any connection to them originating from our network. We will use <strong>(“lm”)</strong> modifier to look for domains updated in VT for the last week and <strong>(“detected_communicating_files_count:5+”)</strong> modifier to search for domains with at least 20 files in VirusTotal that have been observed trying to contact the domain during sandbox detonation.</p>
+<p>entity:domain p:5+ category:&ldquo;command and control&rdquo; detected_communicating_files_count:20+ lm:7d+</p>
+<p>Finally, we will hunt typosquatted <strong>(“fuzzy_domain:fedex.com”)</strong> domains to impersonate a given legitimate one, in this example we will use Fedex. In addition, we search for any suspicious domain containing &ldquo;fedex&rdquo; as a substring, which is typically used by attackers to confuse victims. The domain modifier <strong>(“domain:fedex”)</strong> searches for domains containing this word as a substring, and the depth modifier specifies how many subdomains to include in the search <strong>(“depth:5-”)</strong>. This deep level would find subdomains up to this format “<em>fedex.aaa.bbb.ccc.ddd.com</em>”, where the word fedex could be contained in any of the blocks. We narrow down the results to domains with at least 5 detections <strong>(“p:5+”)</strong> to reduce noise from false positives.</p>
+<p>entity:domain (fuzzy_domain:fedex.com or domain:fedex and depth:5-) p:5+</p>
+<p>You can learn more about domain search modifiers in the documentation.</p>
+<p>As always, we would like to hear from you.</p>
+<p>Happy hunting!</p>
+<p>Please note that this blogpost is part of our #VTMondays series, check out our collection of past publications here.</p>
+<p>Many cyberattacks begin by victims visiting compromised websites that host malware or phishing scams, threat actors use domains for different malicious purposes as part of their infrastructure, and malware communicates with external sites for command and control and exfiltration. Detecting suspicious domains and preemptively feeding corporate security systems can disrupt attacks before they happen, with VT Intelligence being the perfect platform to early detect them and monitor malicious campaigns’ evolution.</p>
+<p>Let’s start by searching for domains <strong>(“entity:domain”)</strong> that use self-signed certificates <strong>(“tag:self-signed”)</strong>. The use of these certificates raise some suspicion as they are unverified. This means anyone can create and issue a certificate for any domain, making it easier for malicious actors to impersonate legitimate websites. We will look for domains created no more than a week ago <strong>(“creation_date:7d+”)</strong> according to their whois information. Finally, we want samples with more than 5 detections to avoid false positives, however this is completely at your discretion.</p>
+<p>entity:domain tag:self-signed creation_date:7d+ p:5+</p>
+<p>Moving to the next stage, let’s look for C2 domains <strong>(“category:command and control”)</strong>. Malware periodically contacts C2 servers to receive instructions, that’s why it is worth investigating any connection to them originating from our network. We will use <strong>(“lm”)</strong> modifier to look for domains updated in VT for the last week and <strong>(“detected_communicating_files_count:5+”)</strong> modifier to search for domains with at least 20 files in VirusTotal that have been observed trying to contact the domain during sandbox detonation.</p>
+<p>entity:domain p:5+ category:&ldquo;command and control&rdquo; detected_communicating_files_count:20+ lm:7d+</p>
+<p>Finally, we will hunt typosquatted <strong>(“fuzzy_domain:fedex.com”)</strong> domains to impersonate a given legitimate one, in this example we will use Fedex. In addition, we search for any suspicious domain containing &ldquo;fedex&rdquo; as a substring, which is typically used by attackers to confuse victims. The domain modifier <strong>(“domain:fedex”)</strong> searches for domains containing this word as a substring, and the depth modifier specifies how many subdomains to include in the search <strong>(“depth:5-”)</strong>. This deep level would find subdomains up to this format “<em>fedex.aaa.bbb.ccc.ddd.com</em>”, where the word fedex could be contained in any of the blocks. We narrow down the results to domains with at least 5 detections <strong>(“p:5+”)</strong> to reduce noise from false positives.</p>
+<p>entity:domain (fuzzy_domain:fedex.com or domain:fedex and depth:5-) p:5+</p>
+<p>You can learn more about domain search modifiers in the documentation.</p>
+<p>As always, we would like to hear from you.</p>
+<p>Happy hunting!</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

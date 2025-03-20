@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How to prove false statements? (Part 2)</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How to prove false statements? (Part 2)</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p><em>This is the second part of a two three four-part series, which covers some recent results on “verifiable computation” and possible pitfalls that could occur there. This post won’t make much sense on its own, so I urge you to start with the first part.</em></p>
+<p>In the previous post we introduced a handful of concepts, including (1) the notion of “verifiable computation” proof systems (sometimes inaccurately called “ZK” by the Ethereum community), (2) hash functions, and (3) some ideal models that we use for our security proofs, and (4) the idea that these “ideal models” are bogus — and sometimes they can make us confident in schemes that are totally insecure in the real world.</p>
+<p>Today I want to move forward and (get closer) to actually talking about the recent result alluded to in the title: the recent paper by Khovratovich, Rothblum and Soukhanov entitled “How to Prove False Statements: Practical Attacks on Fiat-Shamir” (henceforth: <em>KRS</em>.) This paper shows that a proving scheme that <em>appears</em> to be secure in one setting, might not actually be secure.</p>
+<p>One approach to discussing this paper would be to start at the beginning of the paper and then move towards the end. <em>We will not do that.</em> Instead, I plan to pursue an approach that involves a lot of jumping around. There is a method to my madness.</p>
+<p>Before we can get there, we need to cover a bit more essential background.</p>
+<h3 id="background-part-one-interactive-proof-systems">Background Part One: Interactive proof systems</h3>
+<p>I have introduced these posts by reiterating a critique of something called the random oracle model paradigm, in which we pretend that hash functions are actually random functions. Thoughtful cryptographers will no doubt be upset with me about this, since in fact the KRS paper is not about random oracles at all! Instead it demonstrates a problem with a different “heuristic” that cryptographers use everywhere: this is called the Fiat-Shamir heuristic.</p>
+<p>While Fiat-Shamir is not the same as the random oracle model, the two live in the same neighborhood and send their kids to the same school. What I mean is: Fiat-Shamir can (in some very limited theoretical senses) live without the random oracle model, but in practice the two are usually interdependent.</p>
+<p>To explain this new result I therefore need to explain what Fiat-Shamir does. And before I can do that, I need to explain what interactive proofs are. (Feel free to skip forward if you already know this part.)</p>
+<p>Many of the verifiable computation “proof systems” we use today are members of a class of protocols called <em>interactive proofs.</em> These are protocols in which two parties, a Prover and a Verifier, exchange messages so that the Prover can convince a Verifier of the truth of a given statement (such as “I know an input x that makes this particular program happy.”, and maybe a witness <strong>w</strong> to help me prove that) In many cases, these protocols obey a pattern of interaction that takes the following form:</p>
+<p>
+<figure>
+  <img src="https://blog.cryptographyengineering.com/wp-content/uploads/2025/02/image-6.png?w=1024" alt="" />
+</figure>
+
+
+</p>
+<ol>
+<li>
+<p>The Prover sends a message that “commits” to the input and witness, and maybe some other things. This <em>commitment</em> message is sent to the Verifier.</p>
+</li>
+<li>
+<p>The Verifier then generates one or more challenges that the Prover must respond to. The exact nature of what happens here can change from scheme to scheme.</p>
+</li>
+<li>
+<p>The Prover then computes responses to each of the challenges, and the Verifier checks that each response is valid (again, in a manner that is highly specific to the proving scheme.) It rejects the proof if any of the responses don’t check out.</p>
+</li>
+<li>
+<p>The pair may repeat the above steps many times — either sequentially or in parallel.</p>
+</li>
+</ol>
+<p><em>Yes I know</em> that I’m being incredibly vague about what’s happening with these challenges and responses! The truth is that, for the moment, we don’t care. All you need to know is that the challenge/response bits should be easy for the Prover to respond to <em>if it is being honest,</em> that is — that is, if the witness (input) really satisfies the program. It should be unlikely that the Prover can correctly respond to a random challenge if it’s cheating, i.e., if it does not have a proper witness.</p>
+<p>(Note that we don’t demand that the challenges be impossible for a cheating Prover to sneak past! This is why proving systems often repeat the challenge/response phase many times: even if there’s a small chance that a cheating Prover could cheat their way through one challenge, we’d argue that they have a much lower probability of cheating many times.)</p>
+<p>What you may notice about this entire setup is that (1) interactive proofs require lots of (duh) interaction. What might not be so obvious is that (2) they assume an honest Verifier who formulates “good” challenges.</p>
+<p>This need for interaction is pretty annoying in many applications. It is particularly aggravating for systems like blockchains, where there can be thousands (or millions) of computers who will all need to verify that a given statement (say, a transaction) is correct. It would be <em>much, much</em> easier if the Prover could run the proof just once time with a single Verifier, then the pair could just publish the <em>transcript</em> of their interaction. Anyone could just check the transcript to make sure the Prover answered all the challenges correctly!</p>
+<p><strong>Unfortunately, there is a critical problem with that idea!</strong> The security of these protocols rides on the idea that the Verifier’s challenges are random, or at least highly unpredictable to the Prover. If the Prover can somehow <em>anticipate</em> which values it will be challenged on before it commits to its inputs in step (1), it can often cheat by altering its approach in the first message. To be more concrete: a dishonest Verifier can “collude” with the Prover to help it prove a false statement, by sneakily letting it know the challenges in advance. <em>For this reason it is: critically important that the Verifier must be honest, and not colluding with the Prover.</em></p>
+<p>But the whole point of these systems is that we shouldn’t need to trust individual parties at all! If we’re just going to trust that people are behaving honestly, what’s the point of any of this?</p>
+<h3 id="more-background-fiat-shamir">More background: Fiat-Shamir</h3>
+<p>Now I want to take you way back in time. All the way back to the mid-1980s.</p>
+<p>
+<figure>
+  <img src="https://blog.cryptographyengineering.com/wp-content/uploads/2025/02/image-2.png?w=890" alt="" />
+</figure>
+
+
+</p>
+<p>Back in 1986, two cryptographers named Amos Fiat and Adi Shamir (pictured above) were stuck on a problem very much like this one. They had an interactive proof system — a much simpler one, since it was the 1980s after all — and they wanted to turn their interactive proofs into <em>non-interactive</em> proofs that any party could verify. They thought about the transcript idea described above, and they realized it wouldn’t work — a Verifier could simply collude with the Prover to help it cheat. To address this, they came up with an ingenious solution that was elegant, simple, and <em>also</em> <em>would open up a yawning chasm of theory</em> that we are still trying to dig out of today.</p>
+<p>Fiat turned to Shamir (I imagine) and outlined the overall problem. Fiat (or Shamir) said: “Perhaps we could find a way for a Verifier to select the challenges in some random but reproducible way — one that would allow anyone to ensure that the challenges were actually random and unpredictable.” And then one of them said: <em>that sounds a lot like a hash function.</em></p>
+<p>And thus was born the Fiat-Shamir heuristic.</p>
+<p>Instead of choosing the challenge values at random, Fiat and Shamir proposed that the “Verifier” would select the challenge values by hashing the “commitment” message sent by the Prover, perhaps along with other junk (such as the “program” or circuit being proved.) The Prover would then respond to these challenge messages, and output a transcript of the whole proof.</p>
+<p>And that’s it. That’s the entire trick.</p>
+<p>Despite its simplicity, there are some obvious attractive features to this Fiat-Shamir approach:</p>
+<ol>
+<li>
+<p>Good hash functions typically output stuff that looks pretty “random”, which is what we want for challenges.</p>
+</li>
+<li>
+<p>Any third party can easily check a transcript, simply by verifying that the challenge values match the hash of the Prover’s “commitment” message. (In other words, there’s no more room for the Verifier to collude or cheat, since it is now fully <em>deterministic</em>.</p>
+</li>
+</ol>
+<p><strong>Critically, there is a cool “circular” paradox in here.</strong> A cheating Prover might try the following trick to predict the values it will be challenged on. Specifically, it might (1) pick a commitment message and then (2) hash that message to find the challenges. Once it knows the challenge values, it might try to <em>change its inputs</em> to step (1) so it can more easily cheat on those specific challenge points. <strong>But critically that approach creates a paradox</strong>…<strong>!</strong> if the Prover changes its inputs to step (1), that will result in a whole new “commitment” message! Once hashed, <em>that new commitment message</em> will produce a very different set of challenge messages, and our cheater is locked in an infinite time-loop that it can never escape!1</p>
+<p>
+<figure>
+  <img src="https://blog.cryptographyengineering.com/wp-content/uploads/2025/02/image-9.png?w=787" alt="" />
+</figure>
+
+
+</p>
+<p>The great thing about Fiat-Shamir is that once your (challenge-generating) Verifier is fully deterministic, there’s no more reason to even have that code run by a separate party. The Prover can run the deterministic challenge-generation code all by itself, i.e., performing all necessary hashing to make the challenges, and then outputting the final transcript. So the Prover and (original) “Verifier” code collapse into a single party (that we will now just call the Prover), and the new <em>Verifier</em> is an algorithm that checks the transcript — performing all the necessary hashes and challenge/response checks to make sure everything is kosher.</p>
+<p>The resulting proofs (“transcripts”) do not require any interaction to verify, and so we can even post them on blockchains. They can be verified by thousands or millions of people, and we are now set to hang big piles of money off of them.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://blog.cryptographyengineering.com/wp-content/uploads/2025/02/image-3.png?w=1024" alt="" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p><em>Starknet is just one of the cryptocurrency systems hanging real money off of Fiat-Shamir-style proof systems. There are others!</em></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h3 id="i-bet-youre-going-to-yammer-on-about-the-provable-security-of-fiat-shamir-now-right">I bet you’re going to yammer on about the provable security of Fiat-Shamir now, right?</h3>
+<p><em>Wait, how did you know that’s what I was going to talk about?</em> Oh that’s right: “you” are me, and so I’m just answering my own questions. (Wasn’t that a cute illustration of the paradox that Fiat-Shamir helps to solve!)</p>
+<p>I am going to make this as quick and painless as I can, but here’s the deal. Fiat-Shamir seems like a nutty trick. We even call it a <em>heuristic</em>, which is literally an admission of this. And yet. Literally hundreds of papers have been written about the provable security of Fiat-Shamir and schemes that use it.</p>
+<p>The general TL;DR is that Fiat-Shamir can often be proven secure (for various definitions of “secure”) if we make one helpful assumption. Specifically: that the hash function we use is actually a random oracle (please see this footnote for more pedantic stuff!2) I’m not going to get very deep into the argument, but I just want you to remember how random oracles work:</p>
+<ol>
+<li>
+<p>In the random oracle model, the hash function is a random function. Phrased imprecisely, this means that (when queried on some fresh value) it outputs random bits that are completely <em>uncorrelated</em> with the input.</p>
+</li>
+<li>
+<p>The hash function “lives” inside a totally separate party called an oracle. You send things to be hashed, if the input has not been hashed before, you get back unpredictable random values.</p>
+</li>
+</ol>
+<p>This clearly looks a lot like the interactive proof setting! Put succinctly (no pun): if an appropriate scheme can be proven secure in an interactive setting where the Prover interacts with an honest Verifier (who picks random challenges), then it seems likely that the Fiat-Shamir version of that protocol should also work with a random oracle. The random oracle is essentially acting like the Verifier in the original interactive scheme: it is generating random challenges that everyone can “trust” to be truly random, and yet any third party can also ask it to reproduce the same challenges later on, when they want to check a transcript!</p>
+<p>
+<figure>
+  <img src="https://blog.cryptographyengineering.com/wp-content/uploads/2025/02/image-7.png?w=1024" alt="" />
+</figure>
+
+
+</p>
+<p>And for many purposes, this random oracle approach usually works ok. Some folks have come up with crazy theoretical counterexamples (meaning, contrived interactive protocols that are secure in the random oracle model, yet blow apart when used with real hash functions.) But mostly practitioners just ignore these because they’re so obviously full of weird nonsense.</p>
+<p>Out in the real world where applied cryptographers design new proving systems on a daily basis, we’ve adopted a pretty standard pattern. A new proof system will be specified as an interactive protocol first. Ultimately everyone knows this proof system won’t be used interactively, it will be Fiat-Shamir flattened and used on a blockchain. Yet the authors won’t spend a lot of time arguing about the Fiat-Shamir part. They’ll simply describe an interactive protocol with the right structure, then they say something like “<em>of course this can be flattened using Fiat-Shamir</em>, <em>if we assume a random oracle or something</em>” and everyone nods and deposits a billion dollars onto it.</p>
+<h3 id="but-theres-a-catch-isnt-there">But there’s a catch, isn’t there?</h3>
+<p>Indeed, there is a major <em>asterisk (*)</em> about this whole strategy that I must now raise.</p>
+<p>Even though we can sometimes prove Fiat-Shamir protocols secure, usually in the ROM, a critical feature of these ROM proofs is that we (the participants in the protocol) do not know a compact description of the hash function. This is inevitable, since the hash function used in the random oracle model is a giant random function that cannot possibly expressed in a compact form.</p>
+<p>In the real world we will naturally replace the random oracle with something like SHA-3 or an even more exciting hash function like Poseidon. Suddenly, everyone in the protocol will know a compact description of the hash function. As I mentioned above, this can lead to theoretical problems. Way back in 2004, Goldwasser and Tauman (now Kalai) designed a specific interactive protocol that exploded when the hash was instantiated with any concrete hash function.</p>
+<p>But the Goldwasser/Tauman protocol was very artificial. It did silly things you could see in the protocol description. So obviously as long as <em>we don’t do those things, we were fine</em>, maybe?</p>
+<p>The problem now is that we are deploying proof systems that can prove the satisfaction of literally any reasonable program (or “NP-relation”.) These programs might contain an implementation of the Fiat-Shamir hash function. In the random oracle model, this is literally impossible — so we just assume it cannot happen. In the real world it’s eminently possible, and we kind of have to assume it can and will happen.</p>
+<p>In fact it is extremely likely that some circuits really will contain an implementation of the Fiat-Shamir hash function! The reason is because of those <em>recursive proofs</em> I mentioned in the previous post.</p>
+<p>Let’s say we want to build a recursive proof system that works to verify one of our flattened Fiat-Shamir proofs. Recall that to do this, we have to take the Verify algorithm that checks a Fiat-Shamir transcript, and implement it within a program (or circuit.) We then need to run that program and generate a proof that we ran <em>that program</em> successfully! And to make all this work, we really do need to include a copy of the Fiat-Shamir hash function inside our programs — this is not optional at all.</p>
+<p>The crazy thing is that we can’t even prove these recursive Fiat-Shamir-based proofs secure in the random oracle model! In the random oracle model there is no compact description of the hash function, and so no there is no compact recursive Verify program/circuit that we could write. Recursion of this sort is totally impossible. Indeed, recursive Fiat-Shamir proofs can only exist outside of the random oracle model, where we use something like SHA-3 to implement the hash function. But of course, outside of the ROM we can’t prove anything about their security. As a result: anytime you see a recursive Fiat-Shamir proof we’re just basically tossing provable security out the window and full-on YOLOing it.</p>
+<p>This situation is very bad and many theoreticians have died (inside) thinking about it.</p>
+<p>I have now written an entire second post and I have not yet gotten to the KRS result I came here to talk about! Is anyone still reading? Is this thing still on? I sure hope so.</p>
+<p>We are now ready to talk about <em>KRS</em>, and I am going to do that immediately in the next post. Before I close this post and get ready for the <em>big</em> <em>one I will tackle next</em>, allow me recap where we are.</p>
+<ol>
+<li>
+<p>We know that Fiat-Shamir can be proven secure, but generally (for full-on SNARKs) only in the random oracle model.2</p>
+</li>
+<li>
+<p>Once we actually <em>instantiate</em> Fiat-Shamir with real hash functions, any weird thing could happen: especially if the same hash function is implemented within the programs/circuits we want to prove things about.</p>
+</li>
+<li>
+<p>Recursive (Fiat-Shamir) proofs actually require us to implement the hash function inside of the programs we’re going to prove things about, so that’s ultra-worrying.</p>
+</li>
+</ol>
+<p>What remains, however, is to demonstrate that Fiat-Shamir can actually be insecure in practice. Or more concretely: that there exist “evil” programs/circuits that can somehow break a perfectly good proof system that uses Fiat-Shamir.</p>
+<p>In the next post I’m finally going to talk about that.</p>
+<p><em>Notes:</em></p>
+<ol>
+<li>
+<p>The Fiat-Shamir technique isn’t immune to a few obvious attacks, of course. For example: a cheating Prover (who is typically also the “Verifier”) can “grind” the proof — by trying many different inputs to the first message and then, for each one, testing the resulting challenges to see if they’re amenable to cheating. If there is a small probability of cheating, this “try the game many times” approach can significantly <em>boost</em> a cheater’s probability of getting lucky at cheating on a challenge/response, since they now have millions (or billions!) of attempts to find a lucky challenge.</p>
+<p>However, a realistic assumption here is that real-world cheating Provers only have so much computing power. Even if a Prover can try a huge number of hashing attempts (say 250) you can easily set up your scheme so that the probability they succeed is still arbitrarily small. Not everyone does this perfectly, of course: my PhD student Pratyush recently co-authored a nice paper about the parameter choices made by some real-world blockchain Proving systems.</p>
+</li>
+<li>
+<p>When I say that the provable security of Fiat-Shamir depends on the random oracle model, I am being slightly imprecise. The random oracle model is usually sufficient to prove claims about Fiat-Shamir. But in fact there are some (relatively) recent results that show how to construct Fiat-Shamir for very specific interactive protocols using hash functions that are not random oracles: these are called <em>correlation intractable</em> functions. To the best of my knowledge, it is not possible to prove Fiat-Shamir-based SNARKs that work with arbitrary (adaptively-chosen) programs/circuits using these functions. But I am open to being wrong on this detail.</p>
+</li>
+</ol>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

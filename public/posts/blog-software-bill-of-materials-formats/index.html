@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Blog: Software Bill Of Materials Formats</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Blog: Software Bill Of Materials Formats</h1>
+			<b><time>03.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/jenkins">jenkins</a>
+        	       
+
+			<div>
+				<h2 id="prerequisite">Prerequisite</h2>
+<p>If you don’t understand what is Software Bill of Materials (SBOM), please read this blog post first.</p>
+<h2 id="different-sbom-formats-comparison">Different SBOM formats comparison</h2>
+<p>The National Telecommunications and Information Administration (NTIA) in the U.S. defined minimum requirements for SBOM formats:</p>
+<ul>
+<li>Identifying the supplier of the software component.</li>
+<li>Identifying the details about the version of the component.</li>
+<li>Including unique identifiers for the component like cryptographic hash functions.</li>
+<li>Including the relationships between all dependencies inside the component.</li>
+<li>Including a timestamp of when and by whom the SBOM report was created or last modified</li>
+</ul>
+<p>In this section, we discuss different kinds and formats for SBOM standards and make a brief comparison between them. Three commonly used standards achieved the NTIA minimum requirements for SBOM generation and each one results in a different final SBOM document.</p>
+<h3 id="1---the-software-package-data-exchange-spdx">1 - The Software Package Data Exchange (SPDX)</h3>
+<p><em><strong>History:</strong></em></p>
+<p>SPDX is an open-source machine-readable format adopted by the Linux Foundation as an industry standard. The specifications are implemented as a file format that identifies the software components within a larger piece of computer software and fulfilling the requirements of NTIA. The SPDX project started in 2010 and was initially dedicated to solving the issues around open source licensing compliance. It evolved over the years to adhere supply chain security challenges and has seen extensive uptake by companies and projects in the software industry. Companies like Hitachi, Fujitsu, and Toshiba contributed to furthering the standard in the SPDX v2.2.2 specification release.</p>
+<p><em><strong>Specs:</strong></em></p>
+<p>The SPDX specification describes the necessary sections and fields to produce a valid SPDX document. Note that the only mandatory field in all spdx documents is the “Document Creation Information” section. The presence of other sections (and subset fields of each section) is dependent on your use case and the information you want to provide.</p>
+<p>
+<figure>
+  <img src="https://jenkins-x.io/images/sbom-guide/spdx-2.2-document.png" alt="spdx-specification" />
+</figure>
+
+
+</p>
+<p>Fig 1: <a href="https://spdx.dev/wp-content/uploads/sites/41/2020/05/spdx-2.2-document.png">https://spdx.dev/wp-content/uploads/sites/41/2020/05/spdx-2.2-document.png</a></p>
+<ul>
+<li><strong>Document Creation Information</strong> – Denotes who created the document, how it was created, and other useful information related to its creation. It provides the necessary information for forward and backward compatibility for processing tools (version numbers, license for data, authors, etc. )</li>
+<li><strong>Package Information</strong> – This section provides information about the “package”. A package can be one or more files. These files could be one or more files of any type including but not limited to source, documents, binaries, containers, and so forth. The package information contains the originator, where it was sourced from, a download URL, a checksum, and so forth. It also contains summary licensing for the package.</li>
+<li><strong>File Information</strong> – This is information about a specific file. It can contain the file copyrights found in the file (if any), the license of the file, a checksum for the file, file contributors, and so forth.</li>
+<li><strong>Snippet Information</strong> – Snippets can optionally be used when a file is known to have some content that has been included from another source. They are useful for denoting when part of a file may have been created under another licenseSnippet information can be used to define licensing for ranges within files.</li>
+<li><strong>Other Licensing Information</strong> – Other licensing information provides a way to describe licenses that are not on the SPDX License List. You can create a local (to the SPDX document) identifier for the license and place the license text itself in the document as a well and then reference it for files just like you would a license from the license list.</li>
+<li><strong>Relationships</strong> – Relationships were introduced in the 2.0 specification and are a very powerful way of expressing how SPDX documents relate to one another. See an example of how the SPDX represents those here.</li>
+<li><strong>Annotations</strong> – Annotations are comments made by people on various entities and elements within the document. For example, someone reviewing the document may make an annotation about a file and its license. Annotations are useful for reviews of SPDX documents and for conveying specific information about the package, file, creation, license, file(s), etc.</li>
+</ul>
+<p>In the SPDX specification release 2.2.2, additional output formats of JSON, YAML, and XML are supported. A diverse set of examples for SPDX are available on this github repo</p>
+<p>Further information on the data model and SPDX guide can be found on the SPDX website.</p>
+<hr>
+<p><em><strong>Use Cases:</strong></em></p>
+<ul>
+<li>SBOM for software components</li>
+<li>Tracking of intellectual property (licensing, copyright) of software components</li>
+<li>Listing contents of a software distribution</li>
+<li>Container contents inventory</li>
+<li>Associating CPEs with specific packages</li>
+<li>Identifying provenance of lines of code embedded in files</li>
+</ul>
+<p><em><strong>Key Features:</strong></em></p>
+<ul>
+<li>Documented artifacts can be checked using the provided hash values</li>
+<li>Rich facilities for intellectual property and licensing information</li>
+<li>Flexible model able to scale from snippets and files up to packages, containers, and even operating system distributions</li>
+<li>Ability to add mappings to other package reference systems</li>
+</ul>
+<h3 id="2---software-identification-swid-tags">2 - Software Identification (SWID) Tags</h3>
+<p><em><strong>History:</strong></em></p>
+<p>It is a standard implemented by the National Institute of Standards and Technology (NIST) in the U.S. that was published in 2009, then revised in 2015. They were designed to provide a transparent way for organizations to track the software installed on their managed devices. Standard SWID tags are not generated at the end of certain software creation, instead, they define a lifecycle where a new SWID tag is added to an endpoint with the software installation process and is deleted with the uninstall process. When this lifecycle is followed, the presence of a given SWID Tag corresponds directly to the presence of the software product that the Tag describes.</p>
+<p>
+<figure>
+  <img src="https://jenkins-x.io/images/sbom-guide/swid-tags-lifecycle.png" alt="swid-tag-lifecycle" />
+</figure>
+
+
+</p>
+<p>Fig 2: <a href="https://d3i71xaburhd42.cloudfront.net/496312d64dc77b223803a4ee1b717be8e528e86f/16-Figure1-1.png">https://d3i71xaburhd42.cloudfront.net/496312d64dc77b223803a4ee1b717be8e528e86f/16-Figure1-1.png</a></p>
+<p>Note that the present SWID tags change depending on the current state of the software.</p>
+<p><em><strong>Specs:</strong></em></p>
+<p>The NISTIR 8060 Guideline identifies the standards of SWID tags and the components of each tag. We here go over the necessary types mentioned in the figure above. To capture the lifecycle of a software component, the SWID specification defines four types of SWID tags: primary, patch, corpus, and supplemental</p>
+<ul>
+<li><strong>Corpus Tag</strong> – A SWID Tag that identifies and describes an installable software product in its pre-installation state. A corpus tag can be used to represent metadata about an installation package or installer for a software product, a software update, or a patch.</li>
+<li><strong>Primary Tag</strong> – A SWID Tag that identifies and describes a software product installed on a computing device.</li>
+<li><strong>Supplemental Tag</strong> – A SWID Tag that allows additional information to be associated with any referenced SWID tag. This helps to ensure that SWID Primary and Patch Tags provided by a software provider are not modified by software management tools while allowing these tools to provide their software metadata.</li>
+<li><strong>Patch Information</strong> – A SWID Tag that identifies and describes an installed patch that has made incremental changes to a software product installed on a computing device.</li>
+</ul>
+<p><strong>Note</strong> that Corpus, primary, and patch tags have similar functions in that they describe the existence and/or presence of different types of software (e.g., software installers, software installations, software patches), and, potentially, different states of software products. In contrast, supplemental tags furnish additional information not contained in the corpus, primary, or patch tags.</p>
+<p>SWID tags are mainly implemented in XML format while JSON format is under development. Some tag examples can be found here</p>
+<p><em><strong>Use Cases:</strong></em></p>
+<ul>
+<li>SBOM for software components</li>
+<li>Continuous monitoring of installed software inventory</li>
+<li>Identifying vulnerable software on endpoints</li>
+<li>Ensuring that installed software is properly patched</li>
+<li>Preventing installation of unauthorized or corrupted software</li>
+<li>Preventing the execution of corrupted software</li>
+<li>Managing software entitlements</li>
+</ul>
+<p><em><strong>Key Features:</strong></em></p>
+<ul>
+<li>Provides stable software identifiers created at build time</li>
+<li>Standardizes software information that can be exchanged between software providers and consumers as part of the software installation process</li>
+<li>Enables the correlation of information related to software including related patches or updates, configuration settings, security policies, and vulnerability and threat advisories.</li>
+</ul>
+<h3 id="3---cyclonedx">3 - CycloneDX</h3>
+<p><em><strong>History:</strong></em></p>
+<p>CycloneDX is a lightweight SBOM standard designed for use in application security context and supply chain component analysis as it was originally intended to identify vulnerabilities and supply chain component analysis. It also supports checking for licensing compliance. The CycloneDX project was initiated in 2017 in the OWASPcommunity, then it became a dedicated open source project and included other working groups from Sonatypeand ServiceNow. Supported file formats for CycloneDX are (XML, JSON, and protocol buffers)</p>
+<p><em><strong>Specs:</strong></em></p>
+<p>CycloneDX provides schemas for both XML and JSON, defining a format for describing simple and complex compositions of software components. It’s designed to be flexible, and easily adaptable, with implementations for popular build systems. The specification encourages the use of ecosystem-native naming conventions and supports SPDX license IDs and expressions, pedigree, and external references. It also natively supports the Package URL specification and correlating components to CPEs. The CycloneDX object model is defined in the figure.</p>
+<p>
+<figure>
+  <img src="https://jenkins-x.io/images/sbom-guide/cyclonedx-high-level-object-model-small.svg" alt="" />
+</figure>
+
+
+</p>
+<p>Fig 3: <a href="https://cyclonedx.org/theme/assets/images/high-level-object-model-small.svg">https://cyclonedx.org/theme/assets/images/high-level-object-model-small.svg</a></p>
+<ul>
+<li><strong>BOM Metadata Information</strong> – BOM metadata includes the supplier, manufacturer, and the target component for which the BOM describes. It also includes the tools used to create the BOM, and license information for the BOM document itself.</li>
+<li><strong>Components Information</strong> – Components describe the complete inventory of first-party and third-party components. Component identity can be represented as: – Coordinates (group, name, version) – Package URL – Common Platform Enumerations (CPE) – SWID – Cryptographic hash functions (SHA-1, SHA-2, SHA-3, BLAKE2b, BLAKE3)</li>
+<li><strong>Services Information</strong> – Services describe external APIs that the software may call. Services describe endpoint URIs, authentication requirements, and trust boundary traversals. The flow of data between software and services can also be described including the data classifications and the flow direction of each type.</li>
+<li><strong>Dependency Relationships</strong> – CycloneDX provides the ability to describe components and their dependency on other components. The dependency graph is capable of representing both direct and transitive relationships. Components that depend on services can be represented in the dependency graph and services that depend on other services can be represented as well.</li>
+<li><strong>Compositions</strong> – Compositions describe constituent parts (including components, services, and dependency relationships) and their completeness. The aggregate of each composition can be described as complete, incomplete, incomplete first-party only, incomplete third-party only, or unknown.</li>
+<li><strong>Vulnerabilities</strong> – Known vulnerabilities inherited from the use of third-party and open source software and the exploitability of the vulnerabilities can be communicated with CycloneDX. Previously unknown vulnerabilities affecting both components and services may also be disclosed using CycloneDX, making it ideal for both VEX and security advisory use cases.</li>
+<li><strong>Extensions</strong> – Multiple extension points exist throughout the CycloneDX object model allowing fast prototyping of new capabilities and support for specialized and future use cases. The CycloneDX project maintains extensions that are beneficial to the larger community. The project encourages community participation and the development of extensions that target specialized or industry-specific use cases.</li>
+</ul>
+<p><em><strong>Use Cases:</strong></em></p>
+<ul>
+<li>Inventory of all software components.</li>
+<li>Identifying known vulnerabilities.</li>
+<li>Integrity verification using the hash functions.</li>
+<li>Authenticity of the software components using a digital signature.</li>
+<li>License compliance</li>
+<li>Provenance</li>
+</ul>
+<h2 id="generate-sboms-manually-definitely-not">Generate SBOMs manually? definitely not</h2>
+<p>SBOMs are frequently updated with each release of the software, so we need tools and packages to be integrated with our ci/cd pipeline. We talk about this here</p>
+<h2 id="prerequisite-1">Prerequisite</h2>
+<p>If you don’t understand what is Software Bill of Materials (SBOM), please read this blog post first.</p>
+<h2 id="different-sbom-formats-comparison-1">Different SBOM formats comparison</h2>
+<p>The National Telecommunications and Information Administration (NTIA) in the U.S. defined minimum requirements for SBOM formats:</p>
+<ul>
+<li>Identifying the supplier of the software component.</li>
+<li>Identifying the details about the version of the component.</li>
+<li>Including unique identifiers for the component like cryptographic hash functions.</li>
+<li>Including the relationships between all dependencies inside the component.</li>
+<li>Including a timestamp of when and by whom the SBOM report was created or last modified</li>
+</ul>
+<p>In this section, we discuss different kinds and formats for SBOM standards and make a brief comparison between them. Three commonly used standards achieved the NTIA minimum requirements for SBOM generation and each one results in a different final SBOM document.</p>
+<h3 id="1---the-software-package-data-exchange-spdx-1">1 - The Software Package Data Exchange (SPDX)</h3>
+<p><em><strong>History:</strong></em></p>
+<p>SPDX is an open-source machine-readable format adopted by the Linux Foundation as an industry standard. The specifications are implemented as a file format that identifies the software components within a larger piece of computer software and fulfilling the requirements of NTIA. The SPDX project started in 2010 and was initially dedicated to solving the issues around open source licensing compliance. It evolved over the years to adhere supply chain security challenges and has seen extensive uptake by companies and projects in the software industry. Companies like Hitachi, Fujitsu, and Toshiba contributed to furthering the standard in the SPDX v2.2.2 specification release.</p>
+<p><em><strong>Specs:</strong></em></p>
+<p>The SPDX specification describes the necessary sections and fields to produce a valid SPDX document. Note that the only mandatory field in all spdx documents is the “Document Creation Information” section. The presence of other sections (and subset fields of each section) is dependent on your use case and the information you want to provide.</p>
+<p>
+<figure>
+  <img src="https://jenkins-x.io/images/sbom-guide/spdx-2.2-document.png" alt="spdx-specification" />
+</figure>
+
+
+</p>
+<p>Fig 1: <a href="https://spdx.dev/wp-content/uploads/sites/41/2020/05/spdx-2.2-document.png">https://spdx.dev/wp-content/uploads/sites/41/2020/05/spdx-2.2-document.png</a></p>
+<ul>
+<li><strong>Document Creation Information</strong> – Denotes who created the document, how it was created, and other useful information related to its creation. It provides the necessary information for forward and backward compatibility for processing tools (version numbers, license for data, authors, etc. )</li>
+<li><strong>Package Information</strong> – This section provides information about the “package”. A package can be one or more files. These files could be one or more files of any type including but not limited to source, documents, binaries, containers, and so forth. The package information contains the originator, where it was sourced from, a download URL, a checksum, and so forth. It also contains summary licensing for the package.</li>
+<li><strong>File Information</strong> – This is information about a specific file. It can contain the file copyrights found in the file (if any), the license of the file, a checksum for the file, file contributors, and so forth.</li>
+<li><strong>Snippet Information</strong> – Snippets can optionally be used when a file is known to have some content that has been included from another source. They are useful for denoting when part of a file may have been created under another licenseSnippet information can be used to define licensing for ranges within files.</li>
+<li><strong>Other Licensing Information</strong> – Other licensing information provides a way to describe licenses that are not on the SPDX License List. You can create a local (to the SPDX document) identifier for the license and place the license text itself in the document as a well and then reference it for files just like you would a license from the license list.</li>
+<li><strong>Relationships</strong> – Relationships were introduced in the 2.0 specification and are a very powerful way of expressing how SPDX documents relate to one another. See an example of how the SPDX represents those here.</li>
+<li><strong>Annotations</strong> – Annotations are comments made by people on various entities and elements within the document. For example, someone reviewing the document may make an annotation about a file and its license. Annotations are useful for reviews of SPDX documents and for conveying specific information about the package, file, creation, license, file(s), etc.</li>
+</ul>
+<p>In the SPDX specification release 2.2.2, additional output formats of JSON, YAML, and XML are supported. A diverse set of examples for SPDX are available on this github repo</p>
+<p>Further information on the data model and SPDX guide can be found on the SPDX website.</p>
+<hr>
+<p><em><strong>Use Cases:</strong></em></p>
+<ul>
+<li>SBOM for software components</li>
+<li>Tracking of intellectual property (licensing, copyright) of software components</li>
+<li>Listing contents of a software distribution</li>
+<li>Container contents inventory</li>
+<li>Associating CPEs with specific packages</li>
+<li>Identifying provenance of lines of code embedded in files</li>
+</ul>
+<p><em><strong>Key Features:</strong></em></p>
+<ul>
+<li>Documented artifacts can be checked using the provided hash values</li>
+<li>Rich facilities for intellectual property and licensing information</li>
+<li>Flexible model able to scale from snippets and files up to packages, containers, and even operating system distributions</li>
+<li>Ability to add mappings to other package reference systems</li>
+</ul>
+<h3 id="2---software-identification-swid-tags-1">2 - Software Identification (SWID) Tags</h3>
+<p><em><strong>History:</strong></em></p>
+<p>It is a standard implemented by the National Institute of Standards and Technology (NIST) in the U.S. that was published in 2009, then revised in 2015. They were designed to provide a transparent way for organizations to track the software installed on their managed devices. Standard SWID tags are not generated at the end of certain software creation, instead, they define a lifecycle where a new SWID tag is added to an endpoint with the software installation process and is deleted with the uninstall process. When this lifecycle is followed, the presence of a given SWID Tag corresponds directly to the presence of the software product that the Tag describes.</p>
+<p>
+<figure>
+  <img src="https://jenkins-x.io/images/sbom-guide/swid-tags-lifecycle.png" alt="swid-tag-lifecycle" />
+</figure>
+
+
+</p>
+<p>Fig 2: <a href="https://d3i71xaburhd42.cloudfront.net/496312d64dc77b223803a4ee1b717be8e528e86f/16-Figure1-1.png">https://d3i71xaburhd42.cloudfront.net/496312d64dc77b223803a4ee1b717be8e528e86f/16-Figure1-1.png</a></p>
+<p>Note that the present SWID tags change depending on the current state of the software.</p>
+<p><em><strong>Specs:</strong></em></p>
+<p>The NISTIR 8060 Guideline identifies the standards of SWID tags and the components of each tag. We here go over the necessary types mentioned in the figure above. To capture the lifecycle of a software component, the SWID specification defines four types of SWID tags: primary, patch, corpus, and supplemental</p>
+<ul>
+<li><strong>Corpus Tag</strong> – A SWID Tag that identifies and describes an installable software product in its pre-installation state. A corpus tag can be used to represent metadata about an installation package or installer for a software product, a software update, or a patch.</li>
+<li><strong>Primary Tag</strong> – A SWID Tag that identifies and describes a software product installed on a computing device.</li>
+<li><strong>Supplemental Tag</strong> – A SWID Tag that allows additional information to be associated with any referenced SWID tag. This helps to ensure that SWID Primary and Patch Tags provided by a software provider are not modified by software management tools while allowing these tools to provide their software metadata.</li>
+<li><strong>Patch Information</strong> – A SWID Tag that identifies and describes an installed patch that has made incremental changes to a software product installed on a computing device.</li>
+</ul>
+<p><strong>Note</strong> that Corpus, primary, and patch tags have similar functions in that they describe the existence and/or presence of different types of software (e.g., software installers, software installations, software patches), and, potentially, different states of software products. In contrast, supplemental tags furnish additional information not contained in the corpus, primary, or patch tags.</p>
+<p>SWID tags are mainly implemented in XML format while JSON format is under development. Some tag examples can be found here</p>
+<p><em><strong>Use Cases:</strong></em></p>
+<ul>
+<li>SBOM for software components</li>
+<li>Continuous monitoring of installed software inventory</li>
+<li>Identifying vulnerable software on endpoints</li>
+<li>Ensuring that installed software is properly patched</li>
+<li>Preventing installation of unauthorized or corrupted software</li>
+<li>Preventing the execution of corrupted software</li>
+<li>Managing software entitlements</li>
+</ul>
+<p><em><strong>Key Features:</strong></em></p>
+<ul>
+<li>Provides stable software identifiers created at build time</li>
+<li>Standardizes software information that can be exchanged between software providers and consumers as part of the software installation process</li>
+<li>Enables the correlation of information related to software including related patches or updates, configuration settings, security policies, and vulnerability and threat advisories.</li>
+</ul>
+<h3 id="3---cyclonedx-1">3 - CycloneDX</h3>
+<p><em><strong>History:</strong></em></p>
+<p>CycloneDX is a lightweight SBOM standard designed for use in application security context and supply chain component analysis as it was originally intended to identify vulnerabilities and supply chain component analysis. It also supports checking for licensing compliance. The CycloneDX project was initiated in 2017 in the OWASPcommunity, then it became a dedicated open source project and included other working groups from Sonatypeand ServiceNow. Supported file formats for CycloneDX are (XML, JSON, and protocol buffers)</p>
+<p><em><strong>Specs:</strong></em></p>
+<p>CycloneDX provides schemas for both XML and JSON, defining a format for describing simple and complex compositions of software components. It’s designed to be flexible, and easily adaptable, with implementations for popular build systems. The specification encourages the use of ecosystem-native naming conventions and supports SPDX license IDs and expressions, pedigree, and external references. It also natively supports the Package URL specification and correlating components to CPEs. The CycloneDX object model is defined in the figure.</p>
+<p>
+<figure>
+  <img src="https://jenkins-x.io/images/sbom-guide/cyclonedx-high-level-object-model-small.svg" alt="" />
+</figure>
+
+
+</p>
+<p>Fig 3: <a href="https://cyclonedx.org/theme/assets/images/high-level-object-model-small.svg">https://cyclonedx.org/theme/assets/images/high-level-object-model-small.svg</a></p>
+<ul>
+<li><strong>BOM Metadata Information</strong> – BOM metadata includes the supplier, manufacturer, and the target component for which the BOM describes. It also includes the tools used to create the BOM, and license information for the BOM document itself.</li>
+<li><strong>Components Information</strong> – Components describe the complete inventory of first-party and third-party components. Component identity can be represented as: – Coordinates (group, name, version) – Package URL – Common Platform Enumerations (CPE) – SWID – Cryptographic hash functions (SHA-1, SHA-2, SHA-3, BLAKE2b, BLAKE3)</li>
+<li><strong>Services Information</strong> – Services describe external APIs that the software may call. Services describe endpoint URIs, authentication requirements, and trust boundary traversals. The flow of data between software and services can also be described including the data classifications and the flow direction of each type.</li>
+<li><strong>Dependency Relationships</strong> – CycloneDX provides the ability to describe components and their dependency on other components. The dependency graph is capable of representing both direct and transitive relationships. Components that depend on services can be represented in the dependency graph and services that depend on other services can be represented as well.</li>
+<li><strong>Compositions</strong> – Compositions describe constituent parts (including components, services, and dependency relationships) and their completeness. The aggregate of each composition can be described as complete, incomplete, incomplete first-party only, incomplete third-party only, or unknown.</li>
+<li><strong>Vulnerabilities</strong> – Known vulnerabilities inherited from the use of third-party and open source software and the exploitability of the vulnerabilities can be communicated with CycloneDX. Previously unknown vulnerabilities affecting both components and services may also be disclosed using CycloneDX, making it ideal for both VEX and security advisory use cases.</li>
+<li><strong>Extensions</strong> – Multiple extension points exist throughout the CycloneDX object model allowing fast prototyping of new capabilities and support for specialized and future use cases. The CycloneDX project maintains extensions that are beneficial to the larger community. The project encourages community participation and the development of extensions that target specialized or industry-specific use cases.</li>
+</ul>
+<p><em><strong>Use Cases:</strong></em></p>
+<ul>
+<li>Inventory of all software components.</li>
+<li>Identifying known vulnerabilities.</li>
+<li>Integrity verification using the hash functions.</li>
+<li>Authenticity of the software components using a digital signature.</li>
+<li>License compliance</li>
+<li>Provenance</li>
+</ul>
+<h2 id="generate-sboms-manually-definitely-not-1">Generate SBOMs manually? definitely not</h2>
+<p>SBOMs are frequently updated with each release of the software, so we need tools and packages to be integrated with our ci/cd pipeline. We talk about this here</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

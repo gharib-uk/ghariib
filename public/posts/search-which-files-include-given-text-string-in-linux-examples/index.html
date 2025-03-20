@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Search Which Files include Given Text/String in Linux (Examples)</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Search Which Files include Given Text/String in Linux (Examples)</h1>
+			<b><time>10.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2022/03/terminal-logo-250x250.webp" alt="" />
+</figure>
+
+
+</p>
+<p>This tutorial shows how to search and print which files contain your specified text or string in Ubuntu and other Linux in command line, with examples.</p>
+<p>Search file or file content is an important skill for Linux administrator. I’ve shown how to use locate command to search files through the keyword in its file-name, path, and file type.</p>
+<p>Here I’m going to show you how to search files if you know any text or string they contain.</p>
+<h3 id="method-1-use-grep-command">Method 1: Use grep command</h3>
+<p><code>grep</code> is a very popular command line tool that most Linux includes it out-of-the-box. I use it quite often to filter content in command output.</p>
+<p>In my case, building an app sometimes work in recent Ubuntu but NOT for older Ubuntu. It outputs error “has no member or class named ‘xxxxxx&rsquo;”. I need to find out which file contains that member/class in recent Ubuntu and backport to older Ubuntu version.</p>
+<p>1. In the case, I can run the command below, for example, to <strong>search files under <code>/usr/include</code> directory which include string <code>GParamSpecClass</code> in file content</strong>.</p>
+<pre tabindex="0"><code>grep -lr &#34;GParamSpecClass&#34; /usr/include/
+</code></pre><p>Here you may replace the string and searching directory accordingly, or skip <code>/usr/include/</code> to search under current working directory.</p>
+<p>And, the command options are:</p>
+<ul>
+<li><code>-l</code> or <code>--files-with-matches</code> means only print names of files containing matches.</li>
+<li><code>-r</code> or <code>--recursive</code>, also search sub-folders for given directory.</li>
+</ul>
+<p>As you know, Linux is case sensitive. To ignore, use <code>-i</code> or <code>--ignore-case</code> in command. So, the commands below work same as last:</p>
+<pre tabindex="0"><code>grep -lir &#34;gparamspecclass&#34; /usr/include/
+</code></pre><pre tabindex="0"><code>grep -lir &#34;GPARAMSPECclass&#34; /usr/include/
+</code></pre><p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/grep-listfiles-match-700x269.webp" alt="" />
+</figure>
+
+
+</p>
+<p>2. For choice, you may <strong>print names of files, matched lines, as well as line numbers</strong> of files contain “GParamSpecClass” under /usr/include/, by running similar command below:</p>
+<pre tabindex="0"><code>grep -irn &#34;GParamSpecClass&#34; /usr/include/
+</code></pre><p>As you see, in command:</p>
+<ul>
+<li>Skip <code>-l</code> or <code>--files-with-matches</code>, then it prints matched lines in output.</li>
+<li>Add <code>-n</code> or <code>--line-number</code>, will also show the line numbers.</li>
+</ul>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/grep-listfiles-lines-700x381.webp" alt="" />
+</figure>
+
+
+</p>
+<p>3. To show more file content, you may add:</p>
+<ul>
+<li><code>-A NUM</code> or <code>--after-context=NUM</code> to print NUM lines of trailing context after matching lines.</li>
+<li><code>-B NUM</code> or <code>--before-context=NUM</code> to print NUM lines of leading context before matching lines</li>
+</ul>
+<p>For example, search files under <code>/usr/include</code> directory that include “<code>g_cclosure_marshal_generic</code>” string, print files names, matched lines, as well as 2 lines before and 4 lines after matches.</p>
+<pre tabindex="0"><code>grep -irn -B 2 -A 4 &#34;g_cclosure_marshal_generic&#34; /usr/include/
+</code></pre><p>Sometimes, there may be multiple files or multiple lines match what you search. In the case, you may add <code>-m NUM</code> or <code>--max-count=NUM</code> to search first NUM matches.</p>
+<p>For example, the command below will do same as the last, but only show the first one that matches.</p>
+<pre tabindex="0"><code>grep -irn -m 1 -B 2 -A 4 &#34;g_cclosure_marshal_generic&#34; /usr/include/
+</code></pre><p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/grep-beforeafter-first-700x502.webp" alt="" />
+</figure>
+
+
+</p>
+<p><code>grep</code> supports regex expressions to make searching more flexible. Instead of typing the exact string or text you want to search, you may use “<code>^string</code>” to search files contain <code>string</code> at beginning of lines, use “<code>string$</code>” to search files contain the string in end of lines, or <code>stringA|stringB</code> to search files contain either <code>stringA</code> or <code>stringB</code>.</p>
+<p>They are so many regex patterns that I cannot include them all in this tutorial, see wikipedia page for more.</p>
+<h3 id="method-2-use-ag-command">Method 2: Use ag command</h3>
+<p>It’s hard for me to remember infrequently used command options. In the case, I tend to use alternatives that just works with default arguments. <code>ag</code> is the one for searching file content.</p>
+<p>1. First, <strong>run command to install ag</strong>.</p>
+<ul>
+<li>
+<p>For Debian, Ubuntu, Linux Mint, use command:</p>
+<pre tabindex="0"><code>sudo apt install silversearcher-ag
+</code></pre></li>
+<li>
+<p>For Fedora, RHEL, etc, run command:</p>
+<pre tabindex="0"><code>sudo dnf install the_silver_searcher
+</code></pre></li>
+<li>
+<p>While, Arch based systems may use the command below instead:</p>
+<pre tabindex="0"><code>sudo pacman -S the_silver_searcher
+</code></pre></li>
+</ul>
+<p>2. Then, for example <strong>search files under <code>/usr/include</code> that include string “<code>gparamspecclass</code>“</strong>:</p>
+<pre tabindex="0"><code>ag &#34;gparamspecclass&#34; /usr/include
+</code></pre><p>As the screenshot shows, it prints all the names of files, lines and line numbers that matches. And, it’s case insensitive.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/ag-search-700x378.webp" alt="" />
+</figure>
+
+
+</p>
+<p><code>ag</code> command is super fast! In case the default options do not meet your needs, here are some that similar to <code>grep</code>:</p>
+<ul>
+<li><code>-A NUM</code> or <code>--after NUM</code>, print NUM lines after matches.</li>
+<li><code>-B NUM</code> or <code>--before NUM</code>, print NUM lines before matches.</li>
+<li><code>-c</code> or <code>--count</code>, print only names of files and the number of matches.</li>
+<li><code>-m NUM</code> or <code>--max-count NUM</code>, print only first NUM matches.</li>
+<li><code>-f</code> or <code>--follow</code>, also search files link to others out of searching directory.</li>
+<li><code>-l</code> or <code>--files-with-matches</code>, only print the names of files containing matches.</li>
+</ul>
+<p>For example, search “gparamspecclass” under current directory, and only show file-names and how many matches.</p>
+<pre tabindex="0"><code>ag &#34;gparamspecclass&#34; -c
+</code></pre><p>Or search and print the first match, as well as 2 lines before and 4 lines after the match lines.</p>
+<pre tabindex="0"><code>ag -m 1 -A 4 -B 2 &#34;gparamspecclass&#34;
+</code></pre><p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2025/01/ag-search-match-700x338.webp" alt="" />
+</figure>
+
+
+</p>
+<p><code>ag</code> by default excludes files listed in <code>.gitignore</code> and <code>.hgignore</code> under searching directory, and user can manually add exclusions by create’n’adding them into <code>.ignore</code> file.</p>
+<p>To also search files mentioned before, either use <code>-a</code> option to search all (exclude hidden files) or <code>--hidden</code> to search hidden files. For more, see <code>man ag</code>.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

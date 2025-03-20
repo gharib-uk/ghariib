@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How to Install Sigil 2.3.1 in Ubuntu 24.04 / Linux Mint 22</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How to Install Sigil 2.3.1 in Ubuntu 24.04 / Linux Mint 22</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2022/03/sigil-logo-250x250.webp" alt="" />
+</figure>
+
+
+</p>
+<p>This is a step by step guide shows how to install Sigil ePub ebook editor (v2.3.1 so far) <strong>by either using Flatpak package or building from the source tarball.</strong></p>
+<p>Sigil is a popular free and open-source ePub ebook editor that works in Windows, Linux, and macOS. However, it does not provide official packages for Linux.</p>
+<p>While Sigil in Ubuntu system repository is always old, user can easily install the latest version via Flatpak package that runs in sandbox environment, or by compiling it from the source tarball.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2024/12/sigil231-700x464.webp" alt="" />
+</figure>
+
+
+</p>
+<p>SIgil 2.3.1</p>
+<h3 id="method-1-install-sigil-via-flatpak-package">Method 1: Install Sigil via Flatpak package</h3>
+<p><strong>Tips: Not only for Ubuntu 24.04, the Flatpak package works in most Linux, including old Ubuntu 18.04, Ubuntu 20.04, and Ubuntu 22.04.</strong></p>
+<p>The easiest way to get the latest Sigil in Linux is using the Flatpak package, which is however <strong>unofficial</strong> and runs in sandbox environment.</p>
+<p><strong>Linux Mint 21/22</strong> users can simply search for and install the package from Software Manager after enabling unverified Flatpak packages in the Preferences dialog.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2024/12/sigil-flatpak-mint-700x398.webp" alt="" />
+</figure>
+
+
+</p>
+<p>Sigil package in Linux Mint Software Manager</p>
+<p>For Debian and Ubuntu users, press <code>Ctrl+Alt+T</code> to open terminal, then run commands:</p>
+<ul>
+<li>
+<p>First, enable Flatpak support by installing the daemon package:</p>
+<pre tabindex="0"><code>sudo apt install flatpak
+</code></pre><p>For old Ubuntu 18.04, you need to add this PPA first. While other Linux can follow this setup guide instead.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2024/03/apt-flatpak-noble-700x501.webp" alt="" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p>Then, install Sigil as Flatpak package by running command:</p>
+<pre tabindex="0"><code>flatpak install https://dl.flathub.org/repo/appstream/com.sigil_ebook.Sigil.flatpakref
+</code></pre><p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2024/12/flatpak-sigil-700x462.webp" alt="" />
+</figure>
+
+
+</p>
+</li>
+</ul>
+<p>After installed the app package, just search for and launch it from start menu. If the app icon is no visible, either log out and back in, or run the command below instead to start from terminal:</p>
+<pre tabindex="0"><code>flatpak run com.sigil_ebook.Sigil
+</code></pre><p>For the future releases, run the command to check &amp; install:</p>
+<pre tabindex="0"><code>flatpak update com.sigil_ebook.Sigil
+</code></pre><h3 id="method-2-compile-sigil-231-from-the-source-tarball">Method 2: Compile Sigil 2.3.1 from the source tarball</h3>
+<p>If you don’t like running the app in sandbox environment, then you may build it from source tarball by yourself.</p>
+<p><strong>NOTE: Sigil 2.3.1 needs Qt6 &gt;= 6.4, this method works only in Ubuntu 24.04, 24.10, Linux Mint 22, Debian 12.</strong></p>
+<p>Building an app from source usually includes following steps:</p>
+<ul>
+<li>Install the build tools and dependency libraries (xxx-dev packages).</li>
+<li>Download the source and extract.</li>
+<li>Configure the source.</li>
+<li>Build &amp; install.</li>
+<li>And cleanup</li>
+</ul>
+<p>If all the requirements matches and there’s no compiler bugs, then the process is NOT hard.</p>
+<p><strong>1.</strong> First, press <code>Ctrl+Alt+T</code> to open up a terminal window. When it opens, run command to install all the required tools and dependency libraries:</p>
+<pre tabindex="0"><code>sudo apt install build-essential cmake qt6-webengine-dev qt6-webengine-dev-tools qt6-base-dev-tools qt6-tools-dev qt6-tools-dev-tools qt6-l10n-tools qt6-5compat-dev qt6-svg-dev libqt6webenginecore6-bin libhunspell-dev libpcre2-dev libminizip-dev python3-dev python3-pip python3-lxml python3-six python3-css-parser python3-dulwich python3-pil.imagetk python3-html5lib python3-regex python3-pil python3-cssselect python3-chardet
+</code></pre><p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2024/12/apt-sigil-deps-700x492.webp" alt="" />
+</figure>
+
+
+</p>
+<p><strong>2.</strong> Then, download the latest Sigil source tarball from the Github release page under “Assets” section:</p>
+<p>Download Sigil</p>
+<p>Select download the Source code (either zip or tar.gz), then extract, right-click on source folder and select “<strong>Open in Terminal</strong>“.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2024/12/open-sigil-interminal-700x470.webp" alt="" />
+</figure>
+
+
+</p>
+<p><strong>3.</strong> When terminal opens with the Sigil source folder as working directory, start configure the source, build and install it by running the commands below one by one.</p>
+<ul>
+<li>
+<p>First, create a build folder and navigate into it:</p>
+<pre tabindex="0"><code>mkdir build &amp;&amp; cd build
+</code></pre></li>
+<li>
+<p>Then, configure the source via cmake command:</p>
+<pre tabindex="0"><code>cmake -G &#34;Unix Makefiles&#34; -DCMAKE_BUILD_TYPE=Release ../
+</code></pre><p>If it outputs errors, then you miss something that the app required. Though, in my case everything went well in Ubuntu 24.04.</p>
+</li>
+<li>
+<p>Next, start building the package via make command:</p>
+<pre tabindex="0"><code>make -j4
+</code></pre><p>Here <code>-j4</code> means to start 4 threads in parallel. Depends on how many CPU cores you have, replace it with <code>j8</code>, <code>-j16</code> or just skip it.</p>
+</li>
+<li>
+<p>If there’s no compiler bug, you may then install Sigil now via command:</p>
+<pre tabindex="0"><code>sudo make install
+</code></pre></li>
+</ul>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2024/12/compile-sigil231-700x397.webp" alt="" />
+</figure>
+
+
+</p>
+<p><strong>4.</strong> As you see in the screenshot above, the commands above by default install Sigil into <code>/usr/local</code> directory. It won’t cover the native <code>.deb</code> package if you installed from system repository.</p>
+<p>So, if you have multiple app icons in start menu, either remove other Sigil packages, or run <code>/usr/local/bin/sigil</code> to start from terminal.</p>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2023/08/launch-sigil.webp" alt="" />
+</figure>
+
+
+</p>
+<p><strong>5.</strong> If everything goes well, you may cleanup by removing the source tarball as well as the extract folder from the Downloads folder.</p>
+<p>You can also run the command below to remove the useless <code>-dev</code> packages (<strong>optional</strong>).</p>
+<pre tabindex="0"><code>sudo apt remove build-essential qt6-webengine-dev qt6-webengine-dev-tools qt6-base-dev-tools qt6-tools-dev qt6-tools-dev-tools qt6-l10n-tools qt6-5compat-dev qt6-svg-dev libhunspell-dev libpcre2-dev libminizip-dev python3-dev
+</code></pre><p><strong>NOTE: After removed the -dev package above, run <code>apt remove --autoremove</code> at any time MAY remove the required run-time libraries that cause Sigil app launching issue.</strong></p>
+<h3 id="uninstall-sigil">Uninstall Sigil</h3>
+<p>If you installed the ebook editor via Flatpak package, then open terminal (Ctrl+Alt+T) and run command to uninstall:</p>
+<pre tabindex="0"><code>flatpak uninstall --delete-data com.sigil_ebook.Sigil
+</code></pre><p>Also run <code>flatpak uninstall --unused</code> will remove useless run-time libraries.</p>
+<p>To uninstall Sigil that was building from the source (via the steps above), then just delete all the installed files:</p>
+<ul>
+<li>
+<p>First, remove the library and share folders:</p>
+<pre tabindex="0"><code>sudo rm -R /usr/local/share/sigil /usr/local/lib/sigil
+</code></pre></li>
+<li>
+<p>Then, remove the icon, app shortcut, and executable files:</p>
+<pre tabindex="0"><code>sudo rm /usr/local/share/pixmaps/sigil.png /usr/local/share/applications/sigil.desktop /usr/local/bin/sigil
+</code></pre></li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

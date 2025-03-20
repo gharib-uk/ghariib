@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>WhatsApp for Android Retains Deleted Contacts Locally</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>WhatsApp for Android Retains Deleted Contacts Locally</h1>
+			<b><time>06.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/advisories">advisories</a>
+        	       
+		           <a href="/tags/facebook">facebook</a>
+        	       
+		           <a href="/tags/whatsapp">whatsapp</a>
+        	       
+
+			<div>
+				<h2 id="summary">Summary</h2>
+<p>WhatApp for Android retains contact info locally after contacts get deleted. This would allow an attacker with physical access to the device to check if the WhatsApp user had interactions with specific contacts, even though they have been deleted.</p>
+<h2 id="vulnerability-details">Vulnerability Details</h2>
+<p>When a contact is deleted on WhatsApp, their information about security code changes is retained (while the chat content is not). The only way to get rid of that is to select “Clear Chat” for the contact before deleting it. Even deleting the chat itself doesn’t do it unless the “Clear Chat” operation is done first. The “security code change notifications” option must be enabled in order for this to work.</p>
+<p>Someone getting access to the user’s device can figure out whether they ever chatted with specific contacts, even if those contacts and their chats are no longer on the device. This is a privacy issue – especially for people like journalists and those living in dangerous countries.</p>
+<p>Since WhatsApp uses Android’s contact app for contact information but supports chats with numbers that aren’t contacts, our theory is that the application retains information about security code changes even for contacts no longer on the device. There seems to be a discrepancy between how the “Clear chat” option and “Delete Chat” options are implemented in the application, with the first option deleting security notification data.</p>
+<p>To reproduce:</p>
+<ol>
+<li>Delete a chat with a contact that had security code changes before.</li>
+<li>Delete the contact from the device via the Android Contacts app.</li>
+<li>Re-add contact to the device via the Android Contacts app.</li>
+<li>Start a new chat in WhatsApp with that contact but do not send any messages.</li>
+<li>Observe that security code changes are listed with dates in the chat.</li>
+<li>Select “Clear Chat” to remove the security code changes, and repeat sterps 1-4. Observe that the security code changes no longer appear.</li>
+</ol>
+<p>
+<figure>
+  <img src="https://wwws.nightwatchcybersecurity.com/wp-content/uploads/2021/12/screen-shot-2021-12-30-at-4.13.16-pm.png?w=612" alt="" />
+</figure>
+
+
+</p>
+<p>Tested on WhatsApp for Android, app version 2.21.20.20, running on Android 12.</p>
+<h2 id="vendor-response">Vendor Response</h2>
+<p>We haven’t retested on a more recent version but our recommendation to users is to use the “Clear Chat” option in order to prevent this.</p>
+<p>The vendor will not be fixing this issue, here is their response:</p>
+<blockquote>
+<p><em>As part of the attack scenario you describe getting access to a person’s WhatsApp account to obtain private data, as you mention yourself, people do have a way to remove these messages from their account, if a bad actor gets access to their WhatsApp account prior to that person deleting that information then they will be able to view this information. As such, we are closing this report.</em></p></blockquote>
+<h2 id="references">References</h2>
+<p>CWE: CWE-212 – Improper Removal of Sensitive Information Before Storage or Transfer</p>
+<p>Facebook # 10102482597361835</p>
+<h2 id="timeline">Timeline</h2>
+<p>2021-10-24: Initial report sent to the vendor, report ID assigned<br>
+2021-10-27: Vendor asks for more info, additional info and screenshots sent<br>
+2021-11-03: Vendor sent interim status report, still investigating<br>
+2021-11-09: Vendor rejects the vulnerability and closes the report<br>
+2021-12-30: Public disclosure</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

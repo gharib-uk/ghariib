@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta name="generator" content="Hugo 0.145.0">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Gharib Personal Blog</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Gharib Personal Blog">
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2024-06-24-hfinger---fingerprinting-http-requests/">Hfinger - Fingerprinting HTTP Requests</a></h1>
+	<b><time>24.06.2024 08:30</time></b>
+	
+	<div>
+		<h1 id="hfinger---fingerprinting-http-requests">Hfinger - Fingerprinting HTTP Requests</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Tool for Fingerprinting HTTP requests of malware. Based on Tshark and written in Python3. Working prototype stage :-)</p>
+<p>Its main objective is to provide unique representations (fingerprints) of malware requests, which help in their identification. <em>Unique</em> means here that each fingerprint should be seen only in one particular malware family, yet one family can have multiple fingerprints. Hfinger represents the request in a shorter form than printing the whole request, but still human interpretable.</p>
+		
+			<a href="https://ghariib.ir/posts/2024-06-24-hfinger---fingerprinting-http-requests/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2024-06-23-vulnnodeapp---a-vulnerable-nodejs-appli/">VulnNodeApp - A Vulnerable NodeJs Application</a></h1>
+	<b><time>23.06.2024 08:30</time></b>
+	
+	<div>
+		<h1 id="vulnnodeapp---a-vulnerable-nodejs-application">VulnNodeApp - A Vulnerable NodeJs Application</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>A <a href="https://www.kitploit.com/search/label/Vulnerable" title="vulnerable">vulnerable</a> application made using node.js, express server and ejs template engine. This application is meant for educational purposes only.</p>
+<h1 id="setup">Setup</h1>
+<h2 id="clone-this-repository">Clone this repository</h2>
+<pre tabindex="0"><code>git clone https://github.com/4auvar/VulnNodeApp.git
+</code></pre><h2 id="application-setup">Application setup:</h2>
+<ul>
+<li>Install the latest node.js version with npm.</li>
+<li>Open terminal/command prompt and navigate to the location of downloaded/cloned repository.</li>
+<li>Run command: <code>npm install</code></li>
+</ul>
+<h2 id="db-setup">DB setup</h2>
+<ul>
+<li>Install and configure latest mysql version and start the mysql service/deamon</li>
+<li>Login with root user in mysql and run below sql script:</li>
+</ul>
+<pre tabindex="0"><code>CREATE USER &#39;vulnnodeapp&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;password&#39;;create database vuln_node_app_db;GRANT ALL PRIVILEGES ON vuln_node_app_db.* TO &#39;vulnnodeapp&#39;@&#39;localhost&#39;;USE vuln_node_app_db;create table users (id int AUTO_INCREMENT PRIMARY KEY, fullname varchar(255), username varchar(255),password varchar(255), email varchar(255), phone varchar(255), profilepic varchar(255));insert into users(fullname,username,password,email,phone) values(&#34;test1&#34;,&#34;test1&#34;,&#34;test1&#34;,&#34;test1@test.com&#34;,&#34;976543210&#34;);insert into users(fullname,username,password,email,phone) values(&#34;test2&#34;,&#34;test2&#34;,&#34;test2&#34;,&#34;test2@test.com&#34;,&#34;9887987541&#34;);insert into users(fullname,username,password,email,phone) values(&#34;test3&#34;,&#34;test3&#34;,&#34;test3&#34;,&#34;test3@test.com&#34;,&#34;9876987611&#34;);insert into users(fullname,username,password,email,phone) values(&#34;test4&#34;,&#34;test4&#34;,&#34;test4&#34;,&#34;test4@test.com&#34;,&#34;9123459876&#34;);insert into users(fullname,username,password,email,phone) values(&#34;test5&#34;,&#34;test5&#34;,&#34;test   5&#34;,&#34;test5@test.com&#34;,&#34;7893451230&#34;);
+</code></pre><h2 id="set-basic-environment-variable">Set basic environment variable</h2>
+<ul>
+<li>User needs to set the below environment variable.
+<ul>
+<li>DATABASE_HOST (E.g: localhost, 127.0.0.1, etc&hellip;)</li>
+<li>DATABASE_NAME (E.g: vuln_node_app_db or DB name you change in above DB script)</li>
+<li>DATABASE_USER (E.g: vulnnodeapp or user name you change in above DB script)</li>
+<li>DATABASE_PASS (E.g: password or password you change in above DB script)</li>
+</ul>
+</li>
+</ul>
+<h1 id="start-the-server">Start the server</h1>
+<ul>
+<li>Open the command prompt/terminal and navigate to the location of your repository</li>
+<li>Run command: <code>npm start</code></li>
+<li>Access the application at http://localhost:3000</li>
+</ul>
+<h1 id="vulnerability-covered">Vulnerability covered</h1>
+<ul>
+<li>SQL Injection</li>
+<li>Cross Site Scripting (XSS)</li>
+<li>Insecure Direct Object Reference (IDOR)</li>
+<li>Command Injection</li>
+<li>Arbitrary File Retrieval</li>
+<li>Regular Expression Injection</li>
+<li>External XML Entity Injection (XXE)</li>
+<li>Node js Deserialization</li>
+<li>Security Misconfiguration</li>
+<li>Insecure Session Management</li>
+</ul>
+<h1 id="todo">TODO</h1>
+<ul>
+<li>Will add new vulnerabilities such as CORS, Template Injection, etc&hellip;</li>
+<li>Improve application documentation</li>
+</ul>
+<h1 id="issues">Issues</h1>
+<ul>
+<li>In case of bugs in the application, feel free to create an <a href="https://github.com/4auvar/VulnNodeApp/issues" title="issues">issues</a> on github.</li>
+</ul>
+<h1 id="contribution">Contribution</h1>
+<ul>
+<li>Feel free to create a pull request for any contribution.</li>
+</ul>
+<p>You can reach me out at <a href="https://twitter.com/4auvar" title="@4auvar">@4auvar</a></p>
+		
+			<a href="https://ghariib.ir/posts/2024-06-23-vulnnodeapp---a-vulnerable-nodejs-appli/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2024-06-22-xmgoat---composed-of-xm-cyber-terraform/">XMGoat - Composed of XM Cyber terraform templates that help you learn about common Azure security issues</a></h1>
+	<b><time>22.06.2024 08:30</time></b>
+	
+	<div>
+		<h1 id="xmgoat---composed-of-xm-cyber-terraform-templates-that-help-you-learn-about-common-azure-security-issues">XMGoat - Composed of XM Cyber terraform templates that help you learn about common Azure security issues</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>XM <a href="https://www.kitploit.com/search/label/Goat" title="Goat">Goat</a> is composed of XM <a href="https://www.kitploit.com/search/label/Cyber" title="Cyber">Cyber</a> <a href="https://www.kitploit.com/search/label/Terraform" title="terraform">terraform</a> templates that help you learn about common <a href="https://www.kitploit.com/search/label/Azure" title="Azure">Azure</a> security issues. Each template is a <a href="https://www.kitploit.com/search/label/Vulnerable" title="vulnerable">vulnerable</a> environment, with some significant misconfigurations. Your job is to attack and compromise the environments.</p>
+<p>Here&rsquo;s what to do for each environment:</p>
+<ol>
+<li>
+<p>Run installation and then get started.</p>
+		
+			<a href="https://ghariib.ir/posts/2024-06-22-xmgoat---composed-of-xm-cyber-terraform/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2024-06-21-extrude---analyse-binaries-for-missing-/">Extrude - Analyse Binaries For Missing Security Features Information Disclosure And More</a></h1>
+	<b><time>21.06.2024 08:30</time></b>
+	
+	<div>
+		<h1 id="extrude---analyse-binaries-for-missing-security-features-information-disclosure-and-more">Extrude - Analyse Binaries For Missing Security Features Information Disclosure And More</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Analyse binaries for missing security features, information disclosure and more.</p>
+<p>Extrude is in the early stages of development, and currently only supports <a href="https://www.kitploit.com/search/label/ELF" title="ELF">ELF</a> and MachO binaries. PE (Windows) binaries will be supported soon.</p>
+<h2 id="usage">Usage</h2>
+<pre tabindex="0"><code>Usage:  extrude [flags] [file]Flags:  -a, --all               Show details of all tests, not just those which failed.  -w, --fail-on-warning   Exit with a non-zero status even if only warnings are discovered.  -h, --help              help for extrude
+</code></pre><h2 id="docker">Docker</h2>
+<p>You can optionally run extrude with docker via:</p>
+		
+			<a href="https://ghariib.ir/posts/2024-06-21-extrude---analyse-binaries-for-missing-/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2024-06-20-bokuloader---a-proof-of-concept-cobalt-/">BokuLoader - A Proof-Of-Concept Cobalt Strike Reflective Loader Which Aims To Recreate Integrate And Enhance Cobalt Strikes Evasion Features</a></h1>
+	<b><time>20.06.2024 11:41</time></b>
+	
+	<div>
+		<h1 id="bokuloader---a-proof-of-concept-cobalt-strike-reflective-loader-which-aims-to-recreate-integrate-and-enhance-cobalt-strikes-evasion-features">BokuLoader - A Proof-Of-Concept Cobalt Strike Reflective Loader Which Aims To Recreate Integrate And Enhance Cobalt Strikes Evasion Features</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>A proof-of-concept <a href="https://hstechdocs.helpsystems.com/manuals/cobaltstrike/current/userguide/content/topics/malleable-c2-extend_user-defined-rdll.htm" title="User-Defined Reflective Loader (UDRL)">User-Defined Reflective Loader (UDRL)</a> which aims to recreate, integrate, and enhance Cobalt Strike&rsquo;s <a href="https://www.kitploit.com/search/label/Evasion" title="evasion">evasion</a> features!</p>
+<h4 id="contributors">Contributors:</h4>
+<p>Contributor</p>
+<p>Twitter</p>
+<p>Notable Contributions</p>
+<p>Bobby Cooke</p>
+<p><a href="https://twitter.com/0xBoku" title="@0xBoku">@0xBoku</a></p>
+<p>Project original author and maintainer</p>
+<p>Santiago Pecin</p>
+<p><a href="https://twitter.com/s4ntiago_p" title="@s4ntiago_p">@s4ntiago_p</a></p>
+<p>Reflective Loader major enhancements</p>
+<p>Chris Spehn</p>
+<p><a href="https://twitter.com/ConsciousHacker" title="@ConsciousHacker">@ConsciousHacker</a></p>
+		
+			<a href="https://ghariib.ir/posts/2024-06-20-bokuloader---a-proof-of-concept-cobalt-/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2024-06-19-volana---shell-command-obfuscation-to-a/">Volana - Shell Command Obfuscation To Avoid Detection Systems</a></h1>
+	<b><time>19.06.2024 08:30</time></b>
+	
+	<div>
+		<h1 id="volana---shell-command-obfuscation-to-avoid-detection-systems">Volana - Shell Command Obfuscation To Avoid Detection Systems</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h4 id="shell-command-obfuscation-to-avoid-siemdetection-system">Shell command obfuscation to avoid SIEM/detection system</h4>
+<p>During pentest, an important aspect is to <strong>be <a href="https://www.kitploit.com/search/label/Stealth" title="stealth">stealth</a></strong>. For this reason you should <strong>clear your tracks after your passage</strong>. Nevertheless, many infrastructures log command and send them to a <a href="https://www.kitploit.com/search/label/Siem" title="SIEM">SIEM</a> in a real time making the afterwards cleaning part alone useless.</p>
+<p><code>volana</code> provide a simple way to hide commands executed on compromised machine by providing it self shell runtime (enter your command, volana executes for you). Like this you <strong>clear your tracks DURING your passage</strong></p>
+		
+			<a href="https://ghariib.ir/posts/2024-06-19-volana---shell-command-obfuscation-to-a/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2024-06-18-cyberchef---the-cyber-swiss-army-knife-/">CyberChef - The Cyber Swiss Army Knife - A Web App For Encryption Encoding Compression And Data Analysis</a></h1>
+	<b><time>18.06.2024 08:30</time></b>
+	
+	<div>
+		<h1 id="cyberchef---the-cyber-swiss-army-knife---a-web-app-for-encryption-encoding-compression-and-data-analysis">CyberChef - The Cyber Swiss Army Knife - A Web App For Encryption Encoding Compression And Data Analysis</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><a href="https://www.kitploit.com/search/label/CyberChef" title="CyberChef">CyberChef</a> is a simple, intuitive web app for carrying out all manner of &ldquo;cyber&rdquo; <a href="https://www.kitploit.com/search/label/Operations" title="operations">operations</a> within a web browser. These <a href="https://www.kitploit.com/search/label/Operations" title="operations">operations</a> include simple <a href="https://www.kitploit.com/search/label/Encoding" title="encoding">encoding</a> like XOR and Base64, more complex <a href="https://www.kitploit.com/search/label/Encryption" title="encryption">encryption</a> like AES, DES and Blowfish, creating binary and hexdumps, <a href="https://www.kitploit.com/search/label/Compression" title="compression">compression</a> and de<a href="https://www.kitploit.com/search/label/Compression" title="compression">compression</a> of data, calculating hashes and checksums, IPv6 and X.509 parsing, changing character <a href="https://www.kitploit.com/search/label/Encoding" title="encoding">encoding</a>s, and much more.</p>
+		
+			<a href="https://ghariib.ir/posts/2024-06-18-cyberchef---the-cyber-swiss-army-knife-/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2024-06-16-nativedump---dump-lsass-using-only-nati/">NativeDump - Dump Lsass Using Only Native APIs By Hand-Crafting Minidump Files Without MinidumpWriteDump</a></h1>
+	<b><time>16.06.2024 13:16</time></b>
+	
+	<div>
+		<h1 id="nativedump---dump-lsass-using-only-native-apis-by-hand-crafting-minidump-files-without-minidumpwritedump">NativeDump - Dump Lsass Using Only Native APIs By Hand-Crafting Minidump Files Without MinidumpWriteDump</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>NativeDump allows to dump the lsass process using only NTAPIs generating a Minidump file with only the streams needed to be parsed by tools like Mimikatz or Pypykatz (SystemInfo, ModuleList and Memory64List Streams).</p>
+<p><a href="https://blogger.googleusercontent.com/img/a/AVvXsEh11fh6aFNrHcYMfe0poV40nnVo76iyfvtZ186Tz0QHquUWBMmZWc8SBwB_t6QnDKvusgUVyFIQxgDbSeha7QyatSDeWuFqpsN8ZH5u0f6HrWTnGCh3p9XRtTGuWOd4agBGBQQ2sQRqNZ6is4Z1N_XhG68KS41meeBR4sOQwVk1IKgD0OpYEUkdrqABPMo">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/a/AVvXsEh11fh6aFNrHcYMfe0poV40nnVo76iyfvtZ186Tz0QHquUWBMmZWc8SBwB_t6QnDKvusgUVyFIQxgDbSeha7QyatSDeWuFqpsN8ZH5u0f6HrWTnGCh3p9XRtTGuWOd4agBGBQQ2sQRqNZ6is4Z1N_XhG68KS41meeBR4sOQwVk1IKgD0OpYEUkdrqABPMo=w640-h210" alt="" />
+</figure>
+
+
+</a></p>
+<ul>
+<li>NTOpenProcessToken and NtAdjustPrivilegeToken to get the &ldquo;SeDebugPrivilege&rdquo; privilege</li>
+<li>RtlGetVersion to get the Operating System version details (Major version, minor version and build number). This is necessary for the SystemInfo Stream</li>
+<li>NtQueryInformationProcess and NtReadVirtualMemory to get the lsasrv.dll address. This is the only module necessary for the ModuleList Stream</li>
+<li>NtOpenProcess to get a handle for the lsass process</li>
+<li>NtQueryVirtualMemory and NtReadVirtualMemory to loop through the memory regions and dump all possible ones. At the same time it populates the Memory64List Stream</li>
+</ul>
+<p>Usage:</p>
+		
+			<a href="https://ghariib.ir/posts/2024-06-16-nativedump---dump-lsass-using-only-nati/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2024-06-06-long-range-hacking-with-lora/">Long Range Hacking with LoRa</a></h1>
+	<b><time>06.06.2024 00:06</time></b>
+	
+	<div>
+		<h1 id="long-range-hacking-with-lora">Long Range Hacking with LoRa</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h4 id="source"><a href="https://cyberarms.wordpress.com/2024/06/05/long-range-hacking-with-lora/">Source</a></h4>
+<!-- raw HTML omitted -->
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2024-05-31-game-of-drones-the-use-of-drones-in-mod/">Game of Drones The Use of Drones in Modern Warfare</a></h1>
+	<b><time>31.05.2024 22:18</time></b>
+	
+	<div>
+		<h1 id="game-of-drones-the-use-of-drones-in-modern-warfare">Game of Drones The Use of Drones in Modern Warfare</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h4 id="source"><a href="https://cyberarms.wordpress.com/2024/05/31/game-of-drones-the-use-of-drones-in-modern-warfare/">Source</a></h4>
+<!-- raw HTML omitted -->
+		
+	</div>
+</article>
+
+		
+		<div>
+
+	<a href="/page/493/">Previous Page</a>
+
+494 of 496
+
+	<a href="/page/495/">Next Page</a>
+
+</div>
+
+	</main>
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

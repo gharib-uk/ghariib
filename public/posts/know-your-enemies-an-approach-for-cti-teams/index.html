@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Know your enemies: An approach for CTI teams</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Know your enemies: An approach for CTI teams</h1>
+			<b><time>05.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>VirusTotal’s <strong>Threat Landscape</strong> can be a valuable source of operational and tactical threat intelligence for CTI teams, for instance helping us find the latest <strong>malware trends</strong> used by a given Threat Actor to adjust our <strong>intelligence-led security posture</strong> accordingly. In this post, we will play the role of a CTI analyst working for a Singaporean financial institution.</p>
+<p>As a first step, we search for threat actors that traditionally both targeted the <strong>financial industry</strong> and <strong>Singaporean companies</strong>.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhOYfPOF1sfQMsCFRPMBClNxlkMUuRqDUJu7BHziJtU6HkPOIO30_gk1vvbq8xFAk3xzheI-Qg3nhq4xQx8jGXtxTDIpRbibFtr4UE6S5VTRL2HUno3HTNOiKOiM4ZkciKairpUmBrB8jJPniPIWQHEH-RL08KLcUjFGNrGPOglM3-0wjr1vSySxvxkPHM/s1379/kyep1.png" alt="" />
+</figure>
+
+
+</p>
+<p>“<strong>TA505</strong>” and “<strong>APT41</strong>” both match these requirements. For the moment let’s focus on TA505, which seems more active at the moment.</p>
+<h2 id="understanding-ta505">Understanding (TA505):</h2>
+<p>The <strong>Threat Actor</strong> card provides details on the actor, which seems to target organizations in the financial, healthcare, retail, and hospitality sectors across Europe, Asia Pacific region, Canada, India and the United States.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjLPvh_Z021Xb4CKQgwRFRX-0TTY-tTHqhtTUhRm0wjmY2p5WLI7yHpRgu6y5mS7adKxf6L1M4NESJpH1q3NuBeUFzPKenCLYQamRxMKN9FpZ7fO2lhlCr6386YZCCgIohG_v6j9JrWQ_ghO7kgkpETQVbKyR1VLqfdww3nImmbf2NyBAxUS3qBKdjBHRQ/s16000/kyep2.png" alt="" />
+</figure>
+
+
+</p>
+<p>According to the description TA505 seems related to <strong>Dridex banking trojan</strong> and <strong>Locky ransomware</strong> activity.</p>
+<p>In VirusTotal we can find <strong>two categories for TTPs</strong>:<br>
+- The First are TTPs directly ingested from <strong>MISP</strong> and <strong>MITRE</strong>.<br>
+- The second (called Toolkit TTPs) shows TTPs obtained from <strong>sandbox analysis of the IOCs</strong> related to a particular actor.</p>
+<p>In this case, for TA505 we can find the following <strong>Toolkit TTPs</strong>:</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhsXor4ZlNpvzrA3SWkbEpawRbYIKZElisjfG5-pC4Ywfp_Kx9R8Uw3cZpaafbQ6L0R_bIiYKVA3IsJMudc9VEY3pEOtoJOakEgA-Xag_627pS6uyN1UfdfJmv3lD-0Ka20YbdflEPxkzs1JPQNYsgXdKs85Hogk6ET8NLeL5VOpJC1ZEfG4LaZyqXC8Qg/s16000/kyep3.png" alt="" />
+</figure>
+
+
+</p>
+<p>The <strong>T1486</strong> tactic <strong>(‘Data Encrypted technique for Impact&rsquo;)</strong> seems potentially related to the use of <strong>ransomware</strong>, such as <strong>Locky</strong>, by this actor. This seems like a good point for us to retrieve some fresh data and understand this actor’s recent activity. For instance, the following query provide <strong>fresh samples</strong> from the actor (samples submitted after January 1st, 2024) that use data encryption, and tagged as ransom by AVs:</p>
+<p>attack_technique:T1486 threat_actor:TA505 ls:2024-01-01+ engines:ransom</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjIQeMWoIypq_2ootb1FVClD_5_9S0nlIexg50yzpY3n3LRgO8Ftki0R_y9alhKe4BEApxBErdPmDyTZZzoEhjlydfHGvPOgLbqeLp8mvKVLmsl5C6AY-E2t3UK-D_Jue33gBLtGzg5bEhyo-eKip2G4nGpYLzNlZh43kcS4mHus8m6MuD6_QSiaDpUzMQ/s16000/kyep4.png" alt="" />
+</figure>
+
+
+</p>
+<p>Multiple of the returned samples belong to the “locky” Collection <strong>tagged as ‘locky’</strong>, which contains <strong>510 files</strong> at the moment.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgMADkBylU3Ua5_WIyPUatBioi5GrWhyQbiGRGXiyKOoJvdIHERuvpquxnCVMjOGXuCPp-JZq-K6i3vxqie5Z6RlfvfYFL9fscnqPjlAzPSHLQmvqfUgWDgg3mGXHfWAqjcyJO-WC0t8WaEEGoFEFv0NpFbs7ycoWeOncv7aWTjNvgkFQDGWRQQcHeIMEU/s16000/kyep5.png" alt="" />
+</figure>
+
+
+</p>
+<p>The <strong>Telemetry tab</strong> provides information about <strong>submissions</strong> and <strong>lookups</strong>, which helps us understand malware family’s distribution and timeframes of operations.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiDWIpq2eU-Fmk0Twg67amSaq_GYrt4iQY8TLkmVcj2Yw8XARxapIqQBybRYmBllJXbkQj27zsiKPwVdXioxlWzajs9m7RxrCY-mmD6XqMp4TI1WCwRHmt6V43QLeXFBS2MfmeU_bSm7GUZbtXdOHsBArdFzSl4OpcvCl00ZR6nXC4UF7peVm9jsZv1sDM/s16000/kyep6.png" alt="" />
+</figure>
+
+
+</p>
+<h2 id="tailoring-defenses">Tailoring defenses:</h2>
+<p>In addition, the Collection’s <strong>Rules</strong> panel provides details on crowdsourced <strong>Yara</strong>, <strong>sigma</strong> and <strong>IDS rules</strong> that match different indicators files in this collection.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg2-cDcNE2XuSnFVnC5uC8aTD7SMr7leJvBpMBYG3iFopbx3QZqc15N8c1sSKqEjl_tIwnUSAvzhtuCJ7fJjtnrrGxuFITgUFffSMjqIBU3UF-C0wgJ5nHKGM3S-y9n9Lgsrnt9p0x8qaAlymMNmSANW2gkBrQ5ZRqui3EKobK6AUq6YR8QLY8wnTiFLhg/s16000/kyep7.png" alt="" />
+</figure>
+
+
+</p>
+<p>In this case, the “<strong>win_locky_auto</strong>” yara rule matches almost all the files in this collection (505/510). This could help to enhance detection capabilities for this threat.</p>
+<p>Collection’s <strong>commonalities</strong> refer to characteristics, behaviors, or technical attributes shared by a set of indicators, which helps to identify patterns. Let’s use this to create a new “<strong>Livehunt rule</strong>” to track this activity in the future. We will use only recent samples, we can filter them in the IOCS tab (“fs:180d+”):</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgjp6zsOoykB_WZIyIsTdIadYqnQkbECnAjwMN0o2blQv3q01Cbo5vMiKYeTtnR-_T1opy5lxAyvkARZBCadq_z_lJQIu__8STHtuCpYHTB11owibRlERVtxznts-A3WGpHevh36Ec1BLxHtG9oJVdxuwYB30kcmdOZ74HnuMeyb0lYr1C2rzIUDJ8o2SI/s16000/kyep8.png" alt="" />
+</figure>
+
+
+</p>
+<p>Based on commonalities results, some <strong>useful information</strong> to create the livehunt rule may include:</p>
+<p><strong>Metadata</strong>:</p>
+<ul>
+<li><strong>File type</strong>: EXE and DLL formats.<br>
+(vt.metadata.file_type == vt.FileType.PE_DLL or vt.metadata.file_type == vt.FileType.PE_EXE)</li>
+<li><strong>File size</strong>: Less than 1Mb.<br>
+(vt.metadata.file_size &lt; 1000000)</li>
+<li><strong>Main icon</strong>: Custom and specific icon.<br>
+(vt.metadata.main_icon.dhash == &ldquo;52c244c9a7a3998b&rdquo;)</li>
+<li><strong>Imphash</strong>: Hash value calculated from PE&rsquo;s import table, that could be matching some locky samples.<br>
+(vt.metadata.imphash == &ldquo;31553623c43827d554ad9e1b7dfa6a5a&rdquo;)</li>
+</ul>
+<p><strong>Behavior</strong>:</p>
+<ul>
+<li><strong>Sandbox attack techniques</strong>: Detect T1486 Encryption Data technique.<br>
+(for any tec in vt.behaviour.mitre_attack_techniques: (tec.id == &ldquo;T1486&rdquo;))</li>
+<li><strong>Command execution</strong>: Identification of possible rescue note and background set.<br>
+(for any ce in vt.behaviour.command_executions: (ce icontains &ldquo;\Desktop\*.txt&rdquo; or ce icontains &ldquo;\Desktop\*.bmp&rdquo;))</li>
+<li><strong>Memory patterns</strong>: Specific patterns observed in locky samples that could be reused.<br>
+(for any mem in vt.behaviour.memory_pattern_urls: (mem icontains &ldquo;checkupdate&rdquo; or mem icontains &ldquo;userinfo.php&rdquo;))</li>
+</ul>
+<p>Remember you can always <strong>follow</strong> Threat Actor and/or collections and receive <strong>fresh new IOCs</strong> through the IoC Stream.</p>
+<h2 id="wrapping-up">Wrapping up:</h2>
+<p>Threat Landscape empowers CTI teams with insights for prioritizing threats, understanding threat actors and tracking their operations pivoting between <strong>Threat Actors</strong> &lt;=&gt; <strong>Collections</strong> &lt;=&gt; <strong>IOCs</strong>. This provides actionable details based on the technical capabilities of the malware used in these campaigns, including a set of TTPs based on sandbox detonation that we can use both for hunting and monitoring. Collections also provide “<strong>Commonalities</strong>” on different indicators, including which crowdsourced rules better detect them. This helps us to quickly create effective monitoring and hunting strategies for malware families and threats actors, as well as effective protections adjusted to recent campaigns and malicious activity.</p>
+<p>If you have any <strong>suggestions</strong> or want to <strong>share feedback</strong> please feel free to reach out here.</p>
+<p>Happy Hunting!</p>
+<p>VirusTotal’s <strong>Threat Landscape</strong> can be a valuable source of operational and tactical threat intelligence for CTI teams, for instance helping us find the latest <strong>malware trends</strong> used by a given Threat Actor to adjust our <strong>intelligence-led security posture</strong> accordingly. In this post, we will play the role of a CTI analyst working for a Singaporean financial institution.</p>
+<p>As a first step, we search for threat actors that traditionally both targeted the <strong>financial industry</strong> and <strong>Singaporean companies</strong>.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhOYfPOF1sfQMsCFRPMBClNxlkMUuRqDUJu7BHziJtU6HkPOIO30_gk1vvbq8xFAk3xzheI-Qg3nhq4xQx8jGXtxTDIpRbibFtr4UE6S5VTRL2HUno3HTNOiKOiM4ZkciKairpUmBrB8jJPniPIWQHEH-RL08KLcUjFGNrGPOglM3-0wjr1vSySxvxkPHM/s1379/kyep1.png" alt="" />
+</figure>
+
+
+</p>
+<p>“<strong>TA505</strong>” and “<strong>APT41</strong>” both match these requirements. For the moment let’s focus on TA505, which seems more active at the moment.</p>
+<h2 id="understanding-ta505-1">Understanding (TA505):</h2>
+<p>The <strong>Threat Actor</strong> card provides details on the actor, which seems to target organizations in the financial, healthcare, retail, and hospitality sectors across Europe, Asia Pacific region, Canada, India and the United States.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjLPvh_Z021Xb4CKQgwRFRX-0TTY-tTHqhtTUhRm0wjmY2p5WLI7yHpRgu6y5mS7adKxf6L1M4NESJpH1q3NuBeUFzPKenCLYQamRxMKN9FpZ7fO2lhlCr6386YZCCgIohG_v6j9JrWQ_ghO7kgkpETQVbKyR1VLqfdww3nImmbf2NyBAxUS3qBKdjBHRQ/s16000/kyep2.png" alt="" />
+</figure>
+
+
+</p>
+<p>According to the description TA505 seems related to <strong>Dridex banking trojan</strong> and <strong>Locky ransomware</strong> activity.</p>
+<p>In VirusTotal we can find <strong>two categories for TTPs</strong>:<br>
+- The First are TTPs directly ingested from <strong>MISP</strong> and <strong>MITRE</strong>.<br>
+- The second (called Toolkit TTPs) shows TTPs obtained from <strong>sandbox analysis of the IOCs</strong> related to a particular actor.</p>
+<p>In this case, for TA505 we can find the following <strong>Toolkit TTPs</strong>:</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhsXor4ZlNpvzrA3SWkbEpawRbYIKZElisjfG5-pC4Ywfp_Kx9R8Uw3cZpaafbQ6L0R_bIiYKVA3IsJMudc9VEY3pEOtoJOakEgA-Xag_627pS6uyN1UfdfJmv3lD-0Ka20YbdflEPxkzs1JPQNYsgXdKs85Hogk6ET8NLeL5VOpJC1ZEfG4LaZyqXC8Qg/s16000/kyep3.png" alt="" />
+</figure>
+
+
+</p>
+<p>The <strong>T1486</strong> tactic <strong>(‘Data Encrypted technique for Impact&rsquo;)</strong> seems potentially related to the use of <strong>ransomware</strong>, such as <strong>Locky</strong>, by this actor. This seems like a good point for us to retrieve some fresh data and understand this actor’s recent activity. For instance, the following query provide <strong>fresh samples</strong> from the actor (samples submitted after January 1st, 2024) that use data encryption, and tagged as ransom by AVs:</p>
+<p>attack_technique:T1486 threat_actor:TA505 ls:2024-01-01+ engines:ransom</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjIQeMWoIypq_2ootb1FVClD_5_9S0nlIexg50yzpY3n3LRgO8Ftki0R_y9alhKe4BEApxBErdPmDyTZZzoEhjlydfHGvPOgLbqeLp8mvKVLmsl5C6AY-E2t3UK-D_Jue33gBLtGzg5bEhyo-eKip2G4nGpYLzNlZh43kcS4mHus8m6MuD6_QSiaDpUzMQ/s16000/kyep4.png" alt="" />
+</figure>
+
+
+</p>
+<p>Multiple of the returned samples belong to the “locky” Collection <strong>tagged as ‘locky’</strong>, which contains <strong>510 files</strong> at the moment.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgMADkBylU3Ua5_WIyPUatBioi5GrWhyQbiGRGXiyKOoJvdIHERuvpquxnCVMjOGXuCPp-JZq-K6i3vxqie5Z6RlfvfYFL9fscnqPjlAzPSHLQmvqfUgWDgg3mGXHfWAqjcyJO-WC0t8WaEEGoFEFv0NpFbs7ycoWeOncv7aWTjNvgkFQDGWRQQcHeIMEU/s16000/kyep5.png" alt="" />
+</figure>
+
+
+</p>
+<p>The <strong>Telemetry tab</strong> provides information about <strong>submissions</strong> and <strong>lookups</strong>, which helps us understand malware family’s distribution and timeframes of operations.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiDWIpq2eU-Fmk0Twg67amSaq_GYrt4iQY8TLkmVcj2Yw8XARxapIqQBybRYmBllJXbkQj27zsiKPwVdXioxlWzajs9m7RxrCY-mmD6XqMp4TI1WCwRHmt6V43QLeXFBS2MfmeU_bSm7GUZbtXdOHsBArdFzSl4OpcvCl00ZR6nXC4UF7peVm9jsZv1sDM/s16000/kyep6.png" alt="" />
+</figure>
+
+
+</p>
+<h2 id="tailoring-defenses-1">Tailoring defenses:</h2>
+<p>In addition, the Collection’s <strong>Rules</strong> panel provides details on crowdsourced <strong>Yara</strong>, <strong>sigma</strong> and <strong>IDS rules</strong> that match different indicators files in this collection.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg2-cDcNE2XuSnFVnC5uC8aTD7SMr7leJvBpMBYG3iFopbx3QZqc15N8c1sSKqEjl_tIwnUSAvzhtuCJ7fJjtnrrGxuFITgUFffSMjqIBU3UF-C0wgJ5nHKGM3S-y9n9Lgsrnt9p0x8qaAlymMNmSANW2gkBrQ5ZRqui3EKobK6AUq6YR8QLY8wnTiFLhg/s16000/kyep7.png" alt="" />
+</figure>
+
+
+</p>
+<p>In this case, the “<strong>win_locky_auto</strong>” yara rule matches almost all the files in this collection (505/510). This could help to enhance detection capabilities for this threat.</p>
+<p>Collection’s <strong>commonalities</strong> refer to characteristics, behaviors, or technical attributes shared by a set of indicators, which helps to identify patterns. Let’s use this to create a new “<strong>Livehunt rule</strong>” to track this activity in the future. We will use only recent samples, we can filter them in the IOCS tab (“fs:180d+”):</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgjp6zsOoykB_WZIyIsTdIadYqnQkbECnAjwMN0o2blQv3q01Cbo5vMiKYeTtnR-_T1opy5lxAyvkARZBCadq_z_lJQIu__8STHtuCpYHTB11owibRlERVtxznts-A3WGpHevh36Ec1BLxHtG9oJVdxuwYB30kcmdOZ74HnuMeyb0lYr1C2rzIUDJ8o2SI/s16000/kyep8.png" alt="" />
+</figure>
+
+
+</p>
+<p>Based on commonalities results, some <strong>useful information</strong> to create the livehunt rule may include:</p>
+<p><strong>Metadata</strong>:</p>
+<ul>
+<li><strong>File type</strong>: EXE and DLL formats.<br>
+(vt.metadata.file_type == vt.FileType.PE_DLL or vt.metadata.file_type == vt.FileType.PE_EXE)</li>
+<li><strong>File size</strong>: Less than 1Mb.<br>
+(vt.metadata.file_size &lt; 1000000)</li>
+<li><strong>Main icon</strong>: Custom and specific icon.<br>
+(vt.metadata.main_icon.dhash == &ldquo;52c244c9a7a3998b&rdquo;)</li>
+<li><strong>Imphash</strong>: Hash value calculated from PE&rsquo;s import table, that could be matching some locky samples.<br>
+(vt.metadata.imphash == &ldquo;31553623c43827d554ad9e1b7dfa6a5a&rdquo;)</li>
+</ul>
+<p><strong>Behavior</strong>:</p>
+<ul>
+<li><strong>Sandbox attack techniques</strong>: Detect T1486 Encryption Data technique.<br>
+(for any tec in vt.behaviour.mitre_attack_techniques: (tec.id == &ldquo;T1486&rdquo;))</li>
+<li><strong>Command execution</strong>: Identification of possible rescue note and background set.<br>
+(for any ce in vt.behaviour.command_executions: (ce icontains &ldquo;\Desktop\*.txt&rdquo; or ce icontains &ldquo;\Desktop\*.bmp&rdquo;))</li>
+<li><strong>Memory patterns</strong>: Specific patterns observed in locky samples that could be reused.<br>
+(for any mem in vt.behaviour.memory_pattern_urls: (mem icontains &ldquo;checkupdate&rdquo; or mem icontains &ldquo;userinfo.php&rdquo;))</li>
+</ul>
+<p>Remember you can always <strong>follow</strong> Threat Actor and/or collections and receive <strong>fresh new IOCs</strong> through the IoC Stream.</p>
+<h2 id="wrapping-up-1">Wrapping up:</h2>
+<p>Threat Landscape empowers CTI teams with insights for prioritizing threats, understanding threat actors and tracking their operations pivoting between <strong>Threat Actors</strong> &lt;=&gt; <strong>Collections</strong> &lt;=&gt; <strong>IOCs</strong>. This provides actionable details based on the technical capabilities of the malware used in these campaigns, including a set of TTPs based on sandbox detonation that we can use both for hunting and monitoring. Collections also provide “<strong>Commonalities</strong>” on different indicators, including which crowdsourced rules better detect them. This helps us to quickly create effective monitoring and hunting strategies for malware families and threats actors, as well as effective protections adjusted to recent campaigns and malicious activity.</p>
+<p>If you have any <strong>suggestions</strong> or want to <strong>share feedback</strong> please feel free to reach out here.</p>
+<p>Happy Hunting!</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

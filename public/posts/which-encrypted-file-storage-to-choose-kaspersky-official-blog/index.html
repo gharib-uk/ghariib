@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Which encrypted file storage to choose? | Kaspersky official blog</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Which encrypted file storage to choose? | Kaspersky official blog</h1>
+			<b><time>03.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Attacks on encrypted file storage: how to choose a safe alternative to Dropbox or OneDrive</p>
+<p>No one can deny the convenience of cloud file-storage services like Dropbox or OneDrive. The one drawback is that cybercriminals, intelligence agencies, or the hosting provider itself can view your cloud-based files without authorization. But there’s a more secure alternative: encrypted cloud file-storage. Some call it end-to-end encryption (E2EE) — similar to Signal and WhatsApp. According to the marketing blurb, files are encrypted on your device and sent to the cloud already in secure form — the encryption key remaining in your possession and no one else’s. Not even the provider can sniff this information. But is that really the case?</p>
+<h2 id="swiss-cheese-encryption">Swiss-cheese encryption</h2>
+<p>The Applied Cryptography Group at ETH Zurich took apart the algorithms of five popular encrypted storage services: Sync.com, pCloud, Icedrive, Seafile, and Tresorit. In each of them, the researchers found errors in the implementation of encryption allowing, to varying degrees, file manipulation, and even access to fragments of unencrypted data. Earlier, they’d discovered flaws in two other popular hosting services —  MEGA and Nextcloud.</p>
+<p>In all cases, attacks are carried out from a malicious server. The scenario is as follows: the intruders either hack the encrypted hosting servers, or, by manipulating routers along the client-to-server path, force the victim’s computer to connect to another server mimicking the genuine encrypted hosting server. If this tricky maneuver succeeds, the attackers can theoretically:</p>
+<ul>
+<li>In the case of <strong>com</strong>, plant folders and files with incriminating information, and change the file names and metadata of stored information. Also, the hacked server can send new encryption keys to the client, then decrypt any files downloaded afterwards. Plus, the built-in share function allows the malicious server to decrypt any file shared by the victim, since the decryption key is contained in the link that’s sent when the server is accessed.</li>
+<li>In the case of <strong>pCloud</strong>, plant files and folders, arbitrarily move files and swap file names, delete file fragments, and decrypt files downloaded post-hack.</li>
+<li>In the case of <strong>Seafile</strong>, force the client to use an older version of the protocol, making it easier to bruteforce passwords, swap or delete file fragments, plant files and folders, and modify file metadata.</li>
+<li>In the case of <strong>Icedrive</strong>, plant files consisting of fragments of other files already uploaded to the cloud, change the name and location of stored files, and reorder file fragments.</li>
+<li>In the case of <strong>Tresorit</strong>, manipulate the metadata of stored files— including authorship.</li>
+<li>In the case of <strong>Nextcloud</strong>, manipulate encryption keys — allowing decryption of downloaded files.</li>
+<li>In the case of <strong>MEGA</strong>, restore encryption keys and thus decrypt all files. It’s also possible to plant incriminating files.</li>
+</ul>
+<p>The malicious server in each case is a hard-to-implement but not blue-sky component of the attack. In light of the cyberattacks on Microsoft and Twilio, the possibility of compromising a major player is real. And of course, E2EE by definition needs to be resistant to malicious server-side actions.</p>
+<p>Without going into technical details, we note that the developers of all the services seem to have implemented bona fide E2EE and used recognized, strong algorithms like AES and RSA. But file encryption creates a lot of technical difficulties when it comes to document collaboration and co-authoring. The tasks required to overcome these difficulties and factor in all possible attacks involving modified encryption keys remain unsolved, but Tresorit has done a far better job than anyone else.</p>
+<p>The researchers point out that the developers of the various services made very similar errors independently of each other. This means that the implementation of encrypted cloud storage is fraught with non-trivial cryptographic nuances. What’s needed is a well-developed protocol thoroughly tested by the cryptographic community — such as TLS for websites or the Signal Protocol for instant messengers.</p>
+<h2 id="costly-fixes">Costly fixes</h2>
+<p>The biggest problem with fixing the identified bugs is that not only do the applications and server software need updating, but also, in many cases, user-saved files need re-encrypting. Not every hosting provider can afford these huge computational outlays. What’s more, re-encryption is only possible in cooperation with each user — not unilaterally. Which is probably why fixes are slow in coming:</p>
+<ul>
+<li><strong>com</strong> responded to the researchers after six months, and only after the appearance of press reports. Having finally woken up, they announced a fix for the problem of key leakage when sharing links, and said they’d to patch the other flaws as well — but without giving a time frame.</li>
+<li><strong>Tresorit</strong> promised to fix the issue in 2025 (but the problem is less acute for them).</li>
+<li><strong>Seafile</strong> fixed the issue of protocol version downgrade without commenting on the other flaws.</li>
+<li><strong>Icedrive</strong> decided not to address the identified issues.</li>
+<li><strong>pCloud</strong> didn’t respond to the researchers until the appearance of press reports, then announced that the attacks are theoretical and don’t require immediate action.</li>
+<li><strong>Nextcloud</strong> fixed the issue and majorly reworked the overall approach to E2EE in version 3.12. The updated encryption scheme has yet to be researched.</li>
+<li><strong>MEGA</strong> significantly lowered the likelihood of an attack by introducing client-side checks.</li>
+</ul>
+<h2 id="what-users-need-to-do">What users need to do</h2>
+<p>Although the issues identified by the Applied Cryptography Group cannot be called purely theoretical, they do not represent a mass threat readily exploitable by cybercriminals. Therefore, hasty action isn’t required; rather — a sober assessment of your situation is needed:</p>
+<ul>
+<li>How sensitive is the data in your storage, and how tempting is it to outsiders?</li>
+<li>How much data do you store in the encrypted service, and is it easy to move to another?</li>
+<li>How important are the collaboration and file-sharing features?</li>
+</ul>
+<p>If collaboration isn’t important, while the data stored is critical, the best option is to switch to local file encryption. You can do this in a variety of ways — for example, by storing data in an encrypted container file or an archive with a strong password. If you need to transfer data to another device, you can upload an already encrypted archive to the cloud hosting service.</p>
+<p>If you want to combine collaboration and convenience with proper security guarantees, and the amount of stored data isn’t that great, it’s worth moving the data to one of the services that better withstood ETH Zurich’s testing. That means Tresorit first and foremost, but don’t discount MEGA and Nextcloud.</p>
+<p>If none of these solutions fits the bill, you can opt for other encrypted hosting services, but with additional precautions: avoid storing highly sensitive data, promptly update client applications, regularly check your cloud drives, and delete outdated or extraneous information.</p>
+<p>In any case, remember that the most likely attack on your data will take the shape of an infostealer simply compromising your computer or smartphone. Therefore, encrypted hosting must go hand in hand with full anti-malware protection for all smartphones and computers.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

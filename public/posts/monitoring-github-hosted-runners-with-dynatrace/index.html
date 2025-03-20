@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Monitoring GitHub-hosted runners with Dynatrace</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Monitoring GitHub-hosted runners with Dynatrace</h1>
+			<b><time>23.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://dt-cdn.net/wp-content/uploads/2023/02/github-dark-300x169.png" alt="Dynatrace | GitHub" />
+</figure>
+
+
+</p>
+<p>As more organizations embrace DevOps and CI/CD pipelines, GitHub-hosted runners and GitHub Actions have emerged as powerful tools for automating workflows. But as with many other automation tools, it can be difficult to maintain the performance and visibility of these workflows. That’s where Dynatrace business events and automation workflows come into play to provide a comprehensive view of your CI/CD pipelines.</p>
+<p>Let’s explore some of the advantages of monitoring GitHub runners using Dynatrace.</p>
+<ol>
+<li><strong>Enhanced observability and release validation</strong><br>
+Dynatrace already excels at delivering full-stack, end-to-end observability of your systems and user journeys. Extending this visibility into your CI/CD pipelines offers even greater value. By integrating Dynatrace with GitHub Actions, you can proactively monitor for potential issues or slowdowns in the deployment processes. You can also validate releases to ensure quality and reliability. With this integration, teams can detect, confirm, and resolve problems faster by correlating new issues directly to updates deployed by a GitHub runner, streamlining troubleshooting, and minimizing downtime.</li>
+<li><strong>Improving collaboration across teams</strong><br>
+By surfacing actionable insights and centralized monitoring data, Dynatrace fosters collaboration between development, operations, security, and business teams. Everyone involved in the software delivery lifecycle can work together more effectively with a single source of truth and a shared understanding of pipeline performance and health.</li>
+<li><strong>Optimizing resource utilization</strong><br>
+Whether you’re using self-hosted or GitHub-hosted runners, their resource demands can significantly impact your organization. Inefficient or resource-intensive runners can lead to increased costs and underutilized infrastructure. With Dynatrace, you can monitor runner resource usage and consumption patterns, identify inefficiencies, and optimize runner performance. This awareness allows teams to allocate and scale resources more effectively, reducing costs while ensuring CI/CD pipelines operate smoothly and efficiently.</li>
+</ol>
+<h2 id="automating-github-runner-data-ingestion-with-dynatrace-workflows">Automating GitHub runner data ingestion with Dynatrace workflows</h2>
+<p>Workflows within the Dynatrace SaaS platform are a robust tool for automating complex processes. In the example below, we demonstrate how to use workflows to ingest data from the GitHub API, capturing detailed information about runners and integrating it seamlessly into Dynatrace business events for actionable insights.</p>
+<p>
+<figure>
+  <img src="https://dt-cdn.net/wp-content/uploads/2025/01/github_runners_flowchart.png" alt="GitHub-hosted runners flowchart" />
+</figure>
+
+
+</p>
+<h2 id="workflow-overview">Workflow overview</h2>
+<p>The workflow, though simple, is highly effective. It begins with a timed trigger set to run every 10 minutes. After triggering, the workflow sends a series of GET requests to the following GitHub API endpoints:</p>
+<ul>
+<li><code>/actions/runs</code> – Retrieves workflow run details.</li>
+<li><code>/actions/runners/downloads</code> – Fetches runner software download information.</li>
+<li><code>/actions/runners</code> – Provides details about self-hosted and GitHub-hosted runners.</li>
+<li><code>/billing/actions</code> – Tracks the minutes consumed by GitHub-hosted runners.</li>
+</ul>
+<p>This data covers all aspects of CI/CD activity, from workflow executions to runner performance and cost metrics.</p>
+<p>In the final step of the workflow, a JavaScript processes the API responses. Since GitHub API endpoints return data in different formats, the script normalizes and cleans the data to ensure consistency. This customization ensures that only the relevant metrics are extracted, tailored to the user’s needs.</p>
+<p>Once the data is formatted, it is ingested into Dynatrace Business Analytics using the Dynatrace SDK. This integration enables advanced analysis, visualization, and reporting on runner and workflow performance within the Dynatrace platform.</p>
+<p>To simplify implementation, find the JavaScript and workflow templates on this GitHub repository.</p>
+<h2 id="visualizing-the-data">Visualizing the data</h2>
+<p>Using Dynatrace dashboards and business events, you can visualize GitHub workflows, runners, and performance metrics in a centralized, customizable interface.</p>
+<h3 id="example-dashboard-overview">Example dashboard overview</h3>
+<p>In the example below, a straightforward dashboard visualizes key GitHub data:</p>
+<p>Workflow runs and states: Displays the number of workflow executions and their current states (for example success, failure, in progress).</p>
+<p>GitHub-hosted runner usage: Tracks the time spent on GitHub-hosted runners, helping monitor resource usage and associated costs.</p>
+<p>Self-hosted runner status: Provides real-time insights into the health and performance of self-hosted runners.</p>
+<p>
+<figure>
+  <img src="https://dt-cdn.net/wp-content/uploads/2025/01/github_runners_dashboard.png" alt="GitHub-hosted workflows dashboard shows stats of runner status, usage, and states" />
+</figure>
+
+
+</p>
+<p>This view is fully customizable, allowing users to tailor it to the specific data ingested from their workflows using the Dynatrace Query Language (DQL).</p>
+<h2 id="next-steps-unlock-the-potential-of-github-data-in-dynatrace">Next steps: Unlock the potential of GitHub data in Dynatrace</h2>
+<p>The examples provided were designed to be straightforward and easy to implement, offering a foundation for integrating GitHub data into Dynatrace. However, these use cases are just the beginning. When your data is in Dynatrace, the possibilities for analysis and visualization are virtually limitless.</p>
+<p>Here are some next steps to consider:</p>
+<ul>
+<li>Visualize workflow success trends</li>
+<li>Identify runner performance bottlenecks</li>
+<li>Correlate runner activity with workflow execution times</li>
+</ul>
+<p>With the flexibility of DQL and Dynatrace’s powerful visualizations, you can create customized dashboards and reports that deliver actionable insights tailored to your needs. The only limit is your imagination—experiment with new queries, uncover hidden trends, and continually refine your monitoring setup to maximize the value of your GitHub data. To achieve all this and more, try Dynatrace in your own environment today.</p>
+<p>The post Monitoring GitHub-hosted runners with Dynatrace appeared first on Dynatrace news.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

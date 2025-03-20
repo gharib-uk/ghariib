@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How MIG maximizes GPU efficiency on OpenShift AI</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How MIG maximizes GPU efficiency on OpenShift AI</h1>
+			<b><time>06.02.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Modern data science workloads demand high computational power, and Graphic Processing Units (GPUs) are often at the heart of these operations. However, sharing GPU resources efficiently among multiple users or workloads can be challenging. NVIDIA Multi-Instance GPU (MIG) technology offers a solution. This article explores how I tested MIG on Red Hat OpenShift AI using an NVIDIA Ampere architecture GPU and the benefits for AI and data science teams.</p>
+<h2 id="the-nvidia-mig-solution-and-test">The NVIDIA MIG solution and test</h2>
+<p>GPUs in a Kubernetes environment are assigned to pods in a 1:1 ratio by default. This means a single GPU is dedicated to one pod, regardless of whether the workload fully utilizes the GPU’s capacity. This limitation can lead to inefficient resource usage, especially for smaller workloads. NVIDIA MIG solves this issue by splitting a single GPU into multiple independent instances to be used by different pods. This feature maximizes GPU utilization and ensures resources are not wasted. In the next sections, I will demonstrate how I tested MIG on Red Hat OpenShift AI.</p>
+<h3 id="prepare-the-environment">Prepare the environment</h3>
+<p>For this test, certain preparatory steps are required to leverage MIG on OpenShift. I used Azure’s <code>Standard_NC24ads_A100_v4</code> virtual machine (VM), equipped with an NVIDIA A100 PCIe 80GB GPU as an OpenShift worker (Figure 1).</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/1-lspci_worker_0.png?itok=rp9bMR85" alt="lspci output from the GPU OpenShift worker" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 1: lspci output from the GPU OpenShift worker.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h4 id="step-1-install-nfd">Step 1: Install NFD</h4>
+<p>First, I installed the Node Feature Discovery (NFD) operator, as shown in Figures 2 and 3.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/2-nfd-operator_0.png?itok=2lEra0o-" alt="NFD operator installation page" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 2: NFD operator installation page.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>This operator detects hardware features and ensures that GPUs are discoverable by the NVIDIA GPU operator.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/3-nfd-deamonset.png?itok=DJEZnuNZ" alt="NFD deamonset" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 3: NFD deamonset.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>We will see many labels added to the node, indicating the operator detects its GPU:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ oc describe node/ods-cluster-mqt7l-worker-eastus2-fn5w8
+</span></span><span style="display:flex;"><span>                        Labels:             beta.kubernetes.io/arch=amd64
+</span></span><span style="display:flex;"><span>                                          feature.node.kubernetes.io/cpu-cpuid.ADX=true
+</span></span><span style="display:flex;"><span>                                          feature.node.kubernetes.io/cpu-cpuid.AESNI=true
+</span></span><span style="display:flex;"><span>                                          ...
+</span></span><span style="display:flex;"><span>                                          feature.node.kubernetes.io/cpu-cpuid.FMA3=true
+</span></span><span style="display:flex;"><span>                                          feature.node.kubernetes.io/gpu.present=true
+</span></span><span style="display:flex;"><span>                                          feature.node.kubernetes.io/gpu.memory=80GB
+</span></span><span style="display:flex;"><span>                                          feature.node.kubernetes.io/gpu.vendor=nvidia
+</span></span><span style="display:flex;"><span>                                          feature.node.kubernetes.io/gpu.model=A100
+</span></span></code></pre></div><h4 id="step-2-install-the-nvidia-gpu-operator">Step 2: Install the NVIDIA GPU operator</h4>
+<p>Next, I installed the NVIDIA GPU operator, which handles the configuration of GPU resources (Figure 4).</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/4-gpu-operator.png?itok=dPw1H918" alt="GPU Operator installation page" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 4: GPU Operator installation page.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>I made sure to enable the MIG manager in the ClusterPolicy configuration to facilitate the MIG setup (Figure 5).</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/5-mig-config.png?itok=xj5NQPvW" alt="MIG configuration" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 5: MIG configuration.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h4 id="step-3-check-the-pods">Step 3: Check the pods</h4>
+<p>There are two ways to make sure all pods under the <code>nvidia-gpu-operator</code> namespace are up and running:</p>
+<ol>
+<li>
+<p>From the CLI:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ oc get pods -n nvidia-gpu-operator
+</span></span></code></pre></div></li>
+<li>
+<p>From the console, as shown in Figure 6:</p>
+</li>
+</ol>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/6-gpu-operator-pods.png?itok=scsZ-cV8" alt="GPU Operator pods" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 6: GPU Operator pods.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h3 id="choose-the-right-mig-configuration">Choose the right MIG configuration</h3>
+<p>MIG offers a variety of configurations tailored to different GPU models and workload requirements. You have to understand which configurations are supported for the NVIDIA A100–80GB GPU. For example, I ran the command <code>oc describe configmap/default-mig-parted-config</code>, explored the available configurations, and selected one that matched my <code>requirements.1g.10gb</code>, which divides the GPU into seven instances.</p>
+<p>The following configuration is ideal for workloads that require smaller, dedicated slices of GPU power.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>    # H100-80GB, H800-80GB, A100-80GB, A800-80GB, A100-40GB, A800-40GB
+</span></span><span style="display:flex;"><span>     all-1g.10gb:
+</span></span><span style="display:flex;"><span>       # H100-80GB, H800-80GB, A100-80GB, A800-80GB
+</span></span><span style="display:flex;"><span>       - device-filter: [&#34;0x233010DE&#34;, &#34;0x233110DE&#34;, &#34;0x232210DE&#34;, &#34;0x20B210DE&#34;, &#34;0x20B510DE&#34;, &#34;0x20F310DE&#34;, &#34;0x20F510DE&#34;, &#34;0x232410DE&#34;]
+</span></span><span style="display:flex;"><span>         devices: all
+</span></span><span style="display:flex;"><span>         mig-enabled: true
+</span></span><span style="display:flex;"><span>         mig-devices:
+</span></span><span style="display:flex;"><span>           &#34;1g.10gb&#34;: 7
+</span></span></code></pre></div><h3 id="enable-and-verify-mig">Enable and verify MIG</h3>
+<p>To verify the setup, I used the <code>nvidia-smi</code> tool to query the GPU status and configurations. When MIG was initially disabled, I enabled it and restarted the node:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>sh-4.4# nvidia-smi -i 0 -mig 1
+</span></span><span style="display:flex;"><span>                        Enabled MIG Mode for GPU 00000001:00:00.0
+</span></span><span style="display:flex;"><span>                        All done.
+</span></span></code></pre></div><p>To verify that MIG is enabled for the GPU, I connected to the <code>nvidia-mig-manager</code> pod in OpenShift and used the terminal tab to query <code>GPU=0</code> configurations with the following command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>sh-4.4#
+</span></span><span style="display:flex;"><span>                        sh-4.4# nvidia-smi -i 0 -q
+</span></span><span style="display:flex;"><span>                        ==============NVSMI LOG==============
+</span></span><span style="display:flex;"><span>                        Timestamp                           : Tue Dec  5 15:41:13 2023
+</span></span><span style="display:flex;"><span>                        Driver Version                      : 535.104.12
+</span></span><span style="display:flex;"><span>                        CUDA Version                        : Not Found
+</span></span><span style="display:flex;"><span>                        Attached GPUs                       : 1
+</span></span><span style="display:flex;"><span>                        GPU 00000001:00:00.0
+</span></span><span style="display:flex;"><span>                            Product Name                    : NVIDIA A100 80GB PCIe
+</span></span><span style="display:flex;"><span>                            Product Brand                   : NVIDIA
+</span></span><span style="display:flex;"><span>                            Product Architecture            : Ampere
+</span></span><span style="display:flex;"><span>                            Display Mode                    : Enabled
+</span></span><span style="display:flex;"><span>                            Display Active                  : Disabled
+</span></span><span style="display:flex;"><span>                            Persistence Mode                : Enabled
+</span></span><span style="display:flex;"><span>                            Addressing Mode                 : None
+</span></span><span style="display:flex;"><span>                            MIG Mode
+</span></span><span style="display:flex;"><span>                                Current                     : Enabled
+</span></span><span style="display:flex;"><span>                                Pending                     : Enabled
+</span></span></code></pre></div><p>After selecting the configuration, I labeled the node with the following command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ oc label node &lt;node-name&gt; nvidia.com/mig.config=all-1g.10gb --overwrite
+</span></span></code></pre></div><p>The MIG manager pod logs insights into the status of the node labeling process (Figure 7).</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/7-mig-manager-logs.png?itok=IMNgxVYJ" alt="MIG-manager logs" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 7: MIG-manager logs.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Once successful, the node reported multiple allocatable GPUs instead of a single one.</p>
+<p>Let&rsquo;s describe the node to confirm that it recognizes seven GPUs:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ oc describe node/ods-cluster-mqt7l-worker-eastus2-fn5w8
+</span></span><span style="display:flex;"><span>                        Capacity:
+</span></span><span style="display:flex;"><span>                          attachable-volumes-azure-disk: 8
+</span></span><span style="display:flex;"><span>                          cpu: 24
+</span></span><span style="display:flex;"><span>                          ephemeral-storage: 133682156Ki
+</span></span><span style="display:flex;"><span>                          hugepages-1Gi: 0
+</span></span><span style="display:flex;"><span>                          hugepages-2Mi: 0
+</span></span><span style="display:flex;"><span>                          memory: 226965748Ki
+</span></span><span style="display:flex;"><span>                          nvidia.com/gpu: 7
+</span></span><span style="display:flex;"><span>                          pods: 250
+</span></span><span style="display:flex;"><span>                        Allocatable:
+</span></span><span style="display:flex;"><span>                          attachable-volumes-azure-disk: 8
+</span></span><span style="display:flex;"><span>                          cpu: 23500m
+</span></span><span style="display:flex;"><span>                          ephemeral-storage: 122127732942
+</span></span><span style="display:flex;"><span>                          hugepages-1Gi: 0
+</span></span><span style="display:flex;"><span>                          hugepages-2Mi: 0
+</span></span><span style="display:flex;"><span>                          memory: 225814772Ki
+</span></span><span style="display:flex;"><span>                          nvidia.com/gpu: 7
+</span></span><span style="display:flex;"><span>                          pods: 250
+</span></span></code></pre></div><h3 id="consume-the-sliced-gpus-via-red-hat-openshift-ai">Consume the sliced GPUs via Red Hat OpenShift AI</h3>
+<p>With MIG enabled, the OpenShift AI dashboard reflected the increased availability of GPU resources. I could select up to seven GPUs for my workbench (Figure 8). This setup empowers AI and data science teams to run diverse workloads simultaneously without bottlenecks.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/8-notebook.png?itok=7S0Bmhdg" alt="Allocating GPUs in the OpenShift AI notebook" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 8: Allocating GPUs in the OpenShift AI notebook.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h2 id="unlock-gpu-potential-with-nvidia-mig-and-openshift-ai">Unlock GPU potential with NVIDIA MIG and OpenShift AI</h2>
+<p>NVIDIA MIG technology, integrated with Red Hat OpenShift AI, transforms GPU resource management by facilitating scalable and efficient workloads. By partitioning GPUs into smaller, independent units, organizations can achieve maximum resource utilization, cost savings, and streamlined AI/ML operations. MIG on OpenShift AI helps teams fully harness the power of GPU technology, whether they manage diverse workloads or scale multi-user environments.</p>
+<p>Learn more about using NVIDIA NIM on Red Hat OpenShift AI and the performance results shown by Red Hat AI Performance and Scale when testing NVIDIA GPUs with MIG.</p>
+<p>The post How MIG maximizes GPU efficiency on OpenShift AI appeared first on Red Hat Developer.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

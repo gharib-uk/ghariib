@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Anomaly Detection in Time Series</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Anomaly Detection in Time Series</h1>
+			<b><time>22.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/dev">dev</a>
+        	       
+		           <a href="/tags/developers">developers</a>
+        	       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/jetbrains">jetbrains</a>
+        	       
+		           <a href="/tags/linux">linux</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>How do you identify unusual patterns in data that might reveal critical issues or hidden opportunities? Anomaly detection helps identify data that deviates significantly from the norm. Time series data, which consists of data collected over time, often includes trends and seasonal patterns. Anomalies in time series data occur when these patterns are disrupted, making […]</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/pc-featured_blog_1280x720_en-4.png" alt="Anomaly Detection in Time Series" />
+</figure>
+
+
+</p>
+<p>How do you identify unusual patterns in data that might reveal critical issues or hidden opportunities? Anomaly detection helps identify data that deviates significantly from the norm. Time series data, which consists of data collected over time, often includes trends and seasonal patterns. Anomalies in time series data occur when these patterns are disrupted, making anomaly detection a valuable tool in industries like sales, finance, manufacturing, and healthcare.</p>
+<p>As time series data has unique characteristics like seasonality and trends, specialized methods are required to detect anomalies effectively. In this blog post, we’ll explore some popular methods for anomaly detection in time series, including STL decomposition and LSTM prediction, with detailed code examples to help you get started.</p>
+<h2 id="time-series-anomaly-detection-in-businesses">Time series anomaly detection in businesses</h2>
+<p>Time series data is essential to many businesses and services. Many businesses record data over time with timestamps, allowing changes to be analyzed and data to be compared over time. Time series are useful when comparing a certain quantity over a certain period, as, for example, in a year-over-year comparison where the data exhibits characteristics of seasonalities.</p>
+<p><strong>Sales monitoring</strong></p>
+<p>One of the most common examples of time series data with seasonalities is sales data. As a lot of sales are affected by annual holidays and the time of the year, it is hard to draw conclusions about sales data without considering the seasonalities. Because of that, a common method for analyzing and finding anomalies in sales data is STL decomposition, which we will cover in detail later in this blog post.</p>
+<p><strong>Finance</strong></p>
+<p>Financial data, such as transactions and stock prices, are typical examples of time series data. In the finance industry, analyzing and detecting anomalies in this data is a common practice. For example, time series prediction models can be used in automatic trading. We’ll use a time series prediction to identify anomalies in stock data later in this blog post.</p>
+<p><strong>Manufacturing</strong></p>
+<p>Another use case of time series anomaly detection is monitoring defects in production lines. Machines are often monitors, making time series data available. Being able to notify management of potential failures is essential, and anomaly detection plays a key role.</p>
+<p><strong>Medicine and healthcare</strong></p>
+<p>In medicine and healthcare, human vitals are monitored and anomalies can be detected. This is important enough in medical research, but it’s critical in diagnostics. If a patient at a hospital has anomalies in their vitals and is not treated immediately, the results can be fatal.</p>
+<h2 id="why-is-it-important-to-use-special-methods-for-time-series-anomaly-detection">Why is it important to use special methods for time series anomaly detection?</h2>
+<p>Time series data is special in the sense that it sometimes cannot be treated like other types of data. For example, when we apply a train test split to time series data, the sequentially related nature of the data means we cannot shuffle it. This is also true when applying time series data to a deep learning model. A recurrent neural network (RNN) is commonly used to take the sequential relationship into account, and training data is input as time windows, which preserve the sequence of events within.</p>
+<p>Time series data is also special because it often has seasonality and trends that we cannot ignore. This seasonality can manifest in a 24-hour cycle, a 7-day cycle, or a 12-month cycle, just to name a few common possibilities. Anomalies can only be determined after the seasonality and trends have been considered, as you will see in our example below. </p>
+<h2 id="methods-used-for-anomaly-detection-in-time-series">Methods used for anomaly detection in time series</h2>
+<p>Because time series data is special, there are specific methods for detecting anomalies in it. Depending on the type of data, some of the methods and algorithms we mentioned in the previous blog post about anomaly detection can be used on time series data. However, with those methods, the anomaly detection may not be as robust as using ones specifically designed for time series data. In some cases, a combination of detection methods can be used to reconfirm the detection result and avoid false positives or negatives.</p>
+<h3 id="stl-decomposition">STL decomposition</h3>
+<p>One of the most popular ways to use time series data that has seasonality is STL decomposition – seasonal trend decomposition using LOESS (locally estimated scatterplot smoothing). In this method, a time series is decomposed using an estimate of seasonality (with the period provided or determined using an algorithm), a trend (estimated), and the residual (the noise in the data). A Python library that provides STL decomposition tools is the statsmodels library.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-70.png" alt="STL decomposition" />
+</figure>
+
+
+</p>
+<p>An anomaly is detected when the residual is beyond a certain threshold. </p>
+<h3 id="using-stl-decomposition-on-beehive-data">Using STL decomposition on beehive data</h3>
+<p>In an earlier blog post, we explored anomaly detection in beehives using the OneClassSVM and IsolationForest methods. </p>
+<p>In this tutorial, we’ll analyze beehive data as a time series using the <code>STL</code> class provided by the statsmodels library. To get started, set up your environment using this file: requirements.txt. </p>
+<h4 id="1-install-the-library"><strong>1. Install the library</strong></h4>
+<p>Since we have only been using the model provided by Scikit-learn, we will need to install statsmodels from PyPI. This is easy to do in PyCharm.</p>
+<p>Start with PyCharm Pro for free</p>
+<p>Go to the <em>Python</em> <em>Package</em> window (choose the icon at the bottom of the left-hand side of the IDE) and type in statsmodels in the search box.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-76.png" alt="Statsmodels in PyCharm" />
+</figure>
+
+
+</p>
+<p>You can see all of the information about the package on the right-hand side. To install it, simply click <em>Install package</em>.</p>
+<h4 id="2-create-a-jupyter-notebook"><strong>2. Create a Jupyter notebook</strong></h4>
+<p>To investigate the dataset further, let’s create a Jupyter notebook to take advantage of the tools that PyCharm’s Jupyter notebook environment provides.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-77.png" alt="Create a Jupyter notebook in PyCharm" />
+</figure>
+
+
+</p>
+<p>We will import pandas and load the <code>.csv</code> file.</p>
+<pre tabindex="0"><code>import pandas as pd
+
+df = pd.read_csv(&#39;../data/Hive17.csv&#39;, sep=&#34;;&#34;)
+df = df.dropna()
+df
+</code></pre><p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-73.png" alt="Import pandas in PyCharm" />
+</figure>
+
+
+</p>
+<h4 id="3-inspect-the-data-as-graphs"><strong>3. Inspect the data as graphs</strong></h4>
+<p>Now, we can inspect the data as graphs. Here, we would like to see the temperature of hive 17 over time. Click on <em>Chart view</em> in the dataframe inspector and then choose <em>T17</em> as the y-axis in the series settings.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-2.gif" alt="Inspect the data as graphs in PyCharm" />
+</figure>
+
+
+</p>
+<p>When expressed as a time series, the temperature has a lot of ups and downs. This indicates periodic behavior, likely due to the day-night cycle, so it is safe to assume there is a 24-hour period for the temperature. </p>
+<p>Next, there is a trend of temperature dropping over time. If you inspect the <em>DateTime</em> column, you can see that the dates range from August to November. Since the Kaggle page of the dataset indicates that the data was collected in Turkey, the transition from summer to fall explains our observation that the temperature is dropping over time.</p>
+<h4 id="4-time-series-decomposition"><strong>4. Time series decomposition</strong></h4>
+<p>To understand the time series and detect anomalies, we will perform STL decomposition, importing the <code>STL</code> class from statsmodels and fitting it with our temperature data.</p>
+<pre tabindex="0"><code>from statsmodels.tsa.seasonal import STL
+
+stl = STL(df[&#34;T17&#34;], period=24, robust=True) 
+result = stl.fit()
+</code></pre><p>We will have to provide a period for the decomposition to work. As we mentioned before, it is safe to assume a 24-hour cycle.</p>
+<p>According to the documentation, <code>STL</code> decomposes a time series into three components: trend, seasonal, and residual. To get a clearer look at the decomposed result, we can use the built-in <code>plot</code> method:</p>
+<pre tabindex="0"><code>result.plot()
+</code></pre><p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/Time-series-decomposition.png" alt="Time series decomposition" />
+</figure>
+
+
+</p>
+<p>You can see the <em>Trend</em> and <em>Season</em> plots seem to align with our assumptions above. However, we are interested in the residual plot at the bottom, which is the original series without the trend and seasonal changes. Any extremely high or low value in the residual indicates an anomaly.</p>
+<h4 id="5-anomaly-threshold"><strong>5. Anomaly threshold</strong></h4>
+<p>Next, we would like to determine what values of the residual we’ll consider abnormal. To do that, we can look at the residual’s histogram.</p>
+<pre tabindex="0"><code>result.resid.plot.hist()
+</code></pre><p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-78.png" alt="Anomaly threshold in PyCharm" />
+</figure>
+
+
+</p>
+<p>This can be considered a normal distribution around 0, with a long tail above 5 and below -5, so we’ll set the threshold to 5.</p>
+<p>To show the anomalies on the original time series, we can color all of them red in the graph like this:</p>
+<pre tabindex="0"><code>import matplotlib.pyplot as plt
+
+threshold = 5
+anomalies_filter = result.resid.apply(lambda x: True if abs(x) &gt; threshold else False)
+anomalies = df[&#34;T17&#34;][anomalies_filter]
+
+plt.figure(figsize=(14, 8))
+plt.scatter(x=anomalies.index, y=anomalies, color=&#34;red&#34;, label=&#34;anomalies&#34;)
+plt.plot(df.index, df[&#39;T17&#39;], color=&#39;blue&#39;)
+plt.title(&#39;Temperatures in Hive 17&#39;)
+plt.xlabel(&#39;Hours&#39;)
+plt.ylabel(&#39;Temperature&#39;)
+plt.legend()
+plt.show()
+</code></pre><p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-79.png" alt="Anomalies on the original time series in PyCharm" />
+</figure>
+
+
+</p>
+<p>Without STL decomposition, it is very hard to identify these anomalies in a time series consisting of periods and trends.</p>
+<h3 id="lstm-prediction">LSTM prediction</h3>
+<p>Another way to detect anomalies in time series data is to do a time series prediction on the series using deep learning methods to estimate the outcome of data points. If an estimate is very different from the actual data point, then it could be a sign of anomalous data.</p>
+<p>One of the popular deep learning algorithms to perform the prediction of sequential data is the Long short-term memory (LSTM) model, which is a type of recurrent neural network (RNN). The LSTM model has input, forget, and output gates, which are number matrices. This ensures important information is passed on in the next iteration of the data.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/LSTM-memory-cell.png" alt="LSTM memory cell" />
+</figure>
+
+
+</p>
+<p>Since time series data is sequential data, meaning the order of data points is in sequential order and should not be shuffled, the LSTM model is an effective deep learning model to predict the outcome at a certain time. This prediction can be compared to the actual data and a threshold can be set to determine if the actual data is an anomaly.</p>
+<h3 id="using-lstm-prediction-on-stock-prices">Using LSTM prediction on stock prices</h3>
+<p>Now let’s start a new Jupyter project to detect any anomalies in Apple’s stock price over the past 5 years. The stock price dataset shows the most up-to-date data. If you want to follow along with the blog post, you can download the dataset we are using.</p>
+<h4 id="1-start-a-jupyter-project"><strong>1. Start a Jupyter project</strong></h4>
+<p>When starting a new project, you can choose to create a Jupyter one, which is optimized for data science. In the <em>New Project</em> window, you can create a Git repository and determine which conda installation to use for managing your environment.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/Jupyter-project-in-PyCharm.png" alt="Start a Jupyter project in PyCharm" />
+</figure>
+
+
+</p>
+<p>After starting the project, you will see an example notebook. Go ahead and start a new Jupyter notebook for this exercise.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-4.gif" alt="An example notebook in PyCharm" />
+</figure>
+
+
+</p>
+<p>After that, let’s set up <code>requirements.txt</code>. We will need pandas, matplotlib, and PyTorch, which is named torch on PyPI. Since PyTorch is not included in the conda environment, PyCharm will tell us that we are missing the package. To install the package, click on the lightbulb and select <em>Install all missing packages</em>.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-5.gif" alt="Install all missing packages in PyCharm" />
+</figure>
+
+
+</p>
+<h4 id="2-loading-and-inspecting-the-data"><strong>2. Loading and inspecting the data</strong></h4>
+<p>Next, let’s put our dataset apple_stock_5y.csv in the data folder and load it as a pandas DataFrame to inspect it.</p>
+<pre tabindex="0"><code>import pandas as pd
+ 
+df = pd.read_csv(&#39;data/apple_stock_5y.csv&#39;)
+df
+</code></pre><p>With the interactive table, we can easily see if any data is missing.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-6.gif" alt="" />
+</figure>
+
+
+</p>
+<p>There is no missing data, but we have one issue – we would like to use the <em>Close/Last</em> price but it is not a numeric data type. Let’s do a conversion and inspect our data again:</p>
+<pre tabindex="0"><code>df[&#34;Close/Last&#34;] = df[&#34;Close/Last&#34;].apply(lambda x: float(x[1:]))
+df
+</code></pre><p>Now, we can inspect the price with the interactive table. Click on the plot icon on the left and a plot will be created. By default, it uses <em>Date</em> as the x-axis and <em>Volume</em> as the y-axis. Since we would like to inspect the <em>Close/Last</em> price, go to the settings by clicking the gear icon on the right and choose <em>Close/Last</em> as the y-axis.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-7.gif" alt="" />
+</figure>
+
+
+</p>
+<h4 id="3-preparing-the-training-data-for-lstm"><strong>3. Preparing the training data for LSTM</strong></h4>
+<p>Next, we have to prepare the training data to be used in the LSTM model. We need to prepare a sequence of vectors (feature X), each representing a time window, to predict the next price. The next price will form another sequence (target y). Here we can choose how big this time window is with the <code>lookback</code> variable. The following code creates sequences X and y which will then be converted to PyTorch tensors:</p>
+<pre tabindex="0"><code>import torch
+
+lookback = 5
+timeseries = df[[&#34;Close/Last&#34;]].values.astype(&#39;float32&#39;)
+
+X, y = [], []
+for i in range(len(timeseries)-lookback):
+    feature = timeseries[i:i+lookback]
+    target = timeseries[i+1:i+lookback+1]
+    X.append(feature)
+    y.append(target)
+    
+X = torch.tensor(X)
+y = torch.tensor(y)
+
+print(X.shape, y.shape)
+</code></pre><p>Generally speaking, the bigger the window, the bigger our model will be, since the input vector is bigger. However, with a bigger window, the sequence of inputs will be shorter, so determining this lookback window is a balancing act. We will start with 5, but feel free to try different values to see the differences.</p>
+<h4 id="4-build-and-train-the-model"><strong>4. Build and train the model</strong></h4>
+<p>We can build the model by creating a class using the nn module in PyTorch before we train it. The nn module provides building blocks, such as different neural network layers. In this exercise, we will build a simple LSTM layer followed by a linear layer:</p>
+<pre tabindex="0"><code>import torch.nn as nn
+
+class StockModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.lstm = nn.LSTM(input_size=1, hidden_size=50, num_layers=1, batch_first=True)
+        self.linear = nn.Linear(50, 1)
+    def forward(self, x):
+        x, _ = self.lstm(x)
+        x = self.linear(x)
+        return x
+</code></pre><p>Next, we will train our model. Before training it, we will need to create an optimizer, a loss function used to calculate the loss between the predicted and actual y values, and a data loader to feed in our training data:</p>
+<pre tabindex="0"><code>import numpy as np
+import torch.optim as optim
+import torch.utils.data as data
+
+model = StockModel()
+optimizer = optim.Adam(model.parameters())
+loss_fn = nn.MSELoss()
+loader = data.DataLoader(data.TensorDataset(X, y), shuffle=True, batch_size=8)
+</code></pre><p>The data loader can shuffle the input, as we have already created the time windows. This preserves the sequential relationship in each window.</p>
+<p>Training is done using a <code>for</code> loop which loops over each epoch. For every 100 epochs, we will print out the loss and observe while the model converges:</p>
+<pre tabindex="0"><code>n_epochs = 1000
+for epoch in range(n_epochs):
+    model.train()
+    for X_batch, y_batch in loader:
+        y_pred = model(X_batch)
+        loss = loss_fn(y_pred, y_batch)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+    if epoch % 100 != 0:
+        continue
+    model.eval()
+    with torch.no_grad():
+        y_pred = model(X)
+        rmse = np.sqrt(loss_fn(y_pred, y))
+    print(f&#34;Epoch {epoch}: RMSE {rmse:.4f}&#34;)
+</code></pre><p>We start at 1000 epochs, but the model converges quite quickly. Feel free to try other numbers of epochs for training to achieve the best result.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/Epochs-for-training.png" alt="Epochs for training" />
+</figure>
+
+
+</p>
+<p>In PyCharm, a cell that requires some time to execute will provide a notification about how much time remains and a shortcut to the cell. This is very handy when training machine learning models, especially deep learning models, in Jupyter notebooks.</p>
+<h4 id="5-plot-the-prediction-and-find-the-errors"><strong>5. Plot the prediction and find the errors</strong></h4>
+<p>Next, we will create the prediction and plot it together with the actual time series. Note that we will have to create a 2D np series to match with the actual time series. The actual time series will be in blue while the predicted time series will be in red.</p>
+<pre tabindex="0"><code>import matplotlib.pyplot as plt
+
+with torch.no_grad():
+    pred_series = np.ones_like(timeseries) * np.nan
+    pred_series[lookback:] = model(X)[:, -1, :]
+
+plt.plot(timeseries, c=&#39;b&#39;)
+plt.plot(pred_series, c=&#39;r&#39;)
+plt.show()
+</code></pre><p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/Plot-the-prediction-and-find-the-errors.png" alt="Plot the prediction and find the errors" />
+</figure>
+
+
+</p>
+<p>If you observe carefully, you will see that the prediction and the actual values do not align perfectly. However, most of the predictions do a good job.</p>
+<p>To inspect the errors closely, we can create an error series and use the interactive table to observe them. We are using the absolute error this time.</p>
+<pre tabindex="0"><code>error = abs(timeseries-pred_series)
+error
+</code></pre><p>Use the settings to create a histogram with the value of the absolute error as the x-axis and the count of the value as the y-axis.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-3.gif" alt="" />
+</figure>
+
+
+</p>
+<h4 id="6-decide-on-the-anomaly-threshold-and-visualize"><strong>6. Decide on the anomaly threshold and visualize</strong></h4>
+<p>Most of the points will have an absolute error of less than 6, so we can set that as the anomaly threshold. Similar to what we did for the beehive anomalies, we can plot the anomalous data points in the graph.</p>
+<pre tabindex="0"><code>threshold = 6
+error_series = pd.Series(error.flatten())
+price_series = pd.Series(timeseries.flatten())
+
+anomalies_filter = error_series.apply(lambda x: True if x &gt; threshold else False)
+anomalies = price_series[anomalies_filter]
+
+plt.figure(figsize=(14, 8))
+plt.scatter(x=anomalies.index, y=anomalies, color=&#34;red&#34;, label=&#34;anomalies&#34;)
+plt.plot(df.index, timeseries, color=&#39;blue&#39;)
+plt.title(&#39;Closing price&#39;)
+plt.xlabel(&#39;Days&#39;)
+plt.ylabel(&#39;Price&#39;)
+plt.legend()
+plt.show()
+</code></pre><p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/Plot-the-anomalous-data-points-in-the-graph.png" alt="Plot the anomalous data points in the graph" />
+</figure>
+
+
+</p>
+<h2 id="summary">Summary</h2>
+<p>Time series data is a common form of data used in many applications including business and scientific research. Due to the sequential nature of time series data, special methods and algorithms are used to help determine anomalies in it. In this blog post, we demonstrated how to identify anomalies using STL decomposition to eliminate seasonalities and trends. We have also demonstrated how to use deep learning and the LSTM model to compare the predicted estimate and the actual data in order to determine anomalies.</p>
+<h2 id="detect-anomalies-using-pycharm">Detect anomalies using PyCharm</h2>
+<p>With the Jupyter project in PyCharm Professional, you can organize your anomaly detection project with a lot of data files and notebooks easily. Graphs output can be generated to inspect anomalies and plots are very accessible in PyCharm. Other features, such as auto-complete suggestions, make navigating all the Scikit-learn models and Matplotlib plot settings a blast.</p>
+<p>Power up your data science projects by using PyCharm, and check out the data science features offered to streamline your data science workflow.</p>
+<p>Start with PyCharm Pro for free</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

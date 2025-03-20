@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Customize the scope of IAM Access Analyzer unused access analysis</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Customize the scope of IAM Access Analyzer unused access analysis</h1>
+			<b><time>08.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/data">data</a>
+        	       
+		           <a href="/tags/management">management</a>
+        	       
+		           <a href="/tags/tech">tech</a>
+        	       
+		           <a href="/tags/ui">ui</a>
+        	       
+		           <a href="/tags/un">un</a>
+        	       
+
+			<div>
+				<p>AWS Identity and Access Management Access Analyzer simplifies inspecting unused access to guide you towards least privilege. You can use unused access findings to identify over-permissive access granted to AWS Identity and Access Management (IAM) roles and users in your accounts or organization. From a delegated administrator account for IAM Access Analyzer, you can use the dashboard to review unused access findings across your organization and prioritize the accounts to inspect based on the volume and type of findings. The findings highlight unused roles, unused access keys for IAM users, and unused passwords for IAM users. For active IAM users and roles, the findings provide visibility into unused services and actions. Recently, IAM Access Analyzer launched new configuration capabilities that you can use to customize the analysis. You can select accounts, roles, and users to exclude, and focus on the areas that matter the most to you. You can use identifiers such as account ID or scale configuration using tags. By scoping the IAM Access Analyzer to monitor a subset of accounts and roles, you can reduce noise from unwanted findings. You can update the configuration when needed to change the scope of analysis. With this new offering, IAM Access Analyzer provides enhanced controls to help you tailor the analysis more closely to your organization’s security needs.</p>
+<p>In this post, we walk you through an example scenario. Imagine that you’re a cloud administrator in a company that uses Amazon Web Services (AWS). You use AWS Organizations to organize your workload into several organizational units (OUs) and accounts. You have dedicated accounts for testing and experimenting with new AWS features called <em>sandbox</em> accounts across your organization. The sandbox accounts can be created by anyone in your company and are centrally recorded. You’re using tags on IAM resources and have followed AWS best practices and strategies when tagging your AWS resources. Tags are applied to the IAM roles created by your teams.</p>
+<p>To make sure that your teams are following the principle of least privilege and are working with only the required permissions to access the AWS accounts, you use IAM Access Analyzer. You created an unused access analyzer at the organization level so it will monitor the AWS accounts in your organization. You noticed that you have multiple unused access findings. After analysis, your security team suggests the exclusion of some AWS accounts, IAM roles, and users so they can focus on the relevant findings. They want the sandbox accounts and the IAM roles they use for security purposes (such as auditing, incident response) to be excluded from the unused access analysis.</p>
+<p>You can select accounts and roles to exclude when you create a new analyzer or update the analyzer later. In this post, we show you how to configure IAM Access Analyzer unused access finding to exclude specific accounts across your organization and specific principals (IAM roles and IAM users) once you have set up an analyzer. There is no additional pricing for using the prescriptive recommendations after you have enabled unused access findings.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>The following are the prerequisites to configure IAM Access Analyzer for unused access analysis:</p>
+<ul>
+<li>An unused access analyzer created at the organization level</li>
+<li>Administrative level access to the IAM Access Analyzer delegated administrator account</li>
+<li>A list of account IDs that you want to exclude</li>
+<li>IAM roles with tags</li>
+</ul>
+<p>In the following sections, you will learn how to customize your IAM Access Analyzer to better suit your organization’s needs. This includes the following:</p>
+<ol>
+<li>Explore how to exclude specific AWS accounts from the analyzer’s unused access findings.</li>
+<li>See how to exclude tagged IAM roles from the analysis, allowing you to focus on the most relevant security insights and you see how to review exclusions on your analyzer to modify them as needed.</li>
+<li>By the end, you will have a tailored unused access analyzer that provides more meaningful and actionable results for your organization.</li>
+</ol>
+<h2 id="exclude-specific-accounts-across-your-organization">Exclude specific accounts across your organization</h2>
+<p>In this section, you will see how to update your existing unused access analyzer at the organization level through the AWS Management Console and AWS Command Line Interface (AWS CLI) to exclude specific AWS account IDs from its analysis.</p>
+<p>If you don’t have an unused access analyzer in the organization, see this post for instructions on how to create one.</p>
+<p><strong>Use the console to update your unused access analyzer:</strong></p>
+<ol>
+<li>
+<p>Connect to your IAM Access Analyzer delegated administrator account (by default, your organization management account).</p>
+</li>
+<li>
+<p>Open the IAM Access Analyzer console in your management account. You will see the dashboard with your active finding by selecting the analyzer of your choice on the top right. In this example, the analyzer has 251 active findings.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/02/Customize-scope-IAM-Access-Analyzer-1.jpeg" alt="Figure 1: Unused access findings dashboard without exclusions" />
+</figure>
+
+
+</p>
+<p>Figure 1: Unused access findings dashboard without exclusions</p>
+</li>
+<li>
+<p>You can see the split of active findings per account. The example account has 57 active findings that you want to exclude from it.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/02/Customize-scope-IAM-Access-Analyzer-2.png" alt="Figure 2: Unused access findings per account" />
+</figure>
+
+
+</p>
+<p>Figure 2: Unused access findings per account</p>
+</li>
+<li>
+<p>Select <strong>Analyzer settings</strong> under <strong>Access Analyzer</strong> in that navigation pane.</p>
+</li>
+<li>
+<p>The analyzer settings page presents the analyzers in your AWS Region and their status.</p>
+</li>
+<li>
+<p>Select your unused access analyzer in the list based on its name.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/02/Customize-scope-IAM-Access-Analyzer-3.png" alt="Figure 3: Active access analyzers" />
+</figure>
+
+
+</p>
+<p>Figure 3: Active access analyzers</p>
+</li>
+<li>
+<p>On the <strong>Analyzer</strong> page, you can see the analyzer settings and a new tab called <strong>Exclusion</strong>. Because you have no excluded AWS accounts, the count of <strong>Excluded AWS accounts</strong> is <strong>0</strong> and there are no accounts displayed.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/02/Customize-scope-IAM-Access-Analyzer-4.png" alt="Figure 4: Unused access analyzer exclusion tab" />
+</figure>
+
+
+</p>
+<p>Figure 4: Unused access analyzer exclusion tab</p>
+</li>
+<li>
+<p>Choose <strong>Manage</strong> in the <strong>Excluded AWS accounts</strong> section.</p>
+</li>
+<li>
+<p>Select <strong>Choose from organization</strong> and <strong>Hierarchy</strong> and choose <strong>Exclude</strong> next to the sandbox account that you want to exclude.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/02/Customize-scope-IAM-Access-Analyzer-5.png" alt="Figure 5: Exclude sandbox account" />
+</figure>
+
+
+</p>
+<p>Figure 5: Exclude sandbox account</p>
+</li>
+<li>
+<p>After you select <strong>Exclude</strong> for the sandbox account, the account will be deselected and will appear in <strong>AWS accounts to exclude</strong>. The count of accounts to exclude has changed from <strong>0</strong> to <strong>1</strong>. After you have finished, choose <strong>Save changes</strong>.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/02/Customize-scope-IAM-Access-Analyzer-6.png" alt="Figure 6: Verify that the account is excluded and save changes" />
+</figure>
+
+
+</p>
+<p>Figure 6: Verify that the account is excluded and save changes</p>
+</li>
+<li>
+<p>The page will be automatically updated with your changes. You can then review the <strong>Excluded AWS accounts</strong> and verify that your excluded account is correctly configured.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/02/Customize-scope-IAM-Access-Analyzer-7.png" alt="Figure 7: Analyzer configuration updated with excluded account" />
+</figure>
+
+
+</p>
+<p>Figure 7: Analyzer configuration updated with excluded account</p>
+</li>
+<li>
+<p>You can go back to the console dashboard and see the results. In this example, the exclusion of the sandbox account has caused the total number of active findings to go down from 251 to 194.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/02/Customize-scope-IAM-Access-Analyzer-8.png" alt="Figure 8: Dashboard showing a reduction in active findings" />
+</figure>
+
+
+</p>
+<p>Figure 8: Dashboard showing a reduction in active findings</p>
+</li>
+</ol>
+<p><strong>Use AWS CLI to update your unused access analyzer:</strong></p>
+<p>You can update your existing analyzer using the AWS CLI command <code>aws accessanalyzer update-analyzer</code>. Use the following command, replacing <code>_&lt;YOUR-ANALYZER-NAME&gt;_</code> with the name of your analyzer.</p>
+<pre tabindex="0"><code>aws accessanalyzer update-analyzer 
+--analyzer-name &lt;YOUR-ANALYZER-NAME&gt;
+--configuration &#39;{
+  &#34;unusedAccess&#34;: {
+    &#34;analysisRule&#34;: {
+      &#34;exclusions&#34;: [
+        {
+          &#34;accountIds&#34;: [
+            &#34;222222222222&#34;
+          ]
+        }
+      ]
+    }
+  }
+}&#39;
+</code></pre><p>You will obtain a result similar to the following:</p>
+<pre tabindex="0"><code>{
+    &#34;revisionId&#34;: &#34;&lt;UNIQUE-REVISION-NUMBER&gt;&#34;, 
+    &#34;configuration&#34;: {
+        &#34;unusedAccess&#34;: {
+            &#34;analysisRule&#34;: {
+                &#34;exclusions&#34;: [
+                    {
+                        &#34;accountIds&#34;: [
+                            &#34;222222222222&#34;
+                        ]
+                    }
+                ]
+            }, 
+            &#34;unusedAccessAge&#34;: 90
+        }
+    }
+</code></pre><p>You have successfully excluded a sandbox account from the unused access analysis. Now you will exclude the IAM roles used by the security team to audit your accounts based on tags.</p>
+<h2 id="excluding-specific-principals-in-your-organization-using-tags">Excluding specific principals in your organization using tags</h2>
+<p>In this section, you will see how to update an existing unused access analyzer by excluding tagged IAM roles in your organization using the console and then AWS CLI.</p>
+<p><strong>Use the console to update your unused access analyzer:</strong></p>
+<ol>
+<li>
+<p>Open the IAM Access Analyzer console.</p>
+</li>
+<li>
+<p>Review the summary dashboard containing your unused findings. Choose <strong>Analyzer settings</strong> at the top of the screen.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/02/Customize-scope-IAM-Access-Analyzer-9.png" alt="Figure 9: IAM Access Analyzer summary dashboard" />
+</figure>
+
+
+</p>
+<p>Figure 9: IAM Access Analyzer summary dashboard</p>
+</li>
+<li>
+<p>You will see a list of analyzers created in your account in that Region. Select the analyzer that you want to update.</p>
+</li>
+<li>
+<p>Review the analyzer page. On the <strong>Exclusion</strong> tab, you will see <strong>Exclude IAM users and roles with tags</strong> with a count of <strong>0</strong>.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/02/Customize-scope-IAM-Access-Analyzer-10.png" alt="Figure 10: Configure exclusion of IAM roles using tag" />
+</figure>
+
+
+</p>
+<p>Figure 10: Configure exclusion of IAM roles using tag</p>
+</li>
+<li>
+<p>Choose <strong>Manage</strong> in the <strong>Excluded IAM users and roles with tags</strong> section.</p>
+</li>
+<li>
+<p>Add the tags attached to the roles that you want to exclude from the analysis and choose <strong>Save changes</strong>.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/02/Customize-scope-IAM-Access-Analyzer-11.png" alt="Figure 11: Add tag to exclude" />
+</figure>
+
+
+</p>
+<p>Figure 11: Add tag to exclude</p>
+</li>
+<li>
+<p>You can now see that <strong>Excluded IAM users and roles with tags</strong> now has a count of <strong>1</strong>, and you can see the tags in the list.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/02/Customize-scope-IAM-Access-Analyzer-12.png" alt="Figure 12: List of exclusion tags" />
+</figure>
+
+
+</p>
+<p>Figure 12: List of exclusion tags</p>
+</li>
+</ol>
+<p><strong>Use AWS CLI to update your unused access analyzer:</strong></p>
+<p>You can also update your existing analyzer using the AWS CLI command <code>aws accessanalyzer update-analyzer</code>. Using the following command, replace <code>_&lt;YOUR-ANALYZER-NAME&gt;_</code> with the name of your analyzer.</p>
+<pre tabindex="0"><code>aws accessanalyzer update-analyzer 
+--analyzer-name &lt;YOUR-ANALYZER-NAME&gt; 
+--configuration &#39;{
+  &#34;unusedAccess&#34;: {
+    &#34;analysisRule&#34;: {
+      &#34;exclusions&#34;: [
+        {
+          &#34;accountIds&#34;: [
+            &#34;222222222222&#34;
+          ]
+        },
+        {
+          &#34;resourceTags&#34;: [
+            {
+              &#34;team&#34;: &#34;security&#34;
+            }
+          ]
+        }
+      ]
+    }
+  }
+}&#39;
+</code></pre><p>A successful response will look like the following:</p>
+<pre tabindex="0"><code>{
+    &#34;revisionId&#34;: &#34;&lt;UNIQUE-REVISION-NUMBER&gt;&#34;, 
+    &#34;configuration&#34;: {
+        &#34;unusedAccess&#34;: {
+            &#34;analysisRule&#34;: {
+                &#34;exclusions&#34;: [
+                    {
+                        &#34;accountIds&#34;: [
+                            &#34;222222222222&#34;
+                        ]
+                    }, 
+                    {
+                        &#34;resourceTags&#34;: [
+                            {
+                                &#34;team&#34;: &#34;security&#34;
+                            }
+                        ]
+                    }
+                ]
+            }, 
+            &#34;unusedAccessAge&#34;: 90
+        }
+    }
+}
+</code></pre><h2 id="review-the-exclusion-on-your-analyzer">Review the exclusion on your analyzer</h2>
+<p>You can review, remove, or update the exclusions configured on your analyzer by using the console or AWS CLI. For example, as a security administrator managing multiple accounts, you might initially exclude IAM roles that have the tag <code>security</code> from analysis. However, you might need to review these exclusions if your policies change, requiring analysis of certain security roles or removing the exclusion entirely. By adjusting your exclusions, you can make sure that your analyzer’s results remain relevant to your organization’s needs and account structure.</p>
+<p><strong>Review the exclusion on unused access analyzer using the console:</strong></p>
+<p>In this section, review the tags that have been excluded from an analyzer.</p>
+<ol>
+<li>
+<p>Open the IAM console.</p>
+</li>
+<li>
+<p>Select <strong>Access Analyzer</strong>, under <strong>Access reports</strong>, you will see a summary dashboard of findings from an analyzer.</p>
+<ol>
+<li>
+<p>The <strong>Active findings</strong> section shows the number of active findings for unused roles, the number of active findings for unused credentials and the number of active findings for unused permissions.</p>
+</li>
+<li>
+<p>The <strong>Findings overview</strong> section includes a breakdown of the active findings.</p>
+</li>
+<li>
+<p>The <strong>Findings status</strong> section shows the status of findings (whether active, archived or resolved).</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/02/Customize-scope-IAM-Access-Analyzer-8.png" alt="Figure 13: Unused access analyzer dashboard " />
+</figure>
+
+
+</p>
+<p>Figure 13: Unused access analyzer dashboard</p>
+</li>
+</ol>
+</li>
+<li>
+<p>Select the <strong>Analyzer settings</strong> at the top of the screen.</p>
+</li>
+<li>
+<p>Select the analyzer that you want to review to see the exclusion tags.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/02/Customize-scope-IAM-Access-Analyzer-14-1.png" alt="Figure 14: Review unused access analyzer exclusions" />
+</figure>
+
+
+</p>
+<p>Figure 14: Review unused access analyzer exclusions</p>
+</li>
+<li>
+<p>After applying the tags, the updated dashboard is shown after the next scan.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/02/Customize-scope-IAM-Access-Analyzer-15.png" alt="Figure 15: Dashboard showing reduction of findings after exclusions" />
+</figure>
+
+
+</p>
+<p>Figure 15: Dashboard showing reduction of findings after exclusions</p>
+</li>
+</ol>
+<p><strong>Review the exclusion on an unused access analyzer using AWS CLI:</strong></p>
+<p>Using the name of your analyzer, you can run the command <code>get-analyzer</code> to see the configured exclusion. Using the following command, replace <code>_&lt;YOUR-ANALYZER-NAME&gt;_</code> with the name of your analyzer:</p>
+<p><code>aws accessanalyzer get-analyzer --analyzer-name _&lt;YOUR-ANALYZER-NAME&gt;_</code></p>
+<p>You will get a response similar to the following:</p>
+<pre tabindex="0"><code>{
+  &#34;analyzer&#34;: {
+    &#34;status&#34;: &#34;ACTIVE&#34;,
+    &#34;name&#34;: &#34;&lt;YOUR-ANALYZER-NAME&gt;&#34;,
+    &#34;tags&#34;: {},
+    &#34;revisionId&#34;: &#34;&lt;UNIQUE-REVISION-NUMBER&gt;&#34;,
+    &#34;arn&#34;: &#34;arn:aws:access-analyzer:&lt;REGION&gt;:111111111111:analyzer/&lt;YOUR-ANALYZER-NAME&gt;&#34;,
+    &#34;configuration&#34;: {
+      &#34;unusedAccess&#34;: {
+        &#34;analysisRule&#34;: {
+          &#34;exclusions&#34;: [
+            {
+              &#34;accountIds&#34;: [
+                &#34;222222222222&#34;
+              ]
+            },
+            {
+              &#34;resourceTags&#34;: [
+                {
+                  &#34;team&#34;: &#34;security&#34;
+                }
+              ]
+            }
+          ]
+        },
+        &#34;unusedAccessAge&#34;: 90
+      }
+    },
+    &#34;type&#34;: &#34;ORGANIZATION_UNUSED_ACCESS&#34;,
+    &#34;createdAt&#34;: &#34;2024-10-11T22:26:57Z&#34;
+  }
+}
+</code></pre><h2 id="conclusion">Conclusion</h2>
+<p>In this post, you learned how to tailor your unused access analyzer to your needs by excluding specific accounts and IAM roles. To exclude the accounts in your organization from being monitored by IAM Access Analyzer, you can use a list of account IDs or select them from a hierarchical view of your organization structure. You can exclude IAM roles and IAM users based on tags. By customizing the exclusion on the unused access analyzer, you saw that the number of active findings went down, helping you focus on the findings that matter most. With this new offering, IAM Access Analyzer provides enhanced controls to help you tailor the analysis more closely to your organization’s security needs.</p>
+<ul>
+<li>To learn more about IAM Access Analyzer Unused Access, see Findings for external and unused access.</li>
+<li>To learn about the creation of unused access findings, see IAM Access Analyzer simplifies inspection of unused access in your organization.</li>
+<li>To learn about how to Refine unused access using IAM Access Analyzer recommendations.</li>
+<li>To learn about the strategies for achieving least privilege at scale, see Strategies for achieving least privilege at scale Part 1 and Part 2.</li>
+</ul>
+<p>If you have feedback about this post, submit comments in the <strong>Comments</strong> section below.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2023/07/07/StephMbappe.png" alt="Stéphanie Mbappe" />
+</figure>
+
+
+</p>
+<h3 id="p-stéphanie-mbappe">P. Stéphanie Mbappe</h3>
+<p>Stéphanie is a Security Consultant with Amazon Web Services. She delights in assisting her customers at any step of their security journey. Stéphanie enjoys learning, designing new solutions, and sharing her knowledge with others.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2023/11/01/mathangi_ramesh-120x160-1.jpg" alt="Mathangi Ramesh" />
+</figure>
+
+
+</p>
+<h3 id="mathangi-ramesh">Mathangi Ramesh</h3>
+<p>Mathangi is the product manager for AWS Identity and Access Management. She enjoys talking to customers and working with data to solve problems. Outside of work, Mathangi is a fitness enthusiast and a Bharatanatyam dancer. She holds an MBA degree from Carnegie Mellon University.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/02/Reke-Jarikre.png" alt="Reke Jarikre" />
+</figure>
+
+
+</p>
+<h3 id="reke-jarikre">Reke Jarikre</h3>
+<p>Reke is an Associate Security Consultant at Amazon Web Services. She is passionate about safeguarding client infrastructures and crafting robust security measures. Outside work, she enjoys exploring new technologies, public speaking and contributing to open-source projects.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

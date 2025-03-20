@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Sandbox Rust Development with Rust Analyzer</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Sandbox Rust Development with Rust Analyzer</h1>
+			<b><time>25.10.2020 12:47</time></b>
+		       
+
+			<div>
+				<h1 id="sandbox-rust-development-with-rust-analyzer">Sandbox Rust Development with Rust Analyzer</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>To be honest, I haven’t done much Rust development since then, so there are probably a bunch of pain points that I’ve not handled. I’m starting a new project though, and thought I’d try out the language server <a href="https://github.com/rust-analyzer/rust-analyzer">rust-analyzer</a> as I’ve heard good things about it.</p>
+<p>Ordinarily with <a href="https://code.visualstudio.com/">Visual Studio Code</a> (my IDE of choice), you can just install the rust-analyzer extension and begin. However, in my case as I don’t have rust installed directly on my host, there were a few extra steps to take.</p>
+<p>First of all, the VS Code extension tries to install and run the rust-analyzer binary, and fails. So I created another wrapper script named rust-analyzer and dropped it in my PATH:</p>
+<pre tabindex="0"><code>#!/usr/bin/env bash
+set -e
+
+if [ &#34;$USER&#34; != &#34;root&#34; ]; then
+    sudo &#34;$0&#34; &#34;${@:1}&#34;
+    exit 0
+fi
+
+IMAGE_NAME=&#34;grepular/rust-analyzer&#34;
+
+# Build the image if it does not exist
+if [[ $(docker images --filter &#34;reference=$IMAGE_NAME&#34; -q) == &#34;&#34; ]]; then
+    docker build -q -t &#34;$IMAGE_NAME&#34; . -f-&lt;&lt;EOF
+FROM rust:latest
+RUN rustup component add rust-src
+RUN curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-linux -o /rust-analyzer
+RUN chmod 755 /rust-analyzer
+ENTRYPOINT [&#34;/rust-analyzer&#34;]
+EOF
+fi
+
+docker run \
+  -u $(stat -c &#39;%u:%g&#39; .) \
+  -i --rm \
+  -v &#34;$PWD:$PWD:ro&#34; \
+  --workdir &#34;$PWD&#34; \
+  &#34;$IMAGE_NAME&#34; &#34;$@&#34;
+</code></pre><p>I then had to go into the VS Code settings and manually set the path to this script:</p>
+<pre tabindex="0"><code>{
+  &#34;rust-analyzer.serverPath&#34;: &#34;/usr/local/bin/rust-analyzer&#34;
+}
+</code></pre><p>You’ll notice at the beginning of the script, it re-runs it’s self under sudo if it’s not already running as root. This is because my user does not have access to the docker socket (for security reasons). And although my user does have sudo access, it is password protected. Because of the password protection, the rust-analyzer extension fails to run because it is prompted for a password and wasn’t expecting that. So, I placed an exception in my sudoers config to allow my user to run the rust-analyzer script using sudo, without a password. I did this by adding the following to /etc/sudoers.d/mike-rust-analyzer:</p>
+<pre tabindex="0"><code>mike ALL=NOPASSWD: /usr/local/bin/rust-analyzer *
+</code></pre><p>And there we have it. I can continue to run cargo inside a sandboxed environment, and use rust-analyzer inside another sandboxed environment, whilst using my IDE on the host to do development.</p>
+<p>P.S. Initial impressions of rust-analyzer are that it’s very good and I never want to do Rust development again without it.</p>
+<p><a href="https://www.grepular.com/redir?key=amazon_programming_rust" title="Programming Rust">
+<figure>
+  <img src="https://www.grepular.com/images/amazon/programming_rust.jpg" alt="Programming Rust" />
+</figure>
+
+
+</a> <a href="https://www.grepular.com/redir?key=amazon_docker_up_and_running" title="Docker: Up and Running">
+<figure>
+  <img src="https://www.grepular.com/images/amazon/docker_up_and_running.jpg" alt="Docker: Up and Running" />
+</figure>
+
+
+</a></p>
+<h4 id="source"><a href="https://www.grepular.com/Sandbox_Rust_Development_with_Rust_Analyzer">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

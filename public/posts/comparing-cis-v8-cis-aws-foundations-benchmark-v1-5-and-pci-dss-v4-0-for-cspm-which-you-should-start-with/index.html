@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Comparing  CIS v8, CIS AWS Foundations Benchmark v1.5, and PCI DSS v4.0 for CSPM. Which you Should Start With?</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Comparing  CIS v8, CIS AWS Foundations Benchmark v1.5, and PCI DSS v4.0 for CSPM. Which you Should Start With?</h1>
+			<b><time>04.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/penetrationtesting">penetrationtesting</a>
+        	       
+
+			<div>
+				<p>In the complex world of cloud security, organizations must choose the most appropriate frameworks to secure their cloud environments effectively. Three widely recognized frameworks are the Center for Internet Security (CIS) Controls v8, the CIS AWS Foundations Benchmark v1.5, and the Payment Card Industry Data Security Standard (PCI DSS) v4.0. Each framework offers distinct guidelines and controls, catering to different aspects of cloud security. This article compares these frameworks in the context of Cloud Security Posture Management (CSPM) and provides insights into which framework is better suited for specific conditions.</p>
+<p>Below is a detailed comparison of the security controls between CIS Controls v8, CIS AWS Foundations Benchmark v1.5, and PCI DSS v4.0, including specific requirements and how they can be applied in a CSPM context.</p>
+<h3 id="cis-controls-v8">CIS Controls v8</h3>
+<p>CIS Controls v8 offers a comprehensive set of security practices designed to improve overall cybersecurity posture. Here are key controls and their requirements:</p>
+<ol>
+<li>
+<p><strong>Inventory and Control of Enterprise Assets:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Maintain an accurate inventory of hardware assets to prevent unauthorized devices from accessing the network.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Maintain an asset inventory.</p>
+</li>
+<li>
+<p>Use automated tools to detect and inventory all hardware connected to the network.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Use automated discovery tools to identify and inventory all cloud assets.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Inventory and Control of Software Assets:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Ensure all software is tracked, only authorized software is installed, and unauthorized software is prevented.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Maintain a software inventory.</p>
+</li>
+<li>
+<p>Use automated tools to detect and inventory all software installed on systems.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Implement software inventory tools to maintain a list of authorized software in the cloud environment.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Data Protection:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Protect data from unauthorized access and exfiltration.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Implement data classification schemes.</p>
+</li>
+<li>
+<p>Apply encryption for sensitive data.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Enforce encryption for data at rest and in transit, and implement DLP solutions.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Secure Configuration of Enterprise Assets and Software:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Apply and maintain secure configurations for all devices and software.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Establish secure configuration guidelines.</p>
+</li>
+<li>
+<p>Regularly audit configurations.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Use configuration management tools to enforce secure configurations on cloud resources.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Account Management:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Control user accounts and their access to data and resources.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Implement account provisioning and de-provisioning processes.</p>
+</li>
+<li>
+<p>Enforce strong password policies.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Use IAM policies to manage user permissions and enforce MFA.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Access Control Management:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Implement least privilege access controls and periodically review access permissions.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Restrict access based on need-to-know principles.</p>
+</li>
+<li>
+<p>Regularly review access permissions.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Regularly review and adjust access policies to ensure minimal necessary access.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Continuous Vulnerability Management:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Continuously identify, prioritize, and remediate vulnerabilities.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Conduct regular vulnerability scans.</p>
+</li>
+<li>
+<p>Apply patches promptly.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Use vulnerability scanning tools to identify and address cloud environment vulnerabilities.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Audit Log Management:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Collect, manage, and analyze audit logs to detect and respond to security incidents.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Enable logging on all systems.</p>
+</li>
+<li>
+<p>Centralize log management.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Centralize logging from all cloud services and analyze logs for suspicious activity.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Email and Web Browser Protections:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Protect email and web browsers from phishing and malware.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Implement email filtering.</p>
+</li>
+<li>
+<p>Enforce secure browser settings.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Implement email filtering and web protection solutions for cloud-based services.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Malware Defenses:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Deploy anti-malware tools to detect and prevent malware infections.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Install anti-malware software.</p>
+</li>
+<li>
+<p>Regularly update malware definitions.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Use endpoint protection solutions on cloud-hosted systems.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Data Recovery:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Ensure data integrity and availability through regular backups.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Implement regular backup schedules.</p>
+</li>
+<li>
+<p>Test data restoration procedures.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Regularly back up cloud data and test restoration procedures.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Network Infrastructure Management:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Secure network infrastructure and enforce segmentation.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Implement network segmentation.</p>
+</li>
+<li>
+<p>Enforce network access controls.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Use virtual networks and firewalls to segment and protect cloud resources.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Security Awareness and Skills Training:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Train personnel to recognize and respond to security threats.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Conduct regular security training.</p>
+</li>
+<li>
+<p>Assess training effectiveness.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Conduct regular security training for cloud administrators and users.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Service Provider Management:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Ensure third-party providers meet security requirements.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Assess third-party security.</p>
+</li>
+<li>
+<p>Include security requirements in contracts.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Assess and monitor the security posture of cloud service providers.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Application Software Security:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Secure applications throughout their lifecycle.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Conduct security testing during development.</p>
+</li>
+<li>
+<p>Apply security patches promptly.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Integrate security into the SDLC and use application security testing tools.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Incident Response Management:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Develop and implement incident response capabilities.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Develop incident response plans.</p>
+</li>
+<li>
+<p>Conduct regular incident response exercises.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Establish cloud-specific incident response plans and conduct regular drills.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Penetration Testing:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Regularly test the effectiveness of security controls.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Conduct regular penetration tests.</p>
+</li>
+<li>
+<p>Remediate identified vulnerabilities.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Conduct penetration tests on cloud infrastructure and applications.</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="cis-aws-foundations-benchmark-v15">CIS AWS Foundations Benchmark v1.5</h3>
+<p>The CIS AWS Foundations Benchmark v1.5 provides specific security controls for Amazon Web Services (AWS) environments. Here are key controls and their requirements:</p>
+<ol>
+<li>
+<p><strong>Identity and Access Management (IAM):</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Manage identities, enforce least privilege, and implement MFA.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Enable MFA for all IAM users.</p>
+</li>
+<li>
+<p>Enforce the principle of least privilege.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Use IAM to control access, enforce MFA for all users, and regularly review IAM policies.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Logging:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Enable comprehensive logging to monitor and investigate activities.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Enable AWS CloudTrail in all regions.</p>
+</li>
+<li>
+<p>Enable AWS Config to track resource changes.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Enable AWS CloudTrail, AWS Config, and VPC Flow Logs to track and analyze activities.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Monitoring:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Continuously monitor the environment for security events.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Enable Amazon GuardDuty.</p>
+</li>
+<li>
+<p>Configure Amazon CloudWatch alarms for critical events.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Use Amazon CloudWatch and AWS GuardDuty to monitor and alert on suspicious activities.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Networking:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Secure network configurations and enforce segmentation.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Implement security groups and network ACLs.</p>
+</li>
+<li>
+<p>Restrict inbound and outbound traffic.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Configure security groups, network ACLs, and VPCs to control traffic and enforce segmentation.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Data Protection:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Protect data at rest and in transit using encryption.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Enable encryption for S3 buckets.</p>
+</li>
+<li>
+<p>Enforce encryption for EBS volumes.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Use AWS KMS to encrypt data and enforce TLS for data in transit.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Incident Response:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Prepare for and respond to security incidents.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Develop and document incident response plans.</p>
+</li>
+<li>
+<p>Implement automated response mechanisms.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Develop incident response plans and use AWS tools like AWS Config and CloudTrail to support investigations.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Configuration Management:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Maintain secure configurations for AWS resources.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Enable AWS Config rules for security best practices.</p>
+</li>
+<li>
+<p>Regularly review and update configurations.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Use AWS Config rules to enforce secure configurations and remediate non-compliance.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Vulnerability Management:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Identify and remediate vulnerabilities in the AWS environment.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Enable Amazon Inspector.</p>
+</li>
+<li>
+<p>Regularly scan for vulnerabilities.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Use AWS Inspector to perform vulnerability assessments and apply patches promptly.</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="pci-dss-v40">PCI DSS v4.0</h3>
+<p>PCI DSS v4.0 is designed to secure cardholder data and ensure secure payment processes. Here are key requirements and their details:</p>
+<ol>
+<li>
+<p><strong>Install and maintain a firewall configuration to protect cardholder data:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Use firewalls to segment and protect the cardholder data environment (CDE).</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Establish firewall and router configuration standards.</p>
+</li>
+<li>
+<p>Implement segmentation controls.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Implement security groups and virtual firewalls to isolate cardholder data environments in the cloud.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Do not use vendor-supplied defaults for system passwords and other security parameters:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Change default settings to prevent unauthorized access.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Change all default passwords and settings.</p>
+</li>
+<li>
+<p>Document all configuration changes.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Enforce policies to change default credentials and configurations for cloud resources.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Protect stored cardholder data:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Implement encryption and other methods to secure cardholder data at rest.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Encrypt cardholder data using strong cryptography.</p>
+</li>
+<li>
+<p>Implement data retention and disposal policies.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Use encryption services like AWS KMS to protect stored data.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Encrypt transmission of cardholder data across open, public networks:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Use strong encryption to protect data in transit.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Use strong encryption protocols (e.g., TLS).</p>
+</li>
+<li>
+<p>Document and implement security protocols.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Implement TLS/SSL for data transmission and use VPNs for secure communication channels.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Protect all systems against malware and regularly update anti-virus software or programs:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Deploy anti-malware solutions and ensure regular updates.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Install and maintain anti-virus software.</p>
+</li>
+<li>
+<p>Regularly update anti-virus definitions.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Use cloud-based endpoint protection solutions and maintain up-to-date malware defenses.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Develop and maintain secure systems and applications:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Implement security into the software development process and patch vulnerabilities.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Follow secure coding guidelines.</p>
+</li>
+<li>
+<p>Regularly update and patch systems.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Use secure development practices, conduct code reviews, and maintain a patch management process.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Restrict access to cardholder data by business need to know:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Ensure access to cardholder data is limited to authorized personnel only.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Implement role-based access controls (RBAC).</p>
+</li>
+<li>
+<p>Regularly review access privileges.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Implement RBAC and least privilege access policies.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Identify and authenticate access to system components:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Use unique IDs and strong authentication methods.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Enforce unique user IDs.</p>
+</li>
+<li>
+<p>Implement multi-factor authentication (MFA).</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Enforce MFA for access to cloud environments and use centralized authentication services.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Restrict physical access to cardholder data:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Control physical access to systems handling cardholder data.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Implement physical access controls.</p>
+</li>
+<li>
+<p>Monitor and log physical access.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Ensure cloud service providers’ data centers meet physical security standards.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Track and monitor all access to network resources and cardholder data:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Maintain comprehensive logging and monitoring to detect and respond to access anomalies.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Enable logging mechanisms.</p>
+</li>
+<li>
+<p>Regularly review and analyze logs.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Use cloud logging and monitoring tools to track access and integrate with SIEM solutions for real-time analysis.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Regularly test security systems and processes:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Perform regular vulnerability scans and penetration tests.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Conduct internal and external vulnerability scans.</p>
+</li>
+<li>
+<p>Perform penetration tests at least annually.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Schedule regular scans and penetration tests on cloud environments and applications.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Maintain a policy that addresses information security for employees and contractors:</strong></p>
+<ul>
+<li>
+<p><strong>Objective:</strong> Establish and enforce a comprehensive security policy.</p>
+</li>
+<li>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>
+<p>Develop and maintain an information security policy.</p>
+</li>
+<li>
+<p>Ensure policies are communicated to all personnel.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CSPM Application:</strong> Develop cloud-specific security policies and ensure all personnel are aware and trained on these policies.</p>
+</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>Elevate Your Cloud Defense: 5 Revolutionary Strategies for Cloud Vulnerability Prioritization</p></blockquote>
+<!-- raw HTML omitted -->
+<p>Integrating controls from CIS Controls v8, CIS AWS Foundations Benchmark v1.5, and PCI DSS v4.0 helps organizations establish a robust Cloud Security Posture Management system. The CIS Controls v8 provides a broad set of best practices for overall cybersecurity, CIS AWS Foundations Benchmark v1.5 offers specific guidance for securing AWS environments, and PCI DSS v4.0 focuses on protecting cardholder data and ensuring secure payment processes. Combining these frameworks ensures comprehensive security coverage tailored to specific compliance requirements and broader cybersecurity best practices.</p>
+<h4 id="comparing-cis-v8-cis-aws-foundations-v15-and-pci-dss-v40-for-cspm">Comparing CIS v8, CIS AWS Foundations v1.5, and PCI DSS v4.0 for CSPM</h4>
+<ol>
+<li>
+<p><strong>Scope and Applicability</strong></p>
+<ul>
+<li>
+<p><strong>CIS Controls v8</strong>: Broadly applicable across various industries and organizations. It provides a general set of security best practices that can be adapted to different environments.</p>
+</li>
+<li>
+<p><strong>CIS AWS Foundations Benchmark v1.5</strong>: Specifically designed for AWS environments, offering tailored recommendations for securing AWS services and infrastructure.</p>
+</li>
+<li>
+<p><strong>PCI DSS v4.0</strong>: Specifically targeted at organizations handling payment card data, with stringent controls focused on protecting cardholder information.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Focus Areas</strong></p>
+<ul>
+<li>
+<p><strong>CIS Controls v8</strong>: Emphasizes a wide range of security controls, including asset management, access control, and incident response, organized into Implementation Groups.</p>
+</li>
+<li>
+<p><strong>CIS AWS Foundations Benchmark v1.5</strong>: Focuses on AWS-specific security configurations, covering identity and access management, logging, monitoring, and network security within AWS.</p>
+</li>
+<li>
+<p><strong>PCI DSS v4.0</strong>: Primarily focuses on securing payment card data and the associated infrastructure, with specific requirements for encryption, access control, and transaction security.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Regulatory Compliance</strong></p>
+<ul>
+<li>
+<p><strong>CIS Controls v8</strong>: Not a regulatory requirement but widely adopted as a best practice framework. It helps organizations achieve compliance with various regulations by providing a strong security foundation.</p>
+</li>
+<li>
+<p><strong>CIS AWS Foundations Benchmark v1.5</strong>: Not a regulatory requirement but aids organizations in aligning their AWS configurations with best practices and regulatory standards.</p>
+</li>
+<li>
+<p><strong>PCI DSS v4.0</strong>: A mandatory requirement for organizations involved in payment card processing. Compliance is required to avoid penalties and maintain the ability to process card payments.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Implementation Complexity</strong></p>
+<ul>
+<li>
+<p><strong>CIS Controls v8</strong>: Flexible and scalable, allowing organizations to implement controls incrementally based on their specific needs and capabilities.</p>
+</li>
+<li>
+<p><strong>CIS AWS Foundations Benchmark v1.5</strong>: Requires a thorough understanding of AWS services and configurations but provides clear, actionable guidance.</p>
+</li>
+<li>
+<p><strong>PCI DSS v4.0</strong>: Requires strict adherence to all specified controls, which can be resource-intensive and complex to implement, especially for smaller organizations.</p>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="which-framework-is-better-for-cspm">Which Framework is Better for CSPM?</h4>
+<ul>
+<li>
+<p><strong>CIS Controls v8</strong>: Ideal for organizations seeking a comprehensive, flexible, and scalable approach to cloud security. It is suitable for businesses of all sizes and industries looking to improve their overall security posture without the need for specific regulatory compliance.</p>
+</li>
+<li>
+<p><strong>CIS AWS Foundations Benchmark v1.5</strong>: Best suited for organizations using AWS as their cloud service provider. It offers specific, actionable recommendations for securing AWS environments and aligns with various regulatory standards, making it ideal for AWS-centric organizations.</p>
+</li>
+<li>
+<p><strong>PCI DSS v4.0</strong>: Essential for organizations involved in payment card processing. It ensures robust protection of cardholder data and compliance with industry regulations. However, it is less flexible and more specific in scope, making it more suitable for organizations with a clear requirement to secure payment card information.</p>
+</li>
+</ul>
+<p>CIS Controls v8, CIS AWS Foundations Benchmark v1.5, and PCI DSS v4.0 each offer valuable guidelines for enhancing cloud security through CSPM. The choice between these frameworks depends on the specific needs and regulatory requirements of the organization. CIS Controls v8 provides a broad, adaptable approach suitable for various industries, while CIS AWS Foundations Benchmark v1.5 offers AWS-specific recommendations. PCI DSS v4.0 delivers stringent controls necessary for protecting payment card data. Organizations should evaluate their unique security requirements and regulatory obligations to determine which framework best aligns with their goals and capabilities.</p>
+<p>The post Comparing CIS v8, CIS AWS Foundations Benchmark v1.5, and PCI DSS v4.0 for CSPM. Which you Should Start With? appeared first on Cyber Security News | Exploit One | Hacking News.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

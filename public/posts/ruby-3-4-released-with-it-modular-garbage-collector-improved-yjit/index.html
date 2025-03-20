@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Ruby 3.4 Released with ‘it’, Modular Garbage Collector, Improved YJIT</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Ruby 3.4 Released with ‘it’, Modular Garbage Collector, Improved YJIT</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2024/01/ruby-logo-250x250.webp" alt="" />
+</figure>
+
+
+</p>
+<p>Ruby, the free open-source high-level general-purpose programming language, released new 3.4.0 (then 3.4.1 with quick fix) today at Christmas!</p>
+<p>The release introduced <code>it</code> block parameter reference, which behaves very much the same as <code>_1</code>. As the feature request descripted:</p>
+<blockquote>
+<p><em><code>it</code> is implemented as a special case of <code>getlocal</code> insn, not a method. <code>it</code> without an argument is considered <code>_1</code> or a normal local variable if defined. <code>it</code> is considered a method call only when it has any positional/keyword/block arguments.</em></p></blockquote>
+<p>
+<figure>
+  <img src="https://ubuntuhandbook.org/wp-content/uploads/2024/12/ruby-it-700x378.webp" alt="" />
+</figure>
+
+
+</p>
+<p>In Ruby 3.4, <strong>the socket library now features Happy Eyeballs Version 2 (RFC 8305)</strong>. Which, ensures minimized connection delays, even if a specific protocol or IP address is delayed or unavailable.</p>
+<p>This feature is enabled by default. Though, can be disabled either on a per-method basis by using the keyword argument <code>fast_fallback: false</code>, or globally by setting environment variable <code>RUBY_TCP_NO_FAST_FALLBACK=1</code> or calling <code>Socket.tcp_fast_fallback=false</code></p>
+<p>The release also <strong>introduced modular garbage collector (GC)</strong>. It can be enabled at build time by <code>--with-modular-gc</code> configuration option. To load at runtime, use the environment variable <code>RUBY_GC_LIBRARY</code>.</p>
+<p>The built-in garbage collector has been splitted. It can be built as a library and enabled by environment variable <code>RUBY_GC_LIBRARY=default</code>. While, there’s also an experimental GC library based on MMTk, which can be built then enabled by <code>RUBY_GC_LIBRARY=mmtk</code>.</p>
+<p>The new release also <strong>switched the default parser from parse.y to Prism</strong>. While the previous parser is available by using <code>--parser=parse.y</code> command-line argument.</p>
+<p>The YJIT compiler has been improved with better performance on x86-64 and arm64 platforms, and less memory usage through compressed metadata and a unified memory limit.</p>
+<p>While, there are new <code>--yjit-mem-size</code> command option to unify memory limit (default 128MiB) to track total YJIT memory usage, and <code>--yjit-log</code> that enables a compilation log to track what gets compiled.</p>
+<p>Other changes in Ruby 3.4.0 include:</p>
+<ul>
+<li>Keyword splatting <code>nil</code> when calling methods is now supported.</li>
+<li>Block passing and keyword arguments are no longer allowed in index.</li>
+<li>Add <code>GC.config</code> to allow setting configuration variables on the Garbage Collector.</li>
+<li>Introduce <code>rgengc_allow_full_mark</code> GC configuration parameter.</li>
+<li>Add <code>Ractor.main?</code>, <code>Ractor.[]</code>, and <code>Ractor.[]=</code>.</li>
+</ul>
+<p>There are as well other core classes, standard library, API updates, and bug-fixes. See the official release note for details.</p>
+<h3 id="how-to-install-ruby-341">How to Install Ruby 3.4.1</h3>
+<p>Ruby is available in App Center (or Ubuntu Software) as official Snap package, though NOT updated to the lastest at the moment of writing.</p>
+<p>If you can’t wait Snap or third-party package manager, then, you may download the source tarball from the link button below:</p>
+<p>Download Ruby (tarball)</p>
+<p>And, here’s a step by step guide (Method 4) talking about how to build it from source.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

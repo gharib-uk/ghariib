@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Security Capabilities to Support Code Integrity</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Security Capabilities to Support Code Integrity</h1>
+			<b><time>04.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/cybersecurity">cybersecurity</a>
+        	       
+		           <a href="/tags/dev">dev</a>
+        	       
+		           <a href="/tags/developers">developers</a>
+        	       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/security">security</a>
+        	       
+		           <a href="/tags/soc">soc</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>By Kelly FitzGerald, Raytheon Technologies; Altaz Valani, Security Compass; Elena Kravchenko, Imperva; Matthew Lyon, Dell Technologies; Ashwini Siddhi, Dell Technologies</p>
+<h1 id="introduction">Introduction</h1>
+<p>In our previous blog posts, we defined the code integrity problem statement and the basic principles of code integrity. As our series continues, we will define a framework of layered security capabilities to support code integrity. The framework is based on security capabilities that involve an intersection of tools, people, and processes.</p>
+<p>When we talk about code integrity, there are many layers to consider. We need to consider the various assets that are transformed while traversing the software delivery pipeline (for example, code-to-binary, policy-to-infrastructure-as-code recipe, etc.) and ensure the software delivery pipeline is resilient against unauthorized access and tampering from a malicious actor or system.</p>
+<p>Therefore, it’s useful to draw a distinction between security <em>in</em> the pipeline and security <em>of</em> the pipeline. Security <em>in</em> the pipeline encompasses activities that are performed to ensure that the software which an organization develops is secure by default, such as Secure Development Lifecycle (SDL) controls. While these control points are primarily focused on mitigating the risk of security vulnerabilities in code, in some cases these security capabilities also serve to reinforce code integrity. This contrasts with the security <em>of</em> the pipeline, which is focused on mitigating the risk of malicious code insertion, tampering, substitution, and sabotage. This blog post is focused primarily on this latter class of capabilities, that is, the capabilities that support the security <em>of</em> the pipeline. However, we also examine the security capabilities that operate <em>in</em> the pipeline to support secure software development and bolster code integrity.</p>
+<h1 id="code-integrity-security-capabilities">Code Integrity Security Capabilities</h1>
+<p>Every organization that develops code that is incorporated into product and service offerings needs to adopt a defense-in-depth strategy to support code integrity. Development and security teams must work in concert to secure development and build processes with security capabilities. To operationalize these security capabilities, organizations need to operate with an “assume breach” mindset and apply a zero-trust strategy and architecture to secure the pipeline.</p>
+<p>To achieve this outcome, we believe there are three categories of capabilities to examine. These are secure software development capabilities, software delivery pipeline security capabilities, and security operations capabilities. Together, these elements create a multilayered and interrelated system for defense-in-depth to safeguard code integrity.</p>
+<h2 id="secure-software-development-capabilities">Secure Software Development Capabilities</h2>
+<p>Secure software development capabilities consist of tools and processes used to perform secure software development tasks and to deliver software packages that are secure by default. Secure software development capabilities should facilitate process automation, support reproducible process outcomes, and consistently maintain code integrity across all systems and procedures that store, transmit, or process code. Secure software development capabilities are a prerequisite for security <em>in</em> the software delivery pipeline.</p>
+<p>The following tools and processes support secure software development capabilities:</p>
+<ul>
+<li>An Integrated Development Environment (IDE) provides components for developing software within the context of a single user interface and integrates various tools to enable developers to identify and correct issues in code.</li>
+<li>A Version Control System is used to manage change history for source code modifications and control right-to-modify access to source code.</li>
+<li>A Continuous Integration (CI) System integrates code changes via automated distributed build and security testing process orchestration and supports code integrity by recording and tracing inputs and outputs during the build process to determine if they are processed correctly and completely.</li>
+<li>An Artifact Repository manages and enforces access control for software artifacts such as software binary files and associated metadata.</li>
+<li>Static Application Security Tools (SAST) analyze source code to find security vulnerabilities that can make applications susceptible to attack, and Dynamic Application Security Tools (DAST) exercise binary code for components or complete products to find security vulnerabilities.</li>
+<li>MITRE Corporation provides the Common Weakness Enumeration (CWE) and Common Vulnerability and Exposures (CVE) knowledge bases that are useful for measuring the impact of a vulnerability, an important component of risk management; the CWE system helps provide classification and impact of a vulnerability and CVE provides a database of known exposures.</li>
+<li>Defect Tracking Databases enable the recording, tracking, and closure of defects and vulnerabilities.</li>
+<li>Software Composition Analysis tools detect and identify third-party software components that are integrated into the source and binary code and can be used as a trigger to generate a Software Bill-of-Materials (SBOM); SBOM files provide a software component inventory which can be verified and monitored for CVEs within the context of the Software Delivery Pipeline.</li>
+<li>Code Signing applies a digital signature to software packages to provide code recipients with provenance and integrity assurance.</li>
+</ul>
+<p>SAFECode previously published the best practices guide entitled Fundamental Practices for Secure Software Development which elaborates on some of the Secure Software Development Capabilities listed above in more detail.</p>
+<h2 id="software-delivery-pipeline-security-capabilities">Software Delivery Pipeline Security Capabilities</h2>
+<p>Software delivery pipeline security capabilities identify potential threats and anomalous behavior as code flows through the software delivery pipeline. These capabilities can detect anomalous behavior in the application layer of the various components of the secure software development capabilities described above based on standardized workflows and behaviors and create security events to be ingested and acted upon. These capabilities support the security <em>of</em> the software delivery pipeline.</p>
+<p>The following are examples of tools and processes that support software delivery pipeline security capabilities:</p>
+<ul>
+<li>Role-Based Access Control (RBAC) should be applied to all of the systems and infrastructure that comprise the Software Delivery Pipeline to ensure that access rights are granted in a manner that is consistent with the principle of least privilege and that personnel are granted the bare minimum level of access required to effectively perform their job duties as required to sustain the Software Delivery Pipeline.</li>
+<li>Audit Logging should be enabled and protected to provide an accurate record of all activities and events within the Software Delivery Pipeline.</li>
+<li>Software Bill of Materials (SBOM) files provide a software component inventory that can be verified and monitored for CVEs within the context of the Software Delivery Pipeline.</li>
+<li>Malware Scanners can detect the presence of malicious code in the Software Delivery Pipeline.</li>
+<li>Endpoint Detection and Response (EDR) continually monitors an “endpoint” such as a system within the Software Delivery Pipeline, to identify and respond to security breaches and potential threats.</li>
+<li>Next-Generation Antivirus (NGAV) prevents cybersecurity attacks by monitoring and responding to attacker Tactics, Techniques, and Procedures (TTP).</li>
+</ul>
+<h2 id="security-operations-capabilities">Security Operations Capabilities</h2>
+<p>The software delivery pipeline security capabilities listed above provide a mechanism for monitoring development behavior patterns. Security operations capabilities leverage a consistent set of information flowing through these tools to identify and scrutinize anomalous activity, and corresponding incident response processes address suspected or confirmed violations of code integrity based on these real-time detection and response capabilities. Together, these capabilities also support the security <em>of</em> the software delivery pipeline.</p>
+<p>Here are some examples of security operations capabilities to consider:</p>
+<ul>
+<li>A Security Information and Event Management (SIEM) system provides real-time analysis of security alerts generated by some of the software delivery pipeline security capabilities described above; SIEM systems allow an organization to have a more complete, complex, and nuanced view of the security landscape by analyzing the input from multiple systems in the organization (i.e., firewalls, anti-virus, and logging platforms).</li>
+<li>Penetration Testing Tools check a network, system, or software components for security vulnerabilities and potential exploit scenarios.</li>
+<li>Data Mining is a process of turning raw data into useful intelligence and can be used to help enable malware detection and intrusion detection.</li>
+<li>Artificial Intelligence (AI) Security encompasses tools and techniques that leverage AI to identify and respond to potential threats based on similar or previous activity profiles.</li>
+<li>Open-Source Intelligence (OSINT) utilizes free and open data sources to measure the risk to an organization and can be leveraged to understand the code integrity threat landscape.</li>
+<li>Incident Response involves human investigation and intervention based on potential threats identified by observability tools.</li>
+</ul>
+<h1 id="conclusion">Conclusion</h1>
+<p>Operationalizing code integrity requires a joint effort between security and development teams. Security practitioners must collaborate with developers to help achieve code integrity outcomes. This means that security practitioners must help developers to embed security tools into the development workflow.</p>
+<p>This is why having a security reference architecture is so important, as it includes both secure development and the security of development. It provides a blueprint to help achieve this integration. In the future, we will be discussing use cases that further engage and leverage the developer perspective in a vision for a reference architecture that includes code intake, code development, and code release.</p>
+<h1 id="references">References</h1>
+<ul>
+<li>Fundamental Practices Guide for Secure Software Development – SAFECode</li>
+<li>Zero Trust Commandments – The Open Group</li>
+<li>Zero Trust Core Principles – The Open Group</li>
+<li>DoD Enterprise DevSecOps Reference Design – United States Department of Defense</li>
+<li>Six Pillars of DevSecOps Series – Cloud Security Alliance</li>
+</ul>
+<p>The post Security Capabilities to Support Code Integrity appeared first on SAFECode.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

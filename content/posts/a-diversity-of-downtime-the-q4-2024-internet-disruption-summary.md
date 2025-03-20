@@ -1,0 +1,128 @@
+---
+title: "A diversity of downtime: the Q4 2024 Internet disruption summary"
+date: 2025-01-29
+---
+
+Cloudflare’s network spans more than 330 cities in over 120 countries, where we interconnect with over 13,000 network providers in order to provide a broad range of services to millions of customers. The breadth of both our network and our customer base provides us with a unique perspective on Internet resilience, enabling us to observe the impact of Internet disruptions at both a local and national level, as well as at a network level.
+
+As we have noted in the past, this post is intended as a summary overview of observed and confirmed disruptions, and is not an exhaustive or complete list of issues that have occurred during the quarter. A larger list of detected traffic anomalies is available in the Cloudflare Radar Outage Center.
+
+In the third quarter we covered quite a few government-directed Internet shutdowns, including many intended to prevent cheating on exams. In the fourth quarter, however, we only observed a single government-directed shutdown, this one related to protests. Terrestrial cable cuts impacted connectivity in two African countries. As we have seen multiple times before, both unexpected power outages and rolling power outages following military action resulted in Internet disruptions. Violent storms and an earthquake predictably caused Internet outages in the affected countries. And unexpected issues with maintenance efforts caused outages at two European providers, while Verizon customers in several US states experienced a brief but unexplained outage.
+
+## Cable cuts
+
+### Rwanda
+
+On October 1, local mobile provider MTN Rwanda (AS36890) published a post on X alerting subscribers of a double fiber cut in Tanzania and Uganda that may impact connection quality. As a result of these fiber cuts, Internet traffic began to drop sharply after 12:45 local time (10:45 UTC), with a full outage visible between 13:15 - 13:30 local time (11:15 - 11:30 UTC). Traffic then began to rapidly recover, recovering to expected levels around 19:00 local time (17:00 UTC). Several hours later, MTN Rwanda published a followup post confirming that all services had been restored.
+
+The African Undersea and Terrestrial Fibre Optic Cables (AfTerFibre) map shows that in addition to connecting with networks to the north and south in Tanzania and Uganda, it appears that connections are also available through networks to the west in the Democratic Republic of the Congo (DRC). However, MTN Rwanda’s upstream providers and/or peers may not be routing traffic through DRC-based networks, meaning that they couldn’t be used as a backup path when the apparently simultaneous fiber cuts occurred.
+
+### Niger
+
+On November 30, local mobile provider Airtel Niger (AS37531) posted a thread of messages on X apologizing for Internet service disruptions, explaining that (translated) “_Indeed, due to a simultaneous interruption on the national optical fiber on the Niamey-Dosso, Niamey-Balleyara exits, our internet services are completely interrupted throughout the territory, beyond our control._” These simultaneous fiber cuts resulted in a near complete outage between 17:30 local time (16:30 UTC) on November 29 until 19:45 local time (18:45 UTC) on November 30.
+
+It seems unusual that the message thread was not posted until after the outage was resolved. It is possible that Airtel Niger themselves had no backup connectivity, and could not post an update until connectivity was restored. Alternately, given that the first post of the thread starts with “_\[COMMUNIQUÉ IMPORTANT📢\]_” (“_\[IMPORTANT PRESS RELEASE 📢 \]_”), it is possible that the alert and apology was communicated through more official channels, such as Airtel’s website, in a timely manner, with the thread on X simply a follow-up once Internet services were again available.
+
+## Power outages
+
+### Cuba 
+
+Instability in a country’s electrical infrastructure often causes widespread power outages, which, in turn, disrupt Internet connectivity. This happened on October 18 in Cuba, where a post on X from the Ministry of Energy and Mines of Cuba noted (translated) “_Following the unexpected departure of the Antonio Guiteras CTE, the National Electricity System was completely disconnected at 11 a.m. today. The Unión Eléctrica is working on its restoration._” The power outage caused Internet traffic within the country to drop by more than half within minutes (15:15 UTC). Connectivity was disrupted for approximately three-and-a-half days, as it returned to expected levels around 23:00 local time on October 21 (03:00 UTC on October 22).
+
+The Ministry posted several status updates on October 19 and 20, covering the work being done to restore power across the country. A final X post on October 22 signaled the end of the power outage, proclaiming (translated) “_At 02:44 pm the National Electric System was synchronized._”
+
+Several weeks later, power issues again impacted Internet connectivity in Cuba. On November 6, the Electrical Union of Cuba (Uníon Eléctrica) posted on X that (translated) “_14:48 hours. Strong winds caused by the intense Hurricane Rafael, cause the disconnection of the National Electric System. Contingency protocols are applied._” The timing of this post aligns with a sharp decline in traffic observed from Cuba, which fell sharply around 14:30 local time (19:30 UTC). Over the following days, after Hurricane Rafael passed the island, the Uníon Eléctrica posted numerous updates on the restoration of electrical service. Internet traffic appeared to return to expected levels around 13:00 local time (18:00 UTC) on November 9, although full restoration of electrical services took several days longer.
+
+On December 4, Cuba suffered its third nationwide power outage in as many months. Early that morning, the Ministry of Energy and Mines posted on X that (translated) “_At 2:08 this morning, the Electrical System, SEN, was disconnected when the Antonio Guiteras thermoelectric plant went out due to the automatic tripping._” The loss of this electrical power due to the failure of this generation plant caused a significant drop in Internet traffic from Cuba, falling approximately 60% as compared to the previous week at just before 02:15 local time (07:15 UTC). Traffic recovered to expected levels almost a day later at around 00:30 local time (05:30 UTC). This timing aligns with a follow-on X post from the Ministry that announced that all units had been synchronized, signaling a restoration of electrical service.
+
+### Guadeloupe
+
+An article published in The Guardian on October 25 noted that “_The French Caribbean island of_ _Guadeloupe_ _has been left entirely without power after striking workers seized control of the territory’s power station._” Workers entered the power station’s command room “_and caused an emergency shutdown of all the engines_”, according to the article. The power outage caused by this “emergency shutdown” resulted in traffic dropping nearly 70% as compared to the previous week at 08:30 local time (12:30 UTC). Although “restored electricity supply for the 230,000 affected households was expected at 3 pm local time (19:00 UTC) at best”, it appears that recovery took significantly longer than expected, as Internet traffic did not return to expected levels until around 22:00 local time on October 26 (02:00 UTC on October 27) . A press release from the government at 11:00 local time (15:00 UTC) on October 26 gave an update on the recovery efforts, noting (translated) “_160,000 users have had their electricity restored. The restoration of service for the 70,000 customers still cut off is continuing, with a return to normal expected over the weekend._” It also noted that “_76% of Orange subscribers have been able to regain their network connection. 1,800 homes are still without internet._”
+
+### Kenya
+
+Power outages in Kenya resulted in multiple Internet disruptions during both the second and third quarters of 2024. A similar event occurred during the fourth quarter as well. An X post from Kenya Power contained a “Customer Alert” issued at 01:28 local time on December 18 (22:28 UTC on December 17) that informed customers that “_We are experiencing a widespread power outage affecting most of the country, except parts of Western and North Rift regions._” This outage caused Internet traffic from the country to drop by over 70% starting just after midnight local time on December 18 (21:00 UTC on December 17). On December 18 at 07:35 local time (04:35 UTC), an update from Kenya Power posted to X reported that power had been restored to all affected areas. Internet traffic from the country had recovered to near expected levels by that time as well.
+
+## Natural disasters
+
+### United States, Florida
+
+At 20:30 local time on October 9 (00:30 UTC on October 10), Hurricane Milton made landfall in Florida as a Category 3 storm. Damage from Milton was extensive, including flooding, downed trees and power lines, and damage to homes and businesses. The power outages and other infrastructure damage caused by the storm, coupled with evacuation from impacted areas, resulted in a notable Internet disruption at a state level. As seen in the graph below, peak traffic levels on October 10, after Milton’s arrival, were approximately 40% lower than the preceding days. As recovery and restoration efforts began over the following days, and as evacuees returned to home, school, and work, the state’s Internet traffic began to gradually increase.
+
+![](https://cf-assets.www.cloudflare.com/zkvhlag99gkb/KVUA87OvUlomBVrbylU8w/793b65193655ffef980c9341c1476668/Oct_9_-_United_States_-_Florida.png)
+
+This gradual recovery is also visible in the series of maps below, which illustrate cities where Internet traffic was over 50% lower than the same time the prior week, with snapshots taken at 09:00 local time (13:00 UTC) on October 10, 11, and 14. On October 10, over 70 cities had significantly lower traffic, while on October 14, it was just over 10 cities.
+
+![](https://cf-assets.www.cloudflare.com/zkvhlag99gkb/4rqveKTtJ60LW8rLBizxeD/ea62aec5653bc46622fbabb922e61c88/Florida_-_three_maps.jpeg)
+
+### Mayotte
+
+On December 14, Cyclone Chido caused significant destruction on the French territory of Mayotte in the Indian Ocean. Power, water, and communications infrastructure were all damaged, as well as homes and public facilities. Over three dozen people were killed, with thousands more injured. With such widespread devastation, Internet traffic from the country was also impacted, as would be expected. Chido made landfall in Mayotte early in the morning on December 14, and traffic dropped sharply around 09:00 local time (06:00 UTC), causing a near-complete Internet outage. After extremely slow growth over the following week, a diurnal pattern is once again visible, with peak traffic levels continuing to gradually increase through the end of the month. As of the third week of January 2025, Mayotte’s Internet traffic continues to slowly increase, but remains well below pre-Chido levels.
+
+### Vanuatu
+
+A magnitude 7.3 earthquake struck 24 km WNW of Port-Vila, Vanuatu at 17:46 local time (01:47 UTC) on December 17. Internet traffic from the country dropped sharply almost immediately, falling nearly 90% compared to the previous week. A significant drop in announced IPv4 address space was also observed, suggesting that damage from the earthquake took core network provider infrastructure offline as well. Recovery was slow, with Internet traffic not returning to expected levels until around 23:00 local time (12:00 UTC) on December 26.
+
+An editorial published on The Maritime Executive website highlights that Vanuatu is currently reliant on the Interchange Cable Network 1 (ICN1) submarine cable connection to Fiji for international Internet connectivity. The editorial states that “_A fire at the cable landing station temporarily interrupted the power supply, disabling internet traffic. The connection was restored 10 days later…_” The resolution of the power outage at the cable landing station roughly aligns with traffic returning to expected levels, suggesting that this was a significant driver of the drop in traffic seen from Vanuatu after the earthquake. Starlink’s satellite Internet service provides some nominal redundancy, as the company announced service availability on October 7. The TAMTAM submarine cable, connecting Vanuatu to New Caledonia, is expected to be ready for service in 2026 — once available, it will provide additional redundancy for Internet connectivity. 
+
+## Government directed
+
+### Mozambique
+
+On October 25 in Mozambique, mobile Internet connectivity across multiple providers was shut down after protests against the re-election of the ruling Frelimo party became violent. Starting around 13:00 local time (11:00 UTC), significant drops in traffic were observed across AS30619 (Telecomiuncacoes de Mocambique), AS37342 (Movitel), and AS37223 (Vodacom). Both Vodacom and Movitel experienced near complete outages almost immediately, while some traffic remained on Telecomiuncacoes de Mocambique until just before 02:00 local time (00:00 UTC) on October 26. Connectivity was restored the morning of October 26, as traffic returned around 08:00 local time (06:00 UTC). However, after connectivity returned, some social media platforms and messaging applications remained unavailable.
+
+Just over a week later, on November 3, subscribers on these mobile networks experienced another Internet shutdown. At around 20:30 local time (18:30 UTC) traffic dropped significantly on each of these networks, with connectivity disrupted for nearly 12 hours before recovering around 08:00 (06:00 UTC) the morning of November 4. Similar shutdowns (“Internet curfews”) were observed November 4-5 and November 6-7 on all three networks, and November 7-8 on Movitel and Vodacom. According to a published report, the country’s Minister of Transport and Communications “admitted that Internet access was restricted in order ‘to avoid the destruction of the country’”, but shifted blame to the impacted services providers, claiming that when they note misuse of their services, they can take the initiative of interrupting the services, as part of their “civil responsibility” to safeguard “the stability and welfare of the population”.
+
+## Military action
+
+### Syria
+
+An Internet disruption observed in Syria on November 9 may have been caused by damage from an Israeli airstrike near Aleppo and Idlib reported to have taken place earlier that morning. Internet traffic from the country dropped by about 80% at around 04:00 local time (01:00 UTC), with announced IP address space from the country falling significantly at that time as well. The disruption lasted approximately four hours, with traffic and announced IP address space returning to expected levels around 08:00 local time (05:00 UTC). 
+
+Internal analysis of city-level Internet traffic shows a similar disruption in Aleppo, suggesting that it may have been caused by the airstrike.
+
+![](https://cf-assets.www.cloudflare.com/zkvhlag99gkb/4mINSvpkYHgWfw2fmmUQ73/655b6509cff44bcdb627fc319b301198/Nov_9_-_Syria_-_Aleppo.png)
+
+### Ukraine
+
+Russian missile strikes on November 17 targeting electrical power infrastructure in Ukraine resulted in rolling power outages in multiple regions across the country. As we have seen multiple times throughout the nearly three-year-old conflict, these power outages result in disruptions to Internet traffic, impacting both service provider infrastructure and subscriber connectivity.
+
+During the period between 07:30 local time (05:30 UTC) on November 17 and 02:00 local time (00:00 UTC) on November 23, we observed lower Internet traffic as compared to the previous week in Odessa, Zaporizhzhia, Mykolaiv, and Sumy. Traffic in Odessa initially dropped on November 17 by around 50% as compared to the prior week, while on November 18, traffic dropped by over 20% in the other regions. Traffic largely recovered in Odessa by November 21, while the other regions took several additional days.
+
+![](https://cf-assets.www.cloudflare.com/zkvhlag99gkb/4df2zIvFEYuEzlxCOsheVq/929deb1bb59fa7424499489910df1660/Nov_17_-_Ukraine_-_Odessa_-_compare.png)![](https://cf-assets.www.cloudflare.com/zkvhlag99gkb/2ifIBz0P1A5CJJE5jzXCEb/9bed04debd6d2b2bb477a09bf33be572/Nov_17_-_Ukraine_-_Mykolaiv_-_compare.png)![](https://cf-assets.www.cloudflare.com/zkvhlag99gkb/3OP5J1JrocK1gEM8RV8Ejk/55cbe2ef4d5f58665e5a3e8a45930d28/Nov_17_-_Ukraine_-_Sumy_-_compare.png)![](https://cf-assets.www.cloudflare.com/zkvhlag99gkb/5Ul0rncfaLHonLFaO1PAza/171a02e635370bf4ef83d83272309351/Nov_17_-_Ukraine_-_Zaporizhzhia_-_compare.png)
+
+Similar attacks took place just a few days later, with additional Russian airstrikes again targeting electrical infrastructure in Ukraine. Once again, Ukrainian officials implemented emergency power outages, which impacted Internet traffic in multiple areas across the country. Starting around 07:00 local time (05:00 UTC) on November 28, we observed traffic drop by as much as 65% as compared to the previous week in Kherson Oblast, Mykolaiv, Ternopil Oblast, Rivna, and Lviv. Traffic remained lower over the next several days, but appears to have generally recovered by December 1.
+
+![](https://cf-assets.www.cloudflare.com/zkvhlag99gkb/4MdWZ5jx2HNvMb98N1OSUv/b2241380e2c8f41bad84c1bfc9d97e26/Nov_28_-_Ukraine_-_Kherson_-_compare.png)![](https://cf-assets.www.cloudflare.com/zkvhlag99gkb/5BT5MUbigIKPn23Qrro81i/aaaaca0a3ec7281efb726b3fd2ee47b6/Nov_28_-_Ukraine_-_Mykolaiv_-_compare.png)![](https://cf-assets.www.cloudflare.com/zkvhlag99gkb/3SFzcNP5FgPxQ20T5HH1UD/9bc3da6e9be2465e9df62bb47dc8e1be/Nov_28_-_Ukraine_-_Ternopil_-_compare.png)![](https://cf-assets.www.cloudflare.com/zkvhlag99gkb/6i7si8ch823gPYhcvrANJe/08cf403779b09f7d451da06c61d137d3/Nov_28_-_Ukraine_-_Rivne_-_compare.png)![](https://cf-assets.www.cloudflare.com/zkvhlag99gkb/3jcZqZeL0hDEgb7jTVNaMW/5de359cf61ba96763b6416b835790722/Nov_28_-_Ukraine_-_LVIV_-_compare.png)
+
+## Maintenance
+
+### Switzerland, Salt Mobile
+
+According to the image below, which replaced the homepage of Swiss provider Salt Mobile (AS15796), reported maintenance took the network completely offline early in the morning of December 3.
+
+![](https://cf-assets.www.cloudflare.com/zkvhlag99gkb/3UcFvHDUtaPnmtKKVi0SaM/f02396634bef3dee5579428956189ebc/Dec_2_-_Switzerland_-_Salt_Mobile_-splash_-_border.jpg)
+
+The outage lasted nearly three hours, with observed traffic at or near zero, between 01:25 and 04:20 local time (00:25 - 03:20 UTC). 
+
+### Greenland, Tusass A/S
+
+A December 10 update from Tusass A/S (AS8818, formerly TeleGreenland) explained why the provider experienced a complete Internet outage between 02:30 and 05:15 local time (04:30 - 07:15 UTC) that morning. The post noted “_This happened because preventive maintenance was to be done on the connections in Canada between 02:00 and 06:00 last night, but with a combined fault on our connection to Denmark we lost nationwide connectivity. Fortunately, the fault on the connection to Denmark occurred on land, and therefore easy to repair._” The graphs below show that for the duration of the outage, traffic from the network dropped to zero, no IPv6 address space was announced, and the volume of announced IPv4 address space fell by 94%.
+
+According to Telegeography’s Submarine Cable Map, the Greenland Connect cable system connects Greenland to Newfoundland, Canada. It is possible that the fault on the connection to Denmark may have occurred on the Greenland-to-Iceland segment of the Greenland Connect cable system; the Iceland-to-Denmark connection is made over the DANICE submarine cable.
+
+## Unknown
+
+### United States, Verizon
+
+Very early in the morning of November 12, some subscribers of Verizon’s Fios Internet service experienced a disruption to their Internet connectivity. A post to the Outages mailing list noted that a major multi-state Verizon Fios outage began at 12:28am EST, impacting Virginia, Washington DC, Maryland, and New Jersey, as well as parts of eastern Pennsylvania. Traffic from AS701, the autonomous system used by Verizon for their Fios service, dropped by approximately 30% around 00:30 Eastern time (05:30 UTC). At a state level, traffic from AS701 dropped between 50-70% in Pennsylvania, Delaware, Maryland, and Washington DC.
+
+A subsequent post on the Outages mailing list stated that the outage was resolved everywhere at 3:23am EST (08:23 UTC). Nearly six hours after the outage ended, Verizon Support published a post on X acknowledging the issue, stating “_A network issue early this morning disrupted service for some Verizon Fios customers in the Northeast for a short period of time. As soon as the issue was identified, our engineering teams quickly restored the service._” However, they did not provide any information on what ultimately caused the service disruption.
+
+## Conclusion
+
+In addition to the outages and disruptions covered above, resilient Internet connectivity meant that two Baltic Sea cable cuts that occurred on November 17 and 18 had minimal impact. Whether accidental or sabotage, the security and resiliency of submarine cable infrastructure continues to be an important topic. The security and resilience of terrestrial cable infrastructure, as well as other critical Internet infrastructure, must also remain top of mind to help speed recovery from storms, earthquakes, military action, and power outages.
+
+The Cloudflare Radar team is constantly monitoring for Internet disruptions, sharing our observations on the Cloudflare Radar Outage Center, via social media, and in posts on blog.cloudflare.com. Follow us on social media at @CloudflareRadar (X), noc.social/@cloudflareradar (Mastodon), and radar.cloudflare.com (Bluesky), or contact us via email.
+
+Go to Source

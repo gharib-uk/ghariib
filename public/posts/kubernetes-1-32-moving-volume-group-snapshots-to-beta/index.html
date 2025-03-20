@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Kubernetes 1.32: Moving Volume Group Snapshots to Beta</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Kubernetes 1.32: Moving Volume Group Snapshots to Beta</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Volume group snapshots were introduced as an Alpha feature with the Kubernetes 1.27 release. The recent release of Kubernetes v1.32 moved that support to <strong>beta</strong>. The support for volume group snapshots relies on a set of extension APIs for group snapshots. These APIs allow users to take crash consistent snapshots for a set of volumes. Behind the scenes, Kubernetes uses a label selector to group multiple PersistentVolumeClaims for snapshotting. A key aim is to allow you restore that set of snapshots to new volumes and recover your workload based on a crash consistent recovery point.</p>
+<p>This new feature is only supported for CSI volume drivers.</p>
+<h2 id="an-overview-of-volume-group-snapshots">An overview of volume group snapshots</h2>
+<p>Some storage systems provide the ability to create a crash consistent snapshot of multiple volumes. A group snapshot represents <em>copies</em> made from multiple volumes, that are taken at the same point-in-time. A group snapshot can be used either to rehydrate new volumes (pre-populated with the snapshot data) or to restore existing volumes to a previous state (represented by the snapshots).</p>
+<h2 id="why-add-volume-group-snapshots-to-kubernetes">Why add volume group snapshots to Kubernetes?</h2>
+<p>The Kubernetes volume plugin system already provides a powerful abstraction that automates the provisioning, attaching, mounting, resizing, and snapshotting of block and file storage.</p>
+<p>Underpinning all these features is the Kubernetes goal of workload portability: Kubernetes aims to create an abstraction layer between distributed applications and underlying clusters so that applications can be agnostic to the specifics of the cluster they run on and application deployment requires no cluster specific knowledge.</p>
+<p>There was already a VolumeSnapshot API that provides the ability to take a snapshot of a persistent volume to protect against data loss or data corruption. However, there are other snapshotting functionalities not covered by the VolumeSnapshot API.</p>
+<p>Some storage systems support consistent group snapshots that allow a snapshot to be taken from multiple volumes at the same point-in-time to achieve write order consistency. This can be useful for applications that contain multiple volumes. For example, an application may have data stored in one volume and logs stored in another volume. If snapshots for the data volume and the logs volume are taken at different times, the application will not be consistent and will not function properly if it is restored from those snapshots when a disaster strikes.</p>
+<p>It is true that you can quiesce the application first, take an individual snapshot from each volume that is part of the application one after the other, and then unquiesce the application after all the individual snapshots are taken. This way, you would get application consistent snapshots.</p>
+<p>However, sometimes the application quiesce can be so time consuming that you want to do it less frequently, or it may not be possible to quiesce an application at all. For example, a user may want to run weekly backups with application quiesce and nightly backups without application quiesce but with consistent group support which provides crash consistency across all volumes in the group.</p>
+<h2 id="kubernetes-apis-for-volume-group-snapshots">Kubernetes APIs for volume group snapshots</h2>
+<p>Kubernetes&rsquo; support for <em>volume group snapshots</em> relies on three API kinds that are used for managing snapshots:</p>
+<p>VolumeGroupSnapshot</p>
+<p>Created by a Kubernetes user (or perhaps by your own automation) to request creation of a volume group snapshot for multiple persistent volume claims. It contains information about the volume group snapshot operation such as the timestamp when the volume group snapshot was taken and whether it is ready to use. The creation and deletion of this object represents a desire to create or delete a cluster resource (a group snapshot).</p>
+<p>VolumeGroupSnapshotContent</p>
+<p>Created by the snapshot controller for a dynamically created VolumeGroupSnapshot. It contains information about the volume group snapshot including the volume group snapshot ID. This object represents a provisioned resource on the cluster (a group snapshot). The VolumeGroupSnapshotContent object binds to the VolumeGroupSnapshot for which it was created with a one-to-one mapping.</p>
+<p>VolumeGroupSnapshotClass</p>
+<p>Created by cluster administrators to describe how volume group snapshots should be created, including the driver information, the deletion policy, etc.</p>
+<p>These three API kinds are defined as CustomResourceDefinitions (CRDs). These CRDs must be installed in a Kubernetes cluster for a CSI Driver to support volume group snapshots.</p>
+<h2 id="what-components-are-needed-to-support-volume-group-snapshots">What components are needed to support volume group snapshots</h2>
+<p>Volume group snapshots are implemented in the external-snapshotter repository. Implementing volume group snapshots meant adding or changing several components:</p>
+<ul>
+<li>Added new CustomResourceDefinitions for VolumeGroupSnapshot and two supporting APIs.</li>
+<li>Volume group snapshot controller logic is added to the common snapshot controller.</li>
+<li>Adding logic to make CSI calls into the snapshotter sidecar controller.</li>
+</ul>
+<p>The volume snapshot controller and CRDs are deployed once per cluster, while the sidecar is bundled with each CSI driver.</p>
+<p>Therefore, it makes sense to deploy the volume snapshot controller and CRDs as a cluster addon.</p>
+<p>The Kubernetes project recommends that Kubernetes distributors bundle and deploy the volume snapshot controller and CRDs as part of their Kubernetes cluster management process (independent of any CSI Driver).</p>
+<h2 id="whats-new-in-beta">What&rsquo;s new in Beta?</h2>
+<ul>
+<li>
+<p>The VolumeGroupSnapshot feature in CSI spec moved to GA in the v1.11.0 release.</p>
+</li>
+<li>
+<p>The snapshot validation webhook was deprecated in external-snapshotter v8.0.0 and it is now removed. Most of the validation webhook logic was added as validation rules into the CRDs. Minimum required Kubernetes version is 1.25 for these validation rules. One thing in the validation webhook not moved to CRDs is the prevention of creating multiple default volume snapshot classes and multiple default volume group snapshot classes for the same CSI driver. With the removal of the validation webhook, an error will still be raised when dynamically provisioning a VolumeSnapshot or VolumeGroupSnapshot when multiple default volume snapshot classes or multiple default volume group snapshot classes for the same CSI driver exist.</p>
+</li>
+<li>
+<p>The <code>enable-volumegroup-snapshot</code> flag in the snapshot-controller and the CSI snapshotter sidecar has been replaced by a feature gate. Since VolumeGroupSnapshot is a new API, the feature moves to Beta but the feature gate is disabled by default. To use this feature, enable the feature gate by adding the flag <code>--feature-gates=CSIVolumeGroupSnapshot=true</code> when starting the snapshot-controller and the CSI snapshotter sidecar.</p>
+</li>
+<li>
+<p>The logic to dynamically create the VolumeGroupSnapshot and its corresponding individual VolumeSnapshot and VolumeSnapshotContent objects are moved from the CSI snapshotter to the common snapshot-controller. New RBAC rules are added to the common snapshot-controller and some RBAC rules are removed from the CSI snapshotter sidecar accordingly.</p>
+</li>
+</ul>
+<h2 id="how-do-i-use-kubernetes-volume-group-snapshots">How do I use Kubernetes volume group snapshots</h2>
+<h3 id="creating-a-new-group-snapshot-with-kubernetes">Creating a new group snapshot with Kubernetes</h3>
+<p>Once a VolumeGroupSnapshotClass object is defined and you have volumes you want to snapshot together, you may request a new group snapshot by creating a VolumeGroupSnapshot object.</p>
+<p>The source of the group snapshot specifies whether the underlying group snapshot should be dynamically created or if a pre-existing VolumeGroupSnapshotContent should be used.</p>
+<p>A pre-existing VolumeGroupSnapshotContent is created by a cluster administrator. It contains the details of the real volume group snapshot on the storage system which is available for use by cluster users.</p>
+<p>One of the following members in the source of the group snapshot must be set.</p>
+<ul>
+<li><code>selector</code> - a label query over PersistentVolumeClaims that are to be grouped together for snapshotting. This selector will be used to match the label added to a PVC.</li>
+<li><code>volumeGroupSnapshotContentName</code> - specifies the name of a pre-existing VolumeGroupSnapshotContent object representing an existing volume group snapshot.</li>
+</ul>
+<h4 id="dynamically-provision-a-group-snapshot">Dynamically provision a group snapshot</h4>
+<p>In the following example, there are two PVCs.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>NAME STATUS VOLUME CAPACITY ACCESS MODES STORAGECLASS VOLUMEATTRIBUTESCLASS AGE
+</span></span><span style="display:flex;"><span>pvc-0 Bound pvc-6e1f7d34-a5c5-4548-b104-01e72c72b9f2 100Mi RWO csi-hostpath-sc &lt;unset&gt; 2m15s
+</span></span><span style="display:flex;"><span>pvc-1 Bound pvc-abc640b3-2cc1-4c56-ad0c-4f0f0e636efa 100Mi RWO csi-hostpath-sc &lt;unset&gt; 2m7s
+</span></span></code></pre></div><p>Label the PVCs.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>% kubectl label pvc pvc-0 group<span style="color:#f92672">=</span>myGroup
+</span></span><span style="display:flex;"><span>persistentvolumeclaim/pvc-0 labeled
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>% kubectl label pvc pvc-1 group<span style="color:#f92672">=</span>myGroup
+</span></span><span style="display:flex;"><span>persistentvolumeclaim/pvc-1 labeled
+</span></span></code></pre></div><p>For dynamic provisioning, a selector must be set so that the snapshot controller can find PVCs with the matching labels to be snapshotted together.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">groupsnapshot.storage.k8s.io/v1beta1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">VolumeGroupSnapshot</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">name</span>: <span style="color:#ae81ff">snapshot-daily-20241217</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">demo-namespace</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">volumeGroupSnapshotClassName</span>: <span style="color:#ae81ff">csi-groupSnapclass</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">source</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">matchLabels</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">group</span>: <span style="color:#ae81ff">myGroup</span>
+</span></span></code></pre></div><p>In the VolumeGroupSnapshot spec, a user can specify the VolumeGroupSnapshotClass which has the information about which CSI driver should be used for creating the group snapshot. A VolumGroupSnapshotClass is required for dynamic provisioning.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">groupsnapshot.storage.k8s.io/v1beta1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">VolumeGroupSnapshotClass</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">name</span>: <span style="color:#ae81ff">csi-groupSnapclass</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">annotations</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">kubernetes.io/description</span>: <span style="color:#e6db74">&#34;Example group snapshot class&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">driver</span>: <span style="color:#ae81ff">example.csi.k8s.io</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">deletionPolicy</span>: <span style="color:#ae81ff">Delete</span>
+</span></span></code></pre></div><p>As a result of the volume group snapshot creation, a corresponding VolumeGroupSnapshotContent object will be created with a volumeGroupSnapshotHandle pointing to a resource on the storage system.</p>
+<p>Two individual volume snapshots will be created as part of the volume group snapshot creation.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>NAME READYTOUSE SOURCEPVC RESTORESIZE SNAPSHOTCONTENT AGE
+</span></span><span style="display:flex;"><span>snapshot-0962a745b2bf930bb385b7b50c9b08af471f1a16780726de19429dd9c94eaca0 true pvc-0 100Mi snapcontent-0962a745b2bf930bb385b7b50c9b08af471f1a16780726de19429dd9c94eaca0 16m
+</span></span><span style="display:flex;"><span>snapshot-da577d76bd2106c410616b346b2e72440f6ec7b12a75156263b989192b78caff true pvc-1 100Mi snapcontent-da577d76bd2106c410616b346b2e72440f6ec7b12a75156263b989192b78caff 16m
+</span></span></code></pre></div><h4 id="importing-an-existing-group-snapshot-with-kubernetes">Importing an existing group snapshot with Kubernetes</h4>
+<p>To import a pre-existing volume group snapshot into Kubernetes, you must also import the corresponding individual volume snapshots.</p>
+<p>Identify the individual volume snapshot handles, manually construct a VolumeSnapshotContent object first, then create a VolumeSnapshot object pointing to the VolumeSnapshotContent object. Repeat this for every individual volume snapshot.</p>
+<p>Then manually create a VolumeGroupSnapshotContent object, specifying the volumeGroupSnapshotHandle and individual volumeSnapshotHandles already existing on the storage system.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">groupsnapshot.storage.k8s.io/v1beta1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">VolumeGroupSnapshotContent</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">name</span>: <span style="color:#ae81ff">static-group-content</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">deletionPolicy</span>: <span style="color:#ae81ff">Delete</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">driver</span>: <span style="color:#ae81ff">hostpath.csi.k8s.io</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">source</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">groupSnapshotHandles</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">volumeGroupSnapshotHandle</span>: <span style="color:#ae81ff">e8779136-a93e-11ef-9549-66940726f2fd</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">volumeSnapshotHandles</span>:
+</span></span><span style="display:flex;"><span> - <span style="color:#ae81ff">e8779147-a93e-11ef-9549-66940726f2fd</span>
+</span></span><span style="display:flex;"><span> - <span style="color:#ae81ff">e8783cd0-a93e-11ef-9549-66940726f2fd</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">volumeGroupSnapshotRef</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">name</span>: <span style="color:#ae81ff">static-group-snapshot</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">demo-namespace</span>
+</span></span></code></pre></div><p>After that create a VolumeGroupSnapshot object pointing to the VolumeGroupSnapshotContent object.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">groupsnapshot.storage.k8s.io/v1beta1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">VolumeGroupSnapshot</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">name</span>: <span style="color:#ae81ff">static-group-snapshot</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">demo-namespace</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">source</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">volumeGroupSnapshotContentName</span>: <span style="color:#ae81ff">static-group-content</span>
+</span></span></code></pre></div><h3 id="how-to-use-group-snapshot-for-restore-in-kubernetes">How to use group snapshot for restore in Kubernetes</h3>
+<p>At restore time, the user can request a new PersistentVolumeClaim to be created from a VolumeSnapshot object that is part of a VolumeGroupSnapshot. This will trigger provisioning of a new volume that is pre-populated with data from the specified snapshot. The user should repeat this until all volumes are created from all the snapshots that are part of a group snapshot.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">PersistentVolumeClaim</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">name</span>: <span style="color:#ae81ff">examplepvc-restored-2024-12-17</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">demo-namespace</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">storageClassName</span>: <span style="color:#ae81ff">example-foo-nearline</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">dataSource</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">name</span>: <span style="color:#ae81ff">snapshot-0962a745b2bf930bb385b7b50c9b08af471f1a16780726de19429dd9c94eaca0</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">VolumeSnapshot</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">snapshot.storage.k8s.io</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">accessModes</span>:
+</span></span><span style="display:flex;"><span> - <span style="color:#ae81ff">ReadWriteOncePod</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">requests</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">storage</span>: <span style="color:#ae81ff">100Mi</span> <span style="color:#75715e"># must be enough storage to fit the existing snapshot</span>
+</span></span></code></pre></div><h2 id="as-a-storage-vendor-how-do-i-add-support-for-group-snapshots-to-my-csi-driver">As a storage vendor, how do I add support for group snapshots to my CSI driver?</h2>
+<p>To implement the volume group snapshot feature, a CSI driver <strong>must</strong>:</p>
+<ul>
+<li>Implement a new group controller service.</li>
+<li>Implement group controller RPCs: <code>CreateVolumeGroupSnapshot</code>, <code>DeleteVolumeGroupSnapshot</code>, and <code>GetVolumeGroupSnapshot</code>.</li>
+<li>Add group controller capability <code>CREATE_DELETE_GET_VOLUME_GROUP_SNAPSHOT</code>.</li>
+</ul>
+<p>See the CSI spec and the Kubernetes-CSI Driver Developer Guide for more details.</p>
+<p>As mentioned earlier, it is strongly recommended that Kubernetes distributors bundle and deploy the volume snapshot controller and CRDs as part of their Kubernetes cluster management process (independent of any CSI Driver).</p>
+<p>As part of this recommended deployment process, the Kubernetes team provides a number of sidecar (helper) containers, including the external-snapshotter sidecar container which has been updated to support volume group snapshot.</p>
+<p>The external-snapshotter watches the Kubernetes API server for VolumeGroupSnapshotContent objects, and triggers <code>CreateVolumeGroupSnapshot</code> and <code>DeleteVolumeGroupSnapshot</code> operations against a CSI endpoint.</p>
+<h2 id="what-are-the-limitations">What are the limitations?</h2>
+<p>The beta implementation of volume group snapshots for Kubernetes has the following limitations:</p>
+<ul>
+<li>Does not support reverting an existing PVC to an earlier state represented by a snapshot (only supports provisioning a new volume from a snapshot).</li>
+<li>No application consistency guarantees beyond any guarantees provided by the storage system (e.g. crash consistency). See this doc for more discussions on application consistency.</li>
+</ul>
+<h2 id="whats-next">What’s next?</h2>
+<p>Depending on feedback and adoption, the Kubernetes project plans to push the volume group snapshot implementation to general availability (GA) in a future release.</p>
+<h2 id="how-can-i-learn-more">How can I learn more?</h2>
+<ul>
+<li>The design spec for the volume group snapshot feature.</li>
+<li>The code repository for volume group snapshot APIs and controller.</li>
+<li>CSI documentation on the group snapshot feature.</li>
+</ul>
+<h2 id="how-do-i-get-involved">How do I get involved?</h2>
+<p>This project, like all of Kubernetes, is the result of hard work by many contributors from diverse backgrounds working together. On behalf of SIG Storage, I would like to offer a huge thank you to the contributors who stepped up these last few quarters to help the project reach beta:</p>
+<ul>
+<li>Ben Swartzlander (bswartz)</li>
+<li>Cici Huang (cici37)</li>
+<li>Hemant Kumar (gnufied)</li>
+<li>James Defelice (jdef)</li>
+<li>Jan Šafránek (jsafrane)</li>
+<li>Madhu Rajanna (Madhu-1)</li>
+<li>Manish M Yathnalli (manishym)</li>
+<li>Michelle Au (msau42)</li>
+<li>Niels de Vos (nixpanic)</li>
+<li>Leonardo Cecchi (leonardoce)</li>
+<li>Rakshith R (Rakshith-R)</li>
+<li>Raunak Shah (RaunakShah)</li>
+<li>Saad Ali (saad-ali)</li>
+<li>Xing Yang (xing-yang)</li>
+<li>Yati Padia (yati1998)</li>
+</ul>
+<p>For those interested in getting involved with the design and development of CSI or any part of the Kubernetes Storage system, join the Kubernetes Storage Special Interest Group (SIG). We always welcome new contributors.</p>
+<p>We also hold regular Data Protection Working Group meetings. New attendees are welcome to join our discussions.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>BSidesPDX CTF : SeaQuell</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>BSidesPDX CTF : SeaQuell</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p><strong>Category:</strong> Web</p>
+<p><strong>Points:</strong> 200</p>
+<p><strong>Description:</strong></p>
+<pre tabindex="0"><code>Our competitors at SeaQuell have uploaded their latest proprietary data to their employee area. We have already compromised their web developer and obtained the source code to their site, here: seaquell.py
+
+Host: a32fcd6eab2d811e784db0a6f99bb55a-829124630.eu-central-1.elb.amazonaws.com
+
+Port: 1589
+
+Seaquell.py
+</code></pre><h1 id="note">Note</h1>
+<p>The BSidesPDX organizers have made the source code for all of their challenges freely available so that you can run them at home and follow along. You can find more information here.</p>
+<h1 id="investigation">Investigation</h1>
+<p>At the beginning of the challenge you are given the source for the website, and you know ou have to attempt to login to the employees-only area. Since we’ve got the source, we can see how the SQL queries are created for the login and craft an attack against that query.</p>
+<pre tabindex="0"><code>seaquell.py:31: cur.execute(&#39;SELECT password FROM employees WHERE username == &#34;&#39;+user+&#39;&#34;&#39;)
+</code></pre><p>By injecting <code>&quot; or 1=1 --</code> into the username field and supplying a random password, we got a result in one of the HTTP headers that gave us a descriptive error. <code>Invalid user: &quot;&quot; or 1=1 --&quot; (got [(u'pirat3',), (u'drillBabyDrill',)])</code></p>
+<p>Now we’ve got passwords, since the SQL query was selecting passwords where a username matched and we inserted a <code>1=1</code> which always evaluates true. Next we need to get the usernames associated with these passwords. Nothing a little union select can’t handle. User <code>&quot; union select username from employees--</code> with a random password returns us a list of passwords in the same HTTP header error message. <code>Invalid user: &quot;&quot; union select username from employees--&quot; (got [(u'sparrowj',), (u'tillersonr',)])</code></p>
+<p>Once we’ve got the username password pairs, we login and there’s a link to the flag. Yes! We’ve got it!</p>
+<pre tabindex="0"><code>&lt;h1&gt;403&lt;/h1&gt;Not Authorized
+</code></pre><p>I guess not. Let’s take another look at the source and see what’s causing this.</p>
+<pre tabindex="0"><code>        if (&#39;..&#39; in self.path or 
+           not (self.path.endswith(&#39;.html&#39;) or
+                self.path.endswith(&#39;/&#39;) or
+                self.path.endswith(&#39;.jpg&#39;))):
+           self.send_response(403)
+           self.end_headers()
+           self.wfile.write(&#39;&lt;h1&gt;403&lt;/h1&gt;Not Authorized&#39;)
+</code></pre><p>So it looks like if we try to do any directory traversals we’ll get a 403, and if we don’t end with <code>.html</code>, <code>/</code>, or <code>.jpg</code> we’ll also get a 403. Luckily this is not how you properly evaluate the extension of a file in a URL, so we can abuse it to get the flag.</p>
+<h1 id="solution">Solution</h1>
+<p>Send your get request but append <code>?.html</code> to the end of the flag url so that it looks like <code>/employees-only/flag?.html</code>. Now you’ll receive the flag because <code>self.path.endswith('.html')</code> evaluates to <code>True</code></p>
+<h1 id="flag">Flag</h1>
+<p><strong>BSidesPDX{7h3_se4w33d_i5_alw4s_gr33n3r_wh3n_y0u_hav3_cr3ds}</strong></p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

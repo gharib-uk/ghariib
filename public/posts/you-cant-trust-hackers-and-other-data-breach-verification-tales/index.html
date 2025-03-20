@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;You Can&#39;t Trust Hackers, and Other Data Breach Verification Tales&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;You Can&#39;t Trust Hackers, and Other Data Breach Verification Tales&lt;/div&gt;</h1>
+			<b><time>23.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/2025-01-22_17-20-03.png" alt="You Can&rsquo;t Trust Hackers, and Other Data Breach Verification Tales" />
+</figure>
+
+
+</p>
+<p>It&rsquo;s hard to find a good criminal these days. I mean a really trustworthy one you can be confident won&rsquo;t lead you up the garden path with false promises of data breaches. Like this guy yesterday:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/image-17.png" alt="You Can&rsquo;t Trust Hackers, and Other Data Breach Verification Tales" />
+</figure>
+
+
+</p>
+<p>For my international friends, JB Hi-Fi is a massive electronics retailer down under <em>and they have my data!</em> I mean by design because I&rsquo;ve bought a bunch of stuff from them, so I was curious not just about my own data but because a breach of 12 million plus people would be massive in a country of not much more than double that. So, I dropped the guy a message and asked if he&rsquo;d be willing to help me verify the incident by sharing my own record. I didn&rsquo;t want to post any public commentary about this incident until I had a reasonable degree of confidence it was legit, not given how much impact it could have in my very own backyard.</p>
+<p>Now, I wouldn&rsquo;t normally share a private conversation with another party, but when someone sets out to scam people, that rule goes out the window as far as I&rsquo;m concerned. So here&rsquo;s where the conversation got interesting:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/image-21.png" alt="You Can&rsquo;t Trust Hackers, and Other Data Breach Verification Tales" />
+</figure>
+
+
+</p>
+<p><em>He guaranteed it for me!</em> Sounds legit. But hey, everyone gets the benefit of the doubt until proven otherwise, so I started looking at the data. It turns out my own info wasn&rsquo;t in the full set, but he was happy to provide a few thousand sample records with 14 columns:</p>
+<ol>
+<li>customer_id_</li>
+<li>first_name</li>
+<li>last_name</li>
+<li>FullName</li>
+<li>gender</li>
+<li>email_address_</li>
+<li>mobile_country_</li>
+<li>mobile_number_</li>
+<li>dob</li>
+<li>postal_street_1_</li>
+<li>state_</li>
+<li>postal_code_</li>
+<li>city_</li>
+<li>account_status</li>
+</ol>
+<p>Pretty standard stuff, could be legit, let&rsquo;s check. I have a little Powershell script I run against the HIBP API when a new alleged breach comes in and I want to get a really good sense of how unique it is. It simply loops through all the email addresses in a file, checks which breaches they&rsquo;ve been in and keeps track of the percentage that have been seen before. A unique breach will have anywhere from about 40% to 80% previously seen addresses, but this one had, well, more:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/image-23.png" alt="You Can&rsquo;t Trust Hackers, and Other Data Breach Verification Tales" />
+</figure>
+
+
+</p>
+<p>Spot the trend? Every single address has one breach in common. Hmmm&hellip; wonder what the guy has to say about that?</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/image-18.png" alt="You Can&rsquo;t Trust Hackers, and Other Data Breach Verification Tales" />
+</figure>
+
+
+</p>
+<p><em>But he was in the server! And he grabbed it from the dashboard of Shopify!</em> Must be legit, unless&hellip; what if I compared it to the actual full breach of Dymocks? That&rsquo;s a local Aussie bookseller (so it would have a lot of Aussie-looking email addresses in it, just like JB Hi-Fi would), and their breach dated back to mid-2023. I keep breaches like that on hand for just such occasions, let&rsquo;s compare the two:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/image-20.png" alt="You Can&rsquo;t Trust Hackers, and Other Data Breach Verification Tales" />
+</figure>
+
+
+</p>
+<p>Wow! What are the chances?! He&rsquo;s going to be <em>so</em> interested when he hears about this!</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/image-19.png" alt="You Can&rsquo;t Trust Hackers, and Other Data Breach Verification Tales" />
+</figure>
+
+
+</p>
+<p>And that was it. The chat went silent and very shortly after, the listing was gone:</p>
+<p>
+<figure>
+  <img src="https://www.troyhunt.com/content/images/2025/01/image-22.png" alt="You Can&rsquo;t Trust Hackers, and Other Data Breach Verification Tales" />
+</figure>
+
+
+</p>
+<p>It looks like the bloke has also since been booted off the forum where he tried to run the scam so yeah, this one didn&rsquo;t work out great for him. That $16k would have been so tasty too!</p>
+<p>I wrote this short post to highlight how important verification of data breach claims is. Obviously, I&rsquo;ve seen <em>loads</em> of legitimate ones but I&rsquo;ve also seen a lot of rubbish. Not usually this blatant where the party contacting me is making such demonstrably false claims about their own exploits, but very regularly from people who obtain something from another party and repeat the lie they&rsquo;ve been told. This example also highlights how useful data from previous breaches is, even after the email addresses have been extracted and loaded into HIBP. Data is so often recycled and shipped around as something new, this was just a textbook perfect case of making use of a previous incident to disprove a new claim. Plus, it&rsquo;s kinda fun poking holes in a scamming criminal&rsquo;s claims 😊</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

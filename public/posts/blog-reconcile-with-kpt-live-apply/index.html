@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Blog: Reconcile with kpt live apply</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Blog: Reconcile with kpt live apply</h1>
+			<b><time>03.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/jenkins">jenkins</a>
+        	       
+
+			<div>
+				<p>Since the dawn of Jenkins X 3 the default last step of reconciling the state of the files in your cluster repository to your cluster has been to execute <code>kubectl apply</code>. You can find more details about this here.</p>
+<p>There are some drawbacks with <code>kubectl apply</code> though. The one that made me start looking for alternatives was that if you remove a resource from your cluster repository it may not be removed from your cluster. The way deletion works with <code>kubectl apply</code> is that it is handed the option <code>--prune</code> which will remove resources that are not in the manifests. Except that it doesn’t always work as expected. It will only remove certain kinds of resources defined in kubectl. In my case I removed an HorizontalPodAutoscaler from my cluster repository, but it wasn’t removed from my cluster.</p>
+<p>When trying to find a solution to this I first tried to override this default list in kubectl of things to prune, but this turned out to be difficult in the general case. I also tried the already existing alternative of using <code>kapp</code> to apply the manifests, but I couldn’t get that to work. Looking for other options I settled for <code>kpt live apply</code>.</p>
+<h2 id="configuration">Configuration</h2>
+<p>For all the functionality described here to work you need to have a cluster that is upgraded later than January 24th 2023.</p>
+<p>You enable the use of <code>kpt live apply</code> by adding</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-make" data-lang="make"><span style="display:flex;"><span>KUBEAPPLY <span style="color:#f92672">=</span> kpt-apply
+</span></span></code></pre></div><p>to the <code>Makefile</code> of your cluster repository anywhere before <code>include versionStream/src/Makefile.mk</code>. This works both in a dev cluster and in a remote cluster. (With the caveat that all bets are off if you have done changes yourself to <code>versionStream/src/Makefile.mk</code>.)</p>
+<p>After you have pushed this you can watch the log of the boot job using <code>jx admin log</code> as usual. When <code>kpt live apply</code> has been executed the first time you can optionally add let <code>kpt live apply --dry-run</code> be executed for pull requests, giving a better assurance that the content of a pull request will apply nicely. But this only work properly for pull requests to the dev cluster, since it’s in the dev cluster the pull request pipeline will execute. So in a remote clusters this should not be enabled. That said this functionality can be enabled by adding</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-make" data-lang="make"><span style="display:flex;"><span>PR_LINT <span style="color:#f92672">=</span> kpt-apply-dry-run
+</span></span></code></pre></div><p>to the <code>Makefile</code> of your cluster repository.</p>
+<h2 id="waiting-for-resources-to-be-reconciled">Waiting for resources to be reconciled</h2>
+<p>While the fact that I can be sure that removed resource actually are gone is the killer feature of <code>kpt live apply</code> for me the opposite is true as well. With this I mean that <code>kpt live apply</code>(and as a consequence) the boot job won’t succeed unless all resources are verified to have been applied. This includes for example that the rollout of new applications versions with deployments have succeeded.</p>
+<p>This can be seen as a problem though: the default is that <code>kpt live apply</code> tries for 15 minutes before timing out with an error. But since the boot job is normal k8s job the job controller will create new pods on failure up to the backoff limit, that is set to <strong>4</strong>. This can block the application of subsequent changes to the cluster repo.</p>
+<h2 id="tagging-and-release-notes">Tagging and release notes</h2>
+<p>When activating <code>kpt live apply</code> you will also see that tags are added to the cluster repository upon successful application of changes. These tags can have 3 prefixes:</p>
+<ul>
+<li><code>crd</code> for custom resource definitions</li>
+<li><code>cluster</code> for cluster wide resources</li>
+<li><code>ns</code> for namespaced resources (the most common)</li>
+</ul>
+<p>For <code>ns</code> tags release notes will also be generated and added to the git provider (for example GitHub). This means that you can see what has changed in your cluster by looking at the releases of the cluster repository.</p>
+<p>One handy use of this is that you can get a notification from GitHub when changes has been successfully deployed by going to the <strong>Watch</strong> menu for the repo, select <strong>Custom</strong> and check <strong>Releases</strong>. If you get the notification by email or on the GitHub site depends on the notification settings for your GitHub account.</p>
+<p>This functionality can be further customized by adding scripts to the <code>extensions</code> directory of your cluster repository.</p>
+<ul>
+<li><code>crd-reconciled</code> will be executed after a <code>crd</code> tag has been added</li>
+<li><code>cluster-reconciled</code> will be executed after a <code>cluster</code> tag has been added</li>
+<li><code>ns-reconciled</code> will be executed after a <code>ns</code> tag has been added</li>
+</ul>
+<p>The default behaviour is equivalent to adding the following script as <code>ns-reconciled</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>jx changelog create --tag-prefix ns-
+</span></span></code></pre></div><p>Here is a somewhat hacky variety that sends out a mail with the release notes similarly to what you can subscribe to for yourself:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>set -xe
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>jx changelog create --tag-prefix ns-
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>token<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>kubectl get secret jx-boot -o jsonpath<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{.data[&#39;password&#39;]}&#34;</span> | base64 -d<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>repourl<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>kubectl get secret jx-boot -o jsonpath<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{.data[&#39;url&#39;]}&#34;</span>    | base64 -d<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>owner<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>echo $repourl | cut -d/ -f4<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>repo<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>echo $repourl | cut -d/ -f5 | cut -d. -f1<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>cat <span style="color:#e6db74">&lt;&lt;EOF
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">to: changelog@example.com
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">From: dev@example.com
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">MIME-Version: 1.0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Return-Path: &lt;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Precedence: Bulk
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Content-Type: text/html; charset=utf-8
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Subject: Deploy to kubernetes cluster
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;html&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;body&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;h1&gt;Deploy to kubernetes cluster&lt;/h1&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span>curl -s  -H <span style="color:#e6db74">&#34;Authorization: Bearer </span>$token<span style="color:#e6db74">&#34;</span> https://api.github.com/graphql -X POST -d <span style="color:#e6db74">&#39;{&#34;query&#34;:&#34;query { repository(owner:&#34;&#39;</span>$owner<span style="color:#e6db74">&#39;&#34;, name:&#34;&#39;</span>$repo<span style="color:#e6db74">&#39;&#34;) { release(tagName: &#34;ns-&#39;</span><span style="color:#e6db74">${</span>TS<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;&#34;) { descriptionHTML }}}&#34;}&#39;</span> | yq .data.repository.release.descriptionHTML
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;&lt;/body&gt;&lt;/html&gt;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">)</span> | sendmail -t -S smtp.example.com
+</span></span></code></pre></div><p>To adapt for your own use, the minimal changes would be to find and replace the smtp server and mail addresses now added for the domain <strong>example.com</strong>. Don’t forget to make the script executable with <code>chmod +x ns-reconciled</code>.</p>
+<p>Since the dawn of Jenkins X 3 the default last step of reconciling the state of the files in your cluster repository to your cluster has been to execute <code>kubectl apply</code>. You can find more details about this here.</p>
+<p>There are some drawbacks with <code>kubectl apply</code> though. The one that made me start looking for alternatives was that if you remove a resource from your cluster repository it may not be removed from your cluster. The way deletion works with <code>kubectl apply</code> is that it is handed the option <code>--prune</code> which will remove resources that are not in the manifests. Except that it doesn’t always work as expected. It will only remove certain kinds of resources defined in kubectl. In my case I removed an HorizontalPodAutoscaler from my cluster repository, but it wasn’t removed from my cluster.</p>
+<p>When trying to find a solution to this I first tried to override this default list in kubectl of things to prune, but this turned out to be difficult in the general case. I also tried the already existing alternative of using <code>kapp</code> to apply the manifests, but I couldn’t get that to work. Looking for other options I settled for <code>kpt live apply</code>.</p>
+<h2 id="configuration-1">Configuration</h2>
+<p>For all the functionality described here to work you need to have a cluster that is upgraded later than January 24th 2023.</p>
+<p>You enable the use of <code>kpt live apply</code> by adding</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-make" data-lang="make"><span style="display:flex;"><span>KUBEAPPLY <span style="color:#f92672">=</span> kpt-apply
+</span></span></code></pre></div><p>to the <code>Makefile</code> of your cluster repository anywhere before <code>include versionStream/src/Makefile.mk</code>. This works both in a dev cluster and in a remote cluster. (With the caveat that all bets are off if you have done changes yourself to <code>versionStream/src/Makefile.mk</code>.)</p>
+<p>After you have pushed this you can watch the log of the boot job using <code>jx admin log</code> as usual. When <code>kpt live apply</code> has been executed the first time you can optionally add let <code>kpt live apply --dry-run</code> be executed for pull requests, giving a better assurance that the content of a pull request will apply nicely. But this only work properly for pull requests to the dev cluster, since it’s in the dev cluster the pull request pipeline will execute. So in a remote clusters this should not be enabled. That said this functionality can be enabled by adding</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-make" data-lang="make"><span style="display:flex;"><span>PR_LINT <span style="color:#f92672">=</span> kpt-apply-dry-run
+</span></span></code></pre></div><p>to the <code>Makefile</code> of your cluster repository.</p>
+<h2 id="waiting-for-resources-to-be-reconciled-1">Waiting for resources to be reconciled</h2>
+<p>While the fact that I can be sure that removed resource actually are gone is the killer feature of <code>kpt live apply</code> for me the opposite is true as well. With this I mean that <code>kpt live apply</code>(and as a consequence) the boot job won’t succeed unless all resources are verified to have been applied. This includes for example that the rollout of new applications versions with deployments have succeeded.</p>
+<p>This can be seen as a problem though: the default is that <code>kpt live apply</code> tries for 15 minutes before timing out with an error. But since the boot job is normal k8s job the job controller will create new pods on failure up to the backoff limit, that is set to <strong>4</strong>. This can block the application of subsequent changes to the cluster repo.</p>
+<h2 id="tagging-and-release-notes-1">Tagging and release notes</h2>
+<p>When activating <code>kpt live apply</code> you will also see that tags are added to the cluster repository upon successful application of changes. These tags can have 3 prefixes:</p>
+<ul>
+<li><code>crd</code> for custom resource definitions</li>
+<li><code>cluster</code> for cluster wide resources</li>
+<li><code>ns</code> for namespaced resources (the most common)</li>
+</ul>
+<p>For <code>ns</code> tags release notes will also be generated and added to the git provider (for example GitHub). This means that you can see what has changed in your cluster by looking at the releases of the cluster repository.</p>
+<p>One handy use of this is that you can get a notification from GitHub when changes has been successfully deployed by going to the <strong>Watch</strong> menu for the repo, select <strong>Custom</strong> and check <strong>Releases</strong>. If you get the notification by email or on the GitHub site depends on the notification settings for your GitHub account.</p>
+<p>This functionality can be further customized by adding scripts to the <code>extensions</code> directory of your cluster repository.</p>
+<ul>
+<li><code>crd-reconciled</code> will be executed after a <code>crd</code> tag has been added</li>
+<li><code>cluster-reconciled</code> will be executed after a <code>cluster</code> tag has been added</li>
+<li><code>ns-reconciled</code> will be executed after a <code>ns</code> tag has been added</li>
+</ul>
+<p>The default behaviour is equivalent to adding the following script as <code>ns-reconciled</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>jx changelog create --tag-prefix ns-
+</span></span></code></pre></div><p>Here is a somewhat hacky variety that sends out a mail with the release notes similarly to what you can subscribe to for yourself:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>set -xe
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>jx changelog create --tag-prefix ns-
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>token<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>kubectl get secret jx-boot -o jsonpath<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{.data[&#39;password&#39;]}&#34;</span> | base64 -d<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>repourl<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>kubectl get secret jx-boot -o jsonpath<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{.data[&#39;url&#39;]}&#34;</span>    | base64 -d<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>owner<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>echo $repourl | cut -d/ -f4<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>repo<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>echo $repourl | cut -d/ -f5 | cut -d. -f1<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>cat <span style="color:#e6db74">&lt;&lt;EOF
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">to: changelog@example.com
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">From: dev@example.com
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">MIME-Version: 1.0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Return-Path: &lt;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Precedence: Bulk
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Content-Type: text/html; charset=utf-8
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Subject: Deploy to kubernetes cluster
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;html&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;body&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;h1&gt;Deploy to kubernetes cluster&lt;/h1&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span>curl -s  -H <span style="color:#e6db74">&#34;Authorization: Bearer </span>$token<span style="color:#e6db74">&#34;</span> https://api.github.com/graphql -X POST -d <span style="color:#e6db74">&#39;{&#34;query&#34;:&#34;query { repository(owner:&#34;&#39;</span>$owner<span style="color:#e6db74">&#39;&#34;, name:&#34;&#39;</span>$repo<span style="color:#e6db74">&#39;&#34;) { release(tagName: &#34;ns-&#39;</span><span style="color:#e6db74">${</span>TS<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;&#34;) { descriptionHTML }}}&#34;}&#39;</span> | yq .data.repository.release.descriptionHTML
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;&lt;/body&gt;&lt;/html&gt;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">)</span> | sendmail -t -S smtp.example.com
+</span></span></code></pre></div><p>To adapt for your own use, the minimal changes would be to find and replace the smtp server and mail addresses now added for the domain <strong>example.com</strong>. Don’t forget to make the script executable with <code>chmod +x ns-reconciled</code>.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

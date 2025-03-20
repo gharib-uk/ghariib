@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Blocking Russian IPs</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Blocking Russian IPs</h1>
+			<b><time>06.03.2025 23:42</time></b>
+		       
+
+			<div>
+				<h1 id="blocking-russian-ips">Blocking Russian IPs</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre tabindex="0"><code># apt install libnginx-mod-http-geoip
+# echo &#34;geoip_country /usr/share/GeoIP/GeoIP.dat;&#34; &gt; /etc/nginx/conf.d/geoip.conf
+# cat &lt;&lt; EOF &gt; /etc/nginx/cc-block.conf
+if ($geoip_country_code3 = &#34;RUS&#34;) {
+    rewrite / /block-russia;
+}
+
+location /block-russia {
+    default_type text/plain;
+    return 200 &#39;Russian IPs are blocked here, due to your unjust and unprovoked War against Ukraine.&#39;;
+}
+EOF
+</code></pre><p>Now for each of the vhosts in /etc/conf.d/sites-enabled/ that you want to block access for, just add “include cc-block.conf;” inside the server block. Then of course, do an “nginx -t” to test your config and a “service nginx reload” to load the changes.</p>
+<p>You can test what your website looks like from different IPs using <a href="https://geotargetly.com/geo-browse">https://geotargetly.com/geo-browse</a></p>
+<h4 id="source"><a href="https://www.grepular.com/Blocking_Russian_IPs">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>v16 Cloud Rebalancing, Analytics,</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>v16 Cloud Rebalancing, Analytics,</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://cdn-images-1.medium.com/max/1024/1*YEpt4gwe_KcB6O3mGJAzLA.png" alt="" />
+</figure>
+
+
+</p>
+<h3 id="v16-brings-rebalance-restructured-cloud-new-analytics-and-more-cybercriminals"><strong>V16 Brings (Re)Balance: Restructured Cloud, New Analytics, and More Cybercriminals</strong></h3>
+<p>In v16, we’re all about balance — striking that perfect chord between familiar and pioneering to keep things real and actionable.</p>
+<p>This update fine-tunes how we cover cloud environments, finding equilibrium between depth and practicality to ensure it remains practical for defenders. As part of our balancing act, we’re also expanding on familiar threats while introducing some fresh behaviors and groups. This release also features optimized detection engineering offerings and enhanced usability across ATT&amp;CK tools, with the goal of a <em>balanced</em> resource for everyone.</p>
+<p>For all the details on our updates/additions across Techniques, Software, Groups and Campaigns take a look at our release notes, our detailed changelog, or our changelog.json.</p>
+<h3 id="enterprise">Enterprise</h3>
+<h4 id="cloud-realigned">Cloud Realigned</h4>
+<p>We’ve been working to fine-tune the balance between abstraction and detail in the Cloud matrix to cover various cloud environments and threats, while staying specific enough to guide actionable defenses. v16 unveils our efforts to keep the matrix practical for defenders across diverse setups, clarify technique descriptions, and ensure that it’s intuitively navigable.</p>
+<p>We’d like to introduce the recalibrated <strong>Cloud matrix</strong>**,** now featuring four platforms (Iaas, SaaS, Identity Provider, and Office Suite) — key changes include:</p>
+<ul>
+<li>Broadened <strong>Identity</strong> concept to cover multiple products and services, reflecting how identity functions work similarly across cloud setups.<br>
+– This includes incorporating <strong>Azure AD</strong> into <strong>Identity Provider</strong> for clearer cloud functionality distinctions.</li>
+<li>Clarified the <strong>Google Workspace</strong> and <strong>Microsoft</strong> <strong>365</strong> overlap with the new <strong>Office Suite</strong> platform, as they behave nearly identically at the technique level.</li>
+</ul>
+<h4 id="behavior-balancing-act">Behavior Balancing Act</h4>
+<p>We maintained our perfect balance formula (<em>Familiar + Novel = Reality</em>) with this release, expanding on existing techniques with behaviors you’ll recognize, but weren’t previously in the matrix — for example, T1557.004: Adversary-in-the-Middle: Evil Twin, T1213.004: Data from Information Repositories: Customer Relationship Management Software and T1213:Data from Information Repositories: Messaging Applications.</p>
+<p>For the novelty factor, this release also features some intriguing new behaviors, like T1496.004:Resource Hijacking:Cloud Service Hijacking, where adversaries can hijack compromised SaaS applications (like email and messaging services) to send spam, while also draining your resources and impacting service availability. We also added T1666: Modify Cloud Resource Hierarchy, highlighting how IaaS hierarchies can be manipulated to evade defenses and exploit resources by creating covert subscriptions in Azure or detaching AWS accounts from their organizations.</p>
+<p>Our <strong>Linux</strong> and <strong>macOS</strong> behavior repository also grew, with the highly demanded T1546.017: Event Triggered Execution: Udev Rules**,** where adversaries can persist on Linux by tweaking udev rules to run malicious code, exploiting its permissions and background capabilities. The new T1558.005: Steal or Forge Kerberos Tickets: Ccache Files sub reminds us how adversaries can swipe Kerberos tickets from credential cache files to access multiple services as the current user — and even indulge in a little privilege escalation or lateral movement.</p>
+<p>For the full list of (sub) technique additions and expansions, check out the changelog!</p>
+<p><strong>What’s Next:</strong> We’re looking into a optimizing a couple of disparate areas — including restructuring Defense Evasion for clarity and usability. One approach we’re assessing is to organize techniques based on the specific behaviors they represent: those that focus on evading detection and those aimed at circumventing specific mitigations. We’re also evaluating how to refactor metadata to only feature what’s useable and relevant. Have thoughts or would like to contribute insights to either discussion? Share them on Slack or email!</p>
+<h3 id="defensive-coverage">Defensive Coverage</h3>
+<h4 id="detection-engineering">Detection Engineering</h4>
+<p>Our Defensive goal for this year was to expand detections and mitigations, and help you get more actionable through detection engineering. With our optimization of our pseudocode format for analytics — reflecting real-world query language that is meant to serve as a template for your tailored queries — v16 is coming in hot with a whole host of new analytic blueprints.</p>
+<p>In the Execution, we’ve added <strong>85 new analytics</strong>, to help you identify techniques that execute malicious code,<strong>120 new analytics</strong> under Credential Access aimed at capturing the behaviors used to steal credentials, and <strong>26 new Cloud analytics</strong> designed to highlight techniques that exploit Microsoft 365 &amp; Azure AD.</p>
+<p>As a bonus, v16 also features a STIX analytic extraction Python script that lets you quickly pull and export analytics.</p>
+<h4 id="mitigations">Mitigations</h4>
+<p>On the Mitigations front, we added a new mitigation: Out of Band Communication, focused on secure, alternative communication channels — like encrypted messaging or satellite lines — to keep critical comms safe and running during incidents and bypassing any compromised network systems. We also enhanced Active Directory Configuration with a community contribution that adds clearer examples and detailed interpretations of group policy settings. As we continue to update Mitigations, we need your insights! When you share specific use cases, clearer examples, and detailed configurations, you’re making it easier for fellow defenders to understand and implement mitigations effectively.</p>
+<p><strong>What’s Next:</strong> We have a lot on our docket and some areas we’re still considering, including implementing STIX IDs for data components to improve clarity and tracking, developing analytics for Initial Access and Exfiltration, and Discovery, and revamping our data sources for actionability. We’ll also be looking into multi-event analytics that examine how different sources, like file modifications and process creation, interact within a short time frame instead of focusing on just one collection source. We would love your insights and collaboration on these initiatives — email or join #defensive_attack to get involved!</p>
+<h3 id="cyber-threat-intelligence">Cyber Threat Intelligence</h3>
+<p>Our CTI updates also embody the <em>perfect balance formula</em>: we’re working to close the representation gaps in the cybercrime space while continuing to update state-attributed groups.</p>
+<p>Some of the cybercriminal additions in v16 include G1032 (Inc Ransom), a group notorious for its double-extortion tactics, as well as the G1040 (Play) ransomware group, that utilizes advanced encryption and targeting of high-value victims. Both groups exploit known vulnerabilities to gain initial access and steal data before deploying their ransomware. Additionally, G1037 operates as an initial access broker, using phishing techniques to infiltrate networks.</p>
+<p>On the State front, we updated G0007 and G0034, both linked to different units of Russia’s General Staff Main Intelligence Directorate (GRU), with common behaviors, such as using malicious Microsoft Office attachments in their spear-phishing emails.</p>
+<p><strong>What’s Next:</strong> Moving forward, we intend to continue staying responsive to your contributions — highlighting groups, software, and campaigns that matter to practitioners, while also showcasing unique and exceptional tradecraft to highlight techniques. Got brilliant insights or behaviors to share? Join us on #attack-cti, or contribute.</p>
+<h3 id="software-development">Software Development</h3>
+<p>Our Software goal this year was to enhance usability and streamline processes for ATT&amp;CK tools and infrastructure. We’ve been working hard towards these goals, but most importantly, we introduced our new TAXII server: the MITRE ATT&amp;CK Workbench TAXII 2.1 Server and open-sourced the TAXII 2.1 code to enable you to establish your own servers within your organization <em>and</em> contribute to enhancing it. As you’re exploring the new 2.1 server, remember that we’ll be retiring the TAXII 2.0 server on December 18. <strong>To continue receiving updated ATT&amp;CK data, you’ll need to migrate from cti-taxii.mitre.org to attack-taxii.mitre.org.</strong> Check out our TAXII 2.1 blog post for more details.</p>
+<p><strong>What’s Next:</strong> We’re planning on rolling out ATT&amp;CK Data Model 1.0, which will introduce Platform objects and assign ATT&amp;CK IDs to data components for easier tracking. We’ll also be updating the defensive objects structure for intuitiveness and simplifying the Workbench process. On the website front, our goal is to move towards a modern framework and ensure consistency and clarity across ATT&amp;CK tools and documentation with STIX 2.1.</p>
+<h3 id="you-bring-the-insights-well-bring-theupdates">You Bring the Insights, We’ll Bring the Updates</h3>
+<p>We deeply value our community, and your in-the-wild examples and real-world implementations are what ensure that ATT&amp;CK remains relevant and actionable, so <em>if you see something,</em> <em>contrib</em> <em>something.</em></p>
+<p>Looking ahead, we can’t wait to keep partnering with you on everything we have lined up — as well as all the things we haven’t planned yet but will absolutely end up on our agenda, thanks to your great contributions.</p>
+<p>Connect with us on Email, Twitter, LinkedIn, or Slack.</p>
+<p>©2024 The MITRE Corporation. ALL RIGHTS RESERVED. Approved for public release. Distribution unlimited 24–00779–4.</p>
+<p>
+<figure>
+  <img src="https://medium.com/_/stat?event=post.clientViewed&amp;referrerSource=full_rss&amp;postId=561c76af94cf" alt="" />
+</figure>
+
+
+</p>
+<hr>
+<p>v16 Cloud Rebalancing, Analytics, was originally published in MITRE ATT&amp;CK® on Medium, where people are continuing the conversation by highlighting and responding to this story.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

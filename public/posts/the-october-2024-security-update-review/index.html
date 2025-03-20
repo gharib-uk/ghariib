@@ -1,0 +1,2369 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>The October 2024 Security Update Review</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>The October 2024 Security Update Review</h1>
+			<b><time>04.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/cybersecurity">cybersecurity</a>
+        	       
+		           <a href="/tags/security">security</a>
+        	       
+		           <a href="/tags/zero_day">zero_day</a>
+        	       
+		           <a href="/tags/zeroday">zeroday</a>
+        	       
+
+			<div>
+				<p>It’s the spooky season, and there’s nothing spookier than security patches – at least in my world. Microsoft and Adobe have released their latest patches, and no bones about it, there are some skeletons in those closets. Take a break from your regular activities and join us as we review the details of their latest security alerts. If you’d rather watch the full video recap covering the entire release, you can check it out here:</p>
+<p><strong>Adobe Patches for October 2024</strong></p>
+<p>For October, Adobe released nine patches addressing 52 CVEs in Adobe Substance 3D Painter, Commerce, Dimension, Animate, Lightroom, InCopy, InDesign, Substance 3D Stager, and Adobe FrameMaker. Two of these bugs were submitted through the ZDI program. The largest and most urgent of these patches covers 22 CVEs in Adobe Commerce, which includes fixes for Critical-rated code execution bugs. Although not listed as public or under attack, Adobe lists this as Priority 2. The update for Dimension fixes two Critical-rated bugs that could lead to code execution. The fix for Animate fixes 11 vulnerabilities, some of which could lead to code execution. The Substance 3D Stager patch covers eight bugs – all of which are rated Critical and could lead to code execution. The five CVEs addressed by the FrameMaker fix are also all Critical-rated code execution bugs. The remaining bulletins all address only a single CVE each. The memory leak in Substance 3D Painter is rated Important. That’s the same for the Lightroom patch. The InCopy patch fixes a Critical-rated unrestricted upload bug, which is also the case for the InDesign fix.</p>
+<p>None of the bugs fixed by Adobe this month are listed as publicly known or under active attack at the time of release. Outside of the fix for Commerce, Adobe categorizes these updates as a deployment priority rating of 3.</p>
+<p><strong>Microsoft Patches for October 2024</strong></p>
+<p>This month, Microsoft released 117 new CVEs in Windows and Windows Components; Office and Office Components; Azure; .NET and Visual Studio; OpenSSH for Windows; Power BI; Windows Hyper-V; and Windows Mobile Broadband. One of these vulnerabilities was reported through the ZDI program. With the addition of the third-party CVEs, the entire release tops out at 121 CVEs.</p>
+<p>Of the patches being released today, three are rated Critical, 115 are rated Important, and two are rated Moderate in severity. This is the third triple-digit CVE release from Microsoft this year, putting the Redmond giant on pace to exceed the number of CVEs fixed in 2023. They are still a way off from the record pace set in 2020 (thankfully).</p>
+<p>Five of these CVEs are listed as publicly known, and two of these are listed as under active attack at the time of release. Let’s take a closer look at some of the more interesting updates for this month, starting with the vulnerabilities currently being exploited:</p>
+<p><strong>CVE-2024-43573</strong> <strong>- Windows MSHTML Platform Spoofing Vulnerability</strong>While only listed as Moderate, this is one of the bugs listed as actively exploited this month. This is also very similar to the bug patched back in July in the same component, which was used by the APT group known as Void Banshee. You can read out full analysis of that bug here. There’s no word from Microsoft on whether it’s the same group, but considering there is no acknowledgment here, it makes me think the original patch was insufficient. Either way, don’t ignore this based on the severity rating. Test and deploy this update quickly.</p>
+<p><strong>CVE-2024-43572</strong> <strong>- Microsoft Management Console Remote Code Execution Vulnerability</strong>Here’s another Moderate-severity bug listed as being actively attacked. In this instance, a threat actor would need to send a malicious MMC snap-in and have a user load the file. While this does sound unlikely, it’s clearly happening. Microsoft doesn’t say how widespread these attacks are, but considering the amount of social engineering required to exploit this bug, I would think attacks would be limited at this point. Still considering the damage that could be caused by an admin loading a malicious snap-in, I would test and deploy this update quickly.</p>
+<p><strong>CVE-2024-43468</strong> <strong>- Microsoft Configuration Manager Remote Code Execution Vulnerability</strong>Not to be confused with MMC, here’s a bug in the Configuration Manager that doesn’t require user interaction. In fact, this CVSS 9.8 bug could be hit by a remote, unauthenticated attacker sending specially crafted requests, resulting in arbitrary code execution on the target server. In addition to the patch, you’ll need to install an in-console update to be protected. Microsoft provides this guide for those affected. This is another example of why the “Just Patch” advice is short-sighted.</p>
+<p><strong>CVE-2024-43582</strong> <strong>- Remote Desktop Protocol Server Remote Code Execution Vulnerability</strong>This bug also allows a remote, unauthenticated attacker to gain arbitrary code execution at elevated levels simply by sending specially crafted RPC requests. Microsoft notes that the attacker would need to win a race condition, but we’ve seen plenty of successful Pwn2Own entries win race conditions. While this bug is wormable, it’s unlikely to actually result in a worm. RPC should be blocked at your perimeter, and it isn’t, now’s a good time to check. That limits this to internal systems only, but it could be used for lateral movement within an enterprise.</p>
+<p>Here’s the full list of CVEs released by Microsoft for October 2024:</p>
+<table>
+  <thead>
+      <tr>
+          <th>CVE</th>
+          <th>Title</th>
+          <th>Severity</th>
+          <th>CVSS</th>
+          <th>Public</th>
+          <th>Exploited</th>
+          <th>Type</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>CVE-2024-43572</td>
+          <td>Microsoft Management Console Remote Code Execution Vulnerability</td>
+          <td>Moderate</td>
+          <td>7.8</td>
+          <td>Yes</td>
+          <td>Yes</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43573</td>
+          <td>Windows MSHTML Platform Spoofing Vulnerability</td>
+          <td>Moderate</td>
+          <td>6.5</td>
+          <td>Yes</td>
+          <td>Yes</td>
+          <td>Spoofing</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-6197 *</td>
+          <td>Open Source Curl Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>Yes</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-20659</td>
+          <td>Windows Hyper-V Security Feature Bypass Vulnerability</td>
+          <td>Important</td>
+          <td>7.1</td>
+          <td>Yes</td>
+          <td>No</td>
+          <td>SFB</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43583</td>
+          <td>Winlogon Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>Yes</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43468 †</td>
+          <td>Microsoft Configuration Manager Remote Code Execution Vulnerability</td>
+          <td>Critical</td>
+          <td>9.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43582</td>
+          <td>Remote Desktop Protocol Server Remote Code Execution Vulnerability</td>
+          <td>Critical</td>
+          <td>8.1</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43488</td>
+          <td>Visual Studio Code extension for Arduino Remote Code Execution Vulnerability</td>
+          <td>Critical</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43485</td>
+          <td>.NET and Visual Studio Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38229</td>
+          <td>.NET and Visual Studio Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.1</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43483</td>
+          <td>.NET, .NET Framework, and Visual Studio Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43484</td>
+          <td>.NET, .NET Framework, and Visual Studio Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43591</td>
+          <td>Azure Command Line Integration (CLI) Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>8.7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38097</td>
+          <td>Azure Monitor Agent Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.1</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43480</td>
+          <td>Azure Service Fabric for Linux Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>6.6</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38179</td>
+          <td>Azure Stack HCI Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43513 †</td>
+          <td>BitLocker Security Feature Bypass Vulnerability</td>
+          <td>Important</td>
+          <td>6.4</td>
+          <td>No</td>
+          <td>No</td>
+          <td>SFB</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38149</td>
+          <td>BranchCache Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43506</td>
+          <td>BranchCache Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43585</td>
+          <td>Code Integrity Guard Security Feature Bypass Vulnerability</td>
+          <td>Important</td>
+          <td>5.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>SFB</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43497</td>
+          <td>DeepSpeed Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43515</td>
+          <td>Internet Small Computer Systems Interface (iSCSI) Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43517</td>
+          <td>Microsoft ActiveX Data Objects Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43614</td>
+          <td>Microsoft Defender for Endpoint for Linux Spoofing Vulnerability</td>
+          <td>Important</td>
+          <td>5.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Spoofing</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43504</td>
+          <td>Microsoft Excel Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43576</td>
+          <td>Microsoft Office Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43616</td>
+          <td>Microsoft Office Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43609</td>
+          <td>Microsoft Office Spoofing Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Spoofing</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43505</td>
+          <td>Microsoft Office Visio Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38029</td>
+          <td>Microsoft OpenSSH for Windows Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43581</td>
+          <td>Microsoft OpenSSH for Windows Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.1</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43615</td>
+          <td>Microsoft OpenSSH for Windows Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.1</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43503</td>
+          <td>Microsoft SharePoint Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43541</td>
+          <td>Microsoft Simple Certificate Enrollment Protocol Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43544</td>
+          <td>Microsoft Simple Certificate Enrollment Protocol Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43574</td>
+          <td>Microsoft Speech Application Programming Interface (SAPI) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.3</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43519</td>
+          <td>Microsoft WDAC OLE DB provider for SQL Server Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43560</td>
+          <td>Microsoft Windows Storage Port Driver Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43553</td>
+          <td>NT OS Kernel Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.4</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43604</td>
+          <td>Outlook for Android Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>5.7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43481</td>
+          <td>Power BI Report Server Spoofing Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Spoofing</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43612</td>
+          <td>Power BI Report Server Spoofing Vulnerability</td>
+          <td>Important</td>
+          <td>7.6</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Spoofing</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43533</td>
+          <td>Remote Desktop Client Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43599</td>
+          <td>Remote Desktop Client Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43532</td>
+          <td>RPC Endpoint Mapper Service Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43571</td>
+          <td>Sudo for Windows Spoofing Vulnerability</td>
+          <td>Important</td>
+          <td>5.6</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Spoofing</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43590</td>
+          <td>Visual C++ Redistributable Installer Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43601</td>
+          <td>Visual Studio Code for Linux Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.1</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43603</td>
+          <td>Visual Studio Collector Service Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>5.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43563</td>
+          <td>Windows Ancillary Function Driver for WinSock Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43501</td>
+          <td>Windows Common Log File System Driver Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43546</td>
+          <td>Windows Cryptographic Information Disclosure Vulnerability</td>
+          <td>Important</td>
+          <td>5.6</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Info</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43509</td>
+          <td>Windows Graphics Component Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43556</td>
+          <td>Windows Graphics Component Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43508</td>
+          <td>Windows Graphics Component Information Disclosure Vulnerability</td>
+          <td>Important</td>
+          <td>5.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Info</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43534</td>
+          <td>Windows Graphics Component Information Disclosure Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Info</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43521</td>
+          <td>Windows Hyper-V Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43567</td>
+          <td>Windows Hyper-V Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43575</td>
+          <td>Windows Hyper-V Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-30092</td>
+          <td>Windows Hyper-V Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38129</td>
+          <td>Windows Kerberos Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43547</td>
+          <td>Windows Kerberos Information Disclosure Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Info</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43520</td>
+          <td>Windows Kernel Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-37979</td>
+          <td>Windows Kernel Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>6.7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43502</td>
+          <td>Windows Kernel Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.1</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43511</td>
+          <td>Windows Kernel Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43527</td>
+          <td>Windows Kernel Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43570</td>
+          <td>Windows Kernel Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>6.4</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43535</td>
+          <td>Windows Kernel-Mode Driver Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43554</td>
+          <td>Windows Kernel-Mode Driver Information Disclosure Vulnerability</td>
+          <td>Important</td>
+          <td>5.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Info</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43522</td>
+          <td>Windows Local Security Authority (LSA) Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43537</td>
+          <td>Windows Mobile Broadband Driver Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43538</td>
+          <td>Windows Mobile Broadband Driver Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43540</td>
+          <td>Windows Mobile Broadband Driver Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43542</td>
+          <td>Windows Mobile Broadband Driver Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43555</td>
+          <td>Windows Mobile Broadband Driver Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43557</td>
+          <td>Windows Mobile Broadband Driver Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43558</td>
+          <td>Windows Mobile Broadband Driver Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43559</td>
+          <td>Windows Mobile Broadband Driver Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43561</td>
+          <td>Windows Mobile Broadband Driver Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43523</td>
+          <td>Windows Mobile Broadband Driver Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>6.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43524</td>
+          <td>Windows Mobile Broadband Driver Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>6.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43525</td>
+          <td>Windows Mobile Broadband Driver Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>6.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43526</td>
+          <td>Windows Mobile Broadband Driver Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>6.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43536</td>
+          <td>Windows Mobile Broadband Driver Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>6.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43543</td>
+          <td>Windows Mobile Broadband Driver Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>6.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38124</td>
+          <td>Windows Netlogon Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>9</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43562</td>
+          <td>Windows Network Address Translation (NAT) Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43565</td>
+          <td>Windows Network Address Translation (NAT) Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43545</td>
+          <td>Windows Online Certificate Status Protocol (OCSP) Server Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43529</td>
+          <td>Windows Print Spooler Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.3</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38262</td>
+          <td>Windows Remote Desktop Licensing Service Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43456</td>
+          <td>Windows Remote Desktop Services Tampering Vulnerability</td>
+          <td>Important</td>
+          <td>4.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Tampering</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43514</td>
+          <td>Windows Resilient File System (ReFS) Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43500</td>
+          <td>Windows Resilient File System (ReFS) Information Disclosure Vulnerability</td>
+          <td>Important</td>
+          <td>5.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Info</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-37976</td>
+          <td>Windows Resume Extensible Firmware Interface Security Feature Bypass Vulnerability</td>
+          <td>Important</td>
+          <td>6.7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>SFB</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-37982</td>
+          <td>Windows Resume Extensible Firmware Interface Security Feature Bypass Vulnerability</td>
+          <td>Important</td>
+          <td>6.7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>SFB</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-37983</td>
+          <td>Windows Resume Extensible Firmware Interface Security Feature Bypass Vulnerability</td>
+          <td>Important</td>
+          <td>6.7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>SFB</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38212</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38261</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38265</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43453</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43549</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43564</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43589</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43592</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43593</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43607</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43608</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43611</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43584</td>
+          <td>Windows Scripting Engine Security Feature Bypass Vulnerability</td>
+          <td>Important</td>
+          <td>7.7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>SFB</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43550</td>
+          <td>Windows Secure Channel Spoofing Vulnerability</td>
+          <td>Important</td>
+          <td>7.4</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Spoofing</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43516</td>
+          <td>Windows Secure Kernel Mode Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43528</td>
+          <td>Windows Secure Kernel Mode Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43552</td>
+          <td>Windows Shell Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.3</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43512</td>
+          <td>Windows Standards-Based Storage Management Service Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43551</td>
+          <td>Windows Storage Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43518</td>
+          <td>Windows Telephony Server Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-7025 *</td>
+          <td>Chromium: CVE-2024-7025 Integer overflow in Layout</td>
+          <td>High</td>
+          <td>N/A</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-9369 *</td>
+          <td>Chromium: CVE-2024-9369 Insufficient data validation in Mojo</td>
+          <td>High</td>
+          <td>N/A</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-9370 *</td>
+          <td>Chromium: CVE-2024-9370 Inappropriate implementation in V8</td>
+          <td>High</td>
+          <td>N/A</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<p><em>* Indicates this CVE had been released by a third party and is now being included in Microsoft releases</em>.</p>
+<p><em>† Indicates further administrative actions are required to fully address the vulnerability.</em></p>
+<p>The only other Critical-rated bug this month is for the Visual Studio Code extension for Arduino. However, there’s no action to take here as Microsoft has already resolved the issue and is just documenting this CVE.</p>
+<p>There are 39 other code execution bugs to cover this month, and many of these are the open-and-own variety found in Office and other components. There are a dozen bugs affecting the Routing and Remote Access Service (RRAS), but only a few of these could be triggered by a remote attacker. The others require the client to attempt to connect to a malicious server. The patch for Azure Service Fabric for Linux requires special privileges to hit. There’s a code execution bug in DeepSpeed – the open-source deep learning optimization library – but Microsoft provides no details on it. This also appears to be the first CVE for this component. There are three bugs in OpenSSH for Windows, but all require extensive user interaction and are unlikely to be exploited. The two bugs in RDP client require connecting to a malicious RDP server, which also seems unlikely. Connecting to a malicious server is also a requirement for the bug in Windows Telephony.</p>
+<p>The code execution bug in Hyper-V is somewhat limited but still interesting. It could allow a guest OS to execute code against another guest OS, but it wouldn’t allow that code execution to a system not on the same Hyper-V server. The bug in the Remote Desktop Licensing server requires authentication. The code execution bugs are rounded out with a half-dozen fixes for the Mobile Broadband Driver. Interestingly, all six of these require the attacker to physically insert a malicious USB drive into an affected system.</p>
+<p>There are more than two dozen fixes for Elevation of Privilege (EoP) bugs in this release. However, most of these either lead to SYSTEM-level code execution or administrative privileges if an authenticated user runs specially crafted code. However, there are a few that stand out. The bug in Netlogon is the most interesting to me. It allows an adjacent attacker to impersonate a domain controller if they can predict the naming convention of the domain controller when added. It’s an unlikely scenario, but kudos to the person who found such an odd corner case. The EoP in Azure Command Line Integration requires the attacker to be assigned the role of either “Security Admin” or “Contributor” but exploitation could lead to SYSTEM-level access. Interestingly, the bug in the NT OS Kernel could lead to kernel memory access, which sounds a bit like an information disclosure bug to me. Finally, the bug in Outlook for Android leads to SYSTEM when opening a malicious meeting or appointment invitation. That’s another vote from e-mails or meetings – especially when food isn’t involved.</p>
+<p>There are a handful of Security Feature Bypass (SFB) bugs in the October release, and the BitLocker fix stands out since for Windows Server 2012 R2, you will need to install KB2919355 first to be protected. There are three different bypasses in the Windows Resume Extensible Firmware Interface and all of them allow local attackers to bypass Secure Boot. The bug in the Scripting Service bypasses the Anti-Malware Scanning Interface under certain circumstances. As expected, the bug in the Code Integrity Guard allows an authenticated attacker to bypass code integrity checks. The bypass in Hyper-V would be tricky to implement as there are a lot of caveats, but successful exploitation allows an attacker to bypass UEFI on the hypervisor. This is one of the bugs listed as publicly known, but I would be stunned to see this ever exploited in the wild.</p>
+<p>The October release includes fixes for only six information disclosure bugs, and all but one simply result in info leaks consisting of unspecified memory contents. The exception is the bug in the Cryptographic component. An attacker could read the contents of the Optimal asymmetric encryption padding (OAEP) decrypt from a user mode process. This could potentially result in a cross-VM attack affecting multiple VMs on a single hypervisor.</p>
+<p>In addition to the one previously covered, there are six other spoofing bugs receiving patches this month. Unfortunately, Microsoft doesn’t provide much information about these vulnerabilities. The spoofing bug in Office appears to result in NTLM relaying as Microsoft lists restricting outbound NTLM as a mitigation. There’s no real information about the Power BI bugs other than to say they require authentication. The vulnerability in Secure Channel requires a Machine-in-the-Middle (MitM) to succeed. The final spoofing bug is in Sudo for Windows. An authenticated attacker would need to launch a specially crafted application and then wait for the target to enter a command in a console window.</p>
+<p>There are a mountain of Denial-of-Service (DoS) bugs getting fixed this month, and many of these are in the Mobile Broadband Driver. There’s not a lot of info on these bugs, but Microsoft notes the target must be “within proximity of the target system to send and receive radio transmissions.” There’s little other information to go on here. I do like how the kernel bug must be exploited by “An authorized attacker…” I think they meant authenticated here as not many attackers are authorized. It would be great if Microsoft could provide just a bit more information here. Is this a temporary or a permanent DoS? Does the system automatically recover or does an administrator need to take action? Please Microsoft – don’t be stingy with the details.</p>
+<p>Finally, the release is rounded out by a single tampering bug in Remote Desktop Services. Microsoft (again) provides no real detail here other than that the attacker must be MitM. Well, that’s something I suppose.</p>
+<p>There are no new advisories in this month’s release. However, ADV990001 has been revised to include the latest servicing stack updates.</p>
+<p><strong>Looking Ahead</strong></p>
+<p>The next Patch Tuesday of 2024 will be on November 12, and, assuming I survive Pwn2Own Ireland, I’ll return with details and patch analysis then. Until then, keep the lights on, stay safe, happy patching, and may all your reboots be smooth and clean!</p>
+<p>It’s the spooky season, and there’s nothing spookier than security patches – at least in my world. Microsoft and Adobe have released their latest patches, and no bones about it, there are some skeletons in those closets. Take a break from your regular activities and join us as we review the details of their latest security alerts. If you’d rather watch the full video recap covering the entire release, you can check it out here:</p>
+<p><strong>Adobe Patches for October 2024</strong></p>
+<p>For October, Adobe released nine patches addressing 52 CVEs in Adobe Substance 3D Painter, Commerce, Dimension, Animate, Lightroom, InCopy, InDesign, Substance 3D Stager, and Adobe FrameMaker. Two of these bugs were submitted through the ZDI program. The largest and most urgent of these patches covers 22 CVEs in Adobe Commerce, which includes fixes for Critical-rated code execution bugs. Although not listed as public or under attack, Adobe lists this as Priority 2. The update for Dimension fixes two Critical-rated bugs that could lead to code execution. The fix for Animate fixes 11 vulnerabilities, some of which could lead to code execution. The Substance 3D Stager patch covers eight bugs – all of which are rated Critical and could lead to code execution. The five CVEs addressed by the FrameMaker fix are also all Critical-rated code execution bugs. The remaining bulletins all address only a single CVE each. The memory leak in Substance 3D Painter is rated Important. That’s the same for the Lightroom patch. The InCopy patch fixes a Critical-rated unrestricted upload bug, which is also the case for the InDesign fix.</p>
+<p>None of the bugs fixed by Adobe this month are listed as publicly known or under active attack at the time of release. Outside of the fix for Commerce, Adobe categorizes these updates as a deployment priority rating of 3.</p>
+<p><strong>Microsoft Patches for October 2024</strong></p>
+<p>This month, Microsoft released 117 new CVEs in Windows and Windows Components; Office and Office Components; Azure; .NET and Visual Studio; OpenSSH for Windows; Power BI; Windows Hyper-V; and Windows Mobile Broadband. One of these vulnerabilities was reported through the ZDI program. With the addition of the third-party CVEs, the entire release tops out at 121 CVEs.</p>
+<p>Of the patches being released today, three are rated Critical, 115 are rated Important, and two are rated Moderate in severity. This is the third triple-digit CVE release from Microsoft this year, putting the Redmond giant on pace to exceed the number of CVEs fixed in 2023. They are still a way off from the record pace set in 2020 (thankfully).</p>
+<p>Five of these CVEs are listed as publicly known, and two of these are listed as under active attack at the time of release. Let’s take a closer look at some of the more interesting updates for this month, starting with the vulnerabilities currently being exploited:</p>
+<p><strong>CVE-2024-43573</strong> <strong>- Windows MSHTML Platform Spoofing Vulnerability</strong>While only listed as Moderate, this is one of the bugs listed as actively exploited this month. This is also very similar to the bug patched back in July in the same component, which was used by the APT group known as Void Banshee. You can read out full analysis of that bug here. There’s no word from Microsoft on whether it’s the same group, but considering there is no acknowledgment here, it makes me think the original patch was insufficient. Either way, don’t ignore this based on the severity rating. Test and deploy this update quickly.</p>
+<p><strong>CVE-2024-43572</strong> <strong>- Microsoft Management Console Remote Code Execution Vulnerability</strong>Here’s another Moderate-severity bug listed as being actively attacked. In this instance, a threat actor would need to send a malicious MMC snap-in and have a user load the file. While this does sound unlikely, it’s clearly happening. Microsoft doesn’t say how widespread these attacks are, but considering the amount of social engineering required to exploit this bug, I would think attacks would be limited at this point. Still considering the damage that could be caused by an admin loading a malicious snap-in, I would test and deploy this update quickly.</p>
+<p><strong>CVE-2024-43468</strong> <strong>- Microsoft Configuration Manager Remote Code Execution Vulnerability</strong>Not to be confused with MMC, here’s a bug in the Configuration Manager that doesn’t require user interaction. In fact, this CVSS 9.8 bug could be hit by a remote, unauthenticated attacker sending specially crafted requests, resulting in arbitrary code execution on the target server. In addition to the patch, you’ll need to install an in-console update to be protected. Microsoft provides this guide for those affected. This is another example of why the “Just Patch” advice is short-sighted.</p>
+<p><strong>CVE-2024-43582</strong> <strong>- Remote Desktop Protocol Server Remote Code Execution Vulnerability</strong>This bug also allows a remote, unauthenticated attacker to gain arbitrary code execution at elevated levels simply by sending specially crafted RPC requests. Microsoft notes that the attacker would need to win a race condition, but we’ve seen plenty of successful Pwn2Own entries win race conditions. While this bug is wormable, it’s unlikely to actually result in a worm. RPC should be blocked at your perimeter, and it isn’t, now’s a good time to check. That limits this to internal systems only, but it could be used for lateral movement within an enterprise.</p>
+<p>Here’s the full list of CVEs released by Microsoft for October 2024:</p>
+<table>
+  <thead>
+      <tr>
+          <th>CVE</th>
+          <th>Title</th>
+          <th>Severity</th>
+          <th>CVSS</th>
+          <th>Public</th>
+          <th>Exploited</th>
+          <th>Type</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>CVE-2024-43572</td>
+          <td>Microsoft Management Console Remote Code Execution Vulnerability</td>
+          <td>Moderate</td>
+          <td>7.8</td>
+          <td>Yes</td>
+          <td>Yes</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43573</td>
+          <td>Windows MSHTML Platform Spoofing Vulnerability</td>
+          <td>Moderate</td>
+          <td>6.5</td>
+          <td>Yes</td>
+          <td>Yes</td>
+          <td>Spoofing</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-6197 *</td>
+          <td>Open Source Curl Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>Yes</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-20659</td>
+          <td>Windows Hyper-V Security Feature Bypass Vulnerability</td>
+          <td>Important</td>
+          <td>7.1</td>
+          <td>Yes</td>
+          <td>No</td>
+          <td>SFB</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43583</td>
+          <td>Winlogon Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>Yes</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43468 †</td>
+          <td>Microsoft Configuration Manager Remote Code Execution Vulnerability</td>
+          <td>Critical</td>
+          <td>9.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43582</td>
+          <td>Remote Desktop Protocol Server Remote Code Execution Vulnerability</td>
+          <td>Critical</td>
+          <td>8.1</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43488</td>
+          <td>Visual Studio Code extension for Arduino Remote Code Execution Vulnerability</td>
+          <td>Critical</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43485</td>
+          <td>.NET and Visual Studio Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38229</td>
+          <td>.NET and Visual Studio Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.1</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43483</td>
+          <td>.NET, .NET Framework, and Visual Studio Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43484</td>
+          <td>.NET, .NET Framework, and Visual Studio Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43591</td>
+          <td>Azure Command Line Integration (CLI) Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>8.7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38097</td>
+          <td>Azure Monitor Agent Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.1</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43480</td>
+          <td>Azure Service Fabric for Linux Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>6.6</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38179</td>
+          <td>Azure Stack HCI Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43513 †</td>
+          <td>BitLocker Security Feature Bypass Vulnerability</td>
+          <td>Important</td>
+          <td>6.4</td>
+          <td>No</td>
+          <td>No</td>
+          <td>SFB</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38149</td>
+          <td>BranchCache Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43506</td>
+          <td>BranchCache Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43585</td>
+          <td>Code Integrity Guard Security Feature Bypass Vulnerability</td>
+          <td>Important</td>
+          <td>5.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>SFB</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43497</td>
+          <td>DeepSpeed Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43515</td>
+          <td>Internet Small Computer Systems Interface (iSCSI) Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43517</td>
+          <td>Microsoft ActiveX Data Objects Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43614</td>
+          <td>Microsoft Defender for Endpoint for Linux Spoofing Vulnerability</td>
+          <td>Important</td>
+          <td>5.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Spoofing</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43504</td>
+          <td>Microsoft Excel Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43576</td>
+          <td>Microsoft Office Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43616</td>
+          <td>Microsoft Office Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43609</td>
+          <td>Microsoft Office Spoofing Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Spoofing</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43505</td>
+          <td>Microsoft Office Visio Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38029</td>
+          <td>Microsoft OpenSSH for Windows Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43581</td>
+          <td>Microsoft OpenSSH for Windows Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.1</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43615</td>
+          <td>Microsoft OpenSSH for Windows Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.1</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43503</td>
+          <td>Microsoft SharePoint Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43541</td>
+          <td>Microsoft Simple Certificate Enrollment Protocol Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43544</td>
+          <td>Microsoft Simple Certificate Enrollment Protocol Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43574</td>
+          <td>Microsoft Speech Application Programming Interface (SAPI) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.3</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43519</td>
+          <td>Microsoft WDAC OLE DB provider for SQL Server Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43560</td>
+          <td>Microsoft Windows Storage Port Driver Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43553</td>
+          <td>NT OS Kernel Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.4</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43604</td>
+          <td>Outlook for Android Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>5.7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43481</td>
+          <td>Power BI Report Server Spoofing Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Spoofing</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43612</td>
+          <td>Power BI Report Server Spoofing Vulnerability</td>
+          <td>Important</td>
+          <td>7.6</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Spoofing</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43533</td>
+          <td>Remote Desktop Client Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43599</td>
+          <td>Remote Desktop Client Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43532</td>
+          <td>RPC Endpoint Mapper Service Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43571</td>
+          <td>Sudo for Windows Spoofing Vulnerability</td>
+          <td>Important</td>
+          <td>5.6</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Spoofing</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43590</td>
+          <td>Visual C++ Redistributable Installer Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43601</td>
+          <td>Visual Studio Code for Linux Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.1</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43603</td>
+          <td>Visual Studio Collector Service Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>5.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43563</td>
+          <td>Windows Ancillary Function Driver for WinSock Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43501</td>
+          <td>Windows Common Log File System Driver Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43546</td>
+          <td>Windows Cryptographic Information Disclosure Vulnerability</td>
+          <td>Important</td>
+          <td>5.6</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Info</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43509</td>
+          <td>Windows Graphics Component Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43556</td>
+          <td>Windows Graphics Component Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43508</td>
+          <td>Windows Graphics Component Information Disclosure Vulnerability</td>
+          <td>Important</td>
+          <td>5.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Info</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43534</td>
+          <td>Windows Graphics Component Information Disclosure Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Info</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43521</td>
+          <td>Windows Hyper-V Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43567</td>
+          <td>Windows Hyper-V Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43575</td>
+          <td>Windows Hyper-V Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-30092</td>
+          <td>Windows Hyper-V Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38129</td>
+          <td>Windows Kerberos Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43547</td>
+          <td>Windows Kerberos Information Disclosure Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Info</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43520</td>
+          <td>Windows Kernel Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-37979</td>
+          <td>Windows Kernel Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>6.7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43502</td>
+          <td>Windows Kernel Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.1</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43511</td>
+          <td>Windows Kernel Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43527</td>
+          <td>Windows Kernel Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43570</td>
+          <td>Windows Kernel Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>6.4</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43535</td>
+          <td>Windows Kernel-Mode Driver Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43554</td>
+          <td>Windows Kernel-Mode Driver Information Disclosure Vulnerability</td>
+          <td>Important</td>
+          <td>5.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Info</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43522</td>
+          <td>Windows Local Security Authority (LSA) Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43537</td>
+          <td>Windows Mobile Broadband Driver Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43538</td>
+          <td>Windows Mobile Broadband Driver Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43540</td>
+          <td>Windows Mobile Broadband Driver Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43542</td>
+          <td>Windows Mobile Broadband Driver Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43555</td>
+          <td>Windows Mobile Broadband Driver Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43557</td>
+          <td>Windows Mobile Broadband Driver Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43558</td>
+          <td>Windows Mobile Broadband Driver Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43559</td>
+          <td>Windows Mobile Broadband Driver Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43561</td>
+          <td>Windows Mobile Broadband Driver Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43523</td>
+          <td>Windows Mobile Broadband Driver Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>6.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43524</td>
+          <td>Windows Mobile Broadband Driver Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>6.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43525</td>
+          <td>Windows Mobile Broadband Driver Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>6.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43526</td>
+          <td>Windows Mobile Broadband Driver Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>6.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43536</td>
+          <td>Windows Mobile Broadband Driver Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>6.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43543</td>
+          <td>Windows Mobile Broadband Driver Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>6.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38124</td>
+          <td>Windows Netlogon Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>9</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43562</td>
+          <td>Windows Network Address Translation (NAT) Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43565</td>
+          <td>Windows Network Address Translation (NAT) Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43545</td>
+          <td>Windows Online Certificate Status Protocol (OCSP) Server Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43529</td>
+          <td>Windows Print Spooler Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.3</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38262</td>
+          <td>Windows Remote Desktop Licensing Service Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43456</td>
+          <td>Windows Remote Desktop Services Tampering Vulnerability</td>
+          <td>Important</td>
+          <td>4.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Tampering</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43514</td>
+          <td>Windows Resilient File System (ReFS) Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43500</td>
+          <td>Windows Resilient File System (ReFS) Information Disclosure Vulnerability</td>
+          <td>Important</td>
+          <td>5.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Info</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-37976</td>
+          <td>Windows Resume Extensible Firmware Interface Security Feature Bypass Vulnerability</td>
+          <td>Important</td>
+          <td>6.7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>SFB</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-37982</td>
+          <td>Windows Resume Extensible Firmware Interface Security Feature Bypass Vulnerability</td>
+          <td>Important</td>
+          <td>6.7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>SFB</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-37983</td>
+          <td>Windows Resume Extensible Firmware Interface Security Feature Bypass Vulnerability</td>
+          <td>Important</td>
+          <td>6.7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>SFB</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38212</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38261</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-38265</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43453</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43549</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43564</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43589</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43592</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43593</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43607</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43608</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43611</td>
+          <td>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43584</td>
+          <td>Windows Scripting Engine Security Feature Bypass Vulnerability</td>
+          <td>Important</td>
+          <td>7.7</td>
+          <td>No</td>
+          <td>No</td>
+          <td>SFB</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43550</td>
+          <td>Windows Secure Channel Spoofing Vulnerability</td>
+          <td>Important</td>
+          <td>7.4</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Spoofing</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43516</td>
+          <td>Windows Secure Kernel Mode Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43528</td>
+          <td>Windows Secure Kernel Mode Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43552</td>
+          <td>Windows Shell Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>7.3</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43512</td>
+          <td>Windows Standards-Based Storage Management Service Denial of Service Vulnerability</td>
+          <td>Important</td>
+          <td>6.5</td>
+          <td>No</td>
+          <td>No</td>
+          <td>DoS</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43551</td>
+          <td>Windows Storage Elevation of Privilege Vulnerability</td>
+          <td>Important</td>
+          <td>7.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>EoP</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-43518</td>
+          <td>Windows Telephony Server Remote Code Execution Vulnerability</td>
+          <td>Important</td>
+          <td>8.8</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-7025 *</td>
+          <td>Chromium: CVE-2024-7025 Integer overflow in Layout</td>
+          <td>High</td>
+          <td>N/A</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-9369 *</td>
+          <td>Chromium: CVE-2024-9369 Insufficient data validation in Mojo</td>
+          <td>High</td>
+          <td>N/A</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td>CVE-2024-9370 *</td>
+          <td>Chromium: CVE-2024-9370 Inappropriate implementation in V8</td>
+          <td>High</td>
+          <td>N/A</td>
+          <td>No</td>
+          <td>No</td>
+          <td>RCE</td>
+      </tr>
+      <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<p><em>* Indicates this CVE had been released by a third party and is now being included in Microsoft releases</em>.</p>
+<p><em>† Indicates further administrative actions are required to fully address the vulnerability.</em></p>
+<p>The only other Critical-rated bug this month is for the Visual Studio Code extension for Arduino. However, there’s no action to take here as Microsoft has already resolved the issue and is just documenting this CVE.</p>
+<p>There are 39 other code execution bugs to cover this month, and many of these are the open-and-own variety found in Office and other components. There are a dozen bugs affecting the Routing and Remote Access Service (RRAS), but only a few of these could be triggered by a remote attacker. The others require the client to attempt to connect to a malicious server. The patch for Azure Service Fabric for Linux requires special privileges to hit. There’s a code execution bug in DeepSpeed – the open-source deep learning optimization library – but Microsoft provides no details on it. This also appears to be the first CVE for this component. There are three bugs in OpenSSH for Windows, but all require extensive user interaction and are unlikely to be exploited. The two bugs in RDP client require connecting to a malicious RDP server, which also seems unlikely. Connecting to a malicious server is also a requirement for the bug in Windows Telephony.</p>
+<p>The code execution bug in Hyper-V is somewhat limited but still interesting. It could allow a guest OS to execute code against another guest OS, but it wouldn’t allow that code execution to a system not on the same Hyper-V server. The bug in the Remote Desktop Licensing server requires authentication. The code execution bugs are rounded out with a half-dozen fixes for the Mobile Broadband Driver. Interestingly, all six of these require the attacker to physically insert a malicious USB drive into an affected system.</p>
+<p>There are more than two dozen fixes for Elevation of Privilege (EoP) bugs in this release. However, most of these either lead to SYSTEM-level code execution or administrative privileges if an authenticated user runs specially crafted code. However, there are a few that stand out. The bug in Netlogon is the most interesting to me. It allows an adjacent attacker to impersonate a domain controller if they can predict the naming convention of the domain controller when added. It’s an unlikely scenario, but kudos to the person who found such an odd corner case. The EoP in Azure Command Line Integration requires the attacker to be assigned the role of either “Security Admin” or “Contributor” but exploitation could lead to SYSTEM-level access. Interestingly, the bug in the NT OS Kernel could lead to kernel memory access, which sounds a bit like an information disclosure bug to me. Finally, the bug in Outlook for Android leads to SYSTEM when opening a malicious meeting or appointment invitation. That’s another vote from e-mails or meetings – especially when food isn’t involved.</p>
+<p>There are a handful of Security Feature Bypass (SFB) bugs in the October release, and the BitLocker fix stands out since for Windows Server 2012 R2, you will need to install KB2919355 first to be protected. There are three different bypasses in the Windows Resume Extensible Firmware Interface and all of them allow local attackers to bypass Secure Boot. The bug in the Scripting Service bypasses the Anti-Malware Scanning Interface under certain circumstances. As expected, the bug in the Code Integrity Guard allows an authenticated attacker to bypass code integrity checks. The bypass in Hyper-V would be tricky to implement as there are a lot of caveats, but successful exploitation allows an attacker to bypass UEFI on the hypervisor. This is one of the bugs listed as publicly known, but I would be stunned to see this ever exploited in the wild.</p>
+<p>The October release includes fixes for only six information disclosure bugs, and all but one simply result in info leaks consisting of unspecified memory contents. The exception is the bug in the Cryptographic component. An attacker could read the contents of the Optimal asymmetric encryption padding (OAEP) decrypt from a user mode process. This could potentially result in a cross-VM attack affecting multiple VMs on a single hypervisor.</p>
+<p>In addition to the one previously covered, there are six other spoofing bugs receiving patches this month. Unfortunately, Microsoft doesn’t provide much information about these vulnerabilities. The spoofing bug in Office appears to result in NTLM relaying as Microsoft lists restricting outbound NTLM as a mitigation. There’s no real information about the Power BI bugs other than to say they require authentication. The vulnerability in Secure Channel requires a Machine-in-the-Middle (MitM) to succeed. The final spoofing bug is in Sudo for Windows. An authenticated attacker would need to launch a specially crafted application and then wait for the target to enter a command in a console window.</p>
+<p>There are a mountain of Denial-of-Service (DoS) bugs getting fixed this month, and many of these are in the Mobile Broadband Driver. There’s not a lot of info on these bugs, but Microsoft notes the target must be “within proximity of the target system to send and receive radio transmissions.” There’s little other information to go on here. I do like how the kernel bug must be exploited by “An authorized attacker…” I think they meant authenticated here as not many attackers are authorized. It would be great if Microsoft could provide just a bit more information here. Is this a temporary or a permanent DoS? Does the system automatically recover or does an administrator need to take action? Please Microsoft – don’t be stingy with the details.</p>
+<p>Finally, the release is rounded out by a single tampering bug in Remote Desktop Services. Microsoft (again) provides no real detail here other than that the attacker must be MitM. Well, that’s something I suppose.</p>
+<p>There are no new advisories in this month’s release. However, ADV990001 has been revised to include the latest servicing stack updates.</p>
+<p><strong>Looking Ahead</strong></p>
+<p>The next Patch Tuesday of 2024 will be on November 12, and, assuming I survive Pwn2Own Ireland, I’ll return with details and patch analysis then. Until then, keep the lights on, stay safe, happy patching, and may all your reboots be smooth and clean!</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+---
+title: "Cloud RAN with Google Distributed Cloud Edge; Strategy: host network functions of other vendors on Google Cloud"
+date: 2025-01-03
+categories: 
+  - "general"
+---
+
+At MWC 2023 Barcelona, **Google Cloud** announced that they can now run the **radio access network (RAN)** functions as software on Google Distributed Cloud Edge, providing communications service providers (CSPs- AKA telcos) with a common and agile operating model that extends from the core of the network to the edge, for a high degree of programmability, flexibility, and low operating expenses.  CSPs have already embraced open architecture, open-source software, disaggregation, automation, cloud, AI and machine learning, and new operational models, to name a few. The journey started in the last decade with Network Functions Virtualization, primarily with value added services and then deeper with core network applications, and in the past few years, that evolved into a push towards cloud-native. With significant progress in the core, the time for **Cloud RAN** is now, according to Google.  However, whether for industry or region-specific compliance reasons, data sovereignty needs, or latency or local data-processing requirements, most of the network functions deployed in a mobile or wireline network may have to follow a hybrid deployment model where network functions are placed flexibly in a combination of both on-premises and cloud regions. RAN, which is traditionally implemented with proprietary hardware, falls into that camp as well.
+
+In 2021,the company launched Google Distributed Cloud Edge (GDC Edge), an on-premises offering that extends a consistent operating model from our public Google Cloud regions to the customer’s premises. For CSPs, this hybrid approach makes it possible to modernize the network, while enabling easy development, fast innovation, efficient scale and operational efficiency; all while simultaneously helping to reduce technology risk and operational costs. GDC Edge became generally available in 2022.
+
+![](https://storage.googleapis.com/gweb-cloudblog-publish/images/1_ran.max-1000x1000.jpg)
+
+**Google Cloud** does not plan to develop its own private wireless networking services to sell to enterprise customers, nor does the company plan to develop its own networking software functions, according to Gabriele Di Piazza, an executive with Google Cloud who spoke at MWC 2023 in Barcelona. Instead,  Google Cloud would like to host the networking software functions of other vendors like **Ericsson** and **Mavenir** in its cloud.  It would also like to resell private networking services from operators and others.
+
+Rather than develop its own cloud native 5G SA core network or other cloud networking software (like Microsoft and AWS are doing), **Google Cloud** wants to “avoid partner conflict,” Di Piazza said.  Google has been building its telecom cloud story around its Anthos platform. That platform is directly competing against the likes of AWS and Microsoft for telecom customers. According to a number of analysts, AWS appears to enjoy an early lead in the telecom industry – but its rivals, like Google, are looking for ways to gain a competitive advantage.  One of Google’s competitive arguments is that it doesn’t have aspirations to sell network functions. Therefore, according to Di Piazza, the company can remain a trusted, unbiased partner.
+
+![](https://storage.googleapis.com/gweb-cloudblog-publish/images/teleco_2022.max-2500x2500.jpg)
+
+**Image Credit:  Google Cloud**
+
+Last year, the executive said that moving to a **cloud-native architecture** is mandatory, not optional for telcos, adding that telecom operators are facing lots of challenges right now due to declining revenue growth, exploding data consumption and increasing capital requirements for 5G.  Cloud-native networks have significant challenges. For example, there is a **lack of standardization** among the various open-source groups and there’s fragmentation among parts of the cloud-native ecosystem, particularly among OSS vendors, cloud providers and startups.
+
+In recent years, **Google, Microsoft, Amazon, Oracle** and other cloud computing service providers have been working to develop products and services that are specifically designed to allow telecom network operator’s to run their network functions inside a third-party cloud environment.  For example, AT&T and Dish Network are running their 5G SA core networks on Microsoft Azure and AWS, respectively.
+
+Matt Beal, a senior VP of software development for **Oracle Communications**, said his company offers both a substantial cloud computing service as well as a **lengthy list of network functions**. He maintains that Oracle is a better partner for telecom network operators because of it. Beal said Oracle has long offered a wide range of networking functions, from policy control to network slice management, that can be run inside its cloud or inside the cloud of other companies. He said that, because Oracle developed those functions itself, the company has more experience in running them in a cloud environment compared with a company that hasn’t done that kind of work.  Beal’s inference is that network operators ought to partner with the best and most experienced companies in the market. That position runs directly counter to Google’s competitive stance on the topic.  “When you know how these things work in real life … you can optimize your cloud to run these workloads,” he said.
+
+While a number of other telecom network operators have put things like customer support or IT into the cloud, they have been reluctant to release critical network functions like policy control to a cloud service provider.
+
+**References:**
+
+https://www.lightreading.com/mobile-world-congress/google-cloud-takes-non-threatening-stance-in-pursuit-of-telecom/d/d-id/783559?
+
+https://cloud.google.com/solutions/telecommunications
+
+https://cloud.google.com/blog/topics/telecommunications
+
+https://www.silverliningsinfo.com/cloud/google-cloud-exec-says-cloud-native-architecture-will-reduce-costs
+
+Go to Source

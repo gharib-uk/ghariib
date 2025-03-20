@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Highlights from Git 2.48</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Highlights from Git 2.48</h1>
+			<b><time>12.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>The open source Git project just released Git 2.48. Here is GitHub&rsquo;s look at some of the most interesting features and changes introduced since last time.</p>
+<p>The post Highlights from Git 2.48 appeared first on The GitHub Blog.</p>
+<p>The open source Git project just released Git 2.48 with features and bug fixes from over 93 contributors, 35 of them new. We last caught up with you on the latest in Git back when 2.47 was released.</p>
+<p>To celebrate this most recent release, here is GitHub’s look at some of the most interesting features and changes introduced since last time.</p>
+<h2 id="faster-sha-1s-without-compromising-security">Faster SHA-1s without compromising security</h2>
+<p>When we published our coverage of Git’s 2.47 release, we neglected to mention a handful of performance changes that went in toward the very end of the cycle. Because this version contains a bugfix related to those changes, we figured now was as good a time as any1 to discuss those changes.</p>
+<p>You likely know that Git famously uses SHA-1 hashes by default to identify objects within your repository. (We have covered Git’s capability to use SHA-256 as its primary hash function instead, but for this tidbit we’ll focus on Git in its SHA-1 mode). What you may not know is that Git uses SHA-1 hashes internally in a couple of spots, too. Most notable for our purposes is that the pack format includes a trailing SHA-1 that stores the checksum of the preceding bytes. Git uses this data to validate that a pack’s contents matches what was advertised, and didn’t get corrupted in transit.</p>
+<p>By default, Git uses a collision detecting implementation of SHA-1, hardening it against common SHA-1 attacks like SHAttered and Shambles. (GitHub also uses the collision detecting SHA-1 implementation). While the collision detecting SHA-1 implementation protects Git against collision attacks, it does so at the cost of a few extra CPU cycles to look for the telltale signs of these attacks while checksumming.</p>
+<p>In most cases, the performance impact is negligible, and the benefit outweighs the minor performance cost. But when computing the checksum of a large pack (like when cloning a large repository), the cost adds up. For instance, we used Callgrind and measured that Git spends around 78% of its CPU computing a checksum during a simulated clone of <code>torvalds/linux</code>.</p>
+<p>Luckily, the trailing checksum is a data integrity measure, not a security one. For our purposes, this means that we can safely use a faster, non-collision-detecting implementation of SHA-1 specifically when computing trailing checksums (but nowhere else) without compromising security. Git 2.47 introduced new build-time options to specify a separate hash function implementation used specifically when computing trailing checksums. GitHub has used this option, and as a result measured a 10-13% performance improvement in serving fetches/clones across all repositories.</p>
+<p>You can try out Git’s ability to select alternative hash function implementations by building with <code>make OPENSSL_SHA1_UNSAFE=1</code>, or other <code>_UNSAFE</code> variants.</p>
+<p>[source, source, source]</p>
+<h2 id="bringing---remerge-diff-to-range-diff">Bringing <code>--remerge-diff</code> to range-diff</h2>
+<p>Regular readers of this series will no doubt recall our coverage of Git’s range-diff command (introduced back in Git 2.19), and the newer –remerge-diff option (released in Git 2.36). In case you’re a first-time reader, or neither of those ring a bell for you, don’t worry; here’s a brief refresher.</p>
+<p>Git’s <code>range-diff</code> command allows you to compare two <em>sequences</em> of commits, including changes to their order, commit messages, and the actual content changes they introduce. This can be useful when comparing a sequence of commits that were rebased (potentially tweaking the order and changes within the patches along the way), to what that set of commits looked like before the rebase.</p>
+<p>Git’s <code>--remerge-diff</code> option tells <code>git show</code>, <code>git log</code>, or various diff-related commands to view the differences between where Git would have stopped with the merge, and what is recorded in the merge. This can be useful when dealing with merge conflicts, since the <code>--remerge-diff</code> view will show you the difference between the conflicts and their resolution, showing you how a given merge conflict was handled.</p>
+<p>In Git 2.48, these two features meet for the first time, and <code>range-diff</code> now accepts a <code>--remerge-diff</code> option, so that if someone rebases a sequence of commits with <code>--rebase-merges</code> and potentially needs to make some changes, then the changes in merge commits can also be reviewed as part of the range-diff.</p>
+<p>As a side effect of this work, a longstanding bug with <code>--remerge-diff</code> was also fixed, which in particular will allow <code>git log –remerge-diff</code> to be used together with options that change the order of commit traversal (such as <code>--reverse</code>).</p>
+<p>[source, source]</p>
+<h2 id="memory-leak-free-tests-in-git">Memory leak-free tests in Git</h2>
+<p>Beginning all the way back in Git 2.34, the Git project has been focused on reducing memory leaks with the goal of ultimately making Git leak-free. Since Git is a command line tool, each execution typically only lasts for a brief period of time, after which the kernel will free any memory allocated to Git that Git itself did not free. Because of this, memory leaks in Git have not posed a significant practical issue for everyday use.</p>
+<p>But, having memory leaks in Git makes it difficult to convert much of Git’s internals into a callable library, where having memory leaks would be a significant issue. To address this, there has been a concerted effort over many years to reduce the number of memory leaks in Git’s codebase, with the ultimate goal of eliminating them altogether.</p>
+<p>After much effort toward that end, Git can now run its test suite successfully with leak checking enabled. As a satisfying end result, much of the test infrastructure we talked about back in 2.34 was removed, resulting in a simpler test infrastructure. Making Git memory leak-free represents significant progress toward being able to convert parts of Git’s internals into a callable library.</p>
+<p>[source, source, source, source, source, source, source, source, source, source, source, source]</p>
+<h2 id="introducing-meson-into-git">Introducing Meson into Git</h2>
+<p>The Git project uses GNU Make as the primary means to compile Git, meaning that if you can obtain a copy of Git’s source, running <code>make</code> should be all you need to get a working Git binary (provided you have the necessary dependencies, etc.). There are a couple of exceptions, namely that Git has some support for Autoconf and CMake, though they are not as up-to-date as Git’s <code>Makefile</code>.</p>
+<p>But as the Git project approaches its 20th anniversary later this year, its <code>Makefile</code> is starting to show its age. There have been over 2,000 commits to the <code>Makefile</code>, resulting in a build script that is nearly 4,000 lines long.</p>
+<p>In this release, the Git project has support for a new build system, Meson, as an alternative to building with GNU Make. While support for Meson is not yet as robust as building with Make, Meson does offer a handful of advantages over Make. Meson is easier to use than Make, making the project more accessible to newcomers or contributors who don’t have significant experience working with Make. Meson also has extensive IDE support, and supports out-of-tree and cross-platform builds, which are both significant assets to the Git project.</p>
+<p>Git will retain support for Make and CMake in addition to Meson for the foreseeable future, and retain support for Autoconf for a little longer. But if you’re curious to experiment with Git’s newest build system, you can run <code>meson setup build &amp;&amp; ninja -C build</code> on a fresh copy of Git 2.48 or newer.</p>
+<p>[source]</p>
+<hr>
+<ul>
+<li>
+<p>As the Git project has grown over the years, it has accumulated a number of features and modes that, while reasonable when first introduced, have since become outdated or superseded and are now deprecated. In Git 2.48, the Git project began collecting these now-deprecated features in a list stored in <code>Documentation/BreakingChanges.txt</code>.</p>
+<p>This document enables the Git project to discuss deprecating certain features and collects the project’s anticipated deprecations in a single place. On the other side of the equation, it allows users to see if they might be affected by an upcoming deprecation, and share their use-case of a particular feature with the project. Check out the list to see if there is anything on there that you might miss, and to get an early picture of what an eventual Git 3.0 release might look like!</p>
+<p>[source]</p>
+</li>
+<li>
+<p>If you’ve ever scripted around your repository’s references, you are likely familiar with Git’s <code>for-each-ref</code> command. In case you’re not, <code>for-each-ref</code> is a flexible tool that allows you to list references in your repository, apply custom formatting specifiers to them, and much more.</p>
+<p>Back in Git 2.44, we talked about some performance improvements that allowed <code>git for-each-ref</code> to run significantly faster by combining reference filtering and formatting into the same codepath, eliminating the need to store and sort the results in certain conditions.</p>
+<p>Git 2.48 extends those changes by allowing us to take advantage of the same optimizations even when asked to output the references in sorted order (under certain conditions). As long as those conditions are met, you can quickly output a small number of references even under <code>--sort=refname</code> independent of how many references your repository actually has.</p>
+<p>[source]</p>
+</li>
+<li>
+<p>While we’re on the topic of references, the reftable subsystem has received some more attention in this release. Git’s reftable implementation was updated to avoid explicit dependencies on some of Git’s convenience APIs, making further progress on being able to compile the reftable code without <code>libgit.a</code>. The reftable implementation was also updated to gracefully handle memory allocation failures instead of exiting the process immediately. Last but not least, the reftable code was updated to be able to reuse reference iterators, resulting in faster reference creation and lower memory usage when using reftables.</p>
+<p>For more about reftables, check out our previous coverage of reftables.</p>
+<p>[source, source, source, source]</p>
+</li>
+<li>
+<p>When you clone from a remote repository, the default branch that the remote repository uses is reflected in <code>refs/remotes/origin/HEAD</code> locally2. In prior versions of Git, subsequent fetches and pulls did not update this symbolic reference. With Git 2.48, if the remote has a default branch but <code>refs/remotes/origin/HEAD</code> is missing locally, then a fetch will update it.</p>
+<p>If you want to take it a step further, you can set <code>remote.origin.followRemoteHead</code> configuration to <code>warn</code> or <code>always</code>; if you do so, when <code>refs/remotes/origin/HEAD</code> already exists but does not match the default branch on the remote side, then when you run <code>git fetch</code> it will either warn you about the change or just automatically update <code>refs/remote/origin/HEAD</code> to the appropriate value depending on what setting you used.</p>
+<p>[source, source]</p>
+</li>
+<li>
+<p>Partial clones also received some love this cycle, fixing an infinite loop and avoiding promisor to non-promisor references that could break the repository after a <code>git gc</code>.</p>
+<p>For those unfamiliar with partial clones or want to learn more about their internals, you can read the guide “Get up to speed with partial clone and shallow clone.”</p>
+<p>[source, source, source, source]</p>
+</li>
+</ul>
+<hr>
+<h2 id="the-rest-of-the-iceberg">The rest of the iceberg</h2>
+<p>That’s just a sample of changes from the latest release. For more, check out the release notes for 2.48, or any previous version in the Git repository.</p>
+<h4 id="notes">Notes</h4>
+<hr>
+<ol>
+<li>A better time would have been in the Highlights from Git 2.47 blog post, but who’s counting? ↩</li>
+<li>By default, anyway. You can specify a name other than “origin” with the <code>-o</code> option ↩</li>
+</ol>
+<p>The post Highlights from Git 2.48 appeared first on The GitHub Blog.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

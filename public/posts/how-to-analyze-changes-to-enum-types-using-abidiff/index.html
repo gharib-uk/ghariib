@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How to analyze changes to enum types using abidiff</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How to analyze changes to enum types using abidiff</h1>
+			<b><time>06.02.2025 00:00</time></b>
+		       
+		           <a href="/tags/include">include</a>
+        	       
+
+			<div>
+				<p>It is required to have a stable  application binary interface (ABI) when maintaining a stable shared library that is written in C or C++ and shipped as part of a complex software stack. Developers must comply with this requirement. When building a newer version of a shared library, developers may try the following approach:</p>
+<ul>
+<li>Analyze the ABI changes.</li>
+<li>Detect the potential incompatibility of the changes, or ABI breaks.</li>
+<li>Fix them before releasing the library.</li>
+</ul>
+<p>To perform the analysis, developers can use the abidiff tool to compare the newer version of the shared library against the previous stable version. The abidiff tool is part of the libabigail framework. It reports the ABI changes to data types and how they impact the functions of variables.</p>
+<p>This is a tutorial illustrating the changes to enum types in C and C++, how they are analyzed by libabigail, and how developers can use this analysis to tailor it to their needs.</p>
+<h2 id="detecting-and-categorizing-enum-changes">Detecting and categorizing enum changes</h2>
+<p>The libabigail framework reads the debug information accompanying the binary shared library and constructs an internal representation (IR) of the data types in the ABI. Then it compares the IRs of the two binary versions and analyzes the resulting changes.</p>
+<p>After comparing the IRs of the enum type, libabigail detects additions or removals of enumerators as well as changes to enumerator names and values. Then it classifies those changes into several categories. The abidiff tool emits an exit code, a bit-field of several categories of changes. By inspecting that exit code for a given reported ABI change, users can see if the change is categorized as an incompatible ABI change (ABI break) or if the tool is suggesting a user review to determine the category of the change.</p>
+<p>Usually, abidiff suggests a user review because it doesn&rsquo;t have enough context to determine if the ABI change is compatible or not. In that case, the user provides the missing context so the tool can subsequently categorize similar ABI changes without requiring a review. That context is provided using a suppression specification.</p>
+<h2 id="example-use-case">Example use case</h2>
+<p>In this section, I will present a use case that is a somewhat realistic example of a shared library that exposes an enum type as part of its ABI. As the hypothetical maintainer of that shared library, I will produce a new version by modifying the enum type in a way that will result in an ABI incompatibility, and I will show you how to use abidiff to detect the ABI change before the release. Then I&rsquo;ll review the ABI change and provide the potentially missing context to abidiff so that subsequent similar ABI changes are better categorized in the future. </p>
+<h3 id="defining-a-libcolor-shared-library">Defining a libcolor shared library</h3>
+<p>Let&rsquo;s define a library written in C that gives the red, green, and blue (RGB) components of a given color, following the Red Green Blue color model.</p>
+<p>The library defines colors as enumerators of the <code>enum color_type</code> type. That enum is defined as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>enum color_type
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  BLACK_COLOR,
+</span></span><span style="display:flex;"><span>  WHITE_COLOR,
+</span></span><span style="display:flex;"><span>  GREEN_COLOR,
+</span></span><span style="display:flex;"><span>  BLUE_COLOR,
+</span></span><span style="display:flex;"><span>  LAST_COLOR
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>The library also has a type <code>struct rgb_type</code> that corresponds to each color. That <code>struct</code> is defined as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>struct rgb_type
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  char red;
+</span></span><span style="display:flex;"><span>  char green;
+</span></span><span style="display:flex;"><span>  char blue;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>Each color denoted by the <code>enum color_type</code> corresponds to a given RGB value of type <code>struct rbg_type</code>. The RGB value, or RGB code, for a given color is returned by the function <code>get_color_code</code> and declared as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>struct rgb_type*
+</span></span><span style="display:flex;"><span>get_color_code (enum color_type color);
+</span></span></code></pre></div><p>The <code>display_color</code> function emits the string representation of a given color (enumerator of <code>enum color_type</code>) on the standard output. Likewise, the <code>display_color_code</code> function emits the string representation of a given RGB color code (of type <code>struct rgb_type</code>) on the standard output.</p>
+<p>All of these types and functions are defined or declared in the <code>libcolor.h</code> header file which constitutes the application programming interface (API) of the library. The following shows the content of the current version of <code>libcolor.h</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ cat libcolor-v0.h
+</span></span><span style="display:flex;"><span>struct rgb_type
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  char red;
+</span></span><span style="display:flex;"><span>  char green;
+</span></span><span style="display:flex;"><span>  char blue;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>enum color_type
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  BLACK_COLOR,
+</span></span><span style="display:flex;"><span>  WHITE_COLOR,
+</span></span><span style="display:flex;"><span>  GREEN_COLOR,
+</span></span><span style="display:flex;"><span>  BLUE_COLOR,
+</span></span><span style="display:flex;"><span>  LAST_COLOR
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>void
+</span></span><span style="display:flex;"><span>init_color_codes ();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>struct rgb_type*
+</span></span><span style="display:flex;"><span>get_color_code (enum color_type color);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>struct rgb_type*
+</span></span><span style="display:flex;"><span>set_color_code (enum color_type color, struct rgb_type* color_code);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>void
+</span></span><span style="display:flex;"><span>display_color_code (struct rgb_type* color_code);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>void
+</span></span><span style="display:flex;"><span>display_color (enum color_type color);
+</span></span><span style="display:flex;"><span>$
+</span></span></code></pre></div><p>The shared library is compiled into a <code>libcolor.so</code> shared library.</p>
+<h3 id="creating-a-colorapp-application">Creating a colorapp application</h3>
+<p>For the sake of completeness, let&rsquo;s write a little application that uses the <code>libcolor.so</code> shared library through its application programming interface:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>cat color-app.c:
+</span></span><span style="display:flex;"><span>#include &lt;stdio.h&gt;
+</span></span><span style="display:flex;"><span>#include &#34;libcolor.h&#34;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>int
+</span></span><span style="display:flex;"><span>main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  init_color_codes();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  for (enum color_type color = BLACK_COLOR; color &lt; LAST_COLOR; color++)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      printf (&#34;For color &#39;&#34;);
+</span></span><span style="display:flex;"><span>      display_color (color);
+</span></span><span style="display:flex;"><span>      printf (&#34;&#39;, the RGB color code is: &#34;);
+</span></span><span style="display:flex;"><span>      struct rgb_type* color_code = get_color_code(color);
+</span></span><span style="display:flex;"><span>      display_color_code (color_code);
+</span></span><span style="display:flex;"><span>      printf (&#34;.n&#34;);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  return 0;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>$
+</span></span></code></pre></div><p>That code is compiled into the <code>colorapp</code> program, dynamically linked against the <code>libcolor.so</code> shared library as confirmed by the following output of the <code>ldd</code> program on my GNU/Linux system:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ ldd colorapp 
+</span></span><span style="display:flex;"><span>      linux-vdso.so.1 (0x00007ffe4b3df000)
+</span></span><span style="display:flex;"><span>      libcolor.so (0x00007f8316532000)
+</span></span><span style="display:flex;"><span>      libc.so.6 =&gt; /lib64/libc.so.6 (0x00007f8316200000)
+</span></span><span style="display:flex;"><span>      /lib64/ld-linux-x86-64.so.2 (0x00007f8316539000)
+</span></span><span style="display:flex;"><span>$
+</span></span></code></pre></div><p>When I execute the <code>colorapp</code> program, I get this output:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ ./colorapp 
+</span></span><span style="display:flex;"><span>For color &#39;black&#39;, the RGB color code is: {Red: 0, Green: 0, Blue: 0}.
+</span></span><span style="display:flex;"><span>For color &#39;white&#39;, the RGB color code is: {Red: 0xf, Green: 0xf, Blue: 0xf}.
+</span></span><span style="display:flex;"><span>For color &#39;green&#39;, the RGB color code is: {Red: 0, Green: 0xf, Blue: 0}.
+</span></span><span style="display:flex;"><span>For color &#39;blue&#39;, the RGB color code is: {Red: 0, Green: 0, Blue: 0xf}.
+</span></span><span style="display:flex;"><span>$
+</span></span></code></pre></div><h3 id="changing-the-abi-of-the-shared-library">Changing the ABI of the shared library</h3>
+<p>Looking at the <code>enum color_type</code>, I see that the definition of the <code>RED_COLOR</code> enumerator is missing. Oops! Let&rsquo;s create a new version of the <code>libcolor.so</code> library and amend the <code>enum color_type</code> to add a new <code>RED_COLOR</code> enumerator. This new version also adds support for the new <code>RED_COLOR</code> enumerator in the <code>get_color_code</code> and <code>display_color</code> functions.</p>
+<p>The following shows the textual difference between <code>libcolor-v0.h</code> and the newer <code>libcolor-v1.h</code> reported by the GNU Diff tool:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ diff -p -u v0/libcolor-v0.h v1/libcolor-v1.h 
+</span></span><span style="display:flex;"><span>--- v0/libcolor-v0.h
+</span></span><span style="display:flex;"><span>+++ v1/libcolor-v1.h
+</span></span><span style="display:flex;"><span>@@ -9,6 +9,7 @@ enum color_type
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>   BLACK_COLOR,
+</span></span><span style="display:flex;"><span>   WHITE_COLOR,
+</span></span><span style="display:flex;"><span>+  RED_COLOR,
+</span></span><span style="display:flex;"><span>   GREEN_COLOR,
+</span></span><span style="display:flex;"><span>   BLUE_COLOR,
+</span></span><span style="display:flex;"><span>   LAST_COLOR
+</span></span><span style="display:flex;"><span>$ 
+</span></span></code></pre></div><p>Let&rsquo;s build the newer version of <code>libcolor.so</code> and name it <code>libcolor.so.1</code>.</p>
+<p>Please note that the initial <code>libcolor.so</code> is a symbolic link that points to the initial <code>libcolor.so.0</code>. If we want to use the newer <code>libcolor.so.1</code>, we can make the symbolic link <code>libcolor.so</code> point to <code>libcolor.so.1</code>. For now, here is what we have:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ ls -l libcolor.so
+</span></span><span style="display:flex;"><span>lrwxrwxrwx. 1 dodji dodji 16 25 nov.  12:08 libcolor.so -&gt; v0/libcolor.so.0
+</span></span><span style="display:flex;"><span>$
+</span></span></code></pre></div><h3 id="analyzing-the-resulting-abi-change-with-abidiff">Analyzing the resulting ABI change with abidiff</h3>
+<p>At this point, we can use <code>abidiff</code> to compare the ABI of the newer <code>libcolor.so.1</code> against the older <code>libcolor.so.0</code> as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ abidiff v0/libcolor.so.0 v1/libcolor.so.1; echo &#34;abidiff returned code: $?&#34;
+</span></span><span style="display:flex;"><span>Functions changes summary: 0 Removed, 1 Changed (2 filtered out), 0 Added functions
+</span></span><span style="display:flex;"><span>Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>1 function with some indirect sub-type change:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  [C] &#39;function void display_color(color_type)&#39; at libcolor-v0.c:55:1 has some indirect sub-type changes:
+</span></span><span style="display:flex;"><span>    parameter 1 of type &#39;enum color_type&#39; has sub-type changes:
+</span></span><span style="display:flex;"><span>      type size hasn&#39;t changed
+</span></span><span style="display:flex;"><span>      1 enumerator insertion:
+</span></span><span style="display:flex;"><span>        &#39;color_type::RED_COLOR&#39; value &#39;2&#39;
+</span></span><span style="display:flex;"><span>      3 enumerator changes:
+</span></span><span style="display:flex;"><span>        &#39;color_type::GREEN_COLOR&#39; from value &#39;2&#39; to &#39;3&#39; at libcolor-v1.h:8:1
+</span></span><span style="display:flex;"><span>        &#39;color_type::BLUE_COLOR&#39; from value &#39;3&#39; to &#39;4&#39; at libcolor-v1.h:8:1
+</span></span><span style="display:flex;"><span>        &#39;color_type::LAST_COLOR&#39; from value &#39;4&#39; to &#39;5&#39; at libcolor-v1.h:8:1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>abidiff returned code: 4
+</span></span><span style="display:flex;"><span>$
+</span></span></code></pre></div><p>We see that <code>abidiff</code> detects a change to the <code>enum color_type</code>. The change is the insertion of the <code>RED_COLOR</code> enumerator. But that change also includes changes to the values of the existing enumerators <code>GREEN_COLOR</code>, <code>BLUE_COLOR</code>, and <code>LAST_COLOR</code>.</p>
+<p>Please note that the <code>abidiff</code> tool returns a code that is <code>4</code>. Looking at the documentation for the return codes of abidiff, we see that <code>4</code> is the value <code>ABIDIFF_ABI_CHANGE</code>. This means that <code>abidiff</code> has categorized this ABI change as needing a human review to determine if it&rsquo;s compatible.</p>
+<p>The addition of the new <code>RED_COLOR</code> enumerator is not an incompatible change. But changing the existing enumerator values <code>GREEN_COLOR</code> and <code>BLUE_COLOR</code> can be considered as incompatible changes.</p>
+<p>By &ldquo;incompatible&rdquo;, I mean the change can cause an unexpected behavior in an application previously compiled against <code>libcolor.so.0</code> that now executes, using the newer <code>libcolor.so.1</code> without being recompiled against the newer API of <code>libcolor.so.1</code>.</p>
+<p>By chance, we do have such an application, the <code>colorapp</code> program. Let&rsquo;s execute it against the newer <code>libcolor.so.1</code> to see if its behavior changes:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ rm libcolor.so
+</span></span><span style="display:flex;"><span>$ ln -s v1/libcolor.so.1 libcolor.so
+</span></span><span style="display:flex;"><span>$ ./colorapp 
+</span></span><span style="display:flex;"><span>For color &#39;black&#39;, the RGB color code is: {Red: 0, Green: 0, Blue: 0}.
+</span></span><span style="display:flex;"><span>For color &#39;white&#39;, the RGB color code is: {Red: 0xf, Green: 0xf, Blue: 0xf}.
+</span></span><span style="display:flex;"><span>For color &#39;red&#39;, the RGB color code is: {Red: 0xf, Green: 0, Blue: 0}.
+</span></span><span style="display:flex;"><span>For color &#39;green&#39;, the RGB color code is: {Red: 0, Green: 0xf, Blue: 0}.
+</span></span><span style="display:flex;"><span>$ 
+</span></span></code></pre></div><p>We see that this run of the <code>colorapp</code> using <code>libcolor.so.1</code> returns the RGB color codes for the colors black, white, red, and green, whereas the previous run using <code>libcolor.so.0</code> returned the codes for colors black, white, green, and blue. The ABI change definitely changed the behavior of the application in an unexpected manner. This is what I would call an incompatible ABI change, or ABI break.</p>
+<h3 id="fixing-the-abi-break">Fixing the ABI break</h3>
+<p>To fix the ABI break, let&rsquo;s consider creating a third version of the library by adding the newer <code>RED_COLOR</code> at the end of the <code>enum color_type</code> to avoid changing the value of any meaningful enumerator:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ diff -u -p v0/libcolor-v0.h v2/libcolor-v2.h
+</span></span><span style="display:flex;"><span>--- v0/libcolor-v0.h  2024-11-25 12:05:21.741730539 +0100
+</span></span><span style="display:flex;"><span>+++ v2/libcolor-v2.h  2024-11-25 15:48:21.659597559 +0100
+</span></span><span style="display:flex;"><span>@@ -11,6 +11,7 @@ enum color_type
+</span></span><span style="display:flex;"><span>   WHITE_COLOR,
+</span></span><span style="display:flex;"><span>   GREEN_COLOR,
+</span></span><span style="display:flex;"><span>   BLUE_COLOR,
+</span></span><span style="display:flex;"><span>+  RED_COLOR,
+</span></span><span style="display:flex;"><span>   LAST_COLOR
+</span></span><span style="display:flex;"><span> };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$
+</span></span></code></pre></div><p>The <code>libcolor.so.2</code> is the name of the third library version.</p>
+<p>Let&rsquo;s use <code>abidiff</code> again to compare the ABI of the newer <code>libcolor.so.2</code> against the initial <code>libcolor.so.0</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ abidiff v0/libcolor.so.0 v2/libcolor.so.2; echo &#34;abidiff returned code: $?&#34;
+</span></span><span style="display:flex;"><span>Functions changes summary: 0 Removed, 1 Changed (2 filtered out), 0 Added functions
+</span></span><span style="display:flex;"><span>Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>1 function with some indirect sub-type change:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  [C] &#39;function void display_color(color_type)&#39; at libcolor-v0.c:55:1 has some indirect sub-type changes:
+</span></span><span style="display:flex;"><span>    parameter 1 of type &#39;enum color_type&#39; has sub-type changes:
+</span></span><span style="display:flex;"><span>      type size hasn&#39;t changed
+</span></span><span style="display:flex;"><span>      1 enumerator insertion:
+</span></span><span style="display:flex;"><span>        &#39;color_type::RED_COLOR&#39; value &#39;4&#39;
+</span></span><span style="display:flex;"><span>      1 enumerator change:
+</span></span><span style="display:flex;"><span>        &#39;color_type::LAST_COLOR&#39; from value &#39;4&#39; to &#39;5&#39; at libcolor-v2.h:8:1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>abidiff returned code: 4
+</span></span><span style="display:flex;"><span>$ 
+</span></span></code></pre></div><p>Here we see that the value of the <code>LAST_COLOR</code> enumerator of <code>enum color_type</code> is changed by addition of the <code>RED_COLOR</code> enumerator near the end of the enum.</p>
+<p>However, as the library maintainer carefully reviewing the code, I know that the <code>LAST_COLOR</code> enumerator is not used in the library in a way that would incur an incompatible behavior change when the <code>LAST_COLOR</code> is incremented. Thus, <code>abidiff</code> should consider the change to the <code>LAST_COLOR</code> color enumerator as harmless.</p>
+<h3 id="teaching-abidiff-to-ignore-the-change">Teaching abidiff to ignore the change</h3>
+<p>We can teach the libabigail framework to suppress (or ignore) some ABI changes. In this case, we want the <code>abidiff</code> tool to ignore the last enumerator of the <code>color_type</code> enum called <code>LAST_COLOR</code>.</p>
+<p>Following the documentation of type suppression specifications, we can write the following suppression specification type:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ cat v2/last-enumerator.suppr
+</span></span><span style="display:flex;"><span>[suppress_type]
+</span></span><span style="display:flex;"><span># We want to suppress a change to an enum type ...
+</span></span><span style="display:flex;"><span>  type_kind = enum
+</span></span><span style="display:flex;"><span># ... named &#39;color_type&#39;
+</span></span><span style="display:flex;"><span>  name = color_type
+</span></span><span style="display:flex;"><span># ... where the actual change is the value of
+</span></span><span style="display:flex;"><span># the enumerator named &#39;LAST_COLOR&#39;
+</span></span><span style="display:flex;"><span>  changed_enumerators = LAST_COLOR
+</span></span><span style="display:flex;"><span>$
+</span></span></code></pre></div><p>Let&rsquo;s see how <code>abidiff</code> behaves when provided with this suppression specification:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ abidiff --suppr v2/last-enumerator.suppr v0/libcolor.so.0 v2/libcolor.so.2; echo &#34;abidiff returned code: $?&#34;
+</span></span><span style="display:flex;"><span>Functions changes summary: 0 Removed, 0 Changed (3 filtered out), 0 Added functions
+</span></span><span style="display:flex;"><span>Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>abidiff returned code: 0
+</span></span><span style="display:flex;"><span>$
+</span></span></code></pre></div><p>Now the tool says that the ABIs of the first and latest versions of <code>libcolor.so</code> are compatible.</p>
+<p>Let&rsquo;s test the <code>colorapp</code> program by making it use the <code>v2/libcolor.so.2</code> shared library and making the <code>libcolor.so</code> symbolic link point to <code>v2/libcolor.so.2</code> as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ rm libcolor.so
+</span></span><span style="display:flex;"><span>$ ln -s v2/libcolor.so.2 libcolor.so
+</span></span><span style="display:flex;"><span>$ ls -l libcolor.so
+</span></span><span style="display:flex;"><span>lrwxrwxrwx. 1 dodji dodji 16 26 nov.  00:05 libcolor.so -&gt; v2/libcolor.so.2
+</span></span><span style="display:flex;"><span>$ 
+</span></span></code></pre></div><p>Execute the <code>colorapp</code> program as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ ./colorapp 
+</span></span><span style="display:flex;"><span>For color &#39;black&#39;, the RGB color code is: {Red: 0, Green: 0, Blue: 0}.
+</span></span><span style="display:flex;"><span>For color &#39;white&#39;, the RGB color code is: {Red: 0xf, Green: 0xf, Blue: 0xf}.
+</span></span><span style="display:flex;"><span>For color &#39;green&#39;, the RGB color code is: {Red: 0, Green: 0xf, Blue: 0}.
+</span></span><span style="display:flex;"><span>For color &#39;blue&#39;, the RGB color code is: {Red: 0, Green: 0, Blue: 0xf}.
+</span></span><span style="display:flex;"><span>$ 
+</span></span></code></pre></div><p>We see that the application&rsquo;s behavior, using the latest version of the library, is the same as the first version. This confirms the last ABI change is now recognized as compatible by <code>abidiff</code>.</p>
+<p>This suppression specification is very specific, however. As an improvement, we would like a suppression specification that is more generic.</p>
+<p>Let&rsquo;s observe that in this code base, every single enum&rsquo;s last enumerator will start with the sub-string <code>LAST_</code>. As a maintainer of this code base, that&rsquo;s a coding rule that I am making up. Yes, there have to be advantages to being a maintainer!</p>
+<p>It&rsquo;s not uncommon to see open source projects with similar coding standards. Some projects would prefer to have the name of the last enumerator of enum types end up with sub-strings, such as <code>_LAST</code>, <code>_MAX</code>, <code>_NBITS</code>.</p>
+<p>We can use the libabigail&rsquo;s type suppression specifications supporting the <code>changed_enumerators_regexp</code> property to recognize such patterns,  as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ cat v2/last-enumerator-2.suppr
+</span></span><span style="display:flex;"><span>[suppress_type]
+</span></span><span style="display:flex;"><span># We want to suppress a change to any enum type ...
+</span></span><span style="display:flex;"><span>  type_kind = enum
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># ... where the actual change is the value of
+</span></span><span style="display:flex;"><span># any enumerator which named starts with &#34;LAST_&#34;
+</span></span><span style="display:flex;"><span>  changed_enumerators_regexp = ^LAST_.*
+</span></span><span style="display:flex;"><span>$ 
+</span></span></code></pre></div><p>Using that updated suppression specification with <code>abidiff</code> yields the following output:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>$ abidiff --suppr v2/last-enumerator-2.suppr v0/libcolor.so.0 v2/libcolor.so.2; echo &#34;abidiff returned code: $?&#34;
+</span></span><span style="display:flex;"><span>Functions changes summary: 0 Removed, 0 Changed (3 filtered out), 0 Added functions
+</span></span><span style="display:flex;"><span>Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>abidiff returned code: 0
+</span></span><span style="display:flex;"><span>$ 
+</span></span></code></pre></div><h2 id="conclusion">Conclusion</h2>
+<p>Detecting non-compatible ABI changes in shared library types is often not a black or white matter. It is frequently necessary for the case to have a human review of the code base to determine if a particular change detected at the binary level is compatible.</p>
+<p>This need for human review is due to limitations of the tool. For instance, the tool might have mis-categorized a given ABI change. In that case, it&rsquo;s a bug that should be reported and fixed. In other cases, the context necessary for the tool to properly categorize the ABI change might be lost in the compilation process. In those cases, after the human review, a somewhat equivalent context can be fed to the tool using a suppression specification file for that particular shared library.</p>
+<p>Maintainers of stable libraries are encouraged to provide suppression specification files to compare their ABIs before the release of a newer version.</p>
+<p>If you have any questions or follow-up request concerning libabigail, please get in touch. The community will be glad to hear from you.</p>
+<p>The post How to analyze changes to enum types using abidiff appeared first on Red Hat Developer.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

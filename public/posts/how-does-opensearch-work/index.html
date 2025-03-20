@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How does OpenSearch work?</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How does OpenSearch work?</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>OpenSearch is an open source search and analytics suite that developers use to build solutions for search, data observability, data ingestion, security information and event management (SIEM), vector database, and more. It is designed for scalability, offering powerful full-text search capabilities and supporting various data types, including structured and unstructured data. OpenSearch has rapidly developed into a standalone platform with unique features and capabilities. </p>
+<p>OpenSearch is Apache 2.0 licensed software, and is run, maintained and advanced by the community. OpenSearch includes a network of partners and is open to contribution. The organization believes that great open source software is built together with a diverse community of contributors. The mission of the OpenSearch Software Foundation is to provide infrastructure and other resources to enable the long-term sustainability of the OpenSearch open source project and the OpenSearch ecosystem. </p>
+<p>In this blog, we’ll explore how OpenSearch works and what it’s for, examining its key use cases and components.</p>
+<h3 id="opensearch-enterprise-use-cases">OpenSearch enterprise use cases</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Search</th>
+          <th>OpenSearch enhances your website, data lake catalog,  or e-commerce search capabilities with full-text querying, autocomplete, scroll search, and customizable scoring and ranking.</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Analytics and machine learning</td>
+          <td>You can use OpenSearch in multiple analytics solutions such as events analytics, trace analytics, and machine learning, which uses algorithms such as anomaly detection and data clustering.</td>
+      </tr>
+      <tr>
+          <td>Security</td>
+          <td>Security information and event management (SIEM) solutions can use OpenSearch to  investigate, detect, analyze, and respond to security threats that can jeopardize the success of organizations and their online operations.</td>
+      </tr>
+      <tr>
+          <td>Observability</td>
+          <td>You can use OpenSearch to create observability applications through the OpenSearch Dashboard. You can also use it to schedule, export, and share reports.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="how-does-opensearch-work">How does OpenSearch work?</h3>
+<p>OpenSearch consists of a data store and search engine called OpenSearch, and a visualization and user interface called OpenSearch Dashboards. In addition, users can extend the functionality of OpenSearch with a selection of plugins that enhance search, security, performance analysis, machine learning, and more.</p>
+<h4 id="search-engine-and-data-store">Search engine and data store</h4>
+<p>OpenSearch features a distributed design that allows users and applications to interact with clusters. Each cluster consists of one or more nodes running on servers that store data and handle search requests. Similar to how databases and tables are organized in relational databases, OpenSearch uses indices to structure its data. The data within a cluster is organized by mapping each index to a primary shard, which is then replicated to one or more replica shards. This setup not only safeguards your data against hardware failures but also increases capacity for handling read requests.</p>
+<p>The diagram below illustrates an example of an OpenSearch cluster, displaying OpenSearch nodes, OpenSearch Dashboard, and data sources.</p>
+<p>
+<figure>
+  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_720/https://lh7-rt.googleusercontent.com/docsz/AD_4nXc0aTqRQWi97dpw5w8kRErkL9LJFDljzGtRKKA59XWtbQq0-ddX1WJFGo-AhRhvunaaGw0_KCqelyCsMA69TeACzg88692SWO9j-0N51PukbaV41fA1QX028bxjLaRnz-kyHtNf7w?key=9VrXJ2dB1AbnPjktxU5JY8Ld" alt="" />
+</figure>
+
+
+</p>
+<p>End users  can interact directly with the OpenSearch Dashboards, for example to perform data analysis tasks in order to improve business processes. However, before users can access the Dashboard, data sources need to be ingested into the OpenSearch cluster. This data source can be in different formats like log files, metrics, JSON documents, etc.</p>
+<p>A cluster can contain various types of nodes:  main, coordinating and data nodes. Each node has a different role:</p>
+<ul>
+<li>Cluster managers – Manage the overall operation of a cluster and keep track of the cluster state. This includes creating and deleting indexes, keeping track of the nodes that join and leave the cluster, checking the health of each node in the cluster (by running ping requests), and allocating shards to nodes.</li>
+<li>Data nodes – Store and search data. These nodes perform all data-related operations (indexing, searching, aggregating) on local shards. These are the worker nodes of a cluster and need more disk space than any other node type.</li>
+<li>Coordinating nodes – Delegate client requests to shards on the data nodes, collect and aggregate the results into one final result, and send this result back to the client. Coordinating nodes manage outside requests like the OpenSearch Dashboard and other client libraries.</li>
+</ul>
+<h4 id="visualization-and-user-interface">Visualization and user interface</h4>
+<p>As described above, OpenSearch Dashboards is included in the OpenSearch ecosystem, however, it is optional for users. OpenSearch Dashboards is an open-source, integrated visualization tool that allows users to explore their data in OpenSearch. From real-time application monitoring, threat detection, and incident management to personalized search, OpenSearch Dashboards represent trends, outliers, and patterns in data graphically. The image below shows a sample of data visualizations in OpenSearch Dashboards.</p>
+<p>
+<figure>
+  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_720/https://lh7-rt.googleusercontent.com/docsz/AD_4nXcibhfYWQeN9iv-92XeYd1HIREE86BOTYLoGITtXPacgWAEIDfcxIcS0oGJ5uw7Tsc-Qr-fhT6C-7E4KhadqzgrVkwKB6NY1UInItLAsqsLnAT65BDRCwrJT_g445VdGXJC4jGViA?key=9VrXJ2dB1AbnPjktxU5JY8Ld" alt="" />
+</figure>
+
+
+</p>
+<p>Figure 1: OpenSearch Dashboards weblogs (source: Sample dashboard in AWS)</p>
+<h4 id="other-features-and-plug-ins">Other features and plug-ins</h4>
+<p>OpenSearch provides several features to help index, secure, monitor, and analyze your data. Most OpenSearch plugins have associated OpenSearch Dashboards plugins that provide a convenient, unified user interface.</p>
+<ul>
+<li>Anomaly detection – Identify atypical data and receive automatic notifications.</li>
+<li>SQL – Use SQL or a Piped Processing Language (PPL) to query your data.</li>
+<li>Index State Management – Automate index operations.</li>
+<li>Search methods – From traditional lexical search to advanced vector and hybrid search, discover the optimal search method for your use case.</li>
+<li>Machine learning – Integrate machine learning models into your workloads.</li>
+<li>Workflow automation – Automate complex OpenSearch setup and preprocessing tasks.</li>
+<li>Performance evaluation – Monitor and optimize your cluster.</li>
+<li>Asynchronous search – Run search requests in the background.</li>
+<li>Cross-cluster replication – Replicate your data across multiple OpenSearch clusters.</li>
+</ul>
+<h3 id="enterprise-opensearch-solution">Enterprise OpenSearch solution</h3>
+<p>Charmed OpenSearch builds on the OpenSearch upstream by integrating automation to streamline production clusters’ deployment, management, and orchestration. The operator enhances efficiency, consistency, and security. Its rich features include high availability, seamless scaling features for deployments of all sizes, both http and data-in-transit encryption,  multi-cloud support, safe upgrades without downtime, roles and plugin management and data visualization through Charmed OpenSearch Dashboards. Charmed OpenSearch provides a comprehensive solution that simplifies complex operations, supports scalable infrastructure, and ensures high performance and security. </p>
+<!-- raw HTML omitted -->
+<p>With the Charmed OpenSearch operator, you can deploy and run OpenSearch on physical and virtual machines (VM) and other cloud and cloud-like environments, including AWS, Azure, Google Cloud, OpenStack, and VMware. On top of this, Charmed OpenSearch guarantees security patching for critical and high-severity Common Vulnerabilities and Exposures (CVEs)  with ten years of security maintenance and 24/7 access to a world-class support team. </p>
+<p>Get started with Charmed OpenSearch by watching this Getting Started Webinar and following this tutorial. </p>
+<h3 id="conclusion">Conclusion</h3>
+<p>OpenSearch offers a robust search service, effective data storage, and impressive visualization features, allowing it to effectively address various use cases such as application search, log analytics, data observability, and data ingestion. Additionally, its architecture is designed to ensure optimized search and analytics capabilities. OpenSearch is gaining significant traction due to its open source license and rapid innovations over the past few years.</p>
+<p>To learn more, visit canonical.com/data/opensearch/what-is-opensearch<br>
+Explore more or contact our team for your OpenSearch needs.</p>
+<p>Reference: <a href="https://www.opensearch.org">www.opensearch.org</a> </p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

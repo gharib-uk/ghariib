@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Setting Up Dual Compilation (SSR &#43; CSR) in ViteJS with vite-plugin-builder</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Setting Up Dual Compilation (SSR &#43; CSR) in ViteJS with vite-plugin-builder</h1>
+			<b><time>08.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/file">file</a>
+        	       
+		           <a href="/tags/react">react</a>
+        	       
+		           <a href="/tags/tutorial">tutorial</a>
+        	       
+		           <a href="/tags/ui">ui</a>
+        	       
+		           <a href="/tags/un">un</a>
+        	       
+
+			<div>
+				<h1 id="using"><strong>Using <code>vite-plugin-builder</code> to Set Up an SSR and CSR Project in Vite</strong></h1>
+<p>In this tutorial, I will show you how to create a project from scratch with <strong>Vite</strong>, configure it to build both <strong>Server-Side Rendering (SSR)</strong> and <strong>Client-Side Rendering (CSR)</strong> using the <strong><code>vite-plugin-builder</code></strong> plugin, which simplifies the whole process with a single command.</p>
+<h3 id="what-is"><strong>What is <code>vite-plugin-builder</code>?</strong></h3>
+<p><strong><code>vite-plugin-builder</code></strong> is a plugin for <strong>Vite</strong> that simplifies the setup and compilation of applications requiring both <strong>SSR</strong> and <strong>CSR</strong> in a single project (dual build). With it, you can easily manage both server and client entry points, which is ideal for modern applications that need to process content both on the server and on the client.</p>
+<h3 id="steps-to-create-the-project-and-set-up-the-plugin"><strong>Steps to Create the Project and Set Up the Plugin</strong></h3>
+<p>Below, I&rsquo;ll walk you through setting up <strong>Vite</strong> and <strong>vite-plugin-builder</strong> from scratch.</p>
+<h4 id="1-create-the-project-with-vite"><strong>1. Create the Project with Vite</strong></h4>
+<p>First, create a new Vite project using the following command. We will use <strong>React</strong> as an example, but you can choose any other framework if you prefer.</p>
+<pre tabindex="0"><code># Follow the steps to create a React project with TS or JS.
+yarn create vite my-app
+cd my-app
+</code></pre><h4 id="2-install-the-required-dependencies"><strong>2. Install the Required Dependencies</strong></h4>
+<p>Now, install <strong><code>vite-plugin-builder</code></strong> as a development dependency:</p>
+<pre tabindex="0"><code>yarn add -D vite-plugin-builder
+</code></pre><h4 id="3-configure-the"><strong>3. Configure the <code>vite.config.ts</code> File</strong></h4>
+<p>Open the <code>vite.config.ts</code> file and configure the <strong><code>vite-plugin-builder</code></strong> plugin to handle both the server and client. Here’s a basic example:</p>
+<pre tabindex="0"><code>import { defineConfig } from &#34;vite&#34;;
+import react from &#34;@vitejs/plugin-react-swc&#34;;
+import builder from &#34;vite-plugin-builder&#34;;
+
+// https://vite.dev/config/
+export default defineConfig({
+  base: &#34;/&#34;,
+  plugins: [
+    react(),
+    builder({
+      // Server entry point
+      serverEntry: &#34;server/main.js&#34;,
+      // Client entry point (optional as it inherits Vite&#39;s config)
+      clientEntry: {
+        main: &#34;index.html&#34;,
+      },
+    }),
+  ],
+});
+</code></pre><h4 id="4-create-the"><strong>4. Create the <code>server/main.js</code> File</strong></h4>
+<p>The next step is to create the <code>server/main.js</code> file, which will serve as the entry point for your server (SSR). This file will represent your backend entry. Here’s a basic example of what it could contain:</p>
+<pre tabindex="0"><code>console.log(&#34;Server is running...&#34;);
+// You can create an Express server or configure another server depending on your app stack
+// Server-side logic for SSR
+</code></pre><blockquote>
+<p>You can check out a full example at <a href="https://github.com/yracnet/vite-plugin-builder/tree/main/packages/examples">https://github.com/yracnet/vite-plugin-builder/tree/main/packages/examples</a></p></blockquote>
+<h4 id="5-build-the-project-for-production"><strong>5. Build the Project for Production</strong></h4>
+<p>Finally, to compile the project and prepare it for production, use:</p>
+<pre tabindex="0"><code>yarn build
+</code></pre><p>This will generate two directories: one for the client and one for the server.</p>
+<p>The expected structure will look like this:</p>
+<pre tabindex="0"><code># Server Output
+/dist/app.js
+/dist/bin/[name]-[hash].[ext]
+/dist/assets/[name]-[hash].[ext]
+
+# Client Output
+/dist/public/index.html
+/dist/public/assets/[name]-[hash].[ext]
+/dist/public/chunks/[name]-[hash].[ext]
+</code></pre><h4 id="6-customizing-the-project"><strong>6. Customizing the Project</strong></h4>
+<p>According to the plugin documentation, you can customize various aspects, such as the output directories for the server and client, which can be different based on your needs.</p>
+<p>Here’s an example of how to customize it:</p>
+<pre tabindex="0"><code>import { defineConfig } from &#34;vite&#34;;
+import path from &#34;path&#34;;
+import react from &#34;@vitejs/plugin-react-swc&#34;;
+import builder from &#34;vite-plugin-builder&#34;;
+
+// https://vite.dev/config/
+export default defineConfig({
+  base: &#34;/&#34;,
+  plugins: [
+    react(),
+    builder({
+      // Path to the server entry file
+      serverEntry: &#34;server/main.js&#34;,
+      // (optional) Configuration for the server build
+      serverConfig: {
+        outDir: &#34;app-sanbox/server&#34;, // Server output directory
+        privateDir: &#34;private-files&#34;, // Directory with private files to copy
+        // Define variables for server-side compilation
+        define: {
+          &#34;BUILD.BASE&#34;: &#39;&#34;/&#34;&#39;,
+          &#34;BUILD.BASE_API&#34;: &#39;&#34;/api&#34;&#39;,
+          // Change to output client directory
+          &#34;BUILD.STATIC_DIR&#34;: &#39;&#34;../client&#34;&#39;,
+          &#34;BUILD.SERVER_IP&#34;: &#39;&#34;0.0.0.0&#34;&#39;,
+          &#34;BUILD.SERVER_PORT&#34;: &#34;3001&#34;,
+        },
+      },
+      // Client configuration
+      clientConfig: {
+        outDir: &#34;app-sanbox/client&#34;,
+      },
+    }),
+  ],
+});
+</code></pre><p>This way, the server will use these variables during the final compilation:</p>
+<pre tabindex="0"><code>import express from &#34;express&#34;;
+import { api } from &#34;./api&#34;;
+import { site } from &#34;./site&#34;;
+
+// ENV
+const { SERVER_IP = BUILD.SERVER_IP, SERVER_PORT = BUILD.SERVER_PORT } =
+  process.env;
+
+// APP
+const app = express();
+
+// RUN
+app.use(BUILD.BASE_API, api);
+app.use(BUILD.BASE, site);
+app.listen(SERVER_PORT, SERVER_IP, () =&gt;
+  console.log(`Server running on port ${SERVER_IP}:${SERVER_PORT}`)
+);
+</code></pre><p>You can also configure the copying of static files inside the server directory using the <code>serverConfig.privateDir</code> variable, which will copy files from the <code>private-files</code> folder to <code>/app-sanbox/server</code>.</p>
+<p>The <code>private-files</code> directory might include files such as:</p>
+<pre tabindex="0"><code># Private directory
+/private-files/package.json
+/private-files/.env
+</code></pre><p>The expected output for this configuration will look like this:</p>
+<pre tabindex="0"><code># Server Output
+/app-sanbox/server/app.js
+/app-sanbox/server/bin/[name]-[hash].[ext]
+/app-sanbox/server/assets/[name]-[hash].[ext]
+/app-sanbox/server/package.json
+/app-sanbox/server/.env
+
+# Client Output
+/app-sanbox/client/index.html
+/app-sanbox/client/assets/[name]-[hash].[ext]
+/app-sanbox/client/chunks/[name]-[hash].[ext]
+</code></pre><h3 id="conclusion"><strong>Conclusion</strong></h3>
+<p>With <strong><code>vite-plugin-builder</code></strong>, you can easily set up a project that supports both <strong>SSR</strong> and <strong>CSR</strong> in Vite. The plugin simplifies the configuration and build process, allowing you to focus on developing your application without additional complications.</p>
+<p>For more details or more complex examples, you can check out the official documentation on GitHub.</p>
+<p>That’s it! Now you have a hybrid project with both SSR and CSR running in Vite.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

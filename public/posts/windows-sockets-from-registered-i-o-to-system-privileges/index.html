@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Windows Sockets: From Registered I/O to SYSTEM Privileges</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Windows Sockets: From Registered I/O to SYSTEM Privileges</h1>
+			<b><time>15.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/ces">ces</a>
+        	       
+		           <a href="/tags/edge">edge</a>
+        	       
+		           <a href="/tags/exploit-techniques">exploit-techniques</a>
+        	       
+		           <a href="/tags/vulnerability-analysis">vulnerability-analysis</a>
+        	       
+		           <a href="/tags/zero-day">zero-day</a>
+        	       
+
+			<div>
+				<p>By Luca Ginex</p>
+<h2 id="overview">Overview</h2>
+<p>This post discusses CVE-2024-38193, a use-after-free vulnerability in the afd.sys Windows driver. Specifically, the vulnerability is in the Registered I/O extension for Windows sockets. The vulnerability was patched in the August 2024 Patch Tuesday. This post describes the exploitation process for the vulnerability.</p>
+<p>First, we give a general overview of the registered I/O extension for Winsock, describing the driver’s internal structures. We then analyze the vulnerability and proceed to detailing the exploitation strategy.</p>
+<h2 id="preliminaries">Preliminaries</h2>
+<p>In this section we give a general overview of the registered I/O extension for Winsock and describe the relevant structures for registering I/O extensions.</p>
+<h3 id="winsock-registered-io-extension">Winsock Registered I/O Extension</h3>
+<p>In Windows, the Registered I/O (RIO) extension can be used in socket programming in order to reduce the amount of system calls issued by userland programs while sending and receiving packets. The RIO extension workflow is as follows:</p>
+<ul>
+<li>The userland program registers huge buffers. The kernel then obtains kernel mappings for them.</li>
+<li>The userland program issues send and receive requests by using the receive and send buffer <em>slices</em> of the registered buffers.</li>
+</ul>
+<p>If a userland program wants to use the Registered I/O extension for sockets, it has to create a socket via the <code>WSASocketA()</code> function.<br>
+The function’s prototype is as follows:</p>
+<pre><code>				`SOCKET WSAAPI WSASocketA(   [in] int                 af,   [in] int                 type,   [in] int                 protocol,   [in] LPWSAPROTOCOL_INFOA lpProtocolInfo,   [in] GROUP               g,   [in] DWORD               dwFlags );`
+</code></pre>
+<p>The userland program has to specify the <code>WSA_FLAG_REGISTERED_IO</code> flag in the <code>dwFlags</code> argument of the call. The program then has to retrieve the function table for the RIO API. This table can be retrieved by issuing a <code>WSAIoctl()</code> call with the <code>SIO_GET_MULTIPLE_EXTENSION_FUNCTION_POINTER</code> IOCTL code. The call returns a <code>RIO_EXTENSION_FUNCTION_TABLE</code> structure. This table contains all the pointers to the RIO API. The definition of the structure is presented in the following code listing:</p>
+<pre><code>				`typedef struct _RIO_EXTENSION_FUNCTION_TABLE {   DWORD                         cbSize;   LPFN_RIORECEIVE               RIOReceive;   LPFN_RIORECEIVEEX             RIOReceiveEx;   LPFN_RIOSEND                  RIOSend;   LPFN_RIOSENDEX                RIOSendEx;   LPFN_RIOCLOSECOMPLETIONQUEUE  RIOCloseCompletionQueue;   LPFN_RIOCREATECOMPLETIONQUEUE RIOCreateCompletionQueue;   LPFN_RIOCREATEREQUESTQUEUE    RIOCreateRequestQueue;   LPFN_RIODEQUEUECOMPLETION     RIODequeueCompletion;   LPFN_RIODEREGISTERBUFFER      RIODeregisterBuffer;   LPFN_RIONOTIFY                RIONotify;   LPFN_RIOREGISTERBUFFER        RIORegisterBuffer;   LPFN_RIORESIZECOMPLETIONQUEUE RIOResizeCompletionQueue;   LPFN_RIORESIZEREQUESTQUEUE    RIOResizeRequestQueue; } RIO_EXTENSION_FUNCTION_TABLE, *PRIO_EXTENSION_FUNCTION_TABLE;`
+</code></pre>
+<p>Once the function table is obtained, the program has to register the I/O buffers. These buffers will be used for all subsequent I/O operations. In order to do so, the <code>RIORegisterBuffer()</code> function must be called.</p>
+<p>The function’s prototype is as follows:</p>
+<pre><code>				`RIO_BUFFERID  RIORegisterBuffer(   _In_ PCHAR DataBuffer,   _In_ DWORD DataLength );`
+</code></pre>
+<p>The `DataBuffer` argument is a pointer to the buffer to be used and the `DataLength` argument is the size of the buffer. The function returns a `RIO_BUFFERID` buffer descriptor, which is an opaque integer that identifies the registered buffer in the kernel.</p>
+<p>In order to send or receive data from the socket, the `RIOSend()` and the `RIOReceive()` functions can be used. These functions accept a `RIO_BUF` structure that describes a *slice* of the registered buffers to be used. The definition of the `RIO_BUF` structure is as follows:</p>
+<pre><code>				`typedef struct _RIO_BUF {   RIO_BUFFERID BufferId;   ULONG        Offset;   ULONG        Length; } RIO_BUF, *PRIO_BUF;`
+</code></pre>
+<h3 id="kernel-structures">Kernel Structures</h3>
+<p>Structure definitions are obtained by reverse engineering and may not accurately reflect structures defined in the source code. The recovered structure definition for the registered buffer is as follows:</p>
+<pre><code>				`struct RIOBuffer {   PMDL AssociatedMDL;   _QWORD VirtualAddressBuffer;   _DWORD LengthBuffer;   _DWORD RefCount;   _DWORD IsInvalid;   _DWORD Unknown; };`
+</code></pre>
+<p>This kernel structure is used by the <code>afd.sys</code> driver to keep track of the registered buffer. It contains the following fields:</p>
+<ul>
+<li><code>AssociatedMDL</code>: A pointer to the MDL that describes the userland buffer.</li>
+<li><code>VirtualAddressBuffer</code>: A virtual kernel pointer that can be used by the kernel driver to write/read to the userland buffer.</li>
+<li><code>LengthBuffer</code>: The size of the userland buffer.</li>
+<li><code>RefCount</code>: Field that keeps track of the number of references to this buffer.</li>
+<li><code>IsInvalid</code>: Field that encodes the state of the buffer. <code>0</code> means that it is in use, <code>1</code> means that it is freed and <code>2</code> means that it has to be<br>
+freed.</li>
+<li><code>Unknown</code>: Reserved.</li>
+</ul>
+<p>The <code>afd.sys</code> driver keeps all the <code>RIOBuffer</code> structures in an array, one entry for each registered buffer. The <code>afd.sys</code> driver also creates, for efficiency reasons, a <em>cache</em> for the most recently used <code>RIOBuffer</code> elements of the array. Each entry in the cache has the following structure:</p>
+<pre><code>				`struct CachedBuffer {   _DWORD IdBuffer;   _DWORD RefCount;   RIOBuffer *BufferPtr; };`
+</code></pre>
+<p>It contains the following fields:</p>
+<ul>
+<li><code>IdBuffer</code>: The integer identifier associated with the registered buffer.</li>
+<li><code>RefCount</code>: Reference counter for the cached entry.</li>
+<li><code>BufferPtr</code>: Pointer to the <code>RIOBuffer</code> structure this entry is mirroring.</li>
+</ul>
+<p>The following image is a visual representation of the afd.sys RIO component.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://blog.exodusintel.com/wp-content/uploads/2024/12/img1.png" alt="" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>afd.sys RIO component</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h2 id="vulnerability">Vulnerability</h2>
+<p>The use-after-free vulnerability is caused by a race condition between the <code>AfdRioGetAndCacheBuffer()</code> and <code>AfdRioDereferenceBuffer()</code> functions. The <code>AfdRioGetAndCacheBuffer()</code> function needs to access the registered buffers involved in send/receive operations, therefore it temporarily increments the reference counter of the involved registered buffers by using the <code>_InterlockedIncrement()</code> intrinsic function.</p>
+<p>The <code>AfdRioDereferenceBuffer()</code> function is called when a usermode application calls the <code>RIODeregister()</code> API function. This function checks the reference counter’s value associated with the registered buffer that the usermode application wants to deregister. If the reference counter’s value is one, then the function proceeds to free the structure. The race condition between these functions, allows a malicious user to force the <code>AfdRioGetAndCacheBuffer()</code> function to act on a registered buffer structure that has been freed by the <code>AfdRioDereferenceBuffer()</code> function.</p>
+<h3 id="io-buffer-registration">IO Buffer Registration</h3>
+<p>When a user-mode application registers an I/O buffer using <code>RIORegisterBuffer()</code>, this ultimately calls the <code>AfdRioCreateRegisteredBuffer()</code><br>
+function in the afd.sys driver.</p>
+<pre><code>				`// Module: afd.sys &lt;div&gt;&lt;/div&gt; __int64 __fastcall AfdRioCreateRegisteredBuffer(         struct_FsContext *FsContext,         _MDL *a2,         __int64 VirtualAddr,         int Len,         unsigned int *a5,         PMDL **a6) {   RioBuffer = 0i64;   memset(＆LockHandle, 0, sizeof(LockHandle));   v8 = 1;   v9 = 1;   *a6 = 0i64;   AfdAcquireWriteLock(FsContext-＞SpinLock, ＆LockHandle);   if ( FsContext-＞byte88 )   {     v10 = STATUS_INVALID_DEVICE_STATE;     goto LABEL_17;   }   LastIdx = FsContext-＞LastIdx; &lt;div&gt;&lt;/div&gt; [1] &lt;div&gt;&lt;/div&gt;   ArrayBuffers = ＆FsContext-＞ArrayBuffers;   v13 = ＆FsContext-＞NumBuffers; &lt;div&gt;&lt;/div&gt; [2] &lt;div&gt;&lt;/div&gt;   while ( 1 )   {     if ( !LastIdx )       goto LABEL_7;     RioBuffer = (RIOBuffer *)(*ArrayBuffers)[LastIdx];     if ( !RioBuffer )       break;     if ( RioBuffer-＞IsInvalid == 2 )     {       v8 = 0;       goto LABEL_13;     } LABEL_7:     v14 = LastIdx;     v15 = LastIdx + 1;     LastIdx = 0;     if ( v14 != *v13 - 1 )       LastIdx = v15;     if ( LastIdx == FsContext-＞LastIdx )       goto LABEL_14;   }   v9 = 0; LABEL_13:   FsContext-＞LastIdx = LastIdx; LABEL_14:   if ( v8 )   { &lt;div&gt;&lt;/div&gt; [Truncated] &lt;div&gt;&lt;/div&gt; [3] &lt;div&gt;&lt;/div&gt;     RioBuffer = (RIOBuffer *)ExAllocatePool2(97i64, 0x20i64, 'bOIR');     (*ArrayBuffers)[LastIdx] = (__int64)RioBuffer;   }   RioBuffer-＞AssociatedMDL = a2;   RioBuffer-＞VirtualAddressBuffer = VirtualAddr;   RioBuffer-＞LengthBuffer = Len;   RioBuffer-＞RefCount = 1;   RioBuffer-＞IsInvalid = 0;   *a5 = LastIdx;   *a6 = ＆RioBuffer-＞AssociatedMDL;   KeReleaseInStackQueuedSpinLock(＆LockHandle);   return 0i64; }`
+</code></pre>
+<p>At [1], the <code>AfdRioCreateRegisteredBuffer()</code> function retrieves the array of registered buffers and at [2], in the <code>while</code> loop, it finds the next free index ID to assign to the new buffer. Once found, at [3], memory for the new <code>RIOBuffer</code> structure is allocated and its <code>RefCount</code> is initialized to 1.</p>
+<h3 id="io-buffer-usage">IO Buffer Usage</h3>
+<p>Whenever the <code>afd.sys</code> kernel driver needs to look up the array buffer (when sending or receiving packets, for example) it temporarily increments the reference count of that specific <code>RIOBuffer</code> structure and it stores it in the cache. An example of this behavior can be seen in the <code>AfdRioValidateRequestBuffer()</code> function below.</p>
+<pre><code>				`// Module: afd.sys &lt;div&gt;&lt;/div&gt; char __fastcall AfdRioValidateRequestBuffer(         _QWORD *a1,         struct _KLOCK_QUEUE_HANDLE *QueueLock,         _BYTE *ReadLockAcquired,         unsigned int *a4,         RIOBuffer **a5) {   NumBuffer = *a4;   if ( NumBuffer )   { &lt;div&gt;&lt;/div&gt; [4] &lt;div&gt;&lt;/div&gt;     CachedBuffer = (RIOBuffer *)AfdRioGetCachedBuffer((__int64)a1, QueueLock, ReadLockAcquired, NumBuffer);     if ( CachedBuffer )     {       Offset = a4[1];       Length = a4[2];       if ( Length + Offset ＞= Offset ＆＆ Length + Offset ＜= CachedBuffer-＞LengthBuffer )       {         *a5 = CachedBuffer;         return 1;       }       AFDETW_RIO_TRACE_INVALID_BUFFER_RANGE(*a1, (int)a1, (int)CachedBuffer, Offset, Length);       AfdRioDereferenceCachedBuffer((__int64)a1, *a4, CachedBuffer);       result = 0;     }     else     {       AFDETW_RIO_TRACE_INVALID_BUFFERID(*a1, a1, *a4);       result = 0;     }   }   else   {     result = 1;   }   *a5 = 0i64;   return result; }`
+</code></pre>
+<p>This function is called when a userland program uses the <code>RIOSend()</code> function API. The <code>AfdRioValidateRequestBuffer()</code> function is in charge of validating the <code>RIO_BUF</code>structure passed as an argument to the function API. At [4], the code calls the <code>AfdRioGetCachedBuffer()</code> function passing the identifier for the registered buffer. This function returns the <code>CachedBuffer</code> structure corresponding to that specific identifier if the ID is valid, otherwise it returns zero.</p>
+<p>The <code>AfdRioGetCachedBuffer()</code> function is shown below.</p>
+<pre><code>				`// Module: afd.sys &lt;div&gt;&lt;/div&gt; RIOBuffer *__fastcall AfdRioGetCachedBuffer(         struct_a1 *a1,         struct _KLOCK_QUEUE_HANDLE *a2,         _BYTE *a3,         unsigned int NumBuffer) {   CachedBufferArrays = a1-＞CachedBufferArrays;   v8 = NumBuffer % a1-＞ModuloCachedBuffers;   BufferPtr = CachedBufferArrays[v8].BufferPtr; &lt;div&gt;&lt;/div&gt; [5] &lt;div&gt;&lt;/div&gt;   if ( BufferPtr ＆＆ !BufferPtr-＞IsInvalid ＆＆ CachedBufferArrays[v8].IdBuffer == NumBuffer )   {     v10 = CachedBufferArrays[v8].RefCount++ == -1;     CachedBufferArrays_1 = a1-＞CachedBufferArrays;     if ( v10 )     {       --CachedBufferArrays_1[v8].RefCount;       return 0i64;     }     else     { &lt;div&gt;&lt;/div&gt; [6] &lt;div&gt;&lt;/div&gt;       return CachedBufferArrays_1[v8].BufferPtr;     }   }   else   {     if ( !*a3 )     {       AfdAcquireReadLockAtDpcLevel(a1-＞FsContext-＞SpinLock, a2);       *a3 = 1;     } &lt;div&gt;&lt;/div&gt; [7] &lt;div&gt;&lt;/div&gt;     return AfdRioGetAndCacheBuffer(a1, NumBuffer);   } }`
+</code></pre>
+<p>The <code>AfdRioGetCachedBuffer()</code> function checks if the requested buffer is already cached [5]. If so, the functions returns the structure without further processing [6]. If the requested buffer is not in the cache, the <code>AfdRioGetCachedBuffer()</code> function has to evict one of the entries in the cache to store the requested buffer. This is done in the <code>AfdRioGetAndCacheBuffer()</code> function [7] shown below.</p>
+<pre><code>				`// Module: afd.sys &lt;div&gt;&lt;/div&gt; RIOBuffer *__fastcall AfdRioGetAndCacheBuffer(struct_a1 *a1, unsigned int NumBuffer) {   v2 = a1-＞FsContext;   v4 = ＆a1-＞CachedBufferArrays[NumBuffer % a1-＞ModuloCachedBuffers];   if ( a1-＞FsContext-＞byte88 )     return 0i64;   if ( NumBuffer ＞= v2-＞NumBuffers )     return 0i64;   _mm_lfence();   v5 = (RIOBuffer *)v2-＞ArrayBuffers[NumBuffer];   if ( !v5 || v5-＞IsInvalid )     return 0i64; &lt;div&gt;&lt;/div&gt; [8] &lt;div&gt;&lt;/div&gt;   _InterlockedIncrement(＆v5-＞RefCount);   if ( AfdRioEvictCachedBuffer(v4) )   {     v4-＞BufferPtr = v5;     v4-＞IdBuffer = NumBuffer;     v4-＞RefCount = 1;   }   return v5; }`
+</code></pre>
+<p>At [8], the <code>AfdRioGetCachedBuffer()</code> function temporarily increments the reference counter of the <code>RIOBuffer</code> structure associated with the specific identifier by calling the <code>_InterlockedIncrement()</code> intrinsic function. The usage of this intrinsic only guarantees an atomic increment of the variable. Then the <code>AfdRioGetAndCacheBuffer()</code> function calls the <code>AfdRioEvictCachedBuffer()</code> function to evict the cache entry. If the operation is successful, the cache entry is populated with the new buffer data.</p>
+<h3 id="io-buffer-deregistration">IO Buffer Deregistration</h3>
+<p>When a userland program wants to deregister an RIO buffer it can do so by calling the <code>RIODeregisterBuffer()</code> function API which subsequently invokes the <code>AfdRioDereferenceBuffer()</code> function in the <code>afd.sys</code> kernel driver.</p>
+<p>The <code>AfdRioDereferenceBuffer()</code> function is shown below.</p>
+<pre><code>				`// Module: afd.sys &lt;div&gt;&lt;/div&gt; void __fastcall AfdRioDereferenceBuffer(struct_FsContext *a1, RIOBuffer *a2, unsigned int NumBuffer) {   v4 = NumBuffer; &lt;div&gt;&lt;/div&gt; [9] &lt;div&gt;&lt;/div&gt;   if ( a2-＞RefCount == 1 || _InterlockedExchangeAdd(＆a2-＞RefCount, -1u) == 1 )   {     SpinLock = a1-＞SpinLock;     memset(＆LockHandle, 0, sizeof(LockHandle));     AfdAcquireWriteLock(SpinLock, ＆LockHandle);     a1-＞ArrayBuffers[v4] = 0i64;     KeReleaseInStackQueuedSpinLock(＆LockHandle);     AfdRioCleanupBuffer(a2, 1);   } }`
+</code></pre>
+<p>At [9], the <code>AfdRioDereferenceBuffer()</code> function checks if the reference counter for that specific <code>RIOBuffer</code> structure is set to <code>1</code>. If so, the <code>RIOBuffer</code> structure is freed in the <code>AfdRioCleanupBuffer()</code> function.</p>
+<p>A race condition exists here that allows a malicious user to schedule the execution of the <code>AfdRioGetAndCacheBuffer()</code> and the <code>AfdRioDereferenceBuffer()</code> functions in different CPUs at the same time acting on the same registered buffer. If the malicious user is able to win the race condition, at [8], the new cached buffer contains a <code>BufferPtr</code> field pointing to a memory region freed by the thread executing the <code>AfdRioDereferenceBuffer()</code> function on the same registered buffer resulting in a use-after-free vulnerability.</p>
+<h2 id="exploitation">Exploitation</h2>
+<p>Exploiting this vulnerability involves the following steps:</p>
+<ol>
+<li>
+<p>Heap Spraying Stage:</p>
+<ul>
+<li>Spraying the non-paged pool with fake <code>RIOBuffer</code> structures.</li>
+<li>Creating holes in the non-paged pool.</li>
+<li>Registering I/O buffers. </li>
+</ul>
+</li>
+<li>
+<p>Triggering the use-after-free vulnerability on one of the previously-allocated RIOBuffer structure</p>
+</li>
+<li>
+<p>Privilege Escalation</p>
+</li>
+</ol>
+<h3 id="heap-spraying-stage">Heap Spraying Stage</h3>
+<p>Since the vulnerable buffer is allocated in the non-paged pool, the spray technique we used leverages <em>named pipes</em> to fill the non-paged pool area with arbitrary-sized buffers. Readers unfamiliar with named pipes heap spraying techniques can read more about them here and here. The target size is the same one as the <code>RIOBuffer</code>‘s size, which is <code>0x20</code> bytes. There are a lot of documented techniques that use named pipes for heap spraying. In this case we used <em>unbuffered entries</em>. The advantage over <em>buffered entries</em> is that unbuffered entries don’t have an header. This makes them ideal to perfectly match <code>RIOBuffer</code>‘s size. After the spray, the non-paged pool layout is as follows:</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://blog.exodusintel.com/wp-content/uploads/2024/12/img2.png" alt="" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Non-page pool after being sprayed</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>It’s important to note that the content of the unbuffered entries is fully controlled by the exploit. The next step is to create holes inside the non-paged pool by closing some of the previously-allocated named pipes. This leaves room for <code>RIOBuffer</code> structures to be allocated next to unbuffered entries. In order to fill the holes, the exploit must call the <code>RegisterBuffer()</code> function.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://blog.exodusintel.com/wp-content/uploads/2024/12/img3-1024x606.png" alt="" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Creating holes in the non-paged pool</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h3 id="triggering-the-vulnerability">Triggering the vulnerability</h3>
+<p>With the non-paged pool setup completed, we can trigger the use-after-free vulnerability. In order to trigger it, the exploit must create two concurrent threads: one that keeps using the registered buffers by issuing read/write requests and the other one that loops through all the registered buffers and tries to deregister them. If the race condition is successful, the afd.sys will have entries in <code>CachedArray</code> that are pointing to freed <code>RIOBuffer</code> structures.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://blog.exodusintel.com/wp-content/uploads/2024/12/img4-1024x714.png" alt="" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Triggering the use-after-free</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h3 id="privilege-escalation">Privilege Escalation</h3>
+<p>Once the use-after-free vulnerability has been triggered, some of the <code>RIOBuffer</code> structures are freed but remain in use in the afd.sys cache. The exploit must re-allocate them in order to gain control over the contents of the <code>RIOBuffer</code> structures. The exploit can again use unbuffered entries. If the exploit operations are successful, the exploit now controls the content of some <code>RIOBuffer</code> structures that are still alive in the cache.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://blog.exodusintel.com/wp-content/uploads/2024/12/img5-1024x714.png" alt="" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Exploit using some unbuffered entries</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>In order to create arbitrary read and arbitrary write primitives, the exploit leverages the internal mechanism of the <code>RIOSend()</code> and <code>RIOReceive()</code> functions. These two functions use the <code>AssociatedMDL</code> field of the <code>RIOBuffer</code> structure to copy data to/from the registered buffer. Since the exploit has control over the <code>AssociatedMDL</code>field, it can craft an arbitrary MDL in userland having the <code>MappedSystemVa</code> field pointing to an arbitrary address.</p>
+<p>By issuing a <code>RIOSend()</code> call, data is copied from the <code>MappedSystemVa</code> address to the packet that is sent to the network. Vice versa, by issuing a <code>RIOReceive()</code> call, data is copied from the packet coming from the network to the <code>MappedSystemVa</code> address. In our case, the arbitrary write primitive is very interesting. A good candidate kernel address for the arbitrary write primitive is the address of the <code>_SEP_TOKEN_PRIVILEGES</code>structure of the exploit process. By overwriting the <code>_SEP_TOKEN_PRIVILEGES</code> structure it is possible to escalate to <code>nt authoritysystem</code> privileges.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>In this blogpost we described a use-after-free vulnerability in the afd.sys Windows driver patched in the August 2024 patch Tuesday. We also presented a possible exploitation technique to achieve privilege escalation to <code>nt authoritysystem</code> privileges. We tested the exploit on a Windows 11 21H2 machine and the heap spraying routine proved to be very stable</p>
+<h2 id="about-exodus-intelligence">About Exodus Intelligence</h2>
+<p>Our world class team of vulnerability researchers discover hundreds of exclusive Zero-Day vulnerabilities, providing our clients with proprietary knowledge before the adversaries find them. We also conduct N-Day research, where we select critical N-Day vulnerabilities and complete research to prove whether these vulnerabilities are truly exploitable in the wild.</p>
+<p>For more information on our products and how we can help your vulnerability efforts, visit <a href="https://www.exodusintel.com">www.exodusintel.com</a> or contact <a href="mailto:info@exodusintel.com">info@exodusintel.com</a> for further discussion.</p>
+<p>The post Windows Sockets: From Registered I/O to SYSTEM Privileges appeared first on Exodus Intelligence.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

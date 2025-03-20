@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Kubernetes v1.32: Memory Manager Goes GA</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Kubernetes v1.32: Memory Manager Goes GA</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>With Kubernetes 1.32, the memory manager has officially graduated to General Availability (GA), marking a significant milestone in the journey toward efficient and predictable memory allocation for containerized applications. Since Kubernetes v1.22, where it graduated to beta, the memory manager has proved itself reliable, stable and a good complementary feature for the CPU Manager.</p>
+<p>As part of kubelet&rsquo;s workload admission process, the memory manager provides topology hints to optimize memory allocation and alignment. This enables users to allocate exclusive memory for Pods in the Guaranteed QoS class. More details about the process can be found in the memory manager goes to beta blog.</p>
+<p>Most of the changes introduced since the Beta are bug fixes, internal refactoring and observability improvements, such as metrics and better logging.</p>
+<h2 id="observability-improvements">Observability improvements</h2>
+<p>As part of the effort to increase the observability of memory manager, new metrics have been added to provide some statistics on memory allocation patterns.</p>
+<ul>
+<li>
+<p><strong>memory_manager_pinning_requests_total</strong> - tracks the number of times the pod spec required the memory manager to pin memory pages.</p>
+</li>
+<li>
+<p><strong>memory_manager_pinning_errors_total</strong> - tracks the number of times the pod spec required the memory manager to pin memory pages, but the allocation failed.</p>
+</li>
+</ul>
+<h2 id="improving-memory-manager-reliability-and-consistency">Improving memory manager reliability and consistency</h2>
+<p>The kubelet does not guarantee pod ordering when admitting pods after a restart or reboot.</p>
+<p>In certain edge cases, this behavior could cause the memory manager to reject some pods, and in more extreme cases, it may cause kubelet to fail upon restart.</p>
+<p>Previously, the beta implementation lacked certain checks and logic to prevent these issues.</p>
+<p>To stabilize the memory manager for general availability (GA) readiness, small but critical refinements have been made to the algorithm, improving its robustness and handling of edge cases.</p>
+<h2 id="future-development">Future development</h2>
+<p>There is more to come for the future of Topology Manager in general, and memory manager in particular. Notably, ongoing efforts are underway to extend memory manager support to Windows, enabling CPU and memory affinity on a Windows operating system.</p>
+<h2 id="getting-involved">Getting involved</h2>
+<p>This feature is driven by the SIG Node community. Please join us to connect with the community and share your ideas and feedback around the above feature and beyond. We look forward to hearing from you!</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

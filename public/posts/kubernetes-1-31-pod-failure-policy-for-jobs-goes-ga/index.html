@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Kubernetes 1.31: Pod Failure Policy for Jobs Goes GA</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Kubernetes 1.31: Pod Failure Policy for Jobs Goes GA</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>This post describes <em>Pod failure policy</em>, which graduates to stable in Kubernetes 1.31, and how to use it in your Jobs.</p>
+<h2 id="about-pod-failure-policy">About Pod failure policy</h2>
+<p>When you run workloads on Kubernetes, Pods might fail for a variety of reasons. Ideally, workloads like Jobs should be able to ignore transient, retriable failures and continue running to completion.</p>
+<p>To allow for these transient failures, Kubernetes Jobs include the <code>backoffLimit</code> field, which lets you specify a number of Pod failures that you&rsquo;re willing to tolerate during Job execution. However, if you set a large value for the <code>backoffLimit</code> field and rely solely on this field, you might notice unnecessary increases in operating costs as Pods restart excessively until the backoffLimit is met.</p>
+<p>This becomes particularly problematic when running large-scale Jobs with thousands of long-running Pods across thousands of nodes.</p>
+<p>The Pod failure policy extends the backoff limit mechanism to help you reduce costs in the following ways:</p>
+<ul>
+<li>Gives you control to fail the Job as soon as a non-retriable Pod failure occurs.</li>
+<li>Allows you to ignore retriable errors without increasing the <code>backoffLimit</code> field.</li>
+</ul>
+<p>For example, you can use a Pod failure policy to run your workload on more affordable spot machines by ignoring Pod failures caused by graceful node shutdown.</p>
+<p>The policy allows you to distinguish between retriable and non-retriable Pod failures based on container exit codes or Pod conditions in a failed Pod.</p>
+<h2 id="how-it-works">How it works</h2>
+<p>You specify a Pod failure policy in the Job specification, represented as a list of rules.</p>
+<p>For each rule you define <em>match requirements</em> based on one of the following properties:</p>
+<ul>
+<li>Container exit codes: the <code>onExitCodes</code> property.</li>
+<li>Pod conditions: the <code>onPodConditions</code> property.</li>
+</ul>
+<p>Additionally, for each rule, you specify one of the following actions to take when a Pod matches the rule:</p>
+<ul>
+<li><code>Ignore</code>: Do not count the failure towards the <code>backoffLimit</code> or <code>backoffLimitPerIndex</code>.</li>
+<li><code>FailJob</code>: Fail the entire Job and terminate all running Pods.</li>
+<li><code>FailIndex</code>: Fail the index corresponding to the failed Pod. This action works with the Backoff limit per index feature.</li>
+<li><code>Count</code>: Count the failure towards the <code>backoffLimit</code> or <code>backoffLimitPerIndex</code>. This is the default behavior.</li>
+</ul>
+<p>When Pod failures occur in a running Job, Kubernetes matches the failed Pod status against the list of Pod failure policy rules, in the specified order, and takes the corresponding actions for the first matched rule.</p>
+<p>Note that when specifying the Pod failure policy, you must also set the Job&rsquo;s Pod template with <code>restartPolicy: Never</code>. This prevents race conditions between the kubelet and the Job controller when counting Pod failures.</p>
+<h3 id="kubernetes-initiated-pod-disruptions">Kubernetes-initiated Pod disruptions</h3>
+<p>To allow matching Pod failure policy rules against failures caused by disruptions initiated by Kubernetes, this feature introduces the <code>DisruptionTarget</code> Pod condition.</p>
+<p>Kubernetes adds this condition to any Pod, regardless of whether it&rsquo;s managed by a Job controller, that fails because of a retriable disruption scenario. The <code>DisruptionTarget</code> condition contains one of the following reasons that corresponds to these disruption scenarios:</p>
+<ul>
+<li><code>PreemptionByKubeScheduler</code>: Preemption by <code>kube-scheduler</code> to accommodate a new Pod that has a higher priority.</li>
+<li><code>DeletionByTaintManager</code> - the Pod is due to be deleted by <code>kube-controller-manager</code> due to a <code>NoExecute</code> taint that the Pod doesn&rsquo;t tolerate.</li>
+<li><code>EvictionByEvictionAPI</code> - the Pod is due to be deleted by an API-initiated eviction.</li>
+<li><code>DeletionByPodGC</code> - the Pod is bound to a node that no longer exists, and is due to be deleted by Pod garbage collection.</li>
+<li><code>TerminationByKubelet</code> - the Pod was terminated by graceful node shutdown, node pressure eviction or preemption for system critical pods.</li>
+</ul>
+<p>In all other disruption scenarios, like eviction due to exceeding Pod container limits, Pods don&rsquo;t receive the <code>DisruptionTarget</code> condition because the disruptions were likely caused by the Pod and would reoccur on retry.</p>
+<h3 id="example">Example</h3>
+<p>The Pod failure policy snippet below demonstrates an example use:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">podFailurePolicy</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">rules</span>:
+</span></span><span style="display:flex;"><span> - <span style="color:#f92672">action</span>: <span style="color:#ae81ff">Ignore</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">onPodConditions</span>:
+</span></span><span style="display:flex;"><span> - <span style="color:#f92672">type</span>: <span style="color:#ae81ff">DisruptionTarget</span>
+</span></span><span style="display:flex;"><span> - <span style="color:#f92672">action</span>: <span style="color:#ae81ff">FailJob</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">onPodConditions</span>:
+</span></span><span style="display:flex;"><span> - <span style="color:#f92672">type</span>: <span style="color:#ae81ff">ConfigIssue</span>
+</span></span><span style="display:flex;"><span> - <span style="color:#f92672">action</span>: <span style="color:#ae81ff">FailJob</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">onExitCodes</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">operator</span>: <span style="color:#ae81ff">In</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">values</span>: [ <span style="color:#ae81ff">42</span> ]
+</span></span></code></pre></div><p>In this example, the Pod failure policy does the following:</p>
+<ul>
+<li>Ignores any failed Pods that have the built-in <code>DisruptionTarget</code> condition. These Pods don&rsquo;t count towards Job backoff limits.</li>
+<li>Fails the Job if any failed Pods have the custom user-supplied <code>ConfigIssue</code> condition, which was added either by a custom controller or webhook.</li>
+<li>Fails the Job if any containers exited with the exit code 42.</li>
+<li>Counts all other Pod failures towards the default <code>backoffLimit</code> (or <code>backoffLimitPerIndex</code> if used).</li>
+</ul>
+<h2 id="learn-more">Learn more</h2>
+<ul>
+<li>For a hands-on guide to using Pod failure policy, see Handling retriable and non-retriable pod failures with Pod failure policy</li>
+<li>Read the documentation for Pod failure policy and Backoff limit per index</li>
+<li>Read the documentation for Pod disruption conditions</li>
+<li>Read the KEP for Pod failure policy</li>
+</ul>
+<h2 id="related-work">Related work</h2>
+<p>Based on the concepts introduced by Pod failure policy, the following additional work is in progress:</p>
+<ul>
+<li>JobSet integration: Configurable Failure Policy API</li>
+<li>Pod failure policy extension to add more granular failure reasons</li>
+<li>Support for Pod failure policy via JobSet in Kubeflow Training v2</li>
+<li>Proposal: Disrupted Pods should be removed from endpoints</li>
+</ul>
+<h2 id="get-involved">Get involved</h2>
+<p>This work was sponsored by batch working group in close collaboration with the SIG Apps, and SIG Node, and SIG Scheduling communities.</p>
+<p>If you are interested in working on new features in the space we recommend subscribing to our Slack channel and attending the regular community meetings.</p>
+<h2 id="acknowledgments">Acknowledgments</h2>
+<p>I would love to thank everyone who was involved in this project over the years - it&rsquo;s been a journey and a joint community effort! The list below is my best-effort attempt to remember and recognize people who made an impact. Thank you!</p>
+<ul>
+<li>Aldo Culquicondor for guidance and reviews throughout the process</li>
+<li>Jordan Liggitt for KEP and API reviews</li>
+<li>David Eads for API reviews</li>
+<li>Maciej Szulik for KEP reviews from SIG Apps PoV</li>
+<li>Clayton Coleman for guidance and SIG Node reviews</li>
+<li>Sergey Kanzhelev for KEP reviews from SIG Node PoV</li>
+<li>Dawn Chen for KEP reviews from SIG Node PoV</li>
+<li>Daniel Smith for reviews from SIG API machinery PoV</li>
+<li>Antoine Pelisse for reviews from SIG API machinery PoV</li>
+<li>John Belamaric for PRR reviews</li>
+<li>Filip Křepinský for thorough reviews from SIG Apps PoV and bug-fixing</li>
+<li>David Porter for thorough reviews from SIG Node PoV</li>
+<li>Jensen Lo for early requirements discussions, testing and reporting issues</li>
+<li>Daniel Vega-Myhre for advancing JobSet integration and reporting issues</li>
+<li>Abdullah Gharaibeh for early design discussions and guidance</li>
+<li>Antonio Ojea for test reviews</li>
+<li>Yuki Iwai for reviews and aligning implementation of the closely related Job features</li>
+<li>Kevin Hannon for reviews and aligning implementation of the closely related Job features</li>
+<li>Tim Bannister for docs reviews</li>
+<li>Shannon Kularathna for docs reviews</li>
+<li>Paola Cortés for docs reviews</li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

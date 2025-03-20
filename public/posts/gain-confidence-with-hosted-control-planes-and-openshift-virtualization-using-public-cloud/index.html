@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Gain confidence with hosted control planes and OpenShift Virtualization using public cloud</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Gain confidence with hosted control planes and OpenShift Virtualization using public cloud</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Hosted control planes (HCP) is the name of the Red Hat product for the upstream HyperShift project. It allows you to deploy the control plane of a Red Hat OpenShift cluster into an OpenShift project instead of requiring dedicated (master) nodes and attach worker nodes managed via the nodePool API to it.</p>
+<p>Hosted control planes architecture has several advantages when managing a fleet of clusters. It allows you to save infrastructure compute resources that would have been necessary for a standalone OpenShift topology and boosts the hosted OpenShift cluster provisioning time and day 2 automation (the provisioning time of a complete hosted cluster lasted 13 minutes in the lab used in this article, including the nodepools virtual machines (VMs) provisioning on Red Hat OpenShift Virtualization).</p>
+<p>Some blog posts have already been written on this technology; you should read them to complement what you will read here (see the final Learn More section). We will dive deep into provisioning multiple virtualized OpenShift clusters on OpenShift Virtualization (based on the KubeVirt project) using public cloud infrastructure to quickly set up a fully functional environment and gain confidence with this technology.</p>
+<h2 id="background-information"><strong>Background information</strong></h2>
+<p>Today, many companies wonder how to find an alternative for on-premises OpenShift deployment using hypervisor technology. While installing Red Hat OpenShift on bare metal infrastructure is a viable alternative that also supports automation for the installation process via the installer-provisioned infrastructure (IPI) mode, many customers appreciate both the automation experience and the flexibility of using a hypervisor to decouple the provisioning and management of the hardware layer from that of the application platform layer.</p>
+<p>So, how do we find an alternative to the current solutions?</p>
+<p>Having an OpenShift cluster installed on a bare metal infrastructure that uses hosted control planes together with OpenShift Virtualization to run the nodepools (the worker nodes) is the Red Hat answer to run OpenShift clusters on premises with the flexibility and automation capabilities of a typical hypervisor-based topology leveraging the mature and well-known KVM technology.</p>
+<p>Since we are talking about a typical on-premises deployment and the prerequisites to setting up a test environment are not trivial, it is very interesting to have the possibility to test this architecture using public cloud infrastructure. This article will explain how to use Amazon Web Services (AWS) to set up a fully functional OpenShift architecture with an OpenShift cluster with OpenShift Virtualization and bare metal nodes (the hosting cluster) that we will use to provision two guest OpenShift clusters with hosted control planes form factor and KubeVirt-provided worker nodes (the hosted clusters).</p>
+<h2 id="core-components">Core components</h2>
+<p>To provision an OpenShift cluster via IPI mode and set up the entire solution, you need one AWS account and a DNS domain. You must also log in to the OpenShift cluster manager portal and download the pull secret required for the installation.</p>
+<p>The OpenShift cluster will have three nodes for each kind: master, infrastructure, and bare metal. The last will host the worker nodes of the HCP cluster as virtual machines on OpenShift Virtualization.</p>
+<p>On the OpenShift cluster’s bare metal nodes, we will add local disks that we will use via the LVM operator to simulate the scenario of bare metal clusters with directly attached disks.</p>
+<p>On the OpenShift cluster’s infrastructure nodes, we will deploy Red Hat OpenShift Data Foundation, the software-defined storage solution provided by Red Hat, to have the ReadWriteMany access mode for the volumes that will host the virtual machines on OpenShift virtualization. This mode is required for live migration and is a best practice for better managing failure scenarios.</p>
+<p>We will also install the multicluster engine operator to create hosted clusters with the hosted control plane form factor.</p>
+<h2 id="workflows-and-processes">Workflows and processes</h2>
+<p>Let&rsquo;s dive into the workflows for each of these components.</p>
+<h3 id="openshift-cluster-creation">OpenShift cluster creation</h3>
+<p>To create the OpenShift cluster on AWS, the prerequisites are to:</p>
+<ul>
+<li>Have properly configured the AWS client environment.</li>
+<li>Have met the requirements described in the Red Hat documentation for the AWS account, particularly the DNS domain configuration required to provision an OpenShift cluster on AWS.</li>
+<li>Prepare the local environment for the installation as described in the Red Hat documentation by obtaining the installation program, downloading your installation pull secret from Red Hat OpenShift Cluster Manager, and installing the OpenShift CLI.</li>
+</ul>
+<p>This is the <code>install-config.yaml</code> file used to install the OpenShift cluster with three worker nodes that will be used for the initial setup:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>apiVersion: v1
+</span></span><span style="display:flex;"><span>baseDomain: &lt;YOUR_DOMAIN&gt;
+</span></span><span style="display:flex;"><span>controlPlane:
+</span></span><span style="display:flex;"><span>  hyperthreading: Enabled
+</span></span><span style="display:flex;"><span>  name: master
+</span></span><span style="display:flex;"><span>  platform:
+</span></span><span style="display:flex;"><span>    aws:
+</span></span><span style="display:flex;"><span>      type: m5.xlarge
+</span></span><span style="display:flex;"><span>  replicas: 3
+</span></span><span style="display:flex;"><span>compute:
+</span></span><span style="display:flex;"><span>- hyperthreading: Enabled
+</span></span><span style="display:flex;"><span>  name: worker
+</span></span><span style="display:flex;"><span>  platform:
+</span></span><span style="display:flex;"><span>    aws:
+</span></span><span style="display:flex;"><span>      type: m5.4xlarge
+</span></span><span style="display:flex;"><span>  replicas: 3
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  name: &lt;YOUR_CLUSTER_NAME&gt;
+</span></span><span style="display:flex;"><span>platform:
+</span></span><span style="display:flex;"><span>  aws:
+</span></span><span style="display:flex;"><span>    region: &lt;YOUR_REGION&gt;
+</span></span><span style="display:flex;"><span>pullSecret: &lt;YOUR_PULL_SECRET&gt;
+</span></span><span style="display:flex;"><span>sshKey: |
+</span></span><span style="display:flex;"><span>  &lt;YOUR_SSH_PUBKEY&gt;
+</span></span></code></pre></div><p>After completing <code>install-config.yaml</code> file, this is the command used to install the cluster:</p>
+<pre tabindex="0"><code class="language-input" data-lang="input">./openshift-install create cluster --dir ./ --log-level=info
+</code></pre><p>After installing the cluster, we will get the topology represented in Figure 1.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/ocp_cluster_-_base_0.jpg?itok=H6EgBG6z" alt="Base OpenShift Cluster installation" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 1: Basic OpenShift cluster.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>In the following steps, those three worker nodes will become the infrastructure nodes and will be used to deploy the hosted control planes and Red Hat OpenShift Data Foundation without charging those worker cores toward the Red Hat OpenShift Container Platform subscription. So, let’s configure them with the appropriate labels:</p>
+<pre tabindex="0"><code class="language-input" data-lang="input">for NODE in $(oc get nodes -l node-role.kubernetes.io/worker 
+-o go-template=&#39;{{range .items}}{{.metadata.name}}{{&#34;n&#34;}}{{end}}&#39;) ; 
+do oc label node $NODE node-role.kubernetes.io/infra=&#34;&#34; ; 
+oc label node $NODE cluster.ocs.openshift.io/openshift-storage=&#34;&#34; ; 
+done
+</code></pre><h3 id="bare-metal-nodes-addition">Bare metal nodes addition</h3>
+<p>To add bare metal nodes, we will create three new machinesets starting from the existing ones.</p>
+<p>First of all, assuming that you have properly configured the AWS CLI environment, let’s get the manifest for the machineset of the AWS availability zone A:</p>
+<pre tabindex="0"><code class="language-input" data-lang="input">AZ=$(grep region ~/.aws/config | cut -d&#39; &#39; -f3)
+AZ_a_MachineSet=$(oc get -n openshift-machine-api machineset 
+-o go-template=&#39;{{range .items}}{{.metadata.name}}{{&#34;n&#34;}}{{end}}&#39; 
+| grep ${AZ}a)
+oc -n openshift-machine-api get machineset $AZ_a_MachineSet 
+-o yaml &gt; ${AZ_a_MachineSet}.yaml
+</code></pre><p>For example, let’s consider a machineset named <code>ocp-cluster-h5ffp-worker-us-east-2a.yaml</code> (yours will be different).</p>
+<p>That machineset must be modified to create the bare metal nodes as we desire for this testing purpose. The result is something like the following manifest; please check the sections that have been modified or added below.</p>
+<p>As you can see, we are:</p>
+<ul>
+<li>Changing the name of the machineset.</li>
+<li>Adding a custom label, which we will use after.</li>
+<li>Adding a local disk that we will use to configure the LVM Cluster.</li>
+<li>Modifying the instanceType to <code>m5.metal</code>.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>apiVersion: machine.openshift.io/v1beta1
+</span></span><span style="display:flex;"><span>kind: MachineSet
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  labels:
+</span></span><span style="display:flex;"><span>    machine.openshift.io/cluster-api-cluster: ocp-cluster-h5ffp
+</span></span><span style="display:flex;"><span>  name: ocp-cluster-h5ffp-metal-us-east-2a
+</span></span><span style="display:flex;"><span>  namespace: openshift-machine-api
+</span></span><span style="display:flex;"><span>spec:
+</span></span><span style="display:flex;"><span>  replicas: 1
+</span></span><span style="display:flex;"><span>  selector:
+</span></span><span style="display:flex;"><span>    matchLabels:
+</span></span><span style="display:flex;"><span>      machine.openshift.io/cluster-api-cluster: ocp-cluster-h5ffp
+</span></span><span style="display:flex;"><span>      machine.openshift.io/cluster-api-machineset: ocp-cluster-h5ffp-metal-us-east-2a
+</span></span><span style="display:flex;"><span>  template:
+</span></span><span style="display:flex;"><span>    metadata:
+</span></span><span style="display:flex;"><span>      labels:
+</span></span><span style="display:flex;"><span>        machine.openshift.io/cluster-api-cluster: ocp-cluster-h5ffp
+</span></span><span style="display:flex;"><span>        machine.openshift.io/cluster-api-machine-role: worker
+</span></span><span style="display:flex;"><span>        machine.openshift.io/cluster-api-machine-type: worker
+</span></span><span style="display:flex;"><span>        machine.openshift.io/cluster-api-machineset: ocp-cluster-h5ffp-metal-us-east-2a
+</span></span><span style="display:flex;"><span>    spec:
+</span></span><span style="display:flex;"><span>      lifecycleHooks: {}
+</span></span><span style="display:flex;"><span>      metadata:
+</span></span><span style="display:flex;"><span>        labels:
+</span></span><span style="display:flex;"><span>          ocpvirt: host
+</span></span><span style="display:flex;"><span>      providerSpec:
+</span></span><span style="display:flex;"><span>        value:
+</span></span><span style="display:flex;"><span>          ami:
+</span></span><span style="display:flex;"><span>            id: ami-08bb6907b96d2a024
+</span></span><span style="display:flex;"><span>          apiVersion: machine.openshift.io/v1beta1
+</span></span><span style="display:flex;"><span>          blockDevices:
+</span></span><span style="display:flex;"><span>          - ebs:
+</span></span><span style="display:flex;"><span>              encrypted: true
+</span></span><span style="display:flex;"><span>              iops: 0
+</span></span><span style="display:flex;"><span>              kmsKey:
+</span></span><span style="display:flex;"><span>                arn: &#34;&#34;
+</span></span><span style="display:flex;"><span>              volumeSize: 120
+</span></span><span style="display:flex;"><span>              volumeType: gp3
+</span></span><span style="display:flex;"><span>          - deviceName: /dev/xvdb
+</span></span><span style="display:flex;"><span>            ebs:
+</span></span><span style="display:flex;"><span>              encrypted: true
+</span></span><span style="display:flex;"><span>              iops: 10000
+</span></span><span style="display:flex;"><span>              volumeSize: 1000
+</span></span><span style="display:flex;"><span>              volumeType: gp3
+</span></span><span style="display:flex;"><span>          credentialsSecret:
+</span></span><span style="display:flex;"><span>            name: aws-cloud-credentials
+</span></span><span style="display:flex;"><span>          deviceIndex: 0
+</span></span><span style="display:flex;"><span>          iamInstanceProfile:
+</span></span><span style="display:flex;"><span>            id: ocp-cluster-h5ffp-worker-profile
+</span></span><span style="display:flex;"><span>          instanceType: m5.metal
+</span></span><span style="display:flex;"><span>          kind: AWSMachineProviderConfig
+</span></span><span style="display:flex;"><span>          metadata:
+</span></span><span style="display:flex;"><span>            creationTimestamp: null
+</span></span><span style="display:flex;"><span>          metadataServiceOptions: {}
+</span></span><span style="display:flex;"><span>          placement:
+</span></span><span style="display:flex;"><span>            availabilityZone: us-east-2a
+</span></span><span style="display:flex;"><span>            region: us-east-2
+</span></span><span style="display:flex;"><span>          securityGroups:
+</span></span><span style="display:flex;"><span>          - filters:
+</span></span><span style="display:flex;"><span>            - name: tag:Name
+</span></span><span style="display:flex;"><span>              values:
+</span></span><span style="display:flex;"><span>              - ocp-cluster-h5ffp-node
+</span></span><span style="display:flex;"><span>          - filters:
+</span></span><span style="display:flex;"><span>            - name: tag:Name
+</span></span><span style="display:flex;"><span>              values:
+</span></span><span style="display:flex;"><span>              - ocp-cluster-h5ffp-lb
+</span></span><span style="display:flex;"><span>          subnet:
+</span></span><span style="display:flex;"><span>            filters:
+</span></span><span style="display:flex;"><span>            - name: tag:Name
+</span></span><span style="display:flex;"><span>              values:
+</span></span><span style="display:flex;"><span>              - ocp-cluster-h5ffp-subnet-private-us-east-2a
+</span></span><span style="display:flex;"><span>          tags:
+</span></span><span style="display:flex;"><span>          - name: kubernetes.io/cluster/ocp-cluster-h5ffp
+</span></span><span style="display:flex;"><span>            value: owned
+</span></span><span style="display:flex;"><span>          userDataSecret:
+</span></span><span style="display:flex;"><span>            name: worker-user-data
+</span></span></code></pre></div><p>We need three bare metal nodes for our lab environment (at least two to perform failure tests), so we have two possibilities to get two other bare metal nodes:</p>
+<ol>
+<li>Either copy this manifest and replace the zone to have bare metal nodes in different availability zones:</li>
+</ol>
+<pre tabindex="0"><code class="language-input" data-lang="input">cp ocp-cluster-h5ffp-worker-us-east-2a.yaml 
+ocp-cluster-h5ffp-worker-us-east-2b.yaml
+sed -i &#34;s/-2a/-2b/&#34; ocp-cluster-h5ffp-worker-us-east-2b.yaml
+cp ocp-cluster-h5ffp-worker-us-east-2a.yaml 
+ocp-cluster-h5ffp-worker-us-east-2c.yaml
+sed -i &#34;s/-2a/-2c/&#34; ocp-cluster-h5ffp-worker-us-east-2c.yaml
+</code></pre><ol start="2">
+<li>OR Change the number of replicas in the first machineset to 3.</li>
+</ol>
+<p>We can then create the bare metal nodes by applying the manifests with <code>oc apply -f &lt;filename&gt;</code> as usual. This is a parametric way to quickly do it if you did not change the machineset manifest file name:</p>
+<pre tabindex="0"><code class="language-input" data-lang="input">infrastructure_id=$(oc get -o 
+jsonpath=&#39;{.status.infrastructureName}{&#34;n&#34;}&#39; infrastructure cluster)
+for manifest in $(ls . | grep ${infrastructure_id}) ; do oc apply -f $manifest ; done
+</code></pre><p>You can monitor the progress of your machinesets creation by running:</p>
+<pre tabindex="0"><code class="language-input" data-lang="input">oc -n openshift-machine-api get machineset
+</code></pre><h3 id="storage-setup">Storage setup</h3>
+<p>The next step is to install the OpenShift Data Foundation and LVM Storage operators with default options to provide two different storage solutions for our laboratory environment to provide volumes to virtual worker nodes attached via nodepools to the hosted clusters. As explained, in one case, we will use OpenShift Data Foundation to provide RWX volumes supporting live migration. In contrast, we will use local disks via an LVM cluster to simulate an infrastructure with directly attached storage disks.</p>
+<p>Figure 2 shows the architecture we will get.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/ocp_cluster_-_with_bm_nodes_0.jpeg?itok=8WpS57O9" alt="OpenShift Cluster installation with bare metal nodes added and storage services configured." />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 2: OpenShift Cluster installation with bare metal nodes added and storage services configured.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>For this lab, we installed the operators and provisioned the OpenShift Data Foundation storage system and LVMCluster custom resources (CRs) using the OpenShift web console—doing it declaratively is possible, but it is outside the purpose of this article.</p>
+<p>To install the required operators, go to the <strong>Operator Hub menu</strong>, search for them, and install them using the default options to obtain the situation shown in Figure 3.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/installed_operators.jpg?itok=DnBtc6Jk" alt="Storage operators installed." />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 3: Storage operators installed.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>After installing the operators, we must create the StorageSystem custom resource the OpenShift Data Foundation operator manages. Some screenshots will guide you through the process using the OpenShift web console. We will use default options, and the nodes will be automatically selected thanks to the labels we set in the previous paragraph.</p>
+<p>Figure 4 shows the first step of the  StorageSystem creation via web UI.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/create_storage_system.jpg?itok=OoQZKuhX" alt="ODF StorageSystem custom resource creation - 1" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 4: Create StorageSystem.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Figure 5 shows the node selection step. Nodes will be automatically selected thanks to the label <code>cluster.ocs.openshift.io/openshift-storage=&quot;&quot;</code> we inserted at the beginning.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/create_storage_system_-_select_capacity.jpg?itok=ThQpMOhy" alt="ODF StorageSystem custom resource creation - 2" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 5: Create StorageSystem, select nodes.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>In step 3 and 4 we confirm the defaults settings and Figure 6 shows the final review before submitting the creation.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/create_storage_system_-_review.jpg?itok=e6kAXPgU" alt="ODF StorageSystem custom resource creation - Review" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 6: Create StorageSystem, Review.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>We must then create the LVMCluster custom resource managed by the LVM Storage operator. The nodes will be selected using the label <code>ocpvirt=host</code> we set previously in the <code>MachineSet</code>.</p>
+<p>Creating the <code>LVMCluster</code> via web UI is a little articulate; it can be easier doing it via manifest:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>apiVersion: lvm.topolvm.io/v1alpha1
+</span></span><span style="display:flex;"><span>kind: LVMCluster
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  name: test-lvmcluster
+</span></span><span style="display:flex;"><span>  namespace: openshift-storage
+</span></span><span style="display:flex;"><span>spec:
+</span></span><span style="display:flex;"><span>  storage:
+</span></span><span style="display:flex;"><span>    deviceClasses:
+</span></span><span style="display:flex;"><span>      - deviceSelector:
+</span></span><span style="display:flex;"><span>          optionalPaths:
+</span></span><span style="display:flex;"><span>            - /dev/nvme1n1
+</span></span><span style="display:flex;"><span>            - /dev/nvme0n1
+</span></span><span style="display:flex;"><span>        fstype: xfs
+</span></span><span style="display:flex;"><span>        nodeSelector:
+</span></span><span style="display:flex;"><span>          nodeSelectorTerms:
+</span></span><span style="display:flex;"><span>            - matchExpressions:
+</span></span><span style="display:flex;"><span>                - values:
+</span></span><span style="display:flex;"><span>                    - host
+</span></span><span style="display:flex;"><span>                  key: ocpvirt
+</span></span><span style="display:flex;"><span>                  operator: In
+</span></span><span style="display:flex;"><span>        thinPoolConfig:
+</span></span><span style="display:flex;"><span>          chunkSizeCalculationPolicy: Static
+</span></span><span style="display:flex;"><span>          sizePercent: 90
+</span></span><span style="display:flex;"><span>          name: thin-pool-1
+</span></span><span style="display:flex;"><span>          overprovisionRatio: 10
+</span></span><span style="display:flex;"><span>        name: vg1
+</span></span><span style="display:flex;"><span>        default: true
+</span></span></code></pre></div><p>To check if the LVMCluster installation has been completed, you can use the following command:</p>
+<pre tabindex="0"><code class="language-input" data-lang="input">oc -n openshift-storage get lvmcluster
+</code></pre><pre tabindex="0"><code class="language-output" data-lang="output">NAME              STATUS
+test-lvmcluster   Ready
+</code></pre><p>To check the <code>lvmcluster</code> custom resource status, you can use the following command:</p>
+<pre tabindex="0"><code class="language-input" data-lang="input">oc -n openshift-storage get lvmcluster test-lvmcluster -o 
+go-template=&#39;---{{&#34;n&#34;}}{{range .status.deviceClassStatuses}}VG: {{.name}}{{&#34;n&#34;}}NODES:{{&#34;n&#34;}}{{range .nodeStatus}}{{.node}}{{&#34;n&#34;}}{{end}}{{end}}&#39;
+</code></pre><pre tabindex="0"><code class="language-output" data-lang="output">---
+VG: vg1
+NODES:
+ip-10-0-16-232.us-east-2.compute.internal
+ip-10-0-41-85.us-east-2.compute.internal
+ip-10-0-83-249.us-east-2.compute.internal
+</code></pre><h3 id="virtualization-and-hosted-control-plane-operators-installation">Virtualization and hosted control plane operators installation</h3>
+<p>To create HCP clusters using OpenShift Virtualization on bare metal nodes, we have to install two more operators:</p>
+<ul>
+<li>Red Hat OpenShift Virtualization: After installing the OpenShift Virtualization operator, you must create the HyperConverged custom resource, which will create the core virtualization management engine.</li>
+<li>Multicluster engine for Kubernetes: After installing the multicluster engine for Kubernetes operator, you must create the MultiClusterEngine custom resource to spin up the required controllers.</li>
+</ul>
+<p>You can do it via web UI with default options in both cases.</p>
+<p>In our setup, we will use the default ingress DNS of the hosting cluster to create subdomains for the hosted cluster, and we will have to create a new wildcard route for each hosted cluster. The HAProxy Ingress Controller supports wildcard routes. You must configure this behavior by entering the following command:</p>
+<pre tabindex="0"><code class="language-input" data-lang="input">oc patch ingresscontroller -n openshift-ingress-operator default --type=json 
+-p &#39;[{ &#34;op&#34;: &#34;add&#34;, &#34;path&#34;: &#34;/spec/routeAdmission&#34;, &#34;value&#34;: {wildcardPolicy: &#34;WildcardsAllowed&#34;}}]&#39;
+</code></pre><h3 id="hosted-clusters-creation"><strong>Hosted clusters creation</strong></h3>
+<p>We can now create two different hosted clusters with nodepools running on OpenShift Virtualization on bare metal nodes and hosted control planes running on infra nodes.</p>
+<p>Considering the diagram shown in Figure 7, we will create one hosted cluster using <code>cephfs</code> as RWX-capable storage to host VM volumes (yellow cluster) and another hosted cluster using LVMCluster on local disks without RWX capability (blue cluster).</p>
+<p>The diagram below shows what we will get at the end of the process: the so-called <strong>hosting cluster</strong> hosts the storage services (via OpenShift Data Foundation and LVM Storage), the OpenShift Virtualization hypervisor, and the hosted control planes. The hosted control planes are spun up from the HyperShift operators, and the HyperShift operator is deployed because of the multi-cluster engine operator. On top of the hosting cluster, we have two hosted clusters**,** <code>cephfs-hcp</code> (yellow cluster) and <code>lvm-hcp</code> (blue cluster).</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/ocp_cluster_-_bm_nodes_-_hcp_1.jpeg?itok=QuRxkZIt" alt="Final layout of the hosting OpenShift cluster with two hosted cluster on bare metal nodes via OpenShift Virtualization and Hosted Control Plane." />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 7: Final layout of the hosting OpenShift cluster.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Before installing the hosted clusters, you must install the hosted control plane command line interface, <code>hcp</code>, by completing the following steps:</p>
+<ul>
+<li>From the OpenShift Container Platform console, click the <strong>Help</strong> icon &gt; <strong>Command Line Tools</strong>.</li>
+<li>Click <strong>Download hcp CLI for your platform</strong>.</li>
+</ul>
+<p>You can input this command to create the local disks based hosted clusters (the blue one):</p>
+<pre tabindex="0"><code class="language-input" data-lang="input">hcp create cluster kubevirt --infra-availability-policy HighlyAvailable --cores 4 --memory 16Gi 
+--root-volume-size 120 --auto-repair --control-plane-availability-policy HighlyAvailable 
+--pull-secret ./pull-secret.txt --node-upgrade-type Replace --node-pool-replicas 3 
+--node-drain-timeout 60s --node-selector node-role.kubernetes.io/infra=&#34;&#34; 
+--vm-node-selector ocpvirt=host --etcd-storage-class gp3-csi --root-volume-storage-class lvms-vg1 
+--name lvm-hcp --release-image=quay.io/openshift-release-dev/ocp-release:4.16.18-x86_64 
+--infra-storage-class-mapping=lvms-vg1/lvms-vg1
+</code></pre><p>You can input this command to create the <code>cephfs</code> hosted clusters (the yellow one):</p>
+<pre tabindex="0"><code class="language-input" data-lang="input">hcp create cluster kubevirt --infra-availability-policy HighlyAvailable --cores 4 --memory 16Gi 
+--root-volume-size 120 --auto-repair --control-plane-availability-policy HighlyAvailable 
+--pull-secret ./pull-secret.txt --node-upgrade-type Replace --node-pool-replicas 3 
+--node-drain-timeout 60s --node-selector node-role.kubernetes.io/infra=&#34;&#34; 
+--vm-node-selector ocpvirt=host --etcd-storage-class gp3-csi --root-volume-storage-class ocs-storagecluster-cephfs 
+--name cephfs-hcp --release-image=quay.io/openshift-release-dev/ocp-release:4.16.18-x86_64 
+--infra-storage-class-mapping=ocs-storagecluster-cephfs/cephfs
+</code></pre><p>Finally, you can monitor the hosted control plane status and availability with the following command:</p>
+<pre tabindex="0"><code class="language-input" data-lang="input">oc -n clusters get hostedcluster
+</code></pre><pre tabindex="0"><code class="language-output" data-lang="output">NAME         VERSION   KUBECONFIG                    PROGRESS    AVAILABLE   PROGRESSING   MESSAGE
+cephfs-hcp   4.16.18   cephfs-hcp-admin-kubeconfig   Completed   True        False         The hosted control plane is available
+lvm-hcp      4.16.18   lvm-hcp-admin-kubeconfig      Completed   True        False         The hosted control plane is available
+</code></pre><p>And the related nodepools status and availability with the following command:</p>
+<pre tabindex="0"><code class="language-input" data-lang="input">oc -n clusters get nodepools
+</code></pre><pre tabindex="0"><code class="language-output" data-lang="output">NAME         CLUSTER      DESIRED NODES   CURRENT NODES   AUTOSCALING   AUTOREPAIR   VERSION   UPDATINGVERSION   UPDATINGCONFIG   MESSAGE
+cephfs-hcp   cephfs-hcp   3               3               False         True         4.16.18
+lvm-hcp      lvm-hcp      3               3               False         True         4.16.18
+</code></pre><p>The multicluster engine operator provides the All Clusters view of the OpenShift UI, which allows you to finally see all your clusters: the local cluster (the hosting cluster) and the two hosted clusters, as shown in Figure 8.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/all_clusters.jpg?itok=K9XJUFRI" alt="All clusters view from the hosting cluster." />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure8: All clusters view in the OpenShift UI.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>The credentials to access the newly created hosted clusters are available in the hosting cluster web console by selecting the <strong>All Clusters</strong> view on the top left and then selecting the single hosted cluster to check details, as shown in Figure 9.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/ceph-fs_hcp_cluster.png?itok=xqKIWZGM" alt="Retrieve credentials to access hosted clusters." />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 9: getting credentials of a hosted cluster.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>You now have your lab completely set up and can start performing functional and nonfunctional tests to simulate a failure scenario and check how the platform reacts.</p>
+<h2 id="best-practices">Best practices</h2>
+<p>To improve the resiliency of your architecture, best practices consist of using an RWX-capable storage solution for virtual machines attached to hosted clusters via nodepools. This will speed up the failover of worker nodes on kubervirt and allow for better management of cluster operations thanks to live-migration capabilities enabled by ReadWriteMany access mode.</p>
+<p>Some other options that affect the availability of the hosted clusters have been used in the cluster creation phase, in particular:</p>
+<ul>
+<li><code>--infra-availability-policy HighlyAvailable</code></li>
+<li><code>--control-plane-availability-policy HighlyAvailable</code></li>
+<li><code>--node-upgrade-type Replace</code></li>
+<li><code>--node-drain-timeout 60s</code></li>
+<li><code>--auto-repair</code></li>
+</ul>
+<p>You can read more about those options in the official documentation to understand better the impact of setting them.</p>
+<p>Finally, consider using Node Health Check Operator to improve the hosting cluster&rsquo;s resilience. It can also enhance the VMs’ failover process on OpenShift Virtualization.</p>
+<p>You can find more information on the official documentation.</p>
+<h2 id="wrap-up">Wrap up</h2>
+<p>Hosted control plane technology associated with OpenShift Virtualization is a very powerful solution for using OpenShift Container Platform on a hypervisor to maximize the efficiency of your bare metal infrastructure. Thanks to the hypervisor&rsquo;s decoupling layer, the reliability and maintenance processes of the whole infrastructure are also improved. Moreover, the hosted control plane technology allows the reuse of the same Kubernetes/OpenShift primitives previously exclusive to workloads, which are now used to control planes as a workload: OpenShift FOR OpenShift.</p>
+<p>Leveraging the public cloud can allow you to test this architecture quickly to gain confidence without providing bare metal infrastructures in your data center, at least initially.</p>
+<h2 id="call-to-action">Call to action</h2>
+<p>If you have reached the end of this article, you are ready to design and implement your own HCP with the KubeVirt provider lab environment and start trying this powerful technology to virtualize your OpenShift clusters without another third-party hypervisor.</p>
+<p>Are you wondering if your virtualized hosted cluster can also be used for AI workloads? The answer is yes; starting from OpenShift 4.17, attaching NVIDIA GPUs  to hosted clusters’ nodepools is also available as a Technology Preview feature.</p>
+<p>Considering that we are talking about a new mode to provision virtualized OpenShift clusters, it is also worth noting that, with Red Hat Advanced Cluster Management 2.11 (the multi-cluster OpenShift/Kubernetes management technology), you can leverage observability from a single pane of glass for each cluster with OpenShift Virtualization installed.</p>
+<p>Now, it is time to put your hands on the keyboard!</p>
+<p>Some other articles on hosted control plane technology have been published; read them to complement what you have read here:</p>
+<ul>
+<li>
+<p>What are hosted control planes?</p>
+</li>
+<li>
+<p>Unlocking new possibilities: The general availability of hosted control planes for self-managed Red Hat OpenShift</p>
+</li>
+<li>
+<p>Effortlessly And Efficiently Provision OpenShift Clusters With OpenShift Virtualization</p>
+</li>
+</ul>
+<p>The post Gain confidence with hosted control planes and OpenShift Virtualization using public cloud appeared first on Red Hat Developer.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

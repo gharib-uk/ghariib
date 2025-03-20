@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Powered by Docker: Streamlining Engineering Operations as a Platform Engineer</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Powered by Docker: Streamlining Engineering Operations as a Platform Engineer</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p><em>The Powered by Docker is a series of blog posts featuring use cases and success stories from Docker partners and practitioners. This story was contributed by Neal Patel from Siimpl.io. Neal has more than ten years of experience developing software and is a Docker Captain.</em></p>
+<h2 id="background">Background</h2>
+<p>As a platform engineer at a mid-size startup, I’m responsible for identifying bottlenecks and developing solutions to streamline engineering operations to keep up with the velocity and scale of the engineering organization. In this post, I outline some of the challenges we faced with one of our clients, how we addressed them, and provide guides on how to tackle these challenges at your company.</p>
+<p>One of our clients faced critical engineering challenges, including poor synchronization between development and CI/CD environments, slow incident response due to inadequate rollback mechanisms, and fragmented telemetry tools that delayed issue resolution. Siimpl implemented strategic solutions to enhance development efficiency, improve system reliability, and streamline observability, turning obstacles into opportunities for growth.</p>
+<p><strong>Let’s walk through the primary challenges we encountered.</strong></p>
+<h3 id="inefficient-development-and-deployment">Inefficient development and deployment</h3>
+<ul>
+<li><strong>Problem:</strong> We lacked parity between developer tooling and CI/CD tooling, which made it difficult for engineers to test changes confidently.</li>
+<li><strong>Goal:</strong> We needed to ensure consistent environments across development, testing, and production.</li>
+</ul>
+<h3 id="unreliable-incident-response">Unreliable incident response</h3>
+<ul>
+<li><strong>Problem:</strong> If a rollback was necessary, we did not have the proper infrastructure to accomplish this efficiently.</li>
+<li><strong>Goal:</strong> We wanted to revert to stable versions in case of deployment issues easily.</li>
+</ul>
+<h3 id="lack-of-comprehensive-telemetry">Lack of comprehensive telemetry</h3>
+<ul>
+<li><strong>Problem:</strong> Our SRE team created tooling to simplify collecting and publishing telemetry, but distribution and upgradability were poor. Also, we found adoption to be extremely low.</li>
+<li><strong>Goal:</strong> We needed to standardize how we configure telemetry collection, and simplify the configuration of auto-instrumentation libraries so the developer experience is turnkey.</li>
+</ul>
+<h2 id="solution-efficient-development-and-deployment">Solution: Efficient development and deployment</h2>
+<p>
+<figure>
+  <img src="https://www-stage.docker.com/app/uploads/2025/02/blog-Solution-Efficient-development_1200-1110x786.png" alt="blog Solution Efficient development 1200" />
+  <figcaption>- blog Solution Efficient development 1200</figcaption>
+</figure>
+
+
+</p>
+<h3 id="cicd-configuration-with-self-hosted-github-runners-and-docker-buildx">CI/CD configuration with self-hosted GitHub runners and Docker Buildx</h3>
+<p>We had a requirement for multi-architecture support (arm64/amd64), which we initially implemented in CI/CD with Docker Buildx and QEMU. However, we noticed an extreme dip in performance due to the emulated architecture build times.</p>
+<p>We were able to reduce build times by almost 90% by ditching QEMU (emulated builds), and targeting arm64 and amd64 self-hosted runners. This gave us the advantage of blazing-fast native architecture builds, but still allowed us to support multi-arch by publishing the manifest after-the-fact. </p>
+<p>Here’s a working example of the solution we will walk through: <a href="https://github.com/siimpl/multi-architecture-cicd">https://github.com/siimpl/multi-architecture-cicd</a></p>
+<p>If you’d like to deploy this yourself, there’s a guide in the README.md.</p>
+<h4 id="prerequisites">Prerequisites</h4>
+<p>This project uses the following tools:</p>
+<ul>
+<li>Docker Build Cloud (included in all Docker paid subscriptions.)</li>
+<li>DBC cloud driver</li>
+<li>GitHub/GitHub Actions</li>
+<li>A managed container orchestration service like Elastic Kubernetes Service (EKS), Azure Kubernetes Service (AKS), or  Google Kubernetes Engine (GKE)</li>
+<li>Terraform</li>
+<li>Helm</li>
+</ul>
+<p>Because this project uses industry-standard tooling like Terraform, Kubernetes, and Helm, it can be easily adapted to any CI/CD or cloud solution you need.</p>
+<h4 id="key-features">Key features</h4>
+<p>The secret sauce of this solution is provisioning the self-hosted runners in a way that allows our CI/CD to specify which architecture to execute the build on.</p>
+<p>The first step is to provision two node pools — an amd64 node pool and an arm64 node pool, which can be found in the aks.tf. In this example, the node_count is fixed at 1 for both node pools but for better scalability/flexibility you can also enable autoscaling for a dynamic pool.</p>
+<pre tabindex="0"><code>resource &#34;azurerm_kubernetes_cluster_node_pool&#34; &#34;amd64&#34; {
+  name                  = &#34;amd64pool&#34;
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.cicd.id
+  vm_size               = &#34;Standard_DS2_v2&#34; # AMD-based instance
+  node_count            = 1
+  os_type               = &#34;Linux&#34;
+  tags = {
+    environment = &#34;dev&#34;
+  }
+}
+
+resource &#34;azurerm_kubernetes_cluster_node_pool&#34; &#34;arm64&#34; {
+  name                  = &#34;arm64pool&#34;
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.cicd.id
+  vm_size               = &#34;Standard_D4ps_v5&#34; # ARM-based instance
+  node_count            = 1
+  os_type               = &#34;Linux&#34;
+  tags = {
+    environment = &#34;dev&#34;
+  }
+}
+</code></pre><p>Next, we need to update the self-hosted runners’ values.yaml to have a configurable nodeSelector. This will allow us to deploy one runner scale set to the arm64pool and one to the amd64pool.</p>
+<p>Once the Terraform resources are successfully created, the runners should be registered to the organization or repository you specified in the GitHub config URL. We can now update the REGISTRY values for the emulated-build and the native-build.</p>
+<p>After creating a pull request with those changes, navigate to the <strong>Actions</strong> tab to witness the results.</p>
+<p>
+<figure>
+  <img src="https://www-stage.docker.com/app/uploads/2025/02/blog-Actions-Tab_1200-1110x185.png" alt="blog Actions Tab 1200" />
+  <figcaption>- blog Actions Tab 1200</figcaption>
+</figure>
+
+
+</p>
+<p>You should see two jobs kick off, one using the emulated build path with QEMU, and the other using the self-hosted runners for native node builds. Depending on cache hits or the Dockerfile being built, the performance improvements can be up to 90%. Even with this substantial improvement, utilizing Docker Build Cloud can improve performance 95%. More importantly, you can reap the benefits during development builds! Take a look at the docker-build-cloud.yml workflow for more details. All you need is a Docker Build Cloud subscription and a cloud driver to take advantage of the improved pipeline.</p>
+<p><strong>Getting Started</strong></p>
+<p>1. Generate GitHub PAT</p>
+<p>2. Update the variables.tf</p>
+<p>3. Initialise AZ CLI</p>
+<p>4. Deploy Cluster</p>
+<p>5. Create a PR to validate pipelines</p>
+<p>README.md for reference</p>
+<h3 id="reliable-incident-response">Reliable Incident Response</h3>
+<p><strong>Leveraging SemVer Tagged Containers for Easy Rollback</strong></p>
+<p>Recognizing that deployment issues can arise unexpectedly, we needed a mechanism to quickly and reliably rollback production deployments. Below is an example workflow for properly rolling back a deployment based on the tagging strategy we implemented above.</p>
+<ol>
+<li><strong>Rollback Process:</strong>
+<ul>
+<li>In case of a problematic build, deployment was rolled back to a previous stable version using the tagged images.</li>
+<li>AWS CLI commands were used to update ECS services with the desired image tag:</li>
+</ul>
+</li>
+</ol>
+<pre tabindex="0"><code>on:
+  workflow_call:
+    inputs:
+      image-version:
+        required: true
+        type: string
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      context: read
+    steps:
+     - name: Rollback to previous version
+       run: |
+         aws ecs update-service --cluster my-cluster --service my-service --force-new-deployment --image ${{ secrets.REGISTRY }}/myapp:${{ inputs.image-version }}
+</code></pre><h3 id="comprehensive-telemetry">Comprehensive Telemetry</h3>
+<p><strong>Configuring Sidecar Containers in ECS for Aggregating/Publishing Telemetry Data (OTEL)</strong></p>
+<p>As we adopted a OpenTelemetry to standardize observability, we quickly realized that adoption was one of the toughest hurdles. As a team, we decided to bake in as much configuration as possible into the infrastructure (Terraform modules) so that we could easily distribute and maintain observability instrumentation.</p>
+<ol>
+<li><strong>Sidecar Container Setup:</strong>
+<ul>
+<li>Sidecar containers were defined in the ECS task definitions to run OpenTelemetry collectors.</li>
+<li>The collectors were configured to aggregate and publish telemetry data from the application containers.</li>
+</ul>
+</li>
+<li><strong>Task Definition Example:</strong></li>
+</ol>
+<pre tabindex="0"><code>{
+  &#34;containerDefinitions&#34;: [
+    {
+      &#34;name&#34;: &#34;myapp&#34;,
+      &#34;image&#34;: &#34;myapp:1.0.0&#34;,
+      &#34;essential&#34;: true,
+      &#34;portMappings&#34;: [{ &#34;containerPort&#34;: 8080 }]
+    },
+    {
+      &#34;name&#34;: &#34;otel-collector&#34;,
+      &#34;image&#34;: &#34;otel/opentelemetry-collector:latest&#34;,
+      &#34;essential&#34;: false,
+      &#34;portMappings&#34;: [{ &#34;containerPort&#34;: 4317 }],
+      &#34;environment&#34;: [
+        { &#34;name&#34;: &#34;OTEL_RESOURCE_ATTRIBUTES&#34;, &#34;value&#34;: &#34;service.name=myapp&#34; }
+      ]
+    }
+  ],
+  &#34;family&#34;: &#34;my-task&#34;
+}
+</code></pre><p><strong>Configuring Multi-Stage Dockerfiles for OpenTelemetry Auto-Instrumentation Libraries (Node.js)</strong></p>
+<p>At the application level, configuring the auto-instrumentation posed a challenge since most applications varied in their build process. By leveraging multi-stage Dockerfiles, we were able to help standardize the way we initialized the auto-instrumentation libraries across microservices. We were primarily a nodejs shop, so below is an example Dockerfile for that.</p>
+<ol>
+<li><strong>Multi-Stage Dockerfile:</strong>
+<ul>
+<li>The Dockerfile is divided into stages to separate the build environment from the final runtime environment, ensuring a clean and efficient image.</li>
+<li>OpenTelemetry libraries are installed in the build stage and copied to the runtime stage:</li>
+</ul>
+</li>
+</ol>
+<pre tabindex="0"><code># Stage 1: Build stage
+FROM node:20 AS build
+WORKDIR /app
+COPY package.json package-lock.json ./
+# package.json defines otel libs (ex. @opentelemetry/node @opentelemetry/tracing)
+RUN npm install
+COPY . .
+RUN npm run build
+
+# Stage 2: Runtime stage
+FROM node:20
+WORKDIR /app
+COPY --from=build /app /app
+CMD [&#34;node&#34;, &#34;dist/index.js&#34;]
+</code></pre><h3 id="results">Results</h3>
+<p>By addressing these challenges we were able to reduce build times by <strong>~90%</strong>, which alone dropped our DORA metrics for <strong>Lead time for changes</strong> and <strong>Time to restore</strong> by <strong>~50%.</strong> With the rollback strategy and telemetry changes, we were able to reduce our Mean time to Detect (MTTD) and Mean time to resolve (MTTR) by <strong>~30%</strong>. We believe that it could get to <strong>50-60%</strong> with tuning of alerts and the addition of runbooks (automated and manual).</p>
+<ol>
+<li><strong>Enhanced Development Efficiency:</strong> Consistent environments across development, testing, and production stages sped up the development process, and roughly 90% faster build times with the native architecture solution.</li>
+<li><strong>Reliable Rollbacks:</strong> Quick and efficient rollbacks minimized downtime and maintained system integrity.</li>
+<li><strong>Comprehensive Telemetry:</strong> Sidecar containers enabled detailed monitoring of system health and security without impacting application performance, and was baked right into the infrastructure developers were deploying. Auto-instrumentation of the application code was simplified drastically with the adoption of our Dockerfiles.</li>
+</ol>
+<h3 id="siimpl-transforming-enterprises-with-cloud-first-solutions">Siimpl: Transforming Enterprises with Cloud-First Solutions</h3>
+<p>With Docker at the core, Siimpl.io’s solutions demonstrate how teams can build faster, more reliable, and scalable systems. Whether you’re optimizing CI/CD pipelines, enhancing telemetry, or ensuring secure rollbacks, Docker provides the foundation for success. Try Docker today to unlock new levels of developer productivity and operational efficiency.</p>
+<p><strong>Learn more</strong> <strong>from our website</strong> <strong>or contact us at</strong> <strong><em>solutions@siimpl.io</em></strong></p>
+<p>​Products, CI/CD, Docker Build Cloud, Docker Desktop, Platform Engineering</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

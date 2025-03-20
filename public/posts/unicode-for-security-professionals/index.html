@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Unicode for Security Professionals</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Unicode for Security Professionals</h1>
+			<b><time>22.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/python">python</a>
+        	       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjA-bXWtq_FvVNTnTeUdUg2AcROc4d1ehWeU4upby9butCxWYPxyt4r-WNq0jeNuqnmnHWgLGbLeJJB2sTM_IrAaoEKXMyrJ45D-dEZ2uE6zlBPF8M9zQrufmcMgunUtGSpAkeq4Ivz84FI/s320/unicode_thumbnail-300x157-1%255B1%255D.png" alt="" />
+</figure>
+
+
+</p>
+<p>Unicode is the de-facto standard for multilingual character encoding. UTF-8 is the most popular encoding used that supports its hundreds of thousands of characters. Aside from the encoding (byte representation of characters), Unicode defines multiple transformations that can be applied to characters. For instance, it describes the behavior of transformations such as Uppercase.</p>
+<p>The character known as Long S “ſ” (U+017F) will become a regular uppercase S “S” (U+0053). Unexpected behavior for developers can often lead to security issues. Today, we will dive into the case mapping and normalization transformations. You will see how they can contribute to logic flaws in code.</p>
+<p>Along with this article, we are sharing a list of API to look for in source code audit. We are also publishing an interactive cheat sheet for character testing.</p>
+<h2 id="unicode-transformations">Unicode Transformations</h2>
+<h3 id="case-mapping">Case Mapping</h3>
+<p>Unexpected behavior in transformations can sometimes lead to bugs, some of them affecting software security. While the strings “gou017FFecure” and “gosecure” are not equal, a code that applies the uppercase transformation to both strings could mistakenly interpret both strings as being equal.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#34;gou017Fecure&#34;</span>.<span style="color:#a6e22e">toUpperCase</span>().<span style="color:#a6e22e">equals</span>(<span style="color:#e6db74">&#34;gosecure&#34;</span>.<span style="color:#a6e22e">toUpperCase</span>())
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">true</span>
+</span></span></code></pre></div><h3 id="normalization">Normalization</h3>
+<p>Aside from the uppercasing and lowercasing, there is normalization which is also specified by Unicode. The purpose of normalization is to simplify expressions to allow matching equal or equivalent “meaning”. The comparison could be useful when implementing a search or a sort feature for example.</p>
+<p>For simplification, we will group the forms NFC and NFD (Normalization Form Canonical Composition/Decomposition) together and do the same with NFKC and NFKD (Normalization Form Compatibility Composition/Decomposition). While their behaviors are not the same, it is identical for the characters that interest us.</p>
+<h3 id="nfcnfd">NFC/NFD</h3>
+<p>NFC/NFD is the most common form of normalization. You are likely to see it used internally in some of the functions in your favorite language. It is much stricter compared to NFKC/NFKD. There are only three characters that will normalize to ASCII characters.</p>
+<table>
+  <thead>
+      <tr>
+          <th>  <strong>Original Character</strong></th>
+          <th>  <strong>Normalized Character</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>  ; (U+037E)</td>
+          <td>  ; (U+003B)</td>
+      </tr>
+      <tr>
+          <td>  ` (U+1FEF)</td>
+          <td>  ` (U+0060)</td>
+      </tr>
+      <tr>
+          <td>  K (U+212A)</td>
+          <td>  K (U+004B)</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="nfkcnfkd">NFKC/NFKD</h3>
+<p>On the other hand, NFKC is a looser method of representing the equivalence of characters. It will decompose a symbol that contains multiples letters. It will also simplify exponents and stylized characters. With this normalization form, 610 characters will produce ASCII characters. Here are a few examples.</p>
+<table>
+  <thead>
+      <tr>
+          <th>  <strong>Original Character</strong></th>
+          <th>  <strong>Transform Character</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>  ª (U+00AA)</td>
+          <td>  a (U+0061)</td>
+      </tr>
+      <tr>
+          <td>  ℋ (U+210B)</td>
+          <td>  H (U+0048)</td>
+      </tr>
+      <tr>
+          <td>  Ⓐ (U+24B6)</td>
+          <td>  A (U+0041)</td>
+      </tr>
+      <tr>
+          <td>  ㍲ (U+3372)</td>
+          <td>  da (U+0064 U+0061)</td>
+      </tr>
+      <tr>
+          <td>  ﹤ (U+FE64)</td>
+          <td>  &lt; (U+003C)</td>
+      </tr>
+      <tr>
+          <td>  … and more</td>
+          <td>  …</td>
+      </tr>
+  </tbody>
+</table>
+<p>How does vulnerable code look like? Security bugs revolve around logic flaws. Conditions that cannot be crossed become so, thanks to permissive Unicode comparisons. An example of a logic flaw is the one that affected Django and Github: password reset based on email submission.</p>
+<p>Here is an example of a faulty logic. In this password reset form from Django, an email value is received, the user information is fetched and an email is sent to each user that were matched. The issue is that the search is case insensitive. A special Unicode character can be used to trigger a collision. Special Unicode characters have the chance to be converted to punycode when sent to the SMTP service.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PasswordResetForm</span>(forms<span style="color:#f92672">.</span>Form):
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">save</span>(self, [<span style="color:#f92672">...</span>]):
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">//</span>Email <span style="color:#f92672">from</span> user input
+</span></span><span style="display:flex;"><span>        email <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>cleaned_data[<span style="color:#e6db74">&#34;email&#34;</span>]
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">//</span> [<span style="color:#f92672">...</span>]
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">//</span>Search <span style="color:#66d9ef">for</span> an email <span style="color:#f92672">-</span> Case _insensitive_
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> user <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>get_users(email): 
+</span></span><span style="display:flex;"><span>            [<span style="color:#f92672">...</span>]
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">//</span>Send an email <span style="color:#66d9ef">with</span> the original email
+</span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>send_mail(
+</span></span><span style="display:flex;"><span>                [<span style="color:#f92672">...</span>],
+</span></span><span style="display:flex;"><span>                email, 
+</span></span><span style="display:flex;"><span>                [<span style="color:#f92672">...</span>],
+</span></span><span style="display:flex;"><span>            )
+</span></span></code></pre></div><p>Source: [django/contrib/auth/forms.py]</p>
+<p>This code was fixed by using the email already stored in the database. This way even the reset form is only sent to the original email entered by the user.</p>
+<h2 id="differences-in-programming-languages">Differences in programming languages</h2>
+<p>Transformations are expected to be standardized [1] [2]. We compared the implementation in various languages. The normalizations transformation NFC, NFD, NFKC and NFKD were identical, however, the case mapping did have some small differences.</p>
+<h3 id="unicode-characters-producing-ascii-character-with-lowercase-transformation">Unicode characters producing ASCII character with lowercase transformation</h3>
+<table>
+  <thead>
+      <tr>
+          <th>  <strong>Character</strong></th>
+          <th>  <strong>Result</strong></th>
+          <th>  <strong>Python</strong></th>
+          <th>  <strong>Ruby</strong></th>
+          <th>  <strong>Java</strong></th>
+          <th>  <strong>C#</strong></th>
+          <th>  <strong>Go</strong></th>
+          <th>  <strong>PHP</strong></th>
+          <th>  <strong>PHP (mb_*)</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>  İ (U+0130)</td>
+          <td>  i̇ (U+0069 U+0307)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  </td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+      <tr>
+          <td>  K (U+212A)</td>
+          <td>  k (U+006B)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  </td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="unicode-characters-producing-ascii-character-with-uppercase-transformation">Unicode characters producing ASCII character with uppercase transformation</h3>
+<table>
+  <thead>
+      <tr>
+          <th>  <strong>Character</strong></th>
+          <th>  <strong>Result</strong></th>
+          <th>  <strong>Python</strong></th>
+          <th>  <strong>Ruby</strong></th>
+          <th>  <strong>Java</strong></th>
+          <th>  <strong>C#</strong></th>
+          <th>  <strong>Go</strong></th>
+          <th>  <strong>PHP</strong></th>
+          <th>  <strong>PHP (mb_*)</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>  ß (U+00DF)</td>
+          <td>  SS     (U+0053     U+0053)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  **</td>
+          <td>  </td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+      <tr>
+          <td>  ı (U+0131)</td>
+          <td>  I     (U+0049)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+      <tr>
+          <td>  ŉ (U+0149)</td>
+          <td>  ʼN     (U+02BC     U+004E)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  </td>
+          <td>  </td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+      <tr>
+          <td>  ſ (U+017F)</td>
+          <td>  S     (U+0053)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+      <tr>
+          <td>  ǰ (U+01F0)</td>
+          <td>  J̌     (U+004A     U+030C)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  </td>
+          <td>  </td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+      <tr>
+          <td>  ẖ (U+1E96)</td>
+          <td>  H̱     (U+0048     U+0331)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  </td>
+          <td>  </td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+      <tr>
+          <td>  ẗ (U+1E97)</td>
+          <td>  T̈     (U+0054     U+0308)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  </td>
+          <td>  </td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+      <tr>
+          <td>  ẘ (U+1E98)</td>
+          <td>  W̊     (U+0057     U+030A)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  </td>
+          <td>  </td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+      <tr>
+          <td>  ẙ (U+1E99)</td>
+          <td>  Y̊     (U+0059     U+030A)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  </td>
+          <td>  </td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+      <tr>
+          <td>  ẚ (U+1E9A)</td>
+          <td>  Aʾ     (U+0041     U+02BE)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  </td>
+          <td>  </td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+      <tr>
+          <td>  ﬀ (U+FB00)</td>
+          <td>  FF     (U+0046     U+0046)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  </td>
+          <td>  </td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+      <tr>
+          <td>  ﬁ (U+FB01)</td>
+          <td>  FI     (U+0046     U+0049)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  </td>
+          <td>  </td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+      <tr>
+          <td>  ﬂ (U+FB02)</td>
+          <td>  FL     (U+0046     U+004C)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  </td>
+          <td>  </td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+      <tr>
+          <td>  ﬃ (U+FB03)</td>
+          <td>  FFI     (U+0046     U+0046     U+0049)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  </td>
+          <td>  </td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+      <tr>
+          <td>  ﬄ (U+FB04)</td>
+          <td>  FFL     (U+0046     U+0046     U+004C)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  </td>
+          <td>  </td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+      <tr>
+          <td>  ﬅ (U+FB05)</td>
+          <td>  ST     (U+0053     U+0054)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  </td>
+          <td>  </td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+      <tr>
+          <td>  ﬆ (U+FB06)</td>
+          <td>  ST     (U+0053     U+0054)</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  x</td>
+          <td>  </td>
+          <td>  </td>
+          <td>  </td>
+          <td>  x</td>
+      </tr>
+  </tbody>
+</table>
+<p>There are four main observations to extract from the previous grid.</p>
+<p>The first is that PHP does not have potential side effects when applying strtolower() or strtoupper(), it will only transform ASCII characters. When a PHP developer is introducing Unicode lowercasing, it is done willingly using the multibyte function mb_strtolower. PHP used to provide aliasing (overloading) for the multibyte version of those functions. This is likely to introduce unexpected behaviors because the original code might not have been built with Unicode support in mind.</p>
+<p>The second highlight is that both C# and Go only support two characters for uppercasing. In terms of internationalization, it represents an incomplete case mapping implementation. But in terms of security, this further reduces the size of the already limited character set available to perform these attacks.</p>
+<p>** The third observation is that German B in C# may not be transformed with the <code>toUpper()</code> function. It is, however, supported in APIs such as <code>string.Equals(input1,input2, StringComparison.CurrentCultureIgnoreCase)</code>.</p>
+<p>Finally, some Unicode character will result into multiple characters where only part of those are ASCII. This has limited risk, but it is possible that output value gets transformed later to only keep the ASCII ones. For example, this python code snippet illustrates a second operation where the non-ascii characters are truncated during string decoding.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span><span style="color:#75715e">#First, the string is transform using uppercasing</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> input <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;u0149orthsec&#34;</span><span style="color:#f92672">.</span>upper()              <span style="color:#75715e"># ʼNORTHSEC</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span><span style="color:#75715e">#Later, the string is reimported...</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&gt;&gt;&gt;</span> encoded_bytes <span style="color:#f92672">=</span> bytes(input,<span style="color:#e6db74">&#34;utf-8&#34;</span>)         <span style="color:#75715e"># xcaxbcNORTHSEC</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&gt;&gt;&gt;</span> encoded_bytes<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#34;ascii&#34;</span>,errors<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;ignore&#39;</span>)<span style="color:#75715e"># NORTHSEC</span>
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">&#39;NORTHSEC&#39;</span>
+</span></span></code></pre></div><p>Transformations are not limited to the uppercase and lowercase as you will see in the next section.</p>
+<h2 id="auditing-source-code">Auditing Source Code</h2>
+<p>If you are reviewing code from applications, you may be wondering which API (functions) should be reviewed. We have compiled a list below of Unicode case mapping and normalization functions. We have also included less obvious functions that under the hood applied these transformations. Standard libraries include many of those hidden transformations. We have included only those that are likely to be used when implementing security controls.</p>
+<h3 id="c-net">C# (.NET)</h3>
+<table>
+  <thead>
+      <tr>
+          <th>  <strong>Case mapping</strong></th>
+          <th>  <strong>Normalization</strong></th>
+          <th>  <strong>Other</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>strings.ToLower(input)   strings.ToUpper(input)   <strong>Regex.IsMatch(input, regex,RegexOptions.IgnoreCase);   string.Equals(input1, input2,StringComparison.CurrentCultureIgnoreCase);   new   CultureInfo(..).CompareInfo.Compare(input1,input2,   CompareOptions.IgnoreNonSpace)</strong></td>
+          <td>input.Normalize(NormalizationForm.FormC)   input.Normalize(NormalizationForm.FormKC)</td>
+          <td>IdnMapping().GetAscii(input)   <strong>Uri(input).Host /   Uri(input).IdnHost /   Uri(input).SafeDnsHost</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>Aside from the obvious functions, regex evaluation with the IgnoreCase option supports Unicode transformations. A developer should not assume that ASCII characters are the only ones to match. values extracted from regex group will not be converted implicitly.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>Regex.IsMatch(<span style="color:#e6db74">&#34;hacu212A&#34;</span>, <span style="color:#e6db74">&#34;HACK&#34;</span>, RegexOptions.IgnoreCase) == <span style="color:#66d9ef">true</span>
+</span></span></code></pre></div><p>The Uri class implicitly lowercases the hostname when the class is initialized. This would only be a security issue if the hostname is validated before with a different parser.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;http://faceboou212A.com&#34;</span>).Host == <span style="color:#e6db74">&#34;facebook.com&#34;</span>
+</span></span></code></pre></div><h3 id="go">Go</h3>
+<table>
+  <thead>
+      <tr>
+          <th>  <strong>Case mapping</strong></th>
+          <th>  <strong>Normalization</strong></th>
+          <th>  <strong>Other</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>strings.ToLower(input)   strings.ToUpper(input)   <strong>bytes.ToLower(input)   bytes.ToUpper(input)</strong></td>
+          <td>norm.NFC.String(input)   norm.NFKC.String(input)</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<p>Go has a small number of functions to look for. One interesting aspect is that byte arrays can be lowercased and uppercased. The language assumes that byte arrays are UTF-8 encoded.</p>
+<h3 id="java">Java</h3>
+<table>
+  <thead>
+      <tr>
+          <th>  <strong>Case mapping</strong></th>
+          <th>  <strong>Normalization</strong></th>
+          <th>  <strong>Other</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>input.toLowerCase()   input.toUpperCase()</td>
+          <td>Normalizer.normalize(url,   Normalizer.Form.NFC);      Normalizer.normalize(url,   Normalizer.Form.NFKC);</td>
+          <td>IDN.toASCII(input)   <strong>new URI(input).toASCIIString()   SAXParser().parse(input_path)</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>URIs are not transformed by default in Java. Calling toASCIIString() will normalize characters in the canonical form (NFC). StreamSource and SAXParser classes, used for parsing of large XML files, normalize URIs and file names received. Normalization is likely to open small opportunity for path traversal in the context of blacklisted routes. “/BACKUP/” could possibly be reachable with “BAC<strong>u212A</strong>UP”. The behavior will occur when using a File as argument. The string and InputSource arguments do not have this side effect.</p>
+<h3 id="python">Python</h3>
+<table>
+  <thead>
+      <tr>
+          <th>  <strong>Case mapping</strong></th>
+          <th>  <strong>Normalization</strong></th>
+          <th>  <strong>Other</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>input.lower()   input.upper()  re.compile(regex, re.IGNORECASE).match(input)   input.casefold()</td>
+          <td>unicodedata.normalize(‘NFC’, input)   unicodedata.normalize(‘NFKC’, input)</td>
+          <td>urllib.parse.urlparse(input).hostname</td>
+      </tr>
+  </tbody>
+</table>
+<p>Just like in C#, parsing a URL can lead to an implicit lowercasing of the hostname.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#f92672">import</span> urllib.parse
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> urllib<span style="color:#f92672">.</span>parse<span style="color:#f92672">.</span>urlparse(<span style="color:#e6db74">&#34;http://iu006bea.com&#34;</span>)<span style="color:#f92672">.</span>hostname <span style="color:#f92672">==</span>  
+</span></span><span style="display:flex;"><span>urllib<span style="color:#f92672">.</span>parse<span style="color:#f92672">.</span>urlparse(<span style="color:#e6db74">&#34;http://ikea.com&#34;</span>)<span style="color:#f92672">.</span>hostname
+</span></span></code></pre></div><h3 id="ruby">Ruby</h3>
+<table>
+  <thead>
+      <tr>
+          <th>  <strong>Case mapping</strong></th>
+          <th>  <strong>Normalization</strong></th>
+          <th>  <strong>Other</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>input.upcase   input.downcase  input.match(/REGEX/im)</td>
+          <td>input.unicode_normalize(:nfc)   input.unicode_normalize(:nfkc)</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<p>We did not find any special APIs. The URI class is lowercasing the hostname internally. However, there is an exception that is raised if any Unicode characters other than ASCII are specified. The URI class has therefore no chance of causing harm.</p>
+<h2 id="cataloging-the-characters">Cataloging the Characters</h2>
+<p>Characters that can be transformed to ASCII characters are the most interesting for security professionals. They are likely to be confused for another intended character. The previous code snippets showed some examples that could be used in faulty logic.</p>
+<p>To help both developers and pentesters, we have built an interactive cheat sheet. This cheat sheet can be used by developers to build regression test cases to make sure no characters are being misinterpreted. For pentesters, the list can be used to help build payloads in the context of black-box testing. For each interesting Unicode characters, we have listed the most common encodings to facilitate the integration in JSON, HTTP GET parameters, and XML payloads.</p>
+<table>
+  <thead>
+      <tr>
+          <th>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgolzApu0Z7VCZrZGlARPYkiIVs7Z5r7J11jLVMbkqGClatMqaEyEfrNHEP3vqm0JhsnSwIIlQRClZhW1FC9MUbwfT3s__E5uY9lsylHRV1MnL3rOJLyOuXNO9HkFsJ31RbQQSYWexT13lG/w640-h450/unicode-image-1-1024x719-1%255B1%255D.png" alt="" />
+</figure>
+
+
+</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->Interactive Cheat Sheet<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="conclusion">Conclusion</h2>
+<p>Although the security problems emerging from these transformations are rare, we hope that this article can help when performing code review of security-critical component that use these. By providing an exhaustive list of characters, we hope that developers will easily have good coverage of potential glitches when doing manual dynamic tests or automate regression tests.</p>
+<p>This article does not cover any specific vulnerabilities and is meant as a reference. However, we are going to release a follow-up blog post with specific vulnerabilities in popular software products such as the Oracle JDK and Apache’s HTTPClient library. Do not miss this!</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

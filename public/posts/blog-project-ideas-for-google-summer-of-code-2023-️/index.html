@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Blog: Project ideas for Google Summer of Code 2023 ☀️</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Blog: Project ideas for Google Summer of Code 2023 ☀️</h1>
+			<b><time>03.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/jenkins">jenkins</a>
+        	       
+
+			<div>
+				<p>We have put together some project ideas as part of our application to participate in the Google Summer of Code 2023 program.</p>
+<h3 id="1-cd-events-integration-with-jenkins-x">1. CD events integration with Jenkins X</h3>
+<h5 id="description">Description</h5>
+<p>The cdEvents project standardises the way systems talk to each other, which enables Interoperability between systems so they speak a common language through the cdEvents spec in the event. Creating a capability in Jenkins X that can receive and sent a cdEvent would benefit the project and the DevOps ecosystem in general, by stopping glue code used to integrate systems and power innovation by letting end users swap out tools with no effort.</p>
+<h5 id="expected-outcomes">Expected Outcomes</h5>
+<ul>
+<li>Ability to receive cdEvents</li>
+<li>Ability to parse cdEvents so Jenkins X understands them</li>
+<li>Ability to send cdEvents</li>
+</ul>
+<h5 id="recommended-skills">Recommended skills</h5>
+<p>Jenkins X, Kubernetes, golang, cdEvents</p>
+<h5 id="mentors">Mentors</h5>
+<ul>
+<li>Brad McCoy</li>
+</ul>
+<h5 id="resources">Resources</h5>
+<ul>
+<li><a href="https://cloudevents.io/">https://cloudevents.io/</a></li>
+<li><a href="https://www.youtube.com/watch?v=yg7RuDWHwV8">https://www.youtube.com/watch?v=yg7RuDWHwV8</a></li>
+<li><a href="https://www.jenkins.io/projects/gsoc/2021/projects/cloudevents-plugin/">https://www.jenkins.io/projects/gsoc/2021/projects/cloudevents-plugin/</a></li>
+<li><a href="https://cdevents.dev/">https://cdevents.dev/</a></li>
+<li><a href="https://github.com/jenkins-x/lighthouse">https://github.com/jenkins-x/lighthouse</a></li>
+</ul>
+<h5 id="expected-size-of-project">Expected Size of project</h5>
+<p>350 hours</p>
+<h5 id="difficulty-rating">Difficulty rating</h5>
+<p>Hard</p>
+<h3 id="2-implement-drift-detection-gitops">2. Implement drift detection (gitops)</h3>
+<h5 id="description-1">Description</h5>
+<p>Jenkins X only applies changes to cluster when contents of the gitops repository changes as part of a git pull request or git commit. This does not satisfy one of the requirements of the gitops model where we need continuous reconciliation. It would be nice to detect drift between the current state (kubernetes) and the desired state (git) and apply only those changes. This has the side effect of making the boot job faster.</p>
+<p>Also, our bootjob is made up of a makefile which calls cli commands written in golang, instead it would be desirable to move to a controller based approach similar to other tools in the kubernetes ecosystem.</p>
+<h5 id="expected-outcomes-1">Expected Outcomes</h5>
+<ul>
+<li>Drift detection in Jenkins X</li>
+<li>Configurable interval when Jenkins X will do a drift detection and apply the changes</li>
+<li>Updated documentation</li>
+</ul>
+<h5 id="recommended-skills-1">Recommended skills</h5>
+<p>Kubernetes, golang, Jenkins X, kubebuiler, basic understanding of gitops.</p>
+<h5 id="mentors-1">Mentors</h5>
+<ul>
+<li>Ankit D Mohapatra</li>
+<li>Rajat Gupta</li>
+</ul>
+<h5 id="resources-1">Resources</h5>
+<ul>
+<li><a href="https://opengitops.dev/">https://opengitops.dev/</a></li>
+<li><a href="https://book.kubebuilder.io/">https://book.kubebuilder.io/</a></li>
+</ul>
+<h5 id="expected-size-of-project-1">Expected Size of project</h5>
+<p>350 hours</p>
+<h5 id="difficulty-rating-1">Difficulty rating</h5>
+<p>Hard</p>
+<h3 id="3-rbac-role-based-access-control-in-jenkins-x-ui">3. RBAC (Role Based Access Control) in Jenkins X UI</h3>
+<h5 id="description-2">Description</h5>
+<p>In the last GSoC project, we created a modern UI which has more functionalities than the older viewer UI. However, as we added the ability to start/stop pipelines from the new UI, this opened up an issue around access. Users of Jenkins X would like to restrict who can start/stop pipelines from the UI.</p>
+<p>As we add more features to the UI involving repositories, this would also require ability to restrict access using RBAC (Role Based Access Control). In addition, an audit trail would also help the users keep track of activities in the UI.</p>
+<h5 id="expected-outcomes-2">Expected Outcomes</h5>
+<ul>
+<li>Fully functional Jenkins X Dashboard running in the kubernetes cluster</li>
+<li>Drop in replacement for existing read only UI</li>
+<li>Ability to restrict access in the UI</li>
+<li>Audit trail of who took what action in the UI</li>
+<li>Updated documentation</li>
+</ul>
+<h5 id="recommended-skills-2">Recommended skills</h5>
+<p>golang, basic understanding of sveltejs and sveltekit (or any modern js framework like react, vue. angular or solid) and kubernetes</p>
+<h5 id="mentors-2">Mentors</h5>
+<ul>
+<li>Ankit D Mohapatra</li>
+<li>Rajat Gupta</li>
+</ul>
+<h5 id="resources-2">Resources</h5>
+<ul>
+<li><a href="https://youtu.be/AdNJ3fydeao">https://youtu.be/AdNJ3fydeao</a></li>
+<li><a href="https://svelte.dev/">https://svelte.dev/</a></li>
+<li><a href="https://kit.svelte.dev/">https://kit.svelte.dev/</a></li>
+<li><a href="https://tailwindcss.com/">https://tailwindcss.com/</a></li>
+<li><a href="https://go.dev/tour/welcome/1">https://go.dev/tour/welcome/1</a></li>
+<li><a href="https://casbin.org/">https://casbin.org/</a></li>
+</ul>
+<h5 id="expected-size-of-project-2">Expected Size of project</h5>
+<p>350 hours</p>
+<h5 id="difficulty-rating-2">Difficulty rating</h5>
+<p>Medium</p>
+<h3 id="4-simplifying-jenkins-x-pipeline-syntax">4. Simplifying Jenkins X pipeline syntax</h3>
+<h5 id="description-3">Description</h5>
+<p>Jenkins X uses the raw tekton pipeline syntax for pipelines. The issue with this syntax is that it’s too verbose. The verbosity makes sense for low level pipeline building libraries like tektoncd, but for an user facing tool like Jenkins X, it makes the pipeline files too big for no apparent reason. We want to investigate a new syntax which will set the boilerplate so that the syntax is recognized by tekon, but is still user friendly like gitlab/github CI.</p>
+<h5 id="expected-outcomes-3">Expected outcomes</h5>
+<ul>
+<li>Simpler and easier to understand pipeline syntax (for developers)</li>
+<li>More verbose pipeline syntax for power users (if there is a need)</li>
+<li>Updated documentation</li>
+</ul>
+<h5 id="recommended-skills-3">Recommended skills</h5>
+<p>Golang, kubernetes, tekton, cue</p>
+<h5 id="resources-3">Resources</h5>
+<ul>
+<li><a href="https://github.com/cue-lang/cue">https://github.com/cue-lang/cue</a></li>
+</ul>
+<h5 id="mentors-3">Mentors</h5>
+<ul>
+<li>Ankit D Mohapatra</li>
+<li>Rajat Gupta</li>
+</ul>
+<h5 id="expected-size-of-project-3">Expected Size of project</h5>
+<p>350 hours</p>
+<h5 id="difficulty-rating-3">Difficulty rating</h5>
+<p>Medium</p>
+<h3 id="5-multi-tenancy-in-jenkins-x">5. Multi-tenancy in Jenkins X</h3>
+<h5 id="description-4">Description</h5>
+<p>Installing multiple versions of Jenkins X in a single kubernetes cluster is not supported. There are both architectural and scalability issues around it. This would be beneficial for small teams within organizations who want to own their entire CI/CD platform instead of relying on a central release management team which can lead to more productive teams.</p>
+<h5 id="expected-outcomes-4">Expected outcomes</h5>
+<ul>
+<li>A multi-tenant enabled Jenkins X install (jenkins X in different namespaces or a central jx install controlling pipelines running for different tenants)</li>
+<li>Better scaling and security model for Jenkins X</li>
+<li>Updated documentation</li>
+</ul>
+<h5 id="recommended-skills-4">Recommended skills</h5>
+<p>Golang, kubernetes, event driven architecture</p>
+<h5 id="resources-4">Resources</h5>
+<ul>
+<li><a href="https://github.com/jenkins-x/enhancements/pull/46">https://github.com/jenkins-x/enhancements/pull/46</a></li>
+</ul>
+<h5 id="mentors-4">Mentors</h5>
+<ul>
+<li>Ankit D Mohapatra</li>
+<li>Rajat Gupta</li>
+</ul>
+<h5 id="expected-size-of-project-4">Expected Size of project</h5>
+<p>350 hours</p>
+<h5 id="difficulty-rating-4">Difficulty rating</h5>
+<p>Hard</p>
+<h3 id="next-steps">Next Steps</h3>
+<p>If Jenkins X gets selected, we will create a followup blog with additional details.</p>
+<p>We have put together some project ideas as part of our application to participate in the Google Summer of Code 2023 program.</p>
+<h3 id="1-cd-events-integration-with-jenkins-x-1">1. CD events integration with Jenkins X</h3>
+<h5 id="description-5">Description</h5>
+<p>The cdEvents project standardises the way systems talk to each other, which enables Interoperability between systems so they speak a common language through the cdEvents spec in the event. Creating a capability in Jenkins X that can receive and sent a cdEvent would benefit the project and the DevOps ecosystem in general, by stopping glue code used to integrate systems and power innovation by letting end users swap out tools with no effort.</p>
+<h5 id="expected-outcomes-5">Expected Outcomes</h5>
+<ul>
+<li>Ability to receive cdEvents</li>
+<li>Ability to parse cdEvents so Jenkins X understands them</li>
+<li>Ability to send cdEvents</li>
+</ul>
+<h5 id="recommended-skills-5">Recommended skills</h5>
+<p>Jenkins X, Kubernetes, golang, cdEvents</p>
+<h5 id="mentors-5">Mentors</h5>
+<ul>
+<li>Brad McCoy</li>
+</ul>
+<h5 id="resources-5">Resources</h5>
+<ul>
+<li><a href="https://cloudevents.io/">https://cloudevents.io/</a></li>
+<li><a href="https://www.youtube.com/watch?v=yg7RuDWHwV8">https://www.youtube.com/watch?v=yg7RuDWHwV8</a></li>
+<li><a href="https://www.jenkins.io/projects/gsoc/2021/projects/cloudevents-plugin/">https://www.jenkins.io/projects/gsoc/2021/projects/cloudevents-plugin/</a></li>
+<li><a href="https://cdevents.dev/">https://cdevents.dev/</a></li>
+<li><a href="https://github.com/jenkins-x/lighthouse">https://github.com/jenkins-x/lighthouse</a></li>
+</ul>
+<h5 id="expected-size-of-project-5">Expected Size of project</h5>
+<p>350 hours</p>
+<h5 id="difficulty-rating-5">Difficulty rating</h5>
+<p>Hard</p>
+<h3 id="2-implement-drift-detection-gitops-1">2. Implement drift detection (gitops)</h3>
+<h5 id="description-6">Description</h5>
+<p>Jenkins X only applies changes to cluster when contents of the gitops repository changes as part of a git pull request or git commit. This does not satisfy one of the requirements of the gitops model where we need continuous reconciliation. It would be nice to detect drift between the current state (kubernetes) and the desired state (git) and apply only those changes. This has the side effect of making the boot job faster.</p>
+<p>Also, our bootjob is made up of a makefile which calls cli commands written in golang, instead it would be desirable to move to a controller based approach similar to other tools in the kubernetes ecosystem.</p>
+<h5 id="expected-outcomes-6">Expected Outcomes</h5>
+<ul>
+<li>Drift detection in Jenkins X</li>
+<li>Configurable interval when Jenkins X will do a drift detection and apply the changes</li>
+<li>Updated documentation</li>
+</ul>
+<h5 id="recommended-skills-6">Recommended skills</h5>
+<p>Kubernetes, golang, Jenkins X, kubebuiler, basic understanding of gitops.</p>
+<h5 id="mentors-6">Mentors</h5>
+<ul>
+<li>Ankit D Mohapatra</li>
+<li>Rajat Gupta</li>
+</ul>
+<h5 id="resources-6">Resources</h5>
+<ul>
+<li><a href="https://opengitops.dev/">https://opengitops.dev/</a></li>
+<li><a href="https://book.kubebuilder.io/">https://book.kubebuilder.io/</a></li>
+</ul>
+<h5 id="expected-size-of-project-6">Expected Size of project</h5>
+<p>350 hours</p>
+<h5 id="difficulty-rating-6">Difficulty rating</h5>
+<p>Hard</p>
+<h3 id="3-rbac-role-based-access-control-in-jenkins-x-ui-1">3. RBAC (Role Based Access Control) in Jenkins X UI</h3>
+<h5 id="description-7">Description</h5>
+<p>In the last GSoC project, we created a modern UI which has more functionalities than the older viewer UI. However, as we added the ability to start/stop pipelines from the new UI, this opened up an issue around access. Users of Jenkins X would like to restrict who can start/stop pipelines from the UI.</p>
+<p>As we add more features to the UI involving repositories, this would also require ability to restrict access using RBAC (Role Based Access Control). In addition, an audit trail would also help the users keep track of activities in the UI.</p>
+<h5 id="expected-outcomes-7">Expected Outcomes</h5>
+<ul>
+<li>Fully functional Jenkins X Dashboard running in the kubernetes cluster</li>
+<li>Drop in replacement for existing read only UI</li>
+<li>Ability to restrict access in the UI</li>
+<li>Audit trail of who took what action in the UI</li>
+<li>Updated documentation</li>
+</ul>
+<h5 id="recommended-skills-7">Recommended skills</h5>
+<p>golang, basic understanding of sveltejs and sveltekit (or any modern js framework like react, vue. angular or solid) and kubernetes</p>
+<h5 id="mentors-7">Mentors</h5>
+<ul>
+<li>Ankit D Mohapatra</li>
+<li>Rajat Gupta</li>
+</ul>
+<h5 id="resources-7">Resources</h5>
+<ul>
+<li><a href="https://youtu.be/AdNJ3fydeao">https://youtu.be/AdNJ3fydeao</a></li>
+<li><a href="https://svelte.dev/">https://svelte.dev/</a></li>
+<li><a href="https://kit.svelte.dev/">https://kit.svelte.dev/</a></li>
+<li><a href="https://tailwindcss.com/">https://tailwindcss.com/</a></li>
+<li><a href="https://go.dev/tour/welcome/1">https://go.dev/tour/welcome/1</a></li>
+<li><a href="https://casbin.org/">https://casbin.org/</a></li>
+</ul>
+<h5 id="expected-size-of-project-7">Expected Size of project</h5>
+<p>350 hours</p>
+<h5 id="difficulty-rating-7">Difficulty rating</h5>
+<p>Medium</p>
+<h3 id="4-simplifying-jenkins-x-pipeline-syntax-1">4. Simplifying Jenkins X pipeline syntax</h3>
+<h5 id="description-8">Description</h5>
+<p>Jenkins X uses the raw tekton pipeline syntax for pipelines. The issue with this syntax is that it’s too verbose. The verbosity makes sense for low level pipeline building libraries like tektoncd, but for an user facing tool like Jenkins X, it makes the pipeline files too big for no apparent reason. We want to investigate a new syntax which will set the boilerplate so that the syntax is recognized by tekon, but is still user friendly like gitlab/github CI.</p>
+<h5 id="expected-outcomes-8">Expected outcomes</h5>
+<ul>
+<li>Simpler and easier to understand pipeline syntax (for developers)</li>
+<li>More verbose pipeline syntax for power users (if there is a need)</li>
+<li>Updated documentation</li>
+</ul>
+<h5 id="recommended-skills-8">Recommended skills</h5>
+<p>Golang, kubernetes, tekton, cue</p>
+<h5 id="resources-8">Resources</h5>
+<ul>
+<li><a href="https://github.com/cue-lang/cue">https://github.com/cue-lang/cue</a></li>
+</ul>
+<h5 id="mentors-8">Mentors</h5>
+<ul>
+<li>Ankit D Mohapatra</li>
+<li>Rajat Gupta</li>
+</ul>
+<h5 id="expected-size-of-project-8">Expected Size of project</h5>
+<p>350 hours</p>
+<h5 id="difficulty-rating-8">Difficulty rating</h5>
+<p>Medium</p>
+<h3 id="5-multi-tenancy-in-jenkins-x-1">5. Multi-tenancy in Jenkins X</h3>
+<h5 id="description-9">Description</h5>
+<p>Installing multiple versions of Jenkins X in a single kubernetes cluster is not supported. There are both architectural and scalability issues around it. This would be beneficial for small teams within organizations who want to own their entire CI/CD platform instead of relying on a central release management team which can lead to more productive teams.</p>
+<h5 id="expected-outcomes-9">Expected outcomes</h5>
+<ul>
+<li>A multi-tenant enabled Jenkins X install (jenkins X in different namespaces or a central jx install controlling pipelines running for different tenants)</li>
+<li>Better scaling and security model for Jenkins X</li>
+<li>Updated documentation</li>
+</ul>
+<h5 id="recommended-skills-9">Recommended skills</h5>
+<p>Golang, kubernetes, event driven architecture</p>
+<h5 id="resources-9">Resources</h5>
+<ul>
+<li><a href="https://github.com/jenkins-x/enhancements/pull/46">https://github.com/jenkins-x/enhancements/pull/46</a></li>
+</ul>
+<h5 id="mentors-9">Mentors</h5>
+<ul>
+<li>Ankit D Mohapatra</li>
+<li>Rajat Gupta</li>
+</ul>
+<h5 id="expected-size-of-project-9">Expected Size of project</h5>
+<p>350 hours</p>
+<h5 id="difficulty-rating-9">Difficulty rating</h5>
+<p>Hard</p>
+<h3 id="next-steps-1">Next Steps</h3>
+<p>If Jenkins X gets selected, we will create a followup blog with additional details.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>ClickFix vs. traditional download in new DarkGate campaign</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>ClickFix vs. traditional download in new DarkGate campaign</h1>
+			<b><time>01.02.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>During the past several months there have been numerous malware campaigns that use a technique something referred to as “ClickFix”. It often consists of a fake CAPTCHA or similar traffic validation page where visitors are instructed to paste and execute code in order to proceed.</p>
+<p>We have started to see ClickFix attacks more and more via malicious Google ads as well. This is in contrast to typical phishing pages where victims download a so-called installer that contains malware.</p>
+<p>In a recent malvertising campaign targeting the Notion brand, we observed these two techniques used at play. It’s quite possible the threat actors were collecting metrics to determine which one of the two gave them the most conversions via malware installs.</p>
+<p>This blog post details this campaign that ultimately delivered the DarkGate malware loader.</p>
+<h2 id="overview">Overview</h2>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/01/image_ac5d87.png" alt="" />
+</figure>
+
+
+</p>
+<h2 id="web-traffic-view">Web traffic view</h2>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/01/image_4a6cf7.png" alt="" />
+</figure>
+
+
+</p>
+<h2 id="delivery-1-powershell-code-via-clickfix">Delivery #1: PowerShell code via “ClickFix”</h2>
+<h3 id="malicious-ad-and-social-engineering">Malicious ad and social engineering</h3>
+<p>Threat actors created a Google ad for the popular utility application Notion. The first time we clicked on the ad, we were redirected to a site showing a “Verify you are human” page, also known as Cloudflare Turnstile. Except this was not the real Cloudflare, and merely a social engineering trick.</p>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/01/image_832429.png?w=1024" alt="" />
+</figure>
+
+
+</p>
+<p>The HTML source code was obfuscated to only show gibberish interlaced with Russian comments, which we later determined was Rot13, a letter substitution cipher. This was likely used to hide the offending code from prying eyes and network rules:</p>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/01/image_92069d.png" alt="" />
+</figure>
+
+
+</p>
+<p>After checking the box to verify we are human, we see new instructions, “Verification steps”, that involve pressing a number of key combinations. <em>Windows + R</em> launches the run dialog while <em>Ctrl + V</em> will paste whatever is in the clipboard. Supposedly this code is part of the verification process, but instead when pressing Enter, the victim will run a malicious command:</p>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/01/image_523d04.png" alt="" />
+</figure>
+
+
+</p>
+<h3 id="powershell-and-payload">PowerShell and payload</h3>
+<p>The code copied into the clipboard is actually a command line that runs PowerShell:</p>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/01/image_7ca93a.png" alt="" />
+</figure>
+
+
+</p>
+<p>The Base64 encoded string retrieves the following code from <em>hxxps[:]//s2notion[.]com/in.php?action=1</em>:</p>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/01/image_08b601.png" alt="" />
+</figure>
+
+
+</p>
+<p>This downloads a binary from <em>hxxps[:]//s2notion[.]com/in.php?action=2</em>. and runs its. That file contains an AutoIt script that launches from:</p>
+<pre tabindex="0"><code>&#34;c:temptestAutoit3.exe&#34; c:temptestscript.a3x
+</code></pre><p>The following DarkGate configuration was extracted from it:</p>
+<pre tabindex="0"><code>{&#39;DarkGate&#39;: {&#39;C2&#39;: [[&#39;155.138.149.77&#39;]], &#39;unknown_8&#39;: [&#39;No&#39;], &#39;name&#39;: [&#39;DarkGate&#39;], &#39;unknown_12&#39;: [&#39;R0ijS0qCVITtS0e6xeZ&#39;], &#39;unknown_13&#39;: [&#39;6&#39;], &#39;unknown_14&#39;: [&#39;Yes&#39;], &#39;port&#39;: [&#39;80&#39;], &#39;startup_persistence&#39;: [&#39;Yes&#39;], &#39;unknown_32&#39;: [&#39;No&#39;], &#39;check_display&#39;: [&#39;Yes&#39;], &#39;check_disk&#39;: [&#39;No&#39;], &#39;min_disk_size&#39;: [&#39;100&#39;], &#39;check_ram&#39;: [&#39;No&#39;], &#39;min_ram_size&#39;: [&#39;4096&#39;], &#39;check_xeon&#39;: [&#39;No&#39;], &#39;unknown_21&#39;: [&#39;No&#39;], &#39;unknown_23&#39;: [&#39;Yes&#39;], &#39;unknown_31&#39;: [&#39;No&#39;], &#39;unknown_24&#39;: [&#39;N-traff&#39;], &#39;campaign_id&#39;: [&#39;user1&#39;], &#39;unknown_26&#39;: [&#39;No&#39;], &#39;xor_key&#39;: [&#39;sDcGdADE&#39;], &#39;unknown_28&#39;: [&#39;No&#39;], &#39;unknown_29&#39;: [&#39;2&#39;], &#39;unknown_35&#39;: [&#39;No&#39;], &#39;tabla&#39;: [&#39;a2THNyA]7u6Kiv$8k.F*ZrO&#34;do1wL9P0 3}eCGDY{XVzctg,&amp;EhJfsx=n)mpQUqljIW5SRMb4B([&#39;]}}
+</code></pre><h2 id="delivery-2-signed-executable">Delivery #2: signed executable</h2>
+<h3 id="malicious-ad-and-decoy-site">Malicious ad and decoy site</h3>
+<p>We saw this scenario after revisiting the malicious ad for a second time. Notice how the URL path is now including “/download/”.</p>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/01/image_ef9508.png?w=1024" alt="" />
+</figure>
+
+
+</p>
+<p>This is the more traditional approach to malvertising for software downloads that we’ve seen for a while now. Victims download an executable after being tricked with a lookalike site. The file was found hosted on Github under the user profile <em>herawtisabela1992</em>:</p>
+<p>
+<figure>
+  <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2025/01/image_e3dbfc.png" alt="" />
+</figure>
+
+
+</p>
+<p>This fake Notion installer was digitally signed (now revoked) by KDL CENTRAL LIMITED. Similar to the other binary mentioned in the first delivery technique, this one also extracts an AutoIt payload, with the same DarkGate configuration.</p>
+<p>It’s interesting to note that the same GitHub user account previously distributed a backdoor called Warmcookie (aka Badspace) from:</p>
+<pre tabindex="0"><code>raw[.]]githubusercontent[.]com/herawtisabela1992/check/refs/heads/main/920836164_x64.exe
+</code></pre><h2 id="conclusion">Conclusion</h2>
+<p>We were not surprised to see the ClickFix social engineering attack here, but what made this campaign interesting what that it alternated between ClickFix and the typical file download.</p>
+<p>It’s quite likely someone is tracking stats and comparing numbers to see which of the two delivery methods yields the most successful installs. If we had to put our money on it, we would bet that ClickFix is ahead. The file download technique remains effective, especially if the payload is digitally signed, but it could be relegated to second place in the near future.</p>
+<p>Malwarebytes detects both payloads as Trojan.Dropper and Backdoor.DarkGate.</p>
+<hr>
+<p><strong>We don’t just report on threats—we remove them</strong></p>
+<p>Cybersecurity risks should never spread beyond a headline. Keep threats off your devices by downloading Malwarebytes today.</p>
+<h2 id="indicators-of-compromise">Indicators of Compromise</h2>
+<p>Malvertising infrastructure</p>
+<pre tabindex="0"><code>notionbox[.]orgs2notion[.]com
+</code></pre><p>Payloads</p>
+<pre tabindex="0"><code>6b6676267c70fbeb3257f0bb9bce1587f0bdec621238eb32dd9f84b2bcd7e3ea4fe8bbc88d7a8cc0eec24bd74951f1f00b5127e3899ae53de8dabd6ff417e6db
+</code></pre><p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

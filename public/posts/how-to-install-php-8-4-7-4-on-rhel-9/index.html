@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How to Install PHP 8.4-7.4 on RHEL 9</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How to Install PHP 8.4-7.4 on RHEL 9</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>PHP is a popular programming language widely used by developers for creating dynamic and robust web applications. It is known for its simplicity, flexibility, and extensive support for modern frameworks and libraries. Most of the popular CMS applications (eg: WordPress, Drupal etc.) are still using PHP programming language. As of today, the latest PHP version is 8.4, recommended for use in production environments.</p>
+<p>REMI is an one of the most trusted RPM repository that provides PHP versions ranging from 7.4 to 8.4. Using this repository, you can easily manage and install multiple PHP versions on your system.</p>
+<p>This tutorial will guide you through the installation of PHP 8.4 or any previous version, including PHP 7.4, on a RHEL 9 system.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Before starting, ensure you meet the following requirements:</p>
+<ul>
+<li>A running RHEL 9 system</li>
+<li>Shell access with a user that has sudo privileges</li>
+</ul>
+<h2 id="step-1-update-system-packages">Step 1: Update System Packages</h2>
+<p>It is always a best practice to ensure your system packages are up-to-date. This helps avoid compatibility issues and ensures system security. The following command will update all existing packages to latest available version in repositories.</p>
+<pre tabindex="0"><code>sudo dnf update
+</code></pre><p>Be careful on production servers to fulfill the compatibility of packages with the applications.</p>
+<h2 id="step-2-enable-rpm-repositories">Step 2: Enable RPM Repositories</h2>
+<p>The RPM packages for php software are still maintained by the REMI repository. Also the REMI repository required the EPEL rpm repository to be configured on system. To install PHP from the REMI repository, you also need to enable the EPEL and REMI both repositories.</p>
+<ul>
+<li>
+<p><strong>Use the following command to enable the EPEL repository:</strong></p>
+<pre tabindex="0"><code>sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+</code></pre></li>
+<li>
+<p><strong>To Enable the REMI repository, type:</strong></p>
+<pre tabindex="0"><code>sudo dnf install https://rpms.remirepo.net/enterprise/remi-release-9.rpm
+</code></pre></li>
+</ul>
+<h2 id="step-3-install-php-84">Step 3: Install PHP 8.4</h2>
+<p>The REMI repository provides the module for the multiple PHP versions. To install PHP 8.4, enable the corresponding REMI module and proceed with the installation:</p>
+<pre tabindex="0"><code>sudo dnf module enable php:remi-8.4
+</code></pre><p>This will enable the PHP 8.4 module and begin the PHP installation. If in case, PHP installation not begins, then type the following command to start PHP installation:</p>
+<pre tabindex="0"><code>sudo dnf install php
+</code></pre><p>Once the installation finished, verify the installation by checking the PHP version:</p>
+<pre tabindex="0"><code>php -v
+</code></pre><p>The output should display the installed PHP version, confirming a successful installation:</p>
+<h2 id="step-4-install-additional-php-modules">Step 4: Install Additional PHP Modules</h2>
+<p>Generally applications relies on multiple additional PHP modules, which is required to be installed on your system. First you need to identify which modules is required for your application. Then search for the available modules using the following command:</p>
+<pre tabindex="0"><code>sudo dnf search php-*
+</code></pre><p>For example, to install commonly used modules like GD, MySQL, XML, and SOAP, use:</p>
+<pre tabindex="0"><code>sudo dnf install php-gd php-mysqlnd php-xml php-soap
+</code></pre><h2 id="step-5-test-php-installation">Step 5: Test PHP Installation</h2>
+<p>To confirm the PHP installation is working, you can create a test script. Save the following code into a file named <code>info.php</code> in your web server’s root directory (e.g., /var/www/html):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;?</span><span style="color:#a6e22e">php</span> <span style="color:#a6e22e">phpinfo</span>(); <span style="color:#75715e">?&gt;</span><span style="color:#960050;background-color:#1e0010"> 
+</span></span></span></code></pre></div><p>Access the file in a web browser by navigating to <code>http://&lt;your-server-ip&gt;/info.php</code>. If PHP is installed correctly, you will see the PHP information page.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This tutorial has provided step-by-step instructions to install PHP 8.4 on a RHEL 9 system, along with enabling repositories and installing additional PHP modules. You can now begin developing or deploying web applications using PHP.</p>
+<p>The post How to Install PHP 8.4-7.4 on RHEL 9 appeared first on TecAdmin.</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

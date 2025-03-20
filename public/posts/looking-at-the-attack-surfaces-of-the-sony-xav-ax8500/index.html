@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Looking at the Attack Surfaces of the Sony XAV-AX8500</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Looking at the Attack Surfaces of the Sony XAV-AX8500</h1>
+			<b><time>10.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/cybersecurity">cybersecurity</a>
+        	       
+		           <a href="/tags/security">security</a>
+        	       
+		           <a href="/tags/zero_day">zero_day</a>
+        	       
+
+			<div>
+				<p>For the upcoming Pwn2Own Automotive contest a total of 4 head units have been selected. One of these is the single DIN Sony XAV-AX8500 that offers a variety of functionality such as wired and wireless Android Auto and Apple CarPlay as well as USB media playback and more.</p>
+<p>This blog post presents internal photos of the XAV-AX8500 boards and highlights each of the interesting components.</p>
+<p><strong>Internals</strong></p>
+<p>Accessing the internals of the XAV-AX8500 involves removing a few screws and metal plates. Once the main chassis is open 3 interconnected boards are exposed that are connected via flat flexible cables. The main board is shown below.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/28c2c2c8-555e-46a3-850d-ad57297c4475/Picture1.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p><em>Figure 1: Main board (top)</em></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>The main application processor is an NXP i.MX 8M Mini with part number MIMX8MM6CVTKZAA. This is a powerful processor with 4 Cortex-A53 cores as well as a low power Cortex M4 that is used for lighter workloads and also security related functions.</p>
+<p>To the left of the processor is the supporting SDRAM and eMMC the i.MX 8M Mini utilizes. The SDRAM is an 8Gb Nanya NT6AN256T32AV-J2 8Gb LPDDR4 chip and below that is a 16GB Samsung KLMAG1JETD eMMC chip.</p>
+<p>To the right of the eMMC is the Rohm BD71847A PMIC and further right is an unused socket. There&rsquo;s also HDMI and USB-C inputs towards the bottom right of the board.</p>
+<p>Above the unused socket is the Murata LBEE5ZZ1PJ radio module that handles Wi-Fi and Bluetooth operations.</p>
+<p>The underside of the main board is shown below.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/23d66940-eac5-4596-9b07-bdc105e1e413/Picture2.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p><em>Figure 2: Main board (underside)</em></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>There isn&rsquo;t much to see other than the Analog Devices ADV7482 video decoder and HDMI receiver chip.</p>
+<p>Next to the main board is a smaller board that receives GPS, iData Link and optional remote control input.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/0884e505-15f2-4a00-8f06-1b477e0d281a/Picture3.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p><em>Figure 3: GPS, iData Link and remote control board (top)</em></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>The GPS module is the Unicorecomm UM220-INS NL which is advertised as a &ldquo;High-end GNSS+MEMS Integrated Navigation and Positioning Module&rdquo;.</p>
+<p>Under both of these boards sits a much larger PCB that handles power and various other inputs and outputs such as audio and video. A photo of this board is shown below.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/45ce0a87-42b6-46a5-ad92-c4cf71f163ab/Picture4.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p><em>Figure 4: Power, audio and video board (top)</em></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Towards the bottom left is the LC88FC2H0A microcontroller from ON Semiconductor. This uses the obscure 16-bit Xstormy16 architecture and is suggested for use in white goods, home audio and car audio applications. To the left of the microcontroller is an unused 5 pin socket.</p>
+<p>The other components are related to power handling and digital signal processing.</p>
+<p>For completeness the underside of the board is shown below.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/fc7ce015-cdf5-4902-a348-de0553f965e2/Picture5.jpg?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p><em>Figure 5: Power, audio and video board (underside)</em></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>There isn&rsquo;t much of interest on this side.</p>
+<p><strong>Summary</strong></p>
+<p>Hopefully, this blog post provides enough information to kickstart vulnerability research against the XAV-AX8500. Keep an eye out for future posts that will cover the threat landscape of the XAV-AX8500.</p>
+<p>We are looking forward to Automotive Pwn2Own again in Tokyo in January 2025 at Automotive World, and we will see if IVI vendors have improved their product security. Don’t wait until the last minute to ask questions and register! We hope to see you there.</p>
+<p>You can find me on Twitter at @ByteInsight, and follow the team on Twitter, Mastodon, LinkedIn, or Bluesky for the latest in exploit techniques and security patches.</p>
+<p>For the upcoming Pwn2Own Automotive contest a total of 4 head units have been selected. One of these is the single DIN Sony XAV-AX8500 that offers a variety of functionality such as wired and wireless Android Auto and Apple CarPlay as well as USB media playback and more.</p>
+<p>This blog post presents internal photos of the XAV-AX8500 boards and highlights each of the interesting components.</p>
+<p><strong>Internals</strong></p>
+<p>Accessing the internals of the XAV-AX8500 involves removing a few screws and metal plates. Once the main chassis is open 3 interconnected boards are exposed that are connected via flat flexible cables. The main board is shown below.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/28c2c2c8-555e-46a3-850d-ad57297c4475/Picture1.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p><em>Figure 1: Main board (top)</em></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>The main application processor is an NXP i.MX 8M Mini with part number MIMX8MM6CVTKZAA. This is a powerful processor with 4 Cortex-A53 cores as well as a low power Cortex M4 that is used for lighter workloads and also security related functions.</p>
+<p>To the left of the processor is the supporting SDRAM and eMMC the i.MX 8M Mini utilizes. The SDRAM is an 8Gb Nanya NT6AN256T32AV-J2 8Gb LPDDR4 chip and below that is a 16GB Samsung KLMAG1JETD eMMC chip.</p>
+<p>To the right of the eMMC is the Rohm BD71847A PMIC and further right is an unused socket. There&rsquo;s also HDMI and USB-C inputs towards the bottom right of the board.</p>
+<p>Above the unused socket is the Murata LBEE5ZZ1PJ radio module that handles Wi-Fi and Bluetooth operations.</p>
+<p>The underside of the main board is shown below.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/23d66940-eac5-4596-9b07-bdc105e1e413/Picture2.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p><em>Figure 2: Main board (underside)</em></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>There isn&rsquo;t much to see other than the Analog Devices ADV7482 video decoder and HDMI receiver chip.</p>
+<p>Next to the main board is a smaller board that receives GPS, iData Link and optional remote control input.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/0884e505-15f2-4a00-8f06-1b477e0d281a/Picture3.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p><em>Figure 3: GPS, iData Link and remote control board (top)</em></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>The GPS module is the Unicorecomm UM220-INS NL which is advertised as a &ldquo;High-end GNSS+MEMS Integrated Navigation and Positioning Module&rdquo;.</p>
+<p>Under both of these boards sits a much larger PCB that handles power and various other inputs and outputs such as audio and video. A photo of this board is shown below.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/45ce0a87-42b6-46a5-ad92-c4cf71f163ab/Picture4.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p><em>Figure 4: Power, audio and video board (top)</em></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Towards the bottom left is the LC88FC2H0A microcontroller from ON Semiconductor. This uses the obscure 16-bit Xstormy16 architecture and is suggested for use in white goods, home audio and car audio applications. To the left of the microcontroller is an unused 5 pin socket.</p>
+<p>The other components are related to power handling and digital signal processing.</p>
+<p>For completeness the underside of the board is shown below.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/fc7ce015-cdf5-4902-a348-de0553f965e2/Picture5.jpg?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p><em>Figure 5: Power, audio and video board (underside)</em></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>There isn&rsquo;t much of interest on this side.</p>
+<p><strong>Summary</strong></p>
+<p>Hopefully, this blog post provides enough information to kickstart vulnerability research against the XAV-AX8500. Keep an eye out for future posts that will cover the threat landscape of the XAV-AX8500.</p>
+<p>We are looking forward to Automotive Pwn2Own again in Tokyo in January 2025 at Automotive World, and we will see if IVI vendors have improved their product security. Don’t wait until the last minute to ask questions and register! We hope to see you there.</p>
+<p>You can find me on Twitter at @ByteInsight, and follow the team on Twitter, Mastodon, LinkedIn, or Bluesky for the latest in exploit techniques and security patches.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

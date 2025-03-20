@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Sign in as anyone: Bypassing SAML SSO authentication with parser differentials</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Sign in as anyone: Bypassing SAML SSO authentication with parser differentials</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>Critical authentication bypass vulnerabilities (CVE-2025-25291 + CVE-2025-25292) were discovered in ruby-saml up to version 1.17.0. In this blog post, we&rsquo;ll shed light on how these vulnerabilities that rely on a parser differential were uncovered.</p>
+<p>The post Sign in as anyone: Bypassing SAML SSO authentication with parser differentials appeared first on The GitHub Blog.</p>
+<blockquote>
+<p>Critical authentication bypass vulnerabilities (CVE-2025-25291 + CVE-2025-25292) were discovered in ruby-saml up to version 1.17.0. Attackers who are in possession of a single valid signature that was created with the key used to validate SAML responses or assertions of the targeted organization can use it to construct SAML assertions themselves and are in turn able to log in as any user. In other words, it could be used for an account takeover attack. Users of ruby-saml should update to version 1.18.0. References to libraries making use of ruby-saml (such as omniauth-saml) need also be updated to a version that reference a fixed version of ruby-saml.</p></blockquote>
+<p>In this blog post, we detail newly discovered authentication bypass vulnerabilities in the ruby-saml library used for single sign-on (SSO) via SAML on the service provider (application) side. GitHub doesn’t currently use ruby-saml for authentication, but began evaluating the use of the library with the intention of using an open source library for SAML authentication once more. This library is, however, used in other popular projects and products. We discovered an exploitable instance of this vulnerability in GitLab, and have notified their security team so they can take necessary actions to protect their users against potential attacks.</p>
+<p>GitHub previously used the ruby-saml library up to 2014, but moved to our own SAML implementation due to missing features in ruby-saml at that time. Following bug bounty reports around vulnerabilities in our own implementation (such as CVE-2024-9487, related to encrypted assertions), GitHub recently decided to explore the use of ruby-saml again. Then in October 2024, a blockbuster vulnerability dropped: an authentication bypass in ruby-saml (CVE-2024-45409) by ahacker1. With tangible evidence of exploitable attack surface, GitHub’s switch to ruby-saml had to be evaluated more thoroughly now. As such, GitHub started a private bug bounty engagement to evaluate the security of the ruby-saml library. We gave selected bug bounty researchers access to GitHub test environments using ruby-saml for SAML authentication. In tandem, the GitHub Security Lab also reviewed the attack surface of the ruby-saml library.</p>
+<p>As is not uncommon when multiple researchers are looking at the same code, both ahacker1, a participant in the GitHub bug bounty program, and I noticed the same thing during code review: ruby-saml was using two different XML parsers during the code path of signature verification. Namely, REXML and Nokogiri. While REXML is an XML parser implemented in pure Ruby, Nokogiri provides an easy-to-use wrapper API around different libraries like libxml2, libgumbo and Xerces (used for JRuby). Nokogiri supports parsing of XML and HTML. It looks like Nokogiri was added to ruby-saml to support canonicalization and potentially other things REXML didn’t support at that time.</p>
+<p>We both inspected the same code path in the <code>validate_signature</code> of <code>xml_security.rb</code> and found that the signature element to be verified is first read via REXML, and then also with Nokogiri’s XML parser. So, if REXML and Nokogiri could be tricked into retrieving different signature elements for the same XPath query it might be possible to trick ruby-saml into verifying the wrong signature. It looked like there could be a potential authentication bypass due to a <strong>parser differential</strong>!</p>
+<p>The reality was actually more complicated than this.</p>
+<p><strong>Parser differentials</strong> occur when different parsers interpret the same input in different ways. There are other documented samples of parser differentials while parsing XML that led to a security impact:</p>
+<ul>
+<li>“XMPP Stanza Smuggling or How I Hacked Zoom” by Ivan Fratric</li>
+<li>“Psychic paper” by Siguza</li>
+</ul>
+<p>But parser differentials are far more common than that and in no way limited to file formats. Other kinds of vulnerabilities often have a parser differential at their core. For example, how URLs are parsed in certain server-side request forgery (SSRF) vulnerabilities or how HTTP headers are interpreted in request smuggling attacks.</p>
+<p>The LangSec paper “A Survey of Parser Differential Anti-Patterns” by Ali and Smith categorizes real world parser differentials with regards to their root causes.</p>
+<p>Roughly speaking, four stages were involved in the discovery of this authentication bypass:</p>
+<ol>
+<li>Discovering that two different XML parsers are used during code review.</li>
+<li>Establishing if and how a parser differential could be exploited.</li>
+<li>Finding an actual parser differential for the parsers in use.</li>
+<li>Leveraging the parser differential to create a full-blown exploit.</li>
+</ol>
+<p>To prove the security impact of this vulnerability, it was necessary to complete all four stages and create a full-blown authentication bypass exploit.</p>
+<h2 id="quick-recap-how-saml-responses-are-validated">Quick recap: how SAML responses are validated</h2>
+<p>Security assertion markup language (SAML) responses are used to transport information about a signed-in user from the identity provider (IdP) to the service provider (SP) in XML format. Often the only important information transported is a username or an email address. When the HTTP POST binding is used, the SAML response travels from the IdP to the SP via the browser of the end user. This makes it obvious why there has to be some sort of signature verification in play to prevent the user from tampering with the message.</p>
+<p>Let’s have a quick look at what a simplified SAML response looks like:<br>
+
+<figure>
+  <img src="https://github.blog/wp-content/uploads/2025/03/goodassertion7_2.png?resize=1024%2C355" alt="A diagram depicting a simplified SAML response on the left and the verification of the digest and the signature on the right." />
+</figure>
+
+
+</p>
+<p><em>Note: in the response above the XML namespaces were removed for better readability.</em></p>
+<p>As you might have noticed: the main part of a simple SAML response is its assertion element (A), whereas the main information contained in the assertion is the information contained in the <code>Subject</code> element (B) (here the NameID containing the username: admin). A real assertion typically contains more information (e.g. <code>NotBefore</code> and <code>NotOnOrAfter</code> dates as part of a <code>Conditions</code> element.)</p>
+<p>Normally, the <code>Assertion</code> (A) (without the whole <code>Signature</code> part) is canonicalized and then compared against the <code>DigestValue</code> (C) and the <code>SignedInfo</code> (D) is canonicalized and verified against the <code>SignatureValue</code> (E). In this sample, the assertion of the SAML response is signed, and in other cases the whole SAML response is signed.</p>
+<h2 id="searching-for-parser-differentials">Searching for parser differentials</h2>
+<p>We learned that ruby-saml used two different XML parsers (REXML and Nokogiri) for validating the SAML response. Now let’s have a look at the verification of the signature and the digest comparison.<br>
+The focus of the following explanation lies on the <code>validate_signature</code> method inside of <code>xml_security.rb</code>.</p>
+<p>Inside that method, there’s a broad XPath query with REXML for the first signature element inside the SAML document:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>sig_element = REXML::XPath.first(
+</span></span><span style="display:flex;"><span>  @working_copy,
+</span></span><span style="display:flex;"><span>  &#34;//ds:Signature&#34;,
+</span></span><span style="display:flex;"><span>  {&#34;ds&#34;=&gt;DSIG}
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><p><em>Hint: When reading the code snippets, you can tell the difference between queries for REXML and Nokogiri by looking at how they are called. REXML methods are prefixed with <code>REXML::</code>, whereas Nokogiri methods are called on <code>document</code>.</em></p>
+<p>Later, the actual <code>SignatureValue</code> is read from this element:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>base64_signature = REXML::XPath.first(
+</span></span><span style="display:flex;"><span>  sig_element,
+</span></span><span style="display:flex;"><span>  &#34;./ds:SignatureValue&#34;,
+</span></span><span style="display:flex;"><span>  {&#34;ds&#34; =&gt; DSIG}
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>signature = Base64.decode64(OneLogin::RubySaml::Utils.element_text(base64_signature))
+</span></span></code></pre></div><p>Note: the name of the <code>Signature</code> element might be a bit confusing. While it contains the actual signature in the <code>SignatureValue</code> node it also contains the part that is actually signed in the <code>SignedInfo</code> node. Most importantly the <code>DigestValue</code> element contains the digest (hash) of the assertion and information about the used key.</p>
+<p>So, an actual <code>Signature</code> element could look like this (removed namespace information for better readability):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>&lt;Signature&gt;
+</span></span><span style="display:flex;"><span>    &lt;SignedInfo&gt;
+</span></span><span style="display:flex;"><span>        &lt;CanonicalizationMethod Algorithm=&#34;http://www.w3.org/2001/10/xml-exc-c14n#&#34; /&gt;
+</span></span><span style="display:flex;"><span>        &lt;SignatureMethod Algorithm=&#34;http://www.w3.org/2001/04/xmldsig-more#rsa-sha256&#34; /&gt;
+</span></span><span style="display:flex;"><span>        &lt;Reference URI=&#34;#_SAMEID&#34;&gt;
+</span></span><span style="display:flex;"><span>            &lt;Transforms&gt;&lt;Transform Algorithm=&#34;http://www.w3.org/2001/10/xml-exc-c14n#&#34; /&gt;&lt;/Transforms&gt;
+</span></span><span style="display:flex;"><span>            &lt;DigestMethod Algorithm=&#34;http://www.w3.org/2001/04/xmlenc#sha256&#34; /&gt;
+</span></span><span style="display:flex;"><span>            &lt;DigestValue&gt;Su4v[..]&lt;/DigestValue&gt;
+</span></span><span style="display:flex;"><span>        &lt;/Reference&gt;
+</span></span><span style="display:flex;"><span>    &lt;/SignedInfo&gt;
+</span></span><span style="display:flex;"><span>    &lt;SignatureValue&gt;L8/i[..]&lt;/SignatureValue&gt;
+</span></span><span style="display:flex;"><span>    &lt;KeyInfo&gt;
+</span></span><span style="display:flex;"><span>        &lt;X509Data&gt;
+</span></span><span style="display:flex;"><span>            &lt;X509Certificate&gt;MIID[..]&lt;/X509Certificate&gt;
+</span></span><span style="display:flex;"><span>        &lt;/X509Data&gt;
+</span></span><span style="display:flex;"><span>    &lt;/KeyInfo&gt;
+</span></span><span style="display:flex;"><span>&lt;/Signature&gt;
+</span></span></code></pre></div><p>Later in the same method (<code>validate_signature</code>) there’s again a query for the Signature(s)—but this time with Nokogiri.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>noko_sig_element = document.at_xpath(&#39;//ds:Signature&#39;, &#39;ds&#39; =&gt; DSIG)
+</span></span></code></pre></div><p>Then the <code>SignedInfo</code> element is taken from that signature and canonicalized:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>noko_signed_info_element = noko_sig_element.at_xpath(&#39;./ds:SignedInfo&#39;, &#39;ds&#39; =&gt; DSIG)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>canon_string = noko_signed_info_element.canonicalize(canon_algorithm)
+</span></span></code></pre></div><p>Let’s remember this <code>canon_string</code> contains the canonicalized <code>SignedInfo</code> element.</p>
+<p>The <code>SignedInfo</code> element is then also extracted with REXML:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span> signed_info_element = REXML::XPath.first(
+</span></span><span style="display:flex;"><span>        sig_element,
+</span></span><span style="display:flex;"><span>        &#34;./ds:SignedInfo&#34;,
+</span></span><span style="display:flex;"><span>        { &#34;ds&#34; =&gt; DSIG }
+</span></span><span style="display:flex;"><span> )
+</span></span></code></pre></div><p>From this <code>SignedInfo</code> element the <code>Reference</code> node is read:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>ref = REXML::XPath.first(signed_info_element, &#34;./ds:Reference&#34;, {&#34;ds&#34;=&gt;DSIG})
+</span></span></code></pre></div><p>Now the code queries for the referenced node by looking for nodes with the signed element id using Nokogiri:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>reference_nodes = document.xpath(&#34;//*[@ID=$id]&#34;, nil, { &#39;id&#39; =&gt; extract_signed_element_id })
+</span></span></code></pre></div><p>The method <code>extract_signed_element_id</code> extracts the signed element id with help of REXML. From the previous authentication bypass (CVE-2024-45409), there’s now a check that only one element with the same ID can exist.</p>
+<p>The first of the <code>reference_nodes</code> is taken and canonicalized:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>hashed_element = reference_nodes[0][..]canon_hashed_element = hashed_element.canonicalize(canon_algorithm, inclusive_namespaces)
+</span></span></code></pre></div><p>The <code>canon_hashed_element</code> is then hashed:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>hash = digest_algorithm.digest(canon_hashed_element)
+</span></span></code></pre></div><p>The <code>DigestValue</code> to compare it against is then extracted with REXML:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>encoded_digest_value = REXML::XPath.first(
+</span></span><span style="display:flex;"><span>        ref,
+</span></span><span style="display:flex;"><span>        &#34;./ds:DigestValue&#34;,
+</span></span><span style="display:flex;"><span>        { &#34;ds&#34; =&gt; DSIG }
+</span></span><span style="display:flex;"><span>      )
+</span></span><span style="display:flex;"><span>digest_value = Base64.decode64(OneLogin::RubySaml::Utils.element_text(encoded_digest_value))
+</span></span></code></pre></div><p>Finally, the <code>hash</code> (built from the element extracted by Nokogiri) is compared against the <code>digest_value</code> (extracted with REXML):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>unless digests_match?(hash, digest_value)
+</span></span></code></pre></div><p>The <code>canon_string</code> extracted some lines ago (a result of an extraction with Nokogiri) is later verified against <code>signature</code> (extracted with REXML).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>unless cert.public_key.verify(signature_algorithm.new, signature, canon_string)
+</span></span></code></pre></div><p>In the end, we have the following constellation:</p>
+<ol>
+<li>The assertion is extracted and canonicalized with Nokogiri, and then hashed. In contrast, the hash against which it will be compared is extracted with REXML.</li>
+<li>The SignedInfo element is extracted and canonicalized with Nokogiri - it is then verified against the SignatureValue, which was extracted with REXML.</li>
+</ol>
+<h2 id="exploiting-the-parser-differential">Exploiting the parser differential</h2>
+<p>The question is: is it possible to create an XML document where REXML sees one signature and Nokogiri sees another?</p>
+<p>It turns out, yes.</p>
+<p>Ahacker1, participating in the bug bounty, was faster to produce a working exploit using a parser differential. Among other things, ahacker1 was inspired by the XML roundtrips vulnerabilities published by Mattermost’s Juho Forsén in 2021.</p>
+<p>Not much later, I produced an exploit using a different parser differential with the help of Trail of Bits’ Ruby fuzzer called ruzzy.</p>
+<p>Both exploits result in an authentication bypass. Meaning that an attacker, who is in possession of a single valid signature that was created with the key used to validate SAML responses or assertions of the targeted organization, can use it to construct assertions for any users which will be accepted by ruby-saml. Such a signature can either come from a signed assertion or response from another (unprivileged) user or in certain cases, it can even come from signed metadata of a SAML identity provider (which can be publicly accessible).</p>
+<p>An exploit could look like this. Here, an additional Signature was added as part of the <code>StatusDetail</code> element that is only visible to Nokogiri:</p>
+<p>
+<figure>
+  <img src="https://github.blog/wp-content/uploads/2025/03/rubysaml-parser-diff-simplified8_2.png?resize=1024%2C400" alt="A diagram depicting a simplified SAML response on the left and the verification of the digest and the signature on the right. For both the signature and the digest verification one part is extracted using Nokogiri and the other using REXML." />
+</figure>
+
+
+</p>
+<p>In summary:</p>
+<p>The <code>SignedInfo</code> element (A) from the signature that is visible to Nokogiri is canonicalized and verified against the <code>SignatureValue</code> (B) that was extracted from the signature seen by REXML.</p>
+<p>The assertion is retrieved via Nokogiri by looking for its ID. This assertion is then canonicalized and hashed (C). The hash is then compared to the hash contained in the <code>DigestValue</code> (D). This DigestValue was retrieved via REXML. This DigestValue has no corresponding signature.</p>
+<p>So, two things take place:</p>
+<ul>
+<li>A valid SignedInfo with DigestValue is verified against a valid signature. (which checks out)</li>
+<li>A fabricated canonicalized assertion is compared against its calculated digest. (which checks out as well)</li>
+</ul>
+<p>This allows an attacker, who is in possession of a valid signed assertion for any (unprivileged) user, to fabricate assertions and as such impersonate any other user.</p>
+<h3 id="check-for-errors-when-using-nokogiri">Check for errors when using Nokogiri</h3>
+<p>Parts of the currently known, undisclosed exploits can be stopped by checking for Nokogiri parsing errors on SAML responses. Sadly, those errors do not result in exceptions, but need to be checked on the <code>errors</code> member of the parsed document:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>doc = Nokogiri::XML(xml) do |config|
+</span></span><span style="display:flex;"><span>  config.options = Nokogiri::XML::ParseOptions::STRICT | Nokogiri::XML::ParseOptions::NONET
+</span></span><span style="display:flex;"><span>end
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>raise &#34;XML errors when parsing: &#34; + doc.errors.to_s if doc.errors.any?
+</span></span></code></pre></div><p>While this is far from a perfect fix for the issues at hand, it renders at least one exploit infeasible.</p>
+<h2 id="indicators-of-compromise">Indicators of compromise</h2>
+<p>We are not aware of any reliable indicators of compromise. While we’ve found a potential indicator of compromise, it only works in debug-like environments and to publish it, we would have to reveal too many details about how to implement a working exploit so we’ve decided that it’s better not to publish it. Instead, our best recommendation is to look for suspicious logins via SAML on the service provider side from IP addresses that do not align with the user’s expected location.</p>
+<h2 id="saml-and-xml-signaturesas-confusing-as-it-gets">SAML and XML signatures:as confusing as it gets</h2>
+<p>Some might say it’s hard to integrate systems with SAML. That might be true. However, it’s even harder to write implementations of SAML using XML signatures in a secure way. As others have stated before: it’s probably best to disregard the specifications, as following them doesn’t help build secure implementations.<br>
+To rehash how the validation works if the SAML assertion is signed, let’s have a look at the graphic below, depicting a simplified SAML response. The assertion, which transports the protected information, contains a signature. Confusing, right?</p>
+<p>
+<figure>
+  <img src="https://github.blog/wp-content/uploads/2025/03/conclusion-combined-saml.png?resize=1024%2C497" alt="A diagram showing a SAML response and its parts: the Assertion containing the Signature and the Signature containing the SignedInfo of which the DigestValue is a part." />
+</figure>
+
+
+</p>
+<p>To complicate it even more: What is even signed here? The whole assertion? No!</p>
+<p>What’s signed is the <code>SignedInfo</code> element and the <code>SignedInfo</code> element contains a <code>DigestValue</code>. This <code>DigestValue</code> is the hash of the canonicalized assertion with the signature element removed before the canonicalization. This two-stage verification process can lead to implementations that have a disconnect between the verification of the hash and the verification of the signature. This is the case for these Ruby-SAML parser differentials: while the hash and the signature check out on their own, they have no connection. The hash is actually a hash of the assertion, but the signature is a signature of a different <code>SignedInfo</code> element containing another hash. What you actually want is a direct connection between the hashed content, the hash, and the signature. (And once the verification is done you only want to retrieve information from the exact part that was actually verified.) Or, alternatively, use a less complicated standard to transport a cryptographically signed username between two systems - but here we are.</p>
+<p>In this case, the library already extracted the <code>SignedInfo</code> and used it to verify the signature of its canonicalized string,<code>canon_string</code>. However, it did not use it to obtain the digest value. If the library had used the content of the already extracted <code>SignedInfo</code> to obtain the digest value, it would have been secure in this case even with two XML parsers in use.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>As shown once again: relying on two different parsers in a security context can be tricky and error-prone. That being said: exploitability is not automatically guaranteed in such cases. As we have seen in this case, checking for Nokogiri errors could not have prevented the parser differential, but could have stopped at least one practical exploitation of it.</p>
+<p>The initial fix for the authentication bypasses does not remove one of the XML parsers to prevent API compatibility problems. As noted, the more fundamental issue was the disconnect between verification of the hash and verification of the signature, which was exploitable via parser differentials. The removal of one of the XML parsers was already planned for other reasons, and will likely come as part of a major release in combination with additional improvements to strengthen the library. If your company relies on open source software for business-critical functionality, consider sponsoring them to help fund their future development and bug fix releases.</p>
+<p>If you’re a user of ruby-saml library, make sure to update to the latest version, 1.18.0, containing fixes for CVE-2025-25291 and CVE-2025-25292. References to libraries making use of ruby-saml (such as omniauth-saml) need also be updated to a version that reference a fixed version of ruby-saml. We will publish a proof of concept exploit at a later date in the GitHub Security Lab repository.</p>
+<h3 id="acknowledgments">Acknowledgments</h3>
+<p>Special thanks to Sixto Martín, maintainer of ruby-saml, and Jeff Guerra from the GitHub Bug Bounty program.<br>
+Special thanks also to ahacker1 for giving inputs to this blog post.</p>
+<h3 id="timeline">Timeline</h3>
+<ul>
+<li>2024-11-04: Bug bounty report demonstrating an authentication bypass was reported against a GitHub test environment evaluating ruby-saml for SAML authentication.</li>
+<li>2024-11-04: Work started to identify and test potential mitigations.</li>
+<li>2024-11-12: A second authentication bypass was found by Peter that renders the planned mitigations for the first useless.</li>
+<li>2024-11-13: Initial contact with Sixto Martín, maintainer of ruby-saml.</li>
+<li>2024-11-14: Both parser differentials are reported to ruby-saml, the maintainer responds immediately.</li>
+<li>2024-11-14: The work on potential patches by the maintainer and ahacker1 begins. (One of the initial ideas was to remove one of the XML parsers, but this was not feasible without breaking backwards compatibility).</li>
+<li>2025-02-04: ahacker1 proposes a non-backwards compatible fix.</li>
+<li>2025-02-06: ahacker1 also proposes a backwards compatible fix.</li>
+<li>2025-02-12: The 90 days deadline of GitHub Security Lab advisories ends.</li>
+<li>2025-02-16: The maintainer starts working on a fix with the idea to be backwards-compatible and easier to understand.</li>
+<li>2025-02-17: Initial contact with GitLab to coordinate a release of their on-prem product with the release of the ruby-saml library.</li>
+<li>2025-03-12: A fixed version of ruby-saml was released.</li>
+</ul>
+<p>The post Sign in as anyone: Bypassing SAML SSO authentication with parser differentials appeared first on The GitHub Blog.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

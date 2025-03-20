@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Automatic certificate issuing with IdM and cert-manager operator for OpenShift</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Automatic certificate issuing with IdM and cert-manager operator for OpenShift</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>This article will show you how to automatically issue certificates using Identity Management in Red Hat Enterprise Linux (IdM) and cert-manager operator for OpenShift.</p>
+<p>Securing communications is a must, not only to protect the data but to provide greater data integrity as well. Applications achieve greater communications security using cryptographic certificates, but these certificates have their own lifecycle. They need to be renewed when expired and the renewal process, when done manually, is prone to errors.</p>
+<p>One of the challenges that modern organizations face is managing a certificate&rsquo;s lifecycle automatically. Application certificates must remain valid to grant not only more secure communications but also to keep application clients&rsquo; trust.</p>
+<p>Automating a certificate&rsquo;s lifecycle means that the platform running the application must interact with a Certification Authority (CA) to request a new certificate. Both parts need to authenticate and exchange information during the process. Deploying a Public Key Infrastructure (PKI) is not an easy task. However, the Internet Security Research Group (ISRG) designed the Automatic Certificate Management Environment (ACME) protocol for its nonprofit CA &ldquo;Let’s Encrypt&rdquo;, becoming the world’s largest CA. ACME has become a standard for certificate management being implemented by many PKI’s around the world.</p>
+<p>Red Hat OpenShift is one of the leaders in container management. Managing a certificate&rsquo;s lifecycle is important, you can take advantage of this to help manage certificate lifecycles via the cert-manager operator for Red Hat OpenShift, which supports the ACME protocol.</p>
+<p><strong>NOTE:</strong> IdM ACME capabilities are Technology Preview (TP) in RHEL 9, so this feature is not ready for production yet.</p>
+<h2 id="idm-as-a-private-acme-server">IdM as a private ACME server</h2>
+<p>Traditionally, issuing certificates has been a manual process, but that process does not scale well when the environment is dynamic or the number of certificates is large.</p>
+<p>To address this challenge, OpenShift relies on a wildcard certificate to expose applications with greater security to the external world under the <code>*.apps</code> subdomain. A wildcard certificate is a convenient approach because it only needs to be configured in one place, but in some organizations wildcard certificates are not allowed. </p>
+<p>Not long ago, the only alternative was to issue certificates manually for every OpenShift application. This is when the ACME protocol came into play, allowing automated interactions between CAs and clients. You can implement your own ACME CA using the IdM CA capabilities. </p>
+<p>IdM will be acting as the private ACME server and the cert-manager operator for OpenShift as the ACME client (see Figure 1). </p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/acme-client-server_0.png?itok=BCuxuEe3" alt="Diagram of IdM acting as ACME server and cert-manager as ACME client." />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 1. IdM and cert-manager as ACME server and client.</p>
+<!-- raw HTML omitted -->
+<p>License under Apache 2.0. Jorge Tudela González de Riancho,</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Figure 1: IdM and cert-manager as ACME server and client.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>We will depict two scenarios where a certificate will be issued automatically by IdM:</p>
+<ul>
+<li>Using ACME HTTP-01 challenge with a Kubernetes Ingress resource.</li>
+<li>Using a cert-manager Certificate resource.</li>
+</ul>
+<p>Before delving into each scenario, we need to install and configure the cert-manager operator for OpenShift and then create a cert-manager ACME Issuer to define IdM as the ACME server.</p>
+<h2 id="install-and-configure-the-cert-manager-operator-for-openshift">Install and configure the cert-manager operator for OpenShift</h2>
+<p>Let&rsquo;s install and configure the cert-manager operator. First we need to create the Namespace, OperatorGroup, and Subscription resources: </p>
+<pre tabindex="0"><code class="language-input" data-lang="input">---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager-operator
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: cert-manager-operator
+  namespace: cert-manager-operator
+spec:
+  targetNamespaces:
+  - cert-manager-operator
+  upgradeStrategy: Default
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: openshift-cert-manager-operator
+  namespace: cert-manager-operator
+spec:
+  channel: stable-v1
+  installPlanApproval: Automatic
+  name: openshift-cert-manager-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: cert-manager-operator.v1.14.1
+</code></pre><p><strong>NOTE:</strong> You can install the cert-manager operator for OpenShift using the OpenShift web console as well.</p>
+<p>The cert-manager operator will create the cert-manager Namespace and deploy the cert-manager Pods. See below:</p>
+<pre tabindex="0"><code class="language-output" data-lang="output">$ oc get pods -n cert-manager
+NAME                                       READY   STATUS    RESTARTS   AGE
+cert-manager-7665468798-4w75r              1/1     Running   0          5h12m
+cert-manager-cainjector-7c47d699c5-scx24   1/1     Running   0          5h12m
+cert-manager-webhook-7f764d5568-ssbwc      1/1     Running   0          5h12m
+</code></pre><p>The cert-manager operator needs to trust the IdM server TLS certificate. Assuming that we have already updated the OpenShift cluster CA bundle to trust IdM, we need to inject the CA into the cert-manager operator.</p>
+<p>First we create the ConfigMap with the right label for the cluster CA to be injected and then patch the cert-manager operator Subscription:</p>
+<pre tabindex="0"><code class="language-output" data-lang="output">$ oc create configmap trusted-ca -n cert-manager
+$ oc label cm trusted-ca config.openshift.io/inject-trusted-cabundle=true -n cert-manager
+$ oc -n cert-manager-operator patch subscription openshift-cert-manager-operator --type=&#39;merge&#39; -p &#39;{&#34;spec&#34;:{&#34;config&#34;:{&#34;env&#34;:[{&#34;name&#34;:&#34;TRUSTED_CA_CONFIGMAP_NAME&#34;,&#34;value&#34;:&#34;trusted-ca&#34;}]}}}&#39; 
+</code></pre><p>Roll out the cert-manager operator and cert-manager Deployments:</p>
+<pre tabindex="0"><code class="language-output" data-lang="output">$ oc rollout status deployment/cert-manager-operator-controller-manager -n cert-manager-operator &amp;&amp; 
+oc rollout status deployment/cert-manager -n cert-manager &amp;&amp; 
+oc rollout status deployment/cert-manager-webhook -n cert-manager &amp;&amp; 
+oc rollout status deployment/cert-manager-cainjector -n cert-manager
+</code></pre><p>Verify the CA has been properly mounted in the cert-manager Pods:</p>
+<pre tabindex="0"><code class="language-output" data-lang="output">$ oc get deployment cert-manager -n cert-manager -o=jsonpath={.spec.template.spec.volumes[0]}
+{&#34;configMap&#34;:{&#34;defaultMode&#34;:420,&#34;name&#34;:&#34;trusted-ca&#34;},&#34;name&#34;:&#34;trusted-ca&#34;}
+$ oc get deployment cert-manager -n cert-manager -o=jsonpath={.spec.template.spec.&#39;containers[0].volumeMounts[0]&#39;}
+{&#34;mountPath&#34;:&#34;/etc/pki/tls/certs/cert-manager-tls-ca-bundle.crt&#34;,&#34;name&#34;:&#34;trusted-ca&#34;,&#34;subPath&#34;:&#34;ca-bundle.crt&#34;}
+</code></pre><h3 id="create-cert-manager-acme-http-01-issuer">Create cert-manager ACME HTTP-01 issuer</h3>
+<p>We are using the ACME HTTP-01 challenge, which is fully supported by the cert-manager operator and TP for IdM in RHEL 9.</p>
+<p>Because of how the ACME HTTP-01 challenge works, bidirectional communication is needed between the ACME server (IdM) and the ACME client (cert-manager operator). The ACME HTTP-01 challenge can only be done on port 80. IdM is installed with ACME enabled at <code>https://idm.melmac.univ</code>. </p>
+<p>Let&rsquo;s create the cert-manager ACME HTTP-01 ClusterIssuer to use our IdM server as the private ACME server:</p>
+<pre tabindex="0"><code class="language-input" data-lang="input">apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: idm-acme
+spec:
+  acme:
+    preferredChain: &#34;&#34;
+    privateKeySecretRef:
+      name: idm-acme-issuer-private-key
+    server: https://idm.melmac.univ/acme/directory
+    solvers:
+    - http01:
+        ingress:
+          ingressClassName: openshift-default
+</code></pre><p>The difference between a cert-manager Issuer and a ClusterIssuer is that Issuer resources are namespace scoped and can only be referenced by Certificates in the same Namespace, while ClusterIssuers are cluster scoped resources and can be referenced by Certificates in any Namespace.</p>
+<h2 id="use-acme-http-01-challenge-with-a-kubernetes-ingress-resource">Use ACME HTTP-01 challenge with a Kubernetes Ingress resource</h2>
+<p>TLS certificates will be requested by cert-manager securing your Ingress resources by simply adding annotations to the Ingress resources, then cert-manager will create the Certificate resource for you.</p>
+<p>We will deploy a dummy application, hello-openshift, and use an Ingress resource to expose it to the external world. We will protect the application using a TLS certificate automatically issued by IdM.</p>
+<p>First we deploy the <code>hello-openshift</code> application:</p>
+<pre tabindex="0"><code class="language-input" data-lang="input">---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hello-openshift
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hello-openshift
+    app.kubernetes.io/component: hello-openshift
+    app.kubernetes.io/instance: hello-openshift
+  name: hello-openshift
+  namespace: hello-openshift
+spec:
+  selector:
+    matchLabels:
+      deployment: hello-openshift
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        deployment: hello-openshift
+    spec:
+      containers:
+      - image: quay.io/openshifttest/hello-openshift:1.2.0
+        imagePullPolicy: IfNotPresent
+        name: hello-openshift
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8888
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: hello-openshift
+    app.kubernetes.io/component: hello-openshift
+    app.kubernetes.io/instance: hello-openshift
+  name: hello-openshift
+  namespace: hello-openshift
+spec:
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  - name: 8888-tcp
+    port: 8888
+    protocol: TCP
+    targetPort: 8888
+  selector:
+    deployment: hello-openshift
+  sessionAffinity: None
+  type: ClusterIP
+</code></pre><p>Once the application is deployed, we create an Ingress resource annotated with <code>cert-manager.io/cluster-issuer: idm-acme</code>, where <code>idm-acme</code> is the name of cert-manager ClusterIssuer we created before. See below:</p>
+<pre tabindex="0"><code class="language-input" data-lang="input">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: idm-acme
+  name: hello-openshift
+  namespace: hello-openshift
+spec:
+  ingressClassName: openshift-default
+  rules:
+  - host: hello-openshift.apps.qisdetdd.eastus.aroapp.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: hello-openshift
+            port:
+              number: 8080
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - hello-openshift.apps.qisdetdd.eastus.aroapp.io
+    secretName: ingress-hello-openshift
+</code></pre><p>A few seconds after creating the Ingress resource we will see a temporary Ingress resource <code>cm-acme-http-solver-XXXX</code> created by the cert-manager operator as the ACME HTTP01 challenge solver. We can also verify this temporary solver Ingress resource is only published on port 80 as mentioned before:</p>
+<pre tabindex="0"><code class="language-output" data-lang="output">$ oc -n hello-openshift get ingress
+NAME        CLASS      HOSTS        ADDRESS      PORTS        AGE
+cm-acme-http-solver-x9v7d   openshift-default   hello-openshift.apps.qisdetdd.eastus.aroapp.io    router-default.apps.qisdetdd.eastus.aroapp.io   80        13s
+hello-openshift             openshift-default   hello-openshift.apps.qisdetdd.eastus.aroapp.io   router-default.apps.qisdetdd.eastus.aroapp.io   80, 443   98s
+</code></pre><p>The Certificate resource has been created in the <code>hello-openshift</code> Namespace and there is a new Secret as well. The Certificate resource will take a few seconds to change to <code>Ready=True</code> status. See below: </p>
+<pre tabindex="0"><code class="language-output" data-lang="output">$ oc -n hello-openshift get certificate
+NAME                      READY   SECRET                    AGE
+ingress-hello-openshift   True    ingress-hello-openshift   89m
+$ oc -n hello-openshift get secret ingress-hello-openshift
+NAME                      TYPE                DATA   AGE
+ingress-hello-openshift   kubernetes.io/tls   3      90m
+</code></pre><p> If we browse the application defined in the Ingress resource <code>https://hello-openshift.apps.qisdetdd.eastus.aroapp.io</code>, we can inspect the TLS certificate and see that it has been issued by the IdM CA (see Figure 2). </p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/hello-ocp-cert-firefox.png?itok=Eq9gz-1C" alt="Mozilla Firefox displaying the TLS certificate of the hello-openshift app." />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 2. hello-openshift app TLS certificate in the web browser.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Figure 2: hello-openshift app TLS certificate in the web browser.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p> Figure 3 shows that a new certificate has been created in IdM.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/hello-ocp-cert-idm_0.png?itok=NT6lt1lW" alt="hello-openshift app certificated shown in IdM with a default duration of 90 days." />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 3. hello-openshift app TLS certificate shown in IdM</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Figure 3: hello-openshift app TLS certificate shown in IdM.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h2 id="use-a-cert-manager-certificate-resource">Use a cert-manager Certificate resource</h2>
+<p>In this scenario we will generate a TLS certificate stored in a Kubernetes Secret, with no application involved. There are situations where a TLS certificate is needed for infrastructure purposes rather than application purposes. </p>
+<p>We need to create a cert-manager Certificate resource:</p>
+<pre tabindex="0"><code class="language-input" data-lang="input">---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test-cert-manager
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: test-cert
+  namespace: test-cert-manager
+spec:
+  isCA: false
+  secretName: test-cert
+  commonName: &#34;test-cert-manager.apps.qisdetdd.eastus.aroapp.io&#34;
+  dnsNames:
+  - &#34;test-cert-manager.apps.qisdetdd.eastus.aroapp.io&#34;
+  issuerRef:
+    name: idm-acme
+    kind: ClusterIssuer
+</code></pre><p>If everything goes well we should see the Certificate resource in <code>Ready=True</code> state and a Kubernetes Secret storing the TLS certificate and key issued by the IdM CA. See below:</p>
+<pre tabindex="0"><code class="language-output" data-lang="output">$ oc -n test-cert-manager get certificate
+NAME        READY   SECRET      AGE
+test-cert   True    test-cert   45s
+$ oc -n test-cert-manager get secret test-cert
+NAME        TYPE                DATA   AGE
+test-cert   kubernetes.io/tls   3      62s
+</code></pre><p>We can inspect the content of the Secret, the <code>tls.crt</code> key that holds the TLS certificate, to verify that it has been issued by the IdM CA. We can check that the certificate subject matches the Certificate resource definition:</p>
+<pre tabindex="0"><code class="language-output" data-lang="output">$ oc -n test-cert-manager extract secret/test-cert --keys=tls.crt --to=- | openssl x509 -noout -issuer -subject
+# tls.crt
+issuer=O=MELMAC.UNIV, CN=Certificate Authority
+subject=CN=test-cert-manager.apps.qisdetdd.eastus.aroapp.io
+</code></pre><p> We can inspect <code>tls.key</code> of the Secret, holding the key of the certificate:</p>
+<pre tabindex="0"><code class="language-output" data-lang="output">$ oc -n test-cert-manager extract secret/test-cert --keys=tls.key --to=- | openssl rsa -text -noout                                                                                                                                           
+# tls.key                                                                                                                                                                                                                                     
+Private-Key: (2048 bit, 2 primes)                                                                                                                                                                                                             
+modulus:
+...
+...                                 
+</code></pre><p> In IdM the new certificate appears (see Figure 4).</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/test-cert-idm.png?itok=_As21XEd" alt="New TLS certificate in IdM generated by the cert-manager using a Certificate resource." />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 4. New TLS certificate in IdM.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Figure 4: New TLS certificate in IdM.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h2 id="certificates-lifecycle">Certificates lifecycle</h2>
+<p>cert-manager will manage the lifecycle of the certificate including the renewal operation. The default validity period is 90 days. Once an X.509 certificate has been issued, cert-manager will calculate the renewal time for the certificate. By default, this will be 2/3 through the X.509 certificate&rsquo;s validity period. It is important to highlight that once a certificate has been issued, the X.509 certificate becomes the source of truth when it comes to calculating and triggering the renewal process.</p>
+<p>If we want to modify the default validity period in the IdM server we need to export the profile used to issue ACME certificates:</p>
+<pre tabindex="0"><code class="language-output" data-lang="output">$ ipa certprofile-show --out acmeIPAServerCert.cfg acmeIPAServerCert
+</code></pre><p>To configure a custom validity period we need to change some parameters in the <code>acmeIPAServerCert.cfg</code> file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>policyset.serverCertSet.7.constraint.params.range=72
+</span></span><span style="display:flex;"><span>policyset.serverCertSet.7.constraint.params.rangeUnit=hour
+</span></span><span style="display:flex;"><span>policyset.serverCertSet.7.default.params.range=48
+</span></span><span style="display:flex;"><span>policyset.serverCertSet.7.default.params.rangeUnit=hour                                                  
+</span></span></code></pre></div><p>The <code>default</code> parameter defines the default validity period and the <code>constraint</code> defines the maximum validity period for the certificate. By default, the range unit is <code>day</code>, but other units can be used such as <code>minute</code>, <code>hour</code>, <code>month</code>, or <code>year</code>.</p>
+<p>The new configuration has to be applied to the IdM’s ACME profile:</p>
+<pre tabindex="0"><code class="language-output" data-lang="output">$ ipa certprofile-mod acmeIPAServerCert --file=acmeIPAServerCert.cfg 
+</code></pre><h2 id="takeaways">Takeaways</h2>
+<p>IdM’s ACME capabilities will make the life of PKI administrators and OpenShift users easier by integrating it with the cert-manager operator for OpenShift. TLS certificate lifecycle management will never again be a time-consuming maintenance burden. </p>
+<p>Remember that IdM is included in your RHEL subscription, you can set up your own ACME server in your infrastructure at no additional cost!</p>
+<p>Reach out to your Red Hat Services representative to get your open source journey started. Red Hat  Services is helping our customers to get the most out of your investment. We can provide you with the resources you need to begin, accelerate, and expand your open source journey as a part of your competitive advantage.</p>
+<p>The post Automatic certificate issuing with IdM and cert-manager operator for OpenShift appeared first on Red Hat Developer.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

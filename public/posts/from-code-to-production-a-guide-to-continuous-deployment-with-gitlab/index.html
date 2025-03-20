@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;From code to production: A guide to continuous deployment with GitLab&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;From code to production: A guide to continuous deployment with GitLab&lt;/div&gt;</h1>
+			<b><time>29.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>Continuous deployment is a game-changing practice that enables teams to deliver value faster, with higher confidence. However, diving into advanced deployment workflows — such as GitOps, container orchestration with Kubernetes, or dynamic environments — can be intimidating for teams just starting out.</p>
+<p>At GitLab, we&rsquo;re committed to making delivery seamless and scalable. By enabling teams to focus on the fundamentals, we empower them to build a strong foundation that supports growth into more complex strategies over time. This guide provides essential steps to begin implementing continuous deployment with GitLab, laying the foundation for your long-term success.</p>
+<h2 id="start-with-a-workflow-plan">Start with a workflow plan</h2>
+<p>Before diving into the technical implementation, take time to map out your deployment workflow. Success lies in careful planning and a methodical approach.</p>
+<h3 id="artifact-management-strategy">Artifact management strategy</h3>
+<p>In the context of continuous deployment, artifacts are the packaged outputs of your build process that need to be stored, versioned, and deployed. These could be:</p>
+<ul>
+<li>container images for your applications</li>
+<li>packages</li>
+<li>compiled binaries or executables</li>
+<li>libraries</li>
+<li>configuration files</li>
+<li>documentation packages</li>
+<li>other artifacts</li>
+</ul>
+<p>Each type of artifact plays a specific role in your deployment process. For example, a typical web application might generate:</p>
+<ul>
+<li>a container image for the backend service</li>
+<li>a ZIP archive of compiled frontend assets</li>
+<li>SQL files for database changes</li>
+<li>environment-specific configuration files</li>
+</ul>
+<p>Managing these artifacts effectively is crucial for successful deployments. Here&rsquo;s how to approach artifact management.</p>
+<h4 id="artifacts-and-releases-versioning-strategies">Artifacts and releases versioning strategies</h4>
+<p>A best practice to get you started with a clean structure is to establish a clear versioning strategy for your artifacts. When creating releases:</p>
+<ul>
+<li>Use semantic versioning (major.minor.patch) for release tags
+<ul>
+<li>Example: <code>myapp:1.2.3</code> for a stable release</li>
+<li>Major version changes (2.0.0) for breaking changes</li>
+<li>Minor version changes (1.3.0) for new features</li>
+<li>Patch version changes (1.2.4) for bug fixes</li>
+</ul>
+</li>
+<li>Maintain a &rsquo;latest&rsquo; tag for the most recent stable version
+<ul>
+<li>Example: <code>myapp:latest</code> for automated deployments</li>
+</ul>
+</li>
+<li>Include commit SHA for precise version tracking
+<ul>
+<li>Example: <code>myapp:1.2.3-abc123f</code> for debugging</li>
+</ul>
+</li>
+<li>Consider branch-based tags for development environments
+<ul>
+<li>Example: <code>myapp:feature-user-auth</code> for feature testing</li>
+</ul>
+</li>
+</ul>
+<h4 id="build-artifacts-retention">Build artifacts retention</h4>
+<p>Implement defined retention rules:</p>
+<ul>
+<li>Set explicit expiration timeframes for temporary artifacts</li>
+<li>Define which artifacts need permanent retention</li>
+<li>Configure cleanup policies to manage storage</li>
+</ul>
+<h4 id="registry-access-and-authentication">Registry access and authentication</h4>
+<p>Secure your artifacts with proper access controls:</p>
+<ul>
+<li>Implement Personal Access Tokens for developer access</li>
+<li>Configure CI/CD variables for pipeline authentication</li>
+<li>Set up proper access scopes</li>
+</ul>
+<h3 id="environment-strategy">Environment strategy</h3>
+<p>Consider your environments early, as they shape your entire deployment pipeline:</p>
+<ul>
+<li>Development, staging, and production environment configurations</li>
+<li>Environment-specific variables and secrets</li>
+<li>Access controls and protection rules</li>
+<li>Deployment tracking and monitoring approach</li>
+</ul>
+<h3 id="deployment-targets">Deployment targets</h3>
+<p>Be intentional as to where and how you&rsquo;ll deploy, these decisions matter and the benefits and drawbacks of each should be consider:</p>
+<ul>
+<li>Infrastructure requirements (VMs, containers, cloud services)</li>
+<li>Network access and security configurations</li>
+<li>Authentication mechanisms (SSH keys, access tokens)</li>
+<li>Resource allocation and scaling considerations</li>
+</ul>
+<p>With our strategy defined and foundational decisions made, we can now translate these plans into a working pipeline. We&rsquo;ll build a practical example that demonstrates these concepts, starting with a simple application and progressively adding deployment capabilities.</p>
+<h2 id="implementing-your-cd-pipeline">Implementing your CD pipeline</h2>
+<h3 id="a-step-by-step-example">A step-by-step example</h3>
+<p>Let&rsquo;s walk through implementing a basic continuous deployment pipeline for a web application. We&rsquo;ll use a simple HTML application as an example, but these principles apply to any type of application. We’re also going to deploy our application as a Docker image on a simple virtual machine. This will allow us to lean on a curated image with minimum dependencies, and to ensure no environment specific requirements are unintentionally brought in. By working on a virtual machine, we won’t be leveraging GitLab’s native integrations, allowing us to work on an easier but less scalable setup to begin with.</p>
+<h4 id="prerequisites">Prerequisites</h4>
+<p>In this example, we’ll aim to containerize an application that we’ll run on a virtual machine hosted on a cloud provider. We’ll also test this application locally on our machine. This list of prerequisites is only needed for this scenario.</p>
+<h5 id="virtual-machine-setup">Virtual machine setup</h5>
+<ul>
+<li>Provision a VM in your preferred cloud provider (e.g., GCP, AWS, Azure)</li>
+<li>Configure network rules to allow access on ports 22, 80, and 443</li>
+<li>Record the machine&rsquo;s public IP address for deployment</li>
+</ul>
+<h5 id="set-up-ssh-authentication">Set up SSH authentication:</h5>
+<ul>
+<li>Generate a public/private key pair for the machine</li>
+<li>In GitLab, go to <strong>Settings &gt; CI/CD &gt; Variables</strong></li>
+<li>Create a variable called <code>GITLAB_KEY</code></li>
+<li>Set Type to &ldquo;File&rdquo; (required for SSH authentication)</li>
+<li>Paste the private key in the Value field</li>
+<li>Define a USER variable, this is the user logging in and running the scripts on your VM</li>
+</ul>
+<h5 id="configure-deployment-variables">Configure deployment variables</h5>
+<ul>
+<li>Create variables for your deployment targets:
+<ul>
+<li><code>STAGING_TARGET</code>: Your staging server IP/domain</li>
+<li><code>PRODUCTION_TARGET</code>: Your production server IP/domain</li>
+</ul>
+</li>
+</ul>
+<h5 id="local-development-setup">Local development setup</h5>
+<ul>
+<li>Install Docker on your local machine for testing deployments</li>
+</ul>
+<h5 id="gitlab-container-registry-access">GitLab Container Registry access</h5>
+<ul>
+<li>Locate your registry path:
+<ul>
+<li>Navigate to <strong>Deploy &gt; Container Registry</strong></li>
+<li>Copy the registry path (e.g., registry.gitlab.com/group/project)</li>
+</ul>
+</li>
+<li>Set up authentication:
+<ul>
+<li>Go to <strong>Settings &gt; Access Tokens</strong></li>
+<li>Create a new token with registry access</li>
+<li>Token expiration: Maximum 1 year</li>
+<li>Save the token securely</li>
+</ul>
+</li>
+<li>Configure local registry access:</li>
+</ul>
+<pre tabindex="0"><code>docker login registry.gitlab.com
+# The username if you are using a PAT is gitlab-ci-token
+# Password: your-access-token
+</code></pre><h4 id="1-create-your-application">1. Create your application</h4>
+<p>Start with a basic web application. For our example, we&rsquo;re using a simple HTML page:</p>
+<pre tabindex="0"><code>&lt;!-- index.html --&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;style&gt;
+      body {
+        background-color: #171321; /* GitLab dark */
+      }
+    &lt;/style&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;!-- Your content here --&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><h4 id="2-containerize-your-application">2. Containerize your application</h4>
+<p>Create a Dockerfile to package your application:</p>
+<pre tabindex="0"><code>FROM nginx:1.26.2
+COPY index.html /usr/share/nginx/html/index.html
+</code></pre><p>This Dockerfile:</p>
+<ul>
+<li>Uses nginx as a base image for serving web content</li>
+<li>Copies your HTML file to the correct location in the nginx directory structure</li>
+</ul>
+<h4 id="3-set-up-your-cicd-pipeline">3. Set up your CI/CD pipeline</h4>
+<p>Create a <code>.gitlab-ci.yml</code> file to define your pipeline stages:</p>
+<pre tabindex="0"><code>variables:
+  TAG_LATEST: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:latest
+  TAG_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHA
+
+stages:
+  - publish
+  - deploy
+</code></pre><p>Let&rsquo;s break it down:</p>
+<p><code>TAG_LATEST</code> is made up of three parts:</p>
+<ul>
+<li><code>$CI_REGISTRY_IMAGE</code> is the path to your project&rsquo;s container registry in GitLab</li>
+</ul>
+<p>For example: <code>registry.gitlab.com/your-group/your-project</code></p>
+<ul>
+<li><code>$CI_COMMIT_REF_NAME</code> is the name of your branch or tag</li>
+</ul>
+<p>For example, if you&rsquo;re on main branch: <code>/main</code>, and if you&rsquo;re on a feature branch: <code>/feature-login</code></p>
+<ul>
+<li><code>:latest</code> is a fixed suffix</li>
+</ul>
+<p>So if you&rsquo;re on the main branch, <code>TAG_LATEST</code> becomes: <code>registry.gitlab.com/your-group/your-project/main:latest</code>.</p>
+<p><code>TAG_COMMIT</code> is almost identical, but instead of <code>:latest</code>, it uses: <code>$CI_COMMIT_SHA</code> which is the commit identifier, for example: <code>:abc123def456</code>.</p>
+<p>So for that same commit on main branch, <code>TAG_COMMIT</code> becomes:<code>registry.gitlab.com/your-group/your-project/main:abc123def456</code>.</p>
+<p>The reason for having both is <code>TAG_LATEST</code> gives you an easy way to always get the newest version, and <code>TAG_COMMIT</code> gives you a specific version you can return to if needed.</p>
+<h4 id="4-publish-to-the-container-registry">4. Publish to the container registry</h4>
+<p>Add the publish job to your pipeline:</p>
+<pre tabindex="0"><code>publish:
+  stage: publish
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker build -t $TAG_LATEST -t $TAG_COMMIT .
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker push $TAG_LATEST
+    - docker push $TAG_COMMIT
+</code></pre><p>This job:</p>
+<ul>
+<li>Uses Docker-in-Docker to build images</li>
+<li>Creates two tagged versions of your image</li>
+<li>Authenticates with the GitLab registry</li>
+<li>Pushes both versions to the registry</li>
+</ul>
+<p>Now that our images are safely stored in the registry, we can focus on deploying them to our target environments. Let&rsquo;s start with local testing to validate our setup before moving to production deployments.</p>
+<h4 id="5-deploy-to-your-environment">5. Deploy to your environment</h4>
+<p>Before deploying to production, you can test locally. We just published our image to the GitLab repository, which we’ll pull locally. If you’re unsure of the exact path, navigate to <strong>Deploy &gt; Container Registry</strong>, and you should see an icon to copy the path of your image at the end of the line for the container image you want to test.</p>
+<pre tabindex="0"><code>docker login registry.gitlab.com 
+docker run -p 80:80 registry.gitlab.com/your-project-path/main:latest
+</code></pre><p>By doing so you should be able to access your application locally on your localhost address through your web browser.</p>
+<p>You can now add a deployment job to your pipeline:</p>
+<pre tabindex="0"><code>deploy:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - chmod 400 $GITLAB_KEY
+    - apk add openssh-client
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - ssh -i $GITLAB_KEY -o StrictHostKeyChecking=no $USER@$TARGET_SERVER 
+      docker pull $TAG_COMMIT &amp;&amp;
+      docker rm -f myapp || true &amp;&amp;
+      docker run -d -p 80:80 --name myapp $TAG_COMMIT
+</code></pre><p>This job:</p>
+<ul>
+<li>Sets up SSH access to your deployment target</li>
+<li>Pulls the latest image</li>
+<li>Removes any existing container</li>
+<li>Deploys the new version</li>
+</ul>
+<h4 id="6-track-deployments">6. Track deployments</h4>
+<p>Enable deployment tracking by adding environment configuration:</p>
+<pre tabindex="0"><code>deploy:
+  environment:
+    name: production
+    url: https://your-application-url.com 
+</code></pre><p>This creates an environment object in GitLab&rsquo;s <strong>Operate &gt; Environments</strong> section, providing:</p>
+<ul>
+<li>Deployment history</li>
+<li>Current deployment status</li>
+<li>Quick access to your application</li>
+</ul>
+<p>While a single environment pipeline is a good starting point, most teams need to manage multiple environments for proper testing and staging. Let&rsquo;s expand our pipeline to handle this more realistic scenario.</p>
+<h4 id="7-set-up-multiple-environments">7. Set up multiple environments</h4>
+<p>For a more robust pipeline, configure staging and production deployments:</p>
+<pre tabindex="0"><code>stages:
+  - publish
+  - staging
+  - release
+  - version
+  - production
+
+staging:
+  stage: staging
+  rules:
+    - if: $CI_COMMIT_BRANCH == &#34;main&#34; &amp;&amp; $CI_COMMIT_TAG == null
+  environment:
+    name: staging
+    url: https://staging.your-app.com
+  # deployment script here
+
+production:
+  stage: production
+  rules:
+    - if: $CI_COMMIT_TAG
+  environment:
+    name: production
+    url: https://your-app.com
+  # deployment script here
+</code></pre><p>This setup:</p>
+<ul>
+<li>Deploys to staging from your main branch</li>
+<li>Uses GitLab tags to trigger production deployments</li>
+<li>Provides separate tracking for each environment</li>
+</ul>
+<p>Here and in our next step, we’re leveraging a very useful GitLab feature: tags. By manually creating a tag in the <strong>Code &gt; Tags</strong> section, the <code>$CI_COMMIT_TAG</code> gets created, which allows us to trigger jobs accordingly.</p>
+<h4 id="8-create-automated-release-notes">8. Create automated release notes</h4>
+<p>We&rsquo;ll be using GitLab&rsquo;s release capabilities through our CI/CD pipeline. First, update your stages in <code>.gitlab-ci.yml</code>:</p>
+<pre tabindex="0"><code>stages:
+
+- publish
+- staging
+- release # New stage for releases
+- version
+- production
+</code></pre><p>Next, add the release job:</p>
+<pre tabindex="0"><code>release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG                  # Only run when a tag is created
+  script:
+    - echo &#34;Creating release for $CI_COMMIT_TAG&#34;
+  release:                                # Release configuration
+    name: &#39;Release $CI_COMMIT_TAG&#39;
+    description: &#39;Release created from $CI_COMMIT_TAG&#39;
+    tag_name: &#39;$CI_COMMIT_TAG&#39;           # The tag to create
+    ref: &#39;$CI_COMMIT_TAG&#39;                # The tag to base release on
+</code></pre><p>You can enhance this by adding links to your container images:</p>
+<pre tabindex="0"><code>release:
+  name: &#39;Release $CI_COMMIT_TAG&#39;
+  description: &#39;Release created from $CI_COMMIT_TAG&#39;
+  tag_name: &#39;$CI_COMMIT_TAG&#39;
+  ref: &#39;$CI_COMMIT_TAG&#39;
+  assets:
+    links:
+      - name: &#39;Container Image&#39;
+        url: &#39;$CI_REGISTRY_IMAGE/main:$CI_COMMIT_TAG&#39;
+        link_type: &#39;image&#39;
+</code></pre><p>For meaningful automated release notes:</p>
+<ul>
+<li>Use conventional commits (feat:, fix:, etc.)</li>
+<li>Include issue numbers (#123)</li>
+<li>Separate subject from body with blank line</li>
+</ul>
+<p>If you want custom release notes with deployment info:</p>
+<pre tabindex="0"><code>release_job:
+  script:
+    - |
+      DEPLOY_TIME=$(date &#39;+%Y-%m-%d %H:%M:%S&#39;)
+      CHANGES=$(git log $(git describe --tags --abbrev=0 @^)..@ --pretty=format:&#34;- %s&#34;)
+      cat &gt; release_notes.md &lt;&lt; EOF
+      ## Deployment Info
+      - Deployed on: $DEPLOY_TIME
+      - Environment: Production
+      - Version: $CI_COMMIT_TAG
+
+      ## Changes
+      $CHANGES
+
+      ## Artifacts
+      - Container Image: `$CI_REGISTRY_IMAGE/main:$CI_COMMIT_TAG`
+      EOF
+  release:
+    description: &#39;./release_notes.md&#39;
+</code></pre><p>Once configured, releases will be created automatically when you create a Git tag. You can view them in GitLab under <strong>Deploy &gt; Releases</strong>.</p>
+<h4 id="9-put-it-all-together">9. Put it all together</h4>
+<p>This is what our final YAML file looks like:</p>
+<pre tabindex="0"><code>variables:
+  TAG_LATEST: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:latest
+  TAG_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHA
+  STAGING_TARGET: $STAGING_TARGET    # Set in CI/CD Variables
+  PRODUCTION_TARGET: $PRODUCTION_TARGET  # Set in CI/CD Variables
+
+stages:
+  - publish
+  - staging
+  - release
+  - version
+  - production
+
+# Build and publish to registry
+publish:
+  stage: publish
+  image: docker:latest
+  services:
+    - docker:dind
+  rules:
+    - if: $CI_COMMIT_BRANCH == &#34;main&#34; &amp;&amp; $CI_COMMIT_TAG == null
+  script:
+    - docker build -t $TAG_LATEST -t $TAG_COMMIT .
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker push $TAG_LATEST
+    - docker push $TAG_COMMIT
+
+# Deploy to staging
+staging:
+  stage: staging
+  image: alpine:latest
+  rules:
+    - if: $CI_COMMIT_BRANCH == &#34;main&#34; &amp;&amp; $CI_COMMIT_TAG == null
+  script:
+    - chmod 400 $GITLAB_KEY
+    - apk add openssh-client
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - ssh -i $GITLAB_KEY -o StrictHostKeyChecking=no $USER@$STAGING_TARGET &#34;
+        docker pull $TAG_COMMIT &amp;&amp;
+        docker rm -f myapp || true &amp;&amp;
+        docker run -d -p 80:80 --name myapp $TAG_COMMIT&#34;
+  environment:
+    name: staging
+    url: http://$STAGING_TARGET
+
+# Create release
+release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - |
+      DEPLOY_TIME=$(date &#39;+%Y-%m-%d %H:%M:%S&#39;)
+      CHANGES=$(git log $(git describe --tags --abbrev=0 @^)..@ --pretty=format:&#34;- %s&#34;)
+      cat &gt; release_notes.md &lt;&lt; EOF
+      ## Deployment Info
+      - Deployed on: $DEPLOY_TIME
+      - Environment: Production
+      - Version: $CI_COMMIT_TAG
+
+      ## Changes
+      $CHANGES
+
+      ## Artifacts
+      - Container Image: `$CI_REGISTRY_IMAGE/main:$CI_COMMIT_TAG`
+      EOF
+  release:
+    name: &#39;Release $CI_COMMIT_TAG&#39;
+    description: &#39;./release_notes.md&#39;
+    tag_name: &#39;$CI_COMMIT_TAG&#39;
+    ref: &#39;$CI_COMMIT_TAG&#39;
+    assets:
+      links:
+        - name: &#39;Container Image&#39;
+          url: &#39;$CI_REGISTRY_IMAGE/main:$CI_COMMIT_TAG&#39;
+          link_type: &#39;image&#39;
+
+# Version the image with release tag
+version_job:
+  stage: version
+  image: docker:latest
+  services:
+    - docker:dind
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - docker pull $TAG_COMMIT
+    - docker tag $TAG_COMMIT $CI_REGISTRY_IMAGE/main:$CI_COMMIT_TAG
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker push $CI_REGISTRY_IMAGE/main:$CI_COMMIT_TAG
+
+# Deploy to production
+production:
+  stage: production
+  image: alpine:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - chmod 400 $GITLAB_KEY
+    - apk add openssh-client
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - ssh -i $GITLAB_KEY -o StrictHostKeyChecking=no $USER@$PRODUCTION_TARGET &#34;
+        docker pull $CI_REGISTRY_IMAGE/main:$CI_COMMIT_TAG &amp;&amp;
+        docker rm -f myapp || true &amp;&amp;
+        docker run -d -p 80:80 --name myapp $CI_REGISTRY_IMAGE/main:$CI_COMMIT_TAG&#34;
+  environment:
+    name: production
+    url: http://$PRODUCTION_TARGET
+</code></pre><p>This complete pipeline:</p>
+<ul>
+<li>Publishes images to the registry (main branch)</li>
+<li>Deploys to staging (main branch)</li>
+<li>Creates releases (on tags)</li>
+<li>Versions images with release tags Deploys to production (on tags)</li>
+</ul>
+<p>Key benefits:</p>
+<ul>
+<li>Clean reproducible, local development and testing environment</li>
+<li>Clear path to production environments with structure to build confidence in what is deployed</li>
+<li>Pattern to recover from unexpected failures, etc.</li>
+<li>Ready to scale/adopt more complex deployment strategies</li>
+</ul>
+<h3 id="best-practices">Best practices</h3>
+<p>Throughout implementation, maintain these principles:</p>
+<ul>
+<li>Document everything, from variable usage to deployment procedures</li>
+<li>Use GitLab&rsquo;s built-in features (environments, releases, registry)</li>
+<li>Implement proper access controls and security measures</li>
+<li>Plan for failure with robust rollback procedures</li>
+<li>Keep your pipeline configurations DRY (Don&rsquo;t Repeat Yourself)</li>
+</ul>
+<h2 id="scale-your-deployment-strategy">Scale your deployment strategy</h2>
+<p>What next? Here are some aspects to consider as your continuous deployment strategy matures.</p>
+<h3 id="advanced-security-measures">Advanced security measures</h3>
+<p>Enhance security through:</p>
+<ul>
+<li>Protected environments with restricted access</li>
+<li>Required approvals for production deployments</li>
+<li>Integrated security scanning</li>
+<li>Automated vulnerability assessments</li>
+<li>Branch protection rules for deployment-related changes</li>
+</ul>
+<h3 id="progressive-delivery-strategies">Progressive delivery strategies</h3>
+<p>Implement advanced deployment strategies:</p>
+<ul>
+<li>Feature flags for controlled rollouts</li>
+<li>Canary deployments for risk mitigation</li>
+<li>Blue-green deployment strategies</li>
+<li>A/B testing capabilities</li>
+<li>Dynamic environment management</li>
+</ul>
+<h3 id="monitoring-and-optimization">Monitoring and optimization</h3>
+<p>Establish robust monitoring practices:</p>
+<ul>
+<li>Track deployment metrics</li>
+<li>Set up performance monitoring</li>
+<li>Configure deployment alerts</li>
+<li>Establish deployment SLOs</li>
+<li>Regular pipeline optimization</li>
+</ul>
+<h2 id="why-gitlab">Why GitLab?</h2>
+<p>GitLab&rsquo;s continuous deployment capabilities make it a standout choice for modern deployment workflows. The platform excels in streamlining the path from code to production, offering built-in container registry, environment management, and deployment tracking all within a single interface. GitLab&rsquo;s environment-specific variables, deployment approval gates, and rollback capabilities provide the security and control needed for production deployments, while features like review apps and feature flags enable progressive delivery approaches. As part of GitLab&rsquo;s complete DevSecOps platform, these CD capabilities seamlessly integrate with your entire software lifecycle.</p>
+<h2 id="get-started-today">Get started today</h2>
+<p>The journey to continuous deployment is an evolution, not a revolution. Start with the fundamentals, build a solid foundation, and gradually incorporate advanced features as your team&rsquo;s needs grow. GitLab provides the tools and flexibility to support you at every stage of this journey, from your first automated deployment to complex, multi-environment delivery pipelines.</p>
+<blockquote>
+<p>Sign up for a free, 60-day trial of GitLab Ultimate to get started with continous deployment today.</p></blockquote>
+<p>Continuous deployment is a game-changing practice that enables teams to deliver value faster, with higher confidence. However, diving into advanced deployment workflows — such as GitOps, container orchestration with Kubernetes, or dynamic environments — can be intimidating for teams just starting out.</p>
+<p>At GitLab, we&rsquo;re committed to making delivery seamless and scalable. By enabling teams to focus on the fundamentals, we empower them to build a strong foundation that supports growth into more complex strategies over time. This guide provides essential steps to begin implementing continuous deployment with GitLab, laying the foundation for your long-term success.</p>
+<h2 id="start-with-a-workflow-plan-1">Start with a workflow plan</h2>
+<p>Before diving into the technical implementation, take time to map out your deployment workflow. Success lies in careful planning and a methodical approach.</p>
+<h3 id="artifact-management-strategy-1">Artifact management strategy</h3>
+<p>In the context of continuous deployment, artifacts are the packaged outputs of your build process that need to be stored, versioned, and deployed. These could be:</p>
+<ul>
+<li>container images for your applications</li>
+<li>packages</li>
+<li>compiled binaries or executables</li>
+<li>libraries</li>
+<li>configuration files</li>
+<li>documentation packages</li>
+<li>other artifacts</li>
+</ul>
+<p>Each type of artifact plays a specific role in your deployment process. For example, a typical web application might generate:</p>
+<ul>
+<li>a container image for the backend service</li>
+<li>a ZIP archive of compiled frontend assets</li>
+<li>SQL files for database changes</li>
+<li>environment-specific configuration files</li>
+</ul>
+<p>Managing these artifacts effectively is crucial for successful deployments. Here&rsquo;s how to approach artifact management.</p>
+<h4 id="artifacts-and-releases-versioning-strategies-1">Artifacts and releases versioning strategies</h4>
+<p>A best practice to get you started with a clean structure is to establish a clear versioning strategy for your artifacts. When creating releases:</p>
+<ul>
+<li>Use semantic versioning (major.minor.patch) for release tags
+<ul>
+<li>Example: <code>myapp:1.2.3</code> for a stable release</li>
+<li>Major version changes (2.0.0) for breaking changes</li>
+<li>Minor version changes (1.3.0) for new features</li>
+<li>Patch version changes (1.2.4) for bug fixes</li>
+</ul>
+</li>
+<li>Maintain a &rsquo;latest&rsquo; tag for the most recent stable version
+<ul>
+<li>Example: <code>myapp:latest</code> for automated deployments</li>
+</ul>
+</li>
+<li>Include commit SHA for precise version tracking
+<ul>
+<li>Example: <code>myapp:1.2.3-abc123f</code> for debugging</li>
+</ul>
+</li>
+<li>Consider branch-based tags for development environments
+<ul>
+<li>Example: <code>myapp:feature-user-auth</code> for feature testing</li>
+</ul>
+</li>
+</ul>
+<h4 id="build-artifacts-retention-1">Build artifacts retention</h4>
+<p>Implement defined retention rules:</p>
+<ul>
+<li>Set explicit expiration timeframes for temporary artifacts</li>
+<li>Define which artifacts need permanent retention</li>
+<li>Configure cleanup policies to manage storage</li>
+</ul>
+<h4 id="registry-access-and-authentication-1">Registry access and authentication</h4>
+<p>Secure your artifacts with proper access controls:</p>
+<ul>
+<li>Implement Personal Access Tokens for developer access</li>
+<li>Configure CI/CD variables for pipeline authentication</li>
+<li>Set up proper access scopes</li>
+</ul>
+<h3 id="environment-strategy-1">Environment strategy</h3>
+<p>Consider your environments early, as they shape your entire deployment pipeline:</p>
+<ul>
+<li>Development, staging, and production environment configurations</li>
+<li>Environment-specific variables and secrets</li>
+<li>Access controls and protection rules</li>
+<li>Deployment tracking and monitoring approach</li>
+</ul>
+<h3 id="deployment-targets-1">Deployment targets</h3>
+<p>Be intentional as to where and how you&rsquo;ll deploy, these decisions matter and the benefits and drawbacks of each should be consider:</p>
+<ul>
+<li>Infrastructure requirements (VMs, containers, cloud services)</li>
+<li>Network access and security configurations</li>
+<li>Authentication mechanisms (SSH keys, access tokens)</li>
+<li>Resource allocation and scaling considerations</li>
+</ul>
+<p>With our strategy defined and foundational decisions made, we can now translate these plans into a working pipeline. We&rsquo;ll build a practical example that demonstrates these concepts, starting with a simple application and progressively adding deployment capabilities.</p>
+<h2 id="implementing-your-cd-pipeline-1">Implementing your CD pipeline</h2>
+<h3 id="a-step-by-step-example-1">A step-by-step example</h3>
+<p>Let&rsquo;s walk through implementing a basic continuous deployment pipeline for a web application. We&rsquo;ll use a simple HTML application as an example, but these principles apply to any type of application. We’re also going to deploy our application as a Docker image on a simple virtual machine. This will allow us to lean on a curated image with minimum dependencies, and to ensure no environment specific requirements are unintentionally brought in. By working on a virtual machine, we won’t be leveraging GitLab’s native integrations, allowing us to work on an easier but less scalable setup to begin with.</p>
+<h4 id="prerequisites-1">Prerequisites</h4>
+<p>In this example, we’ll aim to containerize an application that we’ll run on a virtual machine hosted on a cloud provider. We’ll also test this application locally on our machine. This list of prerequisites is only needed for this scenario.</p>
+<h5 id="virtual-machine-setup-1">Virtual machine setup</h5>
+<ul>
+<li>Provision a VM in your preferred cloud provider (e.g., GCP, AWS, Azure)</li>
+<li>Configure network rules to allow access on ports 22, 80, and 443</li>
+<li>Record the machine&rsquo;s public IP address for deployment</li>
+</ul>
+<h5 id="set-up-ssh-authentication-1">Set up SSH authentication:</h5>
+<ul>
+<li>Generate a public/private key pair for the machine</li>
+<li>In GitLab, go to <strong>Settings &gt; CI/CD &gt; Variables</strong></li>
+<li>Create a variable called <code>GITLAB_KEY</code></li>
+<li>Set Type to &ldquo;File&rdquo; (required for SSH authentication)</li>
+<li>Paste the private key in the Value field</li>
+<li>Define a USER variable, this is the user logging in and running the scripts on your VM</li>
+</ul>
+<h5 id="configure-deployment-variables-1">Configure deployment variables</h5>
+<ul>
+<li>Create variables for your deployment targets:
+<ul>
+<li><code>STAGING_TARGET</code>: Your staging server IP/domain</li>
+<li><code>PRODUCTION_TARGET</code>: Your production server IP/domain</li>
+</ul>
+</li>
+</ul>
+<h5 id="local-development-setup-1">Local development setup</h5>
+<ul>
+<li>Install Docker on your local machine for testing deployments</li>
+</ul>
+<h5 id="gitlab-container-registry-access-1">GitLab Container Registry access</h5>
+<ul>
+<li>Locate your registry path:
+<ul>
+<li>Navigate to <strong>Deploy &gt; Container Registry</strong></li>
+<li>Copy the registry path (e.g., registry.gitlab.com/group/project)</li>
+</ul>
+</li>
+<li>Set up authentication:
+<ul>
+<li>Go to <strong>Settings &gt; Access Tokens</strong></li>
+<li>Create a new token with registry access</li>
+<li>Token expiration: Maximum 1 year</li>
+<li>Save the token securely</li>
+</ul>
+</li>
+<li>Configure local registry access:</li>
+</ul>
+<pre tabindex="0"><code>docker login registry.gitlab.com
+# The username if you are using a PAT is gitlab-ci-token
+# Password: your-access-token
+</code></pre><h4 id="1-create-your-application-1">1. Create your application</h4>
+<p>Start with a basic web application. For our example, we&rsquo;re using a simple HTML page:</p>
+<pre tabindex="0"><code>&lt;!-- index.html --&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;style&gt;
+      body {
+        background-color: #171321; /* GitLab dark */
+      }
+    &lt;/style&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;!-- Your content here --&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><h4 id="2-containerize-your-application-1">2. Containerize your application</h4>
+<p>Create a Dockerfile to package your application:</p>
+<pre tabindex="0"><code>FROM nginx:1.26.2
+COPY index.html /usr/share/nginx/html/index.html
+</code></pre><p>This Dockerfile:</p>
+<ul>
+<li>Uses nginx as a base image for serving web content</li>
+<li>Copies your HTML file to the correct location in the nginx directory structure</li>
+</ul>
+<h4 id="3-set-up-your-cicd-pipeline-1">3. Set up your CI/CD pipeline</h4>
+<p>Create a <code>.gitlab-ci.yml</code> file to define your pipeline stages:</p>
+<pre tabindex="0"><code>variables:
+  TAG_LATEST: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:latest
+  TAG_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHA
+
+stages:
+  - publish
+  - deploy
+</code></pre><p>Let&rsquo;s break it down:</p>
+<p><code>TAG_LATEST</code> is made up of three parts:</p>
+<ul>
+<li><code>$CI_REGISTRY_IMAGE</code> is the path to your project&rsquo;s container registry in GitLab</li>
+</ul>
+<p>For example: <code>registry.gitlab.com/your-group/your-project</code></p>
+<ul>
+<li><code>$CI_COMMIT_REF_NAME</code> is the name of your branch or tag</li>
+</ul>
+<p>For example, if you&rsquo;re on main branch: <code>/main</code>, and if you&rsquo;re on a feature branch: <code>/feature-login</code></p>
+<ul>
+<li><code>:latest</code> is a fixed suffix</li>
+</ul>
+<p>So if you&rsquo;re on the main branch, <code>TAG_LATEST</code> becomes: <code>registry.gitlab.com/your-group/your-project/main:latest</code>.</p>
+<p><code>TAG_COMMIT</code> is almost identical, but instead of <code>:latest</code>, it uses: <code>$CI_COMMIT_SHA</code> which is the commit identifier, for example: <code>:abc123def456</code>.</p>
+<p>So for that same commit on main branch, <code>TAG_COMMIT</code> becomes:<code>registry.gitlab.com/your-group/your-project/main:abc123def456</code>.</p>
+<p>The reason for having both is <code>TAG_LATEST</code> gives you an easy way to always get the newest version, and <code>TAG_COMMIT</code> gives you a specific version you can return to if needed.</p>
+<h4 id="4-publish-to-the-container-registry-1">4. Publish to the container registry</h4>
+<p>Add the publish job to your pipeline:</p>
+<pre tabindex="0"><code>publish:
+  stage: publish
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker build -t $TAG_LATEST -t $TAG_COMMIT .
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker push $TAG_LATEST
+    - docker push $TAG_COMMIT
+</code></pre><p>This job:</p>
+<ul>
+<li>Uses Docker-in-Docker to build images</li>
+<li>Creates two tagged versions of your image</li>
+<li>Authenticates with the GitLab registry</li>
+<li>Pushes both versions to the registry</li>
+</ul>
+<p>Now that our images are safely stored in the registry, we can focus on deploying them to our target environments. Let&rsquo;s start with local testing to validate our setup before moving to production deployments.</p>
+<h4 id="5-deploy-to-your-environment-1">5. Deploy to your environment</h4>
+<p>Before deploying to production, you can test locally. We just published our image to the GitLab repository, which we’ll pull locally. If you’re unsure of the exact path, navigate to <strong>Deploy &gt; Container Registry</strong>, and you should see an icon to copy the path of your image at the end of the line for the container image you want to test.</p>
+<pre tabindex="0"><code>docker login registry.gitlab.com 
+docker run -p 80:80 registry.gitlab.com/your-project-path/main:latest
+</code></pre><p>By doing so you should be able to access your application locally on your localhost address through your web browser.</p>
+<p>You can now add a deployment job to your pipeline:</p>
+<pre tabindex="0"><code>deploy:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - chmod 400 $GITLAB_KEY
+    - apk add openssh-client
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - ssh -i $GITLAB_KEY -o StrictHostKeyChecking=no $USER@$TARGET_SERVER 
+      docker pull $TAG_COMMIT &amp;&amp;
+      docker rm -f myapp || true &amp;&amp;
+      docker run -d -p 80:80 --name myapp $TAG_COMMIT
+</code></pre><p>This job:</p>
+<ul>
+<li>Sets up SSH access to your deployment target</li>
+<li>Pulls the latest image</li>
+<li>Removes any existing container</li>
+<li>Deploys the new version</li>
+</ul>
+<h4 id="6-track-deployments-1">6. Track deployments</h4>
+<p>Enable deployment tracking by adding environment configuration:</p>
+<pre tabindex="0"><code>deploy:
+  environment:
+    name: production
+    url: https://your-application-url.com 
+</code></pre><p>This creates an environment object in GitLab&rsquo;s <strong>Operate &gt; Environments</strong> section, providing:</p>
+<ul>
+<li>Deployment history</li>
+<li>Current deployment status</li>
+<li>Quick access to your application</li>
+</ul>
+<p>While a single environment pipeline is a good starting point, most teams need to manage multiple environments for proper testing and staging. Let&rsquo;s expand our pipeline to handle this more realistic scenario.</p>
+<h4 id="7-set-up-multiple-environments-1">7. Set up multiple environments</h4>
+<p>For a more robust pipeline, configure staging and production deployments:</p>
+<pre tabindex="0"><code>stages:
+  - publish
+  - staging
+  - release
+  - version
+  - production
+
+staging:
+  stage: staging
+  rules:
+    - if: $CI_COMMIT_BRANCH == &#34;main&#34; &amp;&amp; $CI_COMMIT_TAG == null
+  environment:
+    name: staging
+    url: https://staging.your-app.com
+  # deployment script here
+
+production:
+  stage: production
+  rules:
+    - if: $CI_COMMIT_TAG
+  environment:
+    name: production
+    url: https://your-app.com
+  # deployment script here
+</code></pre><p>This setup:</p>
+<ul>
+<li>Deploys to staging from your main branch</li>
+<li>Uses GitLab tags to trigger production deployments</li>
+<li>Provides separate tracking for each environment</li>
+</ul>
+<p>Here and in our next step, we’re leveraging a very useful GitLab feature: tags. By manually creating a tag in the <strong>Code &gt; Tags</strong> section, the <code>$CI_COMMIT_TAG</code> gets created, which allows us to trigger jobs accordingly.</p>
+<h4 id="8-create-automated-release-notes-1">8. Create automated release notes</h4>
+<p>We&rsquo;ll be using GitLab&rsquo;s release capabilities through our CI/CD pipeline. First, update your stages in <code>.gitlab-ci.yml</code>:</p>
+<pre tabindex="0"><code>stages:
+
+- publish
+- staging
+- release # New stage for releases
+- version
+- production
+</code></pre><p>Next, add the release job:</p>
+<pre tabindex="0"><code>release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG                  # Only run when a tag is created
+  script:
+    - echo &#34;Creating release for $CI_COMMIT_TAG&#34;
+  release:                                # Release configuration
+    name: &#39;Release $CI_COMMIT_TAG&#39;
+    description: &#39;Release created from $CI_COMMIT_TAG&#39;
+    tag_name: &#39;$CI_COMMIT_TAG&#39;           # The tag to create
+    ref: &#39;$CI_COMMIT_TAG&#39;                # The tag to base release on
+</code></pre><p>You can enhance this by adding links to your container images:</p>
+<pre tabindex="0"><code>release:
+  name: &#39;Release $CI_COMMIT_TAG&#39;
+  description: &#39;Release created from $CI_COMMIT_TAG&#39;
+  tag_name: &#39;$CI_COMMIT_TAG&#39;
+  ref: &#39;$CI_COMMIT_TAG&#39;
+  assets:
+    links:
+      - name: &#39;Container Image&#39;
+        url: &#39;$CI_REGISTRY_IMAGE/main:$CI_COMMIT_TAG&#39;
+        link_type: &#39;image&#39;
+</code></pre><p>For meaningful automated release notes:</p>
+<ul>
+<li>Use conventional commits (feat:, fix:, etc.)</li>
+<li>Include issue numbers (#123)</li>
+<li>Separate subject from body with blank line</li>
+</ul>
+<p>If you want custom release notes with deployment info:</p>
+<pre tabindex="0"><code>release_job:
+  script:
+    - |
+      DEPLOY_TIME=$(date &#39;+%Y-%m-%d %H:%M:%S&#39;)
+      CHANGES=$(git log $(git describe --tags --abbrev=0 @^)..@ --pretty=format:&#34;- %s&#34;)
+      cat &gt; release_notes.md &lt;&lt; EOF
+      ## Deployment Info
+      - Deployed on: $DEPLOY_TIME
+      - Environment: Production
+      - Version: $CI_COMMIT_TAG
+
+      ## Changes
+      $CHANGES
+
+      ## Artifacts
+      - Container Image: `$CI_REGISTRY_IMAGE/main:$CI_COMMIT_TAG`
+      EOF
+  release:
+    description: &#39;./release_notes.md&#39;
+</code></pre><p>Once configured, releases will be created automatically when you create a Git tag. You can view them in GitLab under <strong>Deploy &gt; Releases</strong>.</p>
+<h4 id="9-put-it-all-together-1">9. Put it all together</h4>
+<p>This is what our final YAML file looks like:</p>
+<pre tabindex="0"><code>variables:
+  TAG_LATEST: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:latest
+  TAG_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHA
+  STAGING_TARGET: $STAGING_TARGET    # Set in CI/CD Variables
+  PRODUCTION_TARGET: $PRODUCTION_TARGET  # Set in CI/CD Variables
+
+stages:
+  - publish
+  - staging
+  - release
+  - version
+  - production
+
+# Build and publish to registry
+publish:
+  stage: publish
+  image: docker:latest
+  services:
+    - docker:dind
+  rules:
+    - if: $CI_COMMIT_BRANCH == &#34;main&#34; &amp;&amp; $CI_COMMIT_TAG == null
+  script:
+    - docker build -t $TAG_LATEST -t $TAG_COMMIT .
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker push $TAG_LATEST
+    - docker push $TAG_COMMIT
+
+# Deploy to staging
+staging:
+  stage: staging
+  image: alpine:latest
+  rules:
+    - if: $CI_COMMIT_BRANCH == &#34;main&#34; &amp;&amp; $CI_COMMIT_TAG == null
+  script:
+    - chmod 400 $GITLAB_KEY
+    - apk add openssh-client
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - ssh -i $GITLAB_KEY -o StrictHostKeyChecking=no $USER@$STAGING_TARGET &#34;
+        docker pull $TAG_COMMIT &amp;&amp;
+        docker rm -f myapp || true &amp;&amp;
+        docker run -d -p 80:80 --name myapp $TAG_COMMIT&#34;
+  environment:
+    name: staging
+    url: http://$STAGING_TARGET
+
+# Create release
+release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - |
+      DEPLOY_TIME=$(date &#39;+%Y-%m-%d %H:%M:%S&#39;)
+      CHANGES=$(git log $(git describe --tags --abbrev=0 @^)..@ --pretty=format:&#34;- %s&#34;)
+      cat &gt; release_notes.md &lt;&lt; EOF
+      ## Deployment Info
+      - Deployed on: $DEPLOY_TIME
+      - Environment: Production
+      - Version: $CI_COMMIT_TAG
+
+      ## Changes
+      $CHANGES
+
+      ## Artifacts
+      - Container Image: `$CI_REGISTRY_IMAGE/main:$CI_COMMIT_TAG`
+      EOF
+  release:
+    name: &#39;Release $CI_COMMIT_TAG&#39;
+    description: &#39;./release_notes.md&#39;
+    tag_name: &#39;$CI_COMMIT_TAG&#39;
+    ref: &#39;$CI_COMMIT_TAG&#39;
+    assets:
+      links:
+        - name: &#39;Container Image&#39;
+          url: &#39;$CI_REGISTRY_IMAGE/main:$CI_COMMIT_TAG&#39;
+          link_type: &#39;image&#39;
+
+# Version the image with release tag
+version_job:
+  stage: version
+  image: docker:latest
+  services:
+    - docker:dind
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - docker pull $TAG_COMMIT
+    - docker tag $TAG_COMMIT $CI_REGISTRY_IMAGE/main:$CI_COMMIT_TAG
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker push $CI_REGISTRY_IMAGE/main:$CI_COMMIT_TAG
+
+# Deploy to production
+production:
+  stage: production
+  image: alpine:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - chmod 400 $GITLAB_KEY
+    - apk add openssh-client
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - ssh -i $GITLAB_KEY -o StrictHostKeyChecking=no $USER@$PRODUCTION_TARGET &#34;
+        docker pull $CI_REGISTRY_IMAGE/main:$CI_COMMIT_TAG &amp;&amp;
+        docker rm -f myapp || true &amp;&amp;
+        docker run -d -p 80:80 --name myapp $CI_REGISTRY_IMAGE/main:$CI_COMMIT_TAG&#34;
+  environment:
+    name: production
+    url: http://$PRODUCTION_TARGET
+</code></pre><p>This complete pipeline:</p>
+<ul>
+<li>Publishes images to the registry (main branch)</li>
+<li>Deploys to staging (main branch)</li>
+<li>Creates releases (on tags)</li>
+<li>Versions images with release tags Deploys to production (on tags)</li>
+</ul>
+<p>Key benefits:</p>
+<ul>
+<li>Clean reproducible, local development and testing environment</li>
+<li>Clear path to production environments with structure to build confidence in what is deployed</li>
+<li>Pattern to recover from unexpected failures, etc.</li>
+<li>Ready to scale/adopt more complex deployment strategies</li>
+</ul>
+<h3 id="best-practices-1">Best practices</h3>
+<p>Throughout implementation, maintain these principles:</p>
+<ul>
+<li>Document everything, from variable usage to deployment procedures</li>
+<li>Use GitLab&rsquo;s built-in features (environments, releases, registry)</li>
+<li>Implement proper access controls and security measures</li>
+<li>Plan for failure with robust rollback procedures</li>
+<li>Keep your pipeline configurations DRY (Don&rsquo;t Repeat Yourself)</li>
+</ul>
+<h2 id="scale-your-deployment-strategy-1">Scale your deployment strategy</h2>
+<p>What next? Here are some aspects to consider as your continuous deployment strategy matures.</p>
+<h3 id="advanced-security-measures-1">Advanced security measures</h3>
+<p>Enhance security through:</p>
+<ul>
+<li>Protected environments with restricted access</li>
+<li>Required approvals for production deployments</li>
+<li>Integrated security scanning</li>
+<li>Automated vulnerability assessments</li>
+<li>Branch protection rules for deployment-related changes</li>
+</ul>
+<h3 id="progressive-delivery-strategies-1">Progressive delivery strategies</h3>
+<p>Implement advanced deployment strategies:</p>
+<ul>
+<li>Feature flags for controlled rollouts</li>
+<li>Canary deployments for risk mitigation</li>
+<li>Blue-green deployment strategies</li>
+<li>A/B testing capabilities</li>
+<li>Dynamic environment management</li>
+</ul>
+<h3 id="monitoring-and-optimization-1">Monitoring and optimization</h3>
+<p>Establish robust monitoring practices:</p>
+<ul>
+<li>Track deployment metrics</li>
+<li>Set up performance monitoring</li>
+<li>Configure deployment alerts</li>
+<li>Establish deployment SLOs</li>
+<li>Regular pipeline optimization</li>
+</ul>
+<h2 id="why-gitlab-1">Why GitLab?</h2>
+<p>GitLab&rsquo;s continuous deployment capabilities make it a standout choice for modern deployment workflows. The platform excels in streamlining the path from code to production, offering built-in container registry, environment management, and deployment tracking all within a single interface. GitLab&rsquo;s environment-specific variables, deployment approval gates, and rollback capabilities provide the security and control needed for production deployments, while features like review apps and feature flags enable progressive delivery approaches. As part of GitLab&rsquo;s complete DevSecOps platform, these CD capabilities seamlessly integrate with your entire software lifecycle.</p>
+<h2 id="get-started-today-1">Get started today</h2>
+<p>The journey to continuous deployment is an evolution, not a revolution. Start with the fundamentals, build a solid foundation, and gradually incorporate advanced features as your team&rsquo;s needs grow. GitLab provides the tools and flexibility to support you at every stage of this journey, from your first automated deployment to complex, multi-environment delivery pipelines.</p>
+<blockquote>
+<p>Sign up for a free, 60-day trial of GitLab Ultimate to get started with continous deployment today.</p></blockquote>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

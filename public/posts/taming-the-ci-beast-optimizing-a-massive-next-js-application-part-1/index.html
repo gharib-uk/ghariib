@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Taming the CI Beast: Optimizing a Massive Next.js Application (Part 1)</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Taming the CI Beast: Optimizing a Massive Next.js Application (Part 1)</h1>
+			<b><time>06.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fxe1l1znofuqny17vffdz.png" alt="Taming the CI beast" />
+</figure>
+
+
+</p>
+<p>It all started with a behemoth of a Next.js application. <strong>15,000 files, 107,000 lines of code, and a staggering 18,000 unit tests.</strong> This was the beast we inherited at Leboncoin.fr, and its CI pipeline was, to put it mildly, a bit of a nightmare.</p>
+<h2 id="the-problem-a-50-minute-wait-and-growing">The Problem: A 50-Minute Wait (and Growing!)</h2>
+<p>Our initial encounter with the CI process was less than ideal. Average build times were hovering around <strong>50 minutes</strong>, with some builds dragging on for <strong>2 hours</strong>.</p>
+<p>Now, imagine you&rsquo;re one of the <strong>70 frontend developers (and growing!)</strong> working on this codebase. Every time you open a pull request, you&rsquo;re faced with an <strong>hour-long wait</strong> <em>just</em> to merge your changes. Code reviews? Forget about quick turnarounds.</p>
+<p>This wasn&rsquo;t just a minor inconvenience; it was a major productivity killer. Something had to be done.</p>
+<h2 id="the-initial-approach-github-actions-and-parallelism">The Initial Approach: GitHub Actions and Parallelism</h2>
+<p>We knew we needed to migrate from Travis CI to GitHub Actions, and fast. Travis had its limitations, including capped resources and a reliance on Docker containers for everything. GitHub Actions, running on our own Kubernetes cluster, offered more flexibility and scalability.</p>
+<p>Our first strategy was to tackle the slowest part of the pipeline: the Jest tests. We shifted the testing process to GitHub Actions, hoping that bigger machines would help. We started with 8 vCPUs and 8GB of RAM, but the gains were minimal.</p>
+<p>Then, we discovered a culprit: the <code>--runInBand</code> flag in our Jest configuration. This flag forces Jest to run tests sequentially, one at a time. With <strong>18,000 tests</strong>, you can imagine the impact!</p>
+<h2 id="sharding-woes-and-a-new-direction">Sharding Woes and a New Direction</h2>
+<p>Removing <code>--runInBand</code> led to memory issues when using multiple Jest workers. So, we tried sharding, a technique that splits tests into smaller groups to run concurrently.</p>
+<p>Unfortunately, sharding proved to be another bottleneck. With so many tests, and some generated dynamically, Jest spent an eternity just figuring out how to split them. We were losing more time calculating shards than running tests!</p>
+<p>We needed a more nuanced approach. We decided to combine splitting the tests by logical parts (folders, domains) with sharding, applying sharding only to those parts that were still too large to run efficiently on a single runner.</p>
+<p>Here&rsquo;s a snippet of our GitHub Actions workflow showcasing our combined strategy:</p>
+<pre tabindex="0"><code>run-tests:
+    runs-on: [org/leboncoin, size/medium]
+    needs: install-dependencies
+    strategy:
+      matrix:
+        shard:
+          [
+            { path: &#39;src/{__tests__,client,hooks,decorators,tracking,utils}&#39;, shard: &#39;1/1&#39; },
+            { path: &#39;src/components/[0-9A-Ma-m].*&#39;, shard: &#39;1/1&#39; },
+            { path: &#39;src/components/[N-Sn-s].*&#39;, shard: &#39;1/1&#39; },
+            { path: &#39;src/components/[T-Zt-z].*&#39;, shard: &#39;1/1&#39; },
+            { path: &#39;src/{layouts,services,state}&#39;, shard: &#39;1/2&#39; },
+            { path: &#39;src/{layouts,services,state}&#39;, shard: &#39;2/2&#39; },
+            { path: &#39;src/pages/[0-9].*&#39;, shard: &#39;1/1&#39; },
+            { path: &#39;src/pages/[Aa][A-Ca-c].*&#39;, shard: &#39;1/4&#39; },
+            { path: &#39;src/pages/[Aa][A-Ca-c].*&#39;, shard: &#39;2/4&#39; },
+            { path: &#39;src/pages/[Aa][A-Ca-c].*&#39;, shard: &#39;3/4&#39; },
+            { path: &#39;src/pages/[Aa][A-Ca-c].*&#39;, shard: &#39;4/4&#39; },
+            { path: &#39;src/pages/[Aa][Dd][Ll].*&#39;, shard: &#39;1/1&#39; },
+            { path: &#39;src/pages/[Aa][Dd][Ml].*&#39;, shard: &#39;1/1&#39; },
+            { path: &#39;src/pages/[Aa][D-Zd-z][N-Z-n-z].*&#39;, shard: &#39;1/1&#39; },
+            { path: &#39;src/pages/[B-Db-d].*&#39;, shard: &#39;1/3&#39; },
+            { path: &#39;src/pages/[B-Db-d].*&#39;, shard: &#39;2/3&#39; },
+            { path: &#39;src/pages/[B-Db-d].*&#39;, shard: &#39;3/3&#39; },
+            { path: &#39;src/pages/[E-Oe-o].*&#39;, shard: &#39;1/2&#39; },
+            { path: &#39;src/pages/[E-Oe-o].*&#39;, shard: &#39;2/2&#39; },
+            { path: &#39;src/pages/[P-Rp-r].*&#39;, shard: &#39;1/4&#39; },
+            { path: &#39;src/pages/[P-Rp-r].*&#39;, shard: &#39;2/4&#39; },
+            { path: &#39;src/pages/[P-Rp-r].*&#39;, shard: &#39;3/4&#39; },
+            { path: &#39;src/pages/[P-Rp-r].*&#39;, shard: &#39;4/4&#39; },
+            { path: &#39;src/pages/[S-Zs-z].*&#39;, shard: &#39;1/1&#39; },
+          ]
+    steps:
+</code></pre><p>This approach allowed us to leverage the benefits of sharding without incurring the excessive overhead of calculating shards for the entire test suite.</p>
+<h2 id="victory-but-at-what-cost">Victory! (But at What Cost?)</h2>
+<p>The results were impressive. Test times plummeted from an average of <strong>50 minutes to just 5 minutes!</strong> That&rsquo;s a <strong>90% reduction</strong> in test execution time! We had conquered the slowest part of the CI pipeline.</p>
+<p>But something didn&rsquo;t feel right. We were now running <strong>24 test groups</strong>, each on a 4 vCPU, 4GB RAM virtual machine. It felt like we were throwing money (or hardware) at the problem instead of addressing the root cause.</p>
+<p>This, combined with the fact that our production application required a massive number of Kubernetes pods (<strong>averaging 500!</strong>), led us to suspect deeper performance issues lurking within the code.</p>
+<h2 id="profiling-and-the-hunt-for-bottlenecks">Profiling and the Hunt for Bottlenecks</h2>
+<p>We embarked on a mission to profile the application, searching for memory leaks, CPU hogs, and any other performance gremlins that might be contributing to our woes.</p>
+<p>(To be continued&hellip;)<br>
+Originally posted here</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Improve AI security in GitLab with composite identities&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Improve AI security in GitLab with composite identities&lt;/div&gt;</h1>
+			<b><time>01.02.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>Artificial intelligence (AI) is quickly becoming the backbone of modern software development, fueling developer efficiency and accelerating innovation. With the emergence of AI agents implementing code based on instructions from humans, we are learning that implementing AI-based features has its own unique set of security challenges. <strong>How do we protect access to the resources AI needs, protect confidentiality, and avoid privilege escalation</strong>? Few organizations are ready to answer these questions today. At GitLab, we are. We are introducing a new paradigm for identity management: composite identities.</p>
+<p>When AI agents are integrated into your DevSecOps workflows, previously simple questions become difficult to answer: Who authored this code? Who is the author of this merge request? Who created this Git commit? We found we had to start asking new questions: Who instructed an AI agent to generate this code? What context did AI need to build this feature? What were the resources AI had to access and read to generate the answer?</p>
+<p>To answer these questions, we need to understand some fundamental aspects of AI’s identity:</p>
+<ul>
+<li>Does an AI agent have its own distinct identity?</li>
+<li>What is the representation of this identity?</li>
+<li>How do we make it all secure?</li>
+</ul>
+<h3 id="authentication-and-ai-identity-management">Authentication and AI identity management</h3>
+<p>We are at the beginning of a paradigm shift in identity management in the software delivery lifecycle. Before the AI era, identity management was simpler. We had human user-based identities and machine-type identities using separate accounts.</p>
+<p>With the emergence of AI and agentic workflows, the distinction between these two core types of identities has blurred. AI agents are supposed to work in an autonomous way, so it makes sense to think about them as machine-type accounts. On the other hand, AI agents are usually being instructed by human users, and require access to resources the human users have access to in order to complete their tasks. This introduces significant security risks — for example, the AI may provide human users with information they should not have access to. How do we avoid privilege escalation, provide auditability, and protect confidentiality in a world with AI agents?</p>
+<h3 id="the-solution-composite-identities">The solution: Composite identities</h3>
+<p>A composite identity is our new identity principal, representing an AI agent’s identity that is linked with the identity of a human user who requests actions from the agent. <strong>This enhances our ability to protect resources stored in GitLab</strong>. Whenever an AI agent with a composite identity attempts to access a resource, we will not only authenticate the agent itself, but also link its principal with a human user who is instructing the agent, and will try to authorize both principals before granting access to a resource. Both principals need access; otherwise, the access will be denied. If an AI agent by itself can access a project, but a human user who instructed the agent to do so cannot, GitLab will deny the access.</p>
+<p>The inverse is true as well — if a human user can access a confidential issue, but an AI agent can’t, then its service account will not be able to read the issue. We authorize access to every API request and for each resource an agent attempts to access this way. Composite identity without a request-scoped link to a human account will not be authorized to access any resource. For fully autonomous workloads we are also considering adding support for linking composite identities with other principals.</p>
+<h4 id="composite-identity-and-service-accounts">Composite identity and service accounts</h4>
+<p>We redesigned our authorization framework to support composite identities, allowing multiple principals to be evaluated simultaneously when determining access rights to a resource. We enhanced our security infrastructure by implementing scoped identities across our entire system — from API requests to CI jobs and backend workers. These identities are linked to an AI agent&rsquo;s composite identity account also through OAuth tokens and CI job tokens. This project yielded unexpected security benefits, particularly in GitLab CI, where we upgraded job tokens to signed JSON web tokens (JWTs). Additionally, we contributed code to several open source libraries to add support for scoped identities.</p>
+<h3 id="composite-identity-with-gitlab-duo-with-amazon-q">Composite identity with GitLab Duo with Amazon Q</h3>
+<p>In the GitLab 17.8 release, we made composite identity for service accounts support available for customers through our GitLab Duo with Amazon Q integration. Amazon Q Developer agent will have composite identity enforced, which will protect your confidential GitLab resources from unauthorized access.</p>
+<h3 id="whats-next">What’s next?</h3>
+<p>To learn more, check out our composite identity docs.</p>
+<p>Artificial intelligence (AI) is quickly becoming the backbone of modern software development, fueling developer efficiency and accelerating innovation. With the emergence of AI agents implementing code based on instructions from humans, we are learning that implementing AI-based features has its own unique set of security challenges. <strong>How do we protect access to the resources AI needs, protect confidentiality, and avoid privilege escalation</strong>? Few organizations are ready to answer these questions today. At GitLab, we are. We are introducing a new paradigm for identity management: composite identities.</p>
+<p>When AI agents are integrated into your DevSecOps workflows, previously simple questions become difficult to answer: Who authored this code? Who is the author of this merge request? Who created this Git commit? We found we had to start asking new questions: Who instructed an AI agent to generate this code? What context did AI need to build this feature? What were the resources AI had to access and read to generate the answer?</p>
+<p>To answer these questions, we need to understand some fundamental aspects of AI’s identity:</p>
+<ul>
+<li>Does an AI agent have its own distinct identity?</li>
+<li>What is the representation of this identity?</li>
+<li>How do we make it all secure?</li>
+</ul>
+<h3 id="authentication-and-ai-identity-management-1">Authentication and AI identity management</h3>
+<p>We are at the beginning of a paradigm shift in identity management in the software delivery lifecycle. Before the AI era, identity management was simpler. We had human user-based identities and machine-type identities using separate accounts.</p>
+<p>With the emergence of AI and agentic workflows, the distinction between these two core types of identities has blurred. AI agents are supposed to work in an autonomous way, so it makes sense to think about them as machine-type accounts. On the other hand, AI agents are usually being instructed by human users, and require access to resources the human users have access to in order to complete their tasks. This introduces significant security risks — for example, the AI may provide human users with information they should not have access to. How do we avoid privilege escalation, provide auditability, and protect confidentiality in a world with AI agents?</p>
+<h3 id="the-solution-composite-identities-1">The solution: Composite identities</h3>
+<p>A composite identity is our new identity principal, representing an AI agent’s identity that is linked with the identity of a human user who requests actions from the agent. <strong>This enhances our ability to protect resources stored in GitLab</strong>. Whenever an AI agent with a composite identity attempts to access a resource, we will not only authenticate the agent itself, but also link its principal with a human user who is instructing the agent, and will try to authorize both principals before granting access to a resource. Both principals need access; otherwise, the access will be denied. If an AI agent by itself can access a project, but a human user who instructed the agent to do so cannot, GitLab will deny the access.</p>
+<p>The inverse is true as well — if a human user can access a confidential issue, but an AI agent can’t, then its service account will not be able to read the issue. We authorize access to every API request and for each resource an agent attempts to access this way. Composite identity without a request-scoped link to a human account will not be authorized to access any resource. For fully autonomous workloads we are also considering adding support for linking composite identities with other principals.</p>
+<h4 id="composite-identity-and-service-accounts-1">Composite identity and service accounts</h4>
+<p>We redesigned our authorization framework to support composite identities, allowing multiple principals to be evaluated simultaneously when determining access rights to a resource. We enhanced our security infrastructure by implementing scoped identities across our entire system — from API requests to CI jobs and backend workers. These identities are linked to an AI agent&rsquo;s composite identity account also through OAuth tokens and CI job tokens. This project yielded unexpected security benefits, particularly in GitLab CI, where we upgraded job tokens to signed JSON web tokens (JWTs). Additionally, we contributed code to several open source libraries to add support for scoped identities.</p>
+<h3 id="composite-identity-with-gitlab-duo-with-amazon-q-1">Composite identity with GitLab Duo with Amazon Q</h3>
+<p>In the GitLab 17.8 release, we made composite identity for service accounts support available for customers through our GitLab Duo with Amazon Q integration. Amazon Q Developer agent will have composite identity enforced, which will protect your confidential GitLab resources from unauthorized access.</p>
+<h3 id="whats-next-1">What’s next?</h3>
+<p>To learn more, check out our composite identity docs.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

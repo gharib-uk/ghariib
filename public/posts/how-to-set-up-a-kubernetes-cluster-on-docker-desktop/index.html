@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How to Set Up a Kubernetes Cluster on Docker Desktop</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How to Set Up a Kubernetes Cluster on Docker Desktop</h1>
+			<b><time>07.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Kubernetes is an open source platform for automating the deployment, scaling, and management of containerized applications across clusters of machines. It’s become the go-to solution for orchestrating containers in production environments. But if you’re developing or testing locally, setting up a full Kubernetes cluster can be complex. That’s where Docker Desktop comes in — it lets you run Kubernetes directly on your local machine, making it easy to test microservices, CI/CD pipelines, and containerized apps without needing a remote cluster.</p>
+<p>Getting Kubernetes up and running can feel like a daunting task, especially for developers working in local environments. But with Docker Desktop, spinning up a fully functional Kubernetes cluster is simpler than ever. Whether you’re new to Kubernetes or just want an easy way to test containerized applications locally, Docker Desktop provides a streamlined solution. In this guide, we’ll walk through the steps to start a Kubernetes cluster on Docker Desktop and offer troubleshooting tips to ensure a smooth experience. </p>
+<p><strong>Note:</strong> Docker Desktop’s Kubernetes cluster is designed specially for local development and testing; it is not for production use. </p>
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/09/2400x1260_container-docker-1110x583.png" alt="2400x1260 container docker" />
+  <figcaption>- 2400x1260 container docker</figcaption>
+</figure>
+
+
+</p>
+<h2 id="benefits-of-running-kubernetes-in-docker-desktop">Benefits of running Kubernetes in Docker Desktop </h2>
+<p>The benefits of this setup include: </p>
+<ul>
+<li><strong>Easy local Kubernetes cluster:</strong> A fully functional Kubernetes cluster runs on your local machine with minimal setup, handling network access between the host and Kubernetes as well as storage management. </li>
+<li><strong>Easier learning path and developer convenience:</strong> For developers familiar with Docker but new to Kubernetes, having Kubernetes built into Docker Desktop offers a low-friction learning path. </li>
+<li><strong>Testing Kubernetes-based applications locally:</strong> Docker Desktop gives developers a local environment to test Kubernetes-based microservices applications that require Kubernetes features like services, pods, ConfigMaps, and secrets without needing access to a remote cluster. It also helps developers to test CI/CD pipelines locally. </li>
+</ul>
+<h2 id="how-to-start-kubernetes-cluster-on-docker-desktop-in-three-steps">How to start Kubernetes cluster on Docker Desktop in three steps</h2>
+<ol>
+<li>Download the latest Docker Desktop release.</li>
+<li>Install Docker Desktop on the operating system of your choice. Currently, the supported operating systems are macOS, Linux, and Windows.</li>
+<li>In the <strong>Settings</strong> menu, select <strong>Kubernetes &gt; Enable Kubernetes</strong> and then <strong>Apply &amp; restart</strong> to start a one-node Kubernetes cluster (Figure 1). Typically, the time it takes to set up the Kubernetes cluster depends on your internet speed to pull the needed images.</li>
+</ol>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/12/F1-starting-Kubernetes.png" alt="Screenshot of Settings menu with Kubernetes chosen on the left and the Enable Kubernetes option selected." />
+  <figcaption>Screenshot of Settings menu with Kubernetes chosen on the left and the Enable Kubernetes option selected. - F1 starting Kubernetes</figcaption>
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p><strong>Figure 1:</strong> Starting Kubernetes.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Once the Kubernetes cluster is started successfully, you can see the status from the Docker Desktop dashboard or the command line.</p>
+<p>From the dashboard (Figure 2):</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.docker.com/wp-content/uploads/2024/12/F2-checking-status.png" alt="Screenshot of Docker Desktop dashboard showing green dot next to Kubernetes is running." />
+  <figcaption>Screenshot of Docker Desktop dashboard showing green dot next to Kubernetes is running. - F2 checking status</figcaption>
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p><strong>Figure 2:</strong> Status from the dashboard.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>The command-line status:</p>
+<pre tabindex="0"><code>$ kubectl get node
+NAME             STATUS   ROLES           AGE   VERSION
+docker-desktop   Ready    control-plane   5d    v1.30.2
+</code></pre><h2 id="getting-kubernetes-support">Getting Kubernetes support</h2>
+<p>Docker bundles Kubernetes but does not provide official Kubernetes support. If you are experiencing issues with Kubernetes, however, you can get support in several ways, including from the Docker community, Docker guides, and GitHub documentation: </p>
+<ul>
+<li>Docker community forums</li>
+<li>Deploy to Kubernetes | Docker Docs</li>
+<li>Docker Docs</li>
+<li>GitHub documentation:
+<ul>
+<li>Docker Desktop for Windows documentation</li>
+<li>Docker Desktop for Mac documentation </li>
+<li>Docker Desktop for Linux documentation </li>
+</ul>
+</li>
+</ul>
+<h3 id="what-to-do-if-you-experience-an-issue">What to do if you experience an issue </h3>
+<h4 id="generate-a-diagnostics-file">Generate a diagnostics file</h4>
+<p>Before troubleshooting, generate a diagnostics file using your terminal.</p>
+<p>Refer to the documentation for diagnosing from the terminal. For example, if you are using a Mac, run the following command:</p>
+<pre tabindex="0"><code>/Applications/Docker.app/Contents/MacOS/com.docker.diagnose gather -upload
+</code></pre><p>The command will show you where the diagnostics file is saved:</p>
+<pre tabindex="0"><code>Gathering diagnostics for ID  into /var/folders/50/&lt;Random Character&gt;/&lt;Random Character&gt;/&lt;Machine unique ID&gt;/&lt;YYYYMMDDTTTT&gt;.zip.
+</code></pre><p>In this case, the file is saved at <code>/var/folders/50/&lt;Random Characters&gt;/&lt;Random Characters&gt;/&lt;YYYMMDDTTTT&gt;.zip</code>. Unzip the file (<code>&lt;YYYYMMDDTTTT&gt;.zip</code>) where you can find the logs file for Docker Desktop.</p>
+<h4 id="check-for-logs">Check for logs</h4>
+<p>Checking for logs instead of guessing the issue is good practice. Understanding what Kubernetes components are available and what their functions are is essential before you start troubleshooting. You can narrow down the process by looking at the specific component logs. Look for the keyword <code>error</code> or <code>fatal</code> in the logs. </p>
+<p>Depending on which platform you are using, one method is to use the <code>grep</code> command and search for the keyword in the macOS terminal, a Linux distro for WSL2, or the Linux terminal for the file you unzipped:</p>
+<pre tabindex="0"><code>$ grep -Hrni &#34;&lt;keyword&gt;&#34; &lt;The path of the unzipped file&gt;
+
+## For example, one of the error found related to Kubernetes in the &#34;com.docker.backend.exe&#34; logs:
+
+$ grep -Hrni &#34;error&#34; *
+[com.docker.backend.exe.log:[2022-12-05T05:24:39.377530700Z][com.docker.backend.exe][W] starting kubernetes: 1 error occurred: 
+com.docker.backend.exe.log:	* starting kubernetes: pulling kubernetes images: pulling registry.k8s.io/coredns:v1.9.3: Error response from daemon: received unexpected HTTP status: 500 Internal Server Error
+</code></pre><h4 id="troubleshooting-example">Troubleshooting example</h4>
+<p>Let’s say you notice there is an issue starting up the cluster. This issue could be related to the Kubelet process, which works as a node-level agent to help with container management and orchestration within a Kubernetes cluster. So, you should check the Kubelet logs. </p>
+<p>But, where is the Kubelet log located? It’s at <code>log/vm/kubelet.log</code> in the diagnostics file.</p>
+<p>An example of a possible related issue can be found in the <code>kubelet.log</code>. The images needed to set up Kubernetes are not able to be pulled due to network/internet restrictions. You might find errors related to failing to pull the necessary Kubernetes images to set up the Kubernetes cluster.</p>
+<p>For example:</p>
+<pre tabindex="0"><code>starting kubernetes: pulling kubernetes images: pulling registry.k8s.io/coredns:v1.9.3: Error response from daemon: received unexpected HTTP status: 500 Internal Server Error
+</code></pre><p>Normally, 10 images are needed to set up the cluster. The following output is from a macOS running Docker Desktop version 4.33:</p>
+<pre tabindex="0"><code>$ docker image ls
+REPOSITORY                                TAG                                                                           IMAGE ID       CREATED         SIZE
+docker/desktop-kubernetes                 kubernetes-v1.30.2-cni-v1.4.0-critools-v1.29.0-cri-dockerd-v0.3.11-1-debian   5ef3082e902d   4 weeks ago     419MB
+registry.k8s.io/kube-apiserver            v1.30.2                                                                       84c601f3f72c   7 weeks ago     112MB
+registry.k8s.io/kube-scheduler            v1.30.2                                                                       c7dd04b1bafe   7 weeks ago     60.5MB
+registry.k8s.io/kube-controller-manager   v1.30.2                                                                       e1dcc3400d3e   7 weeks ago     107MB
+registry.k8s.io/kube-proxy                v1.30.2                                                                       66dbb96a9149   7 weeks ago     87.9MB
+registry.k8s.io/etcd                      3.5.12-0                                                                      014faa467e29   6 months ago    139MB
+registry.k8s.io/coredns/coredns           v1.11.1                                                                       2437cf762177   11 months ago   57.4MB
+docker/desktop-vpnkit-controller          dc331cb22850be0cdd97c84a9cfecaf44a1afb6e                                      3750dfec169f   14 months ago   35MB
+registry.k8s.io/pause                     3.9                                                                           829e9de338bd   22 months ago   514kB
+docker/desktop-storage-provisioner        v2.0                                                                          c027a58fa0bb   3 years ago     39.8MB
+</code></pre><p>You can check whether you successfully pulled the 10 images by running <code>docker image ls</code>. If images are missing, a workaround is to save the missing image using <code>docker image save</code> from a machine that successfully starts the Kubernetes cluster (provided both run the same Docker Desktop version). Then, you can transfer the image to your machine, use <code>docker image load</code> to load the image into your machine, and tag it. </p>
+<p>For example, if the <code>registry.k8s.io/coredns:v&lt;VERSION&gt;</code> image is not available,  you can follow these steps:</p>
+<ol>
+<li>Use <code>docker image save</code> from a machine that successfully starts the Kubernetes cluster to save it as a tar file: <code>docker save registry.k8s.io/coredns:v&lt;VERSION&gt; &gt; &lt;Name of the file&gt;.tar</code>.</li>
+<li>Manually transfer the <code>&lt;Name of the file&gt;.tar</code> to your machine.</li>
+<li>Use <code>docker image load</code> to load the image on your machine: <code>docker image load &lt;</code> <code>&lt;Name of the file&gt;.tar</code>.</li>
+<li>Tag the image: <code>docker image tag registry.k8s.io/coredns:v&lt;VERSION&gt; &lt;Name of the file&gt;.tar</code>.</li>
+<li>Re-enable the Kubernetes from your Docker Desktop’s settings.</li>
+<li>Check other logs in the diagnostics log.</li>
+</ol>
+<h4 id="what-to-look-for-in-the-diagnostics-log">What to look for in the diagnostics log</h4>
+<p>In the diagnostics log, look for the folder starting named <code>kube/</code>. (Note that the <code>&lt;kube&gt;</code> below,  for macOS and Linux is <code>kubectl</code> and for Windows is <code>kubectl.exe.</code>)</p>
+<ul>
+<li><code>kube/get-namespaces.txt</code>: List down all the namespaces, equal to <code>&lt;kube&gt; --context docker-desktop get namespaces</code>.</li>
+<li><code>kube/describe-nodes.txt</code>: Describe the docker-desktop node, equal to <code>&lt;kube&gt; --context docker-desktop describe nodes</code>.</li>
+<li><code>kube/describe-pods.txt</code>: Description of all pods running in the Kubernetes cluster.</li>
+<li><code>kube/describe-services.txt</code>: Description of the services running, equal to <code>&lt;kube&gt; --context docker-desktop describe services --all-namespaces</code>.</li>
+<li>You also can find other useful Kubernetes logs in the mentioned folder.</li>
+</ul>
+<h4 id="search-for-known-issues">Search for known issues</h4>
+<p>For any error message found in the steps above, you can search for known Kubernetes issues on GitHub to see if a workaround or any future permanent fix is planned.</p>
+<h4 id="reset-or-reboot">Reset or reboot </h4>
+<p>If the previous steps weren’t helpful, try a reboot. And, if the previous steps weren’t helpful, try a reboot. And, if a reboot is not helpful, the last alternative is to reset your Kubernetes cluster, which often helps resolve issues: </p>
+<ul>
+<li><strong>Reboot:</strong> To reboot, restart your machine. Rebooting a machine in a Kubernetes cluster can help resolve issues by clearing transient states and restoring the system to a clean state.</li>
+<li><strong>Reset:</strong> For a reset, navigate to <strong>Settings</strong> &gt; <strong>Kubernetes</strong> &gt; <strong>Reset the Kubernetes Cluster</strong>. Resetting a Kubernetes cluster can help resolve issues by essentially reverting the cluster to a clean state, and clearing out misconfigurations, corrupted data, or stuck resources that may be causing problems.</li>
+</ul>
+<h2 id="bringing-kubernetes-to-your-local-development-environment">Bringing Kubernetes to your local development environment</h2>
+<p>This guide offers a straightforward way to start a Kubernetes cluster on Docker Desktop, making it easier for developers to test Kubernetes-based applications locally. It covers key benefits like simple setup, a more accessible learning path for beginners, and the ability to run tests without relying on a remote cluster. We also provide some troubleshooting tips and resources for resolving common issues. </p>
+<p>Whether you’re just getting started or looking to improve your local Kubernetes workflow, give it a try and see what you can achieve with Docker Desktop’s Kubernetes integration.</p>
+<h2 id="learn-more">Learn more</h2>
+<ul>
+<li>Subscribe to the Docker Newsletter. </li>
+<li>Get the latest release of Docker Desktop.</li>
+<li>On-demand training: Container Orchestration 101</li>
+<li>Docker and Kubernetes</li>
+<li>Docker community forums</li>
+<li>Deploy to Kubernetes | Docker Docs</li>
+<li>Docker Docs
+<ul>
+<li>Docker Compose Bridge</li>
+</ul>
+</li>
+<li>GitHub documentation
+<ul>
+<li>Docker Desktop for Windows documentation</li>
+<li>Docker Desktop for Mac documentation </li>
+<li>Docker Desktop for Linux documentation </li>
+</ul>
+</li>
+<li>Have questions? The Docker community is here to help.</li>
+<li>New to Docker? Get started.</li>
+</ul>
+<p>​Products, Docker Desktop, Kubernetes</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

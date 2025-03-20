@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Introducing an enhanced version of the AWS Secrets Manager transform: AWS::SecretsManager-2024-09-16</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Introducing an enhanced version of the AWS Secrets Manager transform: AWS::SecretsManager-2024-09-16</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>We’re pleased to announce an enhanced version of the AWS Secrets Manager transform: <code>AWS::SecretsManager-2024-09-16</code>. This update is designed to simplify infrastructure management by reducing the need for manual security updates, bug fixes, and runtime upgrades.</p>
+<p>AWS Secrets Manager helps you manage, retrieve, and rotate database credentials, API keys, and other secrets throughout their lifecycles. Some AWS services offer managed rotation of secrets, but for other secrets, you perform rotation by using an AWS Lambda function that updates your secret and the database or service.</p>
+<p>Transforms are macros hosted by AWS CloudFormation that enable you to create or manage complex infrastructure setups. For general information on transforms, see the AWS CloudFormation documentation.</p>
+<p>The <code>AWS::SecretsManager</code> transforms are used in conjunction with the <code>AWS::SecretsManager::RotationSchedule</code> resource type and <code>HostedRotationLambda</code> property to automatically extend your CloudFormation template to include a nested stack that creates the appropriate rotation Lambda function for your database or service. The transforms provide a convenient way to deploy an AWS vended rotation Lambda function into your own account as part of your CloudFormation templates, without having to rely on creating rotation Lambda functions through the AWS Serverless Application Repository or the AWS Management Console.</p>
+<p>In this post, we’ll explore the new features of the transform, compare them to the previous version, and guide you through updating an existing Lambda function that was created using the old transform version to use the new transform version.</p>
+<h2 id="new-features-in-awssecretsmanager-2024-09-16">New features in <code>AWS::SecretsManager-2024-09-16</code></h2>
+<p>The new transform version introduces several enhancements over the previous version (<code>AWS::SecretsManager-2020-07-23</code>):</p>
+<ul>
+<li><strong>Automatic Lambda upgrades</strong>: Your rotation Lambda functions’ runtime configuration and internal dependencies now update automatically when you update your CloudFormation stacks. This helps you verify that you’re using the most secure and stable versions of Secrets Manager vended rotation Lambda function code and runtimes. Currently, AWS Lambda supports Python runtimes 3.9 and above. With Python 3.8 being deprecated, this feature allows for a seamless transition to newer supported runtimes. For more information on runtime deprecations, see the AWS Lambda runtimes documentation and the Python version guide.</li>
+<li><strong>Additional resource attributes</strong>: The new transform now supports additional resource attributes for the <code>AWS::SecretsManager::RotationSchedule</code> resource type when used with the <code>HostedRotationLambda</code> property. The following attributes are applied to the nested stack (of type <code>AWS::CloudFormation::Stack</code>) that creates the rotation Lambda function:
+<ul>
+<li><code>CreationPolicy</code></li>
+<li><code>DependsOn</code></li>
+<li><code>Metadata</code></li>
+<li><code>UpdatePolicy</code></li>
+<li><code>Condition</code></li>
+</ul>
+</li>
+</ul>
+<p>For more information on these resource attributes, see the AWS CloudFormation resource attribute reference.</p>
+<h3 id="resource-attributes-comparison">Resource attributes comparison</h3>
+<p>The following table shows which resource attributes are supported by the two versions of the Secrets Manager transform.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Attribute</strong></th>
+          <th><strong>AWS::SecretsManager-2020-07-23</strong></th>
+          <th><strong>AWS::SecretsManager-2024-09-16</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>DeletionPolicy</td>
+          <td>Supported</td>
+          <td>Supported</td>
+      </tr>
+      <tr>
+          <td>UpdateReplacePolicy</td>
+          <td>Supported</td>
+          <td>Supported</td>
+      </tr>
+      <tr>
+          <td>CreationPolicy</td>
+          <td>Not Supported</td>
+          <td>Supported</td>
+      </tr>
+      <tr>
+          <td>DependsOn</td>
+          <td>Not Supported</td>
+          <td>Supported</td>
+      </tr>
+      <tr>
+          <td>Metadata</td>
+          <td>Not Supported</td>
+          <td>Supported</td>
+      </tr>
+      <tr>
+          <td>UpdatePolicy</td>
+          <td>Not Supported</td>
+          <td>Supported</td>
+      </tr>
+      <tr>
+          <td>Condition</td>
+          <td>Not Supported</td>
+          <td>Supported</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="important-considerations">Important considerations</h2>
+<p>Before you use the <code>AWS::SecretsManager-2024-09-16</code> transform, it’s essential to be aware of the following considerations so that you can make sure your CloudFormation stacks are properly created or updated:</p>
+<ul>
+<li><strong>Non-backward compatibility</strong>: The new transform version isn’t backward compatible with the previous version. If you downgrade from <code>AWS::SecretsManager-2024-09-16</code> to <code>AWS::SecretsManager-2020-07-23</code>, the additional resource attributes won’t be supported, which might change the behavior of existing stacks.</li>
+<li><strong>Rollback behavior during upgrade</strong>: When you upgrade to the <code>AWS::SecretsManager-2024-09-16</code> transform from the previous version and a stack rollback occurs for any reason, the rotation Lambda function might not revert to its previous state. This is because the older transform’s nested stack might not use the same Lambda deployment package that was used before the upgrade.</li>
+<li><strong>Direct Lambda changes</strong>: If you make direct changes to the Lambda function created by the new transform outside of a CloudFormation stack update, those modifications might be overwritten during subsequent CloudFormation stack updates or rollbacks.</li>
+<li><strong>Lambda runtime management</strong>: When you use the new transform version, the rotation Lambda function’s runtime aligns with the compiled binaries that are vended in Secrets Manager rotation Lambda templates, without you needing to specify a <code>Runtime</code> value in the <code>HostedRotationLambda</code> property. If you specify a <code>Runtime</code> value, make sure it’s the same version that is supported by Secrets Manager vended rotation Lambda templates. Otherwise, the Lambda runtime will be incompatible with the binaries that are published in the rotation Lambda function. For more information on the supported runtime, see the rotation function templates documentation.</li>
+<li><strong>Future support plans</strong>: While this is not an end-of-support announcement, upgrading the transform version as soon as convenient for you will reduce the impact on your CloudFormation stacks in the future when AWS Secrets Manager ends support for the previous transform version <code>AWS::SecretsManager-2020-07-23</code>).</li>
+</ul>
+<h2 id="how-to-upgrade">How to upgrade</h2>
+<p>To upgrade to the new transform version, follow these steps:</p>
+<ol>
+<li>Review your existing CloudFormation stacks that use the <code>AWS::SecretsManager-2020-07-23</code> transform.</li>
+<li>Update your CloudFormation stack templates to use <code>AWS::SecretsManager-2024-09-16</code> in the <code>Transform</code> key at the top of your template: <code>Transform: AWS::SecretsManager-2024-09-16</code></li>
+<li>If you have previously defined a <code>Runtime</code> value in the <code>HostedRotationLambda</code> property, remove it from your template so that your rotation Lambda function’s runtime is updated properly in future stack updates.</li>
+<li>Incorporate the new resource attributes as needed. We recommend that you minimize all other template changes while upgrading to reduce the likelihood of rollbacks.</li>
+<li>Deploy the changes by updating your CloudFormation stack with the revised template.</li>
+</ol>
+<p>By following these steps, your Secrets Manager vended rotation Lambda functions will benefit from the latest improvements and security enhancements. Remember to test the changes in a non-production environment before you apply them to your production stacks. If you encounter any issues during the upgrade process, refer to our documentation or contact AWS Support for assistance.</p>
+<p> <br>
+If you have feedback about this post, submit comments in the <strong>Comments</strong> section below. If you have questions about this post, contact AWS Support.<br>
+ </p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/04/sanjayvd.jpg" alt="Sanjay Varma Datla" />
+</figure>
+
+
+ Sanjay Varma Datla<br>
+Sanjay is a Software Development Engineer at AWS Secrets Manager. With a strong background in software engineering and a passion for secure application design, he focuses on empowering developers to manage sensitive information safely. Outside of work, Sanjay enjoys hiking and exploring new cuisines.</p>
+<p>
+<figure>
+  <img src="https://d2908q01vomqb2.cloudfront.net/22d200f8670dbdb3e253a90eee5098477c95c23d/2024/12/04/robcop.jpg" alt="Rob Stevens" />
+</figure>
+
+
+ Rob Stevens<br>
+Rob is a System Development Engineer for AWS Secrets Manager and is committed to building secure and scalable distributed systems for AWS and its customers. Outside of work, Rob is a fitness enthusiast and also enjoys traveling.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>When to Split React Reducers: A Practical Guide</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>When to Split React Reducers: A Practical Guide</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Managing state in React applications can quickly become complex, especially as your application grows. One of the most common questions developers face is when and how to split their reducers. Let&rsquo;s dive into this topic with real-world examples and practical advice.</p>
+<h4 id="the-single-reducer-pattern-when-it-works-and-when-it-doesnt">The Single Reducer Pattern: When It Works and When It Doesn&rsquo;t</h4>
+<p>Let&rsquo;s start with a common scenario: an e-commerce dashboard that manages both UI state (like modal visibility, selected tabs) and data state (product inventory, orders). Initially, you might start with a single reducer:</p>
+<pre tabindex="0"><code>type DashboardState = {
+  // UI State
+  isProductModalOpen: boolean;
+  selectedTab: &#39;inventory&#39; | &#39;orders&#39; | &#39;analytics&#39;;
+  sidebarCollapsed: boolean;
+
+  // Data State
+  products: Product[];
+  orders: Order[];
+  loadingProducts: boolean;
+  loadingOrders: boolean;
+  error: string | null;
+};
+
+const dashboardReducer = (state: DashboardState, action: DashboardAction): DashboardState =&gt; {
+  switch (action.type) {
+    case &#39;TOGGLE_PRODUCT_MODAL&#39;:
+      return { ...state, isProductModalOpen: !state.isProductModalOpen };
+    case &#39;SET_SELECTED_TAB&#39;:
+      return { ...state, selectedTab: action.payload };
+    case &#39;FETCH_PRODUCTS_START&#39;:
+      return { ...state, loadingProducts: true };
+    case &#39;FETCH_PRODUCTS_SUCCESS&#39;:
+      return { 
+        ...state, 
+        products: action.payload,
+        loadingProducts: false,
+        error: null
+      };
+    // ... many more cases
+  }
+};
+</code></pre><p>This quickly becomes hard to manage for several specific reasons:</p>
+<ol>
+<li>The state shape becomes increasingly complex and intertwined, making it difficult to understand which parts of the state are related to UI and which are related to data.</li>
+<li>The reducer function grows larger, often exceeding 200-300 lines of code, making it harder to maintain and test.</li>
+<li>Different team members working on different features might create conflicts when modifying the same reducer file.</li>
+<li>Type definitions become unwieldy as you add more state properties.</li>
+</ol>
+<h4 id="splitting-by-concern-ui-vs-data">Splitting by Concern: UI vs. Data</h4>
+<p>A better approach is to split the reducer based on concerns. Here&rsquo;s how we can separate UI state from data state:</p>
+<pre tabindex="0"><code>// uiReducer.ts
+type UIState = {
+  isProductModalOpen: boolean;
+  selectedTab: &#39;inventory&#39; | &#39;orders&#39; | &#39;analytics&#39;;
+  sidebarCollapsed: boolean;
+};
+
+const uiReducer = (state: UIState, action: UIAction): UIState =&gt; {
+  switch (action.type) {
+    case &#39;TOGGLE_PRODUCT_MODAL&#39;:
+      return { ...state, isProductModalOpen: !state.isProductModalOpen };
+    case &#39;SET_SELECTED_TAB&#39;:
+      return { ...state, selectedTab: action.payload };
+    case &#39;TOGGLE_SIDEBAR&#39;:
+      return { ...state, sidebarCollapsed: !state.sidebarCollapsed };
+    default:
+      return state;
+  }
+};
+
+// dataReducer.ts
+type DataState = {
+  products: Product[];
+  orders: Order[];
+  loadingProducts: boolean;
+  loadingOrders: boolean;
+  error: string | null;
+};
+
+const dataReducer = (state: DataState, action: DataAction): DataState =&gt; {
+  switch (action.type) {
+    case &#39;FETCH_PRODUCTS_START&#39;:
+      return { ...state, loadingProducts: true };
+    case &#39;FETCH_PRODUCTS_SUCCESS&#39;:
+      return {
+        ...state,
+        products: action.payload,
+        loadingProducts: false,
+        error: null
+      };
+    case &#39;FETCH_PRODUCTS_ERROR&#39;:
+      return {
+        ...state,
+        loadingProducts: false,
+        error: action.payload
+      };
+    // ... other data-related cases
+    default:
+      return state;
+  }
+};
+</code></pre><h4 id="when-to-split-further-domain-driven-separation">When to Split Further: Domain-Driven Separation</h4>
+<p>As your application grows, you might find that even the data reducer becomes too large. This is particularly true when you&rsquo;re dealing with multiple domains in your application. Let&rsquo;s consider when you should split the data reducer further:</p>
+<ol>
+<li>When different teams are working on different features</li>
+<li>When state updates in one domain rarely affect other domains</li>
+<li>When testing becomes complicated due to the size of the reducer</li>
+<li>When you notice performance issues due to frequent updates</li>
+</ol>
+<p>Here&rsquo;s an example of splitting the data reducer by domain:</p>
+<pre tabindex="0"><code>// productReducer.ts
+type ProductState = {
+  items: Product[];
+  loading: boolean;
+  error: string | null;
+  categories: Category[];
+};
+
+const productReducer = (state: ProductState, action: ProductAction): ProductState =&gt; {
+  switch (action.type) {
+    case &#39;FETCH_PRODUCTS_START&#39;:
+      return { ...state, loading: true };
+    case &#39;UPDATE_PRODUCT_INVENTORY&#39;:
+      return {
+        ...state,
+        items: state.items.map(product =&gt;
+          product.id === action.payload.id
+            ? { ...product, inventory: action.payload.inventory }
+            : product
+        )
+      };
+    // ... other product-specific cases
+  }
+};
+
+// orderReducer.ts
+type OrderState = {
+  orders: Order[];
+  loading: boolean;
+  error: string | null;
+  activeFilters: OrderFilter[];
+};
+
+const orderReducer = (state: OrderState, action: OrderAction): OrderState =&gt; {
+  switch (action.type) {
+    case &#39;UPDATE_ORDER_STATUS&#39;:
+      return {
+        ...state,
+        orders: state.orders.map(order =&gt;
+          order.id === action.payload.orderId
+            ? { ...order, status: action.payload.status }
+            : order
+        )
+      };
+    // ... other order-specific cases
+  }
+};
+</code></pre><h4 id="real-world-benefits-of-splitting-reducers">Real-World Benefits of Splitting Reducers</h4>
+<ol>
+<li>
+<p><strong>Improved Performance</strong>: When you split reducers, React can optimize re-renders better. For example, if you update the UI state (like toggling a modal), components that only depend on order data won&rsquo;t re-render.</p>
+</li>
+<li>
+<p><strong>Better Testing</strong>: Smaller, focused reducers are easier to test. You can write specific tests for UI behavior without worrying about data state:</p>
+</li>
+</ol>
+<pre tabindex="0"><code>describe(&#39;uiReducer&#39;, () =&gt; {
+  it(&#39;should toggle product modal&#39;, () =&gt; {
+    const initialState = { isProductModalOpen: false, selectedTab: &#39;inventory&#39;, sidebarCollapsed: false };
+    const action = { type: &#39;TOGGLE_PRODUCT_MODAL&#39; as const };
+
+    const newState = uiReducer(initialState, action);
+    expect(newState.isProductModalOpen).toBe(true);
+  });
+});
+</code></pre><ol>
+<li>
+<p><strong>Easier Maintenance</strong>: When bugs occur, it&rsquo;s easier to isolate the problem to a specific reducer. If there&rsquo;s an issue with order status updates, you know exactly where to look.</p>
+</li>
+<li>
+<p><strong>Better Type Safety</strong>: TypeScript types become more focused and manageable:</p>
+</li>
+</ol>
+<pre tabindex="0"><code>type ProductAction =
+  | { type: &#39;FETCH_PRODUCTS_START&#39; }
+  | { type: &#39;FETCH_PRODUCTS_SUCCESS&#39;; payload: Product[] }
+  | { type: &#39;UPDATE_PRODUCT_INVENTORY&#39;; payload: { id: string; inventory: number } };
+
+// Instead of one large union type for all actions
+type DashboardAction = ProductAction | OrderAction | UIAction; // This becomes unwieldy
+</code></pre><h4 id="when-not-to-split-reducers">When Not to Split Reducers</h4>
+<p>While splitting reducers has many benefits, there are cases where it might not be necessary:</p>
+<ol>
+<li>In small applications with limited state</li>
+<li>When state updates frequently need to coordinate between different domains</li>
+<li>When the overhead of managing multiple reducers outweighs the benefits</li>
+</ol>
+<p>The key is to find the right balance for your specific use case. Start with a single reducer, and split when you notice:</p>
+<ul>
+<li>The reducer file exceeding 200 lines</li>
+<li>Multiple developers frequently conflicting in the same file</li>
+<li>Testing becoming difficult</li>
+<li>Performance issues related to unnecessary re-renders</li>
+</ul>
+<p>Remember, the goal of splitting reducers is to make your application more maintainable, performant, and easier to understand. Don&rsquo;t split just for the sake of splitting – let your application&rsquo;s needs guide your decision.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>bash - how to remove a local variable (inside a function)</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="http://localhost:1313/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>bash - how to remove a local variable (inside a function)</h1>
+			<b><time>10.12.2024 14:09</time></b>
+		       
+		           <a href="/tags/unix.stackexchange.com">unix.stackexchange.com</a>
+        	       
+
+			<div>
+				<h1 id="bash---how-to-remove-a-local-variable-inside-a-function">bash - how to remove a local variable (inside a function)</h1>
+<p><strong>Published on</strong>: 2024-12-10T14:09:19Z</p>
+<p><strong>Summary</strong>: Ive read whats listed in Bibliography regarding unset, declare, local and &quot;Shell Functions&quot;. My version of Bash is GNU bash, version 5.1.16(1)-release (x86_64-pc-linux-gnu)  var=outer declare -p var unset var declare -p var function foo {   echo &amp;quot;&quot;Im in&quot;&amp;quot;   local var=inner   declare -p var   unset var   declare -p var } foo  (the strange quoting around Im in is there just to preserve syntax highlithing in the following block quote.) This prints declare &ndash; var=&quot;outer&quot; bash: declare: var: not found &quot;Im in&quot; declare &ndash; var=&quot;inner&quot; declare &ndash; var  There is a difference in unsetting a global variable and unsetting a local variable inside a function. In the former case, the variable is removed. In the latter, the variable stays declared (but unset). Is there a way to completely remove a local variable inside a function (before the function returns)? That is that the output would be declare &ndash; var=&quot;outer&quot; bash: declare: var: not found &quot;Im in&quot; declare &ndash; var=&quot;inner&quot; bash: declare: var: not found  That would be useful to test if a variable is non existing inside a function, like in function foo {   local var   while     declare -p var   do     echo &quot;$var&quot;     ((var++))     [[ &quot;$var&quot; -eq 4 ]] \     &amp;&amp; unset var   done }  This code loops indefinitely, printing  declare &ndash; var=&quot;1&quot; 1 declare &ndash; var=&quot;2&quot; 2 declare &ndash; var=&quot;3&quot; 3 declare &ndash; var  declare &ndash; var=&quot;1&quot; 1 declare &ndash; var=&quot;2&quot; 2 declare &ndash; var=&quot;3&quot; 3 declare &ndash; var [omissis]  Is there anything wrong in checking if a variable exists using declare -p? The only mention I found in the Bash reference manual about the difference between unsetting a global variable and a local one is  If a variable at the current local scope is unset, it will remain so (appearing as unset) until it is reset in that scope or until the function returns. (ref. Bash reference manual - sec. &quot;Shell Functions&quot;)  where the word appearing is the only clue. Bibliography  Bash reference manual sec. &quot;4 Shell Builtin Commands&quot; What does unset do?</p>
+<p>Read more: <a href="https://unix.stackexchange.com/questions/787909/bash-how-to-remove-a-local-variable-inside-a-function">bash - how to remove a local variable (inside a function)</a></p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/security.stackexchange.com_what_is_this_hacker_trying_to_do_by_accessing_stac/">What is this hacker trying to do by accessing stack exchange specific URLs on my site? [closed]</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_buffer_overflow_use_ebp_instead_of_esp_ebp&#43;4__re/">buffer overflow use ebp instead of esp (ebp&#43;4 = ret address)</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_character_escaping_xss_closed/">Character escaping xss [closed]</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_is_there_a_way_to_limit_browser_extension_internet/">Is there a way to limit browser extension internet access?</a></li>
+				
+				<li><a href="/posts/security.stackexchange.com_is_it_common_practice_to_remove_trusted_certificat/">Is it common practice to remove trusted certificate authorities (CA) located in untrusted countries?</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="http://localhost:1313/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

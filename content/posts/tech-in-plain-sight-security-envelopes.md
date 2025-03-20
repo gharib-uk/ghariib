@@ -1,0 +1,81 @@
+---
+title: "Tech In Plain Sight: Security Envelopes"
+date: 2025-01-08
+tags: 
+  - "go"
+  - "tech"
+  - "ui"
+  - "un"
+---
+
+![](https://hackaday.com/wp-content/uploads/2025/01/letterlocking-mary-queen-of-scots-last-letter-a-spiral-lock-england-1587-uh0135-dzpe1mcgxxo-mkv-shot0002_featured.png?w=800)
+
+You probably get a few of these things each week in the mail. And some of them actually do a good job of obscuring the contents inside, even if you hold the envelope up to the light. But have you ever taken the time to appreciate the beauty of security envelope patterns? Yeah, I didn’t think so.
+
+The really interesting thing is just how many different patterns are out there when a dozen or so would probably cover it. But there are so, so many patterns in the world. In my experience, many utilities and higher-end companies create their own security patterns for mailing out statements and the like, so that right there adds up to some unknown abundance.
+
+So, what did people do before security envelopes? When exactly did they come along? And how many patterns are out there? Let’s take a look beneath the flap.
+
+## Before Envelopes, There Was Letterlocking
+
+Pretend it’s 1525 and you have some private correspondence to send. Envelopes won’t come along for another three hundred years, at least not on a commercial scale. So what do you do? A common practice since the end of cuneiform tablets was a technique called letterlocking. This is a method of folding the paper of your letter in such a way that it becomes its own envelope, often using slits and tabs running throughout the creased letter. A wax seal was often employed for good measure.
+
+<figure>
+
+![A model of Mary Queen of Scots' last letter, all locked up.](https://hackaday.com/wp-content/uploads/2025/01/letterlocking.jpeg?w=400)
+
+<figcaption>
+
+The completed letter packet. Image via YouTube
+
+</figcaption>
+
+</figure>
+
+The video below shows a model of Mary Queen of Scots’ last letter, written a few hours before she was beheaded, being letterlocked. Many say that writing this missive was her last act, but after that, it was performing this spiral letterlock to ensure the contents reached her brother-in-law without obvious tampering.
+
+The letter is written on a large sheet of paper folded in half, with plenty of space in the left and right margins. This is where the slits and the tab that binds it all together will end up. Once written, the sender starts by folding a narrow spine into the left margin where the sheet is connected, then cutting a long, thin slice, leaving one short end attached.
+
+Then the letter is then folded top to bottom twice, minus the slice. Then a hole is cut through all the layers and the the slice is pushed through the hole, wrapped around the letter packet and stuck through again until none remains. Finally, the slit and slice are coated with a bit of water so that the paper swells, sealing the lock. This is where sealing wax would come in handy.
+
+<iframe loading="lazy" title="Letterlocking: Mary Queen of Scots’ last letter, a spiral lock, England (1587) (UH0135)" width="800" height="450" src="https://www.youtube.com/embed/dzPE1MCgXxo?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+The point of letterlocking is that it was impossible to open the letter without causing a least a little bit of damage. So, if you received a tampered-with letter, it should have been quite obvious.  Today we can see through locked letters without opening them thanks to x-rays. If you don’t like this method, here are step-by-step instructions for three different letterlocking methods.
+
+## The Rise of Security Envelopes
+
+The mass-produced envelope came along in 1830. They started out thick enough to write addresses on and subsequently obscure the contents, but eventually got thinner and thinner as paper advanced. When the windowed envelope was invented by Americus F. Callahan in 1901 and patented 1902, envelopes became a real problem.
+
+Fortunately, one Julius Regenstein of the Transo Envelope Company would invent the security tint just two years later in 1903. And that’s about all we know about the origin story, unfortunately. There isn’t even a Wikipedia page for security envelopes. Can you believe that?
+
+## The Good, the Bad, and the Ugly
+
+In the biz, they’re called security tints, and there are a few companies like SupremeX out there generating new ones. The two most common tints you’re likely to see are confetti and some variation of the crosshatch pattern, which is just a bunch of intersecting lines. Both of these do a fine job of obscuring the contents of letters.
+
+<figure>
+
+![The confetti security envelope pattern/tint.](https://hackaday.com/wp-content/uploads/2025/01/confetti.webp?w=250)
+
+<figcaption>
+
+A variation of the common confetti pattern for security envelopes. Image by \[Dan Schreck\] via Abstract Collage
+
+</figcaption>
+
+</figure>
+
+Other tints are comprised of things like heavily overlapped circles and weird repeated shapes, or some form of television snow. I have nice wood grain envelopes in both black and blue, but my personal favorite resembles a field of asteroids.
+
+The most common tints I’ve seen are black on white. Blue on white is a close second, but only represents maybe a third of my own personal collection. Red seems to be pretty rare except for mailings from the Red Cross , and I only have one lone envelope in green so far. I do have one highlighter-green return envelope from Globe Life with small black dots in overlapping concentric circles. It’s pretty hard to look at, honestly, but it’s still beautiful.
+
+Usually the tints you see are some kind of abstract, entropic pattern, but sometimes a phrase like `THANK YOU` or `PLEASE RECYCLE THIS ENVELOPE` is repeated instead. And then of course, there are all the individual company tints. You can see many, many examples of these and more in the worldly collections of both \[Dan Schreck\] and \[Joseph King\], but some of my own collection are below.
+
+![A security envelope liner with an asteroid-like pattern.](https://hackaday.com/wp-content/uploads/2025/01/asteroids.png?w=200) ![A security envelope liner with a zig-zag pattern in black and white.](https://hackaday.com/wp-content/uploads/2025/01/zig-zag.png?w=200) ![A security envelope liner with a woodgrain pattern in black and white.](https://hackaday.com/wp-content/uploads/2025/01/woodgrain.png?w=200) ![A security envelope liner with a variant of the confetti pattern.](https://hackaday.com/wp-content/uploads/2025/01/confetti-variant.png?w=200) ![A security envelope liner with a green-on-white confetti pattern.](https://hackaday.com/wp-content/uploads/2025/01/green-confetti-final.png?w=400) ![A security envelope liner with a blue-on-white motif that is hard to describe. Almost a mandala pattern. Almost.](https://hackaday.com/wp-content/uploads/2025/01/blue-design.png?w=300)
+
+## For Your Own Security
+
+Of course, you can pick up a box of security envelopes from the drugstore. But if you want to generate and print your own, have at it here or just run it in the browser. There’s a pattern generator in 12 colors plus grayscale, you can change the size of the pattern repeat, and there’s a randomizer if you’re not artistically inclined.
+
+I hope you look at security envelopes a little differently now. Maybe you’ll start collecting them. If so, here are a bunch of ideas for using them. Or, you could send them to me.
+
+Go to Source

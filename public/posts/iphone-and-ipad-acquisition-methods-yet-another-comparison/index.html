@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>iPhone and iPad Acquisition Methods: Yet Another Comparison</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>iPhone and iPad Acquisition Methods: Yet Another Comparison</h1>
+			<b><time>15.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/ces">ces</a>
+        	       
+		           <a href="/tags/hardware">hardware</a>
+        	       
+		           <a href="/tags/ios">ios</a>
+        	       
+		           <a href="/tags/report">report</a>
+        	       
+
+			<div>
+				<p>
+<figure>
+  <img src="https://blog.elcomsoft.com/wp-content/uploads/2025/01/extraction-methods-2_1200x630.png" alt="" />
+</figure>
+
+
+</p>
+<p>Welcome to the world of mobile forensics, where extracting data is the first (and arguably the most critical) step. Whether you’re working with an ancient Apple device or attempting to break into the latest iPhone 16 Pro Max, there is a method for every gadget – each with its own share of challenges. We love explaining the differences between the extraction techniques, detailing their pros and contras, but sometimes you are limited to the one and only method that is the most likely to succeed.</p>
+<h2 id="a-word-on-consent-extraction">A word on consent extraction</h2>
+<p>Consent extraction simply refers to any means of accessing data an iPhone where the device’s passcode is known. With the passcode in hand, the investigator gains access to the device, bypassing many security hurdles. This allows for the use of a wide range of extraction techniques, such as bootloader exploits or agent-based acquisition. For all modern iPhones and iPads consent extraction is the only way supported by our tools, yet in certain cases some very limited amount of information can be obtained from the device even if the passcode is not known.</p>
+<p>Date extraction is just the first and the most challenging step in mobile forensics. There are several extraction methods for Apple devices, and we are about to give a detailed comparison between them.</p>
+<h2 id="bootloader-exploit"><strong>Bootloader exploit</strong></h2>
+<p>While this extraction method is our favorite for being the safest and most reliable, is it now showing its age. The latest iPhone fully supported by this method is the eight generations old iPhone 7 range, while even the formally supported iPhone 8, 8 Plus, and iPhone X can be only extracted if they are running an old version of iOS (particularly, iOS 11-13 are fully supported, iOS 14-15 require a passcode reset prior to extraction, while iOS 16 extractions are practically unavailable unless the user never set up a passcode in the iPhone). Always use this method when compatible.</p>
+<p><strong>What</strong></p>
+<ul>
+<li>Low-level non-invasive extraction method</li>
+<li>Exploits checkm8 and other similar vulnerabilities in i-device bootloaders</li>
+<li>Supports multiple generations of Apple hardware</li>
+</ul>
+<p><strong>Pros</strong></p>
+<ul>
+<li>Forensically sound with consistent, reproduceable results</li>
+<li>BFU extraction possible, extracting limited information if the passcode is unknown</li>
+<li>Does not tamper the device in any way</li>
+<li>Full file system and keychain are acquired</li>
+<li>Supports Apple TV (up to the original 4K model), Apple Watch (up to S3) and the original HomePod</li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul>
+<li>Works for legacy devices only</li>
+<li>Requires a macOS or Linux computer to run</li>
+</ul>
+<p>In addition, some very ancient iPhones based on the A6 SoC support full passcode unlock. We are currently working on passcode unlock for Apple A7 through A10 based devices.</p>
+<h2 id="agent-acquisition"><strong>Agent acquisition</strong></h2>
+<p>This extraction method allows accessing the same scope of data as the bootlooder exploit, yet it works for much newer devices than that. The range of supported devices starts with the iPhone 8/X, which may or may not support bootloader-based acquisition depending on the version of iOS they run, and all the way up to the iPhone 15 Pro Max. Compatibility depends on the version of iOS installed on the device being investigated as agent-based extraction utilizes vulnerabilities in the OS kernel to obtain the required level of privileges and access the data on the device.</p>
+<p><strong>What</strong></p>
+<ul>
+<li>Low-level extraction method; minimally invasive</li>
+<li>Exploits various chains of vulnerabilities in the iOS or iPadOS</li>
+<li>Supports iPhone and iPad devices</li>
+</ul>
+<p><strong>Pros</strong></p>
+<ul>
+<li>Works with recent device models</li>
+<li>Full file system and keychain are acquired</li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul>
+<li>Limited iOS version support</li>
+<li>Sideloading the extraction agent requires additional safeguards</li>
+<li>May not work with some managed devices</li>
+</ul>
+<p>This extraction method is not bulletproof as there are things that may cause the extraction agent to fail even if the device is fully compatible. That could be MDM or specific ScreenTime settings, for example. Still, this method is great, and we strongly recommend it.</p>
+<h2 id="advanced-logical-acquisition"><strong>Advanced logical acquisition</strong></h2>
+<p>If the device is not compatible with either low-level method, you can still try logical extraction.</p>
+<p><strong>What</strong></p>
+<ul>
+<li>High-level extraction method that can only access permissible data via official Apple protocols</li>
+</ul>
+<p><strong>Pros</strong></p>
+<ul>
+<li>Widely compatible, simple and risk-free when applied properly</li>
+<li>Also works with Apple TV and Apple Watch (though gets less data)</li>
+<li>Fully compatible with all device models and OS versions</li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul>
+<li>Keychain extraction is only partial</li>
+<li>Cannot get important system data</li>
+<li>Cannot get data from many applications</li>
+<li>Only extracts data that is explicitly permitted (by app developers and Apple)</li>
+<li>Various hurdles to overcome (such as backup password or “Stolen Device Protection” that requires users’ biometrics in addition to passcode)</li>
+</ul>
+<h2 id="manual-inspection"><strong>Manual inspection</strong></h2>
+<p>While logical extraction is widely compatible, certain situations may require a different type of analysis. Here comes manual inspection.</p>
+<p><strong>What</strong></p>
+<ul>
+<li>Access individual files and transfer them out by sharing via AirDrop or cloud services</li>
+<li>Screenshots, photos or video recordings of the device being inspected</li>
+</ul>
+<p><strong>Pros</strong></p>
+<ul>
+<li>Quick, simple</li>
+<li>Compatible with all devices</li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul>
+<li>The opposite of forensically sound</li>
+<li>Invasive, makes numerous changes on the device</li>
+<li>Questionable admissibility of evidence collected during manual inspection</li>
+<li>Questionable admissibility of any evidence extracted from the device at a later point</li>
+<li>Very limited amount of data is available</li>
+</ul>
+<h2 id="cloud-acquisition"><strong>Cloud acquisition</strong></h2>
+<p>This method works great both standalone and in combination with other methods, often allowing to fill the gaps. Cloud extraction is the only method that can be used without the device itself, though the list of requirements is long enough.</p>
+<p><strong>What</strong></p>
+<ul>
+<li>Downloading data from various cloud services (in case of Apple devices, from iCloud)</li>
+</ul>
+<p><strong>Pros</strong></p>
+<ul>
+<li>No need for the physical device</li>
+<li>Extracts everything from the user’s cloud account, including data from other devices</li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul>
+<li>Need full authentication credentials</li>
+<li>End-to-end encryption requires a passcode/password from a trusted device</li>
+<li>iCloud data is not always available (e.g. insufficient space, disabled sync, disabled cloud backups and so on)</li>
+<li>iCloud may contain very old data</li>
+<li>Potential legal issues</li>
+</ul>
+<h2 id="summary"><strong>Summary</strong></h2>
+<p>Below is a quick summary of the methods reviewed above:</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><strong>SoC</strong></th>
+          <th><strong>iOS</strong></th>
+          <th><strong>Data</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Bootloader exploit</strong></td>
+          <td>A4-A11</td>
+          <td>ALL</td>
+          <td>FFS, keychain</td>
+      </tr>
+      <tr>
+          <td><strong>Acquisition agent</strong></td>
+          <td>A11-A17</td>
+          <td>12.0 – 16.6.1</td>
+          <td>FFS, keychain</td>
+      </tr>
+      <tr>
+          <td><strong>Extended logical</strong></td>
+          <td>ALL</td>
+          <td>ALL</td>
+          <td>backup, logs, media</td>
+      </tr>
+      <tr>
+          <td><strong>Manual</strong></td>
+          <td>ALL</td>
+          <td>ALL</td>
+          <td>limited</td>
+      </tr>
+      <tr>
+          <td><strong>Cloud</strong></td>
+          <td>ALL</td>
+          <td>ALL</td>
+          <td>backups, synced</td>
+      </tr>
+  </tbody>
+</table>
+<p>To summarize, here are some tips:</p>
+<ul>
+<li><strong>Know your options.</strong> Start by figuring out which extraction methods are compatible with the device you’re working on – even if only theoretically.</li>
+<li><strong>Understand the trade-offs.</strong> Each method has its quirks, limitations, and potential impacts on the device, so keep those in mind.</li>
+<li><strong>Aim for Full File System extraction.</strong> If possible, this should always be your go-to for the most complete data retrieval.</li>
+<li><strong>Handle with care.</strong> Use any method carefully to avoid damaging the device, altering its data or otherwise affecting admissibility.</li>
+</ul>
+<p>Of course, you’ll also need the right tools. Grab Elcomsoft iOS Forensic Toolkit for pulling data from the device itself and Elcomsoft Phone Breaker for iCloud extraction.</p>
+<p>And remember, extraction is just the beginning. Once you’ve got the data, you’ll need to parse it, decrypt it (if needed), analyze it, and finally compile it into a report. To make sure everything is solid, don’t rely on a single piece of software; cross-checking with multiple tools is always a smart move. The different tools support different types of data, including system artefacts and application-specific data across various versions; universal solutions simply do not exist. Besides, even the most reliable tools can have bugs, which are especially prominent in new versions, where issues often arise.</p>
+<p>Finally, don’t forget abou the other devices that are often overlooked: iPods, Apple Watches, Apple TVs, and HomePods. These gadgets may contain unique data unavailable from other sources or inaccessible due to screen lock passcodes. Furthermore, such devices can sometimes help circumvent security on newer devices: for example, a screen lock passcode on an older device might also work to unlock a newer one. This is why analyzing older devices is still valuable and in fact a very common practice.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

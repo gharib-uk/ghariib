@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>4 steps to building a natural language search tool</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>4 steps to building a natural language search tool</h1>
+			<b><time>01.02.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>Empowering humanitarian action with open source: A natural language search tool for UN Resolutions.</p>
+<p>The post 4 steps to building a natural language search tool appeared first on The GitHub Blog.</p>
+<p><strong>“We have a problem. Our current search method for sifting through PDFs is extremely manual and time consuming. Is there an easier way?”</strong></p>
+<p>As a developer, this is one of those questions that really gets me excited. I was tasked with finding a way to transform a cumbersome, archival process into an efficient, intuitive search experience. It’s a way to make a group of people’s lives easier, and because of the organizations they work for, help them be more effective in providing humanitarian assistance to people in need around the world. I couldn’t imagine a better project to be working on.</p>
+<h2 id="unlocking-the-united-nations-legacy-for-rapid-action">Unlocking the United Nations’ legacy for rapid action</h2>
+<p>Since 1945, the United Nations has produced resolutions and other documents that guide international peace and security efforts. Yet accessing this wealth of knowledge remains a challenge, including for organizations such as the International Committee of the Red Cross (ICRC). Currently, delegates at ICRC’s permanent observer mission to the UN advise member states and other stakeholders on international humanitarian law and humanitarian issues. When states negotiate relevant resolutions and other UN products, leaning on pre-existing humanitarian language from UN resolutions can provide precedence. This often requires sifting through PDFs to find relevant content within documents—a time-intensive, manual process ill-suited to the fast-paced world of humanitarian diplomacy.</p>
+<h2 id="a-live-accessible-and-scalable-search-platform">A live, accessible, and scalable search platform</h2>
+<p>To solve this, I built a single-page application (SPA) that enables users to input natural language queries and instantly retrieve relevant UN resolutions. The solution is live now at resolutions.projectrefuge.io and serves as a robust example of how technology can simplify access to critical information.</p>
+<h2 id="how-it-works">How it works</h2>
+<ol>
+<li>
+<p><strong>Text extraction and structuring</strong><br>
+Using Amazon Textract, I extracted raw text from decades’ worth of UN Security Council Resolutions and Presidential Statements and six years of UN General Assembly Resolutions. A Go script then parsed this text using Regex matching, segmenting it into individual resolutions for easier indexing.</p>
+</li>
+<li>
+<p><strong>Search-ready database with MongoDB Atlas</strong><br>
+I adapted a Node.js script from MongoDB to upload the parsed resolutions as embeddings into a MongoDB Atlas database. This step ensures the content is structured for fast and relevant searches.</p>
+</li>
+<li>
+<p><strong>User interface built with Vue.js</strong><br>
+The front end is an intuitive SPA created with Vue.js. Users simply enter semantic search queries—such as “resolutions on humanitarian access in armed conflicts”—and receive results in seconds.</p>
+</li>
+<li>
+<p><strong>Backend hosted on AWS</strong><br>
+The backend relies on AWS Lambda and API Gateway, ensuring scalability and seamless performance. The entire application is hosted as a subdomain on AWS Amplify, combining reliability with ease of access.</p>
+</li>
+</ol>
+<p>
+<figure>
+  <img src="https://github.blog/wp-content/uploads/2025/01/architecture.png?resize=1024%2C607" alt="A Reference Architecture diagram showing the following: Text extraction and structuring Using Amazon Textract, I extracted raw text from decades’ worth of UN Security Council Resolutions and Presidential Statements and six years of UN General Assembly Resolutions. A Go script then parsed this text using Regex matching, segmenting it into individual resolutions for easier indexing. Search-ready database with MongoDB Atlas I adapted a Node.js script from MongoDB to upload the parsed resolutions as embeddings into a MongoDB Atlas database. This step ensures the content is structured for fast and relevant searches. User interface built with Vue.js The front end is an intuitive SPA created with Vue.js. Users simply enter semantic search queries—such as “resolutions on humanitarian access in armed conflicts”—and receive results in seconds. Backend hosted on AWS The backend relies on AWS Lambda and API Gateway, ensuring scalability and seamless performance. The entire application is hosted as a subdomain on AWS Amplify, combining reliability with ease of access." />
+</figure>
+
+
+</p>
+<p>This code is publicly available at projectrefuge/resolutions-search-template. This initiative will empower other organizations to adapt and expand the solution to their unique needs.</p>
+<p><a href="https://github.blog/wp-content/uploads/2025/01/20250117-UNresolutiondemo.mp4#t=0.001">https://github.blog/wp-content/uploads/2025/01/20250117-UNresolutiondemo.mp4#t=0.001</a></p>
+<h2 id="broader-implications-a-blueprint-for-impact">Broader implications: a blueprint for impact</h2>
+<p>The implications of this project go far beyond the ICRC’s use case with UN Resolutions. With slight modifications, the tool could index and search any collection of legal and policy documents. This approach is a blueprint for organizations aiming to leverage technology for better decision-making and more effective action. For nonprofits, this demonstrates the power of owning your code and building tailored solutions. For developers, it’s a reminder of how open source can accelerate progress in humanitarian and public policy sectors.</p>
+<h2 id="build-together-with-open-source">Build together with open source</h2>
+<p>Projects like resolutions.projectrefuge.io highlight the potential of open source to transform how we access and use information. If you’re a nonprofit, explore GitHub for Nonprofits to discover tools and resources that can help you build your own solutions. Developers eager to contribute to impactful work can browse the For Good First Issue program to find projects that align with their skills and values.</p>
+<p>Finally, stay tuned as we work to identify other opportunities with humanitarian actors such as the ICRC to bridge the technology and humanitarian space. Together, we can build a future where knowledge is more accessible and tools are built with collaboration in mind, ensuring that humanitarian efforts are supported by cutting-edge technology.</p>
+<p>Let’s code for good—and make a lasting impact.</p>
+<p><strong>If you’d like to lend your developer skills for good,</strong> check out For Good First Issue, a curated platform of open source projects that contribute to a better future for everyone.</p>
+<p>The post 4 steps to building a natural language search tool appeared first on The GitHub Blog.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

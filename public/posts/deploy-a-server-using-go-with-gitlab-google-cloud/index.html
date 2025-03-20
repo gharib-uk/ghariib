@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>&lt;div&gt;Deploy a server using Go with GitLab &#43; Google Cloud&lt;/div&gt;</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>&lt;div&gt;Deploy a server using Go with GitLab &#43; Google Cloud&lt;/div&gt;</h1>
+			<b><time>29.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>Deploying an application to the cloud often requires assistance from production or DevOps engineers. GitLab&rsquo;s Google Cloud integration empowers developers to handle deployments independently. In this tutorial, you&rsquo;ll learn how to deploy a server to Google Cloud in less than 10 minutes using Go. Whether you’re a solo developer or part of a large team, this setup allows you to deploy applications efficiently.</p>
+<h2 id="youll-learn-how-to">You&rsquo;ll learn how to:</h2>
+<ol>
+<li>Create a new project in GitLab</li>
+<li>Create a Go server utilizing <code>main.go</code></li>
+<li>Use the Google Cloud integration to create a Service account</li>
+<li>Use the Google Cloud integration to create Cloud Run via a merge request</li>
+<li>Access your newly deployed Go server</li>
+<li>Clean up your environment</li>
+</ol>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Owner access on a Google Cloud Platform project</li>
+<li>Working knowledge of Golang</li>
+<li>Working knowledge of GitLab CI</li>
+<li>10 minutes</li>
+</ul>
+<h2 id="step-by-step-golang-server-deployment-to-google-cloud">Step-by-step Golang server deployment to Google Cloud</h2>
+<h3 id="1-create-a-new-blank-project-in-gitlab">1. Create a new blank project in GitLab.</h3>
+<p>We decided to call our project <code>golang-cloud-run</code> for simplicity.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/2B16Vu0ntDofRfQA93sCth/80a80d1498f1d9278edf5f7f07d4c808/image9.png" alt="Create a new blank project in GitLab" />
+</figure>
+
+
+</p>
+<h3 id="2-create-a-server-utilizing-this-maingo-demo">2. Create a server utilizing this <code>main.go</code> demo.</h3>
+<p>Find the <code>main.go</code> demo here.</p>
+<pre tabindex="0"><code>// Sample run-helloworld is a minimal Cloud Run service.
+package main
+
+import (
+	&#34;fmt&#34;
+	&#34;log&#34;
+	&#34;net/http&#34;
+	&#34;os&#34;
+)
+
+func main() {
+	log.Print(&#34;starting server...&#34;)
+	http.HandleFunc(&#34;/&#34;, handler)
+
+	// Determine port for HTTP service.
+	port := os.Getenv(&#34;PORT&#34;)
+	if port == &#34;&#34; {
+		port = &#34;8080&#34;
+		log.Printf(&#34;defaulting to port %s&#34;, port)
+	}
+
+	// Start HTTP server.
+	log.Printf(&#34;listening on port %s&#34;, port)
+	if err := http.ListenAndServe(&#34;:&#34;+port, nil); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func handler(w http.ResponseWriter, r *http.Request) {
+	name := os.Getenv(&#34;NAME&#34;)
+	if name == &#34;&#34; {
+		name = &#34;World&#34;
+	}
+	fmt.Fprintf(w, &#34;Hello %s!n&#34;, name)
+}
+</code></pre><h3 id="3-use-the-google-cloud-integration-to-create-a-service-account">3. Use the Google Cloud integration to create a Service account.</h3>
+<p>Navigate to <strong>Operate &gt; Google Cloud &gt; Create Service account</strong>.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/4JzoDSNQns2lsTpymunzFZ/a376e3d710054a685eaf29fd59309549/image11.png" alt="Golang tutorial - image 2" />
+</figure>
+
+
+</p>
+<h3 id="4-configure-the-region-you-would-like-the-cloud-run-instance-deployed-to">4. Configure the region you would like the Cloud Run instance deployed to.</h3>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/6Gu5KA7YoegDBnfRLIKZle/a675d9f617e02a3d1f0a3259332e069a/image10.png" alt="Golang tutorial - image10" />
+</figure>
+
+
+</p>
+<h3 id="5-use-the-google-cloud-integration-to-configure-cloud-run-via-merge-request">5. Use the Google Cloud integration to configure Cloud Run via Merge Request.</h3>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/4FqDUPGS8Ee1uQIoZklYew/c01396e47b973513ad06a2b64fa498cb/image4.png" alt="Golang tutorial - image4" />
+</figure>
+
+
+</p>
+<h3 id="6-this-will-open-a-merge-request-immediately-merge-the-mr">6. This will open a merge request. Immediately merge the MR.</h3>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/2LqZDXvP6g00RRdlnAe7rg/b931446567127375249a06d1f0c1a541/image6.png" alt="Golang tutorial - image6" />
+</figure>
+
+
+</p>
+<p>This merge request adds a CI/CD deployment job to your pipeline definition. In our case, this is also creating a pipeline definition, as we didn’t have one before.</p>
+<p><strong>Note:</strong> The CI/CD variables <code>GCP_PROJECT_ID</code>, <code>GCP_REGION</code>, <code>GCP_SERVICE_ACCOUNT</code>, <code>GCP_SERVICE_ACCOUNT_KEY</code> will all be automatically populated from the previous steps.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/1Mhk3mTDVpuxCitMiwSICG/51caac3d01839dffe29a2627ce334c11/image7.png" alt="Golang tutorial - image7" />
+</figure>
+
+
+</p>
+<h3 id="7-voila-check-your-pipeline-and-you-will-see-you-have-successfully-deployed-to-google-cloud-run-utilizing-gitlab-ci">7. Voila! Check your pipeline and you will see you have successfully deployed to Google Cloud Run utilizing GitLab CI.</h3>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/4h6e6OwTqhvgmWa2H8zMzY/cfed174bf24a4c0c2e6e7297f679ecce/image2.png" alt="Golang tutorial - image2" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/5sRoDsJjcnmyJFwUHkh3Rj/e089f3c3a890d21c1247b49d3bc31e67/image3.png" alt="Golang tutorial - image3" />
+</figure>
+
+
+</p>
+<h2 id="8-click-the-service-url-to-view-your-newly-deployed-server">8. Click the Service URL to view your newly deployed server.</h2>
+<p>Alternatively, you can navigate to <strong>Operate &gt; Environments</strong> to see a list of deployments for your environments.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/7ClGU8XsMV1zNOA2GxRcNn/65999daafe259ad8e08fc7b47f0f980b/image5.png" alt="Golang tutorial - image5" />
+</figure>
+
+
+</p>
+<p>By clicking on the environment called <strong>main</strong>, you’ll be able to view a complete list of deployments specific to that environment.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/1w1J7vXmqzlr5aT0MLgqkH/3344886b16cbab3a17bd91b441dcbed8/image8.png" alt="Golang tutorial - image8" />
+</figure>
+
+
+</p>
+<h2 id="next-steps">Next steps</h2>
+<p>To get started with developing your Go application, try adding another endpoint. For instance, in your <code>main.go</code> file, you can add a <code>/bye</code> endpoint as shown below (don’t forget to register the new handler function in main!):</p>
+<pre tabindex="0"><code>func main() {
+	log.Print(&#34;starting server...&#34;)
+
+	http.HandleFunc(&#34;/&#34;, handler)
+	http.HandleFunc(&#34;/bye&#34;, byeHandler)
+</code></pre><pre tabindex="0"><code>func byeHandler(w http.ResponseWriter, r *http.Request) {
+	name := os.Getenv(&#34;NAME&#34;)
+	if name == &#34;&#34; {
+		name = &#34;World&#34;
+	}
+	fmt.Fprintf(w, &#34;Bye %s!n&#34;, name)
+}
+</code></pre><p>Your <code>main.go</code> file should now look something like this:</p>
+<pre tabindex="0"><code>// Sample run-helloworld is a minimal Cloud Run service.
+package main
+
+import (
+	&#34;fmt&#34;
+	&#34;log&#34;
+	&#34;net/http&#34;
+	&#34;os&#34;
+)
+
+func main() {
+	log.Print(&#34;starting server...&#34;)
+
+	http.HandleFunc(&#34;/&#34;, handler)
+
+	http.HandleFunc(&#34;/bye&#34;, byeHandler)
+
+	// Determine port for HTTP service.
+	port := os.Getenv(&#34;PORT&#34;)
+	if port == &#34;&#34; {
+		port = &#34;8080&#34;
+		log.Printf(&#34;defaulting to port %s&#34;, port)
+	}
+
+	// Start HTTP server.
+	log.Printf(&#34;listening on port %s&#34;, port)
+	if err := http.ListenAndServe(&#34;:&#34;+port, nil); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func handler(w http.ResponseWriter, r *http.Request) {
+	name := os.Getenv(&#34;NAME&#34;)
+	if name == &#34;&#34; {
+		name = &#34;World&#34;
+	}
+	fmt.Fprintf(w, &#34;Hello %s!n&#34;, name)
+}
+
+func byeHandler(w http.ResponseWriter, r *http.Request) {
+	name := os.Getenv(&#34;NAME&#34;)
+	if name == &#34;&#34; {
+		name = &#34;World&#34;
+	}
+	fmt.Fprintf(w, &#34;Bye %s!n&#34;, name)
+}
+</code></pre><p>Push the changes to the repo, and watch the <code>deploy-to-cloud-run job</code> deploy the updates. Once it’s complete, go back to the Service URL and navigate to the <code>/bye</code> endpoint to see the new functionality in action.</p>
+<h2 id="clean-up-the-environment">Clean up the environment</h2>
+<p>To prevent incurring charges on your Google Cloud account for the resources used in this tutorial, you can either delete the specific resources or delete the entire Google Cloud project. For detailed instructions, refer to the cleanup guide.</p>
+<blockquote>
+<p>Discover more tutorials like this in our Solutions Architecture area.</p></blockquote>
+<p>Deploying an application to the cloud often requires assistance from production or DevOps engineers. GitLab&rsquo;s Google Cloud integration empowers developers to handle deployments independently. In this tutorial, you&rsquo;ll learn how to deploy a server to Google Cloud in less than 10 minutes using Go. Whether you’re a solo developer or part of a large team, this setup allows you to deploy applications efficiently.</p>
+<h2 id="youll-learn-how-to-1">You&rsquo;ll learn how to:</h2>
+<ol>
+<li>Create a new project in GitLab</li>
+<li>Create a Go server utilizing <code>main.go</code></li>
+<li>Use the Google Cloud integration to create a Service account</li>
+<li>Use the Google Cloud integration to create Cloud Run via a merge request</li>
+<li>Access your newly deployed Go server</li>
+<li>Clean up your environment</li>
+</ol>
+<h2 id="prerequisites-1">Prerequisites</h2>
+<ul>
+<li>Owner access on a Google Cloud Platform project</li>
+<li>Working knowledge of Golang</li>
+<li>Working knowledge of GitLab CI</li>
+<li>10 minutes</li>
+</ul>
+<h2 id="step-by-step-golang-server-deployment-to-google-cloud-1">Step-by-step Golang server deployment to Google Cloud</h2>
+<h3 id="1-create-a-new-blank-project-in-gitlab-1">1. Create a new blank project in GitLab.</h3>
+<p>We decided to call our project <code>golang-cloud-run</code> for simplicity.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/2B16Vu0ntDofRfQA93sCth/80a80d1498f1d9278edf5f7f07d4c808/image9.png" alt="Create a new blank project in GitLab" />
+</figure>
+
+
+</p>
+<h3 id="2-create-a-server-utilizing-this-maingo-demo-1">2. Create a server utilizing this <code>main.go</code> demo.</h3>
+<p>Find the <code>main.go</code> demo here.</p>
+<pre tabindex="0"><code>// Sample run-helloworld is a minimal Cloud Run service.
+package main
+
+import (
+	&#34;fmt&#34;
+	&#34;log&#34;
+	&#34;net/http&#34;
+	&#34;os&#34;
+)
+
+func main() {
+	log.Print(&#34;starting server...&#34;)
+	http.HandleFunc(&#34;/&#34;, handler)
+
+	// Determine port for HTTP service.
+	port := os.Getenv(&#34;PORT&#34;)
+	if port == &#34;&#34; {
+		port = &#34;8080&#34;
+		log.Printf(&#34;defaulting to port %s&#34;, port)
+	}
+
+	// Start HTTP server.
+	log.Printf(&#34;listening on port %s&#34;, port)
+	if err := http.ListenAndServe(&#34;:&#34;+port, nil); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func handler(w http.ResponseWriter, r *http.Request) {
+	name := os.Getenv(&#34;NAME&#34;)
+	if name == &#34;&#34; {
+		name = &#34;World&#34;
+	}
+	fmt.Fprintf(w, &#34;Hello %s!n&#34;, name)
+}
+</code></pre><h3 id="3-use-the-google-cloud-integration-to-create-a-service-account-1">3. Use the Google Cloud integration to create a Service account.</h3>
+<p>Navigate to <strong>Operate &gt; Google Cloud &gt; Create Service account</strong>.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/4JzoDSNQns2lsTpymunzFZ/a376e3d710054a685eaf29fd59309549/image11.png" alt="Golang tutorial - image 2" />
+</figure>
+
+
+</p>
+<h3 id="4-configure-the-region-you-would-like-the-cloud-run-instance-deployed-to-1">4. Configure the region you would like the Cloud Run instance deployed to.</h3>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/6Gu5KA7YoegDBnfRLIKZle/a675d9f617e02a3d1f0a3259332e069a/image10.png" alt="Golang tutorial - image10" />
+</figure>
+
+
+</p>
+<h3 id="5-use-the-google-cloud-integration-to-configure-cloud-run-via-merge-request-1">5. Use the Google Cloud integration to configure Cloud Run via Merge Request.</h3>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/4FqDUPGS8Ee1uQIoZklYew/c01396e47b973513ad06a2b64fa498cb/image4.png" alt="Golang tutorial - image4" />
+</figure>
+
+
+</p>
+<h3 id="6-this-will-open-a-merge-request-immediately-merge-the-mr-1">6. This will open a merge request. Immediately merge the MR.</h3>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/2LqZDXvP6g00RRdlnAe7rg/b931446567127375249a06d1f0c1a541/image6.png" alt="Golang tutorial - image6" />
+</figure>
+
+
+</p>
+<p>This merge request adds a CI/CD deployment job to your pipeline definition. In our case, this is also creating a pipeline definition, as we didn’t have one before.</p>
+<p><strong>Note:</strong> The CI/CD variables <code>GCP_PROJECT_ID</code>, <code>GCP_REGION</code>, <code>GCP_SERVICE_ACCOUNT</code>, <code>GCP_SERVICE_ACCOUNT_KEY</code> will all be automatically populated from the previous steps.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/1Mhk3mTDVpuxCitMiwSICG/51caac3d01839dffe29a2627ce334c11/image7.png" alt="Golang tutorial - image7" />
+</figure>
+
+
+</p>
+<h3 id="7-voila-check-your-pipeline-and-you-will-see-you-have-successfully-deployed-to-google-cloud-run-utilizing-gitlab-ci-1">7. Voila! Check your pipeline and you will see you have successfully deployed to Google Cloud Run utilizing GitLab CI.</h3>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/4h6e6OwTqhvgmWa2H8zMzY/cfed174bf24a4c0c2e6e7297f679ecce/image2.png" alt="Golang tutorial - image2" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/5sRoDsJjcnmyJFwUHkh3Rj/e089f3c3a890d21c1247b49d3bc31e67/image3.png" alt="Golang tutorial - image3" />
+</figure>
+
+
+</p>
+<h2 id="8-click-the-service-url-to-view-your-newly-deployed-server-1">8. Click the Service URL to view your newly deployed server.</h2>
+<p>Alternatively, you can navigate to <strong>Operate &gt; Environments</strong> to see a list of deployments for your environments.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/7ClGU8XsMV1zNOA2GxRcNn/65999daafe259ad8e08fc7b47f0f980b/image5.png" alt="Golang tutorial - image5" />
+</figure>
+
+
+</p>
+<p>By clicking on the environment called <strong>main</strong>, you’ll be able to view a complete list of deployments specific to that environment.</p>
+<p>
+<figure>
+  <img src="https://images.ctfassets.net/r9o86ar0p03f/1w1J7vXmqzlr5aT0MLgqkH/3344886b16cbab3a17bd91b441dcbed8/image8.png" alt="Golang tutorial - image8" />
+</figure>
+
+
+</p>
+<h2 id="next-steps-1">Next steps</h2>
+<p>To get started with developing your Go application, try adding another endpoint. For instance, in your <code>main.go</code> file, you can add a <code>/bye</code> endpoint as shown below (don’t forget to register the new handler function in main!):</p>
+<pre tabindex="0"><code>func main() {
+	log.Print(&#34;starting server...&#34;)
+
+	http.HandleFunc(&#34;/&#34;, handler)
+	http.HandleFunc(&#34;/bye&#34;, byeHandler)
+</code></pre><pre tabindex="0"><code>func byeHandler(w http.ResponseWriter, r *http.Request) {
+	name := os.Getenv(&#34;NAME&#34;)
+	if name == &#34;&#34; {
+		name = &#34;World&#34;
+	}
+	fmt.Fprintf(w, &#34;Bye %s!n&#34;, name)
+}
+</code></pre><p>Your <code>main.go</code> file should now look something like this:</p>
+<pre tabindex="0"><code>// Sample run-helloworld is a minimal Cloud Run service.
+package main
+
+import (
+	&#34;fmt&#34;
+	&#34;log&#34;
+	&#34;net/http&#34;
+	&#34;os&#34;
+)
+
+func main() {
+	log.Print(&#34;starting server...&#34;)
+
+	http.HandleFunc(&#34;/&#34;, handler)
+
+	http.HandleFunc(&#34;/bye&#34;, byeHandler)
+
+	// Determine port for HTTP service.
+	port := os.Getenv(&#34;PORT&#34;)
+	if port == &#34;&#34; {
+		port = &#34;8080&#34;
+		log.Printf(&#34;defaulting to port %s&#34;, port)
+	}
+
+	// Start HTTP server.
+	log.Printf(&#34;listening on port %s&#34;, port)
+	if err := http.ListenAndServe(&#34;:&#34;+port, nil); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func handler(w http.ResponseWriter, r *http.Request) {
+	name := os.Getenv(&#34;NAME&#34;)
+	if name == &#34;&#34; {
+		name = &#34;World&#34;
+	}
+	fmt.Fprintf(w, &#34;Hello %s!n&#34;, name)
+}
+
+func byeHandler(w http.ResponseWriter, r *http.Request) {
+	name := os.Getenv(&#34;NAME&#34;)
+	if name == &#34;&#34; {
+		name = &#34;World&#34;
+	}
+	fmt.Fprintf(w, &#34;Bye %s!n&#34;, name)
+}
+</code></pre><p>Push the changes to the repo, and watch the <code>deploy-to-cloud-run job</code> deploy the updates. Once it’s complete, go back to the Service URL and navigate to the <code>/bye</code> endpoint to see the new functionality in action.</p>
+<h2 id="clean-up-the-environment-1">Clean up the environment</h2>
+<p>To prevent incurring charges on your Google Cloud account for the resources used in this tutorial, you can either delete the specific resources or delete the entire Google Cloud project. For detailed instructions, refer to the cleanup guide.</p>
+<blockquote>
+<p>Discover more tutorials like this in our Solutions Architecture area.</p></blockquote>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

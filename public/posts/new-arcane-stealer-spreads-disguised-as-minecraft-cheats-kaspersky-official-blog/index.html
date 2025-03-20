@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>New Arcane stealer spreads disguised as Minecraft cheats | Kaspersky official blog</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>New Arcane stealer spreads disguised as Minecraft cheats | Kaspersky official blog</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+		           <a href="/tags/cybersecurity">cybersecurity</a>
+        	       
+		           <a href="/tags/data_breaches">data_breaches</a>
+        	       
+		           <a href="/tags/infostealers">infostealers</a>
+        	       
+		           <a href="/tags/linux">linux</a>
+        	       
+		           <a href="/tags/malware">malware</a>
+        	       
+		           <a href="/tags/privacy">privacy</a>
+        	       
+		           <a href="/tags/security">security</a>
+        	       
+		           <a href="/tags/siem">siem</a>
+        	       
+
+			<div>
+				<p>Cybercriminals are spreading a stealer disguised as a &ldquo;cheat manager&rdquo; via YouTube videos to steal login credentials. Get the lowdown!</p>
+<p>At the end of 2024, our experts discovered a new stealer called Arcane, which collects a wide range of data from infected devices. Now cybercriminals have taken it a step further by releasing ArcanaLoader — a downloader that claims to install cheats, cracks, and other “useful” gaming tools, but which actually infects devices with the Arcane stealer. Despite their lack of creativity in naming the loader, their distribution scheme is actually quite original.</p>
+<p>Hopefully, you already know not to download random files from YouTube video descriptions. No? Then keep reading.</p>
+<h2 id="how-the-arcane-stealer-spreads">How the Arcane stealer spreads</h2>
+<p>The malicious campaign distributing the Arcane stealer was active even before the malware itself appeared. In other words, cybercriminals were already spreading other malware, eventually replacing it with Arcane.</p>
+<p>Here’s how it worked. First, links to password-protected archives containing malware were placed under YouTube videos advertising game cheats. These archives always included a <em>seemingly harmless</em> BATCH file named <strong>start.bat</strong>. This file’s purpose was to launch PowerShell to download another password-protected archive containing two executable files: a miner and the VGS stealer. The VGS stealer was later replaced with Arcane. At first, the new stealer was distributed in the same way: YouTube video, first malicious archive, then second one, and bingo: Trojan on the victim’s device.</p>
+<p>A few months later, the criminals upgraded their approach. Under the YouTube video they started linking to ArcanaLoader — a downloader with a graphical interface, supposedly needed to install cheats, cracks, and similar software. In reality, ArcanaLoader infected devices with the Arcane stealer.</p>
+<p>
+<figure>
+  <img src="https://media.kasperskydaily.com/wp-content/uploads/sites/92/2025/03/19043321/arcane-stealer-instead-of-cheats-for-minecraft-01.jpeg" alt="Inside the client — various cheat options for Minecraft" />
+</figure>
+
+
+</p>
+<p>Inside the client — various cheat options for Minecraft</p>
+<p>The operation didn’t end with ArcanaLoader. The attackers also set up a dedicated Discord server to embellish their scheme. Among other things, this server is used to recruit YouTubers willing to post links to ArcanaLoader in their video descriptions. The requirements for recruitment are minimal: at least 600 subscribers, over 1500 views, and at least two uploaded videos with links to the downloader. In exchange, participants are promised a new role on the server, the ability to post videos in the chat, instant addition of requested cheats to the downloader, and potential income for generating high traffic. Whether any of these unwitting malware distributors actually received payments is unknown.</p>
+<p>
+<figure>
+  <img src="https://media.kasperskydaily.com/wp-content/uploads/sites/92/2025/03/19043438/arcane-stealer-instead-of-cheats-for-minecraft-02.png" alt="The ArcanaLoader Discord server has over 3000 members" />
+</figure>
+
+
+</p>
+<p>The ArcanaLoader Discord server has over 3000 members</p>
+<p>All communication on the ArcanaLoader Discord server is in Russian, and our telemetry shows the highest number of victims are in Russia, Belarus, and Kazakhstan. We can conclude from this that Arcane primarily targets Russian-speaking gamers.</p>
+<h2 id="how-dangerous-is-the-arcane-stealer">How dangerous is the Arcane stealer?</h2>
+<p>A stealer is a type of malware that steals login credentials and other sensitive information, sending them to attackers. This information helps cybercriminals gain access to accounts in games, social networks, and more. Regarding Arcane, its capabilities are constantly evolving, with cybercriminals actively updating the stealer’s code. At the time of publication of this post, Arcane could steal the “golden classics”: usernames, passwords, and payment card details. The main sources of information for the stealer are browsers based on Chromium and Gecko engines, which is why we recommend against storing such confidential information in browsers. It’s better to use a trusted password manager.</p>
+<p>The stealer has another method for extracting cookies from Chromium-based browsers, and stolen cookies can be used for various malicious purposes, including hijacking a YouTube channel. For how exactly this works, read the Securelist study.</p>
+<p>In addition to browser data, Arcane steals configuration files, settings, and account information from the following applications:</p>
+<ul>
+<li><strong>VPN clients.</strong> OpenVPN, Mullvad, NordVPN, IPVanish, Surfshark, Proton, HideMyName, PIA, CyberGhost, ExpressVPN.</li>
+<li><strong>Network clients and utilities.</strong> Ngrok, PlayIt, Cyberduck, FileZilla, DynDns.</li>
+<li>ICQ, Tox, Skype, Pidgin, Signal, Element, Discord, Telegram, Jabber, Viber.</li>
+<li><strong>Email clients.</strong></li>
+<li><strong>Game clients and services.</strong> Riot Client, Epic Games, Steam, Ubisoft Connect, Roblox, Battle.net, various Minecraft clients.</li>
+<li><strong>Cryptocurrency wallets.</strong> Zcash, Armory, Bytecoin, Jaxx, Exodus, Ethereum, Electrum, Atomic, Guarda, Coinomi.</li>
+</ul>
+<p>An impressive list, right? Arcane also steals various system information. The stealer tells attackers what version of the OS is installed, when it was installed, the Windows activation key, details of the infected system’s hardware, screenshots, running processes, and saved Wi-Fi passwords.</p>
+<h2 id="how-to-protect-yourself-from-arcane">How to protect yourself from Arcane</h2>
+<p>The attackers started by simply placing links to malicious archives under YouTube videos, and later set up their own Discord server and created a downloader with a graphical interface. Of course, all of this was done to give the scam false credibility, luring in potential victims. From this campaign, we can see that cybercriminal groups today are highly adaptable, quickly shifting their distribution strategies and methods.</p>
+<ul>
+<li><strong>Don’t download any files from YouTube video descriptions.</strong> Experience shows that even trusted bloggers may sometimes unknowingly spread Trojans.</li>
+<li><strong>Protect your device</strong> <strong>with a reliable security solution</strong> that will swiftly detect and neutralize the Arcane stealer (among others).</li>
+<li><strong>Don’t store usernames, passwords, and banking information in browsers</strong>**.** While convenient, this is a very risky way to store such critical data. Trust them to Kaspersky Password Manager — you just need a single master password, and we’ll take care of the rest.</li>
+<li><strong>Be suspicious of cheats, mods, and cracks.</strong> Especially for Minecraft and Roblox — players of these games are targeted most often.</li>
+</ul>
+<p>To learn more about other types of stealers and their capabilities, don’t miss these posts:</p>
+<blockquote>
+<ul>
+<li>Beware of stealers disguised as… wedding invitations</li>
+<li>Banshee: a stealer targeting macOS users</li>
+<li>Mario Forever, malware too: a free game with a miner and Trojans inside</li>
+<li>Hacking YouTube channels with stolen cookies</li>
+<li>…and many others.</li>
+</ul></blockquote>
+<p>Subscribe to our blog and follow our Kaspersky Telegram channel to stay informed on the latest cybersecurity threats. Also, be sure to share this post with anyone who frequently plays games but may not be aware of the dangers.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

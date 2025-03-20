@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Step-by-step guide to configuring alerts in Cluster Observability Operator</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Step-by-step guide to configuring alerts in Cluster Observability Operator</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>The first installment in this series provided a brief introduction to the Cluster Observability Operator (COO). This article serves as a detailed guide for configuring alerts within the COO namespace. In the following sections, I will present specific examples for two structural configurations within the COO monitoring stack.</p>
+<h3 id="case-1-one-monitoring-stack-for-multiple-namespace">Case 1: One monitoring stack for multiple namespace. </h3>
+<p>Create a namespace to host the COO instance and utilize this monitoring stack to monitor the namespaces <code>coo-ns2</code>, <code>coo-ns3</code>, and <code>coo-ns4</code> as shown in Figures 1 and 2.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/image4_44.png?itok=8TUvmAIj" alt="COO Monitoring Stack structure." />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 1: COO Monitoring Stack structure.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/image2_58.png?itok=xrnCk2mZ" alt="One Monitoring Stack for multiple namespace structure." />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 2: One Monitoring Stack for multiple namespace structure.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Create a project to host the COO monitoring stack. Give a label for the namespace <code>monitoring.rhobs: coo-stack</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>apiVersion: v1
+</span></span><span style="display:flex;"><span>kind: Namespace
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  name: coo-namespace
+</span></span><span style="display:flex;"><span>  labels:
+</span></span><span style="display:flex;"><span>    monitoring.rhobs:coo-stack
+</span></span></code></pre></div><p>Create a COO monitoring stack, ensuring that the namespaceSelector matches the project label <code>monitoring.rhobs:coo-stack</code>. The resourceSelector should be set to <code>k8s-app: prometheus-coo-example-monitor</code>. This label should match the ServiceMonitor label. See below:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>apiVersion: monitoring.rhobs/v1alpha1
+</span></span><span style="display:flex;"><span>kind: MonitoringStack
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  name: my-coo-monitoring-stack
+</span></span><span style="display:flex;"><span>  namespace: coo-namespace
+</span></span><span style="display:flex;"><span>spec:
+</span></span><span style="display:flex;"><span>  alertmanagerConfig:
+</span></span><span style="display:flex;"><span>    disabled: false
+</span></span><span style="display:flex;"><span>  logLevel: debug
+</span></span><span style="display:flex;"><span>  namespaceSelector:
+</span></span><span style="display:flex;"><span>    matchLabels:
+</span></span><span style="display:flex;"><span>      monitoring.rhobs: coo-stack
+</span></span><span style="display:flex;"><span>  prometheusConfig:
+</span></span><span style="display:flex;"><span>    replicas: 2
+</span></span><span style="display:flex;"><span>  resourceSelector:
+</span></span><span style="display:flex;"><span>    matchLabels:
+</span></span><span style="display:flex;"><span>      k8s-app: prometheus-coo-example-monitor
+</span></span><span style="display:flex;"><span>  resources:
+</span></span><span style="display:flex;"><span>    limits:
+</span></span><span style="display:flex;"><span>      cpu: 500m
+</span></span><span style="display:flex;"><span>      memory: 512Mi
+</span></span><span style="display:flex;"><span>    requests:
+</span></span><span style="display:flex;"><span>      cpu: 100m
+</span></span><span style="display:flex;"><span>      memory: 256Mi
+</span></span><span style="display:flex;"><span>  retention: 16d
+</span></span></code></pre></div><p>Set the label <code>app: prometheus-coo-example</code> for the deployment/pod you wish to monitor:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>apiVersion: monitoring.rhobs/v1
+</span></span><span style="display:flex;"><span>kind: ServiceMonitor
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span> labels:
+</span></span><span style="display:flex;"><span>   k8s-app: prometheus-coo-example-monitor
+</span></span><span style="display:flex;"><span> name: coo-servicemonitor-forcoonamespace
+</span></span><span style="display:flex;"><span> namespace: coo-namespace
+</span></span><span style="display:flex;"><span>spec:
+</span></span><span style="display:flex;"><span> endpoints:
+</span></span><span style="display:flex;"><span> - interval: 30s
+</span></span><span style="display:flex;"><span>   port: web
+</span></span><span style="display:flex;"><span>   scheme: http
+</span></span><span style="display:flex;"><span> selector:
+</span></span><span style="display:flex;"><span>   matchLabels:
+</span></span><span style="display:flex;"><span>     app: prometheus-coo-example
+</span></span></code></pre></div><p>Check the info below namespace <code>coo-namespace</code>, shown in Figure 3.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/image1_89.png?itok=-wqsru8Q" alt="Info below coo-namespace." />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 3: Info below coo-namespace.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Create the namespace <code>coo-ns2</code>, also with label <code>monitoring.rhobs: coo-stack</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>apiVersion: v1
+</span></span><span style="display:flex;"><span>kind: Namespace
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  name: coo-ns2
+</span></span><span style="display:flex;"><span>  labels:
+</span></span><span style="display:flex;"><span>    monitoring.rhobs: coo-stack
+</span></span></code></pre></div><p>Run a Deployment:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>apiVersion: apps/v1
+</span></span><span style="display:flex;"><span>kind: Deployment
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  labels:
+</span></span><span style="display:flex;"><span>    app: prometheus-coo-example
+</span></span><span style="display:flex;"><span>  name: coo-example-app2
+</span></span><span style="display:flex;"><span>  namespace: coo-ns2
+</span></span><span style="display:flex;"><span>spec:
+</span></span><span style="display:flex;"><span>  replicas: 1
+</span></span><span style="display:flex;"><span>  selector:
+</span></span><span style="display:flex;"><span>    matchLabels:
+</span></span><span style="display:flex;"><span>      app: prometheus-coo-example
+</span></span><span style="display:flex;"><span>  template:
+</span></span><span style="display:flex;"><span>    metadata:
+</span></span><span style="display:flex;"><span>      labels:
+</span></span><span style="display:flex;"><span>        app: prometheus-coo-example
+</span></span><span style="display:flex;"><span>    spec:
+</span></span><span style="display:flex;"><span>      containers:
+</span></span><span style="display:flex;"><span>      - image: ghcr.io/rhobs/prometheus-example-app:0.4.2
+</span></span><span style="display:flex;"><span>        imagePullPolicy: IfNotPresent
+</span></span><span style="display:flex;"><span>        name: coo-example-app2
+</span></span></code></pre></div><p>Create a Service:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>apiVersion: v1
+</span></span><span style="display:flex;"><span>kind: Service
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  labels:
+</span></span><span style="display:flex;"><span>   app: prometheus-coo-example
+</span></span><span style="display:flex;"><span>  name: coo-example-service-app2 # alter 条件是这个
+</span></span><span style="display:flex;"><span>  namespace: coo-ns2
+</span></span><span style="display:flex;"><span>spec:
+</span></span><span style="display:flex;"><span>  ports:
+</span></span><span style="display:flex;"><span>  - port: 8080
+</span></span><span style="display:flex;"><span>    protocol: TCP
+</span></span><span style="display:flex;"><span>    targetPort: 8080
+</span></span><span style="display:flex;"><span>    name: web
+</span></span><span style="display:flex;"><span>  selector:
+</span></span><span style="display:flex;"><span>    app: prometheus-coo-example
+</span></span><span style="display:flex;"><span>  type: ClusterIP
+</span></span></code></pre></div><p>Also create a Service Monitor:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>apiVersion: monitoring.rhobs/v1
+</span></span><span style="display:flex;"><span>kind: ServiceMonitor
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  labels:
+</span></span><span style="display:flex;"><span>    k8s-app: prometheus-coo-example-monitor
+</span></span><span style="display:flex;"><span>  name: prometheus-coo-example-servicemonitor2
+</span></span><span style="display:flex;"><span>  namespace: coo-ns2
+</span></span><span style="display:flex;"><span>spec:
+</span></span><span style="display:flex;"><span>  endpoints:
+</span></span><span style="display:flex;"><span>  - interval: 30s
+</span></span><span style="display:flex;"><span>    port: web
+</span></span><span style="display:flex;"><span>    scheme: http
+</span></span><span style="display:flex;"><span>  selector:
+</span></span><span style="display:flex;"><span>    matchLabels:
+</span></span><span style="display:flex;"><span>      app: prometheus-coo-example
+</span></span></code></pre></div><p>Create a PrometheusRule and place the label <code>k8s-app: prometheus-coo-example-monitor</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>apiVersion: monitoring.rhobs/v1
+</span></span><span style="display:flex;"><span>kind: PrometheusRule
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  name: coo-alert2
+</span></span><span style="display:flex;"><span>  namespace: coo-ns2
+</span></span><span style="display:flex;"><span>  labels:
+</span></span><span style="display:flex;"><span>    k8s-app: prometheus-coo-example-monitor
+</span></span><span style="display:flex;"><span>spec:
+</span></span><span style="display:flex;"><span>  groups:
+</span></span><span style="display:flex;"><span>  - name: example
+</span></span><span style="display:flex;"><span>    rules:
+</span></span><span style="display:flex;"><span>    - alert: VersionAlert
+</span></span><span style="display:flex;"><span>      for: 1m
+</span></span><span style="display:flex;"><span>      expr: version{job=&#34;coo-example-service-app2&#34;} &gt; 0 
+</span></span><span style="display:flex;"><span>      labels:
+</span></span><span style="display:flex;"><span>        severity: warning
+</span></span></code></pre></div><p>Use the same method to create <code>coo-ns3</code> and <code>coo-ns4</code>.</p>
+<p>To verify it the alert has been configured correctly, try <code>oc get all</code>. Find the <code>svc</code>. In my case, mine is <code>my-coo-monitoring-stack-prometheus</code>. See Figure 4.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/image1_92.png?itok=OlzUWSGM" alt="Locate my-coo-monitoring-stack-prometheus." />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 4: Locate my-coo-monitoring-stack-prometheus.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>oc port-forward svc/my-coo-monitoring-stack-prometheus 9090:9090 --address 0.0.0.0 -n coo-namespace
+</span></span></code></pre></div><p>Try:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>localhost:9090
+</span></span></code></pre></div><p>You will see a Prometheus UI Page. Click <strong>Alert</strong> and you should find the alert there. See Figure 5.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/image6_29.png?itok=f6zzNNUg" alt="Prometheus Alerts page." />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 5: Prometheus Alerts page.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Next, let&rsquo;s move on and examine case 2. The structure in this example is shown in Figures 6 and 7.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/image3_59.png?itok=uGc3-hl1" alt="Monitoring Stack for single project structure." />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 6: Monitoring Stack for single project structure.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://developers.redhat.com/sites/default/files/styles/article_floated/public/image7_24.png?itok=ZfKnZaP7" alt="A COO Monitoring Stack project structure." />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 7: A COO Monitoring Stack project structure.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h3 id="case-2-deploy-the-monitoring-stack-at-the-namespace-you-wish-to-monitor">Case 2: Deploy the monitoring stack at the namespace you wish to monitor</h3>
+<p>In this instance, deploy the monitoring stack below namespace <code>coo-ns1</code>.</p>
+<p>If you already had the namespace, assign a label for the namespace. If not, create a namespace, then make deployment and configure alerts for the namespace. Give a label for the namespace <code>monitoring.rhobs: coo-stack</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>apiVersion: v1
+</span></span><span style="display:flex;"><span>kind: Namespace
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  name: coo-ns1
+</span></span><span style="display:flex;"><span>  labels:
+</span></span><span style="display:flex;"><span>    monitoring.rhobs: coo-stack
+</span></span></code></pre></div><p>Next, create a monitoringStack. Make sure the namespaceSelector is <code>monitoring.rhobs: coo-stack</code>, the same as the namespace label. Give a label <code>k8s-app: prometheus-coo-example-monitor</code> to resourceSelector:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>apiVersion: monitoring.rhobs/v1alpha1
+</span></span><span style="display:flex;"><span>kind: MonitoringStack
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  name: my-coo-monitoring-stack
+</span></span><span style="display:flex;"><span>  namespace: coo-ns1
+</span></span><span style="display:flex;"><span>spec:
+</span></span><span style="display:flex;"><span>  alertmanagerConfig:
+</span></span><span style="display:flex;"><span>    disabled: false
+</span></span><span style="display:flex;"><span>  logLevel: debug
+</span></span><span style="display:flex;"><span>  namespaceSelector:
+</span></span><span style="display:flex;"><span>    matchLabels:
+</span></span><span style="display:flex;"><span>      monitoring.rhobs: coo-stack
+</span></span><span style="display:flex;"><span>  prometheusConfig:
+</span></span><span style="display:flex;"><span>    replicas: 2
+</span></span><span style="display:flex;"><span>  resourceSelector:
+</span></span><span style="display:flex;"><span>    matchLabels:
+</span></span><span style="display:flex;"><span>      k8s-app: prometheus-coo-example-monitor
+</span></span><span style="display:flex;"><span>  resources:
+</span></span><span style="display:flex;"><span>    limits:
+</span></span><span style="display:flex;"><span>      cpu: 500m
+</span></span><span style="display:flex;"><span>      memory: 512Mi
+</span></span><span style="display:flex;"><span>    requests:
+</span></span><span style="display:flex;"><span>      cpu: 100m
+</span></span><span style="display:flex;"><span>      memory: 256Mi
+</span></span><span style="display:flex;"><span>  retention: 16d
+</span></span></code></pre></div><p>Create a ServiceMonitor. Give the label <code>k8s-app: prometheus-coo-example-monitor</code>. Also give a label <code>app: prometheus-coo-example</code> used for the deployment, service, and pod:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>apiVersion: monitoring.rhobs/v1
+</span></span><span style="display:flex;"><span>kind: ServiceMonitor
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span> labels:
+</span></span><span style="display:flex;"><span>   k8s-app: prometheus-coo-example-monitor
+</span></span><span style="display:flex;"><span> name: coo-servicemonitor-forcoonamespace
+</span></span><span style="display:flex;"><span> namespace: coo-ns1
+</span></span><span style="display:flex;"><span>spec:
+</span></span><span style="display:flex;"><span> endpoints:
+</span></span><span style="display:flex;"><span> - interval: 30s
+</span></span><span style="display:flex;"><span>   port: web
+</span></span><span style="display:flex;"><span>   scheme: http
+</span></span><span style="display:flex;"><span> selector:
+</span></span><span style="display:flex;"><span>   matchLabels:
+</span></span><span style="display:flex;"><span>     app: prometheus-coo-example
+</span></span></code></pre></div><p>Create a Service. Use the same label <code>app: prometheus-coo-example</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>apiVersion: v1
+</span></span><span style="display:flex;"><span>kind: Service
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  labels:
+</span></span><span style="display:flex;"><span>   app: prometheus-coo-example
+</span></span><span style="display:flex;"><span>  name: coo-example-service-app1 
+</span></span><span style="display:flex;"><span>  namespace: coo-ns1
+</span></span><span style="display:flex;"><span>spec:
+</span></span><span style="display:flex;"><span>  ports:
+</span></span><span style="display:flex;"><span>  - port: 8080
+</span></span><span style="display:flex;"><span>    protocol: TCP
+</span></span><span style="display:flex;"><span>    targetPort: 8080
+</span></span><span style="display:flex;"><span>    name: web
+</span></span><span style="display:flex;"><span>  selector:
+</span></span><span style="display:flex;"><span>    app: prometheus-coo-example
+</span></span><span style="display:flex;"><span>  type: ClusterIP
+</span></span></code></pre></div><p>Create a Deployment. Use the same label  <code>app: prometheus-coo-example</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>apiVersion: apps/v1
+</span></span><span style="display:flex;"><span>kind: Deployment
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  labels:
+</span></span><span style="display:flex;"><span>    app: prometheus-coo-example
+</span></span><span style="display:flex;"><span>  name: coo-example-app1
+</span></span><span style="display:flex;"><span>  namespace: coo-ns1
+</span></span><span style="display:flex;"><span>spec:
+</span></span><span style="display:flex;"><span>  replicas: 1
+</span></span><span style="display:flex;"><span>  selector:
+</span></span><span style="display:flex;"><span>    matchLabels:
+</span></span><span style="display:flex;"><span>      app: prometheus-coo-example
+</span></span><span style="display:flex;"><span>  template:
+</span></span><span style="display:flex;"><span>    metadata:
+</span></span><span style="display:flex;"><span>      labels:
+</span></span><span style="display:flex;"><span>        app: prometheus-coo-example
+</span></span><span style="display:flex;"><span>    spec:
+</span></span><span style="display:flex;"><span>      containers:
+</span></span><span style="display:flex;"><span>      - image: ghcr.io/rhobs/prometheus-example-app:0.4.2
+</span></span><span style="display:flex;"><span>        imagePullPolicy: IfNotPresent
+</span></span><span style="display:flex;"><span>        name: coo-example-app1
+</span></span></code></pre></div><p>Create a PrometheusRule. It is to configure the alert you wish to fire once you trigger the condition. Use the label <code>k8s-app: prometheus-coo-example-monitor</code>  from the previous configuration:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>apiVersion: monitoring.rhobs/v1
+</span></span><span style="display:flex;"><span>kind: PrometheusRule
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  name: coo-alert1
+</span></span><span style="display:flex;"><span>  namespace: coo-ns1
+</span></span><span style="display:flex;"><span>  labels:
+</span></span><span style="display:flex;"><span>    k8s-app: prometheus-coo-example-monitor
+</span></span><span style="display:flex;"><span>spec:
+</span></span><span style="display:flex;"><span>  groups:
+</span></span><span style="display:flex;"><span>  - name: example
+</span></span><span style="display:flex;"><span>    rules:
+</span></span><span style="display:flex;"><span>    - alert: VersionAlert
+</span></span><span style="display:flex;"><span>      for: 1m
+</span></span><span style="display:flex;"><span>      expr: version{job=&#34;coo-example-service-app1&#34;} &gt; 0 
+</span></span><span style="display:flex;"><span>      labels:
+</span></span><span style="display:flex;"><span>        severity: warning
+</span></span></code></pre></div><p>To verify it the alert has been configured correctly, try <code>oc get all</code>. Find the <code>svc</code>. In my case, mine is <code>my-coo-monitoring-stack-prometheus</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>kubectl port-forward svc/my-coo-monitoring-stack-prometheus 9090:9090 --address 0.0.0.0 -n coo-ns1 
+</span></span></code></pre></div><p>Try:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>localhost:9090
+</span></span></code></pre></div><p>You will see a Prometheus UI Page. Click <strong>Alert</strong> and you should find the alert there. </p>
+<p>This guide provides you with a step-by-step understanding of the procedure. You can modify the the configuration to satisfy your business requirements.</p>
+<p>The post Step-by-step guide to configuring alerts in Cluster Observability Operator appeared first on Red Hat Developer.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

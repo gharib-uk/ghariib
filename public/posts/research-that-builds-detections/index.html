@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Research that builds detections</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Research that builds detections</h1>
+			<b><time>10.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p><strong>Note:</strong> You can view the full content of the blog here.</p>
+<h2 id="introduction">Introduction</h2>
+<p>Detection engineering is becoming increasingly important in surfacing new malicious activity. Threat actors might take advantage of previously unknown malware families - but a successful detection of certain methodologies or artifacts can help expose the entire infection chain.</p>
+<p>In previous blog posts, we announced the integration of Sigma rules for macOS and Linux into VirusTotal, as well as ways in which Sigma rules can be converted to YARA to take advantage of VirusTotal Livehunt capabilities. In this post, we will show different approaches to hunt for interesting samples and derive new Sigma detection opportunities based on their behavior.</p>
+<h2 id="tell-me-what-role-you-have-and-ill-tell-you-how-you-use-virustotal">Tell me what role you have and I&rsquo;ll tell you how you use VirusTotal</h2>
+<p>VirusTotal is a really useful tool that can be used in many different ways. We have seen how people from SOCs and Incident Response teams use it (in fact, we have our VirusTotal Academy videos for SOCs and IRs teams), and we have also shown how those who hunt for threats or analyze those threats can use it too.</p>
+<p>But there&rsquo;s another really cool way to use VirusTotal - for people who build detections and those who are doing research. We want to show everyone how we use VirusTotal in our work. Hopefully, this will be helpful and also give people ideas for new ways to use it themselves.</p>
+<p>To explain our process, we used examples of Lummac and VenomRAT samples that we found in recent campaigns. These caught our attention due to some behaviors that had not been identified by public detection rules in the community. For that reason we have created two Sigma rules to share with the community, but if you want to get all the details about how we identified it and started our research, go to our Google Threat Intelligence community blog.</p>
+<h2 id="our-approach">Our approach</h2>
+<p>As detection engineers, it is important to look for techniques that can be in use by multiple threat actors - as this makes tracking malicious activity more efficient. Prior to creating those detections, it is best to check existing research and rule collections, such as the Sigma rules repository. This can save time and effort, as well as provide insight into previously observed samples that can be further researched.</p>
+<p>A different approach would be to instead look for malicious files that are not detected by existing Sigma rules, since they can uncover novel methodologies and provide new opportunities for detection creation.</p>
+<p>One approach is to hunt for files that are flagged by at least five different AV vendors, were recently uploaded within the last month, have sandbox execution (in order to view their behavior), and which have not triggered any Crowdsourced Sigma rules.</p>
+<pre tabindex="0"><code>p:5+ have:behavior fs:30d+ not have:sigma
+</code></pre><p>This initial query can be adapted to incorporate additional filters that the researcher may find relevant. These could include modifiers to identify for example, the presence of the PowerShell process in the list of executed processes (behavior_created_processes:powershell.exe), filtering results to only include documents (type:document), or identifying communication with services like Pastebin (behavior_network:pastebin.com).</p>
+<p>Another way to go is to look at files that have been flagged by at least five AV’s and were tested in either Zenbox or CAPE. These sandboxes often have great logs produced by Sysmon, which are really useful for figuring out how to spot these threats. Again, we&rsquo;d want to focus on files uploaded in the last month that haven&rsquo;t triggered any Sigma rules. This gives us a good starting point for building new detection rules.</p>
+<pre tabindex="0"><code>p:5+ (sandbox_name:&#34;CAPE Sandbox&#34; or sandbox_name:&#34;Zenbox&#34;) fs:30d+ not have:sigma
+</code></pre><p>Lastly, another idea is to look for files that have not triggered many high severity detections from the Sigma Crowdsourced rules, as these can be more evasive. Specifically, we will look for samples with zero critical, high or medium alerts - and no more than two low severity ones.</p>
+<pre tabindex="0"><code>p:5+ have:behavior fs:30d+ sigma_critical:0 sigma_high:0 sigma_medium:0 sigma_low:2-
+</code></pre><p>With these queries, we can start investigating some samples that may be interesting to create detection rules.</p>
+<h2 id="our-detections-for-the-community">Our detections for the community</h2>
+<p>Our approach helps us identify behaviors that seem interesting and worth focusing on. In our blog, where we explain this approach in detail, we highlighted two campaigns linked to Lummac and VenomRAT that exhibited interesting activity. Because of this, we decided to share the Sigma rules we developed for these campaigns. Both rules have been published in Sigma&rsquo;s official repository for the community.</p>
+<h4 id="detect-the-execution-of-morecom-and-vbcexe-related-to-lummac-stealer">Detect The Execution Of More.com And Vbc.exe Related to Lummac Stealer</h4>
+<p>Sigma rule on GitHub: <a href="https://github.com/SigmaHQ/sigma/blob/master/rules-emerging-threats/2024/Malware/Lummac-Stealer/proc">https://github.com/SigmaHQ/sigma/blob/master/rules-emerging-threats/2024/Malware/Lummac-Stealer/proc</a>_creation_win_malware_lummac_more_vbc.yml</p>
+<pre tabindex="0"><code>title: Detect The Execution Of More.com And Vbc.exe Related to Lummac Stealer
+  id: 19b3806e-46f2-4b4c-9337-e3d8653245ea
+  status: experimental
+  description: Detects the execution of more.com and vbc.exe in the process tree. This behaviors was observed by a set of samples related to Lummac Stealer. The Lummac payload is injected into the vbc.exe process.
+  references:
+      - https://www.virustotal.com/gui/file/14d886517fff2cc8955844b252c985ab59f2f95b2849002778f03a8f07eb8aef
+      - https://strontic.github.io/xcyclopedia/library/more.com-EDB3046610020EE614B5B81B0439895E.html
+      - https://strontic.github.io/xcyclopedia/library/vbc.exe-A731372E6F6978CE25617AE01B143351.html
+  author: Joseliyo Sanchez, @Joseliyo_Jstnk
+  date: 2024-11-14
+  tags:
+      - attack.defense-evasion
+      - attack.t1055
+  logsource:
+      category: process_creation
+      product: windows
+  detection:
+      # VT Query: behaviour_processes:&#34;C:\Windows\SysWOW64\more.com&#34; behaviour_processes:&#34;C:\Windows\Microsoft.NET\Framework\v4.0.30319\vbc.exe&#34;
+      selection_parent:
+          ParentImage|endswith: &#39;more.com&#39;
+      selection_child:
+          - Image|endswith: &#39;vbc.exe&#39;
+          - OriginalFileName: &#39;vbc.exe&#39;
+      condition: all of selection_*
+  falsepositives:
+      - Unknown
+  level: high
+</code></pre><h4 id="sysmon-event-for-detect-the-execution-of-morecom-and-vbcexe-related-to-lummac-stealer">Sysmon event for: Detect The Execution Of More.com And Vbc.exe Related to Lummac Stealer</h4>
+<pre tabindex="0"><code>{
+  &#34;System&#34;: {
+    &#34;Provider&#34;: {
+      &#34;Guid&#34;: &#34;{5770385F-C22A-43E0-BF4C-06F5698FFBD9}&#34;,
+      &#34;Name&#34;: &#34;Microsoft-Windows-Sysmon&#34;
+    },
+    &#34;EventID&#34;: 1,
+    &#34;Version&#34;: 5,
+    &#34;Level&#34;: 4,
+    &#34;Task&#34;: 1,
+    &#34;Opcode&#34;: 0,
+    &#34;Keywords&#34;: &#34;0x8000000000000000&#34;,
+    &#34;TimeCreated&#34;: {
+      &#34;SystemTime&#34;: &#34;2024-11-26T16:23:05.132539500Z&#34;
+    },
+    &#34;EventRecordID&#34;: 692861,
+    &#34;Correlation&#34;: {},
+    &#34;Execution&#34;: {
+      &#34;ProcessID&#34;: 2396,
+      &#34;ThreadID&#34;: 3116
+    },
+    &#34;Channel&#34;: &#34;Microsoft-Windows-Sysmon/Operational&#34;,
+    &#34;Computer&#34;: &#34;DESKTOP-B0T93D6&#34;,
+    &#34;Security&#34;: {
+      &#34;UserID&#34;: &#34;S-1-5-18&#34;
+    }
+  },
+  &#34;EventData&#34;: {
+    &#34;RuleName&#34;: &#34;-&#34;,
+    &#34;UtcTime&#34;: &#34;2024-11-26 16:23:05.064&#34;,
+    &#34;ProcessGuid&#34;: &#34;{C784477D-F5E9-6745-6006-000000003F00}&#34;,
+    &#34;ProcessId&#34;: 4184,
+    &#34;Image&#34;: &#34;C:\Windows\Microsoft.NET\Framework\v4.0.30319\vbc.exe&#34;,
+    &#34;FileVersion&#34;: &#34;14.8.3761.0&#34;,
+    &#34;Description&#34;: &#34;Visual Basic Command Line Compiler&#34;,
+    &#34;Product&#34;: &#34;Microsoft® .NET Framework&#34;,
+    &#34;Company&#34;: &#34;Microsoft Corporation&#34;,
+    &#34;OriginalFileName&#34;: &#34;vbc.exe&#34;,
+    &#34;CommandLine&#34;: &#34;C:\Windows\Microsoft.NET\Framework\v4.0.30319\vbc.exe&#34;,
+    &#34;CurrentDirectory&#34;: &#34;C:\Users\george\AppData\Roaming\comlocal\RUYCLAXYVMFJ\&#34;,
+    &#34;User&#34;: &#34;DESKTOP-B0T93D6\george&#34;,
+    &#34;LogonGuid&#34;: &#34;{C784477D-9D9B-66FF-6E87-050000000000}&#34;,
+    &#34;LogonId&#34;: &#34;0x5876e&#34;,
+    &#34;TerminalSessionId&#34;: 1,
+    &#34;IntegrityLevel&#34;: &#34;High&#34;,
+    &#34;Hashes&#34;: {
+      &#34;SHA1&#34;: &#34;61F4D9A9EE38DBC72E840B3624520CF31A3A8653&#34;,
+      &#34;MD5&#34;: &#34;FCCB961AE76D9E600A558D2D0225ED43&#34;,
+      &#34;SHA256&#34;: &#34;466876F453563A272ADB5D568670ECA98D805E7ECAA5A2E18C92B6D3C947DF93&#34;,
+      &#34;IMPHASH&#34;: &#34;1460E2E6D7F8ECA4240B7C78FA619D15&#34;
+    },
+    &#34;ParentProcessGuid&#34;: &#34;{C784477D-F5D4-6745-5E06-000000003F00}&#34;,
+    &#34;ParentProcessId&#34;: 6572,
+    &#34;ParentImage&#34;: &#34;C:\Windows\SysWOW64\more.com&#34;,
+    &#34;ParentCommandLine&#34;: &#34;C:\Windows\SysWOW64\more.com&#34;,
+    &#34;ParentUser&#34;: &#34;DESKTOP-B0T93D6\george&#34;
+  }
+} 
+</code></pre><h4 id="file-creation-related-to-rat-clients">File Creation Related To RAT Clients</h4>
+<p>Sigma rule on GitHub: <a href="https://github.com/SigmaHQ/sigma/blob/fad4742996c55d8d4663e611f84877a2b741dc46/rules-emerging-threats/2024/Malware/Generic/file">https://github.com/SigmaHQ/sigma/blob/fad4742996c55d8d4663e611f84877a2b741dc46/rules-emerging-threats/2024/Malware/Generic/file</a>_event_win_malware_generic_creation_configuration_rats.yml</p>
+<pre tabindex="0"><code>title: File Creation Related To RAT Clients
+  id: 2f3039c8-e8fe-43a9-b5cf-dcd424a2522d
+  status: experimental
+  description: File .conf created related to VenomRAT, AsyncRAT and Lummac samples observed in the wild.
+  references:
+      - https://www.virustotal.com/gui/file/c9f9f193409217f73cc976ad078c6f8bf65d3aabcf5fad3e5a47536d47aa6761
+      - https://www.virustotal.com/gui/file/e96a0c1bc5f720d7f0a53f72e5bb424163c943c24a437b1065957a79f5872675
+  author: Joseliyo Sanchez, @Joseliyo_Jstnk
+  date: 2024-11-15
+  tags:
+      - attack.execution
+  logsource:
+      category: file_event
+      product: windows
+  detection:
+      # VT Query: behaviour_files:&#34;\AppData\Roaming\DataLogs\DataLogs.conf&#34;
+      # VT Query: behaviour_files:&#34;DataLogs.conf&#34; or behaviour_files:&#34;hvnc.conf&#34; or behaviour_files:&#34;dcrat.conf&#34;
+      selection_required:
+          TargetFilename|contains: &#39;AppDataRoaming&#39;
+      selection_variants:
+          TargetFilename|endswith:
+              - &#39;datalogs.conf&#39;
+              - &#39;hvnc.conf&#39;
+              - &#39;dcrat.conf&#39;
+          TargetFilename|contains:
+              - &#39;mydata&#39;
+              - &#39;datalogs&#39;
+              - &#39;hvnc&#39;
+              - &#39;dcrat&#39;
+      condition: all of selection_*
+  falsepositives:
+      - Legitimate software creating a file with the same name
+  level: high
+</code></pre><h4 id="sysmon-event-for-file-creation-related-to-rat-clients">Sysmon event for: File Creation Related To RAT Clients</h4>
+<pre tabindex="0"><code>{
+  &#34;System&#34;: {
+    &#34;Provider&#34;: {
+      &#34;Guid&#34;: &#34;{5770385F-C22A-43E0-BF4C-06F5698FFBD9}&#34;,
+      &#34;Name&#34;: &#34;Microsoft-Windows-Sysmon&#34;
+    },
+    &#34;EventID&#34;: 11,
+    &#34;Version&#34;: 2,
+    &#34;Level&#34;: 4,
+    &#34;Task&#34;: 11,
+    &#34;Opcode&#34;: 0,
+    &#34;Keywords&#34;: &#34;0x8000000000000000&#34;,
+    &#34;TimeCreated&#34;: {
+      &#34;SystemTime&#34;: &#34;2024-12-02T00:52:23.072811600Z&#34;
+    },
+    &#34;EventRecordID&#34;: 1555690,
+    &#34;Correlation&#34;: {},
+    &#34;Execution&#34;: {
+      &#34;ProcessID&#34;: 2624,
+      &#34;ThreadID&#34;: 3112
+    },
+    &#34;Channel&#34;: &#34;Microsoft-Windows-Sysmon/Operational&#34;,
+    &#34;Computer&#34;: &#34;DESKTOP-B0T93D6&#34;,
+    &#34;Security&#34;: {
+      &#34;UserID&#34;: &#34;S-1-5-18&#34;
+    }
+  },
+  &#34;EventData&#34;: {
+    &#34;RuleName&#34;: &#34;-&#34;,
+    &#34;UtcTime&#34;: &#34;2024-12-02 00:52:23.059&#34;,
+    &#34;ProcessGuid&#34;: &#34;{C784477D-04C6-674D-5C06-000000004B00}&#34;,
+    &#34;ProcessId&#34;: 7592,
+    &#34;Image&#34;: &#34;C:\Users\george\Desktop\ezzz.exe&#34;,
+    &#34;TargetFilename&#34;: &#34;C:\Users\george\AppData\Roaming\MyData\DataLogs.conf&#34;,
+    &#34;CreationUtcTime&#34;: &#34;2024-12-02 00:52:23.059&#34;,
+    &#34;User&#34;: &#34;DESKTOP-B0T93D6\george&#34;
+  }
+</code></pre><h1 id="wrapping-up">Wrapping up</h1>
+<p>Detection engineering teams can proactively create new detections by hunting for samples that are being distributed and uploaded to our platform. Applying our approach can benefit in the development of detection on the latest behaviors that do not currently have developed detection mechanisms. This could potentially help organizations be proactive in creating detections based on threat hunting missions.</p>
+<p>The Sigma rules created to detect Lummac activity have been used during threat hunting missions to identify new samples of this family in VirusTotal. Another use is translating them into the language of the SIEM or EDR available in the infrastructure, as they could help identify potential behaviors related to Lummac samples observed in late 2024. After passing quality controls and being published on Sigma&rsquo;s public GitHub, they have been integrated for use in VirusTotal, delivering the expected results. You can use them in the following way:</p>
+<p>Lummac Stealer Activity - Execution Of More.com And Vbc.exe</p>
+<pre tabindex="0"><code>sigma_rule:a1021d4086a92fd3782417a54fa5c5141d1e75c8afc9e73dc6e71ef9e1ae2e9c
+</code></pre><p>File Creation Related To RAT Clients</p>
+<pre tabindex="0"><code>sigma_rule:8f179585d5c1249ab1ef8cec45a16d112a53f91d143aa2b0b6713602b1d19252
+</code></pre><p>We hope you found this blog interesting and useful, and as always we are happy to hear your feedback.</p>
+<p><strong>Note:</strong> You can view the full content of the blog here.</p>
+<h2 id="introduction-1">Introduction</h2>
+<p>Detection engineering is becoming increasingly important in surfacing new malicious activity. Threat actors might take advantage of previously unknown malware families - but a successful detection of certain methodologies or artifacts can help expose the entire infection chain.</p>
+<p>In previous blog posts, we announced the integration of Sigma rules for macOS and Linux into VirusTotal, as well as ways in which Sigma rules can be converted to YARA to take advantage of VirusTotal Livehunt capabilities. In this post, we will show different approaches to hunt for interesting samples and derive new Sigma detection opportunities based on their behavior.</p>
+<h2 id="tell-me-what-role-you-have-and-ill-tell-you-how-you-use-virustotal-1">Tell me what role you have and I&rsquo;ll tell you how you use VirusTotal</h2>
+<p>VirusTotal is a really useful tool that can be used in many different ways. We have seen how people from SOCs and Incident Response teams use it (in fact, we have our VirusTotal Academy videos for SOCs and IRs teams), and we have also shown how those who hunt for threats or analyze those threats can use it too.</p>
+<p>But there&rsquo;s another really cool way to use VirusTotal - for people who build detections and those who are doing research. We want to show everyone how we use VirusTotal in our work. Hopefully, this will be helpful and also give people ideas for new ways to use it themselves.</p>
+<p>To explain our process, we used examples of Lummac and VenomRAT samples that we found in recent campaigns. These caught our attention due to some behaviors that had not been identified by public detection rules in the community. For that reason we have created two Sigma rules to share with the community, but if you want to get all the details about how we identified it and started our research, go to our Google Threat Intelligence community blog.</p>
+<h2 id="our-approach-1">Our approach</h2>
+<p>As detection engineers, it is important to look for techniques that can be in use by multiple threat actors - as this makes tracking malicious activity more efficient. Prior to creating those detections, it is best to check existing research and rule collections, such as the Sigma rules repository. This can save time and effort, as well as provide insight into previously observed samples that can be further researched.</p>
+<p>A different approach would be to instead look for malicious files that are not detected by existing Sigma rules, since they can uncover novel methodologies and provide new opportunities for detection creation.</p>
+<p>One approach is to hunt for files that are flagged by at least five different AV vendors, were recently uploaded within the last month, have sandbox execution (in order to view their behavior), and which have not triggered any Crowdsourced Sigma rules.</p>
+<pre tabindex="0"><code>p:5+ have:behavior fs:30d+ not have:sigma
+</code></pre><p>This initial query can be adapted to incorporate additional filters that the researcher may find relevant. These could include modifiers to identify for example, the presence of the PowerShell process in the list of executed processes (behavior_created_processes:powershell.exe), filtering results to only include documents (type:document), or identifying communication with services like Pastebin (behavior_network:pastebin.com).</p>
+<p>Another way to go is to look at files that have been flagged by at least five AV’s and were tested in either Zenbox or CAPE. These sandboxes often have great logs produced by Sysmon, which are really useful for figuring out how to spot these threats. Again, we&rsquo;d want to focus on files uploaded in the last month that haven&rsquo;t triggered any Sigma rules. This gives us a good starting point for building new detection rules.</p>
+<pre tabindex="0"><code>p:5+ (sandbox_name:&#34;CAPE Sandbox&#34; or sandbox_name:&#34;Zenbox&#34;) fs:30d+ not have:sigma
+</code></pre><p>Lastly, another idea is to look for files that have not triggered many high severity detections from the Sigma Crowdsourced rules, as these can be more evasive. Specifically, we will look for samples with zero critical, high or medium alerts - and no more than two low severity ones.</p>
+<pre tabindex="0"><code>p:5+ have:behavior fs:30d+ sigma_critical:0 sigma_high:0 sigma_medium:0 sigma_low:2-
+</code></pre><p>With these queries, we can start investigating some samples that may be interesting to create detection rules.</p>
+<h2 id="our-detections-for-the-community-1">Our detections for the community</h2>
+<p>Our approach helps us identify behaviors that seem interesting and worth focusing on. In our blog, where we explain this approach in detail, we highlighted two campaigns linked to Lummac and VenomRAT that exhibited interesting activity. Because of this, we decided to share the Sigma rules we developed for these campaigns. Both rules have been published in Sigma&rsquo;s official repository for the community.</p>
+<h4 id="detect-the-execution-of-morecom-and-vbcexe-related-to-lummac-stealer-1">Detect The Execution Of More.com And Vbc.exe Related to Lummac Stealer</h4>
+<p>Sigma rule on GitHub: <a href="https://github.com/SigmaHQ/sigma/blob/master/rules-emerging-threats/2024/Malware/Lummac-Stealer/proc">https://github.com/SigmaHQ/sigma/blob/master/rules-emerging-threats/2024/Malware/Lummac-Stealer/proc</a>_creation_win_malware_lummac_more_vbc.yml</p>
+<pre tabindex="0"><code>title: Detect The Execution Of More.com And Vbc.exe Related to Lummac Stealer
+  id: 19b3806e-46f2-4b4c-9337-e3d8653245ea
+  status: experimental
+  description: Detects the execution of more.com and vbc.exe in the process tree. This behaviors was observed by a set of samples related to Lummac Stealer. The Lummac payload is injected into the vbc.exe process.
+  references:
+      - https://www.virustotal.com/gui/file/14d886517fff2cc8955844b252c985ab59f2f95b2849002778f03a8f07eb8aef
+      - https://strontic.github.io/xcyclopedia/library/more.com-EDB3046610020EE614B5B81B0439895E.html
+      - https://strontic.github.io/xcyclopedia/library/vbc.exe-A731372E6F6978CE25617AE01B143351.html
+  author: Joseliyo Sanchez, @Joseliyo_Jstnk
+  date: 2024-11-14
+  tags:
+      - attack.defense-evasion
+      - attack.t1055
+  logsource:
+      category: process_creation
+      product: windows
+  detection:
+      # VT Query: behaviour_processes:&#34;C:\Windows\SysWOW64\more.com&#34; behaviour_processes:&#34;C:\Windows\Microsoft.NET\Framework\v4.0.30319\vbc.exe&#34;
+      selection_parent:
+          ParentImage|endswith: &#39;more.com&#39;
+      selection_child:
+          - Image|endswith: &#39;vbc.exe&#39;
+          - OriginalFileName: &#39;vbc.exe&#39;
+      condition: all of selection_*
+  falsepositives:
+      - Unknown
+  level: high
+</code></pre><h4 id="sysmon-event-for-detect-the-execution-of-morecom-and-vbcexe-related-to-lummac-stealer-1">Sysmon event for: Detect The Execution Of More.com And Vbc.exe Related to Lummac Stealer</h4>
+<pre tabindex="0"><code>{
+  &#34;System&#34;: {
+    &#34;Provider&#34;: {
+      &#34;Guid&#34;: &#34;{5770385F-C22A-43E0-BF4C-06F5698FFBD9}&#34;,
+      &#34;Name&#34;: &#34;Microsoft-Windows-Sysmon&#34;
+    },
+    &#34;EventID&#34;: 1,
+    &#34;Version&#34;: 5,
+    &#34;Level&#34;: 4,
+    &#34;Task&#34;: 1,
+    &#34;Opcode&#34;: 0,
+    &#34;Keywords&#34;: &#34;0x8000000000000000&#34;,
+    &#34;TimeCreated&#34;: {
+      &#34;SystemTime&#34;: &#34;2024-11-26T16:23:05.132539500Z&#34;
+    },
+    &#34;EventRecordID&#34;: 692861,
+    &#34;Correlation&#34;: {},
+    &#34;Execution&#34;: {
+      &#34;ProcessID&#34;: 2396,
+      &#34;ThreadID&#34;: 3116
+    },
+    &#34;Channel&#34;: &#34;Microsoft-Windows-Sysmon/Operational&#34;,
+    &#34;Computer&#34;: &#34;DESKTOP-B0T93D6&#34;,
+    &#34;Security&#34;: {
+      &#34;UserID&#34;: &#34;S-1-5-18&#34;
+    }
+  },
+  &#34;EventData&#34;: {
+    &#34;RuleName&#34;: &#34;-&#34;,
+    &#34;UtcTime&#34;: &#34;2024-11-26 16:23:05.064&#34;,
+    &#34;ProcessGuid&#34;: &#34;{C784477D-F5E9-6745-6006-000000003F00}&#34;,
+    &#34;ProcessId&#34;: 4184,
+    &#34;Image&#34;: &#34;C:\Windows\Microsoft.NET\Framework\v4.0.30319\vbc.exe&#34;,
+    &#34;FileVersion&#34;: &#34;14.8.3761.0&#34;,
+    &#34;Description&#34;: &#34;Visual Basic Command Line Compiler&#34;,
+    &#34;Product&#34;: &#34;Microsoft® .NET Framework&#34;,
+    &#34;Company&#34;: &#34;Microsoft Corporation&#34;,
+    &#34;OriginalFileName&#34;: &#34;vbc.exe&#34;,
+    &#34;CommandLine&#34;: &#34;C:\Windows\Microsoft.NET\Framework\v4.0.30319\vbc.exe&#34;,
+    &#34;CurrentDirectory&#34;: &#34;C:\Users\george\AppData\Roaming\comlocal\RUYCLAXYVMFJ\&#34;,
+    &#34;User&#34;: &#34;DESKTOP-B0T93D6\george&#34;,
+    &#34;LogonGuid&#34;: &#34;{C784477D-9D9B-66FF-6E87-050000000000}&#34;,
+    &#34;LogonId&#34;: &#34;0x5876e&#34;,
+    &#34;TerminalSessionId&#34;: 1,
+    &#34;IntegrityLevel&#34;: &#34;High&#34;,
+    &#34;Hashes&#34;: {
+      &#34;SHA1&#34;: &#34;61F4D9A9EE38DBC72E840B3624520CF31A3A8653&#34;,
+      &#34;MD5&#34;: &#34;FCCB961AE76D9E600A558D2D0225ED43&#34;,
+      &#34;SHA256&#34;: &#34;466876F453563A272ADB5D568670ECA98D805E7ECAA5A2E18C92B6D3C947DF93&#34;,
+      &#34;IMPHASH&#34;: &#34;1460E2E6D7F8ECA4240B7C78FA619D15&#34;
+    },
+    &#34;ParentProcessGuid&#34;: &#34;{C784477D-F5D4-6745-5E06-000000003F00}&#34;,
+    &#34;ParentProcessId&#34;: 6572,
+    &#34;ParentImage&#34;: &#34;C:\Windows\SysWOW64\more.com&#34;,
+    &#34;ParentCommandLine&#34;: &#34;C:\Windows\SysWOW64\more.com&#34;,
+    &#34;ParentUser&#34;: &#34;DESKTOP-B0T93D6\george&#34;
+  }
+} 
+</code></pre><h4 id="file-creation-related-to-rat-clients-1">File Creation Related To RAT Clients</h4>
+<p>Sigma rule on GitHub: <a href="https://github.com/SigmaHQ/sigma/blob/fad4742996c55d8d4663e611f84877a2b741dc46/rules-emerging-threats/2024/Malware/Generic/file">https://github.com/SigmaHQ/sigma/blob/fad4742996c55d8d4663e611f84877a2b741dc46/rules-emerging-threats/2024/Malware/Generic/file</a>_event_win_malware_generic_creation_configuration_rats.yml</p>
+<pre tabindex="0"><code>title: File Creation Related To RAT Clients
+  id: 2f3039c8-e8fe-43a9-b5cf-dcd424a2522d
+  status: experimental
+  description: File .conf created related to VenomRAT, AsyncRAT and Lummac samples observed in the wild.
+  references:
+      - https://www.virustotal.com/gui/file/c9f9f193409217f73cc976ad078c6f8bf65d3aabcf5fad3e5a47536d47aa6761
+      - https://www.virustotal.com/gui/file/e96a0c1bc5f720d7f0a53f72e5bb424163c943c24a437b1065957a79f5872675
+  author: Joseliyo Sanchez, @Joseliyo_Jstnk
+  date: 2024-11-15
+  tags:
+      - attack.execution
+  logsource:
+      category: file_event
+      product: windows
+  detection:
+      # VT Query: behaviour_files:&#34;\AppData\Roaming\DataLogs\DataLogs.conf&#34;
+      # VT Query: behaviour_files:&#34;DataLogs.conf&#34; or behaviour_files:&#34;hvnc.conf&#34; or behaviour_files:&#34;dcrat.conf&#34;
+      selection_required:
+          TargetFilename|contains: &#39;AppDataRoaming&#39;
+      selection_variants:
+          TargetFilename|endswith:
+              - &#39;datalogs.conf&#39;
+              - &#39;hvnc.conf&#39;
+              - &#39;dcrat.conf&#39;
+          TargetFilename|contains:
+              - &#39;mydata&#39;
+              - &#39;datalogs&#39;
+              - &#39;hvnc&#39;
+              - &#39;dcrat&#39;
+      condition: all of selection_*
+  falsepositives:
+      - Legitimate software creating a file with the same name
+  level: high
+</code></pre><h4 id="sysmon-event-for-file-creation-related-to-rat-clients-1">Sysmon event for: File Creation Related To RAT Clients</h4>
+<pre tabindex="0"><code>{
+  &#34;System&#34;: {
+    &#34;Provider&#34;: {
+      &#34;Guid&#34;: &#34;{5770385F-C22A-43E0-BF4C-06F5698FFBD9}&#34;,
+      &#34;Name&#34;: &#34;Microsoft-Windows-Sysmon&#34;
+    },
+    &#34;EventID&#34;: 11,
+    &#34;Version&#34;: 2,
+    &#34;Level&#34;: 4,
+    &#34;Task&#34;: 11,
+    &#34;Opcode&#34;: 0,
+    &#34;Keywords&#34;: &#34;0x8000000000000000&#34;,
+    &#34;TimeCreated&#34;: {
+      &#34;SystemTime&#34;: &#34;2024-12-02T00:52:23.072811600Z&#34;
+    },
+    &#34;EventRecordID&#34;: 1555690,
+    &#34;Correlation&#34;: {},
+    &#34;Execution&#34;: {
+      &#34;ProcessID&#34;: 2624,
+      &#34;ThreadID&#34;: 3112
+    },
+    &#34;Channel&#34;: &#34;Microsoft-Windows-Sysmon/Operational&#34;,
+    &#34;Computer&#34;: &#34;DESKTOP-B0T93D6&#34;,
+    &#34;Security&#34;: {
+      &#34;UserID&#34;: &#34;S-1-5-18&#34;
+    }
+  },
+  &#34;EventData&#34;: {
+    &#34;RuleName&#34;: &#34;-&#34;,
+    &#34;UtcTime&#34;: &#34;2024-12-02 00:52:23.059&#34;,
+    &#34;ProcessGuid&#34;: &#34;{C784477D-04C6-674D-5C06-000000004B00}&#34;,
+    &#34;ProcessId&#34;: 7592,
+    &#34;Image&#34;: &#34;C:\Users\george\Desktop\ezzz.exe&#34;,
+    &#34;TargetFilename&#34;: &#34;C:\Users\george\AppData\Roaming\MyData\DataLogs.conf&#34;,
+    &#34;CreationUtcTime&#34;: &#34;2024-12-02 00:52:23.059&#34;,
+    &#34;User&#34;: &#34;DESKTOP-B0T93D6\george&#34;
+  }
+</code></pre><h1 id="wrapping-up-1">Wrapping up</h1>
+<p>Detection engineering teams can proactively create new detections by hunting for samples that are being distributed and uploaded to our platform. Applying our approach can benefit in the development of detection on the latest behaviors that do not currently have developed detection mechanisms. This could potentially help organizations be proactive in creating detections based on threat hunting missions.</p>
+<p>The Sigma rules created to detect Lummac activity have been used during threat hunting missions to identify new samples of this family in VirusTotal. Another use is translating them into the language of the SIEM or EDR available in the infrastructure, as they could help identify potential behaviors related to Lummac samples observed in late 2024. After passing quality controls and being published on Sigma&rsquo;s public GitHub, they have been integrated for use in VirusTotal, delivering the expected results. You can use them in the following way:</p>
+<p>Lummac Stealer Activity - Execution Of More.com And Vbc.exe</p>
+<pre tabindex="0"><code>sigma_rule:a1021d4086a92fd3782417a54fa5c5141d1e75c8afc9e73dc6e71ef9e1ae2e9c
+</code></pre><p>File Creation Related To RAT Clients</p>
+<pre tabindex="0"><code>sigma_rule:8f179585d5c1249ab1ef8cec45a16d112a53f91d143aa2b0b6713602b1d19252
+</code></pre><p>We hope you found this blog interesting and useful, and as always we are happy to hear your feedback.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>StilachiRAT analysis: From system reconnaissance to cryptocurrency theft</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>StilachiRAT analysis: From system reconnaissance to cryptocurrency theft</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>In November 2024, Microsoft Incident Response researchers uncovered a novel remote access trojan (RAT) we named StilachiRAT that demonstrates sophisticated techniques to evade detection, persist in the target environment, and exfiltrate sensitive data. Analysis of the StilachiRAT’s <em>WWStartupCtrl64.dll</em> module that contains the RAT capabilities revealed the use of various methods to steal information from the target system, such as credentials stored in the browser, digital wallet information, data stored in the clipboard, as well as system information.</p>
+<p>Microsoft has not yet attributed StilachiRAT to a specific threat actor or geolocation. Based on Microsoft’s current visibility, the malware does not exhibit widespread distribution at this time. However, due to its stealth capabilities and the rapid changes within the malware ecosystem, we are sharing these findings as part of our ongoing efforts to monitor, analyze, and report on the evolving threat landscape.</p>
+<p>Microsoft security solutions can detect activities related to attacks that use StilachiRAT. To help defenders protect their network, we are also sharing mitigation guidance to help reduce the impact of this threat, detection details, and hunting queries. Microsoft continues to monitor information on the delivery vector used in these attacks. Malware like StilachiRAT can be installed through multiple vectors; therefore, it is critical to implement security hardening measures to prevent the initial compromise. </p>
+<p>This blog presents our detailed findings on all the key capabilities of StilachiRAT, which include:</p>
+<ul>
+<li>
+<p><strong>System reconnaissance</strong>: Collects comprehensive system information, including operating system (OS) details, hardware identifiers, camera presence, active Remote Desktop Protocol (RDP) sessions, and running graphical user interface (GUI) applications, allowing detailed profiling of the target system.</p>
+</li>
+<li>
+<p><strong>Digital wallet targeting</strong>: Scans for configuration data of 20 different cryptocurrency wallet extensions for the Google Chrome browser.</p>
+</li>
+<li>
+<p><strong>Credential theft</strong>: Extracts and decrypts saved credentials from Google Chrome, gaining access to usernames and passwords stored in the browser.</p>
+</li>
+<li>
+<p><strong>Command-and-control (C2) connectivity</strong>: Establishes communication with remote C2 servers using TCP ports 53, 443, or 16000, enabling remote command execution and potentially SOCKS like proxying.</p>
+</li>
+<li>
+<p><strong>Command execution</strong>: Supports a variety of commands from the C2 server, including system reboots, log clearing, registry manipulation, application execution, and system suspension.</p>
+</li>
+<li>
+<p><strong>Persistence mechanisms</strong>: Achieves persistence through the Windows service control manager (SCM) and uses watchdog threads to ensure self-reinstatement if removed.</p>
+</li>
+<li>
+<p><strong>RDP monitoring</strong>: Monitors RDP sessions, capturing active window information and impersonating users, allowing for potential lateral movement within networks.</p>
+</li>
+<li>
+<p><strong>Clipboard and data collection</strong>: Continuously monitors clipboard content, actively searching for sensitive data like passwords and cryptocurrency keys, while tracking active windows and applications.</p>
+</li>
+<li>
+<p><strong>Anti-forensics and evasion</strong>: Employs anti-forensic tactics by clearing event logs, detecting analysis tools, and implementing sandbox-evading behaviors to avoid detection.</p>
+</li>
+</ul>
+<h2 id="technical-analysis-of-key-capabilities">Technical analysis of key capabilities</h2>
+<h3 id="system-reconnaissance">System reconnaissance</h3>
+<p>StilachiRAT gathers extensive system information, including OS details, device identifiers, BIOS serial numbers, and camera presence. Information is collected through the Component Object Model (COM) Web-based Enterprise Management (WBEM) interfaces using WMI Query Language (WQL). Below are some of the queries it executes:</p>
+<p><strong>Serial number</strong></p>
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/image-44.webp" alt="" />
+</figure>
+
+
+</p>
+<p><strong>Camera</strong></p>
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/image-3.jpg" alt="A black and green text" />
+</figure>
+
+
+</p>
+<p><strong>OS / System info (server, model, manufacturer)</strong></p>
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/Query3-1024x95.webp" alt="A black text on a white background" />
+</figure>
+
+
+</p>
+<p>Additionally, the malware creates a unique identification on the infected device that is derived from the system’s serial number and attackers’ public RSA key. The information is stored in the registry under a CLSID key.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/image-45.webp" alt="A screenshot of a computer code" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 1. Example of a unique ID stored in the registry</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h3 id="digital-wallet-targeting">Digital wallet targeting</h3>
+<p>StilachiRAT targets a list of specific cryptocurrency wallet extensions for the Google Chrome browser. It accesses the settings in the following registry key and validates if any of the extensions are installed:</p>
+<p><strong>SOFTWAREGoogleChromePreferenceMACsDefaultextensions.settings</strong></p>
+<p>The malware targets the following cryptocurrency wallet extensions:</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Cryptocurrency wallet extension name</strong></th>
+          <th><strong>Chrome extension identifier</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Bitget Wallet (Formerly BitKeep)</td>
+          <td>jiidiaalihmmhddjgbnbgdfflelocpak</td>
+      </tr>
+      <tr>
+          <td>Trust Wallet</td>
+          <td>egjidjbpglichdcondbcbdnbeeppgdph</td>
+      </tr>
+      <tr>
+          <td>TronLink</td>
+          <td>ibnejdfjmmkpcnlpebklmnkoeoihofec</td>
+      </tr>
+      <tr>
+          <td>MetaMask (ethereum)</td>
+          <td>nkbihfbeogaeaoehlefnkodbefgpgknn</td>
+      </tr>
+      <tr>
+          <td>TokenPocket</td>
+          <td>mfgccjchihfkkindfppnaooecgfneiii</td>
+      </tr>
+      <tr>
+          <td>BNB Chain Wallet</td>
+          <td>fhbohimaelbohpjbbldcngcnapndodjp</td>
+      </tr>
+      <tr>
+          <td>OKX Wallet</td>
+          <td>mcohilncbfahbmgdjkbpemcciiolgcge</td>
+      </tr>
+      <tr>
+          <td>Sui Wallet</td>
+          <td>opcgpfmipidbgpenhmajoajpbobppdil</td>
+      </tr>
+      <tr>
+          <td>Braavos – Starknet Wallet</td>
+          <td>jnlgamecbpmbajjfhmmmlhejkemejdma</td>
+      </tr>
+      <tr>
+          <td>Coinbase Wallet</td>
+          <td>hnfanknocfeofbddgcijnmhnfnkdnaad</td>
+      </tr>
+      <tr>
+          <td>Leap Cosmos Wallet</td>
+          <td>fcfcfllfndlomdhbehjjcoimbgofdncg</td>
+      </tr>
+      <tr>
+          <td>Manta Wallet</td>
+          <td>enabgbdfcbaehmbigakijjabdpdnimlg</td>
+      </tr>
+      <tr>
+          <td>Keplr</td>
+          <td>dmkamcknogkgcdfhhbddcghachkejeap</td>
+      </tr>
+      <tr>
+          <td>Phantom</td>
+          <td>bfnaelmomeimhlpmgjnjophhpkkoljpa</td>
+      </tr>
+      <tr>
+          <td>Compass Wallet for Sei</td>
+          <td>anokgmphncpekkhclmingpimjmcooifb</td>
+      </tr>
+      <tr>
+          <td>Math Wallet</td>
+          <td>afbcbjpbpfadlkmhmclhkeeodmamcflc</td>
+      </tr>
+      <tr>
+          <td>Fractal Wallet</td>
+          <td>agechnindjilpccclelhlbjphbgnobpf</td>
+      </tr>
+      <tr>
+          <td>Station Wallet</td>
+          <td>aiifbnbfobpmeekipheeijimdpnlpgpp</td>
+      </tr>
+      <tr>
+          <td>ConfluxPortal</td>
+          <td>bjiiiblnpkonoiegdlifcciokocjbhkd</td>
+      </tr>
+      <tr>
+          <td>Plug</td>
+          <td>cfbfdhimifdmdehjmkdobpcjfefblkjm</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="credential-theft">Credential theft</h3>
+<p>StilachiRAT extracts Google Chrome’s <em>encryption_key</em> from the local state file in a user’s directory. However, since the key is encrypted when Chrome is first installed, it uses Windows APIs that rely on current user’s context to decrypt the master key. This allows access to the stored credentials in the password vault. The stored credentials are extracted from the following locations:</p>
+<ul>
+<li>
+<p><em>%LOCALAPPDATA%GoogleChromeUser DataLocal State</em> – stores Chrome’s configuration data, including the encrypted key.</p>
+</li>
+<li>
+<p><em>%LOCALAPPDATA%GoogleChromeUser DataDefaultLogin Data</em> – stores entered user credentials.</p>
+</li>
+</ul>
+<p>The “Login Data**”** stores information using an SQLite database and the malware retrieves credentials using the following query:</p>
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/image-4.jpg" alt="A black text on a white background" />
+</figure>
+
+
+</p>
+<h3 id="command-and-control-c2">Command-and-control (C2)</h3>
+<p>There are two configured addresses for the C2 server – one is stored in obfuscated form and the other is an IP address converted to its binary format (instead of a regular string):</p>
+<ul>
+<li>
+<p>app.95560[.]cc</p>
+</li>
+<li>
+<p>194.195.89[.]47</p>
+</li>
+</ul>
+<p>The communications channel is established using TCP ports 53, 443, or 16000, selected randomly. Additionally, the malware checks for presence of <em>tcpview.exe</em> and will not proceed if one is present. It also delays initial connection by two hours, presumably to evade detection. Once connected, a list of active windows is sent to the server. Additional technical findings regarding C2 communications functionality are listed in the section below.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/image-46.webp" alt="A screenshot of a computer program" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 2. The malware delays connection to evade detection</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h3 id="persistence-mechanisms">Persistence mechanisms</h3>
+<p>StilachiRAT can be launched both as a Windows service or a standalone component. In both cases, there is a mechanism in place to ensure the malware isn’t removed.</p>
+<p>A watchdog thread monitors both the EXE and dynamic link library (DLL) files used by the malware by periodically polling for their presence. If found absent, the files can be recreated from an internal copy obtained during initialization. Lastly, the Windows service component can be recreated by modifying the relevant registry settings and restarting it through the SCM.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/image-47.webp" alt="A screenshot of a computer program" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 3. Monitoring for the presence of EXE and DLL files</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/Figure-4-start-the-mlaware-via-scm.webp" alt="A computer screen shot of a program code" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 4. Start the malware via SCM</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h3 id="rdp-monitoring">RDP monitoring</h3>
+<p>StilachiRAT monitors RDP sessions by capturing foreground window information and duplicating security tokens to impersonate users. This is particularly risky on RDP servers hosting administrative sessions as it could enable lateral movement within networks.</p>
+<p>The malware obtains the current session and actively launches foreground windows as well as enumerates all other RDP sessions. For each identified session, it will access the Windows Explorer shell and duplicate its privileges or security token. The malware then gains capabilities to launch applications with these newly obtained privileges.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/Figure-5-enumerate-rdp-sessions.webp" alt="A screen shot of a computer program" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 5. Enumerate RDP sessions</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/Figure-6-launch-process-another-user.webp" alt="A screen shot of a computer code" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 6. Launch process as another user</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h3 id="data-collection">Data collection</h3>
+<p>StilachiRAT collects a variety of user data, including software installation records and active applications. It monitors active GUI windows, their title bar text, and file location, and sends this information to the C2 server, potentially allowing attackers to track user behavior.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/image-48.webp" alt="A screenshot of a computer" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 7. Registry path for installed software</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/Figure-8-read-title-app-window.webp" alt="A computer code with colorful text" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 8. Read the title of an application window</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h3 id="clipboard-monitoring">Clipboard monitoring</h3>
+<p>StilachiRAT has a functionality that is responsible for monitoring clipboard data. Specifically, the malware can periodically read the clipboard, extract text based on search expressions, and then exfiltrate this data. Clipboard monitoring is continuous, with targeted searches for sensitive information such as passwords, cryptocurrency keys, and potentially personal identifiers.</p>
+<p>The list below includes the regular search expressions used to extract certain credentials. These are associated with the Tron Cryptocurrency blockchain that is popular in Asia, especially in China.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Credential</strong></th>
+          <th> <strong>Regular expression to extract credential</strong>                               </th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td> TRX Address</td>
+          <td> `bT[0-9a-zA-Z]{33}b`                                     </td>
+      </tr>
+      <tr>
+          <td> TRX Key    </td>
+          <td> `b(0x)?[0-9a-fA-F]{64}b`                                 </td>
+      </tr>
+      <tr>
+          <td> TRX Pass   </td>
+          <td> `^s*b([0-9]*[.]*[a-wy-z][a-z]{2,}[ t]*b){12}s*(n$)`</td>
+      </tr>
+      <tr>
+          <td> TRX Pass   </td>
+          <td> `^s*b([0-9]*[.]*?[a-wy-z][a-z]{2,}s*b){12}s*(n$)`</td>
+      </tr>
+  </tbody>
+</table>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/Figure-9-access-clipboard-data.webp" alt="A screen shot of a computer code" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 9. Access clipboard data</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/Figure-10-access-clipboard.webp" alt="A computer screen shot of a black background with white text" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 10. Modify clipboard data</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>The same search expressions are then used to iterate files in the following locations:</p>
+<ul>
+<li>
+<p>%USERPROFILE%Desktop</p>
+</li>
+<li>
+<p>%USERPROFILE%Recent</p>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/Figure-11-access-users-files.webp" alt="A screen shot of a computer code" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 11. Access user’s files</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h3 id="anti-forensic-measures">Anti-forensic measures</h3>
+<p>StilachiRAT displays anti-forensic behavior by clearing event logs and checking certain system conditions to evade detection. This includes looping checks for analysis tools and sandbox timers that prevent its full activation in virtual environments commonly used for malware analysis.</p>
+<p>Additionally, Windows API calls are obfuscated in multiple ways and a custom algorithm is used to encode many text strings and values. This significantly slows down analysis time since extrapolating higher level logic and code design becomes a more complex effort.</p>
+<p>The malware employs API-level obfuscation techniques to impede manual analysis, specifically by concealing its use of Windows APIs (e.g., RegOpenKey()). Instead of referencing API names directly, it encodes them as checksums that are resolved dynamically at runtime. While this is a common technique in malware, the authors have introduced additional layers of obfuscation.</p>
+<p>Precomputed API checksums are stored in multiple lookup tables, each masked with an XOR value. During launch, the malware selects the appropriate table based on the hashed API name, applies the correct XOR mask to decode the value, and dynamically resolves the corresponding Windows API function. The resolved function pointer is then cached, but with an additional XOR mask applied, preventing straightforward memory scans from identifying API references.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/Figure-12-example-function-calls-resolve-sleep-allocconsole.webp" alt="A screen shot of a computer" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 12. Example of two function calls that resolve **Sleep()** and **AllocConsole()** Windows APIs</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/Figure-13-function-initiates-api-resolution.webp" alt="A computer screen shot of text" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 13. Function that initiates API resolution by identifying the correct lookup table for the checksum</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h3 id="commands-launched-from-the-c2-server">Commands launched from the C2 server</h3>
+<p>StilachiRAT can launch various commands received from the C2 server. These commands include system reboot, log clearing, credential theft, executing applications, and manipulating system windows. Additionally, it can suspend the system, modify Windows registry values, and enumerate open windows, indicating a versatile command set for both espionage and system manipulation. The C2 server’s command structure assigns specific numbers to what commands it will initiate. The following section presents details on the said commands.</p>
+<h4 id="07--dialog-box">07 – Dialog box</h4>
+<p>Uses the Windows API function <em>ShowHTMLDialogEx()</em> to display a dialog box with rendered HTML contents from a supplied URL.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/Figure-14-display-message-box.webp" alt="A screen shot of a computer program" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 14. Display a message box</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h4 id="08--log-clearing">08 – Log clearing</h4>
+<p>Given an event log type, the relevant Windows APIs are used to open and then clear the log entries.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/Figure-15-clear-event-logs.webp" alt="A screen shot of a computer" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 15. Clear event logs</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h4 id="09--system-reboot">09 – System reboot</h4>
+<p>Adjusts its own executing privileges to enable system shutdown and uses an undocumented Windows API to perform the action.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/Figure-16-shutdown-pc.webp" alt="A computer screen shot of text" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 16. Shutdown the PC</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h4 id="13--network-sockets">13 – Network sockets</h4>
+<p>Appears to contain capability to receive a network address from C2 server and establish a new outbound connection.</p>
+<h4 id="14--tcp-incoming">14 – TCP incoming</h4>
+<p>Accepts an incoming network connection on the supplied TCP port.</p>
+<h4 id="15--terminate">15 – Terminate</h4>
+<p>If there’s an open network connection, then close it and disable the Windows service controlling this process. This appears to be the self-removal (uninstall) command.</p>
+<h4 id="16--initiate-application">16 – Initiate application</h4>
+<p>The malware creates a console window and initiates a command to launch the program provided by the C2 operator using the <em>WinExec()</em> API.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://www.microsoft.com/en-us/security/blog/wp-content/uploads/2025/03/Figure-17-initiate-program.webp" alt="A black background with white text" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p>Figure 17. Initiate a program</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h4 id="19--enumerate-windows">19 – Enumerate Windows</h4>
+<p>Iterates all windows of the current desktop to look for a requested title bar text. This might allow the operator to access specific GUI applications and their contents, both onscreen and clipboard.</p>
+<h4 id="26--suspend">26 – Suspend</h4>
+<p>Uses the <em>SetSuspendState()</em> API to put the system into either a suspended (sleep) state or hibernation.</p>
+<h4 id="30--chrome-credentials">30 – Chrome credentials</h4>
+<p>Launches the earlier mentioned functionality to steal Google Chrome passwords.</p>
+<h2 id="mitigations">Mitigations</h2>
+<p>Malware like StilachiRAT can be installed through various vectors. The following mitigations can help prevent this type of malware from infiltrating the system and reduce the attack surface:</p>
+<ul>
+<li>
+<p>In some cases, RATs can masquerade as legitimate software or software updates. Always download software from the official website of the software developer or from reputable sources.</p>
+</li>
+<li>
+<p>Encourage users to use Microsoft Edge and other web browsers that support SmartScreen, which identifies and blocks malicious websites, including phishing sites, scam sites, and sites that host malware.</p>
+</li>
+<li>
+<p>Turn on Safe Links and Safe Attachments for Office 365. In organizations with Microsoft Defender for Office 365, Safe Links scanning protects your organization from malicious links that are used in phishing and other attacks. Specifically, Safe Links provides URL scanning and rewriting of inbound email messages during mail flow, and time-of-click verification of URLs and links in email messages, Microsoft Teams, and supported Office 365 apps. Safe Attachments provides an additional layer of protection for email attachments that have already been scanned by anti-malware protection in Exchange Online Protection (EOP).</p>
+</li>
+<li>
+<p>Enable network protection in Microsoft Defender for Endpoint to prevent applications or users from accessing malicious domains and other malicious content on the internet. You can audit network protection in a test environment to view which apps would be blocked before enabling network protection.</p>
+</li>
+</ul>
+<p>General hardening guidelines:</p>
+<ul>
+<li>
+<p>Ensure that tamper protection is enabled in Microsoft Dender for Endpoint.</p>
+</li>
+<li>
+<p>Run endpoint detection and response in block mode so that Microsoft Defender for Endpoint can block malicious artifacts, even when your non-Microsoft antivirus does not detect the threat or when Microsoft Defender Antivirus is running in passive mode.</p>
+</li>
+<li>
+<p>Configure investigation and remediation in full automated mode to let Microsoft Defender for Endpoint take immediate action on alerts to resolve breaches, significantly reducing alert volume.</p>
+</li>
+<li>
+<p>Turn on Potentially unwanted applications (PUA) protection in block mode in Microsoft Defender Antivirus. PUA are a category of software that can cause your machine to run slowly, display unexpected ads, or install other software that might be unexpected or unapproved.</p>
+</li>
+<li>
+<p>Turn on cloud-delivered protection in Microsoft Defender Antivirus or the equivalent for your antivirus product to cover rapidly evolving attacker tools and techniques.</p>
+</li>
+<li>
+<p>Turn on Microsoft Defender Antivirus real-time protection.</p>
+</li>
+</ul>
+<h2 id="microsoft-defender-xdr-detections">Microsoft Defender XDR detections</h2>
+<p>Microsoft Defender XDR customers can refer to the list of applicable detections below. Microsoft Defender XDR coordinates detection, prevention, investigation, and response across endpoints, identities, email, apps to provide integrated protection against attacks like the threat discussed in this blog.</p>
+<p>Customers with provisioned access can also use Microsoft Security Copilot in Microsoft Defender to investigate and respond to incidents, hunt for threats, and protect their organization with relevant threat intelligence.</p>
+<h3 id="microsoft-defender-antivirus">Microsoft Defender Antivirus</h3>
+<p>Microsoft Defender Antivirus detects this threat as the following malware:</p>
+<ul>
+<li>TrojanSpy:Win64/Stilachi.A</li>
+</ul>
+<h3 id="microsoft-defender-for-endpoint">Microsoft Defender for Endpoint</h3>
+<p>The following alerts might indicate threat activity related to this threat. Note, however, that these alerts can be also triggered by unrelated threat activity.</p>
+<ul>
+<li>
+<p>A process was injected with potentially malicious code</p>
+</li>
+<li>
+<p>Process hollowing detected</p>
+</li>
+<li>
+<p>Suspicious service launched</p>
+</li>
+<li>
+<p>Possible theft of passwords and other sensitive web browser information</p>
+</li>
+</ul>
+<h2 id="microsoft-security-copilot">Microsoft Security Copilot</h2>
+<p>Security Copilot customers can use the standalone experience to create their own prompts or run the following pre-built promptbooks to automate incident response or investigation tasks related to this threat:</p>
+<ul>
+<li>
+<p>Incident investigation</p>
+</li>
+<li>
+<p>Microsoft User analysis</p>
+</li>
+<li>
+<p>Threat actor profile</p>
+</li>
+<li>
+<p>Threat Intelligence 360 report based on MDTI article</p>
+</li>
+<li>
+<p>Vulnerability impact assessment</p>
+</li>
+</ul>
+<p>Note that some promptbooks require access to plugins for Microsoft products such as Microsoft Defender XDR or Microsoft Sentinel.</p>
+<h2 id="hunting-queries">Hunting queries</h2>
+<h3 id="microsoft-defender-xdr">Microsoft Defender XDR</h3>
+<p>Microsoft Defender XDR customers can run the following query to find related activity in their networks:</p>
+<p><strong>Look for suspicious outbound network connections</strong></p>
+<p>Monitor network traffic for malicious activity caused by remote access trojans by focusing on identifying unusual outbound connections, irregular port activity, and suspicious data exfiltration patterns that may indicate RAT presence.</p>
+<p>Outbound ports associated with common data transfer protocols such as HTTP/HTTPS (port 80/443), SMB (port 445), and DNS (port 53) or less common ports like 16000 used for specific applications and services for network communications might indicate such activity.</p>
+<pre tabindex="0"><code>let domains = dynamic([&#39;domain1&#39;, &#39;domain2&#39;, &#39;domain3&#39;]);
+DeviceNetworkEvents
+| where RemotePort in (53, 443, 16000)
+| where Protocol == &#34;Tcp&#34;
+| where RemoteUrl has_any (domains)
+| project Timestamp, DeviceName, RemoteIP, RemotePort, InitiatingProcessCommandLine, ActionType, DeviceId, LocalIP, RemoteUrl, InitiatingProcessFileName
+</code></pre><p><strong>Look for signs of persistence</strong></p>
+<p>The malware can be run both as a Windows Service or a standalone component. To identify persistence and suspicious services, monitor for the following event IDs:</p>
+<ul>
+<li>
+<p><strong>Event ID 7045</strong> – a new service was installed on the system. Monitor for suspicious services.</p>
+</li>
+<li>
+<p><strong>Event ID 7040</strong> – start type of a service is changed (boot, on-request). Boot may be a vector for the RAT to persist during a system reboot. On request indicates that the process must request the SCM to start the service.</p>
+</li>
+<li>
+<p>Correlated with <strong>Event ID 4697</strong> – a service was installed on the system (Security log)</p>
+</li>
+</ul>
+<pre tabindex="0"><code>DeviceEvents
+|where ActionType == “ServiceInstalled”
+| project Timestamp, DeviceId,ActionType, FileName, FolderPath, InitiatingProcessCommandLine
+</code></pre><p><strong>Look for anti-forensic behavior</strong></p>
+<p>To identify potential event log clearing, monitor for the following event IDs:</p>
+<ul>
+<li>
+<p><strong>Event ID 1102</strong> (Security log)</p>
+</li>
+<li>
+<p><strong>Event ID 104</strong> (System log)</p>
+</li>
+</ul>
+<h3 id="microsoft-sentinel">Microsoft Sentinel</h3>
+<p>Microsoft Sentinel customers can use the TI Mapping analytics (a series of analytics all prefixed with ‘TI map’) to automatically match the malicious domain/IP/Hash indicators mentioned in this blog post with data in their workspace. If the TI Map analytics are not currently deployed, customers can install the Threat Intelligence solution from the Microsoft Sentinel Content Hub to have the analytics rule deployed in their Sentinel workspace.</p>
+<p>Additionally, Sentinel users can use the following query to detect when the security event log has been cleared, a potential indicator of an attempt to erase system evidence.</p>
+<pre tabindex="0"><code>SecurityEvent
+  | where EventID == 1102 and EventSourceName == &#34;Microsoft-Windows-Eventlog&#34;
+  | summarize StartTimeUtc = min(TimeGenerated), EndTimeUtc = max(TimeGenerated), EventCount = count() by Computer, Account, EventID, Activity
+  | extend HostName = tostring(split(Computer, &#34;.&#34;)[0]), DomainIndex = toint(indexof(Computer, &#39;.&#39;))
+  | extend HostNameDomain = iff(DomainIndex != -1, substring(Computer, DomainIndex + 1), Computer)
+  | extend AccountName = tostring(split(Account, @&#39;&#39;)[1]), AccountNTDomain = tostring(split(Account, @&#39;&#39;)[0])
+</code></pre><p>Sentinel users can also use the following query to detect service installations or modifications in service settings, which may indicate potential persistence mechanisms used by attackers.</p>
+<pre tabindex="0"><code>Event 
+  // 7045: A service was installed in the system
+ //  7040: A service setting has been changed
+  | where Source == &#34;Service Control Manager&#34; 
+  | where EventID in ( &#39;7045&#39;, &#39;7040&#39;)
+  | parse EventData with * &#39;ServiceName&#34;&gt;&#39; ServiceName &#34;&lt;&#34; * &#39;ImagePath&#34;&gt;&#39; ImagePath &#34;&lt;&#34; *
+  | parse EventData with * &#39;AccountName&#34;&gt;&#39; AccountName &#34;&lt;&#34; *
+  | summarize StartTime = min(TimeGenerated), EndTime = max(TimeGenerated) by EventID, Computer, ServiceName, ImagePath, AccountName
+</code></pre><h2 id="indicators-of-compromise">Indicators of compromise</h2>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Indicator</strong></th>
+          <th><strong>Type</strong></th>
+          <th><strong>Description</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>394743dd67eb018b02e069e915f64417bc1cd8b33e139b92240a8cf45ce10fcb</td>
+          <td>SHA-256</td>
+          <td>WWStartupCtrl64.dll</td>
+      </tr>
+      <tr>
+          <td>194.195.89[.]47  </td>
+          <td>IP address</td>
+          <td>C2</td>
+      </tr>
+      <tr>
+          <td>app.95560[.]cc  </td>
+          <td>Domain name</td>
+          <td>C2</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="learn-more">Learn more</h2>
+<p>For the latest security research from the Microsoft Threat Intelligence community, check out the Microsoft Threat Intelligence Blog: https://aka.ms/threatintelblog.</p>
+<p>To get notified about new publications and to join discussions on social media, follow us on LinkedIn at <a href="https://www.linkedin.com/showcase/microsoft-threat-intelligence">https://www.linkedin.com/showcase/microsoft-threat-intelligence</a>, and on X (formerly Twitter) at https://x.com/MsftSecIntel.</p>
+<p>To hear stories and insights from the Microsoft Threat Intelligence community about the ever-evolving threat landscape, listen to the Microsoft Threat Intelligence podcast: <a href="https://thecyberwire.com/podcasts/microsoft-threat-intelligence">https://thecyberwire.com/podcasts/microsoft-threat-intelligence</a>.</p>
+<p>Microsoft is committed to delivering comprehensive customer experience through various Microsoft Offerings. Our approach goes beyond traditional support by focusing on detection, prevention, and in-depth mitigation to help customers quickly respond to security incidents and build resiliency. <strong>Want to know how to Build a More Secure Tomorrow</strong>? Check our Unified and Security eBook and visit <a href="https://aka.ms/Unified">https://aka.ms/Unified</a></p>
+<p><em><strong>Dmitriy Pletnev</strong> and <strong>Daria Pop</strong><br>
+Microsoft Incident Response</em></p>
+<p>The post StilachiRAT analysis: From system reconnaissance to cryptocurrency theft appeared first on Microsoft Security Blog.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

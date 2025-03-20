@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Blog: Kubernetes 1.22 - Breaking change!</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Blog: Kubernetes 1.22 - Breaking change!</h1>
+			<b><time>03.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/jenkins">jenkins</a>
+        	       
+
+			<div>
+				<p>To allow Jenkins X to support Kubernetes 1.22, we had to update our version of Tekton. This updated version of Tekton contains breaking changes that has consequences if you made your own custom Jenkins X pipelines.</p>
+<p>To make sure that your custom pipelines continue to work after this upgrade, you must edit the resource settings in your pipelines. Otherwise your pipelines will most likely not be able to start at all, or if they do, consume a lot of resources.</p>
+<h4 id="changes-in-tekton-version-28">Changes in Tekton version 28</h4>
+<p>Tekton made changes in how to calculate the resources needed to run a pipeline, in order to support the concept of LimitRange in Kubernetes (introduced in Kubernetes version 1.10). Previously, Tekton simply used the maximum requested cpu and memory of any single step, and set that as limits for the all steps in the pipeline.</p>
+<p>For more details, please read the Tekton documentation on LimitRange.</p>
+<h4 id="how-to-prepare-for-upgrade">How to prepare for upgrade</h4>
+<p>In the Tekton pipeline files, the StepTemplate needs to be changed to not specify resource <code>requests</code>, but only setting an empty resource <code>limits</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">stepTemplate</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">image</span>: <span style="color:#ae81ff">uses:jenkins-x/jx3-pipeline-catalog/tasks/go/release.yaml@a5ab19ebc5a074e0402c5016b11bc11b32cc5c83</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># override limits for all containers here</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">limits</span>: {}
+</span></span></code></pre></div><p>The resource <code>requests</code> should be set on only one individual step:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">image</span>: <span style="color:#ae81ff">uses:Mentor-Medier/jx3-pipeline-catalog/tasks/git-clone/git-clone-pr.yaml@versionStream</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">resources</span>: {}
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">jx-variables</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">requests</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">cpu</span>: <span style="color:#ae81ff">400m</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">memory</span>: <span style="color:#ae81ff">512Mi</span>
+</span></span></code></pre></div><p>To see examples of what changes you need to apply to your custom pipelines you may investigate this PR on The Jenkins X pipeline catalog. The PR will be merged and released simultaneous with the upgrade of Tekton.</p>
+<p>In the current version of Tekton used by Jenkins X, the resource <code>requests</code> are set on the stepTemplate. Running the old pipelines in the new version will lead to resource <code>requests</code> being multiplied by the number of steps.</p>
+<p>To prepare for upgrade, you should create a PR applying the changes described above. We done some tests on applying the changes to the current version of Jenkins X/Tekton, and it seemed to work. But - that does not mean it will work on your machines or even pipelines!</p>
+<p>So, please prepare for upgrade now! We want people to have a safe upgrade experience. If you have questions, you can find us on Slack.</p>
+<p>To allow Jenkins X to support Kubernetes 1.22, we had to update our version of Tekton. This updated version of Tekton contains breaking changes that has consequences if you made your own custom Jenkins X pipelines.</p>
+<p>To make sure that your custom pipelines continue to work after this upgrade, you must edit the resource settings in your pipelines. Otherwise your pipelines will most likely not be able to start at all, or if they do, consume a lot of resources.</p>
+<h4 id="changes-in-tekton-version-28-1">Changes in Tekton version 28</h4>
+<p>Tekton made changes in how to calculate the resources needed to run a pipeline, in order to support the concept of LimitRange in Kubernetes (introduced in Kubernetes version 1.10). Previously, Tekton simply used the maximum requested cpu and memory of any single step, and set that as limits for the all steps in the pipeline.</p>
+<p>For more details, please read the Tekton documentation on LimitRange.</p>
+<h4 id="how-to-prepare-for-upgrade-1">How to prepare for upgrade</h4>
+<p>In the Tekton pipeline files, the StepTemplate needs to be changed to not specify resource <code>requests</code>, but only setting an empty resource <code>limits</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">stepTemplate</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">image</span>: <span style="color:#ae81ff">uses:jenkins-x/jx3-pipeline-catalog/tasks/go/release.yaml@a5ab19ebc5a074e0402c5016b11bc11b32cc5c83</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># override limits for all containers here</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">limits</span>: {}
+</span></span></code></pre></div><p>The resource <code>requests</code> should be set on only one individual step:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">image</span>: <span style="color:#ae81ff">uses:Mentor-Medier/jx3-pipeline-catalog/tasks/git-clone/git-clone-pr.yaml@versionStream</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">resources</span>: {}
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">jx-variables</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">requests</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">cpu</span>: <span style="color:#ae81ff">400m</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">memory</span>: <span style="color:#ae81ff">512Mi</span>
+</span></span></code></pre></div><p>To see examples of what changes you need to apply to your custom pipelines you may investigate this PR on The Jenkins X pipeline catalog. The PR will be merged and released simultaneous with the upgrade of Tekton.</p>
+<p>In the current version of Tekton used by Jenkins X, the resource <code>requests</code> are set on the stepTemplate. Running the old pipelines in the new version will lead to resource <code>requests</code> being multiplied by the number of steps.</p>
+<p>To prepare for upgrade, you should create a PR applying the changes described above. We done some tests on applying the changes to the current version of Jenkins X/Tekton, and it seemed to work. But - that does not mean it will work on your machines or even pipelines!</p>
+<p>So, please prepare for upgrade now! We want people to have a safe upgrade experience. If you have questions, you can find us on Slack.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

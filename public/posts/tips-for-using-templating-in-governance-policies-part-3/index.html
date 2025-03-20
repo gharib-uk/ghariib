@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Tips for using templating in governance policies: Part 3</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Tips for using templating in governance policies: Part 3</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Red Hat Advanced Cluster Management for Kubernetes (RHACM) governance provides an extensible framework for enterprises to introduce their own security and configuration policies that can be applied to managed Red Hat OpenShift or Kubernetes clusters. For more information on RHACM policies, I recommend that you read the Applying Policy-Based Governance at Scale Using Templates and Comply to standards using policy based governance blogs.</p>
+<p>In this 3-part series, I will showcase a number of techniques you can use for templates in your RHACM policies. In part one I reviewed practices you can use to make your templates more readable and easier to maintain. Part two of this series took a look at more advanced template functionality and extended use cases for using Policies to manage clusters.</p>
+<p>In this final installment, I will cover writing and debugging policies on a local machine and showcase some advanced templating that is available in recent RHACM releases.</p>
+<h2 id="policytools-cli-for-template-development">Policytools CLI for template development</h2>
+<p>The 2.12 release of RHACM introduced a policytools command-line interface (CLI) that you can use to interact with policies on your local machine to validate and debug template code issues. This first release has the ability to resolve templates using the <code>template-resolver</code> sub-command using an <code>oc</code> login session provided through a kubeconfig file.</p>
+<p>The <code>template-resolver</code> subcommand accepts a file that contains a <code>Policy</code>, <code>ConfigurationPolicy</code>, or <code>object-template-raw</code> definition, after processing the template against a designated cluster the command outputs the full policy with all templates resolved.</p>
+<p>Note: The PolicyGenerator in RHACM 2.11 introduced new ways to manage <code>object-templates-raw</code> definition.</p>
+<p>When creating policies with <code>object-templates-raw</code> definition you can manage your code as a full ConfigurationFile or beginning with RHACM 2.11 you can store just the <code>object-templates-raw</code> definition in your source file and the <code>PolicyGenerator</code> will create the <code>ConfigurationPolicy</code> for you. There are options in the generator that let you have control how the <code>ConfigurationPolicy</code> is created, but if you need full control, you can continue to manage the definition in your source code.</p>
+<p>Using an example template that has a number of lookups, ranges, and if statements, the <code>policytools</code> can help us develop complex policies like this and validate the output before committing to a source repository or applying it to the RHACM hub.</p>
+<p>Note:</p>
+<p>This policy attempts to find all <code>ClusterRoles</code> that are not used in any role bindings. This will never be compliant in a cluster, but does make use of a number of templating techniques.</p>
+<p>Create a list of all ClusterRoles and bindings as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>object-templates-raw: |
+</span></span><span style="display:flex;"><span>  {{/* ##  create list of all ClusterRoles and bindings ## */}} 
+</span></span><span style="display:flex;"><span>  {{- $clusterRoles := (lookup &#34;rbac.authorization.k8s.io/v1&#34; &#34;ClusterRole&#34; &#34;&#34; &#34;&#34;).items }}
+</span></span><span style="display:flex;"><span>  {{- $bindings := concat (lookup &#34;rbac.authorization.k8s.io/v1&#34; &#34;ClusterRoleBinding&#34; &#34;&#34; &#34;&#34;).items 
+</span></span><span style="display:flex;"><span>                          (lookup &#34;rbac.authorization.k8s.io/v1&#34; &#34;RoleBinding&#34; &#34;&#34; &#34;&#34;).items }}
+</span></span><span style="display:flex;"><span>  {{- range $cr := $clusterRoles }}
+</span></span><span style="display:flex;"><span>    {{/* ##  try to exit early from looping if role is found in binding ## */}}
+</span></span><span style="display:flex;"><span>    {{- $bindingFound := false }}
+</span></span><span style="display:flex;"><span>    {{- range $bnd := $bindings }}
+</span></span><span style="display:flex;"><span>      {{- if and (eq $bnd.roleRef.name $cr.metadata.name) (eq $bnd.roleRef.kind $cr.kind) }}
+</span></span><span style="display:flex;"><span>        {{- $bindingFound = true }}
+</span></span><span style="display:flex;"><span>        {{- break }}
+</span></span><span style="display:flex;"><span>      {{- end }}
+</span></span><span style="display:flex;"><span>    {{- end }}
+</span></span><span style="display:flex;"><span>    {{/* ##  skip CR if binding found ## */}}
+</span></span><span style="display:flex;"><span>    {{- if $bindingFound }}
+</span></span><span style="display:flex;"><span>      {{- continue }}
+</span></span><span style="display:flex;"><span>    {{- end }}
+</span></span><span style="display:flex;"><span>  - complianceType: mustnothave
+</span></span><span style="display:flex;"><span>    objectDefinition:
+</span></span><span style="display:flex;"><span>      kind: ClusterRole
+</span></span><span style="display:flex;"><span>      apiVersion: rbac.authorization.k8s.io/v1
+</span></span><span style="display:flex;"><span>      metadata:
+</span></span><span style="display:flex;"><span>        name: {{ $cr.metadata.name }}
+</span></span><span style="display:flex;"><span>  {{- end }}
+</span></span></code></pre></div><p>When we run the <code>policytools template-resolver</code> against this policy, we will see all of the <code>ClusterRoles</code> that are not included in any bindings in our cluster. If there were errors in the template or formatting, those would be included in the output:</p>
+<pre tabindex="0"><code class="language-output" data-lang="output">$ policytools template-resolver policies/cluster-maintenance/alert-clusterrole-unused.yml
+object-templates:
+  - complianceType: mustnothave
+    objectDefinition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      metadata:
+        name: access-to-brokers-submariner-crd
+  - complianceType: mustnothave
+    objectDefinition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      metadata:
+        name: aggregate-appsub-admin
+... output truncated
+</code></pre><h2 id="combining-hub-and-managed-cluster-templates">Combining hub and managed cluster templates</h2>
+<p>Occasionally, you may need to use data from the hub as part of a template that is executed on the managed cluster. We can embed hub templates within a managed cluster template.</p>
+<p>Let’s look at a simple example to see how the templating is formatted. This assigns a value from the hub to a variable that will be evaluated on the managed cluster and used to create a <code>ConfigMap</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>object-templates-raw: |
+</span></span><span style="display:flex;"><span>  {{- $clusterName := &#34;{{hub .ManagedClusterName  hub}}&#34; }}
+</span></span><span style="display:flex;"><span>  - complianceType: musthave
+</span></span><span style="display:flex;"><span>    objectDefinition:
+</span></span><span style="display:flex;"><span>      apiVersion: v1
+</span></span><span style="display:flex;"><span>      kind: ConfigMap
+</span></span><span style="display:flex;"><span>      metadata:
+</span></span><span style="display:flex;"><span>        name: example
+</span></span><span style="display:flex;"><span>        namespace: default
+</span></span><span style="display:flex;"><span>     data:
+</span></span><span style="display:flex;"><span>       setkey: &#39;{{ $clusterName }}&#39;
+</span></span></code></pre></div><h2 id="using-dates-in-policies">Using dates in policies</h2>
+<p>There are many use cases where comparing the date of an object is beneficial, such as automatically rotating a secret after a specific age or deleting namespaces that are considered abandoned after a period of time.</p>
+<p>RHACM 2.9 added the <code>date</code>, <code>toDate</code>, <code>mustToDate</code>, and <code>now</code> functions. These functions return an object of type Time from the go time package. The <code>Time</code> type makes available additional functions such as <code>addDate</code>, and outputs such as <code>Seconds</code>, <code>Unix</code>, and <code>Compare</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>object-templates-raw: |
+</span></span><span style="display:flex;"><span>  {{- $nt := now }}
+</span></span><span style="display:flex;"><span>  {{- $maxAgeDays := 5 }}
+</span></span><span style="display:flex;"><span>  {{- $maxAgeSeconds := (($nt.AddDate 0 0 $maxAgeDays).Sub $nt).Seconds }}
+</span></span><span style="display:flex;"><span>  {{- range $secret := (lookup &#34;v1&#34; &#34;Secret&#34; &#34;&#34; &#34;&#34; &#34;!kubernetes.io/legacy-token-last-used&#34;).items }}
+</span></span><span style="display:flex;"><span>    {{- $secretCreated := (toDate &#34;2006-1-2T15:04:05Z&#34; $secret.metadata.creationTimestamp) }}
+</span></span><span style="display:flex;"><span>    {{- $secretAgeSeconds := ($nt.Sub $secretCreated).Seconds }}
+</span></span><span style="display:flex;"><span>    {{- if and (contains &#34;dev-cluster-access&#34; $secret.metadata.name)
+</span></span><span style="display:flex;"><span>               (gt $secretAgeSeconds $maxAgeSeconds) }}
+</span></span><span style="display:flex;"><span>  - complianceType: mustnothave
+</span></span><span style="display:flex;"><span>    objectDefinition:
+</span></span><span style="display:flex;"><span>      apiVersion: v1
+</span></span><span style="display:flex;"><span>      kind: Secret
+</span></span><span style="display:flex;"><span>      metadata: {{ $secret.metadata | toRawJson | toLiteral }}
+</span></span><span style="display:flex;"><span>    {{- end }}
+</span></span><span style="display:flex;"><span>  {{- end }}
+</span></span></code></pre></div><p>Details of the commands used in the template:</p>
+<ul>
+<li>
+<p><code>{{- $nt := now }}</code>: Creates a <code>Time</code> object of the current date and time.</p>
+</li>
+<li>
+<p><code>(($nt.AddDate 0 0 $maxAgeDays).Sub $nt).Seconds</code> : Adds 0 years, 0 months, and the <code>maxAgeDays</code> to the current date/time using the AddDate function, then subtracts the current date/time leaving a time duration representing <code>maxAgeDays</code>, finally returns the seconds of the duration.</p>
+</li>
+<li>
+<p><code>(toDate &quot;2006-1-2T15:04:05Z&quot; $secret.metadata.creationTimestamp)</code> : Converts the <code>creationTimeStamp</code> value of the secret to a <code>Time</code> object.  </p>
+</li>
+<li>
+<p><strong>Note:</strong> </p>
+<p>The first parameter to <code>toDate</code> is a format string indicating the format of the date/time to be parsed. Go time parsing is a bit different; 1=month, 2=day, 3=hour, and so on. “<code>2006-1-2T15:04:05Z”</code> tells the parser which position of the string to be parsed contains each segment. More details can be found in this blog.</p>
+</li>
+<li>
+<p><code>(gt $secretAgeSeconds $maxAgeSeconds)</code> : Checks if the secret age in seconds is greater than the allowed max age.  <br>
+This could have made use of the <code>Compare</code> function instead like <code>($secretCreated.Compare ($nt.AddDate 0 0 $maxAgeDays))</code>.</p>
+</li>
+</ul>
+<h2 id="outputting-whole-objects">Outputting whole objects</h2>
+<p>The previous example made use of <code>metadata: {{ $secret.metadata | toRawJson | toLiteral }}</code> to define the metadata section of the secret. Piping an object to <code>toRawJson | toLiteral</code> allows us to take advantage of how policy template resolution is processed. </p>
+<p>All policies are converted to JSON. The templates are resolved. Then they are converted back to YAML. Having our template output a raw JSON string allows us to include an entire element without having to write out each child element in the YAML. In the previous example, it saved us from having to write out the name and namespace, but there are other uses where it can be much more beneficial.</p>
+<p>In the next example, we will validate that the <code>ClusterLogForwarder</code> is healthy. Looping through each condition, the status is set to <code>True</code>, and the whole condition is added to the policy output. This allows us to ensure all conditions have the correct value for the policy to be compliant without knowing which conditions are present in advance.</p>
+<p>View the complete policy to see the inclusion of all the status sections of the <code>ClusterLogForwarder</code>. Because of how RHACM handles lists of objects, outputting the whole element gives more accurate results.</p>
+<p>The value of status is set to <code>True</code> using the <code>set</code> function in <code>{{- $_ := set $c &quot;status&quot; &quot;True&quot; }}</code> from the Sprig library. Set takes a dictionary, the name of a key and a value, and adds the key if it does not exist as well as sets the value. A new instance of the dictionary is returned. Since the dictionary as represented by <code>$c</code> is updated, we can trap the return by assigning it to a blank identifier <code>$_</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>{{- $clf := (lookup &#34;observability.openshift.io/v1&#34; &#34;ClusterLogForwarder&#34; &#34;openshift-logging&#34; &#34;collector&#34;) }}
+</span></span><span style="display:flex;"><span>    - complianceType: musthave
+</span></span><span style="display:flex;"><span>      objectDefinition:
+</span></span><span style="display:flex;"><span>        apiVersion: observability.openshift.io/v1
+</span></span><span style="display:flex;"><span>        kind: ClusterLogForwarder
+</span></span><span style="display:flex;"><span>        metadata:
+</span></span><span style="display:flex;"><span>          name: collector
+</span></span><span style="display:flex;"><span>          namespace: openshift-logging
+</span></span><span style="display:flex;"><span>        status:
+</span></span><span style="display:flex;"><span>          conditions:
+</span></span><span style="display:flex;"><span>       {{- range $c := $clf.status.conditions }}
+</span></span><span style="display:flex;"><span>         {{- $_ := set $c &#34;status&#34; &#34;True&#34; }}
+</span></span><span style="display:flex;"><span>          - {{ $c | toRawJson | toLiteral }}
+</span></span><span style="display:flex;"><span>       {{- end }}
+</span></span><span style="display:flex;"><span>          inputConditions:
+</span></span><span style="display:flex;"><span>       {{- range $c := $clf.status.inputConditions }}
+</span></span><span style="display:flex;"><span>         {{- $_ := set $c &#34;status&#34; &#34;True&#34; }}
+</span></span><span style="display:flex;"><span>          - {{ $c | toRawJson | toLiteral }}
+</span></span><span style="display:flex;"><span>       {{- end }}
+</span></span></code></pre></div><p>CVE-2024-7387 remediation recommends removing rules from the admin and edit <code>ClusterRoles</code>. This example shows how using <code>toRawJson | toLiteral</code> can simplify adding a full object block versus going through all of the elements that define a rule:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>  {{- $clusterRoleList := list 
+</span></span><span style="display:flex;"><span>                        (lookup &#34;rbac.authorization.k8s.io/v1&#34; &#34;ClusterRole&#34; &#34;&#34; &#34;admin&#34;)
+</span></span><span style="display:flex;"><span>                        (lookup &#34;rbac.authorization.k8s.io/v1&#34; &#34;ClusterRole&#34; &#34;&#34; &#34;edit&#34;)
+</span></span><span style="display:flex;"><span>  }}
+</span></span><span style="display:flex;"><span>  {{- range $cr := $clusterRoleList }}
+</span></span><span style="display:flex;"><span>  - complianceType: mustonlyhave
+</span></span><span style="display:flex;"><span>    objectDefinition:
+</span></span><span style="display:flex;"><span>      apiVersion: rbac.authorization.k8s.io/v1
+</span></span><span style="display:flex;"><span>      kind: ClusterRole
+</span></span><span style="display:flex;"><span>      metadata:
+</span></span><span style="display:flex;"><span>        name: {{ $cr.metadata.name }}
+</span></span><span style="display:flex;"><span>      rules:
+</span></span><span style="display:flex;"><span>      {{- range $rule := $cr.rules }}
+</span></span><span style="display:flex;"><span>        {{- if or (not (has &#34;build.openshift.io&#34; $rule.apiGroups)) (not (has &#34;buildconfigs&#34; $rule.resources)) }}
+</span></span><span style="display:flex;"><span>        - {{ $rule | toRawJson | toLiteral }}
+</span></span><span style="display:flex;"><span>        {{- else }}
+</span></span><span style="display:flex;"><span>        - apiGroups: 
+</span></span><span style="display:flex;"><span>          {{- range $rule.apiGroups }}
+</span></span><span style="display:flex;"><span>            - {{ . | quote }}
+</span></span><span style="display:flex;"><span>          {{- end }}
+</span></span><span style="display:flex;"><span>          resources:
+</span></span><span style="display:flex;"><span>          {{- range $r := $rule.resources }}
+</span></span><span style="display:flex;"><span>            {{- if not (eq $r &#34;builds&#34; &#34;builds/source&#34; &#34;builds/docker&#34; &#34;builds/custom&#34;) }}
+</span></span><span style="display:flex;"><span>            - {{ $r }}
+</span></span><span style="display:flex;"><span>            {{- end }}
+</span></span><span style="display:flex;"><span>          {{- end }}
+</span></span><span style="display:flex;"><span>            - builds/custom
+</span></span><span style="display:flex;"><span>          verbs: 
+</span></span><span style="display:flex;"><span>          {{- range $rule.verbs }}
+</span></span><span style="display:flex;"><span>            - {{ . }}
+</span></span><span style="display:flex;"><span>          {{- end }}
+</span></span><span style="display:flex;"><span>        {{- end }}
+</span></span><span style="display:flex;"><span>      {{- end }}
+</span></span><span style="display:flex;"><span>  {{- end }}
+</span></span></code></pre></div><h2 id="debugging-techniques">Debugging techniques</h2>
+<p>When writing policies, you may come across situations where you are not sure why the output is not what you expect. Or, there is an error that is not clear as to the cause, such as the &ldquo;failed to convert the resolved template to JSON&rdquo;.</p>
+<p>Using the <code>policytools</code> CLI locally, we can make use of a few simple methods to identify and correct issues:</p>
+<ul>
+<li>Using <code>{{/* … */}}</code>, we can comment out sections, including multiple lines, of the template. This can be used to isolate problems and attempt to resolve them.</li>
+<li>Adding <code>{{ break }}</code> at the bottom of a range block when we want to only output the first item returned to make reviewing the output easier.</li>
+<li><code>ConfigMaps</code> can be used to validate return values, and output YAML after the template process that can help visualize the structure without being bound by parsing rules that lead to the JSON errors above. This can be used to verify output values such as:
+<ul>
+<li>Simple template commands.</li>
+<li>Complete output from a lookup to validate the structure of the returned object.</li>
+<li>YAML created with complex ranges, if statements and other template functions.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>object-templates-raw: |
+</span></span><span style="display:flex;"><span>    - complianceType: musthave
+</span></span><span style="display:flex;"><span>      objectDefinition:
+</span></span><span style="display:flex;"><span>        apiVersion: v1
+</span></span><span style="display:flex;"><span>        kind: ConfigMap
+</span></span><span style="display:flex;"><span>        metadata:
+</span></span><span style="display:flex;"><span>          name: test
+</span></span><span style="display:flex;"><span>          namespace: default
+</span></span><span style="display:flex;"><span>        data:
+</span></span><span style="display:flex;"><span>          template-value: |
+</span></span><span style="display:flex;"><span>            {{ fromClusterClaim &#34;env&#34;  }}
+</span></span><span style="display:flex;"><span>          object-raw: |
+</span></span><span style="display:flex;"><span>            {{ (lookup  &#34;storage.k8s.io/v1&#34; &#34;StorageClass&#34; &#34;&#34; &#34;&#34;) | toRawJson | toLiteral  }}
+</span></span><span style="display:flex;"><span>          object-as-string: |
+</span></span><span style="display:flex;"><span>            apiVersion: storage.k8s.io/v1
+</span></span><span style="display:flex;"><span>            kind: StorageClass
+</span></span><span style="display:flex;"><span>            metadata:
+</span></span><span style="display:flex;"><span>              annotations:
+</span></span><span style="display:flex;"><span>                storageclass.kubernetes.io/is-default-class: &#34;false&#34;
+</span></span><span style="display:flex;"><span>              name: managed-zrs-file-csi-premium
+</span></span><span style="display:flex;"><span>            provisioner: file.csi.azure.com
+</span></span><span style="display:flex;"><span>            reclaimPolicy: Delete
+</span></span><span style="display:flex;"><span>            volumeBindingMode: WaitForFirstConsumer
+</span></span><span style="display:flex;"><span>            allowVolumeExpansion: true
+</span></span><span style="display:flex;"><span>            parameters:
+</span></span><span style="display:flex;"><span>              secretName: azure-storage-secret
+</span></span><span style="display:flex;"><span>              secretNamespace: kube-system
+</span></span><span style="display:flex;"><span>              skuName: Premium_ZRS
+</span></span><span style="display:flex;"><span>              storageAccount: &#39;example{{ fromClusterClaim &#34;env&#34; | substr 0 1  }}{{- if eq (fromClusterClaim &#34;region&#34;) &#34;eastus2&#34; -}}use2{{- else if eq (fromClusterClaim  &#34;region&#34;) &#34;centralus&#34; }}usc{{- end -}}01&#39;
+</span></span><span style="display:flex;"><span>            mountOptions:
+</span></span><span style="display:flex;"><span>              - vers=1.0
+</span></span><span style="display:flex;"><span>          object-bad-indentation: |
+</span></span><span style="display:flex;"><span>            {{- range $pod := (lookup &#34;v1&#34; &#34;Pod&#34; &#34;openshift-multus&#34; &#34;&#34;).items }}
+</span></span><span style="display:flex;"><span>              - complianceType: musthave
+</span></span><span style="display:flex;"><span>                objectDefinition:
+</span></span><span style="display:flex;"><span>                  kind: Pod
+</span></span><span style="display:flex;"><span>                  apiVersion: v1
+</span></span><span style="display:flex;"><span>                  metadata:
+</span></span><span style="display:flex;"><span>                    name: {{ $pod.metadata.name }}
+</span></span><span style="display:flex;"><span>                    namespace: openshift-multus
+</span></span><span style="display:flex;"><span>                  status:
+</span></span><span style="display:flex;"><span>                    containerStatuses:
+</span></span><span style="display:flex;"><span>                      {{- range $c := $pod.status.containerStatuses }}
+</span></span><span style="display:flex;"><span>                        {{- $_ := set $c &#34;started&#34; &#34;true&#34; }}
+</span></span><span style="display:flex;"><span>                        {{- $_ := set $c &#34;ready&#34; &#34;true&#34; }}
+</span></span><span style="display:flex;"><span>                      - {{ $c | toRawJson | toLiteral }}
+</span></span><span style="display:flex;"><span>                      {{- end }}
+</span></span><span style="display:flex;"><span>                      phase: Running
+</span></span><span style="display:flex;"><span>              {{ break }}
+</span></span><span style="display:flex;"><span>            {{- end }}
+</span></span></code></pre></div><h2 id="follow-the-series">Follow the series</h2>
+<p>If you haven&rsquo;t already, please check out part one of this series, where I outlined the usage of a number of template functions; and examples you can use to make your templates easier to read and maintain. In part two, we looked at validating cluster health with policies and how to use the <code>object-templates-raw</code> to expand templates for more complex use cases. In this final part of the series, you learned about more complex templating techniques and new capabilities like the <code>policytools</code> CLI for creating and debugging policies on a local system.</p>
+<p>The post Tips for using templating in governance policies: Part 3 appeared first on Red Hat Developer.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

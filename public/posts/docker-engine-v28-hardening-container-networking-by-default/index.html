@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Docker Engine v28: Hardening Container Networking by Default</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Docker Engine v28: Hardening Container Networking by Default</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+		           <a href="/tags/14041">14041</a>
+        	       
+		           <a href="/tags/22054">22054</a>
+        	       
+		           <a href="/tags/48815">48815</a>
+        	       
+
+			<div>
+				<p>Docker simplifies containerization by removing runtime complexity and making app development seamless. With Docker Engine v28, we’re taking another step forward in security by ensuring containers aren’t unintentionally accessible from local networks. This update isn’t about fixing a single vulnerability — it’s about security hardening so your containers stay safe. </p>
+<h2 id="what-happened">What happened?</h2>
+<p>When you run a container on the default Docker “bridge” network, Docker sets up <strong>NAT (Network Address Translation)</strong> rules using your system’s firewall (via iptables). For example, the following command forwards traffic from port 8080 on your host to port 80 in the container. </p>
+<pre tabindex="0"><code>docker run -d -p 8080:80 my-web-app
+</code></pre><p>However, if your host’s <code>filter-FORWARD</code> chain is permissive (i.e., <code>ACCEPT</code> by default) <strong>and</strong> <code>net.ipv4.ip_forward</code> is enabled, unpublished ports could also be remotely accessible under certain conditions.</p>
+<p>This only affects hosts on the <strong>same physical/link-layer network</strong> as the Docker host. In multi-tenant LAN environments or other shared local networks, someone connected on an RFC1918 subnet (such as <code>192.168.x.x</code> or <code>10.x.x.x</code>) could reach unpublished container ports if they knew (or guessed) its IP address.</p>
+<h2 id="whos-affected">Who’s affected?</h2>
+<p>This behavior only affects Linux users running Docker versions earlier than 28.0.0 with <code>iptables</code>. Docker Desktop is <strong>not</strong> affected.</p>
+<p>If you installed Docker on a single machine and used our defaults, without manually customizing your firewall settings, you’re likely unaffected by upgrading. However, you could be impacted if:</p>
+<ul>
+<li>You <strong>deliberately set your host’s <code>FORWARD</code> chain to <code>ACCEPT</code></strong> and rely on accessing containers by their IP from other machines on the LAN.</li>
+<li>You <strong>bound containers to <code>127.0.0.1</code></strong> or another loopback interface but still route external traffic to them using advanced host networking tricks.</li>
+<li>You <strong>require direct container access</strong> from subnets, VLANs, or other broadcast domains <em>without</em> explicitly publishing ports (i.e., no <code>p</code> flags).</li>
+</ul>
+<p>If any of these exceptions apply to you, you might notice that containers previously reachable by direct IP now appear blocked unless you opt out or reconfigure your networking.</p>
+<h2 id="whats-the-impact">What’s the impact?</h2>
+<p>This exposure would’ve required being <strong>on the same local network</strong> or otherwise having route-level access to the container’s RFC1918 IP range. It <strong>did not</strong> affect machines across the public internet. However, a malicious user could discover unpublished container ports, within LAN settings or corporate environments, and connect to them. </p>
+<p>For instance, they might add a custom route to the container’s subnet, using the following command:</p>
+<pre tabindex="0"><code>ip route add 172.17.0.0/16 via 192.168.0.10
+</code></pre><p>From there, if <code>192.168.0.10</code> is your Docker host with a permissive firewall, the attacker could send packets straight to <code>172.17.0.x</code> (the container’s IP).</p>
+<h2 id="what-are-my-next-steps">What are my next steps?</h2>
+<p>If you’ve been impacted, we recommend taking the following three steps:</p>
+<h4 id="1-upgrade-to-docker-engine-280">1. Upgrade to Docker Engine 28.0</h4>
+<p>Docker Engine 28.0 now drops traffic to unpublished ports by default. </p>
+<p>This “secure by default” approach prevents containers from being unexpectedly accessible on the LAN. Most users won’t notice a difference, published ports will continue to function as usual (<code>-p 8080:80</code>), and unpublished ports remain private as intended.</p>
+<h4 id="2-decide-if-you-need-the-old-behavior-opt-out">2. Decide if you need the old behavior (opt-out)</h4>
+<p>If you connect to containers over the LAN without publishing ports, you have a couple of options:</p>
+<p>**Option 1: Disable Docker’s <code>DROP</code> policy<br>
+**In <code>/etc/docker/daemon.json</code>, add the following:</p>
+<pre tabindex="0"><code>{
+  &#34;ip-forward-no-drop&#34;: true
+}
+</code></pre><p>Or you can run Docker with the <code>--ip-forward-no-drop</code> flag. This preserves a globally open <code>FORWARD</code> chain. But keep in mind that Docker still drops traffic for unpublished ports using separate rules. See Option 2 for a fully unprotected alternative.</p>
+<p><strong>Option 2: Create a “nat-unprotected” network</strong></p>
+<pre tabindex="0"><code>docker network create -d bridge \
+  -o com.docker.network.bridge.gateway_mode_ipv4=nat-unprotected \
+  my_unprotected_net
+</code></pre><h4 id="3-consider-custom-iptables-management">3. Consider custom iptables management</h4>
+<p>Advanced users with complex network setups can manually configure iptables to allow exactly the traffic they need. But this route is only recommended if you’re comfortable managing firewall rules.</p>
+<h2 id="technical-details">Technical details</h2>
+<p>In previous Docker Engine versions, Docker’s reliance on a permissive <code>FORWARD</code> chain meant that containers on the default bridge network could be reached if:</p>
+<ol>
+<li><code>net.ipv4.ip_forward</code> was enabled (often auto-enabled by Docker if it wasn’t already).</li>
+<li>The system-wide <code>FORWARD</code> chain was set to <code>ACCEPT</code>.</li>
+<li>Another machine on the same LAN (or an attached subnet) routed traffic to the container’s IP address.</li>
+</ol>
+<p>In Docker 28.0, we now explicitly drop unsolicited inbound traffic to each container’s internal IP unless that port was explicitly published (<code>-p</code> or <code>--publish</code>). This doesn’t affect local connections from the Docker host itself, but it does block remote LAN connections to unpublished ports.</p>
+<h3 id="attacks-a-real-world-example">Attacks: a real-world example</h3>
+<p>Suppose you have two hosts on the same RFC1918 subnet:</p>
+<ul>
+<li><strong>Attacker</strong> at <code>10.0.0.2</code></li>
+<li><strong>DockerHost</strong> at <code>10.0.0.3</code></li>
+</ul>
+<p>DockerHost runs a container with IP <code>172.17.0.2</code>, and Docker’s firewall policy is effectively “ACCEPT.” In this situation, an attacker could run the following command:</p>
+<pre tabindex="0"><code>ip route add 172.17.0.2/32 via 10.0.0.3
+nc 172.17.0.2 3306
+</code></pre><p>If MySQL was listening on port 3306 in the container (unpublished), Docker might still forward that traffic. The container sees a connection from <code>10.0.0.2</code>, and no authentication is enforced by Docker’s network stack alone. </p>
+<h3 id="mitigations-in-docker-engine-280">Mitigations in Docker Engine 28.0</h3>
+<p>By enforcing a drop rule for unpublished ports, Docker 28.0 now prevents the above scenario by default.</p>
+<p><strong>1. Default drop for unpublished ports</strong></p>
+<p>Ensures that local traffic to container IPs is discarded unless explicitly published.</p>
+<p><strong>2. Targeted adjustments to <code>FORWARD</code> policy</strong></p>
+<p>Originally, if Docker had to enable IP forwarding, it would set <code>DROP</code> by default. Now, Docker only applies that if necessary and extends the same logic to IPv6. You can opt-out with <code>--ip-forward-no-drop</code> or in the config file.</p>
+<p><strong>3. Unpublished ports stay private</strong></p>
+<p>The container remains accessible from the host itself, but not from other devices on the LAN (unless you intentionally choose “nat-unprotected”).</p>
+<h3 id="why-were-making-this-change-now">Why we’re making this change now</h3>
+<p>Some users have raised concerns about local-network exposure for years (see issues like #14041 and #22054). But there’s been a lot of change since then:</p>
+<ul>
+<li><strong>Docker was simpler</strong>: Use cases often revolved around single-node setups where any extra exposure was mitigated by typical dev/test workflows.</li>
+<li><strong>Ecosystem evolution</strong>: Overlay networks, multi-host orchestration, and advanced routing became mainstream. Suddenly, scenarios once relegated to specialized setups became common.</li>
+<li><strong>Security expectations</strong>: Docker now underpins critical workloads in complex environments. Everyone benefits from safer defaults, even if it means adjusting older assumptions.</li>
+</ul>
+<p>By introducing these changes in Docker Engine 28.0, we align with today’s best practices: <strong>don’t expose anything without explicit user intent</strong>. It’s a shift away from relying on users to configure their own firewalls if they want to lock things down.</p>
+<h3 id="backward-compatibility-and-the-path-forward">Backward compatibility and the path forward</h3>
+<p>These changes are <strong>not</strong> backward compatible for users who rely on direct container IP access from a local LAN. For the majority, the new defaults lock down containers more securely without breaking typical <code>docker run -p</code> scenarios.</p>
+<p>Still, we strongly advise upgrading to 28.0.1 or later so you can benefit from:</p>
+<ul>
+<li><strong>Safer defaults</strong>: Unpublished ports remain private unless you publish or explicitly opt out.</li>
+<li><strong>Clearer boundaries</strong>: Published vs. unpublished ports are now unambiguously enforced by iptables rules.</li>
+<li><strong>Easier management</strong>: Users can adopt the new defaults without becoming iptables experts.</li>
+</ul>
+<h3 id="quick-upgrade-checklist">Quick upgrade checklist</h3>
+<p>Before you upgrade, here’s a recommended checklist to run through to make sure you’re set up for success with the latest release:</p>
+<ol>
+<li>
+<p>**Examine current firewall settings</p>
+<p>**Run <code>iptables -L -n</code> and <code>ip6tables -L -n</code>. If you see <code>ACCEPT</code> in the <code>FORWARD</code> chain, and you depend on that for multi-subnet or direct container access, plan accordingly.</p>
+</li>
+<li>
+<p><strong>Test in a controlled environment</strong>Spin up Docker Engine 28.0 on a staging environment. Attempt to reach containers that you previously accessed directly. Then, verify which connections still work and which are now blocked.</p>
+</li>
+<li>
+<p>**Decide on opt-outs</p>
+<p>**If you do need the old behavior, set <code>&quot;ip-forward-no-drop&quot;: true</code> or use a “nat-unprotected” network. Otherwise, enjoy the heightened security defaults.</p>
+</li>
+<li>
+<p><strong>Monitor logs and metrics</strong>Watch for unexpected connection errors or service downtime. If something breaks, check if it’s caused by Docker’s new drop rules before rolling back any changes.</p>
+</li>
+</ol>
+<h2 id="conclusion">Conclusion</h2>
+<p>By hardening default networking rules in Docker Engine 28.0, we’re reducing accidental container exposure on local networks. Most users can continue without disruption and can just enjoy the extra peace of mind. But if you rely on older behaviors, you can opt out or create specialized networks that bypass these rules.</p>
+<p><strong>Ready to upgrade?</strong> Follow our official installation and upgrade instructions to get Docker Engine 28.0 on your system today.</p>
+<p>We appreciate the feedback from the community and encourage you to reach out if you have questions or run into surprises after upgrading. You can find us on GitHub issues, our community forums, or your usual support channels.</p>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li>Review the Docker Engine v28 release notes</li>
+<li>Read Docker’s iptables documentation</li>
+<li>Issues that shaped these changes:
+<ul>
+<li>#14041</li>
+<li>#22054</li>
+<li>#48815</li>
+</ul>
+</li>
+</ul>
+<p>​Products, Docker, Docker engine, security</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Kubernetes 1.31: Autoconfiguration For Node Cgroup Driver (beta)</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Kubernetes 1.31: Autoconfiguration For Node Cgroup Driver (beta)</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Historically, configuring the correct cgroup driver has been a pain point for users running new Kubernetes clusters. On Linux systems, there are two different cgroup drivers: <code>cgroupfs</code> and <code>systemd</code>. In the past, both the kubelet and CRI implementation (like CRI-O or containerd) needed to be configured to use the same cgroup driver, or else the kubelet would exit with an error. This was a source of headaches for many cluster admins. However, there is light at the end of the tunnel!</p>
+<h2 id="automated-cgroup-driver-detection">Automated cgroup driver detection</h2>
+<p>In v1.28.0, the SIG Node community introduced the feature gate <code>KubeletCgroupDriverFromCRI</code>, which instructs the kubelet to ask the CRI implementation which cgroup driver to use. A few minor releases of Kubernetes happened whilst we waited for support to land in the major two CRI implementations (containerd and CRI-O), but as of v1.31.0, this feature is now beta!</p>
+<p>In addition to setting the feature gate, a cluster admin needs to ensure their CRI implementation is new enough:</p>
+<ul>
+<li>containerd: Support was added in v2.0.0</li>
+<li>CRI-O: Support was added in v1.28.0</li>
+</ul>
+<p>Then, they should ensure their CRI implementation is configured to the cgroup_driver they would like to use.</p>
+<h2 id="future-work">Future work</h2>
+<p>Eventually, support for the kubelet&rsquo;s <code>cgroupDriver</code> configuration field will be dropped, and the kubelet will fail to start if the CRI implementation isn&rsquo;t new enough to have support for this feature.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

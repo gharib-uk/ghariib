@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Introducing EasyREST</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Introducing EasyREST</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Hey everyone,</p>
+<p>I’m excited to share my new open-source project, <strong>EasyREST</strong>. If you’ve ever worked with PostgREST for simple CRUD operations and thought, “I wish I could easily switch between SQLite, MySQL/MariaDB, PostgreSQL, and more,” then this project is for you!</p>
+<h2 id="what-is-easyrest">What Is EasyREST?</h2>
+<p>EasyREST is a lightweight and secure REST API server that gives you one unified interface for virtually any relational database. Instead of writing separate API layers for each database, EasyREST lets you connect to multiple databases through a single API with built-in support for authentication and context-aware queries.</p>
+<h2 id="why-i-built-it">Why I Built It</h2>
+<p>I loved the simplicity of PostgREST for small projects, but as my applications grew, I needed something more flexible. Managing different types of databases became a hassle. I built EasyREST to simplify database interactions by:</p>
+<ul>
+<li><strong>Supporting Multiple Databases:</strong> Out of the box, it works with SQLite and can be extended to MySQL/MariaDB, PostgreSQL, and more.</li>
+<li><strong>Context-Aware Queries:</strong> It automatically injects context variables (like timezone, headers, JWT claims, HTTP method, and more) into your SQL queries. This makes it easier to write dynamic, secure queries without the extra boilerplate.</li>
+<li><strong>Easy Plugin System:</strong> Using Hashicorp’s plugin framework, adding support for a new database is straightforward.</li>
+</ul>
+<h2 id="how-it-works">How It Works</h2>
+<h3 id="direct-variable-substitution">Direct Variable Substitution</h3>
+<p>Instead of using complex SQL constructs like CTEs, EasyREST performs direct substitution of context variables in your queries. For example:</p>
+<ul>
+<li><strong>MySQL:</strong> Variables with the prefix <code>@erctx_*</code> for context and <code>@request_*</code> for request data.</li>
+<li><strong>PostgreSQL:</strong> Uses <code>set_config</code> to assign context variables.</li>
+</ul>
+<p>This means you can write queries that automatically include things like the user’s timezone or JWT token claims.</p>
+<h3 id="automatic-api-schema-generation">Automatic API Schema Generation</h3>
+<p>EasyREST can automatically generate a Swagger 2.0 schema for your database. This makes it super easy to integrate with tools like Swagger UI, so you can quickly see what endpoints are available and how to use them.</p>
+<p>Here’s a simplified example of a Swagger schema for a <code>users</code> table:</p>
+<pre tabindex="0"><code>swagger: &#39;2.0&#39;
+info:
+  title: EasyRest API
+  version: v0.3.0
+host: localhost:8080
+basePath: /api/test
+schemes:
+  - http
+produces:
+  - application/json
+consumes:
+  - application/json
+securityDefinitions:
+  jwtToken:
+    flow: password
+    scopes: {}
+    tokenUrl: http://auth.example.com/token
+    type: oauth2
+definitions:
+  test:
+    properties:
+      ID:
+        type: integer
+        x-nullable: true
+      NAME:
+        type: string
+        x-nullable: true
+    type: object
+  users:
+    properties:
+      id:
+        readOnly: true
+        type: integer
+        x-nullable: true
+      name:
+        type: string
+        x-nullable: true
+      to_update:
+        type: integer
+        x-nullable: true
+    type: object
+paths:
+  /test/:
+    get:
+      description: Retrieve rows from the test
+      parameters:
+        # where params like in GET /users/
+      responses:
+        &#39;200&#39;:
+          description: Successful response
+          schema:
+            items:
+              $ref: &#39;#/definitions/test&#39;
+            type: array
+      security:
+        - jwtToken: []
+      summary: Get test
+  /users/:
+    delete:
+      description: Delete rows from users
+      parameters:
+        # where params like in GET
+      responses:
+        &#39;204&#39;:
+          description: Rows deleted
+      security:
+        - jwtToken: []
+      summary: Delete rows from users
+    get:
+      description: Retrieve rows from the users
+      parameters:
+        - collectionFormat: csv
+          description: Comma-separated list of fields
+          enum:
+            - to_update
+            - id
+            - name
+          in: query
+          name: select
+          required: false
+          type: string
+        - collectionFormat: csv
+          description: Comma-separated ordering fields
+          in: query
+          name: ordering
+          required: false
+          type: string
+        - description: Maximum number of records to return
+          in: query
+          name: limit
+          required: false
+          type: integer
+        - description: Number of records to skip
+          in: query
+          name: offset
+          required: false
+          type: integer
+        - description: Filter for field &#39;to_update&#39; with operator lt
+          in: query
+          name: where.lt.to_update
+          required: false
+          type: integer
+        - description: Filter for field &#39;to_update&#39; with operator lte
+          in: query
+          name: where.lte.to_update
+          required: false
+          type: integer
+        - description: Filter for field &#39;to_update&#39; with operator is
+          in: query
+          name: where.is.to_update
+          required: false
+          type: integer
+        - collectionFormat: csv
+          description: Filter for field &#39;to_update&#39; with operator in
+          in: query
+          name: where.in.to_update
+          required: false
+          type: integer
+        - description: Filter for field &#39;to_update&#39; with operator eq
+          in: query
+          name: where.eq.to_update
+          required: false
+          type: integer
+        - description: Filter for field &#39;to_update&#39; with operator neq
+          in: query
+          name: where.neq.to_update
+          required: false
+          type: integer
+        - description: Filter for field &#39;to_update&#39; with operator gt
+          in: query
+          name: where.gt.to_update
+          required: false
+          type: integer
+        - description: Filter for field &#39;to_update&#39; with operator gte
+          in: query
+          name: where.gte.to_update
+          required: false
+          type: integer
+        - description: Filter for field &#39;id&#39; with operator gte
+          in: query
+          name: where.gte.id
+          required: false
+          type: integer
+        - description: Filter for field &#39;id&#39; with operator eq
+          in: query
+          name: where.eq.id
+          required: false
+          type: integer
+        - description: Filter for field &#39;id&#39; with operator neq
+          in: query
+          name: where.neq.id
+          required: false
+          type: integer
+        - description: Filter for field &#39;id&#39; with operator gt
+          in: query
+          name: where.gt.id
+          required: false
+          type: integer
+        - collectionFormat: csv
+          description: Filter for field &#39;id&#39; with operator in
+          in: query
+          name: where.in.id
+          required: false
+          type: integer
+        - description: Filter for field &#39;id&#39; with operator lt
+          in: query
+          name: where.lt.id
+          required: false
+          type: integer
+        - description: Filter for field &#39;id&#39; with operator lte
+          in: query
+          name: where.lte.id
+          required: false
+          type: integer
+        - description: Filter for field &#39;id&#39; with operator is
+          in: query
+          name: where.is.id
+          required: false
+          type: integer
+        - description: Filter for field &#39;name&#39; with operator like
+          in: query
+          name: where.like.name
+          required: false
+          type: string
+        - description: Filter for field &#39;name&#39; with operator ilike
+          in: query
+          name: where.ilike.name
+          required: false
+          type: string
+        - description: Filter for field &#39;name&#39; with operator eq
+          in: query
+          name: where.eq.name
+          required: false
+          type: string
+        - description: Filter for field &#39;name&#39; with operator neq
+          in: query
+          name: where.neq.name
+          required: false
+          type: string
+        - description: Filter for field &#39;name&#39; with operator is
+          in: query
+          name: where.is.name
+          required: false
+          type: string
+        - collectionFormat: csv
+          description: Filter for field &#39;name&#39; with operator in
+          in: query
+          name: where.in.name
+          required: false
+          type: string
+      responses:
+        &#39;200&#39;:
+          description: Successful response
+          schema:
+            items:
+              $ref: &#39;#/definitions/users&#39;
+            type: array
+      security:
+        - jwtToken: []
+      summary: Get users
+    patch:
+      description: Update existing rows in users
+      parameters:
+        # where params like in GET
+        - description: Partial update of a users object
+          in: body
+          name: body
+          required: true
+          schema:
+            $ref: &#39;#/definitions/users&#39;
+      responses:
+        &#39;200&#39;:
+          description: Rows updated
+          schema:
+            properties:
+              updated:
+                type: integer
+            type: object
+      security:
+        - jwtToken: []
+      summary: Update rows in users
+    post:
+      description: Insert new rows into users
+      parameters:
+        - description: Array of users objects
+          in: body
+          name: body
+          required: true
+          schema:
+            items:
+              $ref: &#39;#/definitions/users&#39;
+            type: array
+      responses:
+        &#39;201&#39;:
+          description: Rows created
+      security:
+        - jwtToken: []
+      summary: Create rows in users
+</code></pre><h2 id="real-world-usage">Real-World Usage</h2>
+<h3 id="multi-database-connections">Multi-Database Connections</h3>
+<p>Imagine having two databases:</p>
+<ul>
+<li><strong>Test Database (<code>ER_DB_TEST</code>):</strong> A simple SQLite database with a <code>users</code> table.</li>
+<li><strong>Orders Database (<code>ER_DB_ORDERS</code>):</strong> Another SQLite database with an <code>orders</code> table.</li>
+</ul>
+<p>Set your environment variables like this:</p>
+<pre tabindex="0"><code>export ER_DB_TEST=&#34;sqlite://./test.db&#34;
+export ER_DB_ORDERS=&#34;sqlite://./orders.db&#34;
+export ER_TOKEN_SECRET=&#34;your-secret&#34;
+export ER_TOKEN_USER_SEARCH=&#34;sub&#34;
+export ER_DEFAULT_TIMEZONE=&#34;GMT&#34;
+</code></pre><p>EasyREST will automatically route your API requests to the correct database based on these settings.</p>
+<h3 id="example-api-calls">Example API Calls</h3>
+<p><strong>Creating a User:</strong></p>
+<pre tabindex="0"><code>curl -X POST &#34;http://localhost:8080/api/test/users/&#34; 
+  -H &#34;Authorization: Bearer $TOKEN&#34; 
+  -H &#34;Content-Type: application/json&#34; 
+  -d &#39;[{&#34;name&#34;: &#34;Alice&#34;, &#34;to_update&#34;: 0}]&#39;
+</code></pre><p><strong>Deleting a User:</strong></p>
+<pre tabindex="0"><code>curl -X DELETE &#34;http://localhost:8080/api/users/?where.eq.name=Alice&#34; 
+  -H &#34;Authorization: Bearer $TOKEN&#34;
+</code></pre><p><strong>Updating a User:</strong></p>
+<pre tabindex="0"><code>curl -X PATCH &#34;http://localhost:8080/api/users/?where.eq.id=1&#34; 
+  -H &#34;Authorization: Bearer $TOKEN&#34; 
+  -H &#34;Content-Type: application/json&#34; 
+  -d &#39;{&#34;name&#34;: &#34;Alice Updated&#34;}&#39;
+</code></pre><h2 id="performance-and-security">Performance and Security</h2>
+<p>EasyREST is built for production use. While adding features like token validation and context handling introduces a small overhead, the performance remains efficient. It’s secure by design—leveraging JWT for authentication and ensuring that every request carries all the necessary context for safe database operations.</p>
+<h2 id="wrapping-up">Wrapping Up</h2>
+<p>I built EasyREST to create a tool that scales with your projects—a flexible, secure API that simplifies working with multiple databases. Whether you’re building a simple project with SQLite or a more complex system with MySQL and PostgreSQL, EasyREST has got you covered.</p>
+<p>I’d love for you to check it out, contribute, and share your feedback. Let’s make building database-driven applications simpler together!</p>
+<p>Happy coding!</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li>GitHub Repository</li>
+<li>Installation Guide</li>
+<li>MySQL Plugin</li>
+<li>PostgreSQL Plugin</li>
+</ul>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

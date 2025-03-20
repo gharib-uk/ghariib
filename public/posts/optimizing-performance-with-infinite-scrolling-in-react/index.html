@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Optimizing Performance with Infinite Scrolling in React</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Optimizing Performance with Infinite Scrolling in React</h1>
+			<b><time>06.02.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>In our daily lives, we interact with many applications like Instagram, YouTube, LinkedIn, Facebook etc. If we observe carefully, the content loads continuously as we scroll. This seamless experience is achieved using infinite scrolling, a technique that keeps users engaged without interruptions.</p>
+<h2 id="why-infinite-scrolling">Why Infinite Scrolling?</h2>
+<p>Loading or processing a huge amount of data all at once during page load is not a good idea. It can negatively impact:</p>
+<p><strong>Performance</strong> – Fetching large amounts of data at once can slow down the application.<br>
+<strong>User Experience</strong> – Users might face delays or lag while interacting with the application.</p>
+<p>To avoid these issues, applications implement infinite scrolling. This approach enhances engagement and provides a smooth user experience by dynamically loading content as the user scrolls.</p>
+<h2 id="implementing-infinite-scrolling-in-react">Implementing Infinite Scrolling in React</h2>
+<p>There are multiple ways to implement infinite scrolling in React. One of it is by using the <code>react-infinite-scroll-component</code> library.</p>
+<p>This library helps manage infinite scrolling efficiently by handling API calls and updating the UI without affecting performance.</p>
+<p><strong>1. Define State variables</strong></p>
+<pre tabindex="0"><code>const [items, setItems] = useState([]);
+const [hasMore, setHasMore] = useState(true);
+</code></pre><p><code>items:</code> Stores the list of items displayed on the page.<br>
+<code>hasMore:</code> A boolean that determines whether more data is available to load.</p>
+<p><strong>2. Function to Generate New Data</strong><br>
+This function generates an array of 10 numbers, starting from a given number.</p>
+<pre tabindex="0"><code>const generateArray = (startFrom) =&gt; {
+  return Array.from({ length: 10 }, (_, index) =&gt; startFrom + index);
+};
+</code></pre><p><strong>3. Fetching Initial Data on Component Mount</strong><br>
+When the component mounts, it triggers <code>getInitialData()</code>, which simulates a delayed API call using <code>setTimeout()</code>.</p>
+<pre tabindex="0"><code>useEffect(() =&gt; {
+  async function getInitialData() {
+    setTimeout(() =&gt; {
+      setItems(generateArray(1));
+    }, 1000);
+  }
+  getInitialData();
+}, []);
+</code></pre><p><strong>4. Handling Data Fetching on Scroll</strong></p>
+<pre tabindex="0"><code>const getData = async () =&gt; {
+  if (items.length &lt; 60) {
+    console.log(&#34;Fetching the data after&#34;, items.length);
+    setTimeout(() =&gt; {
+      setItems((prevItems) =&gt; [
+        ...prevItems,
+        ...generateArray(prevItems.length + 1),
+      ]);
+      setHasMore(true);
+    }, 1000);
+  } else {
+    console.log(&#34;-----------No More Data to show----------&#34;);
+    setHasMore(false);
+  }
+};
+</code></pre><ul>
+<li>This <code>getData()</code> function loads more data when the user scrolls down.</li>
+<li>If <code>items.length</code> is less than 60, it fetches the next batch of 10 items.</li>
+<li>If the length reaches 60, it stops loading more data by setting <code>hasMore</code>to <code>false</code>.</li>
+</ul>
+<p><strong>5. InfiniteScroll Component</strong></p>
+<pre tabindex="0"><code>&lt;InfiniteScroll
+  dataLength={items.length}
+  next={getData}
+  hasMore={hasMore}
+  loader={&lt;p&gt;Loading....&lt;/p&gt;}
+&gt;
+  {items.map((value, index) =&gt; (
+    &lt;div
+      key={value + index}
+      style={{
+        height: &#34;100px&#34;,
+        fontSize: &#34;20px&#34;,
+        fontWeight: &#34;bold&#34;,
+        backgroundColor: `${index % 2 === 0 ? &#34;&#34; : &#34;lightblue&#34;}`,
+        marginBottom: &#34;10px&#34;,
+      }}
+    &gt;
+      {value}
+    &lt;/div&gt;
+  ))}
+&lt;/InfiniteScroll&gt;
+</code></pre><h2 id="full-code">Full Code</h2>
+<pre tabindex="0"><code>import { useEffect, useState } from &#34;react&#34;;
+import InfiniteScroll from &#34;react-infinite-scroll-component&#34;;
+
+function InfiniteScrollDemo() {
+  const [items, setItems] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+
+  const generateArray = (startFrom) =&gt; {
+    return Array.from({ length: 10 }, (_, index) =&gt; startFrom + index);
+  };
+
+  useEffect(() =&gt; {
+    async function getInitialData() {
+      setTimeout(() =&gt; {
+        setItems(generateArray(1));
+      }, 1000);
+    }
+    getInitialData();
+  }, []);
+
+  const getData = async () =&gt; {
+    if (items.length &lt; 60) {
+      console.log(&#34;Fetching the data after&#34;, items.length);
+      setTimeout(() =&gt; {
+        setItems((prevItems) =&gt; [
+          ...prevItems,
+          ...generateArray(prevItems.length + 1),
+        ]);
+        setHasMore(true);
+      }, 1000);
+    } else {
+      console.log(&#34;-----------No More Data to show----------&#34;);
+      setHasMore(false);
+    }
+  };
+
+  return (
+    &lt;div className=&#34;App&#34;&gt;
+      &lt;InfiniteScroll
+        dataLength={items.length}
+        next={getData}
+        hasMore={hasMore}
+        loader={&lt;p&gt;Loading....&lt;/p&gt;}
+      &gt;
+        {items.map((value, index) =&gt; (
+          &lt;div
+            key={value + index}
+            style={{
+              height: &#34;100px&#34;,
+              fontSize: &#34;20px&#34;,
+              fontWeight: &#34;bold&#34;,
+              backgroundColor: `${index % 2 === 0 ? &#34;&#34; : &#34;lightblue&#34;}`,
+              marginBottom: &#34;10px&#34;,
+            }}
+          &gt;
+            {value}
+          &lt;/div&gt;
+        ))}
+      &lt;/InfiniteScroll&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default InfiniteScrollDemo;
+</code></pre><h2 id="key-takeaways">Key Takeaways</h2>
+<p>This implementation efficiently loads content in batches, ensuring that the app does not load excessive data at once. The benefits include:<br>
+<strong>Better performance</strong> – Only necessary data is loaded.<br>
+<strong>Smooth user experience</strong> – Users don’t have to wait for large data loads.<br>
+<strong>Engagement-friendly</strong> – Continuous scrolling keeps users active on the page.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

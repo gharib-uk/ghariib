@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How to manage Python dependencies in Ansible execution environments</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How to manage Python dependencies in Ansible execution environments</h1>
+			<b><time>29.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Ansible execution environments provide a runtime for Red Hat Ansible Automation Platform that includes all of the necessary tooling in a single atomic package. Ansible, as an automation tool, relies on Python as its underlying programming language. Not only is Python integral to the core of Ansible, but its use is widespread and can be found throughout the Ansible ecosystem, including Ansible execution environments. As a result, how Python content is managed directly impacts how an execution environment is constructed and operates at runtime. This article will explore the various ways that Python can be managed in Ansible execution environments, including considerations that apply to a variety of operating environments.</p>
+<h2 id="python-within-execution-environments">Python within execution environments</h2>
+<p>An Ansible execution environment is a container image, and its construction is expressed within a definition file (by default with the name <code>execution-environment.yml</code>) which enables operating system packages, Python content, Ansible dependencies, and other configurations to be specified. Multiple options are available within the execution environment definition to enable end users to manage how the base Python package is configured within the underlying operating system, but also how Python packages and any other dependencies are handled.</p>
+<p>The dependencies section of the execution environment definition file contains several properties that users can customize the use of Python along with any related content. The underlying Python package that the execution environment relies on is defined within the <code>dependencies.python_interpreter</code> property. Two options are available within the <code>python_interpreter</code> property:</p>
+<ol>
+<li><code>package_system</code>: Python package managed by the operating system package manager (such as <code>dnf</code>).</li>
+<li><code>python_path</code>: Location of the Python interpreter.</li>
+</ol>
+<p>An example of how these properties can be defined within an execution environment definition file is shown below:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>version: 3
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dependencies:
+</span></span><span style="display:flex;"><span>  python_interpreter:
+</span></span><span style="display:flex;"><span>    package_system: &#34;python310&#34;
+</span></span><span style="display:flex;"><span>    python_path: &#34;/usr/bin/python3.10&#34; 
+</span></span></code></pre></div><h2 id="python-dependency-management">Python dependency management</h2>
+<p>The management of Python packages is facilitated using the pip package manager. <code>pip</code> takes on responsibility for managing core Ansible execution environment components, including <code>ansible-core</code> and <code>ansible-runner</code>, as well as dependencies declared by Ansible Content Collections along with any user-defined packages.</p>
+<p>Customizations to the Ansible Core and Ansible Runner packages can be defined by specifying the following underneath the <code>dependencies</code> within the execution environment definition file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>version: 3
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dependencies:
+</span></span><span style="display:flex;"><span>  ansible_core:
+</span></span><span style="display:flex;"><span>    package_pip: ansible-core==2.14.2
+</span></span><span style="display:flex;"><span>  ansible_runner:
+</span></span><span style="display:flex;"><span>    package_pip: ansible-runner==2.3.1
+</span></span></code></pre></div><p>While users have the ability to customize how the underlying Python package and core Ansible components that are managed within an execution environment are defined, most end users will be concerned with how to specify additional Python packages that should also be included within an execution environment. These packages are used primarily by Ansible Content Collections that are also included within an execution environment, as are any other components that rely on Python content.</p>
+<p>User-defined Python dependencies can either be explicitly defined within the execution environment definition file or via a reference to a file (typically specified within a file called <code>requirements.txt</code>) containing the dependencies to install. The <code>dependencies.python</code> property within the execution environment definition file is the location where either of these approaches are declared. </p>
+<p>The following example illustrates how to explicitly declare the desired Python dependencies within the execution environment definition file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>version: 3
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dependencies:
+</span></span><span style="display:flex;"><span>  # Explicitly declaring Python dependencies
+</span></span><span style="display:flex;"><span>  python:
+</span></span><span style="display:flex;"><span>    - jmespath
+</span></span></code></pre></div><p>Alternatively, dependencies declared within an external file can be referenced within an execution environment definition file, and can be specified using the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>version: 3
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dependencies:
+</span></span><span style="display:flex;"><span>  # Referencing an external file containing Python dependencies
+</span></span><span style="display:flex;"><span>  python: requirements.txt
+</span></span></code></pre></div><p>Regardless of the approach selected, Ansible execution environments offer options for Ansible creators to choose the approach that suits them best.</p>
+<h2 id="build-time-considerations">Build time considerations</h2>
+<p>Thus far, we have discussed several methods for how to define Python-related content that is included within Ansible execution environments. In this section, we will build upon those skills and explore how this Python content is managed during the build process of an execution environment, including the ways that you can influence the final image that is produced as a result of the build.</p>
+<p>When an execution environment is being built, it undergoes several stages where the resulting content is used to assemble the final image. (You can learn more about the execution environment build stages and the actions the <code>ansible-builder</code> tool performs here). Several of these stages have activities directly related to how Python content is utilized and sourced from remote locations. The properties that were defined earlier, such as Python executable version and location, are utilized throughout this process. The <code>additional_build_steps</code> property of the execution environment definition file provides the constructs for users to add customized logic (in the form of commands that are processed by the container tool, such as Podman, in use) within the build process, and is where any of the activities related to the management of Python content can be made. The <code>builder</code> stage of the execution environment build process is primarily where Python-related activities occur including the resolution of declared dependencies and is where any customizations should take place. The <code>base</code> and <code>final</code> stages also play a role in how Python content is assembled into the final image.</p>
+<p>As an Ansible creator, there are at least two primary use cases (though there are certainly others as well) for which there may be a need to interject in the default build of an execution environment:</p>
+<ol>
+<li>Upgrading core <code>pip</code> components.</li>
+<li>Sourcing of Python dependencies managed by <code>pip</code>.</li>
+</ol>
+<p>Similar to how there is a need to ensure that Python and any of the libraries needed to support Ansible automation (as well as the underlying operating system) within an execution environment are updated, it is also important that <code>pip</code> and any of the tooling that it relies upon (such as setuptools) is up to date as well. Let’s show how we can verify that the latest version of both <code>pip</code> and <code>setuptools</code> are included within the execution environment.</p>
+<p>For this task, we will add a new step just prior to when actions in the <code>base</code> stage are executed. The <code>additional_build_steps</code> property offers the <code>prepend_base</code> option to enable additional commands to accomplish this goal. See below:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>version: 3
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>additional_build_steps:
+</span></span><span style="display:flex;"><span>  prepend_base:
+</span></span><span style="display:flex;"><span>    - RUN $PYCMD -m pip install --upgrade pip setuptools
+</span></span></code></pre></div><p><code>RUN</code> is an instruction of the container tool to execute commands and <code>$PYCMD</code> is one of several environment variables that are exposed throughout the build process by the <code>ansible-builder</code> tool. <code>$PYCMD</code> refers to the location of the Python binary, and as you can see, it is being used here to upgrade both <code>pip</code> and <code>setuptools</code> packages to their latest versions to provide a solid foundation for Python content to build upon.</p>
+<p>With an assurance that the base Python content within an execution environment is updated, focus can then shift to the management of dependencies as declared by the user. By default, Python dependencies are sourced from Python Package Index (PyPi), a public hosted repository containing Python content. The ability to easily reference content from a public service is beneficial, as it simplifies how Python content is sourced. However, in many enterprise organizations, they establish and leverage their own internal repository (similar to PyPi) to govern the type of content that can be used. Access to the public PyPi repository is typically restricted or even forbidden. In these situations and environments, <code>ansible-builder</code> must be instructed to source content from this alternate location.</p>
+<p>The <code>pip</code> utility provides options at package install time for referencing locations other than the public PyPi repository which contain Python packages. They can be explicitly set via command line arguments. However, similar to what we saw previously, it is easier to make use of environment variables, as it reduces the overall complexity for specifying different configurations.</p>
+<p>The following environment variables can be set to influence how <code>pip</code> sources Python content:</p>
+<ul>
+<li><code>PIP_INDEX_URL</code>: Location of the PEP 503 compliant repository (the default location is here).</li>
+<li><code>PIP_TRUSTED_HOST</code>: Explicitly trust the host defined. Useful when operating in environments that leverage their own Certificate Authority (CA) for managing Secure Sockets Layer (SSL) certificates which may not be trusted by the default configuration of the base execution environment being used as the foundation for the new execution environment.</li>
+</ul>
+<p>These variables can be placed as needed, and are leveraged within the builder and final stages of an execution environment build. To ensure they are defined before starting those stages, we can use the <code>prepend_builder</code> and <code>prepend_final</code> of the <code>additional_build_steps</code> property to inject those environment variables, as shown below:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>version: 3
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>additional_build_steps:
+</span></span><span style="display:flex;"><span>  prepend_builder:
+</span></span><span style="display:flex;"><span>    - ENV PIP_INDEX_URL=https://myprivatrepohost/pythonrepo/simple
+</span></span><span style="display:flex;"><span>  prepend_final:
+</span></span><span style="display:flex;"><span>    - ENV PIP_INDEX_URL=https://myprivatrepohost/pythonrepo/simple
+</span></span></code></pre></div><p>If authentication is required to access content from the repository, credentials can be provided (especially if utilizing basic authentication) as part of the URL using the form <code>https://&lt;username&gt;:&lt;password&gt;@myprivatrepohost/pythonrepo/simple</code> and replacing the <code>&lt;username&gt;</code> and <code>&lt;password&gt;</code> placeholders with their actual values.</p>
+<p>Alternatively, instead of specifying credentials within the URL, support is available within <code>pip</code> to authenticate using alternate sources, including a <code>.netrc</code> file or a keyring. The configurations needed go beyond the scope of this article, but the inclusion here highlights the options that are available for accessing protected repositories.</p>
+<p>Another enhancement that can be made is to make use of Dockerfile/Containerfile arguments using the <code>ARG</code> instruction instead of the <code>ENV</code> instruction. This offers the flexibility to reuse the same execution environment definition file among multiple environments where Python dependencies may be sourced from different locations (such as between development and production environments).</p>
+<p>The following execution environment file depicts the changes necessary to transition from <code>ENV</code> to <code>ARG</code> instructions:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>version: 3
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>additional_build_steps:
+</span></span><span style="display:flex;"><span>  prepend_builder:
+</span></span><span style="display:flex;"><span>    - ARG PIP_INDEX_URL
+</span></span><span style="display:flex;"><span>  prepend_final:
+</span></span><span style="display:flex;"><span>    - ARG PIP_INDEX_URL
+</span></span></code></pre></div><p>At execution environment build time, values can be injected by specifying the <code>--build-arg</code> flag when invoking the <code>ansible-builder build</code> command. For example, to replicate the first example where the <code>ENV</code> instruction is being utilized, the following command can be used:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>ansible-builder build --build-arg=PIP_INDEX_URL=https://myprivatrepohost/pythonrepo/simple &lt;additional arguments&gt;
+</span></span></code></pre></div><p>A useful feature of the <code>ansible-builder</code> utility is that if the environment variable is already defined in the current shell, it will automatically be injected into the value of the build argument being specified (<code>--build-arg=PIP_INDEX_URL</code>).</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>In this article, I described the various ways that Python-related content can be managed when building Ansible execution environments. From the ability to define the base Python components to the management of Python dependencies, these approaches afford Ansible creators the opportunity to customize and tune the build process such that Ansible execution environments can be utilized across a variety of operating environments.</p>
+<p>Interested in learning more about building and utilizing Ansible execution environments in your own automation workflows? Explore both the associated documentation as well as interactive exercises to level up your skills below.</p>
+<p>Documentation:</p>
+<ul>
+<li>Creating and Using Ansible Execution Environments</li>
+<li>Using Ansible Content Navigator</li>
+</ul>
+<p>Interactive exercises:</p>
+<ul>
+<li>Getting started with Ansible Builder</li>
+<li>Getting started with Ansible Navigator</li>
+</ul>
+<p>The post How to manage Python dependencies in Ansible execution environments appeared first on Red Hat Developer.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

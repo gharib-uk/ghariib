@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Sigma rules for Linux and MacOS</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Sigma rules for Linux and MacOS</h1>
+			<b><time>05.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p><strong>TLDR</strong>: VT Crowdsourced Sigma rules will now also match suspicious activity for macOS and Linux binaries, in addition to Windows.</p>
+<p>We recently discussed how to maximize the value of Sigma rules by easily converting them to YARA Livehunts. Unfortunately, at that time Sigma rules were only matched against Windows binaries.</p>
+<p>Since then, our engineering team worked hard to provide a better experience to Sigma lovers, increasing Crowdsourced Sigma rules value by extending matches to macOS and Linux samples.</p>
+<h2 id="welcome-macos-and-linux">Welcome macOS and Linux</h2>
+<p>Although we are still working to implement Sysmon in our Linux and macOS sandboxes, we implemented new features that allow Sigma rule matching by extracting samples’ runtime behavior.</p>
+<p>For example, a process created in our sandbox that ends in “/crontab” and contains the &ldquo;-l&rdquo; parameter in the command line would match the following Sigma rule:</p>
+<p>logsource:</p>
+<p>  product: linux</p>
+<p>  category: process_creation</p>
+<p>detection:</p>
+<p>  selection:</p>
+<p>    Image|endswith: &lsquo;/crontab&rsquo;</p>
+<p>    CommandLine|contains: &rsquo; -l'</p>
+<p>  condition: selection</p>
+<p>We have mapped all the fields used by Sigma rules with the information offered by our sandboxes, which allowed us to map rules for image_load, process_creation and registry_set, among others.</p>
+<p>This approach has limitations. However, about 54% of Crowdsourced Sigma rules for Linux and 96% for macOS are related to process creation, meaning we already have enough information to match all these with our sandboxes’ output. The same happens for rules based on file creation.</p>
+<p>Let’s look at some examples!</p>
+<h2 id="linux-macos-and-windows-examples">Linux, MacOS and Windows examples</h2>
+<p>The following shell script sample matches 11 Crowdsourced Sigma Rule matches.</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/bTWJ1UA1ZZD4Rp1zveMMQnBj56Ml4m7CNrtWH5WhtyHoHeZ_jQDszTLVAzzMceuWMx6Ca8KuBfZohKHmbBvL4GXs54q5Ioh3BB8S_fpZBraBPB3hTZnQkjwbC6VDTaAjuKQTsaxIlY47PwEq0ShTu6a8UL3Z-JRQbkf4-cXBMvv1LGHiWc57ouscO9y4SK0PZdj0CqzFqZnbvLlZDlNUoKWYoV7KioE16SOr7w" alt="" />
+</figure>
+
+
+</p>
+<p>For every rule, it is possible to check what triggered the match by clicking on &ldquo;View matches”. In the case of Windows binaries, it would show what Sysmon event matched the behavior described in the Sigma rule, as we can see below:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/nH37fyOS9lB4SH9qzIPAK1yTKLJbS-MCJi7qeWjswE9dhWkogvY5br3uA-J2yPoDF9KYFgupIoA5k5YrG9ZzWwhNIdadZHk-xwJZg_zTUM7DTqeA6nqwMtg2o4sGnL38ZkzhB3Pd8MFf8BI-xN5oTQ0Ol-yMAtkww-xEPK5drozKGfysVmADlLUOuUwer9oGtl0gqz7c-mZXTbez9Rt492v3fTJADgURaO6ydg" alt="" />
+</figure>
+
+
+</p>
+<p>In the case of the shell script mentioned above, it shows the values that are relevant to the logic of the rule as you can see in the following image:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/iBVwMpjLAzwLYgV7s-PHZfaTDmuE2ISh-lBEGrLFcFgNIpQ7-f3B2vm4a8R_cEWM5Uax6v3xWT35reZbqurLjx90n-8asI2l1Pxdp41-xEFj0H3Sz99dHzJYtH6kgd54Gw3NvrKWr2UGCI588Ou4QpCZL5VGJnV5q1SddyyPRK6cPezRfFFCB6DVVT7HsB3xrc_FoRkickpOYVcO5F6z-oO6xHemiuSPM5p-eg" alt="" />
+</figure>
+
+
+</p>
+<p>Interestingly, Sigma rules intended for Linux also produce results in macOS environments, and vice versa. In this case, the shell script can be interpreted by both operating systems. Indeed, one of the matching rules for the sample called Indicator Removal on Host - Clear Mac System Logs was specifically created for macOS:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/IU3OM1Nz14k8Pdkaqpi5RWHGc9NjWAHoPKGCL90esa0QZMQb1ZhWqRTDqnVd6vJgCvNpso8PHNQJT2hwmjOrhJRCencqP93ABVfLas7udwAnUCx7gH-svk8LICqcHhZDhodxd5PyVL-oEcAOCx8j40JYMU8d4Iq7Pe-mUh_3IvxIcm20_ChTS7294F-GdclSfNPL19773yuw75SEvOXRruSBYi6NuHMvCtlW3g" alt="" />
+</figure>
+
+
+</p>
+<p>while a second matching rule, Commands to Clear or Remove the Syslog , was created for Linux:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/I83iS3D0wpyQu8TFf0n4dlf153RAfdvIRl8iMWb-sm1NMY8t3P8wwJ3Ixr2rO8gmzAaYHdz7hXuUsRDGzxi_UYuD6OFu3pKsXMXe8KbbDeaAL0tBWfDgcGICAE-irxXsdNRR9kkLDsWsSaXx-5tcdallNMpmYuc-m1GZbAQ4j6-vDPK9wp0Q9ga_Xs7iILRPWqKPzgQv8Q4DoPlLhf274anMMSi3YngwDPbx2w" alt="" />
+</figure>
+
+
+</p>
+<p>To get more examples of samples with Sigma rules that match sandboxes’ output instead of Sysmon, you can use the following queries:</p>
+<p>(have:sigma) and not have:evtx type:mac</p>
+<p>(have:sigma) and not have:evtx type:linux</p>
+<p>A second interesting example is a dmg matching 8 Sigma rules, 5 of them originally created for Linux OS under the “process_creation” category and 2 rules created for macOS. The last match… is a Sigma rule created for Windows samples!</p>
+<p>
+<figure>
+  <img src="https://s5.gifyu.com/images/Sjbsg.gif" alt="" />
+</figure>
+
+
+</p>
+<p>The new feature matching Sigma rules with Linux and macOS samples helped us identify some rules that are maybe too generic, which is not necessarily a problem as long as this is the intended behavior.</p>
+<p>In this case, the Usage Of Web Request Commands And Cmdlets rule was originally created to detect web request using Windows’ command line:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/M5l7N9cJ_zdbuR-MthKBo19qxAcOfCFc2WsKIX4r7G6BVPRJsnhPrqaNxWtyuXmw2r57sc6lDsTtKi0FehS79GM-dN5E5ZYf9ePC_topnL7foWDDZ80kbnRax1seDc6D1iZeBmhtJMQE3wtFVAAFTUG9xydgYY6pIockMd9fLgn7ZrvbZSf1QcmXyShOdi3Eh-uS5OaACCiRnxXwdXXy8MAAuboqpfdVZJB2fQ" alt="" />
+</figure>
+
+
+</p>
+<p>The rule seems a bit too generic since it only checks for a few strings in the command line, although it can be highly effective for generic detection of suspicious behavior.</p>
+<p>To understand why our Macintosh Disk Image sample triggered a detection for this rule, we checked the matches:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/Gzxk4mCCV0uJ4gyiwoQzIPqsscuWfDyu9CCoNhDuviiC-1zJNh4EyM_EJZq4y27OHUeiUMgf35MmPnMTGZwaYPmPC1VDaY2uzH1QHFb3XqXXTb20RY7Zl3RB_hw-GZqtnUfXP63Soq_RaWI8Wjnplq6z5yT8QWuWSg7B5YVVFbSxJx7GvTuT7uAp4UEzxnGkVYNtSXf_Mo5MKb2Ps-VCCpsDF5nvbL9dcKE3Gw" alt="" />
+</figure>
+
+
+</p>
+<p>As we can see, the use of the string “curl” in the command line was enough to match this sample.</p>
+<p>This sigma rule had about 9k hits last year only, with more than 300 of the files being Linux or macOS samples. You can obtain the full list using the following query:</p>
+<p>sigma_rule:f92451c8957e89bb4e61e68433faeb8d7c1461c3b90d06b3403c8f3d87c728b8 and (type:linux or type:mac)</p>
+<h2 id="creating-livehunt-rules-from-sysmon-evtx-outputs">Creating Livehunt rules from Sysmon EVTX outputs</h2>
+<p>So far we have mainly focused on samples that do not have Sysmon (EVTX) logs. Now let&rsquo;s see how it is possible to create a Livehunt rule based on Sysmon logs. For this, we are going to use the “structure” functionality provided in the Livehunt YARA editor, as we explain in this post.</p>
+<p>The sample we will use in this example is associated with CobaltStrike and matches multiple Sigma rules that identify certain behaviors. It is important to note that for every Sigma match, we will see in the file “structure” the context <strong>that matched</strong> but not the full EVTX logs. These can be downloaded from the sample’s VT report behavior section under “Download Artifacts” or using our API (available for public and privately scanned files).</p>
+<p>The following image shows the matching raw EVTX generated by our sample:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/04pqw6oXn8r_d-13nYXDumqEUwjtBKraV6WDXV7YV4zD00ZYiUJ5pgwkCrMi00IiIo1aOxmt7mbi3E6xWoJkz-FMlQOHAdA42xCrPoEWLfjFwmOkgz8D5poXj8J5eXXBSYSesDNd7YvxyA0ffV7oA3RbGoiOOSAZ7YY5_ZvXLWBVXvEyErLBcc3XSW0TU4GP7OLnwclWMRERkotJzwSC0iZO-X2SdaGz7yUgFA" alt="" />
+</figure>
+
+
+</p>
+<p>From the sample’s JSON Structure, <strong>Sigma_analysis_results</strong> is an array that contains objects with all the relevant information related to the matching Sigma rules, including details about the rule itself and EVTX logs. From the previous image, the first highlighted section is related to process creation and the second one is a registry event (value set).</p>
+<p>As explained in our post, by just clicking on the fields that you are interested in you can start building your Livehunt rule, and adjust values accordingly. In this case, our rule will identify files creating registry keys under \CurrentVersion\RunOnce\ with a .bat or .vbs extension:</p>
+<p>import &ldquo;vt&rdquo;</p>
+<p>rule sigma_example_registry_keys {</p>
+<p>  meta:</p>
+<p>    target_entity = &ldquo;file&rdquo;</p>
+<p>  condition:</p>
+<p>    for any vt_behaviour_sigma_analysis_results in vt.behaviour.sigma_analysis_results: (</p>
+<p>      for any vt_behaviour_sigma_analysis_results_match_context in vt_behaviour_sigma_analysis_results.match_context: (</p>
+<p>        vt_behaviour_sigma_analysis_results_match_context.values[&ldquo;TargetObject&rdquo;] icontains &ldquo;\CurrentVersion\RunOnce\&rdquo; and</p>
+<p>        (vt_behaviour_sigma_analysis_results_match_context.values[&ldquo;Details&rdquo;] endswith &ldquo;.vbs&rdquo; or vt_behaviour_sigma_analysis_results_match_context.values[&ldquo;Details&rdquo;] endswith &ldquo;.bat&rdquo;)</p>
+<p>      )</p>
+<p>    )</p>
+<p>}</p>
+<p>Running this YARA using a Retrohunt finds multiple files:</p>
+<p>daef729493b9061e7048b4df10b71fdba2e11d9147512f48463994a88c834a30 141e87e62c110b86cf7b01a2def60faab6365f6391eb0d4a7cbad8d480dd4706 814b2cab7c5a12ec18f345eb743857e74f5be45c35642dc01330e7a0def6269a 31b0e9b188fe944d58867bbfc827d77c7711c3a690168a417377fe6bf1544408 dd6051509ed8cf3d059b538fa8878f87423c51b297b49a12144d3d2923c89cce 647323f0245da631cef57d9ca1e3327c3242fe1cbbf6582c4d187e9f5fbfb678 40a90dd3b2132a299f725e91a5d0127013b21af24074afb944d8bc5735c1bd53 b44c6d2dd8ad93cecd795cecde83081292ee9949d65b2e98d4a2a3c8a97bd936 710b0cca7e7c17a3dd2a309f5ca417b76429feac1ab5fb60f5502995ebbd1515 50c098119ce41771e7a3b8230a7aa61ebea925e8eda46c33f0dd42b8950b92fe</p>
+<p>Here you can see some interesting matches:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/sZLZhAfbKUNhk9RujX-DtJkb9Kg9yFT85fYEcpeyX1fdnglquAV0b8uZv8p4SodmKDpZjUEBp16rEV8ALiwRFYsewYdOBqKuA3b_5dcn9e1fMvHnYZLknfiOPrQ6G81-4408Huvi6-STzDJyC47X5IUuioFoMxljA8CN5dDaz0na3rnpyIM6Stz0aBHIgkJfuVEFe2rZGUCptk5k3KxWyD6DaNAmq6ZV62Efzw" alt="" />
+</figure>
+
+
+</p>
+<p>The next rule focuses on file creation events related to Sysmon (EVID 11) under the “C:WindowsSystem32” directory, with a “.dll” extension and having any “cve” tag (flagging potential CVE exploitation). Remember we can always include any additional details related to the samples we want to hunt, such as positives, metadata, tags, engines, … in addition to EVTX fields:</p>
+<p>import &ldquo;vt&rdquo;</p>
+<p>rule sigma_rule_evtx_cve {</p>
+<p>  meta:</p>
+<p>    target_entity = &ldquo;file&rdquo;</p>
+<p>  condition:</p>
+<p>    for any vt_behaviour_sigma_analysis_results in vt.behaviour.sigma_analysis_results: (</p>
+<p>      for any vt_behaviour_sigma_analysis_results_match_context in vt_behaviour_sigma_analysis_results.match_context: (</p>
+<p>        vt_behaviour_sigma_analysis_results_match_context.values[&ldquo;TargetFilename&rdquo;] startswith &ldquo;C:\Windows\System32\&rdquo; and</p>
+<p>        vt_behaviour_sigma_analysis_results_match_context.values[&ldquo;TargetFilename&rdquo;] endswith &ldquo;.dll&rdquo; and</p>
+<p>        for any vt_metadata_tags in vt.metadata.tags: (</p>
+<p>        vt_metadata_tags icontains &ldquo;cve-&rdquo;</p>
+<p>        )</p>
+<p>      )</p>
+<p>    )</p>
+<p>}</p>
+<h2 id="sysmon-evtx-fields---overlaps">Sysmon EVTX fields - overlaps</h2>
+<p>Some of the details found in Sysmon EVTX fields (found in the VT JSON samples’ structure) can be redundant with details provided in other more traditional fields that you use for your Livehunt rules through the YARA VT module.</p>
+<p>For example, instead of: vt_behaviour_sigma_analysis_results_match_context.values[&ldquo;TargetFilename&rdquo;] from vt.behaviour.sigma_analysis_results</p>
+<p>you could use: vt.behaviour.files_written to identify file creation events.</p>
+<p>When that’s the case, we recommend using traditional fields found in VT samples’ structure for the following reasons:</p>
+<ul>
+<li>Sysmon information is fully stored/indexed only the part matching the Sigma rule, which will limit any YARA hunting.</li>
+<li>We mapped most Sysmon fields into YARA VT module for simplicity.</li>
+<li>Linux and MacOS samples do not have any Sysmon information related to Sigma rules. Similar details about the match can be found under the “behaviour” JSON structure entry.</li>
+</ul>
+<p>The new Sysmon-like details offered in the file “structure” also make VT an excellent platform for researchers and Sigma rule creators, allowing them to leverage this information without the need to create their own lab.</p>
+<p>The following table helps mapping VT Intelligence queries, YARA VT module fields, Sigma Categories, and Sigma fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>VT Intelligence</th>
+          <th>YARA VT module field</th>
+          <th>Sigma Category</th>
+          <th>Sigma Field</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>behavior_created_processes</td>
+          <td>vt.behaviour.processes_created</td>
+          <td>process_creation</td>
+          <td>Image  CommandLine  ParentCommandLine  ParentImage  OriginalFileName</td>
+      </tr>
+      <tr>
+          <td>behavior_files</td>
+          <td>vt.behaviour.files_attribute_changed  vt.behaviour.files_deleted  vt.behaviour.files_opened  vt.behaviour.files_copied  vt.behaviour.files_copied[x].destination  vt.behaviour.files_copied[x].source  vt.behaviour.files_written  vt.behaviour.files_dropped  vt.behaviour.files_dropped[x].path  vt.behaviour.files_dropped[x].sha256  vt.behaviour.files_dropped[x].type</td>
+          <td>file_access  file_change  file_delete  file_rename  file_event</td>
+          <td>TargetFilename</td>
+      </tr>
+      <tr>
+          <td>behavior_injected_processes</td>
+          <td>vt.behaviour.processes_injected</td>
+          <td>process_access  create_remote_thread  process_creation</td>
+          <td>CallTrace  GrantedAccess  SourceImage  TargetImage  StartModule  StartFunction  TargetImage  SourceImage</td>
+      </tr>
+      <tr>
+          <td>behavior_processes</td>
+          <td>vt.behaviour.processes_terminated  vt.behaviour.processes_killed  vt.behaviour.processes_created  vt.behaviour.command_executions  vt.behaviour.processes_injected</td>
+          <td>process_access  create_remote_thread  process_creation</td>
+          <td>CallTrace  GrantedAccess  SourceImage  TargetImage  StartModule  StartFunction  TargetImage  SourceImage  Image  CommandLine  ParentCommandLine  ParentImage  OriginalFileName</td>
+      </tr>
+      <tr>
+          <td>behavior_registry</td>
+          <td>vt.behaviour.registry_keys_deleted  vt.behaviour.registry_keys_opened  vt.behaviour.registry_keys_set  vt.behaviour.registry_keys_set[x].key  vt.behaviour.registry_keys_set[x].value</td>
+          <td>registry_add  registry_delete  registry_event  registry_rename  registry_set</td>
+          <td>EventType  TargetObject  Details</td>
+      </tr>
+      <tr>
+          <td>behavior_services</td>
+          <td>vt.behaviour.services_bound  vt.behaviour.services_created  vt.behaviour.services_opened  vt.behaviour.services_started  vt.behaviour.services_stopped  vt.behaviour.services_deleted</td>
+          <td>registry_set  process_creation</td>
+          <td>Image  CommandLine  ParentCommandLine  ParentImage  EventType  TargetObject  Details</td>
+      </tr>
+      <tr>
+          <td>behavior_network</td>
+          <td>vt.behaviour.dns_lookups  vt.behaviour.dns_lookups[x].hostname  vt.behaviour.dns_lookups[x].resolved_ips  vt.behaviour.hosts_file  vt.behaviour.ip_traffic  vt.behaviour.ip_traffic[x].destination_ip  vt.behaviour.ip_traffic[x].destination_port  vt.behaviour.ip_traffic[x].transport_layer_protocol  vt.behaviour.http_conversations  vt.behaviour.http_conversations[x].url  vt.behaviour.http_conversations[x].request_method  vt.behaviour.http_conversations[x].request_headers  vt.behaviour.http_conversations[x].response_headers  vt.behaviour.http_conversations[x].response_status_code  vt.behaviour.http_conversations[x].response_body_filetype  vt.behaviour.smtp_conversations[x].hostname  vt.behaviour.smtp_conversations[x].destination_ip  vt.behaviour.smtp_conversations[x].destination_port  vt.behaviour.smtp_conversations[x].smtp_from  vt.behaviour.smtp_conversations[x].smtp_to  vt.behaviour.smtp_conversations[x].message_from  vt.behaviour.smtp_conversations[x].message_to  vt.behaviour.smtp_conversations[x].message_cc  vt.behaviour.smtp_conversations[x].message_bcc  vt.behaviour.smtp_conversations[x].timestamp  vt.behaviour.smtp_conversations[x].subject  vt.behaviour.smtp_conversations[x].html_body  vt.behaviour.smtp_conversations[x].txt_body  vt.behaviour.smtp_conversations[x].x_mailer  vt.behaviour.tls</td>
+          <td>network_connection</td>
+          <td>DestinationHostname  DestinationIp  DestinationIsIpv6  DestinationPort  DestinationPortName  SourceIp  SourceIsIpv6  SourcePort  SourcePortName</td>
+      </tr>
+      <tr>
+          <td>behavior (too generic)</td>
+          <td>vt.behaviour.modules_loaded</td>
+          <td>image_load</td>
+          <td>ImageLoaded  Image  OriginalFileName</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="wrapping-up">Wrapping up</h2>
+<p>At VirusTotal, we believe that the Sigma language is a valuable tool for the community to share information about samples’ behavior. Our objective is to make its use on VT as simple as possible. Our addition of MacOS and Linux is just the start of what we are working on, as we aim to add Sysmon for Linux to obtain more robust results, including the ability to download full generated logs.</p>
+<p>Remember that here you have a list of all the Crowdsourced Sigma rules that are currently deployed in VirusTotal and that you can use for threat hunting.</p>
+<p>We hope you join our fan club of Sigma and VirusTotal, and as always we are happy to hear your feedback.</p>
+<p>Happy Hunting!</p>
+<p><strong>TLDR</strong>: VT Crowdsourced Sigma rules will now also match suspicious activity for macOS and Linux binaries, in addition to Windows.</p>
+<p>We recently discussed how to maximize the value of Sigma rules by easily converting them to YARA Livehunts. Unfortunately, at that time Sigma rules were only matched against Windows binaries.</p>
+<p>Since then, our engineering team worked hard to provide a better experience to Sigma lovers, increasing Crowdsourced Sigma rules value by extending matches to macOS and Linux samples.</p>
+<h2 id="welcome-macos-and-linux-1">Welcome macOS and Linux</h2>
+<p>Although we are still working to implement Sysmon in our Linux and macOS sandboxes, we implemented new features that allow Sigma rule matching by extracting samples’ runtime behavior.</p>
+<p>For example, a process created in our sandbox that ends in “/crontab” and contains the &ldquo;-l&rdquo; parameter in the command line would match the following Sigma rule:</p>
+<p>logsource:</p>
+<p>  product: linux</p>
+<p>  category: process_creation</p>
+<p>detection:</p>
+<p>  selection:</p>
+<p>    Image|endswith: &lsquo;/crontab&rsquo;</p>
+<p>    CommandLine|contains: &rsquo; -l'</p>
+<p>  condition: selection</p>
+<p>We have mapped all the fields used by Sigma rules with the information offered by our sandboxes, which allowed us to map rules for image_load, process_creation and registry_set, among others.</p>
+<p>This approach has limitations. However, about 54% of Crowdsourced Sigma rules for Linux and 96% for macOS are related to process creation, meaning we already have enough information to match all these with our sandboxes’ output. The same happens for rules based on file creation.</p>
+<p>Let’s look at some examples!</p>
+<h2 id="linux-macos-and-windows-examples-1">Linux, MacOS and Windows examples</h2>
+<p>The following shell script sample matches 11 Crowdsourced Sigma Rule matches.</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/bTWJ1UA1ZZD4Rp1zveMMQnBj56Ml4m7CNrtWH5WhtyHoHeZ_jQDszTLVAzzMceuWMx6Ca8KuBfZohKHmbBvL4GXs54q5Ioh3BB8S_fpZBraBPB3hTZnQkjwbC6VDTaAjuKQTsaxIlY47PwEq0ShTu6a8UL3Z-JRQbkf4-cXBMvv1LGHiWc57ouscO9y4SK0PZdj0CqzFqZnbvLlZDlNUoKWYoV7KioE16SOr7w" alt="" />
+</figure>
+
+
+</p>
+<p>For every rule, it is possible to check what triggered the match by clicking on &ldquo;View matches”. In the case of Windows binaries, it would show what Sysmon event matched the behavior described in the Sigma rule, as we can see below:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/nH37fyOS9lB4SH9qzIPAK1yTKLJbS-MCJi7qeWjswE9dhWkogvY5br3uA-J2yPoDF9KYFgupIoA5k5YrG9ZzWwhNIdadZHk-xwJZg_zTUM7DTqeA6nqwMtg2o4sGnL38ZkzhB3Pd8MFf8BI-xN5oTQ0Ol-yMAtkww-xEPK5drozKGfysVmADlLUOuUwer9oGtl0gqz7c-mZXTbez9Rt492v3fTJADgURaO6ydg" alt="" />
+</figure>
+
+
+</p>
+<p>In the case of the shell script mentioned above, it shows the values that are relevant to the logic of the rule as you can see in the following image:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/iBVwMpjLAzwLYgV7s-PHZfaTDmuE2ISh-lBEGrLFcFgNIpQ7-f3B2vm4a8R_cEWM5Uax6v3xWT35reZbqurLjx90n-8asI2l1Pxdp41-xEFj0H3Sz99dHzJYtH6kgd54Gw3NvrKWr2UGCI588Ou4QpCZL5VGJnV5q1SddyyPRK6cPezRfFFCB6DVVT7HsB3xrc_FoRkickpOYVcO5F6z-oO6xHemiuSPM5p-eg" alt="" />
+</figure>
+
+
+</p>
+<p>Interestingly, Sigma rules intended for Linux also produce results in macOS environments, and vice versa. In this case, the shell script can be interpreted by both operating systems. Indeed, one of the matching rules for the sample called Indicator Removal on Host - Clear Mac System Logs was specifically created for macOS:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/IU3OM1Nz14k8Pdkaqpi5RWHGc9NjWAHoPKGCL90esa0QZMQb1ZhWqRTDqnVd6vJgCvNpso8PHNQJT2hwmjOrhJRCencqP93ABVfLas7udwAnUCx7gH-svk8LICqcHhZDhodxd5PyVL-oEcAOCx8j40JYMU8d4Iq7Pe-mUh_3IvxIcm20_ChTS7294F-GdclSfNPL19773yuw75SEvOXRruSBYi6NuHMvCtlW3g" alt="" />
+</figure>
+
+
+</p>
+<p>while a second matching rule, Commands to Clear or Remove the Syslog , was created for Linux:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/I83iS3D0wpyQu8TFf0n4dlf153RAfdvIRl8iMWb-sm1NMY8t3P8wwJ3Ixr2rO8gmzAaYHdz7hXuUsRDGzxi_UYuD6OFu3pKsXMXe8KbbDeaAL0tBWfDgcGICAE-irxXsdNRR9kkLDsWsSaXx-5tcdallNMpmYuc-m1GZbAQ4j6-vDPK9wp0Q9ga_Xs7iILRPWqKPzgQv8Q4DoPlLhf274anMMSi3YngwDPbx2w" alt="" />
+</figure>
+
+
+</p>
+<p>To get more examples of samples with Sigma rules that match sandboxes’ output instead of Sysmon, you can use the following queries:</p>
+<p>(have:sigma) and not have:evtx type:mac</p>
+<p>(have:sigma) and not have:evtx type:linux</p>
+<p>A second interesting example is a dmg matching 8 Sigma rules, 5 of them originally created for Linux OS under the “process_creation” category and 2 rules created for macOS. The last match… is a Sigma rule created for Windows samples!</p>
+<p>
+<figure>
+  <img src="https://s5.gifyu.com/images/Sjbsg.gif" alt="" />
+</figure>
+
+
+</p>
+<p>The new feature matching Sigma rules with Linux and macOS samples helped us identify some rules that are maybe too generic, which is not necessarily a problem as long as this is the intended behavior.</p>
+<p>In this case, the Usage Of Web Request Commands And Cmdlets rule was originally created to detect web request using Windows’ command line:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/M5l7N9cJ_zdbuR-MthKBo19qxAcOfCFc2WsKIX4r7G6BVPRJsnhPrqaNxWtyuXmw2r57sc6lDsTtKi0FehS79GM-dN5E5ZYf9ePC_topnL7foWDDZ80kbnRax1seDc6D1iZeBmhtJMQE3wtFVAAFTUG9xydgYY6pIockMd9fLgn7ZrvbZSf1QcmXyShOdi3Eh-uS5OaACCiRnxXwdXXy8MAAuboqpfdVZJB2fQ" alt="" />
+</figure>
+
+
+</p>
+<p>The rule seems a bit too generic since it only checks for a few strings in the command line, although it can be highly effective for generic detection of suspicious behavior.</p>
+<p>To understand why our Macintosh Disk Image sample triggered a detection for this rule, we checked the matches:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/Gzxk4mCCV0uJ4gyiwoQzIPqsscuWfDyu9CCoNhDuviiC-1zJNh4EyM_EJZq4y27OHUeiUMgf35MmPnMTGZwaYPmPC1VDaY2uzH1QHFb3XqXXTb20RY7Zl3RB_hw-GZqtnUfXP63Soq_RaWI8Wjnplq6z5yT8QWuWSg7B5YVVFbSxJx7GvTuT7uAp4UEzxnGkVYNtSXf_Mo5MKb2Ps-VCCpsDF5nvbL9dcKE3Gw" alt="" />
+</figure>
+
+
+</p>
+<p>As we can see, the use of the string “curl” in the command line was enough to match this sample.</p>
+<p>This sigma rule had about 9k hits last year only, with more than 300 of the files being Linux or macOS samples. You can obtain the full list using the following query:</p>
+<p>sigma_rule:f92451c8957e89bb4e61e68433faeb8d7c1461c3b90d06b3403c8f3d87c728b8 and (type:linux or type:mac)</p>
+<h2 id="creating-livehunt-rules-from-sysmon-evtx-outputs-1">Creating Livehunt rules from Sysmon EVTX outputs</h2>
+<p>So far we have mainly focused on samples that do not have Sysmon (EVTX) logs. Now let&rsquo;s see how it is possible to create a Livehunt rule based on Sysmon logs. For this, we are going to use the “structure” functionality provided in the Livehunt YARA editor, as we explain in this post.</p>
+<p>The sample we will use in this example is associated with CobaltStrike and matches multiple Sigma rules that identify certain behaviors. It is important to note that for every Sigma match, we will see in the file “structure” the context <strong>that matched</strong> but not the full EVTX logs. These can be downloaded from the sample’s VT report behavior section under “Download Artifacts” or using our API (available for public and privately scanned files).</p>
+<p>The following image shows the matching raw EVTX generated by our sample:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/04pqw6oXn8r_d-13nYXDumqEUwjtBKraV6WDXV7YV4zD00ZYiUJ5pgwkCrMi00IiIo1aOxmt7mbi3E6xWoJkz-FMlQOHAdA42xCrPoEWLfjFwmOkgz8D5poXj8J5eXXBSYSesDNd7YvxyA0ffV7oA3RbGoiOOSAZ7YY5_ZvXLWBVXvEyErLBcc3XSW0TU4GP7OLnwclWMRERkotJzwSC0iZO-X2SdaGz7yUgFA" alt="" />
+</figure>
+
+
+</p>
+<p>From the sample’s JSON Structure, <strong>Sigma_analysis_results</strong> is an array that contains objects with all the relevant information related to the matching Sigma rules, including details about the rule itself and EVTX logs. From the previous image, the first highlighted section is related to process creation and the second one is a registry event (value set).</p>
+<p>As explained in our post, by just clicking on the fields that you are interested in you can start building your Livehunt rule, and adjust values accordingly. In this case, our rule will identify files creating registry keys under \CurrentVersion\RunOnce\ with a .bat or .vbs extension:</p>
+<p>import &ldquo;vt&rdquo;</p>
+<p>rule sigma_example_registry_keys {</p>
+<p>  meta:</p>
+<p>    target_entity = &ldquo;file&rdquo;</p>
+<p>  condition:</p>
+<p>    for any vt_behaviour_sigma_analysis_results in vt.behaviour.sigma_analysis_results: (</p>
+<p>      for any vt_behaviour_sigma_analysis_results_match_context in vt_behaviour_sigma_analysis_results.match_context: (</p>
+<p>        vt_behaviour_sigma_analysis_results_match_context.values[&ldquo;TargetObject&rdquo;] icontains &ldquo;\CurrentVersion\RunOnce\&rdquo; and</p>
+<p>        (vt_behaviour_sigma_analysis_results_match_context.values[&ldquo;Details&rdquo;] endswith &ldquo;.vbs&rdquo; or vt_behaviour_sigma_analysis_results_match_context.values[&ldquo;Details&rdquo;] endswith &ldquo;.bat&rdquo;)</p>
+<p>      )</p>
+<p>    )</p>
+<p>}</p>
+<p>Running this YARA using a Retrohunt finds multiple files:</p>
+<p>daef729493b9061e7048b4df10b71fdba2e11d9147512f48463994a88c834a30 141e87e62c110b86cf7b01a2def60faab6365f6391eb0d4a7cbad8d480dd4706 814b2cab7c5a12ec18f345eb743857e74f5be45c35642dc01330e7a0def6269a 31b0e9b188fe944d58867bbfc827d77c7711c3a690168a417377fe6bf1544408 dd6051509ed8cf3d059b538fa8878f87423c51b297b49a12144d3d2923c89cce 647323f0245da631cef57d9ca1e3327c3242fe1cbbf6582c4d187e9f5fbfb678 40a90dd3b2132a299f725e91a5d0127013b21af24074afb944d8bc5735c1bd53 b44c6d2dd8ad93cecd795cecde83081292ee9949d65b2e98d4a2a3c8a97bd936 710b0cca7e7c17a3dd2a309f5ca417b76429feac1ab5fb60f5502995ebbd1515 50c098119ce41771e7a3b8230a7aa61ebea925e8eda46c33f0dd42b8950b92fe</p>
+<p>Here you can see some interesting matches:</p>
+<p>
+<figure>
+  <img src="https://lh7-us.googleusercontent.com/sZLZhAfbKUNhk9RujX-DtJkb9Kg9yFT85fYEcpeyX1fdnglquAV0b8uZv8p4SodmKDpZjUEBp16rEV8ALiwRFYsewYdOBqKuA3b_5dcn9e1fMvHnYZLknfiOPrQ6G81-4408Huvi6-STzDJyC47X5IUuioFoMxljA8CN5dDaz0na3rnpyIM6Stz0aBHIgkJfuVEFe2rZGUCptk5k3KxWyD6DaNAmq6ZV62Efzw" alt="" />
+</figure>
+
+
+</p>
+<p>The next rule focuses on file creation events related to Sysmon (EVID 11) under the “C:WindowsSystem32” directory, with a “.dll” extension and having any “cve” tag (flagging potential CVE exploitation). Remember we can always include any additional details related to the samples we want to hunt, such as positives, metadata, tags, engines, … in addition to EVTX fields:</p>
+<p>import &ldquo;vt&rdquo;</p>
+<p>rule sigma_rule_evtx_cve {</p>
+<p>  meta:</p>
+<p>    target_entity = &ldquo;file&rdquo;</p>
+<p>  condition:</p>
+<p>    for any vt_behaviour_sigma_analysis_results in vt.behaviour.sigma_analysis_results: (</p>
+<p>      for any vt_behaviour_sigma_analysis_results_match_context in vt_behaviour_sigma_analysis_results.match_context: (</p>
+<p>        vt_behaviour_sigma_analysis_results_match_context.values[&ldquo;TargetFilename&rdquo;] startswith &ldquo;C:\Windows\System32\&rdquo; and</p>
+<p>        vt_behaviour_sigma_analysis_results_match_context.values[&ldquo;TargetFilename&rdquo;] endswith &ldquo;.dll&rdquo; and</p>
+<p>        for any vt_metadata_tags in vt.metadata.tags: (</p>
+<p>        vt_metadata_tags icontains &ldquo;cve-&rdquo;</p>
+<p>        )</p>
+<p>      )</p>
+<p>    )</p>
+<p>}</p>
+<h2 id="sysmon-evtx-fields---overlaps-1">Sysmon EVTX fields - overlaps</h2>
+<p>Some of the details found in Sysmon EVTX fields (found in the VT JSON samples’ structure) can be redundant with details provided in other more traditional fields that you use for your Livehunt rules through the YARA VT module.</p>
+<p>For example, instead of: vt_behaviour_sigma_analysis_results_match_context.values[&ldquo;TargetFilename&rdquo;] from vt.behaviour.sigma_analysis_results</p>
+<p>you could use: vt.behaviour.files_written to identify file creation events.</p>
+<p>When that’s the case, we recommend using traditional fields found in VT samples’ structure for the following reasons:</p>
+<ul>
+<li>Sysmon information is fully stored/indexed only the part matching the Sigma rule, which will limit any YARA hunting.</li>
+<li>We mapped most Sysmon fields into YARA VT module for simplicity.</li>
+<li>Linux and MacOS samples do not have any Sysmon information related to Sigma rules. Similar details about the match can be found under the “behaviour” JSON structure entry.</li>
+</ul>
+<p>The new Sysmon-like details offered in the file “structure” also make VT an excellent platform for researchers and Sigma rule creators, allowing them to leverage this information without the need to create their own lab.</p>
+<p>The following table helps mapping VT Intelligence queries, YARA VT module fields, Sigma Categories, and Sigma fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>VT Intelligence</th>
+          <th>YARA VT module field</th>
+          <th>Sigma Category</th>
+          <th>Sigma Field</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>behavior_created_processes</td>
+          <td>vt.behaviour.processes_created</td>
+          <td>process_creation</td>
+          <td>Image  CommandLine  ParentCommandLine  ParentImage  OriginalFileName</td>
+      </tr>
+      <tr>
+          <td>behavior_files</td>
+          <td>vt.behaviour.files_attribute_changed  vt.behaviour.files_deleted  vt.behaviour.files_opened  vt.behaviour.files_copied  vt.behaviour.files_copied[x].destination  vt.behaviour.files_copied[x].source  vt.behaviour.files_written  vt.behaviour.files_dropped  vt.behaviour.files_dropped[x].path  vt.behaviour.files_dropped[x].sha256  vt.behaviour.files_dropped[x].type</td>
+          <td>file_access  file_change  file_delete  file_rename  file_event</td>
+          <td>TargetFilename</td>
+      </tr>
+      <tr>
+          <td>behavior_injected_processes</td>
+          <td>vt.behaviour.processes_injected</td>
+          <td>process_access  create_remote_thread  process_creation</td>
+          <td>CallTrace  GrantedAccess  SourceImage  TargetImage  StartModule  StartFunction  TargetImage  SourceImage</td>
+      </tr>
+      <tr>
+          <td>behavior_processes</td>
+          <td>vt.behaviour.processes_terminated  vt.behaviour.processes_killed  vt.behaviour.processes_created  vt.behaviour.command_executions  vt.behaviour.processes_injected</td>
+          <td>process_access  create_remote_thread  process_creation</td>
+          <td>CallTrace  GrantedAccess  SourceImage  TargetImage  StartModule  StartFunction  TargetImage  SourceImage  Image  CommandLine  ParentCommandLine  ParentImage  OriginalFileName</td>
+      </tr>
+      <tr>
+          <td>behavior_registry</td>
+          <td>vt.behaviour.registry_keys_deleted  vt.behaviour.registry_keys_opened  vt.behaviour.registry_keys_set  vt.behaviour.registry_keys_set[x].key  vt.behaviour.registry_keys_set[x].value</td>
+          <td>registry_add  registry_delete  registry_event  registry_rename  registry_set</td>
+          <td>EventType  TargetObject  Details</td>
+      </tr>
+      <tr>
+          <td>behavior_services</td>
+          <td>vt.behaviour.services_bound  vt.behaviour.services_created  vt.behaviour.services_opened  vt.behaviour.services_started  vt.behaviour.services_stopped  vt.behaviour.services_deleted</td>
+          <td>registry_set  process_creation</td>
+          <td>Image  CommandLine  ParentCommandLine  ParentImage  EventType  TargetObject  Details</td>
+      </tr>
+      <tr>
+          <td>behavior_network</td>
+          <td>vt.behaviour.dns_lookups  vt.behaviour.dns_lookups[x].hostname  vt.behaviour.dns_lookups[x].resolved_ips  vt.behaviour.hosts_file  vt.behaviour.ip_traffic  vt.behaviour.ip_traffic[x].destination_ip  vt.behaviour.ip_traffic[x].destination_port  vt.behaviour.ip_traffic[x].transport_layer_protocol  vt.behaviour.http_conversations  vt.behaviour.http_conversations[x].url  vt.behaviour.http_conversations[x].request_method  vt.behaviour.http_conversations[x].request_headers  vt.behaviour.http_conversations[x].response_headers  vt.behaviour.http_conversations[x].response_status_code  vt.behaviour.http_conversations[x].response_body_filetype  vt.behaviour.smtp_conversations[x].hostname  vt.behaviour.smtp_conversations[x].destination_ip  vt.behaviour.smtp_conversations[x].destination_port  vt.behaviour.smtp_conversations[x].smtp_from  vt.behaviour.smtp_conversations[x].smtp_to  vt.behaviour.smtp_conversations[x].message_from  vt.behaviour.smtp_conversations[x].message_to  vt.behaviour.smtp_conversations[x].message_cc  vt.behaviour.smtp_conversations[x].message_bcc  vt.behaviour.smtp_conversations[x].timestamp  vt.behaviour.smtp_conversations[x].subject  vt.behaviour.smtp_conversations[x].html_body  vt.behaviour.smtp_conversations[x].txt_body  vt.behaviour.smtp_conversations[x].x_mailer  vt.behaviour.tls</td>
+          <td>network_connection</td>
+          <td>DestinationHostname  DestinationIp  DestinationIsIpv6  DestinationPort  DestinationPortName  SourceIp  SourceIsIpv6  SourcePort  SourcePortName</td>
+      </tr>
+      <tr>
+          <td>behavior (too generic)</td>
+          <td>vt.behaviour.modules_loaded</td>
+          <td>image_load</td>
+          <td>ImageLoaded  Image  OriginalFileName</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="wrapping-up-1">Wrapping up</h2>
+<p>At VirusTotal, we believe that the Sigma language is a valuable tool for the community to share information about samples’ behavior. Our objective is to make its use on VT as simple as possible. Our addition of MacOS and Linux is just the start of what we are working on, as we aim to add Sysmon for Linux to obtain more robust results, including the ability to download full generated logs.</p>
+<p>Remember that here you have a list of all the Crowdsourced Sigma rules that are currently deployed in VirusTotal and that you can use for threat hunting.</p>
+<p>We hope you join our fan club of Sigma and VirusTotal, and as always we are happy to hear your feedback.</p>
+<p>Happy Hunting!</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

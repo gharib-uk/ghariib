@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Anomaly Detection in Machine Learning Using Python</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Anomaly Detection in Machine Learning Using Python</h1>
+			<b><time>17.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/dev">dev</a>
+        	       
+		           <a href="/tags/developers">developers</a>
+        	       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/jetbrains">jetbrains</a>
+        	       
+		           <a href="/tags/linux">linux</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>In recent years, many of our applications have been driven by the high volume of data that we are able to collect and process. Some may refer to us being in the age of data. One of the essential aspects of handling such a large amount of data is anomaly detection – processes that enable […]</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/pc-featured_blog_1280x720_en-3.png" alt="Anomaly Detection in Machine Learning Using Python" />
+</figure>
+
+
+</p>
+<p>In recent years, many of our applications have been driven by the high volume of data that we are able to collect and process. Some may refer to us being in the age of data. One of the essential aspects of handling such a large amount of data is <strong>anomaly detection</strong> – processes that enable us to identify outliers, data that is outside the bounds of expectation and demonstrate behavior that is out of the norm. In scientific research, anomaly data points could be a cause of technical issues and may need to be discarded when drawing conclusions, or it could lead to new discoveries.</p>
+<p>In this blog post, we’ll see why using machine learning for anomaly detection is helpful and explore key techniques for detecting anomalies using Python. You’ll learn how to implement popular methods like OneClassSVM and Isolation Forest, see examples of how to visualize these results and understand how to apply them to real-world problems.</p>
+<h2 id="where-is-anomaly-detection-used">Where is anomaly detection used?</h2>
+<p>Anomaly detection has also been a crucial part of modern-day business intelligence, as it provides insights into what could possibly go wrong and may also identify potential problems. Here are some examples of using anomaly detection in modern-day business.</p>
+<p><strong>Security alerts</strong></p>
+<p>There are some cyber security attacks that can be detected via anomaly detection; for example, a spike in request volume may indicate a DDoS attack, while suspicious login behavior, like multiple failing attempts, may indicate unauthorized access. Detecting suspicious user behavior may indicate potential cyber security threats, and companies can act on them accordingly to prevent or minimize the damage.</p>
+<p><strong>Fraud detection</strong></p>
+<p>In financial organizations, for example, banks can use anomaly detection to highlight suspicious account activities, which may be an indication of illegal activities like money laundering or identity theft. Suspicious transactions can also be a sign of ​​credit card fraud.</p>
+<p><strong>Observability</strong></p>
+<p>One of the common practices for web services is to collect metrics of the real-time performance of the service if there is abnormal behavior in the system. For example, a spike in memory usage may show that something in the system isn’t functioning properly, and engineers may need to address it immediately to avoid a break in service.</p>
+<h2 id="why-use-machine-learning-for-anomaly-detection">Why use machine learning for anomaly detection?</h2>
+<p>Although traditional statistical methods can also help find outliers, the use of machine learning for anomaly detection has been a game changer. With machine learning algorithms, more complex data (e.g. with multiple parameters) can be analyzed all at once. Machine learning techniques also provide a means to analyze categorical data that isn’t easy to analyze using traditional statistical methods, which are more suited to numerical data.</p>
+<p>A lot of time, these anomaly detection algorithms are programmed and can be deployed as an application (see our FastAPI for Machine Learning tutorial) and run as requested or at scheduled intervals to detect any anomalies. This means that they can prompt immediate actions within the company and can also be used as reporting tools for business intelligence teams to review and adjust strategies.</p>
+<h2 id="types-of-anomaly-detection-techniques-and-algorithms">Types of anomaly detection techniques and algorithms</h2>
+<p>There are generally two main types of anomaly detection: outlier detection and novelty detection.</p>
+<p><strong>Outlier detection</strong></p>
+<p>Outlier detection is sometimes referred to as <strong>unsupervised</strong> anomaly detection, as it is assumed that in the training data, there are some undetected anomalies (thus unlabeled), and the approach is to use unsupervised machine learning algorithms to pick them out. Some of these algorithms include one-class support vector machines (SVMs), Isolation Forest, Local Outlier Factor, and Elliptic Envelope.</p>
+<p><strong>Novelty detection</strong></p>
+<p>On the other hand, novelty detection is sometimes referred to as <strong>semi-supervised</strong> anomaly detection. Since we assume that all training data doesn’t solely consist of anomalies, they’re all labeled as normal. The goal is to detect whether or not new data is an anomaly, which is sometimes referred to as a novelty. The algorithms used in outlier detection can also be used for novelty detection, provided that there are no anomalies in the training data.</p>
+<p>Other than the outlier detection and novelty detection mentioned, it is also very common to require anomaly detection in time series data. However, since the approach and technique used for time series data are often different from the algorithms mentioned above, we’ll discuss these in detail at a later date.</p>
+<h2 id="code-example-finding-anomalies-in-the-beehives-dataset">Code example: finding anomalies in the Beehives dataset</h2>
+<p>In this blog post, we’ll be using this Beehives dataset as an example to detect any anomalies in the hives. This data set provides various measurements of the hive (including the temperature and relative humidity of the hive) at various times.</p>
+<p>Here, we’ll be showing two very different methods for discovering anomalies. They are OneClassSVM, which is based on support vector machine technology, which we’ll use for drawing decision boundaries, and Isolation Forest, which is an ensemble method similar to Random Forest.</p>
+<h3 id="example-oneclasssvm">Example: OneClassSVM</h3>
+<p>In this first example, we’ll be using the data of hive 17, assuming bees will keep their hive in a constant pleasant environment for the colony; we can look at whether this is true and if there are times that the hive experiences anomaly temperature and relative humidity levels. We’ll use OneClassSVM to fit our data and look at the decision-making boundaries on a scatter plot.</p>
+<p>The SVM in OneClassSVM stands for support vector machine, which is a popular machine learning algorithm for classification and regressions. While support vector machines can be used to classify data points in high dimensions, by choosing a kernel and a scalar parameter to define a frontier, we can create a decision boundary that includes most of the data points (normal data), while retaining a small number of anomalies outside of the boundaries to represent the probability (nu) of finding a new anomaly. The method of using support vector machines for anomaly detection is covered in a paper by Scholkopf et al. entitled <em>Estimating the Support of a High-Dimensional Distribution</em>.</p>
+<h4 id="1-start-a-jupyter-project"><strong>1. Start a Jupyter project</strong></h4>
+<p>When starting a new project in PyCharm (Professional 2024.2.2), select <em>Jupyter</em> under <em>Python</em>.</p>
+<p>Start with PyCharm Pro for free</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-34.png" alt="Start a Jupyter project in PyCharm" />
+</figure>
+
+
+</p>
+<p>The benefit of using a Jupyter project (previously also known as a Scientific project) in PyCharm is that a file structure is generated for you, including a folder for storing your data and a folder to store all the Jupyter notebooks so you can keep all your experiments in one place. </p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-35.png" alt="Jupyter projects in PyCharm" />
+</figure>
+
+
+</p>
+<p>Another huge benefit is that we can render graphs very easily with Matplotlib. You will see that in the steps below.</p>
+<h4 id="2-install-dependencies"><strong>2. Install dependencies</strong></h4>
+<p>Download this requirements.txt from the relevant GitHub repo. Once you place it in the project directory and open it in PyCharm, you will see a prompt asking you to install the missing libraries.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/dependencies.png" alt="Install dependencies in PyCharm" />
+</figure>
+
+
+</p>
+<p>Click on <em>Install requirements</em>, and all of the requirements will be installed for you. In this project, we’re using Python 3.11.1.</p>
+<h4 id="3-import-and-inspect-the-data"><strong>3. Import and inspect the data</strong></h4>
+<p>You can either download the “Beehives” dataset from Kaggle or from this GitHub repo. Put all three CSVs in the <em>Data</em> folder. Then, in main.py, enter the following code:</p>
+<pre tabindex="0"><code>import pandas as pd
+
+df = pd.read_csv(&#39;data/Hive17.csv&#39;, sep=&#34;;&#34;)
+df = df.dropna()
+print(df.head())
+</code></pre><p>Finally, press the <em>Run</em> button in the top right-hand corner of the screen, and our code will be run in the Python console, giving us an idea of what our data looks like.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-1.gif" alt="Import data in PyCharm" />
+</figure>
+
+
+</p>
+<h4 id="4-fit-the-data-points-and-inspect-them-in-a-graph"><strong>4. Fit the data points and inspect them in a graph</strong></h4>
+<p>Since we’ll be using the OneClassSVM from scikit-learn, we’ll import it together with DecisionBoundaryDisplay and Matplotlib using the code below:</p>
+<pre tabindex="0"><code>from sklearn.svm import OneClassSVM
+from sklearn.inspection import DecisionBoundaryDisplay
+
+import matplotlib.pyplot as plt
+</code></pre><p>According to the data’s description, we know that column T17 represents the temperature of the hive, and RH17 represents the relative humidity of the hive. We’ll extract the value of these two columns as our input:</p>
+<pre tabindex="0"><code>X = df[[&#34;T17&#34;, &#34;RH17&#34;]].values
+</code></pre><p>Then, we’ll create and fit the model. Note that we’ll try the default setting first:</p>
+<pre tabindex="0"><code>estimator = OneClassSVM().fit(X)
+</code></pre><p>Next, we’ll show the decision boundary together with the data points:</p>
+<pre tabindex="0"><code>disp = DecisionBoundaryDisplay.from_estimator(
+    estimator,
+    X,
+    response_method=&#34;decision_function&#34;,
+    plot_method=&#34;contour&#34;,
+    xlabel=&#34;Temperature&#34;, ylabel=&#34;Humidity&#34;,
+    levels=[0],
+)
+disp.ax_.scatter(X[:, 0], X[:, 1])
+plt.show()
+</code></pre><p>Now, save and press <em>Run</em> again, and you’ll see that the plot is shown in a separate window for inspection.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-36.png" alt="Fit the data points and inspect them in a graph in PyCharm" />
+</figure>
+
+
+</p>
+<h4 id="5-fine-tune-hyperparameters"><strong>5. Fine-tune hyperparameters</strong></h4>
+<p>As the plot above shows, the decision boundary does not fit very well with the data points. The data points consist of a couple of irregular shapes instead of an oval. To fine-tune our model, we have to provide a specific value of “mu” and “gamma” to the OneClassSVM model. You can try it out yourself, but after a couple of tests, it seems “nu=0.1, gamma=0.05” gives the best result.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/fine-tune-hyperparameters.png" alt="Fine-tune hyperparameters in PyCharm" />
+</figure>
+
+
+</p>
+<h3 id="example-isolation-forest">Example: Isolation Forest</h3>
+<p>Isolation Forest is an ensemble-based method, similar to the more popular Random Forest classification method. By randomly selecting parting features and values, it will create many decision trees, and the path length from the root of the tree to the node making that decision will then be averaged over all the trees (hence “forest”). A short average path length indicates anomalies.</p>
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/isolation-forest.png" alt="Isolation Forest" />
+</figure>
+
+
+</p>
+<!-- raw HTML omitted -->
+<p><em>A short decision path usually indicates data that is very different from the others.</em></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Now, let’s compare the result of OneClassSVM with IsolationForest. To do that, we’ll make two plots of the decision boundaries made by the two algorithms. In the following steps, we’ll build on the script above using the same hive 17 data.</p>
+<h4 id="1-import-isolationforest"><strong>1. Import IsolationForest</strong></h4>
+<p>IsolationForest can be imported from the ensemble categories in Scikit-learn:</p>
+<pre tabindex="0"><code>from sklearn.ensemble import IsolationForest
+</code></pre><h4 id="2-refactor-and-add-a-new-estimator"><strong>2. Refactor and add a new estimator</strong></h4>
+<p>Since now we’ll have two different estimators, let’s put them in a list:</p>
+<pre tabindex="0"><code>estimators = [
+    OneClassSVM(nu=0.1, gamma=0.05).fit(X),
+    IsolationForest(n_estimators=100).fit(X)
+]
+</code></pre><p>After that, we’ll use a for loop to loop through all the estimators.</p>
+<pre tabindex="0"><code>for estimator in estimators:
+    disp = DecisionBoundaryDisplay.from_estimator(
+        estimator,
+        X,
+        response_method=&#34;decision_function&#34;,
+        plot_method=&#34;contour&#34;,
+        xlabel=&#34;Temperature&#34;, ylabel=&#34;Humidity&#34;,
+        levels=[0],
+    )
+    disp.ax_.scatter(X[:, 0], X[:, 1])
+    plt.show()
+</code></pre><p>As a final touch, we’ll also add a title to each of the graphs for easier inspection. To do that, we’ll add the following after disp.ax_.scatter:</p>
+<pre tabindex="0"><code>disp.ax_.set_title(
+        f&#34;Decision boundary using {estimator.__class__.__name__}&#34;
+    )
+</code></pre><p>You may find that refactoring using PyCharm is very easy with the auto-complete suggestions it provides.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-40.png" alt="Refactoring using auto-completion in PyCharm" />
+</figure>
+
+
+</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/image-39.png" alt="Auto-completion in PyCharm" />
+</figure>
+
+
+</p>
+<h4 id="3-run-the-code"><strong>3. Run the code</strong></h4>
+<p>Like before, running the code is as easy as pressing the <em>Run</em> button in the top-right corner. After running the code this time, we should get two graphs.</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/run-the-code.gif" alt="Run the code in PyCharm" />
+</figure>
+
+
+</p>
+<p>You can easily flip through the two graphs with the preview on the right. As you can see, the decision boundary is quite different while using different algorithms. When doing anomaly detection, it’s worth experimenting with various algorithms and parameters to find the one that suits the use case the most.</p>
+<h2 id="summary">Summary</h2>
+<p>Anomaly Detection has proven to be an important aspect of business intelligence, and being able to identify anomalies and prompt immediate actions to be taken is essential in some sectors of business. Using the proper machine learning model to automatically detect anomalies can help analyze complicated and high volumes of data in a short period of time. In this blog post, we have demonstrated how to identify anomalies using statistical models like OneClassSVM and how STL decomposition can help identify anomalies in time series data.</p>
+<p>To learn more about using PyCharm for machine learning, please check out “Start Studying Machine Learning With PyCharm” and “How to Use Jupyter Notebooks in PyCharm”.</p>
+<h2 id="detect-anomalies-using-pycharm">Detect anomalies using PyCharm</h2>
+<p>With the Jupyter project in PyCharm Professional, you can organize your anomaly detection project with a lot of data files and notebooks easily. Graphs output can be generated to inspect anomalies and plots are very accessible in PyCharm. Other features, such as auto-complete suggestions, make navigating all the Scikit-learn models and Matplotlib plot settings a blast.</p>
+<p>Power up your data science project by using PyCharm; check out the data science features offered to streamline your data science workflow.</p>
+<p>Start with PyCharm Pro for free</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

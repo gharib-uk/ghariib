@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Announcing CodeQL Community Packs</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Announcing CodeQL Community Packs</h1>
+			<b><time>03.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/development">development</a>
+        	       
+		           <a href="/tags/git">git</a>
+        	       
+		           <a href="/tags/github">github</a>
+        	       
+		           <a href="/tags/gitlab">gitlab</a>
+        	       
+		           <a href="/tags/software">software</a>
+        	       
+
+			<div>
+				<p>We are excited to introduce the new CodeQL Community Packs, a comprehensive set of queries and models designed to enhance your code analysis capabilities. These packs are tailored to augment…</p>
+<p>The post Announcing CodeQL Community Packs appeared first on The GitHub Blog.</p>
+<p>We are excited to introduce the new CodeQL Community Packs, a comprehensive set of queries and models designed to enhance your code analysis capabilities. These packs are tailored to augment the standard set of CodeQL queries, providing additional resources for security researchers and developers alike.</p>
+<h2 id="why">Why?</h2>
+<p>CodeQL is a semantic code analysis tool that allows developers to query their codebases as databases, enabling the identification of vulnerabilities, bugs, and patterns efficiently.</p>
+<p>The standard set of CodeQL queries is focused on accuracy and low false positive rates, which is ideal for integration into CI/CD pipelines where alerts are primarily handled by developers. However, when alerts are operated by security engineers or researchers, the balance between false positives and false negatives can be adjusted to prioritize low false negatives, ensuring no bugs are left behind—albeit at the cost of more triaging.</p>
+<h2 id="what">What?</h2>
+<p>The CodeQL Community Packs is a set of CodeQL packs to augment the standard set queries. They include three main types of packs:</p>
+<ul>
+<li><strong>Model packs</strong>: these packs contain additional models of Taint Tracking sources, sinks, and summaries for libraries and frameworks that are not supported by the default suites.</li>
+<li><strong>Query packs</strong>: these packs contain additional security and audit queries to help identify potential vulnerabilities and improve code quality.</li>
+<li><strong>Library packs</strong>: designed to be used by query packs, these packs do not contain queries themselves but provide essential libraries for more comprehensive analysis.</li>
+</ul>
+<h2 id="how">How?</h2>
+<p>The GitHub Security Lab has been extensively using these packs for the last few years and as our records show, they turned out to be very fruitful.</p>
+<p>
+<figure>
+  <img src="https://github.blog/wp-content/uploads/2024/12/381-vulnerabilities.png?w=683&amp;resize=683%2C529" alt="Badge that says 381 vulnerabilities found with the help of CodeQL." />
+</figure>
+
+
+</p>
+<p>In addition to the additional queries and models provided by the community packs, we have also been using the audit queries, which proved invaluable when running deep-dive manual code reviews, such as the ones we did for Datahub and Home Assistant. Being able to list all the files which introduced untrusted data into the application or that perform security-relevant operations was really helpful when exploring unfamiliar huge codebases, such as the Home Assistant one.</p>
+<p>
+<figure>
+  <img src="https://github.blog/wp-content/uploads/2024/12/home-assistant-codebas.png?w=746&amp;resize=746%2C198" alt="Screenshot of the section &lsquo;Analyzing the code base&rsquo; from a blog post about Home Assistant." />
+</figure>
+
+
+</p>
+<h2 id="whats-in-the-community-packs">What’s in the community packs?</h2>
+<p>The CodeQL Community Packs offer a variety of additional queries and models for languages, such as Java, C#, and Python. These packs are designed to move the Signal to Noise (SNR) ratio closer to the low false negatives end of the spectrum, making them particularly useful for security researchers.</p>
+<p>For example, the Java packs include:</p>
+<ul>
+<li>Java queries
+<ul>
+<li><strong>CVEs</strong>: queries for known CVEs such as Log4Shell.</li>
+<li><strong>Security</strong>: dozens of new security queries contributed by CodeQL engineers and security researchers from the GitHub Security Lab, but also by the broader community of security researchers.</li>
+<li><strong>Audit Exploration</strong>: queries to list all files, dependencies, untrusted data entry points, and hazardous sinks.</li>
+<li><strong>Audit Templates</strong>: templates to build your own taint tracking queries, explore data paths, or “hoist” sinks to public method parameters.</li>
+<li><strong>Library sources</strong>: special queries designed to find third-party APIs called with untrusted data.</li>
+</ul>
+</li>
+<li>Java extension models
+<ul>
+<li>This pack contains additional models which define additional remote flow sources, summaries and sinks for hundreds of APIs.</li>
+</ul>
+</li>
+<li>Java libraries
+<ul>
+<li>A collection of predicates and classes used by Java queries.</li>
+</ul>
+</li>
+<li>Library extension models
+<ul>
+<li>Additional threat model pack which defines library API method parameters as a source of untrusted data.</li>
+</ul>
+</li>
+</ul>
+<p>
+<figure>
+  <img src="https://github.blog/wp-content/uploads/2024/12/file-tree.png?w=669&amp;resize=669%2C1024" alt="Screenshot of what is included in the Java CodeQL Community Pack" />
+</figure>
+
+
+</p>
+<h2 id="library-extension-models">Library extension models</h2>
+<p>Remember Log4Shell? It was relatively easy for a SAST tool to detect, as the JNDI injection sink was well-known and covered by existing CodeQL models at that time. However, CodeQL’s default threat model, like most SAST tools, is based on modeling untrusted data as data that comes from the network. Therefore, CodeQL could have reported Log4Shell if we had analyzed an application that took untrusted data from the network (for example, a web application) and passed this untrusted data to Log4J logger methods.</p>
+<p>To enable CodeQL to report such a data flow path, we would have needed to provide CodeQL with the source code of both the web application and Log4J. Could we have reported Log4Shell by analyzing only the Log4J source code? Certainly! But we would have needed a different threat model, one in which the arguments of logger methods such as <code>info</code> or <code>error</code> were considered sources of untrusted data. But how could CodeQL know that these methods could introduce untrusted data in the first place?</p>
+<p>To support such a threat model, we developed the library source packs. We analyzed thousands of applications that took untrusted data and passed it to third-party APIs (such as Log4J’s <code>error</code> method). This analysis resulted in a list of third-party library methods used in real applications that are passed untrusted data.</p>
+<p>Once we collected this list, which contained API methods such as Log4J’s <code>AbstractLogger.error</code>, we used it to define new sources of untrusted data to be used when scanning library code, such as Log4J code. By doing this with Log4J code, we were able to first identify that logger methods can be called with untrusted data from network requests and second, report a JNDI injection in Log4J code when using the new library source QL packs!</p>
+<p>
+<figure>
+  <img src="https://github.blog/wp-content/uploads/2024/12/kndi-lookup.png?w=1024&amp;resize=1024%2C665" alt="Screenshot of an open issue titled &lsquo;JNDI-lookup with user-controlled name.&rsquo; Beneath the title, there is a banner reading &lsquo;Speed up the remediation of this alert with Copilot Autofix for CodeQL.&rsquo;" />
+</figure>
+
+
+</p>
+<h2 id="exploration-queries">Exploration queries</h2>
+<p>Reviewing a new, unfamiliar codebase is a difficult and lengthy process. Reducing the review surface to the most significant and relevant files is crucial to making this process as efficient as possible.</p>
+<p>When faced with similar reviews, the GitHub Security Lab likes to first map out the new codebase. We do this by listing all the entry points where potentially untrusted data enters the application and identifying operations that can be hazardous, such as file reads/writes, deserialization operations, or network requests.</p>
+<p>To achieve this, we use the RemoteFlowSources.ql query, which provides a list of all places identified by CodeQL where untrusted data enters the application. We also use the HotSpots query, which returns a list of all hazardous sinks in the application, regardless of evidence of untrusted data flowing into them.</p>
+<p>In addition to providing a good initial heat map of the codebase, this approach helps us better understand how well CodeQL covers the used libraries and whether additional modeling is needed.</p>
+<h3 id="how-to-use-them">How to use them?</h3>
+<p>The community packs are regular CodeQL packs and can be used both as part of GitHub’s code scanning workflows and with the CodeQL CLI.</p>
+<p>To use the CodeQL community packs in code scanning, specify a <code>with: packs:</code> entry in the <code>uses: github/codeql-action/init@v3</code> section of your CodeQL code scanning workflow. See the examples below.</p>
+<p>Adding the community packs <strong>library extension models</strong> to a scan:</p>
+<pre tabindex="0"><code>- name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: java
+          packs: githubsecuritylab/codeql-java-library-sources,githubsecuritylab/codeql-java-extensions
+</code></pre><p>Running the community packs <strong>additional security queries</strong>:</p>
+<pre tabindex="0"><code>- name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: java          
+          queries: java
+          packs: githubsecuritylab/codeql-java-queries
+</code></pre><p>Running the community packs <strong>additional security queries</strong> with the additional community packs <strong>extension models</strong>:</p>
+<pre tabindex="0"><code>- name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: java          
+          queries: java
+          packs: githubsecuritylab/codeql-java-extensions,githubsecuritylab/codeql-java-queries
+</code></pre><p>Similarly, you can use the community packs from the CLI.</p>
+<p>Adding the community packs <strong>library extension models</strong> to a scan:</p>
+<pre tabindex="0"><code>codeql database analyze --download &lt;CodeQL DB&gt; --model-packs githubsecuritylab/codeql-java-extensions --model-packs githubsecuritylab/codeql-java-library-sources codeql/java-queries --format=sarif-latest --output=scan.sarif --sarif-add-file-contents
+</code></pre><p>Running the community packs additional <strong>security queries</strong>:</p>
+<pre tabindex="0"><code>codeql database analyze --download &lt;CodeQL DB&gt; githubsecuritylab/codeql-java-queries --format=sarif-latest --output=scan.sarif --sarif-add-file-contents
+</code></pre><p>Running the community packs additional <strong>security queries</strong> with the additional community packs <strong>extension models</strong>:</p>
+<pre tabindex="0"><code>codeql database analyze --download db --model-packs githubsecuritylab/codeql-java-extensions githubsecuritylab/codeql-java-queries --format=sarif-latest --output=scan.sarif --sarif-add-file-contents
+</code></pre><h2 id="how-to-contribute">How to contribute?</h2>
+<p>The most important aspect of the community packs is the community involvement! Sharing your models and queries with the community is the best way to help secure the open source software we all depend on. Contributions can range from simple Model As Data (MaD) lines to existing extension files or even the creation of new queries that model new vulnerability classes. Every contribution is welcome!</p>
+<p>The post Announcing CodeQL Community Packs appeared first on The GitHub Blog.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

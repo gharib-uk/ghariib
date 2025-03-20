@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Regular Expression Validate Phone Number Accurately</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Regular Expression Validate Phone Number Accurately</h1>
+			<b><time>02.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>Regular expressions are powerful input validators and are especially so for formats that follow a predictable pattern, such as phone numbers. A well-constructed regex will ensure that the input is according to the expected format and reduces errors, hence improving data quality.</p>
+<p>This article explores how the following regex is used in the validation of common phone number formats across Python, Java, and JavaScript:</p>
+<h2 id="the-regular-expression">The Regular Expression</h2>
+<p>Here is the common regular expression that helps you to validate common phone number formats.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">/^(+?d{1,3}[-.s]?)?((?d{3})?[-.s]?)?d{3}[-.s]?d{4}$/</span>
+</span></span></code></pre></div><p>The example phone numbers that matches by the above regex.</p>
+<pre tabindex="0"><code class="language-none" data-lang="none">
+123-456-7890
+(123) 456-7890
+123.456.7890
+123 456 7890
++1 123-456-7890
+</code></pre><h3 id="how-it-works">How it works?</h3>
+<p>This regex validates phone numbers and accommodates various formats. Here’s how it works:</p>
+<ul>
+<li><strong>^ and $:</strong> Ensures the entire string matches the pattern.</li>
+<li><strong>(+?d{1,3}[-.s]?)?:</strong> Matches an optional country code:
+<ul>
+<li><code>+?</code>: An optional “+” sign.</li>
+<li><code>d{1,3}</code>: One to three digits for the country code.</li>
+<li><code>[-.s]?</code>: Allows an optional separator (dash, dot, or space).</li>
+</ul>
+</li>
+<li><strong>((?d{3})?[-.s]?)?:</strong> Matches an optional area code:
+<ul>
+<li><code>(?</code>: An optional opening parenthesis.</li>
+<li><code>d{3}</code>: Exactly three digits.</li>
+<li><code>)?</code>: An optional closing parenthesis.</li>
+<li><code>[-.s]?</code>: Allows an optional separator.</li>
+</ul>
+</li>
+<li><strong>d{3}[-.s]?d{4}:</strong> Matches the main phone number:
+<ul>
+<li><code>d{3}</code>: Three digits.</li>
+<li><code>[-.s]?</code>: An optional separator.</li>
+<li><code>d{4}</code>: Four digits.</li>
+</ul>
+</li>
+</ul>
+<h2 id="examples">Examples</h2>
+<p>Here is an few example of implementing the above regex in Python, Java, and JavaScript programing languages.</p>
+<h3 id="python-implementation">Python Implementation</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Define the regex pattern</span>
+</span></span><span style="display:flex;"><span>pattern <span style="color:#f92672">=</span> <span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;^(+?d{1,3}[-.s]?)?((?d</span><span style="color:#e6db74">{3}</span><span style="color:#e6db74">)?[-.s]?)?d</span><span style="color:#e6db74">{3}</span><span style="color:#e6db74">[-.s]?d</span><span style="color:#e6db74">{4}</span><span style="color:#e6db74">$&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Test phone numbers</span>
+</span></span><span style="display:flex;"><span>phone_numbers <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;123-456-7890&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;(123) 456-7890&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;+1 123-456-7890&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;123.456.7890&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;123 456 7890&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;invalid_number&#34;</span>
+</span></span><span style="display:flex;"><span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> number <span style="color:#f92672">in</span> phone_numbers:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> re<span style="color:#f92672">.</span><span style="color:#66d9ef">match</span>(pattern, number):
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Valid: </span><span style="color:#e6db74">{</span>number<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Invalid: </span><span style="color:#e6db74">{</span>number<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span></code></pre></div><h3 id="java-implementation">Java Implementation</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.regex.*;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PhoneNumberValidator</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) {
+</span></span><span style="display:flex;"><span>        String pattern <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;^(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$&#34;</span>;
+</span></span><span style="display:flex;"><span>        String<span style="color:#f92672">[]</span> phoneNumbers <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;123-456-7890&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;(123) 456-7890&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;+1 123-456-7890&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;123.456.7890&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;123 456 7890&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;invalid_number&#34;</span>
+</span></span><span style="display:flex;"><span>        };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (String number : phoneNumbers) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (Pattern.<span style="color:#a6e22e">matches</span>(pattern, number)) {
+</span></span><span style="display:flex;"><span>                System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Valid: &#34;</span> <span style="color:#f92672">+</span> number);
+</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>                System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Invalid: &#34;</span> <span style="color:#f92672">+</span> number);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="javascript-implementation">JavaScript Implementation</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">pattern</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">/^(+?d{1,3}[-.s]?)?((?d{3})?[-.s]?)?d{3}[-.s]?d{4}$/</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">phoneNumbers</span> <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;123-456-7890&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;(123) 456-7890&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;+1 123-456-7890&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;123.456.7890&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;123 456 7890&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;invalid_number&#34;</span>
+</span></span><span style="display:flex;"><span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">phoneNumbers</span>.<span style="color:#a6e22e">forEach</span>(<span style="color:#a6e22e">number</span> =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">pattern</span>.<span style="color:#a6e22e">test</span>(<span style="color:#a6e22e">number</span>)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">`Valid: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">number</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>);
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">`Invalid: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">number</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><h2 id="conclusion">Conclusion</h2>
+<p>The present regex would thus be flexible enough to be able to validate most commonly used phone number formats, while accurately rejecting those in the incorrect format. Various application integrations are easy in Python, Java, and JavaScript and are nicely described by this particular regex pattern. So use regex in order to get consistent results out of your users; deliver better customer experience with the validated phone number data.</p>
+<p>The post Regular Expression Validate Phone Number Accurately appeared first on TecAdmin.</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

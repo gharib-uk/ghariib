@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>A quick post on Chen’s algorithm</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>A quick post on Chen’s algorithm</h1>
+			<b><time>15.01.2025 00:00</time></b>
+		       
+		           <a href="/tags/attacks">attacks</a>
+        	       
+		           <a href="/tags/ces">ces</a>
+        	       
+		           <a href="/tags/eu">eu</a>
+        	       
+		           <a href="/tags/lg">lg</a>
+        	       
+		           <a href="/tags/pqc">pqc</a>
+        	       
+		           <a href="/tags/quantum">quantum</a>
+        	       
+		           <a href="/tags/quantum-computing">quantum-computing</a>
+        	       
+		           <a href="/tags/technology">technology</a>
+        	       
+
+			<div>
+				<p><strong>Update</strong> <strong>(April 19):</strong> <em>Yilei Chen announced the discovery of a bug in the algorithm, which he does not know how to fix. This was independently discovered by Hongxun Wu and Thomas Vidick. At present, the paper does not provide a polynomial-time algorithm for solving LWE.</em></p>
+<p>If you’re a normal person — that is, a person who doesn’t obsessively follow the latest cryptography news — you probably missed last week’s cryptography bombshell. That news comes in the form of a new e-print authored by Yilei Chen, “Quantum Algorithms for Lattice Problems“, which has roiled the cryptography research community. The result is now being evaluated by experts in lattices and quantum algorithm design (<em>and to be clear, I am not one!</em>) but if it holds up, it’s going to be quite a bad day/week/month/year for the applied cryptography community.</p>
+<p>Rather than elaborate at length, here’s quick set of five bullet-points giving the background.</p>
+<p>(1) Cryptographers like to build modern public-key encryption schemes on top of mathematical problems that are believed to be “hard”. In practice, we need problems with a specific structure: we can construct <em>efficient</em> solutions for those who hold a secret key, or “trapdoor”, and yet also admit <em>no efficient solution</em> for folks who don’t. While many problems have been considered (and often discarded), most schemes we use today are based on three problems: factoring (the RSA cryptosystem), discrete logarithm (Diffie-Hellman, DSA) and elliptic curve discrete logarithm problem (EC-Diffie-Hellman, ECDSA etc.)</p>
+<p>(2) While we would like to believe our favorite problems are fundamentally “hard”, we know this isn’t really true. Researchers have devised algorithms that solve all of these problems quite efficiently (i.e., in polynomial time) — provided someone figures out how to build a quantum computer powerful enough to run the attack algorithms. <em>Fortunately such a computer has not yet been built!</em></p>
+<p>(3) Even though quantum computers are not yet powerful enough to break our public-key crypto, the mere threat of <em>future</em> quantum attacks has inspired industry, government and academia to join forces Fellowship-of-the-Ring-style in order to tackle the problem right now. This isn’t merely about future-proofing our systems: even if quantum computers take decades to build, future quantum computers could break encrypted messages we send <em>today</em>!</p>
+<p>(4) One conspicuous outcome of this fellowship is NIST’s Post-Quantum Cryptography (PQC) competition: this was an open competition designed to standardize <em>“post-quantum” cryptographic schemes</em>. Critically, these schemes must be based on different mathematical problems — most notably, problems that <em>don’t</em> seem to admit efficient quantum solutions.</p>
+<p>(5) Within this new set of schemes, the most popular class of schemes are based on problems related to mathematical objects called <em>lattices</em>. NIST-approved schemes based on lattice problems include Kyber and Dilithium (which I wrote about recently.) Lattice problems are also the basis of several efficient fully-homomorphic encryption (FHE) schemes.</p>
+<p>This background sets up the new result.</p>
+<p>Chen’s (not yet peer-reviewed) preprint claims a new quantum algorithm that efficiently solves the “shortest independent vector problem” (SIVP, as well as GapSVP) in lattices with specific parameters. If it holds up, the result could (with numerous important caveats) allow future quantum computers to break schemes that depend on the hardness of specific instances of these problems. The good news here is that even if the result is correct, the vulnerable parameters are very specific: Chen’s algorithm does not <em>immediately</em> apply to the recently-standardized NIST algorithms such as Kyber or Dilithium. Moreover, the exact concrete complexity of the algorithm is not instantly clear: it may turn out to be impractical to run, even if quantum computers become available.</p>
+<p>But there is a saying in our field that <em>attacks only get better.</em> If Chen’s result can be improved upon, then quantum algorithms could render obsolete an entire generation of “post-quantum” lattice-based schemes, forcing cryptographers and industry back to the drawing board.</p>
+<p>In other words, both a great technical result — and possibly a mild disaster.</p>
+<p>As previously mentioned: I am neither an expert in lattice-based cryptography nor quantum computing. The folks who <em>are</em> those things are very busy trying to validate the writeup_:_ and more than a few big results have fallen apart upon detailed inspection. For those searching for the latest developments, here’s a nice writeup by Nigel Smart that doesn’t tackle the correctness of the quantum algorithm (see updates at the bottom), but does talk about the possible implications for FHE and PQC schemes (TL;DR: bad for some FHE schemes, but really depends on the concrete details of the algorithm’s running time.) And here’s another brief note on a “bug” that was found in the paper, that seems to have been quickly addressed by the author.</p>
+<p>Up until this week I had intended to write another long wonky post about complexity theory, lattices, and what it all meant for applied cryptography. But now I hope you’ll forgive me if I hold onto that one, for just a little bit longer.</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

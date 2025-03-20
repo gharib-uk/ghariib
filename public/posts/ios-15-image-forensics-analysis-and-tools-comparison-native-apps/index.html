@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>iOS 15 Image Forensics Analysis and Tools Comparison  - Native Apps</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>iOS 15 Image Forensics Analysis and Tools Comparison  - Native Apps</h1>
+			<b><time>19.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<p>I am finally back with the third blog post in the series!</p>
+<p>Before I introduce this new post, I want to point out some updates to the previous blog post. </p>
+<p>I have corrected a couple of errors related to the Belkasoft tool, in particular the device UDID and the device phone number.</p>
+<p>Also, after the blog post, Alexis Brignoni released some new iLEAPP parsers that cover most of the “red” boxes and MSAB confirmed to me that they have already fixed all the “red” boxes from the previous blog post. At the end of the series, I will re-process the dataset with the latest version of the various tools, and create a separate table with the updated comparison.</p>
+<p>The goal of this third blog entry is to compare native application parsing, specifically the applications listed below that Josh Hickman documented while creating the test image:</p>
+<ul>
+<li>Contacts</li>
+<li>Call History (Phone and FaceTime)</li>
+<li>Messages (SMS/iMessage)</li>
+<li>Mail</li>
+<li>Safari</li>
+<li>Calendar</li>
+<li>Notes</li>
+<li>Maps</li>
+<li>Files</li>
+<li>Apple Music</li>
+<li>Wheater</li>
+<li>Alarms</li>
+<li>AppStore</li>
+</ul>
+<p>There are other relevant apps, notably Photos and Health, both of which are covered in another blog post. Other apps such as podcasts, voice memos, and shortcuts are not compared in this review.</p>
+<h2 id="contacts">Contacts</h2>
+<p>The native address book is stored in an SQLite database available at this path:</p>
+<p>privatevarmobileLibraryAddressBookAddressBook.sqlitedb</p>
+<p>Under the same path, the AddressBookImages.sqlitedb file contains the images associated with the contacts.</p>
+<p>Seven of the compared tools had a parser for these databases, and all of them found 9 contacts. </p>
+<p>Basic information such as first name, last name and phone number was extracted by all tools, while others were parsed only by a subset.</p>
+<p>By manually running the query available on Kacos2000&rsquo;s GitHub account, I verified that the database contains 9 contacts. The query provided coherent results with those provided by the tools.</p>
+<p>It is worth noting that an address book entry can contain additional fields (e.g. organization, birthday, nickname, note, etc.). Since they were not filled in the test image, I could not verify which tools supported all available information. </p>
+<p>AXIOM has a public and detailed document explaining what information can be extracted for each artifact. (). Other tools provide similar documentation only to clients.</p>
+<p>Three tools also extracted information about “Blocked Contacts”, which is available in a plist file that can be found at </p>
+<p>privatevarmobileLibraryPreferencescom.apple.cmfsyncagent.plist</p>
+<p>The results for each value and tool are shown in the figure, where YES means that the value was parsed and parsed correctly, and NO, that the value was not parsed.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Description</strong></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ARTEX</strong></th>
+          <th><strong>APOLLO</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>First Name</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Last Name</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Phone Number(s)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Email(s)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Picture</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Thumbnail</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Creation date</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Last modified date</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Address</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Website</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Organization</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Blocked Contacts</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="call-history">Call History</h2>
+<p>The native call history is stored in an SQLite database available at this path:</p>
+<p>privatevarmobileLibraryCallHistoryDBCallHistory.storedata</p>
+<p>All the tested tools have a parser for this database and all tools parsed most of the available information: other party phone number, direction (incoming/outgoing), call type (phone, face time audio, face time video), answered/unanswered, call start time and call duration. Most of the tools also extracted the “Service Provider Country Code”, when available. Only ArtEx parsed the “Disconnection Cause” and none of the tools included the “Face Time Data” column for Face Time Calls. </p>
+<p>By manually running the query available on Kacos2000 GitHub account, I verified that the database contains 22 contacts. The query provided coherent results with those provided by tools.</p>
+<p>The results for each value and tool are shown in the figure, where YES means that the value was parsed and parsed correctly and NO means that the value was not parsed.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ARTEX</strong></th>
+          <th><strong>APOLLO</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Other party</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Direction (Incoming/Outgoing)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Call type (Phone/Face Time Audio/Face Time Video)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Answered/Unanswered</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Call Start Time</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Call Duration</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Service Provider Country Code</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Disconnection reason</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>FaceTime Data</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="native-messages-smsimessage">Native Messages (SMS/iMessage)</h2>
+<p>The native SMS/iMessage database is stored in an SQLite database available at this path: </p>
+<p>privatevarmobileLibrarySMSsms.db</p>
+<p>All the tested tools have a parser for this database and all tools parsed most of the available information: other party phone number, message timestamp, direction, and message text. Only AXIOM, PA, OXYGEN, and APOLLO extracted all the timestamps, when available: read (incoming messages only) and delivered (outgoing iMessage only). Most of the tools also parsed attachments, with different levels of detail and precision.</p>
+<p>The results for each value and tool are shown in the figure, where YES means that the value was parsed and parsed correctly, and NO means that the value was not parsed.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ARTEX</strong></th>
+          <th><strong>APOLLO</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Other party</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Message Timestamp</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Service (SMS/iMessage)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Direction (Incoming/Outgoing)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Message Text</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Read (Yes/No) (incoming messages only)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Read Timestamp (incoming messages only)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Sent (Yes/No) (outgoing messages only)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Delivered (Yes/No) (incoming messages and outgoing iMessage only)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Delivered Timestamp (only sent messages)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Attachment name</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Attachment path</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Attachment size (bytes)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Message GUID</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Reply</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<p>In the iMessage thread, Josh did some relevant and specific actions:</p>
+<ul>
+<li>Replied to a message</li>
+<li>Liked a message</li>
+<li>Deleted a received message</li>
+<li>Sent a dynamic location</li>
+<li>Received a dynamic location</li>
+<li>Sent a static location</li>
+<li>Received a static location.</li>
+</ul>
+<p>Message reaction was parsed by all tools, and static locations were parsed by most commercial tools. Dynamic location parsing is really limited: tools found that a message was sent/received when the user started sharing/receiving dynamic location and another one was sent/received when the user stopped sharing/receiving dynamic location. Also looking at the raw database, rows for this type seem empty.</p>
+<p>Message reply is a quite relevant aspect and, if ignored, could create confusion while reading a conversation. In the following picture, you can see how a reply is visible in Cellebrite PA conversation view, while it’s not with AXIOM, XAMN, OXYGEN, and BELKASOFT.</p>
+<p><strong>Cellebrite PA</strong></p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhyjoecFDCol_8g1CL_nDxuMzAEmGcQJckfVA1QJhsq220DveMSIerT7LInfJ4TgR2BTM3vIBbBBCLw21KNnQMXf6ocbcISeUCOutHcJJKPzaRmgnoeIBkgZliUs3CxUOdd5jr7AL0IPP6eeWcrGF-SE6eKE66nWsg8bRqdbKcVXzKPKPpnpeLFjn07p3I/w640-h326/iMessage_PA.jpg" alt="" />
+</figure>
+
+
+</p>
+<p><strong>MSAB XAMN</strong></p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhOc5HEquzMkrkl3y_py3Hyv0Pa4eDXnJi3b07YQU66bW7-d3hllMfPIdpoFrGrbK1Vk8Xqs4u6jiaehA94bAeHKf7YncnsyQOLt_UxZMxv6e1GAT9BRCPXZYpeZGa0eZxzV7CrnArjFmI7nX1OJEWIzC5jWxeDy3yW16XOZbfoqkLcpfDWgsmxiPJ9IDY/w640-h406/iMessage_XAMN.jpg" alt="" />
+</figure>
+
+
+</p>
+<p><strong>Magnet AXIOM</strong></p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjameDi2S-HBw1YmbUjq98LCsd1qxU2LyVMmRacW-TnAe1LjQDpGP53jy5gzYYCpnWzS3o9Rm_uQUf2Wl0MCd0CoGfWqeS8g6WSGXeUMJMM_YZd66Gd0zRg7bwmCLhj5s0GQyLPmOZwYLUQMmmckUluPuOPTenEQXLFKkGITgUvEeZ3jSScjb8oZy3W1js/w640-h364/iMessage_AXIOM.jpg" alt="" />
+</figure>
+
+
+</p>
+<p><strong>Oxygen Forensics</strong></p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgn5GN7UalEmLCHbCnIy4Z_Io8AJT67JM1kUNf3eLVWaL-y5YZGcVuRJ7U_9mp5a-_1yVsgq9nDBhDAbm5WtOd8GDqhmdAI4kUkxNLANCFWzlICrAXHOb4Q3Mx9C8Ht_n6RQrAUzCipSVpjseoBBRCbUCurIUqH-D8e9lIQvMgQ9o88pie4UEJj-x1txF4/w640-h236/iMessage_Belkasoft.jpg" alt="" />
+</figure>
+
+
+</p>
+<p><strong>Belkasoft</strong></p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpAJuQYCEYLlaoBsfEAC11YspegIGEZe4rhNlGic9h_YabTEL_GcI0oFXVuaBXRnGl0iyhGjRdzY8hUnKyJUUNqezHGxBXJ9QfjemSEUhow89T34iy_DCPxmdXYlOyRZmRzbMwVUiQHAEyI18jQ3YTBt11lF4RJRT1nmgNLCHtTsD7Av3yzpi5wnvpWHI/w640-h200/iMessage_Belkasoft2.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>Recovering deleted messages is one of our main dreams. We know that this has become more and more complicated, as both native and third-party chat apps improved the way in which they manage the database storing conversations. <strong>None of the used tools was able to recover the iMessage that was deleted on this iPhone from the sms.db</strong>. The interesting aspect is that <strong>the deleted message was still available in iOS Notifications, including timestamp, sender, and text</strong>. iOS Notifications are supported by Cellebrite PA, AXIOM, XAMN, and ILEAPP.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhNhEqaNM5c3FMR-GmvaM6zueEF-QfDlzWLR0oExgcp7o5v-E43RTO3yljttl1Nn2bTY5vqh6ucENDJRjPRvy2pooaZDOdlJMjNRB-48u8Yw6UYwbdS1Bb5prl3VkUynngcZSGtNZOb8idweGIBMtbCb7rbOmrKNumhKJWw5kO9iw678cwLFe3qFCUizKQ/w640-h334/deleted_imessage.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>iLEAPP also has a plugin that checks the number of missing rows and can be used to spot when a deleted message was sent/received. A similar feature is available in ArtEx in Timeline view and when parsing the SQLite database.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjxrueGmK-kuqEpW487neAb8a_FH_UmmSZB2VjDQE8VVt7Nc-WDn-7wYZlkb5ThvV6dei7D07_qiPNr0WIVijjtScFJozHsivdI6-36ZcBypoxsX8aDpwsLNC1lKbZaViFLoDMgJ_CHMSnugfEdmovlhWgxkpbhmpdpkeffuXdV0iBJQWLnu2W1qkRIbTE/w640-h406/imessage_deleted_rows.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>The KnowledgeC database stores the information that a notification was received, even after the message has been deleted, but only the timestamp is available (no sender, no text).</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi-isJLqhAZeSMfnl52trRT8PWEUve61xVTk1BuSkZfmJAQRt-Hd5GNKsotc4c__4DpYfSBTZH1Bnd0BP9Ar1xr0Jndfps3jyNUfZquT8FD-J6V7vJAKutt3Em3cssPqVgtcqFC-C4k7-jHi0QeU77lYUbKFzct_aA6JHEzkkUml_HjLc3UHDPzlp4nEbs/w640-h398/knwoeldgec_axiom.jpg" alt="" />
+</figure>
+
+
+</p>
+<h2 id="apple-mail">Apple Mail</h2>
+<p>Apple Mail is the default email client on iOS devices. All the used tools have more than one parser for this app, extracting data from various files.</p>
+<p>Most of the email metadata is extracted from two SQLite databases:</p>
+<ul>
+<li>privatevarmobileLibraryMailEnvelope Index</li>
+<li>privatevarmobileLibraryMailProtected Index</li>
+</ul>
+<p>Every single message is saved as an emlx file at the path privatevarmobileLibraryMailMessageData.</p>
+<p>Most of the commercial tools parsed metadata and matched the content of the databases with the emlx file and related attachments. Belkasoft, ArtEx, and iLEAPP only parsed metadata.</p>
+<p>The results for each value and tool are shown in the figure, where YES means that the value was parsed and parsed correctly, and NO means that the value was not parsed.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ARTEX</strong></th>
+          <th><strong>APOLLO</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Sent timestamp</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Received timestamp</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Subject</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>From</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>To</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>CC</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>BCC</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Body</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Folder</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Status (Sent, Read, Unread)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Header</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Body</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Summary</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Attachments</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="safari">Safari</h2>
+<p>Safari is the default and most used browser on iOS devices. All the used tools have more than one parser for this app, extracting the data from various files. The most relevant files are:</p>
+<ul>
+<li>privatevarmobileLibrarySafariHistory.db</li>
+<li>privatevarmobileLibrarySafariSafariTabs.db </li>
+<li>privatevarmobileLibrarySafariBookmarks.db</li>
+<li>privatevarmobileLibrarySafariCloudTabs.db</li>
+<li>privatevarmobileLibrarySafariBrowserState.db</li>
+<li>privatevarmobileContainersDataApplication<!-- raw HTML omitted -->LibrarySafariDownloadsDownloads.plist</li>
+<li>privatevarmobileContainersDataApplication<!-- raw HTML omitted -->LibraryPreferencescom.apple.mobilesafari.plist</li>
+<li>privatevarmobileContainersDataApplication<!-- raw HTML omitted -->LibraryCachescom.apple.mobilesafariCache.db</li>
+<li>privatevarmobileContainersDataApplication<!-- raw HTML omitted -->LibraryImage CacheFaviconsFavicons.db</li>
+</ul>
+<p>During dataset creation, Josh took some actions, including visiting websites in normal and private mode, adding a website to bookmarks, downloading a PDF file, and closing various tabs.</p>
+<p>The History.db database contains browsing history in normal mode. Websites visited in Private Mode are never saved to this database. All visits in normal mode were correctly parsed by tools.</p>
+<p>For other files, the most detailed parsing is performed by PA and AXIOM, which parse all the available databases. </p>
+<p>Of particular interest is the database “SafariTabs.db”, which is used to store suspended state tabs: the interesting aspect is that both tabs in normal and private mode are saved here. Of particular interest, in our case, are two visits: on May 10th at 10:18 AM EDT to the SANS Website (sans.org) in a Private Tab left opened and at 10:23 AM EDT to the “espn.com” in a Private Tab that was closed after the visit. AXIOM, PA, and XAMN were able to find the tab still open, but they all parse the database partially or wrongly. AXIOM correctly parsed Title, URL, time stamp, and Tab ID, but states that the page was not visited in private mode. XAMS only extracts Title, URL, and Tab ID and Cellebrite PA only extracts Title and URL.</p>
+<p><strong>Cellebrite PA</strong></p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiOWjClQTPg-2wT1E39w8Bih5ppR63t4hULSXeBbFGfctTVd6RatdWEMRJhvXvbrsHjTUeVzBHB2fttXSxusBMyRmQcJGakVDtNOJA8jJVT-5Mlov6QOarXugIrUkE9Oz1_YirEuIURm057A_om-V3_gAllXQUihyphenhyphenZ-ajazRMo2rnHBzxRuZs8TjMpnOPg/w640-h512/pa_sfaritabs.png" alt="" />
+</figure>
+
+
+</p>
+<p><strong>AXIOM</strong></p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgLtzV1u8O789025finexBuohQrJodpYEmHFYIB0UzgH3O5JWSqCPcQsJziOE4q0eFEQ4lkhCaA88GDrR86yjxfV8Bse9nCIU-fQ3Uuvza81PFEJrcuG-Mlwa7HiKpZBhtGV-VjaXLb_rqN9i9C5uzXNCPGz49ZB8RiPZHmBoxyop4vvcTGhQCCrUUtSMQ/w640-h488/axiom_safaritabs.jpg" alt="" />
+</figure>
+
+
+</p>
+<p><strong>XAMN</strong></p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjL5udccWYXGY58a-6gSprsWPeDHvTvwIbk4lhH_uPnHhtfr8JgPO58licaKiDIVmWor2Y9gV4i8tk4M8QJPCbotRTQgEIYDIaU5AQ_GgPNQa8ivsjTF7U8dgwg-Ui-g5mCed03cMOMIxgfj2ifVwTRCaYzu-x3RxyXABrtdFfSziYGR_zoohOtcGarKjg/w640-h396/xamn_safaritabs.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>The results for each value and tool are shown in the figure, where YES means that the value was parsed and parsed correctly, and NO means that the value was not parsed.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ARTEX</strong></th>
+          <th><strong>APOLLO</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Visit Timestamp</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>URL</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Redirect URL</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Title</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Visit Count</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Visit Source (Local/Cloud)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Search Terms /History.db / com.apple.mobilesafari.plist)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Bookmarks (Bookmarks.db)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>iCloud Tabs (CloudTabs.db)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Last Session (Browser State.db)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Downloads (Downloads.plist)</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Tabs (BrowserState.db)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Tabs (SafariTabs.db)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Favicons (Favicons.db)</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Cache (Cache.db)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Cookies</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="calendar">Calendar</h2>
+<p>The native calendar is stored in an SQLite database available at this path:  </p>
+<p>privatevarmobileLibraryCalendarCalendar.sqlitedb</p>
+<p>All the commercial tools and iLEAPP have a parser for this database. All the tools extracted information about events stored there including title (summary), event location, event organizer, start and end date, all-day event (yes/no), calendar (home/work), and notes. XAMN and iLEAPP also parsed the creation and modified timestamps for each entry. </p>
+<p>By manually executing the query available on Kacos2000 GitHub account, I verified that the database contains 133 rows. The query provided coherent results with the ones provided by tools.</p>
+<p>Some tools show both the “Start Timezone” and the “End Timezone”: be careful in understanding that the raw value in the database is stored in UTC, so the output can be sometimes misleading. </p>
+<p>In the specific case of the analyzed acquisition, there is one event titled “My iOS 15 Test Event” that has a “Start Date” that was set by the user at 2 p.m. EDT on May 31st, 2023. Let’s take a look at how some tools show this information. </p>
+<p>Cellebrite PA, which doesn’t show the “Start Timezone”, if set to show the date and time in UTC, states that the event is set for 6 p.m. UTC on May 31, 2023, as shown in the picture. The provided information is correct, but we don’t have visibility on the “Timezone” of the event.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgv0JZKQJC46v7VGJfn7k4T4qnDcYiS5kyoe-v9smBnZoLRNbXQ9TgwUJCGGYg4lK700-lLNCwWdW4paNx7ypVsE0Y9sgW2hyNGrMJ4LpNjg4ZiPw0y38GodTjwbXvt2d5-MRfMnwyJolFZaRUsgBkKAa1qRA3XXY1CHgPonfkwYv9GbtY-RxX_FIebflE/w474-h640/pa_calendar.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>MAGNET Axiom, which shows the “Start Timezone” as “America/New_York”, if set to show the date and time in UTC, states that the event is set for 6 p.m. UTC on May 31st, 2023, as shown in the picture. The provided information is correct, and you also have visibility on the “Timezone” of the event. But you have to be careful in not to state that the event is set for 6 p.m. on the America/New_York timezone!</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhWeDMh_isE-aTrksswA8_BIu81ghv_fj-VSo12ECnFGWYICcPFLkfa3H07gIBusbxpCo31glNOw3PVn59yvyv8ixLbP1xLTKRcJePkrP0TXVfkPQxwojnuehv6s7Z7qgOitYLNQQurg0VYDH2qUFXaLa_MRA7UmuBQwhk7kVgQnDf5hs6bCNCvx7-GOSE/w410-h640/axiom_calendar.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>The same applies for iLEAPP, that shows the timestamp in UTC and also mentions the America/New_York timezone. Be careful in understanding the output!</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjtdL5pK_VcwY7qUS7F9xr9DqYRc2vK8UyJnIle0pslRsMfB74BwRaVWC8h0EuhOcnah71gRt0RUlLApeH4cZYtRuQF_ohBs2v7dTrsKSK6Zg5RlbDrFyjpdnAIMAe6dsNQBgZ6RyMRjQn74VV3tpoIfRhaJCMCudABFwN7bLb_mVb4b1FkZN6DvxxfF_8/w640-h48/ileapp_calendar.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>The results for each value and tool are shown in the figure, where YES means that the value was parsed and parsed correctly, and NO means that the value was not parsed.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Description</strong></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ARTEX</strong></th>
+          <th><strong>APOLLO</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Subject/Summary</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Folder</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Related Account</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Location</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Start date</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>End date</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Timezone</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Entry creation time</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Entry modified time</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="notes">Notes</h2>
+<p>The Notes database is stored in an SQLite database available at this path:  </p>
+<p>privatevarmobileContainersSharedAppGroup<!-- raw HTML omitted -->NoteStore.sqlite</p>
+<p>All the tools, apart from APOLLO, have a parser for this database and can extract, in the case of unencrypted notes, the modified time, the title, the body, and the summary. Some tools can only identify encrypted notes, while others also have a decryption feature. Cellebrite, ArtEx and Oxygen can decrypt notes when a correct password is provided or by cracking it (Cellebrite and ArtEx only with a keyword list, while Oxygen also with brute force attack), while <strong>AXIOM was able to decrypt the encrypted notes without the need of providing or cracking the password</strong>. AXIOM, PA, and XAMN also extract information about another party who shared the note with the user. Creation timestamp is provided only by Cellebrite and AXIOM.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ARTEX</strong></th>
+          <th><strong>APOLLO</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Creation time</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Modified time</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Title</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Body</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Parties</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Summary</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Password protected (yes/no)</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Password hint</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Decrypt encrypted notes</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="apple-maps">Apple Maps</h2>
+<p>Apple Maps is the default navigation app on iOS devices. All the used tools have parsers for this app, extracting data from various files.</p>
+<p>The most relevant information can be extracted from an SQLite database and three plist files:</p>
+<ul>
+<li>privatevarmobileContainersSharedAppGroup<!-- raw HTML omitted -->MapsMapsSync_0.0.1</li>
+<li>privatevarmobileContainersSharedAppGroup<!-- raw HTML omitted -->LibraryPreferencesgroup.com.apple.Maps.plist</li>
+<li>privatevarmobileContainersDataApplication<!-- raw HTML omitted -->LibraryMapsPins.metadata</li>
+<li>privatevarmobileContainersDataApplication<!-- raw HTML omitted -->DocumentslocationQueryGeococdeCacheFolder</li>
+</ul>
+<p>An interesting and overlooked artifact by commercial tools is Map Cache Files, actually parsed by AXIOM and ilEAPP. This folder contains three relevant SQLite databases:</p>
+<ul>
+<li>privatevarmobileLibraryCachescom.apple.geodAP.db</li>
+<li>privatevarmobileLibraryCachescom.apple.geodMapTiles.sqlitedb</li>
+<li>privatevarmobileLibraryCachescom.apple.geodPDPlaceCache.db</li>
+</ul>
+<p>A great reading about this artifact is the master thesis written by Jesse Spangenberger (<a href="https://drive.google.com/file/d/1QqvRoMS-R1WB58EiD6gNmvsuU7GpP">https://drive.google.com/file/d/1QqvRoMS-R1WB58EiD6gNmvsuU7GpP</a>_SJ/view?ref=digitalforensics.io) and the related blog post (<a href="https://digitalforensics.io/ios-forensics-ileapp-updates/)">https://digitalforensics.io/ios-forensics-ileapp-updates/)</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ARTEX</strong></th>
+          <th><strong>APOLLO</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Origin Address</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Origin Latitude</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Origin Longitude</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Destination Address</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Destination Latitude</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Destination Longitude</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Creation date</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Search terms</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+      <tr>
+          <td>Map Tiles Cache</td>
+          <td>YES</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>YES</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="files">Files</h2>
+<p>The Files application stores its data in three SQLite databases:  </p>
+<ul>
+<li>privatevarmobileLibraryApplication SupportCloudDocssessiondbserver.db</li>
+<li>privatevarmobileLibraryApplication SupportCloudDocssessiondbclient.db</li>
+<li>privatevarmobileContainersSharedAppGroup<!-- raw HTML omitted -->smartfolders.db</li>
+</ul>
+<p><strong>iLEAPP is the only tool parsing this application</strong>. While creating the test image, Josh documented that on May 20th at 10:51 AM EDT, he downloaded a file named “f7390d55-8690-4b52-a794-bc54c2a58fbd.pdf “ and then at 10.54 AM EDT he sent this file via iMessage. Also, at 10.58 AM EDT a file named “SANS_DFPS_FOR585_v3.5_2211.pdf” was saved on May 8th at 2.23 PM EDT </p>
+<p>The only issue I found in the iLEAPP parser, is that the shown date and time are the local time of the machine where it was run. In my case, I run it on a computer set to UTC+2 so the shown date time is not in UTC. Information about the downloaded file (with Safari) and the file sent by iMessage is parsed by all the tools in the specific section (Messages and Safari Browser).</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjtkYbLSZ3LpnP1PsChue7Na9xlqeQHU8sU579wGMiHOdPxolaG180S9LCHCWrKGsWJHfzCWLTcPFp8Rfa4l4DjOSgwwKEX-kFojnI_EjU4Dx22RaF-wsqfYb8tWTU6lFqUnNGh-gSzrh1v186fLh_VRFGQLNW1KgoIiQ6FNj_L_BxcK71sQ-QdtztwCNE/w640-h338/Files_iLEAPP.jpg" alt="" />
+</figure>
+
+
+</p>
+<h2 id="apple-music">Apple Music</h2>
+<p>The Apple Music app is not directly supported by any of the tested tools. By analyzing the KnowledgeC database and, specifically, the “NowPlaying” (Media History) entries, it is possible to find information about which application was playing a media, the start and end date, the song title, the artist, the album, and so on. This information was extracted from the KnowledgeC by AXIOM, Cellebrite, Belkasoft, ArtEx, and APOLLO: the last two provide the most detailed view.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>BELKASOFT</strong></th>
+          <th><strong>ARTEX</strong></th>
+          <th><strong>APOLLO</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Start playing time</td>
+          <td>KnC</td>
+          <td>NO</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>End playing time</td>
+          <td>KnC</td>
+          <td>NO</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Title</td>
+          <td>KnC</td>
+          <td>NO</td>
+          <td>KnC</td>
+          <td>NO</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Artist</td>
+          <td>KnC</td>
+          <td>NO</td>
+          <td>KnC</td>
+          <td>NO</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Album</td>
+          <td>KnC</td>
+          <td>NO</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>Duration</td>
+          <td>KnC</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>KnC</td>
+          <td>NO</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>State</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>State Duration</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>KnC</td>
+          <td>KnC</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="weather">Weather</h2>
+<p>The Apple Weather app is only supported by XAMN and iLEAPP, which parsed the associated plist file available at</p>
+<p>privatevarmobileContainersSharedAppGroup<!-- raw HTML omitted -->LibraryPreferencesgroup.com.apple.weather.plist</p>
+<p>While creating the test image, Josh documented that he added Austin, TX to the location list on May 9th, 2023 at 21:08 EDT.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgXLTTQOdwmoRpeO8PFV9e9E9NYoUUnscsUWCrdsmpqnf1e3WF1OuEEQOtTDN44g-yzUt-WGs6ERI2RbcYVVtpRe-Rdv_pqcwCAGo6JvPeLMCHwXe-edK9vkj-pgzYLkwoWSSi_q6FbptjhKAHzImQiLTaNGWoKQhHKoNehKwhuxR47OjLdw7beKOR51d8/w640-h332/weather_ileapp.png" alt="" />
+</figure>
+
+
+</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj8Ngv7IE6XeHG4jeJuQCgul-OKvUU0gRpheCflzpDRsakqFl4jvYBdRfjFrZnPCvwQvuDbtIh_0dL5WoVb1Lwoh61GXGR_sFAILipIk8eKWWitXSvAQTRts6fL1yg4VfnnsR5dv4UEaa1UHrzhQvm4GcQMp9rEu0RiwjoaJeR0jucoNJPUtXwaWVymkgc/w640-h268/weather_xamn.png" alt="" />
+</figure>
+
+
+</p>
+<p>Additional information about the app usage can be found in the Cache.db stored at </p>
+<p>privatevarmobileContainersDataApplication<!-- raw HTML omitted -->LibraryCachescom.apple.weatherCache.db</p>
+<p>This artifact is parsed by AXIOM.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhEDU0Aofkwu-h_c5yd2QPCDdoAIyGupCb59Jix2m7gvf3uvycODrvt90M_noXPMEZDFs5HZ1ZeP8BTgp39VjRpc5WQeMwpIZPd5oOrxAdNtnCwSPe1ft3aZH0UHdcMweGem0MlViNiBLrWwxEoiEUk79GuCwIyBCE34mChVdqNBT4zZD8-B6_9wKhhz40/w640-h458/weather_axiom.png" alt="" />
+</figure>
+
+
+</p>
+<h2 id="appstore">AppStore</h2>
+<p>As mentioned in Josh’s documentation, some searches were performed in the Apple AppStore application. This artifact is not explicitly supported by any of the tested tools. By knowing which keywords and when they were searched, traces can be found in the AppStore Cache, stored in</p>
+<p>privatevarmobileContainersDataApplication<!-- raw HTML omitted -->LibraryCachescom.apple.AppStoreCache.db.</p>
+<p>An example of this is the URL that could be extracted from the AppStore Cache.db related to the search of “Firefox”:</p>
+<p><a href="https://search.itunes.apple.com/WebObjects/MZSearchHints.woa/wa/hints?caller=com.apple.AppStore&amp;clientApplication=Software&amp;term=Firefox&amp;v=4&amp;with=appEvents">https://search.itunes.apple.com/WebObjects/MZSearchHints.woa/wa/hints?caller=com.apple.AppStore&amp;clientApplication=Software&amp;term=Firefox&amp;v=4&amp;with=appEvents</a></p>
+<p>The analysis of the iOS Cache file format is supported by all the commercial tools, but only two of them parsed the Cache.db file for the AppStore: AXIOM and XAMN. </p>
+<p>Here follows a comparison table for app store activities, among the various tools.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Date</strong></th>
+          <th><strong>Time (EDT)</strong></th>
+          <th><strong>Time (UTC)</strong></th>
+          <th><strong>Action</strong></th>
+          <th><strong>AXIOM</strong></th>
+          <th><strong>PA</strong></th>
+          <th><strong>OXYGEN</strong></th>
+          <th><strong>XAMN</strong></th>
+          <th><strong>Belkasoft</strong></th>
+          <th><strong>ARTEX</strong></th>
+          <th><strong>APOLLO</strong></th>
+          <th><strong>ILEAPP</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>05/05/2023</td>
+          <td>12:14</td>
+          <td>16:14</td>
+          <td>Searched for “Clubhouse”</td>
+          <td>iOS App Cache</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>iOS App Cache</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>05/05/2023</td>
+          <td>13:14</td>
+          <td>17:14</td>
+          <td>Searched for “CoverMe”</td>
+          <td>iOS App Cache</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>iOS App Cache</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>06/05/2023</td>
+          <td>10:55</td>
+          <td>14:55</td>
+          <td>Searched for “Firefox”</td>
+          <td>iOS App Cache</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>iOS App Cache</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+      <tr>
+          <td>20/05/2023</td>
+          <td>09:23</td>
+          <td>13:23</td>
+          <td>Searched for “Gmail”</td>
+          <td>iOS App Cache</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>iOS App Cache</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+          <td>NO</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="alarms">Alarms</h2>
+<p>The Apple Alarms app is only supported by iLEAPP, which parses the associated plist file available at</p>
+<p>privatevarmobileLibraryPreferencescom.apple.mobiletimerd.plist</p>
+<p>While creating the test image, Josh documented that on May 8th at 2.23 PM EDT, he set a timer labelled “My Daily Alarm” at 11.30 EDT from Monday to Friday.</p>
+<p>
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjWb7tfIkvX3mEoNictIJzjoYgvwQS8VawrC_f3fFLtKPtMN_c4sEYs7o7MFT7oW9TLccCh7Cqj1IwMYnyD03vFVAuG36pfhrhCZas92CvF7gt2Btyn1oR-EwqgJhxd_v-v90H19k36CZ5fiErCTSBjNNO_brVfmRiDxbbAsc0tb7MrRMRDUgqR6MyF3Nk/w640-h272/alarm_ileapp.png" alt="" />
+</figure>
+
+
+</p>
+<p>Go to Source</p>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-srsly-risky-biz-chinas-mss-gets-persona/">Srsly Risky Biz Chinas MSS gets personal</a></li>
+				
+				<li><a href="/posts/2025-03-19-risky-bulletin-google-buys-wiz-for-32-b/">Risky Bulletin Google buys Wiz for 32 billion</a></li>
+				
+				<li><a href="/posts/apple-inc-sent-you-a-payment-request-payoneer-invoices-other-microsoft-enabled-scams/">“Apple Inc sent you a payment request” Payoneer invoices; other Microsoft-enabled scams</a></li>
+				
+				<li><a href="/posts/glasses-that-transcribe-text-to-audio/">“Glasses” That Transcribe Text To Audio</a></li>
+				
+				<li><a href="/posts/5-best-linux-centos-replacement-options-alternatives/">&lt;div&gt;5 Best Linux CentOS Replacement Options &amp; Alternatives&lt;/div&gt;</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>
