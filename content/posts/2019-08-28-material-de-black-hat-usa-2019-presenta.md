@@ -1,0 +1,288 @@
+---
+title: "Material de Black Hat USA 2019 Presentaciones Papers y Herramientas"
+date: Wed, 28 Aug 2019 18:14:00 -0400
+draft: false
+type: posts
+categories: 
+- Black Hat,Presentaciones,Video
+---
+# Material de Black Hat USA 2019 Presentaciones Papers y Herramientas
+
+<br/>
+
+<br/>
+[![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEizZdFd5lF4vbOYOzd-1F3ysv6fCsdgzbjy-aOkaPVl4MOVIJa0i2L3HzazLKRaLyoJ342CNhr1QBuFBlQ0Tl8cYxZgTqHOCPdrXFtqLncpZttMMH1uaWBvCe49MPweTmvVOSjzaGqQ8Y4B/s640/blackhat_2019.jpg)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEizZdFd5lF4vbOYOzd-1F3ysv6fCsdgzbjy-aOkaPVl4MOVIJa0i2L3HzazLKRaLyoJ342CNhr1QBuFBlQ0Tl8cYxZgTqHOCPdrXFtqLncpZttMMH1uaWBvCe49MPweTmvVOSjzaGqQ8Y4B/s1600/blackhat_2019.jpg)
+
+  
+
+**Black Hat USA** es el evento de seguridad de la información más importante del mundo, proporcionando a los asistentes lo último en investigación, desarrollo y tendencias. Todos los años asistentes de todas partes y de cualquier rubro, viajan a la conferencia para aprender lo último en ciberseguridad y hacking.
+
+  
+Este es su año 22° y ya han liberado los [vídeos](https://www.youtube.com/playlist?list=PLH15HpR5qRsWrfkjwFSI256x1u2Zy49VI) de las presentaciones:  
+
+-   Every Security Team is a Software Team Now
+-   Detecting Deep Fakes with Mice
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Williams-Detecting-Deep-Fakes-With-Mice.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Wednesday/us-19-Williams-Detecting-Deep-Fakes-With-Mice-wp.pdf)
+-   Bypassing the Maginot Line: Remotely Exploit the Hardware Decoder on Smartphone
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Gong-Bypassing-The-Maginot-Line-Remotely-Exploit-The-Hardware-Decoder-On-Smartphone.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Wednesday/us-19-Gong-Bypassing-The-Maginot-Line-Remotely-Exploit-The-Hardware-Decoder-On-Smartphone-wp.pdf)
+-   A Decade After Bleichenbacher '06, RSA Signature Forgery Still Works
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Chau-A-Decade-After-Bleichenbacher-06-RSA-Signature-Forgery-Still-Works.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Wednesday/us-19-Chau-A-Decade-After-Bleichenbacher-06-RSA-Signature-Forgery-Still-Works-wp.pdf)
+-   ClickOnce and You're in - When Appref-ms Abuse is Operating as Intended
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Burke-ClickOnce-And-Youre-In-When-Appref-Ms-Abuse-Is-Operating-As-Intended.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Wednesday/us-19-Burke-ClickOnce-And-Youre-In-When-Appref-Ms-Abuse-Is-Operating-As-Intended-wp.pdf)
+-   Legal GNSS Spoofing and its Effects on Autonomous Vehicles
+-   Biometric Authentication Under Threat: Liveness Detection Hacking
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Chen-Biometric-Authentication-Under-Threat-Liveness-Detection-Hacking.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Wednesday/us-19-Chen-Biometric-Authentication-Under-Threat-Liveness-Detection-Hacking-wp.pdf)
+-   Battle of Windows Service: A Silver Bullet to Discover File Privilege Escalation Bugs Automatically
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Wu-Battle-Of-Windows-Service-A-Silver-Bullet-To-Discover-File-Privilege-Escalation-Bugs-Automatically.pdf)
+-   SSO Wars: The Token Menace
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Munoz-SSO-Wars-The-Token-Menace.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Wednesday/us-19-Munoz-SSO-Wars-The-Token-Menace-wp.pdf)
+-   Monsters in the Middleboxes: Building Tools for Detecting HTTPS Interception
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Valenta-Monsters-In-The-Middleboxes-Building-Tools-For-Detecting-HTTPS-Interception.pdf)
+-   Exploiting the Hyper-V IDE Emulator to Escape the Virtual Machine
+-   Hacking for the Greater Good: Empowering Technologists to Strengthen Digital Society
+-   Dragonblood: Attacking the Dragonfly Handshake of WPA3
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Vanhoef-Dragonblood-Attacking-The-Dragonfly-Handshake-Of-WPA3.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Wednesday/us-19-Vanhoef-Dragonblood-Attacking-The-Dragonfly-Handshake-Of-WPA3-wp.pdf)
+-   The Most Secure Browser? Pwning Chrome from 2016 to 2019
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Feng-The-Most-Secure-Browser-Pwning-Chrome-From-2016-To-2019.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Wednesday/us-19-Feng-The-Most-Secure-Browser-Pwning-Chrome-From-2016-To-2019-wp.pdf)
+-   Attacking and Defending the Microsoft Cloud (Office 365 & Azure AD)
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Metcalf-Attacking-And-Defending-The-Microsoft-Cloud.pdf)
+-   PicoDMA: DMA Attacks at Your Fingertips
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Sandin-PicoDMA-DMA-Attacks-At-Your-Fingertips.pdf)
+-   APIC’s Adventures in Wonderland
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Matula-APICs-Adventures-In-Wonderland.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Wednesday/us-19-Matula-APICs-Adventures-In-Wonderland-wp.pdf)
+    -   [Download Tool](https://www.ernw.de/download/om/blackhat/us-19-Matula-Block-APICs-Adventures-In-Wonderland-Exploits.zip)
+-   Behind the Scenes: The Industry of Social Media Manipulation Driven by Malware
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Paquet-Clouston-Behind-The-Scenes-The-Industry-Of-Social-Media-Manipulation-Driven-By-Malware.pdf)
+-   Attacking Electric Motors for Fun and Profit
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Jablonski-Attacking-Electric-Motors-For-Fun-And-Profit.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Wednesday/us-19-Jablonski-Attacking-Electric-Motors-For-Fun-And-Profit-wp.pdf)
+-   Sensor and Process Fingerprinting in Industrial Control Systems
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Ochoa-Sensor-And-Process-Fingerprinting-In-ICS.pdf)
+-   HTTP Desync Attacks: Smashing into the Cell Next Door
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Kettle-HTTP-Desync-Attacks-Smashing-Into-The-Cell-Next-Door.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Wednesday/us-19-Kettle-HTTP-Desync-Attacks-Smashing-Into-The-Cell-Next-Door-wp.pdf)
+    -   [Download Tool](https://github.com/portswigger/desynchronize)
+-   Behind the Scenes of Intel Security and Manageability Engine
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Hasarfaty-Behind-The-Scenes-Of-Intel-Security-And-Manageability-Engine.pdf)
+-   All the 4G Modules Could be Hacked
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Shupeng-All-The-4G-Modules-Could-Be-Hacked.pdf)
+-   New Vulnerabilities in 5G Networks
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Shaik-New-Vulnerabilities-In-5G-Networks.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Wednesday/us-19-Shaik-New-Vulnerabilities-In-5G-Networks-wp.pdf)
+-   I’m Unique, Just Like You: Human Side-Channels and Their Implications for Security and Privacy
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Wixey-Im-Unique-Just-Like-You-Human-Side-Channels-And-Their-Implications-For-Security-And-Privacy.pdf)
+-   It’s Not What You Know, It’s What You Do: How Data Can Shape Security Engagement
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Sedova-Know-How-Data-Can-Shape-Security-Engagement.pdf)
+-   Cyber Insurance 101 for CISO’s
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Smith-Cyber-Insurance-101-For-CISOs.pdf)
+-   The Path Less Traveled: Abusing Kubernetes Defaults
+-   Selling 0-Days to Governments and Offensive Security Companies
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Shwartz-Selling-0-Days-To-Governments-And-Offensive-Security-Companies.pdf)
+-   Selling 0-Days to Governments and Offensive Security Companies
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Shwartz-Selling-0-Days-To-Governments-And-Offensive-Security-Companies.pdf)
+-   Infiltrating Corporate Intranet Like NSA - Pre-auth RCE on Leading SSL VPNs
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Tsai-Infiltrating-Corporate-Intranet-Like-NSA.pdf)
+-   Integration of Cyber Insurance Into A Risk Management Program
+-   Come Join the CAFSA - Continuous Automated Firmware Security Analysis
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Mulliner-Come-Join-The-CAFSA-Continuous-Automated-Firmware-Security-Analysis.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Wednesday/us-19-Mulliner-Come-Join-The-CAFSA-Continuous-Automated-Firmware-Security-Analysis-wp.pdf)
+-   Worm Charming: Harvesting Malware Lures for Fun and Profit
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Amini-Worm-Charming-Harvesting-Malware-Lures-For-Fun-And-Profit.pdf)
+-   MITRE ATT&CK: The Play at Home Edition
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Nickels-MITRE-ATTACK-The-Play-At-Home-Edition.pdf)
+-   Look, No Hands! – The Remote, Interaction-less Attack Surface of the iPhone
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Silvanovich-Look-No-Hands-The-Remote-Interactionless-Attack-Surface-Of-The-iPhone.pdf)
+-   Chip.Fail - Glitching the Silicon of the Connected World
+-   Lessons From Two Years of Crypto Audits
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Aumasson-Lessons-From-Two-Years-Of-Crypto-Audits.pdf)
+-   Responding to a Cyber Attack with Missiles
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Hypponen-Responding-To-A-Cyber-Attack-With-Missiles.pdf)
+-   Finding a Needle in an Encrypted Haystack: Leveraging Cryptographic Abilities to Detect the Most Prevalent Attacks on Active Directory
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Simakov-Finding-A-Needle-In-An-Encrypted-Haystack-Leveraging-Cryptographic-Abilities-To-Detect-The-Most-Prevalent-Attacks-On-Active-Directory.pdf)
+-   Controlled Chaos: The Inevitable Marriage of DevOps & Security
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Shortridge-Controlled-Chaos-The-Inevitable-Marriage-Of-DevOps-And-Security.pdf)
+-   Arm IDA and Cross Check: Reversing the Boeing 787's Core Network
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Santamarta-Arm-IDA-And-Cross-Check-Reversing-The-787-Core-Network.pdf)
+-   The Cyber Shell Game – War, Information Warfare, and the Darkening Web
+-   He Said, She Said – Poisoned RDP Offense and Defense
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Baril-He-Said-She-Said-Poisoned-RDP-Offense-And-Defense.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Wednesday/us-19-Baril-He-Said-She-Said-Poisoned-RDP-Offense-And-Defense-wp.pdf)
+-   How Do Cyber Insurers View The World?
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Prevost-How-Insurers-View-The-World.pdf)
+-   Internet-Scale Analysis of AWS Cognito Security
+-   Messaging Layer Security: Towards a New Era of Secure Group Messaging
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Robert-Messaging-Layer-Security-Towards-A-New-Era-Of-Secure-Group-Messaging.pdf)
+-   Hacking Your Non-Compete
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Stone-Hacking-Your-Non-Compete.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Wednesday/us-19-Stone-Hacking-Your-Non-Compete-wp.pdf)
+-   Hunting for Bugs, Catching Dragons
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Joly-Hunting-For-Bugs-Catching-Dragons.pdf)
+-   Flying a False Flag: Advanced C2, Trust Conflicts, and Domain Takeover
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Landers-Flying-A-False-Flag-Advanced-C2-Trust-Conflicts-And-Domain-Takeover.pdf)
+-   Going Beyond Coverage-Guided Fuzzing with Structured Fuzzing
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Metzman-Going-Beyond-Coverage-Guided-Fuzzing-With-Structured-Fuzzing.pdf)
+-   Transparency in the Software Supply Chain: Making SBOM a Reality
+-   Deconstructing the Phishing Campaigns that Target Gmail Users
+-   Cybersecurity Risk Assessment for Safety-Critical Systems
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Vessels-Cybersecurity-Risk-Assessment-For-Safety-Critical-Systems.pdf)
+-   PeriScope: An Effective Probing and Fuzzing Framework for the Hardware-OS Boundary
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Song-PeriScope-An-Effective-Probing-and-Fuzzing-Framework-For-The-Hardware-OS-Boundary.pdf)
+-   Defense Against Rapidly Morphing DDOS
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Tyagi-Defense-Against-Rapidly-Morphing-DDOS.pdf)
+-   Reverse Engineering WhatsApp Encryption for Chat Manipulation and More
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Zaikin-Reverse-Engineering-WhatsApp-Encryption-For-Chat-Manipulation-And-More.pdf)
+-   Detecting Malicious Files with YARA Rules as They Traverse the Network
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-Bernal-Detecting-Malicious-Files-With-YARA-Rules-As-They-Traverse-The-Network.pdf)
+-   MINimum Failure - Stealing Bitcoins with Electromagnetic Fault Injection
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Wednesday/us-19-OFlynn-MINimum-Failure-Stealing-Bitcoins-With-EMFI.pdf)
+    -   [Download Tool](https://github.com/newaetech/phywhispererusb)
+-   Mobile Interconnect Threats: How Next-Gen Products May be Already Outdated
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Teissier-Mobile-Interconnect-Threats-How-Next-Gen-Products-May-Be-Already-Outdated.pdf)
+-   On Trust: Stories from the Front Lines
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Farshchi-On-Trust-Stories-From-The-Front-Lines.pdf)
+-   WebAuthn 101 - Demystifying WebAuthn
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Brand-WebAuthn-101-Demystifying-WebAuthn.pdf)
+-   Attack Surface as a Service
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Westelius-Attack-Surface-As-A-Service.pdf)
+-   Woke Hiring Won’t Save Us: An Actionable Approach to Diversity Hiring and Retention
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Lynch-Woke-Hhiring-Wont-Save-Us-An-Actionable-Approach-To-Diversity-Hiring-And-Retention.pdf)
+-   GDPArrrrr: Using Privacy Laws to Steal Identities
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Pavur-GDPArrrrr-Using-Privacy-Laws-To-Steal-Identities.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Thursday/us-19-Pavur-GDPArrrrr-Using-Privacy-Laws-To-Steal-Identities-wp.pdf)
+-   The Future of Securing Intelligent Electronic Devices Using the IEC 62351-7 Standard for Monitoring
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Carcano-The-Future-Of-Securing-IED-Using-The-IEC62351-7-Standard-For-Monitoring.pdf)
+-   Testing Your Organization's Social Media Awareness
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Wilkin-Testing-Your-Organizations-Social-Media-Awareness.pdf)
+-   Death to the IOC: What's Next in Threat Intelligence
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Soman-Death-To-The-IOC-Whats-Next-In-Threat-Intelligence.pdf)
+-   Planning a Bug Bounty: The Nuts and Bolts from Concept to Launch
+-   Playing Offense and Defense with Deepfakes
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Price-Playing-Offense-And-Defense-With-Deepfakes.pdf)
+-   All Your Apple are Belong to Us: Unique Identification and Cross-Device Tracking of Apple Devices
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Zheng-All-Your-Apple-Are-Belong-To-Us-Unique-Identification-And-Cross-Device-Tracking-Of-Apple-Devices.pdf)
+-   The Enemy Within: Modern Supply Chain Attacks
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Doerr-The-Enemy-Within-Modern-Supply-Chain-Attacks.pdf)
+-   Information Security in the Public Interest
+-   Breaking Through Another Side: Bypassing Firmware Security Boundaries from Embedded Controller
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Matrosov-Breaking-Through-Another-Side-Bypassing-Firmware-Security-Boundaries-From-Embedded-Controller.pdf)
+-   Project Zero: Five Years of 'Make 0Day Hard'
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Hawkes-Project-Zero-Five-Years-Of-Make-0day-Hard.pdf)
+-   Rough and Ready: Frameworks to Measure Persistent Engagement and Deterrence
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Healey-Rough-and-Ready-Frameworks-To-Measure-Persistent-Engagment-and-Deterrence.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Thursday/us-19-Healey-Rough-and-Ready-Frameworks-to-Measure-Persistent-Engagement-and-Deterrence-wp.pdf)
+-   100 Seconds of Solitude: Defeating Cisco Trust Anchor With FPGA Bitstream Shenanigans
+-   Denial of Service with a Fistful of Packets: Exploiting Algorithmic Complexity Vulnerabilities
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Hauke-Denial-Of-Service-With-A-Fistful-Of-Packets-Exploiting-Algorithmic-Complexity-Vulnerabilities.pdf)
+-   Women in Security: Building a Female InfoSec Community in Korea, Japan, and Taiwan
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Nakajima-Women-In-Security-Building-A-Female-InfoSec-Community-In-Korea-Japan-And-Taiwan.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Thursday/us-19-Nakajima-Women-In-Security-Building-A-Female-InfoSec-Community-In-Korea-Japan-And-Taiwan-wp.pdf)
+-   Rogue7: Rogue Engineering-Station Attacks on S7 Simatic PLCs
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Bitan-Rogue7-Rogue-Engineering-Station-Attacks-On-S7-Simatic-PLCs.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Thursday/us-19-Bitan-Rogue7-Rogue-Engineering-Station-Attacks-On-S7-Simatic-PLCs-wp.pdf)
+-   Operational Templates for State-Level Attack and Collective Defense of Countries
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Conti-Operational-Templates-for-State-Level-Attack-and-Collective-Defense-of-Countries.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Thursday/us-19-Conti-Operational-Templates-for-State-Level-Attack-and-Collective-Defense-of-Countries-wp.pdf)
+-   Process Injection Techniques - Gotta Catch Them All
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Kotler-Process-Injection-Techniques-Gotta-Catch-Them-All.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Thursday/us-19-Kotler-Process-Injection-Techniques-Gotta-Catch-Them-All-wp.pdf)
+    -   [Download Tool](https://github.com/SafeBreach-Labs/pinjectra)
+-   Bounty Operations: Best Practices and Common Pitfalls to Avoid in the First 6-12 Months
+-   DevSecOps : What, Why and How
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Shrivastava-DevSecOps-What-Why-And-How.pdf)
+-   Breaking Encrypted Databases: Generic Attacks on Range Queries
+-   Finding Our Path: How We're Trying to Improve Active Directory Security
+-   API-Induced SSRF: How Apple Pay Scattered Vulnerabilities Across the Web
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Maddux-API-Induced-SSRF-How-Apple-Pay-Scattered-Vulnerabilities-Across-The-Web.pdf)
+-   Exploiting Qualcomm WLAN and Modem Over The Air
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Pi-Exploiting-Qualcomm-WLAN-And-Modem-Over-The-Air.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Thursday/us-19-Pi-Exploiting-Qualcomm-WLAN-And-Modem-Over-The-Air-wp.pdf)
+-   Practical Approach to Automate the Discovery and Eradication of Open-Source Software Vulnerabilities at Scale
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Almubayed-Practical-Approach-To-Automate-The-Discovery-And-Eradication-Of-Open-Source-Software-Vulnerabilities-At-Scale.pdf)
+-   Managing for Success: Maintaining a Healthy Bug Bounty Program Long Term
+-   Ghidra - Journey from Classified NSA Tool to Open Source
+-   Firmware Cartography: Charting the Course for Modern Server Compromise
+-   0-days & Mitigations: Roadways to Exploit and Secure Connected BMW Cars
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Cai-0-Days-And-Mitigations-Roadways-To-Exploit-And-Secure-Connected-BMW-Cars.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Thursday/us-19-Cai-0-Days-And-Mitigations-Roadways-To-Exploit-And-Secure-Connected-BMW-Cars-wp.pdf)
+-   Infighting Among Russian Security Services in the Cyber Sphere
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Zenz-Infighting-Among-Russian-Security-Services-in-the-Cyber-Sphere.pdf)
+-   Behind the scenes of iOS and Mac Security
+-   Zombie Ant Farming: Practical Tips for Playing Hide and Seek with Linux EDRs
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Snezhkov-Zombie-Ant-Farming-Practical-Tips-For-Playing-Hide-And-Seek-With-Linux-EDRs.pdf)
+-   Predictive Vulnerability Scoring System
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Roytman-Jacobs-Predictive-Vulnerability-Scoring-System.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Thursday/us-19-Roytman-Predictive-Vulnerability-Scoring-System-wp.pdf)
+-   Towards Discovering Remote Code Execution Vulnerabilities in Apple FaceTime
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Huang-Towards-Discovering-Remote-Code-Execution-Vulnerabilities-In-Apple-FaceTime.pdf)
+-   Backdooring Hardware Devices by Injecting Malicious Payloads on Microcontrollers
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Berta-Backdooring-Hardware-Devices-By-Injecting-Malicious-Payloads-On-Microcontrollers.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Thursday/us-19-Berta-Backdooring-Hardware-Devices-By-Injecting-Malicious-Payloads-On-Microcontrollers-wp.pdf)
+-   Securing the System: A Deep Dive into Reversing Android Pre-Installed Apps
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Stone-Securing-The-System-A-Deep-Dive-Into-Reversing-Android-Preinstalled-Apps.pdf)
+-   Preventing Authentication Bypass: A Tale of Two Researchers
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Jaiswal-Preventing-Authentication-Bypass-A-Tale-Of-Two-Researchers.pdf)
+-   Automation Techniques in C++ Reverse Engineering
+-   Inside the Apple T2
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Davidov-Inside-The-Apple-T2.pdf)
+-   Making Big Things Better the Dead Cow Way
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Thursday/us-19-Menn-Making-Big-Things-Better-The-Dead-Cow-Way-wp.pdf)
+-   Critical Zero Days Remotely Compromise the Most Popular Real-Time OS
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Seri-Critical-Zero-Days-Remotely-Compromise-The-Most-Popular-Real-Time-OS.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Thursday/us-19-Seri-Critical-Zero-Days-Remotely-Compromise-The-Most-Popular-Real-Time-OS-wp.pdf)
+-   Fantastic Red-Team Attacks and How to Find Them
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Smith-Fantastic-Red-Team-Attacks-And-How-To-Find-Them.pdf)
+-   The Discovery of a Government Malware and an Unexpected Spy Scandal
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Franceschi-Bicchierai-The-Discovery-Of-A-Government-Malware-And-An-Unexpected-Spy-Scandal.pdf)
+-   Attacking iPhone XS Max
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Wang-Attacking-IPhone-XS-Max.pdf)
+-   Securing Apps in the Open-By-Default Cloud
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Howes-Securing-Apps-In-The-Open-By-Default-Cloud.pdf)
+-   Adventures in the Underland: The CQForensic Toolkit as a Unique Weapon Against Hackers
+-   HostSplit: Exploitable Antipatterns in Unicode Normalization
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Birch-HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Thursday/us-19-Birch-HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization-wp.pdf)
+-   Hacking Ten Million Useful Idiots: Online Propaganda as a Socio-Technical Security Project
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Perlman-Hacking-Ten-Million-Useful-Idiots-Online-Propaganda-As-A-Socio-Technical-Security-Project.pdf)
+-   Everybody be Cool, This is a Robbery!
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Campana-Everybody-Be-Cool-This-Is-A-Robbery.pdf)
+-   A Compendium of Container Escapes
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Edwards-Compendium-Of-Container-Escapes.pdf)
+-   The Future of ATO
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Martin-The-Future-Of-ATO.pdf)
+-   Exploring the New World : Remote Exploitation of SQLite and Curl
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Qian-Exploring-The-New-World-Remote-Exploitation-Of-SQLite-And-Curl.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Thursday/us-19-Qian-Exploring-The-New-World-Remote-Exploitation-Of-SQLite-And-Curl-wp.pdf)
+-   How to Detect that Your Domains are Being Abused for Phishing by Using DNS
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Hoelzel-How-To-Detect-That-Your-Domains-Are-Being-Abused-For-Phishing-By-Using-DNS.pdf)
+-   Debug for Bug: Crack and Hack Apple Core by Itself - Fun and Profit to Debug and Fuzz Apple Kernel by lldb Script
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Lilang-Debug-For-Bug-Crack-And-Hack-Apple-Core-By-Itself-Fun-And-Profit-To-Debug-And-Fuzz-Apple-Kernel-By-LLDB-Script.pdf)
+-   Shifting Knowledge Left: Keeping up with Modern Application Security
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Stanislav-Shifting-Knowledge-Left-Keeping-Up-With-Modern-Application-Security.pdf)
+-   Paging All Windows Geeks – Finding Evil in Windows 10 Compressed Memory
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Sardar-Paging-All-Windows-Geeks-Finding-Evil-In-Windows-10-Compressed-Memory.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Thursday/us-19-Sardar-Paging-All-Windows-Geeks-Finding-Evil-In-Windows-10-Compressed-Memory-wp.pdf)
+-   Breaking Samsung’s ARM TrustZone
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Peterlin-Breaking-Samsungs-ARM-TrustZone.pdf)
+-   Command Injection in F5 iRules
+    -   [Download Presentation Slides](http://i.blackhat.com/USA-19/Thursday/us-19-Jerkeby-Command-Injection-In-Irules-Loadbalancer-Scripts.pdf)
+    -   [Download White Paper](http://i.blackhat.com/USA-19/Thursday/us-19-Jerkeby-Command-Injection-In-Irules-Loadbalancer-Scripts-wp.pdf)
+-   Moving from Hacking IoT Gadgets to Breaking into One of Europe's Highest Hotel Suites
+    -   [Download Presentation Slides](https://i.blackhat.com/USA-19/Thursday/us-19-Ray-Moving-From-Hacking-IoT-Gadgets-To-Breaking-Into-One-Of-Europes-Highest-Hotel-Suites.pdf)
+-   Lessons and Lulz: The 5th Annual Black Hat USA NOC Report
+
+  
+ **Fuente:** [https://www.cyberhades.com](https://www.cyberhades.com/2019/08/18/material-black-hat-usa-2019/)
+
+#### [Source](http://www.blackploit.com/2019/08/material-de-black-hat-usa-2019.html)
+
+<br/>
+---

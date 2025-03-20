@@ -1,0 +1,19 @@
+---
+title: "VulnCheck and Cyware Partner to Bolster Vulnerability Management"
+date: 2024-03-05T00:00:00.000Z
+draft: false
+type: posts
+categories: 
+- 
+---
+# VulnCheck and Cyware Partner to Bolster Vulnerability Management
+
+<br/>
+
+<br/>
+\*\*LEXINGTON, MA\*\* -- March 5, 2024 -- \[VulnCheck\](https://vulncheck.com/), the exploit intelligence company, today announced a partnership with Cyware, the leader in threat intelligence management, security collaboration, and orchestrated response. VulnCheck will integrate its exploit intelligence solutions with Cyware’s Threat Intelligence Exchange (CTIX) to help enterprise customers rapidly identify and prioritize vulnerabilities, reduce response times, gain threat context and minimize risk exposure. Cyware will also ship with \[VulnCheck KEV\](https://vulncheck.com/kev), its recently launched catalog of known exploited vulnerabilities, featuring 80% more CVEs than the CISA KEV.\\n\\n::author-quote\\n---\\nauthor: Anuj Goel\\nposition: CEO and co-founder, Cyware\\n---\\nIt's more important than ever to provide security teams with the tools to proactively respond to and better manage vulnerabilities at scale. Our partnership with VulnCheck empowers defenders to tackle the vulnerability prioritization challenge and outpace threat actors before exploits can be weaponized.\\n::\\n\\nIn addition to its EVI and IAI solutions, VulnCheck will also integrate its Known Exploited Vulnerabilities (KEV) catalog with Cyware’s CTIX. Together, VulnCheck and Cyware bring an unprecedented level of intelligence-powered defense to automate vulnerability management and correlate against threat feeds, enabling enterprise security teams to prevent and respond to the exploits that matter most. \\n\\n::author-quote\\n---\\nauthor: Anthony Bettini\\nposition: Founder and CEO, VulnCheck\\n---\\nCyware is an incredible partner, and excels at turning threat intelligence into action. Combining their excellence with our unique exploit intelligence capabilities creates a next-generation intelligence solution for defenders.\\n::\\n\\n\\nMoving forward, VulnCheck and Cyware will provide additional joint offerings to customers, including VulnCheck-generated reports from its KEV database for inclusion in Cyware's Situational Awareness Platform. The additional capabilities will unlock new efficiencies and seamless workflows to optimize threat intelligence. \\n\\n\\nTo learn more about VulnCheck and its partners, visit \[https://vulncheck.com/partners\](https://vulncheck.com/partners). \\n\\n### About Cyware\\nCyware delivers an innovative approach to cybersecurity that unifies threat intelligence, automation, threat response, and vulnerability management with data insights gleaned from assets, users, malware, attackers, and vulnerabilities. Cyware’s Cyber Fusion platform integrates SOAR and TIP technology, enabling collaboration across siloed security teams. Cyware is widely deployed by enterprises, government agencies, and MSSPs, and is the leading threat intelligence sharing platform for global ISACs and CERTs.\\nFor more information, visit \[https://cyware.com\](https://cyware.com/).\\n\\n### About VulnCheck\\nVulnCheck is the vulnerability intelligence company helping enterprises, government organizations, and cybersecurity vendors solve the vulnerability prioritization challenge. Trusted by some of the world's largest organizations responsible for protecting hundreds of millions of systems and people, VulnCheck helps organizations outpace adversaries by providing the most comprehensive, real-time vulnerability intelligence that is autonomously correlated with unique, proprietary exploit and threat intelligence. Follow the company on \[LinkedIn\](https://www.linkedin.com/company/vulncheck/), \[Mastodon\](https://infosec.exchange/@vulncheck), or \[Twitter\](https://twitter.com/vulncheckai).
+
+#### [Source](https://vulncheck.com/blog/vulncheck-cyware)
+
+<br/>
+---

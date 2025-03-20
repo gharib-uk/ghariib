@@ -1,0 +1,39 @@
+---
+title: "TechnoColonialism In Reverse"
+date: Wed, 06 Sep 2023 16:33:00 +0000
+draft: false
+type: posts
+categories: 
+- 
+---
+# TechnoColonialism In Reverse
+
+<br/>
+
+<br/>
+The Cyberlaw Podcast is back from August hiatus, and the theme of the episode seems to be the way other countries are using the global success of U.S. technology to impose their priorities on the U.S. Exhibit 1 is the [EU’s Digital Services Act](https://dovthelachman.com/eus-digital-services-act-enforcement-begins/?utm_source=pocket_saves), which took effect last month. [Michael Ellis](https://www.heritage.org/staff/michael-j-ellis) spells out a few of the act’s sweeping changes in how U.S. tech companies must operate – nominally in Europe but as a practical matter in the U.S. as well. [The largest platforms will be heavily regulated](https://www.wsj.com/tech/americas-tech-giants-rush-to-comply-with-new-curbs-in-europe-2076ade9?mod=djemalertNEWS&utm_source=pocket_saves), with restrictions on their content curation algorithms and a requirement that they promote government content when governments declare a crisis. Other social media will also be subject to heavy content regulation, such as transparency in their decisions to demote or ban content and a requirement that they respond promptly to takedown requests from “trusted flaggers” of Bad Speech. In search of a silver lining, I point out that many of the transparency and due process requirements are things that Texas and Florida have advocated over the objections of Silicon Valley companies. Compliance with the EU Act will undercut those claims in the Supreme Court arguments we’re likely to hear this term,  claiming that it can’t be done.
+
+[Cristin Flynn Goodwin](https://urldefense.com/v3/__https:/advancedcyberstrategies.com/about__;!!ApXA7kLm!zWL4sD1J_Lfio1GWCZzXIBXPKCy4VLcac7pObD0_2FhqG1nNBDToCTi24rLJOcH36lxC4GblPdZ7WsOoR-HockJc-g$) and I note that China’s on-again off-again regulatory enthusiasm is off again. Chinese officials are doing their best to [ease Western firms’ concerns about China’s new data security law requirements.](https://www.reuters.com/technology/chinese-officials-meet-with-foreign-firms-ease-data-law-fears-bloomberg-news-2023-08-17/?utm_source=pocket_saves) Even more remarkable, China’s AI regulatory framework was watered down in August, moving away from the EU model and toward a U.S./U.K. ethical/voluntary approach. For now. 
+
+Cristin also brings us up to speed on the SEC’s rule on breach notification. The short version: The rule will make sense to anyone who’s ever stopped putting out a kitchen fire to call their insurer to let them know a claim may be coming. 
+
+[Nick Weaver](https://www.linkedin.com/in/nicholas-weaver-13893644/) brings us up to date on cryptocurrency and the law. Short version: Cryptocurrency had one victory, which it probably deserved, in the [Grayscale case](https://urldefense.com/v3/__https:/www.wsj.com/finance/regulation/grayscale-wins-lawsuit-against-sec-over-bitcoin-etf-1b305cfa?mod=hp_lead_pos5&utm_source=pocket_saves__;!!ApXA7kLm!13AkGEVeuHDTg92lMLAzdW83yzu_Ui375VZ83S4D1UIK8nFFRbkzBCrjooB8lvSaOUo5EApVmAil0iDlUXWbERM$), and a series of devastating losses over Tornado Cash, as a court [rejected Tornado Cash’s claim](https://www.coindesk.com/policy/2023/08/17/coinbase-backed-group-loses-lawsuit-arguing-tornado-cash-sanctions-overstepped-us-treasurys-authority/?utm_source=pocket_saves) that its coders and lawyers had found a hole in Treasury’s Office of Foreign Assets Control ("OFAC") regime, and the [Justice Department indicted the prime movers](https://www.law360.com/cybersecurity-privacy/articles/1714343?nl_pk=5437165b-f98d-4bb4-9523-aa8949638038&nlaidx=0&nlsidx=0&read_more=1&utm_source=pocket_saves) in Tornado Cash for conspiracy to launder North Korea’s stolen loot. [Here’s Nick’s view](https://urldefense.com/v3/__https:/www.lawfaremedia.org/article/tornado-hit-by-the-department-of-justice__;!!ApXA7kLm!13AkGEVeuHDTg92lMLAzdW83yzu_Ui375VZ83S4D1UIK8nFFRbkzBCrjooB8lvSaOUo5EApVmAil0iDl7yr6tlk$) in print. 
+
+Just to show that the EU isn’t the only jurisdiction that can use U.S. legal models to hurt U.S. policy, China managed to kill Intel’s [acquisition of Tower Semiconductor](https://www.nytimes.com/2023/08/16/business/intel-tower-semiconductor-china.html?utm_source=pocket_saves) by stalling its competition authority’s review of the deal. I see an eerie parallel between the Chinese aspirations of federal antitrust enforcers and those of the Christian missionaries we sent to China in the 1920s.  
+
+Michael and I discuss the [belated leak of](https://www.forbes.com/sites/emilybaker-white/2023/08/21/draft-tiktok-cfius-agreement/?sh=3688b2f4112a&utm_source=pocket_saves) the national security negotiations between CFIUS and TikTok. After a nod to substance (no real surprises in the draft), we turn to the question of who leaked it, and whether the effort to curb TikTok is dead.
+
+Nick and I explore the remarkable impact of the [war in Ukraine on drone technology.](https://www.washingtonpost.com/world/2023/07/26/drones-ai-ukraine-war-innovation/?utm_source=pocket_saves) It may change the course of war in Ukraine (or, indeed, a [war over Taiwan](https://urldefense.com/v3/__https:/www.defense.gov/News/News-Stories/Article/Article/3507514/hicks-underscores-us-innovation-in-unveiling-strategy-to-counter-chinas-militar/__;!!ApXA7kLm!13AkGEVeuHDTg92lMLAzdW83yzu_Ui375VZ83S4D1UIK8nFFRbkzBCrjooB8lvSaOUo5EApVmAil0iDlq7HntX4$)), Nick thinks, but it also means that Joe Biden may be the last President to see the sky while in office. (And if you’ve got space in D.C. and want to hear Nick’s provocative thoughts on the topic, he will be in town next week, and eager to give his academic talk: "Dr. Strangedrone, or How I Learned to Stop Worrying and Love the Slaughterbots".)
+
+Cristin, Michael and I dig into another August policy initiative, [the “outbound Committee on Foreign Investment in the United States (CFIUS)” order](https://www.bloomberg.com/news/articles/2023-07-28/biden-to-sign-order-curbing-china-tech-investments-by-mid-august?utm_source=pocket_saves#xj4y7vzkg). Given the long delays and halting rollout, I suggest that the Treasury’s Advance Notice of Proposed Rulemaking (ANPRM) on the topic really stands for Ambivalent Notice of Proposed Rulemaking.” 
+
+Finally, I suggest that autonomous vehicles may finally have turned the corner to success and rollout, now that they’re being used as rolling hookup locations  and (perhaps not coincidentally) being approved [to offer 24/7 robotaxi service in San Francisco](https://www.theverge.com/2023/8/10/23827790/waymo-cruise-cpuc-vote-robotaxi-san-francisco). Nick’s not ready to agree, but we do find common ground in criticizing a study.
+
+[Download 470th Episode (mp3)](https://www.steptoe.com/podcasts/TheCyberlawPodcast-470.mp3)
+
+You can subscribe to The Cyberlaw Podcast using [iTunes](https://itunes.apple.com/us/podcast/steptoe-cyberlaw-podcast/id830593115?mt=2), [Google Play](https://play.google.com/music/listen#/ps/Ikx2d2ncjvw6zuoq3zh4qp2i7qu), [Spotify](https://open.spotify.com/show/3Co2wdTUaZr4Xqnlxs4soG), [Pocket Casts](http://pcasts.in/steptoe), or our [RSS feed.](http://www.steptoe.com/feed-Cyberlaw.rss) As always, The Cyberlaw Podcast is open to feedback. Be sure to engage with [@stewartbaker](https://twitter.com/stewartbaker) on Twitter. Send your questions, comments, and suggestions for topics or interviewees to [CyberlawPodcast@gmail.com](mailto:CyberlawPodcast@gmail.com). _Remember: If your suggested guest appears on the show, we will send you a highly coveted Cyberlaw Podcast mug! The views expressed in this podcast are those of the speakers and do not reflect the opinions of their institutions, clients, friends, families, or pets._
+
+#### [Source](https://sites.libsyn.com/52286/technocolonialism-in-reverse)
+
+<br/>
+---
