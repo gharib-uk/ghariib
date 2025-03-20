@@ -9,6 +9,8 @@ type: posts
 <br/>
 [VIDEO]
 <br/>
+[DESCRIPTION]
+<br/>
 [MARKDOWN]
 
 #### [Source]([LINK])
