@@ -7,253 +7,8 @@
     <generator>Hugo</generator>
     <language>en-us</language>
     <copyright>Alireza Gharib. All right reserved</copyright>
-    <lastBuildDate>Wed, 19 Mar 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 06 Feb 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://ghariib.ir/categories/general/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>&lt;div&gt;Amazon&#39;s Big Spring Sale is next week, but these great deals are already live&lt;/div&gt;</title>
-      <link>https://ghariib.ir/posts/amazons-big-spring-sale-is-next-week-but-these-great-deals-are-already-live/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/amazons-big-spring-sale-is-next-week-but-these-great-deals-are-already-live/</guid>
-      <description>&lt;p&gt;Grab some hot deals before the rush.&lt;/p&gt;&#xA;&lt;p&gt;If you&amp;rsquo;re unaware, Amazon is planning a big sale next week. It&amp;rsquo;s called the Big Spring Sale, and it&amp;rsquo;ll run from March 25th to the 31st. It&amp;rsquo;s a good time to browse the store and see if you can score a huge saving on the stuff you like.&lt;/p&gt;&#xA;&lt;p&gt;Go to Source&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>&lt;div&gt;Auto-expanding aliases in Zsh&lt;/div&gt;</title>
-      <link>https://ghariib.ir/posts/2025-zsh-autoexpand-aliases/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/2025-zsh-autoexpand-aliases/</guid>
-      <description>&lt;p&gt;To avoid needless typing, the fish shell features command abbreviations to expand some words after pressing space. We can emulate such a feature with Zsh:&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;# Definition of abbrev-alias for auto-expanding aliases&#xA;typeset -ga _vbe_abbrevations&#xA;abbrev-alias() {&#xA;    alias $1&#xA;    _vbe_abbrevations+=(${1%%=*})&#xA;}&#xA;_vbe_zle-autoexpand() {&#xA;    local -a words; words=(${(z)LBUFFER})&#xA;    if (( ${​#_vbe_abbrevations[(r)${words[-1]}]} )); then&#xA;        zle _expand_alias&#xA;    fi&#xA;    zle magic-space&#xA;}&#xA;zle -N _vbe_zle-autoexpand&#xA;bindkey -M emacs &amp;#34; &amp;#34; _vbe_zle-autoexpand&#xA;bindkey -M isearch &amp;#34; &amp;#34; magic-space&#xA;&#xA;# Correct common typos&#xA;(( $+commands[git] )) &amp;amp;&amp;amp; abbrev-alias gti=git&#xA;(( $+commands[grep] )) &amp;amp;&amp;amp; abbrev-alias grpe=grep&#xA;(( $+commands[sudo] )) &amp;amp;&amp;amp; abbrev-alias suod=sudo&#xA;(( $+commands[ssh] )) &amp;amp;&amp;amp; abbrev-alias shs=ssh&#xA;&#xA;# Save a few keystrokes&#xA;(( $+commands[git] )) &amp;amp;&amp;amp; abbrev-alias gls=&amp;#34;git ls-files&amp;#34;&#xA;(( $+commands[ip] )) &amp;amp;&amp;amp; {&#xA;  abbrev-alias ip6=&amp;#39;ip -6&amp;#39;&#xA;  abbrev-alias ipb=&amp;#39;ip -brief&amp;#39;&#xA;}&#xA;&#xA;# Hard to remember options&#xA;(( $+commands[mtr] )) &amp;amp;&amp;amp; abbrev-alias mtrr=&amp;#39;mtr -wzbe&amp;#39;&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here is a demo where &lt;code&gt;gls&lt;/code&gt; is expanded to &lt;code&gt;git ls-files&lt;/code&gt; after pressing space:&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>&lt;div&gt;Crafting endless AS paths in BGP&lt;/div&gt;</title>
-      <link>https://ghariib.ir/posts/2024-bgp-endless-aspath/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/2024-bgp-endless-aspath/</guid>
-      <description>&lt;p&gt;Combining BGP confederations and AS override can potentially create a BGP routing loop, resulting in an indefinitely expanding AS path.&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;BGP confederation&lt;/strong&gt; is a technique used to reduce the number of iBGP sessions and improve scalability in large autonomous systems (AS). It divides an AS into sub-ASes. Most eBGP rules apply between sub-ASes, except that next-hop, MED, and local preferences remain unchanged. The AS path length ignores contributions from confederation sub-ASes. BGP confederation is rarely used and BGP route reflection is typically preferred for scaling.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>&lt;div&gt;Customize Caddy&#39;s plugins with Nix&lt;/div&gt;</title>
-      <link>https://ghariib.ir/posts/2024-caddy-nix-plugins/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/2024-caddy-nix-plugins/</guid>
-      <description>&lt;p&gt;Caddy is an open-source web server written in Go. It handles TLS certificates automatically and comes with a simple configuration syntax. Users can extend its functionality through plugins1 to add features like rate limiting, caching, and Docker integration.&lt;/p&gt;&#xA;&lt;p&gt;While &lt;em&gt;Caddy&lt;/em&gt; is available in Nixpkgs, adding extra plugins is not simple.2 The compilation process needs Internet access, which Nix denies during build to ensure reproducibility. When trying to build the following derivation using xcaddy, a tool for building Caddy with plugins, it fails with this error: &lt;code&gt;dial tcp: lookup proxy.golang.org on [::1]:53: connection refused&lt;/code&gt;.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>&lt;div&gt;Fixing layout shifts caused by web fonts&lt;/div&gt;</title>
-      <link>https://ghariib.ir/posts/2024-cls-webfonts/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/2024-cls-webfonts/</guid>
-      <description>&lt;p&gt;In 2020, Google introduced Core Web Vitals metrics to measure some aspects of real-world user experience on the web. This blog has consistently achieved good scores for two of these metrics: Largest Contentful Paint and Interaction to Next Paint. However, optimizing the third metric, Cumulative Layout Shift, which measures unexpected layout changes, has been more challenging. Let’s face it: optimizing for this metric is not really useful for a site like this one. But getting a better score is always a good distraction. 💯&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>&lt;div&gt;Offline PKI using 3 YubiKeys and an ARM single board computer&lt;/div&gt;</title>
-      <link>https://ghariib.ir/posts/2025-offline-pki-yubikeys/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/2025-offline-pki-yubikeys/</guid>
-      <description>&lt;p&gt;An offline PKI enhances security by physically isolating the certificate authority from network threats. A YubiKey is a low-cost solution to store a root certificate. You also need an air-gapped environment to operate the root CA.&lt;/p&gt;&#xA;&lt;!-- raw HTML omitted --&gt;&#xA;&lt;p&gt;&#xD;&#xA;&lt;figure&gt;&#xD;&#xA;  &lt;img src=&#34;https://d2pzklc15kok91.cloudfront.net/images/3-yubikeys@1x.703a8bbdfe6815.jpg&#34; alt=&#34;PKI relying on a set of 3 YubiKeys: 2 for the root CA and 1 for the&#xA;intermediate CA.&#34; /&gt;&#xD;&#xA;&lt;/figure&gt;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&lt;/p&gt;&#xA;&lt;!-- raw HTML omitted --&gt;&#xA;&lt;p&gt;Offline PKI backed up by 3 YubiKeys&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>&lt;div&gt;OpenCTF : Baby&#39;s First ROP&lt;/div&gt;</title>
-      <link>https://ghariib.ir/posts/openctf-babys-first-rop/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/openctf-babys-first-rop/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Binary/Reverse&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 100&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;If this is your first time, it will be your first time. Available at 172.31.2.62:47802 - https://scoreboard.openctf.com/babys_first_rop-e0f4088e3b5a86cf3d388fac3bc070493c6f71c5&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;File Download:&lt;/strong&gt; babys_first_rop-e0f4088e3b5a86cf3d388fac3bc070493c6f71c5&lt;/p&gt;&#xA;&lt;h1 id=&#34;investigation&#34;&gt;Investigation&lt;/h1&gt;&#xA;&lt;p&gt;My initial investigation usually starts the same with pwn challenges. I like to start with running the &lt;code&gt;file&lt;/code&gt; command so that I get a high-level idea of what I’m working with.&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ file babys_first_rop-719f2fbc00e318076347df5eb215a20741fb29ca&#xA;babys_first_rop-719f2fbc00e318076347df5eb215a20741fb29ca: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.6.32, BuildID[sha1]=a92f66db1ba36b3e54041f5de948f19d9043aed1, not stripped&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Ok, so it’s an x86-64 binary, not stripped, and dynamically linked. I next like to run checksec (included with &lt;code&gt;pwntools&lt;/code&gt;), as this will be useful information to keep in mind when looking for vulnerabilities and later building the exploit.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>&lt;div&gt;Why content providers need IPv6&lt;/div&gt;</title>
-      <link>https://ghariib.ir/posts/2024-why-ipv6/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/2024-why-ipv6/</guid>
-      <description>&lt;p&gt;IPv4 is an expensive resource. However, many content providers are still IPv4-only. The most common reason is that IPv4 is here to stay and IPv6 is an additional complexity.1 This mindset may seem selfish, but there are compelling reasons for a content provider to enable IPv6, even when they have enough IPv4 addresses available for their needs.&lt;/p&gt;&#xA;&lt;p&gt;Disclaimer&lt;/p&gt;&#xA;&lt;p&gt;It’s been a while since this article has been in my drafts. I started it when I was working at Shadow, a content provider, while I now work for Free, an internet service provider.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>5 things that annoy me about ultrawide monitors (even though I love them)</title>
-      <link>https://ghariib.ir/posts/5-things-that-annoy-me-about-ultrawide-monitors-even-though-i-love-them/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/5-things-that-annoy-me-about-ultrawide-monitors-even-though-i-love-them/</guid>
-      <description>&lt;p&gt;Ultrawide monitors have been around for a while now, but they still have compatibility issues to live with.&lt;/p&gt;&#xA;&lt;p&gt;I&amp;rsquo;ve been an ultrawide monitor convert ever since the Nixeus EDG 34 landed on my desk for review around the end of 2019. I love the additional space for productivity and the immersiveness of games, but I&amp;rsquo;d be lying if I said it was all smooth sailing. The 21:9 aspect ratio has been around since LG launched the EA93 Series in 2012, but even the best ultrawide monitors still suffer from a common core of annoyances. To be fair, none of them are dealbreakers, and I&amp;rsquo;ll happily live with them for the extra real estate to put two browser windows side-by-side, but it&amp;rsquo;s worth knowing what you&amp;rsquo;re getting into when you decide to go for an ultrawide monitor.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>5 Ways to reduce eye strain while using your PC</title>
-      <link>https://ghariib.ir/posts/5-ways-to-reduce-eye-strain-while-using-your-pc/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/5-ways-to-reduce-eye-strain-while-using-your-pc/</guid>
-      <description>&lt;p&gt;Try these ideas to reduce eye strain while using your computer.&lt;/p&gt;&#xA;&lt;p&gt;Using a screen for extended durations is practically necessary for work and recreation. It usually takes a toll on your health and, most importantly, leads to eye strain and the associated discomfort of irritation, headaches, and dry eyes. While Windows 11 already has specific features to help reduce strain, you can take a few simple steps irrespective of the device you spend time staring at.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>6 of the best sculpting software you should use for 3D printing</title>
-      <link>https://ghariib.ir/posts/6-of-the-best-sculpting-software-you-should-use-for-3d-printing/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/6-of-the-best-sculpting-software-you-should-use-for-3d-printing/</guid>
-      <description>&lt;p&gt;These are the best sculpting software you should be using with your 3D printer.&lt;/p&gt;&#xA;&lt;p&gt;If you want to create highly detailed or organic 3D models, 3D sculpting is the best technique. Unlike other 3D design methods that rely on manipulating vertices, edges, and faces to shape the objects, sculpting allows for a more intuitive, brush-based approach, making it easier to achieve smooth, natural shapes and intricate details. This is why it’s the most recommended method of creating characters, figurines, jewelry designs, and organic objects like trees and rocks. You can use sculpting brushes and tools to manipulate the design through pushing, pulling, pinching, moving, and smoothing until you achieve the intended design.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>7 controversial Windows features that divided fans</title>
-      <link>https://ghariib.ir/posts/7-controversial-windows-features-that-divided-fans/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/7-controversial-windows-features-that-divided-fans/</guid>
-      <description>&lt;p&gt;These Windows features caused some uproar.&lt;/p&gt;&#xA;&lt;p&gt;This year is Microsoft&amp;rsquo;s 50th anniversary, and many are celebrating its contribution to the tech industry by looking back at some of its iconic operating systems and other achievements. While there&amp;rsquo;s no doubt about the company&amp;rsquo;s impact on the computing world with products like Windows, Microsoft Office, and Xbox gaming, it&amp;rsquo;s had its fair share of misses with products that didn&amp;rsquo;t resonate with customers.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>A new monitor is the last PC upgrade on my list</title>
-      <link>https://ghariib.ir/posts/a-new-monitor-is-the-last-pc-upgrade-on-my-list/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/a-new-monitor-is-the-last-pc-upgrade-on-my-list/</guid>
-      <description>&lt;p&gt;Buying a new gaming monitor feels pointless to me&lt;/p&gt;&#xA;&lt;p&gt;When you hear the term PC upgrades, what do you imagine? — probably a GPU, CPU, SSD, RAM, or motherboard (in that order). At least, that&amp;rsquo;s how I think about PC upgrades. Although I haven&amp;rsquo;t made any major upgrades to my PC in almost 3 years, I never thought about upgrading my monitor in all that time. My existing monitor is an LG 27GL850, a 27&amp;quot; 1440p 144Hz IPS display that I purchased back in 2021.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Apple Disables Advanced Data Protection for iCloud in UK</title>
-      <link>https://ghariib.ir/posts/apple-disables-advanced-data-protection-for-icloud-in-uk/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/apple-disables-advanced-data-protection-for-icloud-in-uk/</guid>
-      <description>&lt;p&gt;&#xD;&#xA;&lt;figure&gt;&#xD;&#xA;  &lt;img src=&#34;https://blog.elcomsoft.com/wp-content/uploads/2019/07/EPBEPV_Accessing-iCloud2019_1200x630-1.jpg&#34; alt=&#34;&#34; /&gt;&#xD;&#xA;&lt;/figure&gt;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;In the beginning of February, Apple may have received a secret order requiring the company to create an encryption backdoor. According to a leak, the UK government demanded blanket, covert access to all sorts of encrypted data globally. After that demand, Apple decided to disable Advanced Data Protection for iCloud in the UK, issuing an official statement. What does that mean for the law enforcement, and what consequences are expected for the end users?&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>BSidesPDX CTF : MakeIcon</title>
-      <link>https://ghariib.ir/posts/bsidespdx-ctf-makeicon/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/bsidespdx-ctf-makeicon/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Web&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 300&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;It&amp;#39;s free, as in baby.&#xA;&#xA;Host: ab743120bb6ae11e7ac800aee00def00-1664391948.eu-central-1.elb.amazonaws.com&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;note&#34;&gt;Note&lt;/h1&gt;&#xA;&lt;p&gt;The BSidesPDX organizers have made the source code for all of their challenges freely available so that you can run them at home and follow along. You can find more information here.&lt;/p&gt;&#xA;&lt;h1 id=&#34;investigation&#34;&gt;Investigation&lt;/h1&gt;&#xA;&lt;p&gt;Upon loading the screen, we are presented with a file upload and a button to make a jpeg icon. We also note that the version string indicates it was made in 2016, with a version of &lt;code&gt;Version 2016.3717&lt;/code&gt;. After playing around with it for a little while, I thought about how there was that ImageMagick bug last year that let you execute code remotely. I wasn’t sure it would work, but it was worth a shot.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>BSidesPDX CTF : SeaQuell</title>
-      <link>https://ghariib.ir/posts/bsidespdx-ctf-seaquell/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/bsidespdx-ctf-seaquell/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Web&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 200&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Our competitors at SeaQuell have uploaded their latest proprietary data to their employee area. We have already compromised their web developer and obtained the source code to their site, here: seaquell.py&#xA;&#xA;Host: a32fcd6eab2d811e784db0a6f99bb55a-829124630.eu-central-1.elb.amazonaws.com&#xA;&#xA;Port: 1589&#xA;&#xA;Seaquell.py&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;note&#34;&gt;Note&lt;/h1&gt;&#xA;&lt;p&gt;The BSidesPDX organizers have made the source code for all of their challenges freely available so that you can run them at home and follow along. You can find more information here.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Day One is finally available on Windows</title>
-      <link>https://ghariib.ir/posts/day-one-is-finally-available-on-windows/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/day-one-is-finally-available-on-windows/</guid>
-      <description>&lt;p&gt;Day One is now available on Windows and anyone can try it for free.&lt;/p&gt;&#xA;&lt;p&gt;Journal apps on digital platforms are fairly popular, especially among people who want to keep a digitized record of their lives. A couple of years ago, Apple announced its built-in &lt;strong&gt;Journal&lt;/strong&gt; app for iOS, entering a competitive market which already features the likes of Everlog, Obsidian, and Day One. If you&amp;rsquo;re a customer of the last app mentioned in this list, you&amp;rsquo;ll be happy to hear that the digital journal has now made its way to Windows.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Debunking Six Myths of Cloud Native Security</title>
-      <link>https://ghariib.ir/posts/debunking-six-myths-of-cloud-native-security/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/debunking-six-myths-of-cloud-native-security/</guid>
-      <description>&lt;p&gt;&#xD;&#xA;&lt;figure&gt;&#xD;&#xA;  &lt;img src=&#34;https://blog.aquasec.com/hubfs/blog-main-debunking-myths-1200x628-2024%20final-1.jpg&#34; alt=&#34;Debunking Six Myths of Cloud Native Security&#34; /&gt;&#xD;&#xA;&lt;/figure&gt;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;The promise of cloud native applications lies in their ability to provide enhanced agility, scalability, and resilience, perfectly aligning with the digital transformation needs of today&amp;rsquo;s enterprises. However, as we navigate this transformation, cloud native application security is often surrounded by myths and misconceptions. Understanding these myths and how they are being addressed is crucial for organizations to secure their environments effectively.&lt;/p&gt;&#xA;&lt;p&gt;&#xD;&#xA;&lt;figure&gt;&#xD;&#xA;  &lt;img src=&#34;https://track.hubspot.com/__ptq.gif?a=1665891&amp;amp;k=14&amp;amp;r=https%3A%2F%2Fblog.aquasec.com%2Fdebunking-cloud-native-security-myths&amp;amp;bu=https%253A%252F%252Fblog.aquasec.com&amp;amp;bvt=rss&#34; alt=&#34;&#34; /&gt;&#xD;&#xA;&lt;/figure&gt;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Forensic Implications of Apple’s “Stolen Device Protection”</title>
-      <link>https://ghariib.ir/posts/forensic-implications-of-apples-stolen-device-protection/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/forensic-implications-of-apples-stolen-device-protection/</guid>
-      <description>&lt;p&gt;&#xD;&#xA;&lt;figure&gt;&#xD;&#xA;  &lt;img src=&#34;https://blog.elcomsoft.com/wp-content/uploads/2023/04/passcodes.jpg&#34; alt=&#34;&#34; /&gt;&#xD;&#xA;&lt;/figure&gt;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;With the release of iOS 17.3, Apple introduced a new security feature called “Stolen Device Protection.” This functionality is designed to prevent unauthorized access to sensitive data in cases where a thief has gained knowledge of an iPhone’s passcode. While this feature significantly enhances security for end users, it simultaneously creates substantial obstacles for digital forensic experts, complicating lawful data extraction.&lt;/p&gt;&#xA;&lt;h2 id=&#34;a-roadblock-to-logical-extraction&#34;&gt;A Roadblock to Logical Extraction&lt;/h2&gt;&#xA;&lt;p&gt;Gaining access to data on Apple devices has historically been most feasible through standard mechanisms leveraged by many forensic tools, including iOS Forensic Toolkit, as part of an advanced logical extraction process. Alternative methods, such as low-level extraction, are either limited to older devices and iOS versions (currently, iOS 16.6.1 is the latest iOS build supported by iOS Forensic Toolkit) or legacy devices. Cloud-based analysis also presents challenges, as it requires full user credentials, and the device passcode is required on top of that to access end-to-end encrypted data.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>GigaOm Radar: Aqua Leads in Container Security</title>
-      <link>https://ghariib.ir/posts/gigaom-radar-aqua-leads-in-container-security/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/gigaom-radar-aqua-leads-in-container-security/</guid>
-      <description>&lt;p&gt;&#xD;&#xA;&lt;figure&gt;&#xD;&#xA;  &lt;img src=&#34;https://blog.aquasec.com/hubfs/featured-gigaom-container-security-2025-blog-main-1200x628.jpg&#34; alt=&#34;GigaOm Radar: Aqua Leads in Container Security&#34; /&gt;&#xD;&#xA;&lt;/figure&gt;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;Securing containerized applications demands a multi-layered strategy that spans the entire lifecycle from development to production, a challenge Aqua has spent nearly a decade mastering. Aqua’s Container Security solution provides full lifecycle protection by identifying vulnerabilities early in the build phase, integrating acceptance gates in the CI/CD pipeline to minimize risks, and offering real-time runtime protection in production environments. With the Aqua Platform, organizations can secure container workloads across hybrid and multi-cloud environments, stop attacks as they happen, and maintain compliance, all without slowing development.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Google’s budget-friendly Pixel 9a is finally here, and it comes with a bold new look</title>
-      <link>https://ghariib.ir/posts/googles-budget-friendly-pixel-9a-is-finally-here-and-it-comes-with-a-bold-new-look/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/googles-budget-friendly-pixel-9a-is-finally-here-and-it-comes-with-a-bold-new-look/</guid>
-      <description>&lt;p&gt;Google just announced the Pixel 9a, and it might have just outshined the iPhone 16e.&lt;/p&gt;&#xA;&lt;p&gt;While it hasn&amp;rsquo;t been too long since 2025 started, it&amp;rsquo;s clearly been a good (yet competitive) year for affordable smartphones. Exactly one month after the launch of Apple&amp;rsquo;s budget-friendly phone, the iPhone 16e, Google has finally launched the Pixel 9a. At first glance, the Pixel 9a definitely looks promising, and might as well just win this round, fair and square.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>How to set up VLAN trunking on your managed switch</title>
-      <link>https://ghariib.ir/posts/how-to-set-up-vlan-trunking-on-your-managed-switch/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/how-to-set-up-vlan-trunking-on-your-managed-switch/</guid>
-      <description>&lt;p&gt;VLAN trunking is the easiest way to pass VLAN traffic through multiple switches.&lt;/p&gt;&#xA;&lt;p&gt;As your home network expands, so do the burdens of administering the list of network appliances. Maybe you&amp;rsquo;ve expanded the number of wired devices in your network, and added additional managed network switches to segregate your house into VLANs for easier management and better security. The question then is how to get tagged VLAN traffic to the other endpoint devices in your network.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Hundreds of Malicious Google Play-Hosted Apps Bypassed Android 13 Security With Ease</title>
-      <link>https://ghariib.ir/posts/hundreds-of-malicious-google-play-hosted-apps-bypassed-android-13-security-with-ease/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/hundreds-of-malicious-google-play-hosted-apps-bypassed-android-13-security-with-ease/</guid>
-      <description>&lt;p&gt;Bitdefender&amp;rsquo;s security researchers have identified a large-scale ad fraud campaign that deployed hundreds of malicious apps in the Google Play Store, resulting in more than 60 million downloads total. The apps display out-of-context ads and even try to persuade victims to give away credentials and credit card information in phishing attacks.&lt;/p&gt;&#xA;&lt;p&gt;The Google Play Store is often targeted by cybercriminals trying to upload malicious apps by bypassing existing protections. Google purges the store of suc&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Malware Forensic Analysis: Capturing What Attackers Leave Behind</title>
-      <link>https://ghariib.ir/posts/malware-forensic-analysis-capturing-what-attackers-leave-behind/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/malware-forensic-analysis-capturing-what-attackers-leave-behind/</guid>
-      <description>&lt;p&gt;&#xD;&#xA;&lt;figure&gt;&#xD;&#xA;  &lt;img src=&#34;https://blog.aquasec.com/hubfs/social-Malware-Forensic-Analysis-blog-1200x628-1.jpg&#34; alt=&#34;Malware Forensic Analysis: Capturing What Attackers Leave Behind&#34; /&gt;&#xD;&#xA;&lt;/figure&gt;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;Every attack leaves a trail, but in containerized environments, this trail can evaporate before you even realize you have been attacked. These environments bring new challenges for security teams, including an expanding attack surface. Containers, while incredibly powerful, are short-lived, and attackers exploit this by moving quickly and covering their tracks. They often download and execute malware, then silently modify, or delete the files to erase evidence of their actions, making it nearly impossible to trace the original attack. Security teams are often left scrambling to piece together what happened.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>NotebookLM can now generate Mind Maps, and studying will never be the same</title>
-      <link>https://ghariib.ir/posts/notebooklm-can-now-generate-mind-maps-and-studying-will-never-be-the-same/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/notebooklm-can-now-generate-mind-maps-and-studying-will-never-be-the-same/</guid>
-      <description>&lt;p&gt;Google NotebookLM is already an excellent AI tool for studying, and it just got better with Mind Maps.&lt;/p&gt;&#xA;&lt;p&gt;Frankly, most AI tools that students swear by aren’t all that great. Half the time, they generate inaccurate information, give incorrect answers, or overcomplicate things for no reason. NotebookLM doesn’t do any of that.&lt;/p&gt;&#xA;&lt;p&gt;Go to Source&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>NVIDIA Blackwell is Out: Should You Upgrade?</title>
-      <link>https://ghariib.ir/posts/nvidia-blackwell-is-out-should-you-upgrade/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/nvidia-blackwell-is-out-should-you-upgrade/</guid>
-      <description>&lt;p&gt;&#xD;&#xA;&lt;figure&gt;&#xD;&#xA;  &lt;img src=&#34;https://blog.elcomsoft.com/wp-content/uploads/2022/06/nvidia-rtx-article_1200x630.jpg&#34; alt=&#34;&#34; /&gt;&#xD;&#xA;&lt;/figure&gt;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;Law enforcement and digital forensic specialists have long utilized GPUs for password recovery. GPUs excel at this task due to their thousands of parallel processing cores, enabling rapid hash computations. Tools like Elcomsoft Distributed Password Recovery leverage GPU acceleration to significantly outperform traditional CPUs in brute-force attacks. The new NVIDIA Blackwell architecture doubles the number of INT32 compute units compared to Ada and Ampere. How will this architectural change affect password recovery, and is it worth upgrading to a new GPU?&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>NVIDIA GeForce RTX 5090 Power Connectors Melting Again</title>
-      <link>https://ghariib.ir/posts/nvidia-geforce-rtx-5090-power-connectors-melting-again/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/nvidia-geforce-rtx-5090-power-connectors-melting-again/</guid>
-      <description>&lt;p&gt;&#xD;&#xA;&lt;figure&gt;&#xD;&#xA;  &lt;img src=&#34;https://blog.elcomsoft.com/wp-content/uploads/2025/03/rtx-5090-on-fire_1200x630-1.png&#34; alt=&#34;&#34; /&gt;&#xD;&#xA;&lt;/figure&gt;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;Just a week ago, we published an article about NVIDIA’s new generation of Blackwell-based graphics cards. Despite a noticeable price hike, performance gains in this generation are minimal, with one notable exception: the flagship GeForce RTX 5090 significantly outperforms its predecessor in all key aspects. However, this GPU has also revealed a potential issue that could make its use in workstations running 24/7 problematic and potentially unsafe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;the-new-connector&#34;&gt;The New Connector&lt;/h2&gt;&#xA;&lt;p&gt;Before diving into the root of the issue, let’s first understand how it arose. Modern GPUs require far more power than what can be delivered through the PCIe slot alone, forcing manufacturers to provide additional power via cables directly from the PSU. Antec, a well-known PSU manufacturer, has published a diagram illustrating the number of cables required to power high-performance graphics cards.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>OpenCTF : Do The Needful</title>
-      <link>https://ghariib.ir/posts/openctf-do-the-needful/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/openctf-do-the-needful/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Forensics&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 50&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Do the needful&#xA;https://scoreboard.openctf.com/DoTheNeedful-98e4c6ba71f88e4201a08e7503b0df6124607e39&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;File Download:&lt;/strong&gt; DoTheNeedful-98e4c6ba71f88e4201a08e7503b0df6124607e39&lt;/p&gt;&#xA;&lt;p&gt;When we extract this file, we end up with &lt;code&gt;Challenge.txt&lt;/code&gt;. So I go ahead and cat it.&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ cat Challenge.txt &#xA;=AAAAMjU/o7Z+0V17r06KDNmaZHQB1VSlR7wsTDuNk1ok3wfRPMl5YAAV/DwDzAIAERyH3wAAsVVGNBAIs4H&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This looks like a base64 string, however, with base64 encoding, the &lt;code&gt;=&lt;/code&gt; character is used as padding and should only show up at the end of a base64 string, if at all. So let’s try and reverse the string. I wrote a quick Python script for this, and write the result to a file.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>OpenCTF : Ellingson Mineral 2</title>
-      <link>https://ghariib.ir/posts/openctf-ellingson-mineral-2/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/openctf-ellingson-mineral-2/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; OSINT&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 100&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;We heard word that The Plague escaped prison three weeks ago. We&amp;#39;ve been notified that he was recently seen on soundcloud liking a song by ytcracker called &amp;#34;hacker music.&amp;#34; Let us know what you find.&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;First perform a search on soundcloud.com for “ytcracker hacker music” then go to likes. &lt;code&gt;https://soundcloud.com/ytcracker/ytcracker-hacker-music/likes&lt;/code&gt;&lt;/p&gt;&#xA;&lt;p&gt;Go to ThePlague2018x’s profile&lt;/p&gt;&#xA;&lt;p&gt;&lt;code&gt;https://soundcloud.com/user-843651506&lt;/code&gt;&lt;/p&gt;&#xA;&lt;p&gt;The next clue seemed to be to go to the website on ThePlague2018x’s website which is the following&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>OpenCTF : fire walker 0</title>
-      <link>https://ghariib.ir/posts/openctf-fire-walker-0/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/openctf-fire-walker-0/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Network&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 50&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Flag: http://172.31.2.97:20621/flag-d12bb978.txt Firewall rules: https://scoreboard.openctf.com/firewalker_0-acaceaa807e20591173451a7a824a23f2728563b&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;File Download:&lt;/strong&gt; firewalker_0-acaceaa807e20591173451a7a824a23f2728563b&lt;/p&gt;&#xA;&lt;p&gt;The goal of the fire walker challenges is straight-forward, download the flag file from the provided http URL. The trick is, there are firewall rules that will prevent you from simply running wget, curl, or opening the URL in your favorite web browser. So let’s take a look at the firewall rules:&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ cat port_20621_rules.txt &#xA;Chain PORT_20621 (1 references)&#xA;target     prot opt source               destination         &#xA;REJECT     tcp  -- anywhere             anywhere             tcp spts:1024:65535 reject-with icmp-admin-prohibited&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;So what these rules are describing, is that if the source port is in the range of 1024-65535, the packet will be rejected. For those new to networking, every TCP connection has a source port and a destination port. You are likely already aware of common destination port number used for servers, for example, HTTP uses port &lt;code&gt;80&lt;/code&gt; by default. In this challenge, port &lt;code&gt;20621&lt;/code&gt; is the destination port for our HTTP traffic. However, the source port is randomly selected by your client. And because ports under 1024 generally require elevated privellages, most, if not all, programs will never select a port below 1024. However, both &lt;code&gt;nc&lt;/code&gt; and &lt;code&gt;curl&lt;/code&gt; allow you to manually specify the port number. I decided to use &lt;code&gt;curl&lt;/code&gt; because this allowed me to avoid manually building the HTTP GET request. Be sure to run the command with &lt;code&gt;sudo&lt;/code&gt;.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>OpenCTF : HeadOn</title>
-      <link>https://ghariib.ir/posts/openctf-headon/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/openctf-headon/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Forensics&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 50&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Apply directly to the console&#xA;https://scoreboard.openctf.com/HeadOn-ac8890852965d787f7591bc10add61bb01efb5eb&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;File Download:&lt;/strong&gt; HeadOn-ac8890852965d787f7591bc10add61bb01efb5eb&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ file blob &#xA;blob: data&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I also try running &lt;code&gt;strings&lt;/code&gt; on the file, but I don’t find anything interesting.&lt;/p&gt;&#xA;&lt;p&gt;Let’s try binwalk. If you have never heard of binwalk, it is a fantastic tool for solving forensics challenges. It goes through files of any type, looking for known magic cookies to help identify when one file type is embedded in another. For example, you may be given an ELF file, that has a jpeg embedded in it, binwalk will be able to find it, assuming the file is not encoded or encrypted in some way.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>OpenCTF : mbrtetris</title>
-      <link>https://ghariib.ir/posts/openctf-mbrtetris/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/openctf-mbrtetris/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Forensics&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 25&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;boot this on baremetal. - https://kajer.openctf.com/tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;File Download:&lt;/strong&gt; tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6&lt;/p&gt;&#xA;&lt;p&gt;I start by running the &lt;code&gt;file&lt;/code&gt; command:&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ file tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6 &#xA;tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6: DOS/MBR boot sector; partition 1 : ID=0x7, start-CHS (0x0,33,3), end-CHS (0x1,124,22), startsector 2048, 20480 sectors&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Ok, let’s try mounting this:&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ sudo mount tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6 /mnt&#xA;mount: /mnt: wrong fs type, bad option, bad superblock on /dev/loop19, missing codepage or helper program, or other error.&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Hmm, I use some Google-fu, and I stumble upon this useful article on major.io. As the article suggests, let’s run fdisk to calculate the offset.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>OpenCTF : Nightmare 50</title>
-      <link>https://ghariib.ir/posts/openctf-nightmare-50/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/openctf-nightmare-50/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Web&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 50&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Automated home work scoring my ass. https://shades-of-nightmare.openctf.com/nzpoixyucvkjwnerntasdfascdvasdfqwerqwe/nightmare-50/&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;When connecting to this website in my browser, I receive the following prompt:&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Welcome to Doctor Professor Wilson&amp;#39;s Python 101!&#xA;Lesson 1: hello world&#xA;Enter homework for grading:&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;So it looks like this will execute the Python code you provide. So I test it with the following:&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Welcome to Doctor Professor Wilson&amp;#39;s Python 101!&#xA;Lesson 1: hello world&#xA;Enter homework for grading:&#xA;print(&amp;#39;Hello world&amp;#39;)&#xA;Hello world&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And then it immediately closes the connection. So it looks like it only allows a single line of Python code.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>OpenCTF : SQL 10</title>
-      <link>https://ghariib.ir/posts/openctf-sql-10/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/openctf-sql-10/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Web&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 10&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;https://sql-mayham.openctf.com/ziopxuoiwquyerhnszpasdyvzlkxcjlwerqwer/sql-10/&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;When &lt;code&gt;1&lt;/code&gt; is entered it returns the following row:&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Enter a badge number to view that officers file:1&#xA;(1, &amp;#39;bob&amp;#39;, &amp;#39;simmons&amp;#39;, &amp;#39;none&amp;#39;)&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Performing a basic sql injection we got the same row back but no error. The server only returns 1 row&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Enter a badge number to view that officers file:1 or 1=1&#xA;(1, &amp;#39;bob&amp;#39;, &amp;#39;simmons&amp;#39;, &amp;#39;none&amp;#39;)&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Entering an ID of 2 no results are found.&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Enter a badge number to view that officers file:2 &#xA;None&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Using the sql injection an OR was added to say “id&amp;gt;2”&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Top Cloud Native Threats and Vulnerabilities of 2024</title>
-      <link>https://ghariib.ir/posts/top-cloud-native-threats-and-vulnerabilities-of-2024/</link>
-      <pubDate>Wed, 19 Mar 2025 00:00:00 +0000</pubDate>
-      <guid>https://ghariib.ir/posts/top-cloud-native-threats-and-vulnerabilities-of-2024/</guid>
-      <description>&lt;p&gt;&#xD;&#xA;&lt;figure&gt;&#xD;&#xA;  &lt;img src=&#34;https://blog.aquasec.com/hubfs/no-title-main-Cloud-Security-trends-1200x628.jpg&#34; alt=&#34;Top Cloud Native Threats and Vulnerabilities of 2024&#34; /&gt;&#xD;&#xA;&lt;/figure&gt;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;The complexity of cloud environments means that there is a virtually infinite list of potential security risks and vulnerabilities that could arise within cloud infrastructure or workloads. That said, some cloud security threats are more prevalent than others – and knowing which risks and vulnerabilities are trending is key to knowing what to prioritize when managing the attack surface for your organization. To that end, this article details seven of the most prominent cloud threats and vulnerabilities that emerged in 2024, including several discovered by Aqua researchers.&lt;/p&gt;</description>
-    </item>
     <item>
       <title>&lt;div&gt;5 PC gaming myths you might still believe (and shouldn&#39;t)&lt;/div&gt;</title>
       <link>https://ghariib.ir/posts/5-pc-gaming-myths-you-might-still-believe-and-shouldnt/</link>
@@ -1081,6 +836,13 @@
       <description>&lt;p&gt;Goodbye, BYOVD attacks.&lt;/p&gt;&#xA;&lt;p&gt;Happy 2025! Microsoft has rolled out the first big updates for Windows 10 and 11 for the year, but don&amp;rsquo;t get too excited. Across the board, we&amp;rsquo;re seeing security fixes for the operating system, which, while very useful for warding off attacks, doesn&amp;rsquo;t really get me excited to give it a spin. However, if you&amp;rsquo;re a fan of Roblox, you may notice some issues playing it in the future.&lt;/p&gt;</description>
     </item>
     <item>
+      <title>&lt;div&gt;OpenCTF : Baby&#39;s First ROP&lt;/div&gt;</title>
+      <link>https://ghariib.ir/posts/openctf-babys-first-rop/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/openctf-babys-first-rop/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Binary/Reverse&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 100&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;If this is your first time, it will be your first time. Available at 172.31.2.62:47802 - https://scoreboard.openctf.com/babys_first_rop-e0f4088e3b5a86cf3d388fac3bc070493c6f71c5&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;File Download:&lt;/strong&gt; babys_first_rop-e0f4088e3b5a86cf3d388fac3bc070493c6f71c5&lt;/p&gt;&#xA;&lt;h1 id=&#34;investigation&#34;&gt;Investigation&lt;/h1&gt;&#xA;&lt;p&gt;My initial investigation usually starts the same with pwn challenges. I like to start with running the &lt;code&gt;file&lt;/code&gt; command so that I get a high-level idea of what I’m working with.&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ file babys_first_rop-719f2fbc00e318076347df5eb215a20741fb29ca&#xA;babys_first_rop-719f2fbc00e318076347df5eb215a20741fb29ca: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.6.32, BuildID[sha1]=a92f66db1ba36b3e54041f5de948f19d9043aed1, not stripped&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Ok, so it’s an x86-64 binary, not stripped, and dynamically linked. I next like to run checksec (included with &lt;code&gt;pwntools&lt;/code&gt;), as this will be useful information to keep in mind when looking for vulnerabilities and later building the exploit.&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>3 reasons why I regret getting a Photoshop subscription</title>
       <link>https://ghariib.ir/posts/3-reasons-why-i-regret-getting-a-photoshop-subscription/</link>
       <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
@@ -1123,11 +885,67 @@
       <description>&lt;p&gt;If you&amp;rsquo;re self-hosting any services, you&amp;rsquo;ll want a reverse proxy as another layer of defense.&lt;/p&gt;&#xA;&lt;p&gt;Once your home network starts getting more complex, like if you were to start self-hosting apps and services, you might want to consider setting up a reverse proxy to shield those services from the internet. This is essentially another server that sits between the device your self-hosted apps are on and the internet, but instead of providing access outward to the internet, it provides access to those apps.&lt;/p&gt;</description>
     </item>
     <item>
+      <title>A first look at Android 14 forensics</title>
+      <link>https://ghariib.ir/posts/a-first-look-at-android-14-forensics/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/a-first-look-at-android-14-forensics/</guid>
+      <description>&lt;p&gt;Android 14 was released to the public by the Open Handset Alliance on October 4, 2023, and is now available on various smartphones, including the Google Pixel.&lt;/p&gt;&#xA;&lt;p&gt;This blog post aims to explore a list of the majr oartifacts you can find on this version of the Android OS. &lt;/p&gt;&#xA;&lt;p&gt;For testing and review, I set up a Google Pixel 7A and used it for about a month, with a SIM card and various native and third-party apps installed.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>A first look at iOS 18 forensics</title>
+      <link>https://ghariib.ir/posts/a-first-look-at-ios-18-forensics/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/a-first-look-at-ios-18-forensics/</guid>
+      <description>&lt;p&gt;This has been a tough year for me: my mom passed away in June, and I&amp;rsquo;m still slowly recovering from the hard blow. It&amp;rsquo;s time to start again doing what I love: researching and sharing!&lt;/p&gt;&#xA;&lt;p&gt;It&amp;rsquo;s early September and like every year, that moment is approaching when everyone who deals with mobile forensics starts to tremble at the thought of the arrival of a new version of iOS!&lt;/p&gt;&#xA;&lt;p&gt;First the good news: the basic and traditional techniques for logical acquisition (or Advanced Logical, if you want to call it that) still work on iOS 18!&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Analysis of Android settings during a forensic investigation</title>
+      <link>https://ghariib.ir/posts/analysis-of-android-settings-during-a-forensic-investigation/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/analysis-of-android-settings-during-a-forensic-investigation/</guid>
+      <description>&lt;p&gt;During the forensic examination of a smartphone, we sometimes need to understand some basic settings of the device. Some simple examples are:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;What is the name of the device?&lt;/li&gt;&#xA;&lt;li&gt;Is the &amp;ldquo;Set time automatically&amp;rdquo; option on or off?&lt;/li&gt;&#xA;&lt;li&gt;Is the &amp;ldquo;Set time zone automatically&amp;rdquo; option on or off?&lt;/li&gt;&#xA;&lt;li&gt;Is mobile data switched on or off?&lt;/li&gt;&#xA;&lt;li&gt;Is mobile data roaming switched on or off?&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;On Android devices, most of these settings are managed centrally by the Android settings provider. &lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Android Forensics References: a curated list</title>
+      <link>https://ghariib.ir/posts/android-forensics-references-a-curated-list/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/android-forensics-references-a-curated-list/</guid>
+      <description>&lt;p&gt;During the forensic analysis of a mobile device, we often have the need to understand the content of a specific file or folder. This is particularly true when a file or a folder is not parsed by our set of tools. &lt;/p&gt;&#xA;&lt;p&gt;Our approach is, typically, to start googling the file or folder name to check if someone else has already done some researches on it. This approach is time consuming and it&amp;rsquo;s not always easy to quickly find the proper reference. I also realized that I googled the same file/folder name multiple times&amp;hellip;..&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>BSidesPDX CTF : MakeIcon</title>
+      <link>https://ghariib.ir/posts/bsidespdx-ctf-makeicon/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/bsidespdx-ctf-makeicon/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Web&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 300&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;It&amp;#39;s free, as in baby.&#xA;&#xA;Host: ab743120bb6ae11e7ac800aee00def00-1664391948.eu-central-1.elb.amazonaws.com&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;note&#34;&gt;Note&lt;/h1&gt;&#xA;&lt;p&gt;The BSidesPDX organizers have made the source code for all of their challenges freely available so that you can run them at home and follow along. You can find more information here.&lt;/p&gt;&#xA;&lt;h1 id=&#34;investigation&#34;&gt;Investigation&lt;/h1&gt;&#xA;&lt;p&gt;Upon loading the screen, we are presented with a file upload and a button to make a jpeg icon. We also note that the version string indicates it was made in 2016, with a version of &lt;code&gt;Version 2016.3717&lt;/code&gt;. After playing around with it for a little while, I thought about how there was that ImageMagick bug last year that let you execute code remotely. I wasn’t sure it would work, but it was worth a shot.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>BSidesPDX CTF : SeaQuell</title>
+      <link>https://ghariib.ir/posts/bsidespdx-ctf-seaquell/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/bsidespdx-ctf-seaquell/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Web&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 200&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Our competitors at SeaQuell have uploaded their latest proprietary data to their employee area. We have already compromised their web developer and obtained the source code to their site, here: seaquell.py&#xA;&#xA;Host: a32fcd6eab2d811e784db0a6f99bb55a-829124630.eu-central-1.elb.amazonaws.com&#xA;&#xA;Port: 1589&#xA;&#xA;Seaquell.py&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;note&#34;&gt;Note&lt;/h1&gt;&#xA;&lt;p&gt;The BSidesPDX organizers have made the source code for all of their challenges freely available so that you can run them at home and follow along. You can find more information here.&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>DeepSec 2024 Keynote – The Mind Bomb</title>
       <link>https://ghariib.ir/posts/deepsec-2024-keynote-the-mind-bomb/</link>
       <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
       <guid>https://ghariib.ir/posts/deepsec-2024-keynote-the-mind-bomb/</guid>
       <description>&lt;p&gt;DeepSec 2024 ended on 22 November 2024. We took a week off to post-process the event in terms of video material and dialogues. Usually only participants get first access to the video recordings, but because of the threat of disinformation from nation states, we published the keynote early and freely. Randahl Fink explained his take on manipulation of elections and entire societies. Russia, among others, is very proficient in creating election results that keep on surprising politicians and analysts alike. The Mind Bomb is real, and it is about to explode in Western democracies. You can watch the video online on Randahl’s YouTube channel, his Patreon site, or on our Vimeo account. Presenters at conferences are storytellers. They make topics come alive, create links between seemingly unrelated aspects, teach new knowledge, and hopefully make&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Dissecting the Android WiFiConfigStore.xml for forensic analysis</title>
+      <link>https://ghariib.ir/posts/dissecting-the-android-wificonfigstore-xml-for-forensic-analysis/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/dissecting-the-android-wificonfigstore-xml-for-forensic-analysis/</guid>
+      <description>&lt;p&gt;A smartphone is often connected to a Wi-Fi network: think of how much time we spend at home, in our office, or even in a public place while studying or exercising. As soon as we can reach a (hopefully trusted) Wi-Fi network, we connect to it!&lt;/p&gt;&#xA;&lt;p&gt;On Android devices, the Wi-Fi connection is managed by the Wi-Fi service. This service must store information about the previously connected Wi-Fi networks so that the phone can reconnect as soon as it&amp;rsquo;s in the vicinity.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Has the user ever used the XYZ application? aka traces of application execution on mobile devices</title>
+      <link>https://ghariib.ir/posts/has-the-user-ever-used-the-xyz-application-aka-traces-of-application-execution-on-mobile-devices/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/has-the-user-ever-used-the-xyz-application-aka-traces-of-application-execution-on-mobile-devices/</guid>
+      <description>&lt;p&gt;A common question during a forensic investigation of a digital device is: &amp;ldquo;&lt;strong&gt;Has the user ever used the XYZ application?&lt;/strong&gt;&amp;rdquo;.&lt;/p&gt;&#xA;&lt;p&gt;As always when answering this question, it is important to create and follow a solid process.&lt;/p&gt;&#xA;&lt;p&gt;In this blog post, I want to share a possible process that everyone should customize based on their needs and roles.&lt;/p&gt;&#xA;&lt;p&gt;The ability to answer the question depends on the acquisition that was obtained from the device. In this blog post, I will address the scenario where you have a full file system acquisition (or physical, for older devices).&lt;/p&gt;</description>
     </item>
     <item>
       <title>Instant Password Removal for Quicken 2024</title>
@@ -1144,6 +962,48 @@
       <description>&lt;p&gt;&#xD;&#xA;&lt;figure&gt;&#xD;&#xA;  &lt;img src=&#34;https://blog.elcomsoft.com/wp-content/uploads/2024/11/EDPR-4.70-2_1200x630.jpg&#34; alt=&#34;&#34; /&gt;&#xD;&#xA;&lt;/figure&gt;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;In the latest update of Elcomsoft Distributed Password Recovery (EDPR), we’ve introduced a revamped load-balancing feature. The new feature aims to enhance resource utilization on local workstations across diverse hardware configurations. This update has drastically reduced the time required to break passwords in certain hardware configurations, thanks to a refined load distribution algorithm. In this article, we’ll share some technical details on how load balancing leverages a mix of GPUs and CPU cores.&lt;/p&gt;</description>
     </item>
     <item>
+      <title>iOS 15 Image Forensics Analysis and Tools Comparison  - Browsers, Mail Clients, and Productivity apps</title>
+      <link>https://ghariib.ir/posts/ios-15-image-forensics-analysis-and-tools-comparison-browsers-mail-clients-and-productivity-apps/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/ios-15-image-forensics-analysis-and-tools-comparison-browsers-mail-clients-and-productivity-apps/</guid>
+      <description>&lt;p&gt;The fifth episode is dedicated to three categories of third-party apps: browsers, mail clients, and productivity apps.&lt;/p&gt;&#xA;&lt;p&gt;There are 6 browsers, 3 mail clients, and 3 productivity applications available in Josh Hickman’s acquisition. &lt;/p&gt;&#xA;&lt;p&gt;The 6 browsers are listed below, in alphabetical order.&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;Brave&lt;/li&gt;&#xA;&lt;li&gt;DuckDuckGo&lt;/li&gt;&#xA;&lt;li&gt;Firefox&lt;/li&gt;&#xA;&lt;li&gt;Firefox Focus&lt;/li&gt;&#xA;&lt;li&gt;Google Chrome&lt;/li&gt;&#xA;&lt;li&gt;Microsoft Edge&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;p&gt;The 3 mail clients are listed below, in alphabetical order.&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;Gmail&lt;/li&gt;&#xA;&lt;li&gt;Proton Mail&lt;/li&gt;&#xA;&lt;li&gt;Tutanota&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;p&gt;The 3 productivity applications are listed below, in alphabetical order.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>iOS 15 Image Forensics Analysis and Tools Comparison  - Communication and Social Networking Apps</title>
+      <link>https://ghariib.ir/posts/ios-15-image-forensics-analysis-and-tools-comparison-communication-and-social-networking-apps/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/ios-15-image-forensics-analysis-and-tools-comparison-communication-and-social-networking-apps/</guid>
+      <description>&lt;p&gt;The fourth episode is dedicated to the most analyzed family of applications: communication and social networking apps.&lt;/p&gt;&#xA;&lt;p&gt;Before I start, I would like to mention that I have made some corrections to the previous blog post, based on feedback by tool developers. Also, most of them have confirmed to me that they are working on improving their parsing capabilities, based on this blog series. I am happy to support them in that direction!&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>iOS 15 Image Forensics Analysis and Tools Comparison  - Native Apps</title>
+      <link>https://ghariib.ir/posts/ios-15-image-forensics-analysis-and-tools-comparison-native-apps/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/ios-15-image-forensics-analysis-and-tools-comparison-native-apps/</guid>
+      <description>&lt;p&gt;I am finally back with the third blog post in the series!&lt;/p&gt;&#xA;&lt;p&gt;Before I introduce this new post, I want to point out some updates to the previous blog post. &lt;/p&gt;&#xA;&lt;p&gt;I have corrected a couple of errors related to the Belkasoft tool, in particular the device UDID and the device phone number.&lt;/p&gt;&#xA;&lt;p&gt;Also, after the blog post, Alexis Brignoni released some new iLEAPP parsers that cover most of the “red” boxes and MSAB confirmed to me that they have already fixed all the “red” boxes from the previous blog post. At the end of the series, I will re-process the dataset with the latest version of the various tools, and create a separate table with the updated comparison.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>iOS 15 Image Forensics Analysis and Tools Comparison  - Processing details and general device information</title>
+      <link>https://ghariib.ir/posts/ios-15-image-forensics-analysis-and-tools-comparison-processing-details-and-general-device-information/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/ios-15-image-forensics-analysis-and-tools-comparison-processing-details-and-general-device-information/</guid>
+      <description>&lt;p&gt;As explained in the first blog post, I would like to start discussing the acquisition and processing details.&lt;/p&gt;&#xA;&lt;p&gt;The acquisition was done by Josh Hickman using the Cellebrite Premium tool and the result is a Full File System capture in the traditional file format created by UFED.&lt;/p&gt;&#xA;&lt;p&gt;If you open the file EXTRACTION _FFS.zip ZIP you will see that UFED organizes the extracted full file system into 5 subfolders;&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;filesystem1&lt;/strong&gt;: extraction of system partition, without the mount point “/private/var/mobile/” (“user data&amp;quot;)&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;filesystem2:&lt;/strong&gt; extraction of the mount point for user data (“/private/var/mobile”)&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;metadata1:&lt;/strong&gt; metadata for files stored in “filesystem1”&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;metadata1:&lt;/strong&gt; metadata for files stored in “filesystem2”&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;extra:&lt;/strong&gt; iOS Keychain&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;&#xD;&#xA;&lt;figure&gt;&#xD;&#xA;  &lt;img src=&#34;https://blogger.googleusercontent.com/img/a/AVvXsEiG-mJRk-eDWqHunSP05m0r4r5fxh2x6RYBI5j-31XBOHCqIBAalhgOJ3IRyiqzagdNZrBIPxh-tUn5cl8W4neBa9opUl3rb2ILlWgEICU18EyYQ7uiNfLVxlJEUKi36-P63eopuOOoBZJVonQ6Rby4lcSY6JHLWHhKr1xt3Zn6172TLxWgAWWX_k2FJko=w640-h228&#34; alt=&#34;&#34; /&gt;&#xD;&#xA;&lt;/figure&gt;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>iOS Forensics References: a curated list</title>
+      <link>https://ghariib.ir/posts/ios-forensics-references-a-curated-list/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/ios-forensics-references-a-curated-list/</guid>
+      <description>&lt;p&gt;Following up my previous blog post, I decided to create a curated list of iOS Forensics References, organized by folder with specific references (links to blog post, research paper, articles, and so on) for each interesting file. &lt;/p&gt;&#xA;&lt;p&gt;The list is available as a GitHub repository to make it easier to keep it updated. If you have any proposal for addition in terms of file/folders or a specific reference, please let me know and I&amp;rsquo;ll be happy to add it to the list.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>iOS Forensics: tool validation based on a known dataset - Preamble</title>
+      <link>https://ghariib.ir/posts/ios-forensics-tool-validation-based-on-a-known-dataset-preamble/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/ios-forensics-tool-validation-based-on-a-known-dataset-preamble/</guid>
+      <description>&lt;p&gt;Hello world, it’s been a while since my last series of blog posts! But now I am ready to share with you the results of my recent research.&lt;/p&gt;&#xA;&lt;p&gt;I face many different challenges in my daily work as a digital forensics analyst, who deals mainly with mobile devices. &lt;strong&gt;All modern smartphones are encrypted&lt;/strong&gt; (usually with file-based encryption (FBE)), so obtaining or cracking the passcode is required to gain access to all the data stored on the device. And even if we know the passcode (or the user has not set the passcode, which is increasingly rare these days), we still need an exploit to gain “root” access to the device to read and copy all the data and get our “best acquisition”, usually a full file system (FFS).&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>Is Telegram really an encrypted messaging app?</title>
       <link>https://ghariib.ir/posts/is-telegram-really-an-encrypted-messaging-app/</link>
       <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
@@ -1151,11 +1011,74 @@
       <description>&lt;p&gt;This blog is reserved for more serious things, and ordinarily I wouldn’t spend time on questions like the above. But much as I’d like to spend my time writing about exciting topics, sometimes the world requires a bit of what Brad Delong calls “Intellectual Garbage Pickup,” namely: correcting wrong, or mostly-wrong ideas that spread unchecked across the Internet.&lt;/p&gt;&#xA;&lt;p&gt;This post is inspired by the recent and concerning news that Telegram’s CEO Pavel Durov has been arrested by French authorities for its failure to sufficiently moderate content. While I don’t know the details, the use of criminal charges to coerce social media companies is a pretty worrying escalation, and I hope there’s more to the story.&lt;/p&gt;</description>
     </item>
     <item>
+      <title>McAFuse - open source McAfee FDE decryption</title>
+      <link>https://ghariib.ir/posts/mcafuse-open-source-mcafee-fde-decryption/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/mcafuse-open-source-mcafee-fde-decryption/</guid>
+      <description>&lt;p&gt;This post is a &lt;em&gt;guest&lt;/em&gt; post, where &lt;strong&gt;Andrea Canepa&lt;/strong&gt; (&lt;em&gt;recently&lt;/em&gt; graduated at University of Genoa, Computer Science) will explain his &lt;strong&gt;Master Thesis&lt;/strong&gt;. The topic is &lt;em&gt;how to handle McAfee FDE acquisitions&lt;/em&gt; when doing a DFIR investigations.&lt;/p&gt;&#xA;&lt;p&gt;Suppose that you&amp;rsquo;re asked to perform a forensic investigation on a laptop where McAfee FDE is used: the company will provide you the xml file (McAfee ePO) with the decrypting key. How would you proceed?&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Oh no! I have a wiped iPhone, now what?</title>
+      <link>https://ghariib.ir/posts/oh-no-i-have-a-wiped-iphone-now-what/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/oh-no-i-have-a-wiped-iphone-now-what/</guid>
+      <description>&lt;p&gt;One of the most common questions I got asked during presentations and conferences is: &amp;ldquo;&lt;strong&gt;During a search and seizure we found a wiped iPhone, what can we do next?&lt;/strong&gt;&amp;rdquo;&lt;/p&gt;&#xA;&lt;p&gt;&#xD;&#xA;&lt;figure&gt;&#xD;&#xA;  &lt;img src=&#34;https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi6xIfngOuvXrGpaenivhwwqQadArE3RoQ9MynGYodzJ1SjdkoYvo1KOqbz23sL8xmL9t7IAxSgrKELQZZ6NEBRYFJu3wWr1ZxBQOW3lBtjyCq5gtrLgBKemMqluauKuC5lvteSiMW7t1Y/w296-h640/image.png&#34; alt=&#34;&#34; /&gt;&#xD;&#xA;&lt;/figure&gt;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;First and foremost: &lt;strong&gt;you cannot recover data stored on the device before wiping occurred&lt;/strong&gt;.&lt;br&gt;&#xA;The encryption keys you need to decrypt the data are gone forever.&lt;br&gt;&#xA;Full stop :)&lt;/p&gt;&#xA;&lt;p&gt;If you are aware of any method, technique, tool or magic box that can do that, please let me know :)&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>On Ashton Kutcher and Secure Multi-Party Computation</title>
       <link>https://ghariib.ir/posts/on-ashton-kutcher-and-secure-multi-party-computation/</link>
       <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
       <guid>https://ghariib.ir/posts/on-ashton-kutcher-and-secure-multi-party-computation/</guid>
       <description>&lt;p&gt;Back in March I was fortunate to spend several days visiting Brussels, where I had a chance to attend a panel on “chat control“: the new content scanning regime being considered by the EU Commission. Among various requirements, this proposed legislation would mandate that &lt;em&gt;client-side scanning&lt;/em&gt; technology be incorporated into encrypted text messaging applications like Signal, WhatsApp and Apple’s iMessage. The scanning tech would examine private messages for certain types of illicit content, including child sexual abuse media (known as CSAM), along with a broad category of textual conversations that constitute “grooming behavior.”&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>OpenCTF : Do The Needful</title>
+      <link>https://ghariib.ir/posts/openctf-do-the-needful/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/openctf-do-the-needful/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Forensics&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 50&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Do the needful&#xA;https://scoreboard.openctf.com/DoTheNeedful-98e4c6ba71f88e4201a08e7503b0df6124607e39&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;File Download:&lt;/strong&gt; DoTheNeedful-98e4c6ba71f88e4201a08e7503b0df6124607e39&lt;/p&gt;&#xA;&lt;p&gt;When we extract this file, we end up with &lt;code&gt;Challenge.txt&lt;/code&gt;. So I go ahead and cat it.&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ cat Challenge.txt &#xA;=AAAAMjU/o7Z+0V17r06KDNmaZHQB1VSlR7wsTDuNk1ok3wfRPMl5YAAV/DwDzAIAERyH3wAAsVVGNBAIs4H&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This looks like a base64 string, however, with base64 encoding, the &lt;code&gt;=&lt;/code&gt; character is used as padding and should only show up at the end of a base64 string, if at all. So let’s try and reverse the string. I wrote a quick Python script for this, and write the result to a file.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>OpenCTF : Ellingson Mineral 2</title>
+      <link>https://ghariib.ir/posts/openctf-ellingson-mineral-2/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/openctf-ellingson-mineral-2/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; OSINT&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 100&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;We heard word that The Plague escaped prison three weeks ago. We&amp;#39;ve been notified that he was recently seen on soundcloud liking a song by ytcracker called &amp;#34;hacker music.&amp;#34; Let us know what you find.&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;First perform a search on soundcloud.com for “ytcracker hacker music” then go to likes. &lt;code&gt;https://soundcloud.com/ytcracker/ytcracker-hacker-music/likes&lt;/code&gt;&lt;/p&gt;&#xA;&lt;p&gt;Go to ThePlague2018x’s profile&lt;/p&gt;&#xA;&lt;p&gt;&lt;code&gt;https://soundcloud.com/user-843651506&lt;/code&gt;&lt;/p&gt;&#xA;&lt;p&gt;The next clue seemed to be to go to the website on ThePlague2018x’s website which is the following&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>OpenCTF : fire walker 0</title>
+      <link>https://ghariib.ir/posts/openctf-fire-walker-0/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/openctf-fire-walker-0/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Network&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 50&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Flag: http://172.31.2.97:20621/flag-d12bb978.txt Firewall rules: https://scoreboard.openctf.com/firewalker_0-acaceaa807e20591173451a7a824a23f2728563b&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;File Download:&lt;/strong&gt; firewalker_0-acaceaa807e20591173451a7a824a23f2728563b&lt;/p&gt;&#xA;&lt;p&gt;The goal of the fire walker challenges is straight-forward, download the flag file from the provided http URL. The trick is, there are firewall rules that will prevent you from simply running wget, curl, or opening the URL in your favorite web browser. So let’s take a look at the firewall rules:&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ cat port_20621_rules.txt &#xA;Chain PORT_20621 (1 references)&#xA;target     prot opt source               destination         &#xA;REJECT     tcp  -- anywhere             anywhere             tcp spts:1024:65535 reject-with icmp-admin-prohibited&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;So what these rules are describing, is that if the source port is in the range of 1024-65535, the packet will be rejected. For those new to networking, every TCP connection has a source port and a destination port. You are likely already aware of common destination port number used for servers, for example, HTTP uses port &lt;code&gt;80&lt;/code&gt; by default. In this challenge, port &lt;code&gt;20621&lt;/code&gt; is the destination port for our HTTP traffic. However, the source port is randomly selected by your client. And because ports under 1024 generally require elevated privellages, most, if not all, programs will never select a port below 1024. However, both &lt;code&gt;nc&lt;/code&gt; and &lt;code&gt;curl&lt;/code&gt; allow you to manually specify the port number. I decided to use &lt;code&gt;curl&lt;/code&gt; because this allowed me to avoid manually building the HTTP GET request. Be sure to run the command with &lt;code&gt;sudo&lt;/code&gt;.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>OpenCTF : HeadOn</title>
+      <link>https://ghariib.ir/posts/openctf-headon/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/openctf-headon/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Forensics&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 50&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Apply directly to the console&#xA;https://scoreboard.openctf.com/HeadOn-ac8890852965d787f7591bc10add61bb01efb5eb&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;File Download:&lt;/strong&gt; HeadOn-ac8890852965d787f7591bc10add61bb01efb5eb&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ file blob &#xA;blob: data&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I also try running &lt;code&gt;strings&lt;/code&gt; on the file, but I don’t find anything interesting.&lt;/p&gt;&#xA;&lt;p&gt;Let’s try binwalk. If you have never heard of binwalk, it is a fantastic tool for solving forensics challenges. It goes through files of any type, looking for known magic cookies to help identify when one file type is embedded in another. For example, you may be given an ELF file, that has a jpeg embedded in it, binwalk will be able to find it, assuming the file is not encoded or encrypted in some way.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>OpenCTF : mbrtetris</title>
+      <link>https://ghariib.ir/posts/openctf-mbrtetris/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/openctf-mbrtetris/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Forensics&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 25&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;boot this on baremetal. - https://kajer.openctf.com/tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;File Download:&lt;/strong&gt; tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6&lt;/p&gt;&#xA;&lt;p&gt;I start by running the &lt;code&gt;file&lt;/code&gt; command:&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ file tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6 &#xA;tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6: DOS/MBR boot sector; partition 1 : ID=0x7, start-CHS (0x0,33,3), end-CHS (0x1,124,22), startsector 2048, 20480 sectors&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Ok, let’s try mounting this:&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ sudo mount tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6 /mnt&#xA;mount: /mnt: wrong fs type, bad option, bad superblock on /dev/loop19, missing codepage or helper program, or other error.&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Hmm, I use some Google-fu, and I stumble upon this useful article on major.io. As the article suggests, let’s run fdisk to calculate the offset.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>OpenCTF : Nightmare 50</title>
+      <link>https://ghariib.ir/posts/openctf-nightmare-50/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/openctf-nightmare-50/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Web&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 50&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Automated home work scoring my ass. https://shades-of-nightmare.openctf.com/nzpoixyucvkjwnerntasdfascdvasdfqwerqwe/nightmare-50/&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;When connecting to this website in my browser, I receive the following prompt:&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Welcome to Doctor Professor Wilson&amp;#39;s Python 101!&#xA;Lesson 1: hello world&#xA;Enter homework for grading:&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;So it looks like this will execute the Python code you provide. So I test it with the following:&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Welcome to Doctor Professor Wilson&amp;#39;s Python 101!&#xA;Lesson 1: hello world&#xA;Enter homework for grading:&#xA;print(&amp;#39;Hello world&amp;#39;)&#xA;Hello world&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And then it immediately closes the connection. So it looks like it only allows a single line of Python code.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>OpenCTF : SQL 10</title>
+      <link>https://ghariib.ir/posts/openctf-sql-10/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/openctf-sql-10/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;Category:&lt;/strong&gt; Web&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Points:&lt;/strong&gt; 10&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Description:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;https://sql-mayham.openctf.com/ziopxuoiwquyerhnszpasdyvzlkxcjlwerqwer/sql-10/&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;When &lt;code&gt;1&lt;/code&gt; is entered it returns the following row:&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Enter a badge number to view that officers file:1&#xA;(1, &amp;#39;bob&amp;#39;, &amp;#39;simmons&amp;#39;, &amp;#39;none&amp;#39;)&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Performing a basic sql injection we got the same row back but no error. The server only returns 1 row&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Enter a badge number to view that officers file:1 or 1=1&#xA;(1, &amp;#39;bob&amp;#39;, &amp;#39;simmons&amp;#39;, &amp;#39;none&amp;#39;)&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Entering an ID of 2 no results are found.&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Enter a badge number to view that officers file:2 &#xA;None&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Using the sql injection an OR was added to say “id&amp;gt;2”&lt;/p&gt;</description>
     </item>
     <item>
       <title>Outlook Forensic Toolbox Helps Access Deleted Messages</title>
@@ -1184,6 +1107,13 @@
       <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
       <guid>https://ghariib.ir/posts/sideloading-low-level-extraction-agent-with-regular-apple-ids-from-windows-and-linux/</guid>
       <description>&lt;p&gt;&#xD;&#xA;&lt;figure&gt;&#xD;&#xA;  &lt;img src=&#34;https://blog.elcomsoft.com/wp-content/uploads/2024/07/EIFT-8.60_1200x630.jpg&#34; alt=&#34;&#34; /&gt;&#xD;&#xA;&lt;/figure&gt;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;Low-level extraction enables access to all the data stored in the iOS device. Previously, sideloading the extraction agent for imaging the file system and decrypting keychain required enrolling one’s Apple ID into Apple’s paid Developer Program if one used a Windows or Linux PC. Mac users could utilize a regular, non-developer Apple ID. Today, we are bringing this feature to Windows and Linux editions of iOS Forensic Toolkit.&lt;/p&gt;&#xA;&lt;p&gt;While there are several different methods achieving essentially the same goal, modern devices (starting with those based on the chip found in the iPhone Xr/Xs) require the use of a special app called extraction agent. On the device, the extraction agent attempts to acquire the required level of privileges by utilizing a chain of exploits, which is an absolute requirement for accessing the root of the file system.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Sysdiagnose in iOS 16: a first look from a Digital Forensics perspective</title>
+      <link>https://ghariib.ir/posts/sysdiagnose-in-ios-16-a-first-look-from-a-digital-forensics-perspective/</link>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>https://ghariib.ir/posts/sysdiagnose-in-ios-16-a-first-look-from-a-digital-forensics-perspective/</guid>
+      <description>&lt;p&gt;Back in May 2019, along with my colleagues Heather Mahalik and Adrian Leong, we wrote the paper &amp;ldquo;&lt;strong&gt;Using Apple “Bug Reporting” for forensic purposes&lt;/strong&gt;&amp;rdquo; and some scripts to parse data stored in Sysdiagnose logs.&lt;/p&gt;&#xA;&lt;p&gt;The paper is still available for download and, for the most part, is still accurate. But time goes on, and new iOS versions have come on the market in recent years. I took a first look at a sysdiagnose generated on a freshly wiped iPhone with iOS 16 natively installed.&lt;/p&gt;</description>
     </item>
     <item>
       <title>The 3 best Rainmeter alternatives for Windows</title>

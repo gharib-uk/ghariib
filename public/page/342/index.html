@@ -40,52 +40,71 @@
 		
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/virtualbox-7-1-6-is-out-rhel-9-6-kernel-support-screen-flickering-fix/">&lt;div&gt;VirtualBox 7.1.6 is out! RHEL 9.6 kernel Support &amp; Screen Flickering Fix&lt;/div&gt;</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
+	<h1><a href="https://ghariib.ir/posts/blog-reconcile-with-kpt-live-apply/">Blog: Reconcile with kpt live apply</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
+	
+	<a href="/tags/jenkins">jenkins</a>
 	
 	<div>
-		<p>
-<figure>
-  <img src="https://ubuntuhandbook.org/wp-content/uploads/2024/09/virtualbox-newlogo-250x250.webp" alt="" />
-</figure>
-
-
-</p>
-<p>Oracle announced new Virtualbox 7.1.6 release this Tuesday with various bug-fixes, performance improvements, and minor new features.</p>
-<p>VirtualBox had heavy screen tearing and flickering issue in Linux VMs running with recent Kernel and Wayland for a period of time, that’s why I switched to QEMU/KVM.</p>
-<p>Since the last 7.1.4, VirtualBox greatly improved the flickering, black screen and other screen update issues. In the new release, it also fixed issue with Linux guest screen flickering when guest was using VMSVGA graphics adapter.</p>
+		<p>Since the dawn of Jenkins X 3 the default last step of reconciling the state of the files in your cluster repository to your cluster has been to execute <code>kubectl apply</code>. You can find more details about this here.</p>
+<p>There are some drawbacks with <code>kubectl apply</code> though. The one that made me start looking for alternatives was that if you remove a resource from your cluster repository it may not be removed from your cluster. The way deletion works with <code>kubectl apply</code> is that it is handed the option <code>--prune</code> which will remove resources that are not in the manifests. Except that it doesn’t always work as expected. It will only remove certain kinds of resources defined in kubectl. In my case I removed an HorizontalPodAutoscaler from my cluster repository, but it wasn’t removed from my cluster.</p>
 		
-			<a href="https://ghariib.ir/posts/virtualbox-7-1-6-is-out-rhel-9-6-kernel-support-screen-flickering-fix/">Read more...</a>
+			<a href="https://ghariib.ir/posts/blog-reconcile-with-kpt-live-apply/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/wine-10-0-release-brings-new-drivers-features-changes/">&lt;div&gt;Wine 10.0 Release Brings New Drivers, Features &amp; Changes&lt;/div&gt;</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
+	<h1><a href="https://ghariib.ir/posts/blog-software-bill-of-materials-formats/">Blog: Software Bill Of Materials Formats</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
+	
+	<a href="/tags/jenkins">jenkins</a>
 	
 	<div>
-		<p>
-<figure>
-  <img src="https://i0.wp.com/www.omgubuntu.co.uk/wp-content/uploads/2022/01/wine-3.jpg?resize=406%2C232&amp;ssl=1" alt="" />
-</figure>
-
-
-A fresh stable release of Wine — the open-source compatibility layer that makes it possible to run Windows apps and games on Linux and macOS — has been uncorked. More than 6,000 thousand changes were distilled in Wine 10.0, changes collected, collated, and curated over the past 12 months of Wine 9.x development releases. For those who’ve supped the dev cycle builds, the bulk of what’s new in Wine 10.0 will be familiar. Wine is not the ‘everyday essential’ it was in years past. Back then, web-based services weren’t as capable, so folks were wedded to specific pieces of Windows software, […]</p>
+		<h2 id="prerequisite">Prerequisite</h2>
+<p>If you don’t understand what is Software Bill of Materials (SBOM), please read this blog post first.</p>
+<h2 id="different-sbom-formats-comparison">Different SBOM formats comparison</h2>
+<p>The National Telecommunications and Information Administration (NTIA) in the U.S. defined minimum requirements for SBOM formats:</p>
+<ul>
+<li>Identifying the supplier of the software component.</li>
+<li>Identifying the details about the version of the component.</li>
+<li>Including unique identifiers for the component like cryptographic hash functions.</li>
+<li>Including the relationships between all dependencies inside the component.</li>
+<li>Including a timestamp of when and by whom the SBOM report was created or last modified</li>
+</ul>
+<p>In this section, we discuss different kinds and formats for SBOM standards and make a brief comparison between them. Three commonly used standards achieved the NTIA minimum requirements for SBOM generation and each one results in a different final SBOM document.</p>
 		
-			<a href="https://ghariib.ir/posts/wine-10-0-release-brings-new-drivers-features-changes/">Read more...</a>
+			<a href="https://ghariib.ir/posts/blog-software-bill-of-materials-formats/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/13-top-kubernetes-alternatives-for-containers-in-2025/">13 Top Kubernetes Alternatives for Containers in 2025</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
+	<h1><a href="https://ghariib.ir/posts/blog-software-bill-of-materials-generation-tools/">Blog: Software Bill Of Materials generation tools</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
+	
+	<a href="/tags/jenkins">jenkins</a>
 	
 	<div>
-		<p>See the list of 13 best Kubernetes alternatives for container orchestration and the features to consider when choosing an alternative to K8s.</p>
+		<h2 id="prerequisite">Prerequisite</h2>
+<p>Before you read this, you have to understand what are SBOMs and what are different formats of SBOMs</p>
+<h2 id="different-sbom-generation-tools-comparison">Different SBOM generation tools comparison</h2>
+<p>If you got this far, you already realize the importance of SBOM generation, and also it should meet certain requirements to achieve its purpose. Due to various requirements depending on what standard you’re following, there has to be a way to automatically generate different output formats for different standards. Also, it has to be suited for ci/cd solutions to keep up with the increasing number of releases for each organization.</p>
+		
+			<a href="https://ghariib.ir/posts/blog-software-bill-of-materials-generation-tools/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/build-go-applications-using-project-idx-and-the-gemini-api/">Build Go applications using Project IDX and the Gemini API</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
+	
+	<div>
+		<p>Learn how to build Go applications using Project IDX, an AI-assisted workspace for full-stack app development.</p>
 <p>Go to Source</p>
 		
 	</div>
@@ -93,12 +112,24 @@ A fresh stable release of Wine — the open-source compatibility layer that mak
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/16-lesser-known-uses-of-command-prompt/">16 lesser-known uses of Command Prompt</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
+	<h1><a href="https://ghariib.ir/posts/casa-systems-and-google-cloud-strengthen-partnership-to-progress-cloud-native-5g-sa-core-mec-and-mobile-private-networks/">Casa Systems and Google Cloud strengthen partnership to progress cloud-native 5G SA core, MEC, and mobile private networks</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
 	
 	<div>
-		<p>Do you know these lesser known Command Prompt uses?</p>
-<p>Command Prompt is the most powerful Windows tool and a goldmine of hidden functionalities for a power user. From managing your network to managing installed programs to encrypting your files and folders, you can do so much using simple commands on Command Prompt.</p>
+		<p>Andover, MA based <strong>Casa Systems</strong> [<strong>1.</strong>] today announced a strategic technology and distribution partnership with <strong>Google Cloud</strong> to further advance and differentiate Casa Systems and Google Cloud’s integrated cloud native software and service offerings. The partnership  provides for formalized and coordinated global sales, marketing, and support engagement, whereby Casa Systems and Google Cloud will offer Communication Service Providers (CSPs) and major enterprises integrated Google Cloud-Casa Systems solutions for cloud-native 5G core, 5G SA multi-access edge computing (MEC), and enterprise mobile private network use cases.  It’s yet another partnership between a telecom company and a cloud service provider (e.g. AWS, Azure are the other two) to produce cloud native services and software.</p>
+		
+			<a href="https://ghariib.ir/posts/casa-systems-and-google-cloud-strengthen-partnership-to-progress-cloud-native-5g-sa-core-mec-and-mobile-private-networks/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/celebrating-flutters-production-era/">Celebrating Flutter’s “Production Era”</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
+	
+	<div>
+		<p>Flutter is transitioning into its “production era,” marked by widespread developer adoption and success stories, including deeper iOS fidelity, seamless platform integration, and enhanced developer tools, making it a top choice for building apps at scale.</p>
 <p>Go to Source</p>
 		
 	</div>
@@ -106,101 +137,74 @@ A fresh stable release of Wine — the open-source compatibility layer that mak
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/20-years-of-software-security-threats-and-defense-strategies-evolution/">20 years of Software Security: threats and defense strategies evolution</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
+	<h1><a href="https://ghariib.ir/posts/celebrating-innovation-gemini-api-developer-competition/">Celebrating innovation: Gemini API Developer Competition</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
 	
 	<div>
-		<p> Software security has come a long way in the past two decades. With the advent of new technologies and a rapidly evolving threat landscape, defending against cyber attacks has become more challenging than ever before. We recently presented on the evolution of software security threats and defense strategies at the Security Summit in Milan on 15th March 2023. In this blog post, we&rsquo;ll explore some of the key takeaways from the presentation.</p>
-		
-			<a href="https://ghariib.ir/posts/20-years-of-software-security-threats-and-defense-strategies-evolution/">Read more...</a>
+		<p>Explore innovative projects from the Gemini API Competition, like Omni, EcoTrack, ITMZ, Jana AI, Eagle AI, and AlphaFit, demonstrating the potential of the Gemini API to enhance productivity, promote sustainability, and improve well-being.</p>
+<p>Go to Source</p>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/2024-macos-malware-review-infostealers-backdoors-and-apt-campaigns-targeting-the-enterprise/">2024 macOS Malware Review | Infostealers, Backdoors, and APT Campaigns Targeting the Enterprise</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<a href="/tags/hunting">hunting</a>
-	
-	<div>
-		<p>Learn about the key macOS malware families from 2024, including tactics, IoCs, opportunities for detection, and links to further reading.</p>
-<p>Across 2024, we saw a sharp rise in malware campaigns aimed at macOS users in the enterprise. From infostealers masquerading as business and productivity apps to sophisticated modular backdoors, not to mention plenty of APT activity, threat actors were busier than ever developing and deploying malware to compromise organizations and steal sensitive data.</p>
-		
-			<a href="https://ghariib.ir/posts/2024-macos-malware-review-infostealers-backdoors-and-apt-campaigns-targeting-the-enterprise/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/4-ways-to-mature-your-human-risk-management-program/">4 Ways to Mature Your Human Risk Management Program</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
+	<h1><a href="https://ghariib.ir/posts/chinese-hack-breached-us-sanctions-office-in-treasury-attack/">Chinese Hack Breached US Sanctions Office in Treasury Attack</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
 	
 	<div>
 		<p>
 <figure>
-  <img src="https://blog.knowbe4.com/hubfs/AIDA-Infographic-Social-Image_1200x675_v2.jpg" alt="4 Ways to Mature Your Human Risk Management Program" />
+  <img src="https://130e178e8f8ba617604b-8aedd782b7d22cfe0d1146da69a52436.ssl.cf1.rackcdn.com/chinese-hack-breached-us-sanctions-office-in-treasury-attack-image_file-6-a-27202.jpg" alt="" />
+</figure>
+
+
+<strong>Hackers Reportedly Target Treasury Department Offices Overseeing Economic Sanctions</strong><br>
+A Chinese hack of the U.S. Department of Treasury targeted offices tasked with overseeing economic sanctions and financial investigations, as experts warn Beijing is increasingly escalating attacks on American critical infrastructure while preparing for potential future conflict.</p>
+<p>​DataBreachToday.com RSS Syndication</p>
+<p>​Read More</p>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/cloud-ran-with-google-distributed-cloud-edge-strategy-host-network-functions-of-other-vendors-on-google-cloud/">Cloud RAN with Google Distributed Cloud Edge; Strategy: host network functions of other vendors on Google Cloud</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
+	
+	<div>
+		<p>At MWC 2023 Barcelona, <strong>Google Cloud</strong> announced that they can now run the <strong>radio access network (RAN)</strong> functions as software on Google Distributed Cloud Edge, providing communications service providers (CSPs- AKA telcos) with a common and agile operating model that extends from the core of the network to the edge, for a high degree of programmability, flexibility, and low operating expenses.  CSPs have already embraced open architecture, open-source software, disaggregation, automation, cloud, AI and machine learning, and new operational models, to name a few. The journey started in the last decade with Network Functions Virtualization, primarily with value added services and then deeper with core network applications, and in the past few years, that evolved into a push towards cloud-native. With significant progress in the core, the time for <strong>Cloud RAN</strong> is now, according to Google.  However, whether for industry or region-specific compliance reasons, data sovereignty needs, or latency or local data-processing requirements, most of the network functions deployed in a mobile or wireline network may have to follow a hybrid deployment model where network functions are placed flexibly in a combination of both on-premises and cloud regions. RAN, which is traditionally implemented with proprietary hardware, falls into that camp as well.</p>
+		
+			<a href="https://ghariib.ir/posts/cloud-ran-with-google-distributed-cloud-edge-strategy-host-network-functions-of-other-vendors-on-google-cloud/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/cloud-security-trends-predictions-and-strategies-for-resilience/">Cloud Security Trends: Predictions and Strategies for Resilience</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
+	
+	<a href="/tags/jenkins">jenkins</a>
+	
+	<div>
+		<p>
+<figure>
+  <img src="https://blog.aquasec.com/hubfs/blog-main-Cloud-Security-trends-1200x628-2024%20final.jpg" alt="Cloud Security Trends: Predictions and Strategies for Resilience" />
 </figure>
 
 
 </p>
-<p>Human risk management (HRM) is now the primary approach to addressing the ongoing need for strong security cultures in organizations of all sizes. HRM focuses on more than just security awareness training (SAT) delivered at regular intervals. The goal is a positive security culture through:</p>
+<p>In 2025, <strong>cloud native security</strong> is set to undergo transformative progress. As Chief Information Security Officer at Aqua, I’ve seen how rapidly evolving threats and operational demands are driving organizations to redefine their approach to security. The focus is no longer just on adapting to challenges—it’s about deeply embedding security into every facet of development pipelines, runtime environments, and cloud ecosystems. </p>
 <p>
 <figure>
-  <img src="https://track.hubspot.com/__ptq.gif?a=241394&amp;k=14&amp;r=https%3A%2F%2Fblog.knowbe4.com%2F4-ways-to-mature-your-human-risk-management-program&amp;bu=https%253A%252F%252Fblog.knowbe4.com&amp;bvt=rss" alt="" />
+  <img src="https://blog.aquasec.com/hubfs/blog-main-Cloud-Security-trends-1200x628-2024%20final.jpg" alt="Cloud Security Trends: Predictions and Strategies for Resilience" />
 </figure>
 
 
 </p>
-<p>Go to Source</p>
 		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/5-powershell-best-practices-to-work-even-more-efficiently/">5 PowerShell best practices to work even more efficiently</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<div>
-		<p>Do these practices to make PowerShell even more efficient.</p>
-<p>PowerShell is a handy tool for troubleshooting network issues, automating tasks, managing configurations, or building solutions. But if you&rsquo;re just starting out, it might feel a bit tricky to get the hang of. We’ll discuss some tips to help you get the most out of PowerShell and write scripts that are effective and easy to tweak and reuse in different situations. Like English spelling and grammar rules, PowerShell best practices and style guidelines almost always have exceptions. Still, we’ll discuss a baseline for command design, programming, and formatting to help you avoid common problems.</p>
-		
-			<a href="https://ghariib.ir/posts/5-powershell-best-practices-to-work-even-more-efficiently/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/5th-high-performance-computing-security-workshop/">5th High-Performance Computing Security Workshop</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<div>
-		<p>High-performance computing (HPC) systems provide fundamental computing infrastructure and play a pivotal role in economic competitiveness and scientific discovery. Security is an essential component of HPC. NIST HPC Security Working Group (WG) has</p>
-<p>Go to Source</p>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/6-cyber-security-challenges-emerge-from-world-economic-forum-check-point-research-on-2025-threats/">6 Cyber Security Challenges Emerge from World Economic Forum, Check Point Research on 2025 Threats</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<div>
-		<p>
-<figure>
-  <img src="https://blog.checkpoint.com/wp-content/uploads/2025/01/WEF-2-e1737134976221.jpg" alt="" />
-</figure>
-
-
-</p>
-<p>As we step into 2025, the cyber security landscape continues to be as complex as ever for security leaders looking to protect their organizations from increasingly injurious cyber threats. The World Economic Forum (WEF) detailed some of the most challenging threats in its Global Cyber security Outlook 2025, with some critical areas of concern mirroring those in our own State of Cyber security Report 2025. Both reports emphasize the growing sophistication of cyber threats, the integration of emerging technologies to make cyber threats harder to detect and deter, and the outsized influence of global geopolitical factors influencing cyber security threats. […]</p>
-		
-			<a href="https://ghariib.ir/posts/6-cyber-security-challenges-emerge-from-world-economic-forum-check-point-research-on-2025-threats/">Read more...</a>
+			<a href="https://ghariib.ir/posts/cloud-security-trends-predictions-and-strategies-for-resilience/">Read more...</a>
 		
 	</div>
 </article>
@@ -210,7 +214,7 @@ A fresh stable release of Wine — the open-source compatibility layer that mak
 
 	<a href="/page/341/">Previous Page</a>
 
-342 of 794
+342 of 424
 
 	<a href="/page/343/">Next Page</a>
 
