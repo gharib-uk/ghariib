@@ -40,195 +40,148 @@
 		
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/sans-threat-analysis-rundown-in-review-breaking-down-december-2024s-discussion/">SANS Threat Analysis Rundown in Review: Breaking Down December 2024’s Discussion</a></h1>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-31-kubeadm-v1beta4/">Kubernetes v1.31: kubeadm v1beta4</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>​Exploring the power of the PEAK Threat Hunting framework </p>
-<p>​Read More</p>
+		<p>As part of the Kubernetes v1.31 release, <code>kubeadm</code> is adopting a new (v1beta4) version of its configuration file format. Configuration in the previous v1beta3 format is now formally deprecated, which means it&rsquo;s supported but you should migrate to v1beta4 and stop using the deprecated format. Support for v1beta3 configuration will be removed after a minimum of 3 Kubernetes minor releases.</p>
+<p>In this article, I&rsquo;ll walk you through key changes; I&rsquo;ll explain about the kubeadm v1beta4 configuration format, and how to migrate from v1beta3 to v1beta4.</p>
+		
+			<a href="https://ghariib.ir/posts/kubernetes-v1-31-kubeadm-v1beta4/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/schneider-electric-accutech-manager/">Schneider Electric Accutech Manager</a></h1>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-31-new-kubernetes-cpumanager-static-policy-distribute-cpus-across-cores/">Kubernetes v1.31: New Kubernetes CPUManager Static Policy: Distribute CPUs Across Cores</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p><strong>View CSAF</strong></p>
-<h2 id="1-executive-summary">1. EXECUTIVE SUMMARY</h2>
-<ul>
-<li>
-<p><strong>CVSS v3 7.5</strong></p>
-</li>
-<li>
-<p><strong>ATTENTION</strong>: Exploitable remotely/low attack complexity</p>
-</li>
-<li>
-<p><strong>Vendor</strong>: Schneider Electric</p>
-</li>
-<li>
-<p><strong>Equipment</strong>: Accutech Manager</p>
-</li>
-<li>
-<p><strong>Vulnerability</strong>: Classic Buffer Overflow</p>
-<h2 id="2-risk-evaluation">2. RISK EVALUATION</h2>
-</li>
-</ul>
-<p>Successful exploitation could allow an attacker to cause a crash of the Accutech Manager when receiving a specially crafted request over port 2536/TCP.</p>
-<h2 id="3-technical-details">3. TECHNICAL DETAILS</h2>
-<h3 id="31-affected-products">3.1 AFFECTED PRODUCTS</h3>
-<p>Schneider Electric reports that the following products are affected:</p>
-<ul>
-<li>Schneider Electric Accutech Manager: Versions 2.08.01 and prior</li>
-</ul>
-<h3 id="32-vulnerability-overview">3.2 Vulnerability Overview</h3>
-<h4 id="321-buffer-copy-without-checking-size-of-input-"><strong>3.2.1</strong> <strong>BUFFER COPY WITHOUT CHECKING SIZE OF INPUT (&lsquo;CLASSIC BUFFER OVERFLOW&rsquo;) CWE-120</strong></h4>
-<p>A Classic Buffer Overflow vulnerability exists that could cause a crash of the Accutech Manager when receiving a specially crafted request over port 2536/TCP.</p>
+		<p>In Kubernetes v1.31, we are excited to introduce a significant enhancement to CPU management capabilities: the <code>distribute-cpus-across-cores</code> option for the CPUManager static policy. This feature is currently in alpha and hidden by default, marking a strategic shift aimed at optimizing CPU utilization and improving system performance across multi-core processors.</p>
+<h2 id="understanding-the-feature">Understanding the feature</h2>
+<p>Traditionally, Kubernetes&rsquo; CPUManager tends to allocate CPUs as compactly as possible, typically packing them onto the fewest number of physical cores. However, allocation strategy matters, CPUs on the same physical host still share some resources of the physical core, such as the cache and execution units, etc.</p>
 		
-			<a href="https://ghariib.ir/posts/schneider-electric-accutech-manager/">Read more...</a>
+			<a href="https://ghariib.ir/posts/kubernetes-v1-31-new-kubernetes-cpumanager-static-policy-distribute-cpus-across-cores/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/schneider-electric-modicon-controllers/">Schneider Electric Modicon Controllers</a></h1>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-adds-a-new-cpu-manager-static-policy-option-for-strict-cpu-reservation/">Kubernetes v1.32 Adds A New CPU Manager Static Policy Option For Strict CPU Reservation</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p><strong>View CSAF</strong></p>
-<h2 id="1-executive-summary">1. EXECUTIVE SUMMARY</h2>
-<ul>
-<li><strong>CVSS v3 5.4</strong></li>
-<li><strong>ATTENTION</strong>: Exploitable remotely/low attack complexity</li>
-<li><strong>Vendor</strong>: Schneider Electric</li>
-<li><strong>Equipment</strong>: Modicon Controllers</li>
-<li><strong>Vulnerability</strong>: Cross-site Scripting</li>
-</ul>
-<h2 id="2-risk-evaluation">2. RISK EVALUATION</h2>
-<p>Successful exploitation of this vulnerability could allow an attacker to cause a victim&rsquo;s browser to run arbitrary JavaScript when visiting a page containing injected payload.</p>
-<h2 id="3-technical-details">3. TECHNICAL DETAILS</h2>
-<h3 id="31-affected-products">3.1 AFFECTED PRODUCTS</h3>
-<p>Schneider Electric reports that the following products are affected:</p>
-<ul>
-<li>Schneider Electric Modicon Controllers M258 / LMC058: All versions</li>
-<li>Schneider Electric Modicon Controllers M262: Versions prior to 5.2.8.26</li>
-<li>Schneider Electric Modicon Controllers M251: Versions prior to 5.2.11.24</li>
-<li>Schneider Electric Modicon Controllers M241: Versions prior to 5.2.11.24</li>
-</ul>
-<h3 id="32-vulnerability-overview">3.2 Vulnerability Overview</h3>
-<h4 id="321-improper-neutralization-of-input-during-web-page-generation-"><strong>3.2.1</strong> <strong>IMPROPER NEUTRALIZATION OF INPUT DURING WEB PAGE GENERATION (&lsquo;CROSS-SITE SCRIPTING&rsquo;) CWE-79</strong></h4>
-<p>A Cross-site Scripting  vulnerability exists  where an attacker could cause a victim&rsquo;s browser run arbitrary JavaScript when they visit a page containing the injected payload.</p>
+		<p>In Kubernetes v1.32, after years of community discussion, we are excited to introduce a <code>strict-cpu-reservation</code> option for the CPU Manager static policy. This feature is currently in alpha, with the associated policy hidden by default. You can only use the policy if you explicitly enable the alpha behavior in your cluster.</p>
+<h2 id="understanding-the-feature">Understanding the feature</h2>
+<p>The CPU Manager static policy is used to reduce latency or improve performance. The <code>reservedSystemCPUs</code> defines an explicit CPU set for OS system daemons and kubernetes system daemons. This option is designed for Telco/NFV type use cases where uncontrolled interrupts/timers may impact the workload performance. you can use this option to define the explicit cpuset for the system/kubernetes daemons as well as the interrupts/timers, so the rest CPUs on the system can be used exclusively for workloads, with less impact from uncontrolled interrupts/timers. More details of this parameter can be found on the Explicitly Reserved CPU List page.</p>
 		
-			<a href="https://ghariib.ir/posts/schneider-electric-modicon-controllers/">Read more...</a>
+			<a href="https://ghariib.ir/posts/kubernetes-v1-32-adds-a-new-cpu-manager-static-policy-option-for-strict-cpu-reservation/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/sec587-advanced-open-source-intelligence-course-update-whats-new/">SEC587: Advanced Open-Source Intelligence Course Update – What’s New?</a></h1>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-sneak-peek/">Kubernetes v1.32 sneak peek</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>​A blog about the ipdate to the SANS SEC587 OSINT course. </p>
-<p>​Read More</p>
+		<p>As we get closer to the release date for Kubernetes v1.32, the project develops and matures. Features may be deprecated, removed, or replaced with better ones for the project&rsquo;s overall health.</p>
+<p>This blog outlines some of the planned changes for the Kubernetes v1.32 release, that the release team feels you should be aware of, for the continued maintenance of your Kubernetes environment and keeping up to date with the latest changes. Information listed below is based on the current status of the v1.32 release and may change before the actual release date.</p>
+		
+			<a href="https://ghariib.ir/posts/kubernetes-v1-32-sneak-peek/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/securing-the-future-building-a-culture-of-security/">Securing the future: building a culture of security</a></h1>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-memory-manager-goes-ga/">Kubernetes v1.32: Memory Manager Goes GA</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>According to a 2024 Verizon report, nearly 70% of data breaches occurred because a person was manipulated by social engineering or made some type of error. This highlights the importance of human-layer defenses in an organization’s security strategy. In addition to technology, tools, and processes, security requires awareness and action from everyone in an organization to recognize anomalies, escalate potential issues, and ultimately, mitigate risk.</p>
-<p>Organizations that invest in a culture of security see better employee adoption of security controls, improved cybersecurity behavior, and a more effective use of cybersecurity resources, according to a 2024 Gartner analysis. This aligns with our own experience at AWS, where we deeply invest in our culture of security. Our leadership prioritizes security and builds it into our organizational structure. Everyone, regardless of role, views security as a shared responsibility. Security advocates and advisors are embedded in our teams to share their expertise, and innovation empowers our people to move fast while staying secure.</p>
+		<p>With Kubernetes 1.32, the memory manager has officially graduated to General Availability (GA), marking a significant milestone in the journey toward efficient and predictable memory allocation for containerized applications. Since Kubernetes v1.22, where it graduated to beta, the memory manager has proved itself reliable, stable and a good complementary feature for the CPU Manager.</p>
+<p>As part of kubelet&rsquo;s workload admission process, the memory manager provides topology hints to optimize memory allocation and alignment. This enables users to allocate exclusive memory for Pods in the Guaranteed QoS class. More details about the process can be found in the memory manager goes to beta blog.</p>
 		
-			<a href="https://ghariib.ir/posts/securing-the-future-building-a-culture-of-security/">Read more...</a>
+			<a href="https://ghariib.ir/posts/kubernetes-v1-32-memory-manager-goes-ga/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/securitybedrijf-meldt-actief-misbruik-van-lek-in-industriele-routers-four-faith/">Securitybedrijf meldt actief misbruik van lek in industriële routers Four-Faith</a></h1>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-penelope/">Kubernetes v1.32: Penelope</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<h3 id="securitybedrijf-meldt-actief-misbruik-van-lek-in-industriële-routers-four-faith">Securitybedrijf meldt actief misbruik van lek in industriële routers Four-Faith</h3>
-<p>
-<figure>
-  <img src="https://upload.cvefeed.io/news/21705/thumbnail.jpg" alt="" />
-</figure>
-
-
-</p>
-<p>Aanvallers maken actief misbruik van een kwetsbaarheid in industriële routers van fabrikant Four-Faith en het is onduidelijk of er updates beschikbaar zijn om het probleem te verhelpen, zo meldt secur &hellip; <em>Read more</em></p>
-<p><strong>Published Date:</strong> Dec 31, 2024 (1 day, 22 hours ago)</p>
-<p>Vulnerabilities has been mentioned in this article.</p>
-<p>CVE-2024-12856</p>
+		<p><strong>Editors:</strong> Matteo Bianchi, Edith Puclla, William Rizzo, Ryota Sawada, Rashan Smith</p>
+<p>Announcing the release of Kubernetes v1.32: Penelope!</p>
+<p>In line with previous releases, the release of Kubernetes v1.32 introduces new stable, beta, and alpha features. The consistent delivery of high-quality releases underscores the strength of our development cycle and the vibrant support from our community. This release consists of 44 enhancements in total. Of those enhancements, 13 have graduated to Stable, 12 are entering Beta, and 19 have entered in Alpha.</p>
+		
+			<a href="https://ghariib.ir/posts/kubernetes-v1-32-penelope/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/see-pinned-ubuntu-dock-apps-in-the-application-grid/">See Pinned Ubuntu Dock Apps in the Application Grid</a></h1>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-queueinghint-brings-a-new-possibility-to-optimize-pod-scheduling/">Kubernetes v1.32: QueueingHint Brings a New Possibility to Optimize Pod Scheduling</a></h1>
+	<b><time>02.01.2025 00:00</time></b>
+	
+	<div>
+		<p>The Kubernetes scheduler is the core component that selects the nodes on which new Pods run. The scheduler processes these new Pods <strong>one by one</strong>. Therefore, the larger your clusters, the more important the throughput of the scheduler becomes.</p>
+<p>Over the years, Kubernetes SIG Scheduling has improved the throughput of the scheduler in multiple enhancements. This blog post describes a major improvement to the scheduler in Kubernetes v1.32: a scheduling context element named <em>QueueingHint</em>. This page provides background knowledge of the scheduler and explains how QueueingHint improves scheduling throughput.</p>
+		
+			<a href="https://ghariib.ir/posts/kubernetes-v1-32-queueinghint-brings-a-new-possibility-to-optimize-pod-scheduling/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/lateral-movement-visual-studio-dte/">Lateral Movement – Visual Studio DTE</a></h1>
+	<b><time>02.01.2025 00:00</time></b>
+	
+	<div>
+		<p>A lot of organizations have some sort of application development program and it is highly likely that developers will utilize Visual Studio for their development…</p>
+<p>Continue reading → Lateral Movement – Visual Studio DTE</p>
+<p>Go to Source</p>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/life-at-canonical-victoria-antipovas-perspective-as-a-new-joiner-in-product-marketing/">Life at Canonical: Victoria Antipova’s perspective as a new joiner in Product Marketing</a></h1>
+	<b><time>02.01.2025 00:00</time></b>
+	
+	<div>
+		<p>Canonical is continuously hiring new talent. Being a remote- first company, Canonical’s new joiners receive a unique onboarding experience. In their first weeks, they are introduced to the different departments and the various tools they use to work asynchronously across the globe. New hires develop a good understanding of the open-source technologies that the company deploys and supports such as Openstack, Kubernetes, Kubeflow and OpenSearch – in addition of course to Ubuntu, the world’s most famous OS, which they install on their laptops. </p>
+		
+			<a href="https://ghariib.ir/posts/life-at-canonical-victoria-antipovas-perspective-as-a-new-joiner-in-product-marketing/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/light-brite-turned-sci-fi-console-on-the-cheap/">Light Brite Turned Sci-Fi Console on the Cheap</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
 		<p>
 <figure>
-  <img src="https://i0.wp.com/www.omgubuntu.co.uk/wp-content/uploads/2024/03/gnome-extensions-blue.jpg?resize=406%2C232&amp;ssl=1" alt="" />
+  <img src="https://hackaday.com/wp-content/uploads/2025/01/briteprop_feat.jpg?w=800" alt="" />
 </figure>
 
 
-You may have noticed (or not) that if an app is pinned to the Ubuntu Dock you don’t see a shortcut for it in the applications grid. This approach is by design to avoid duplication since the dock is always visible (by default) so those app shortcuts are always in reach – each app shortcut only shows once. Not everyone likes this behaviour, especially if Ubuntu Dock auto-hide is enabled. Naturally, there are 3rd-party GNOME Shell extensions one can install to make sure all apps show in the main applications grid irrespective of whether they’re pinned to Ubuntu Dock (or […]</p>
+</p>
+<p>Generally, the projects featured on Hackaday actually <em>do</em> something. We won’t go as far as to say they are practical creations, but they usually have some kind of function other than to sit there and blink. But what if just sitting still and blinking away randomly is precisely what you want a piece of hardware to do?</p>
+<p>That was exactly the goal when [createscifi] set out to dress a Lite Brite up as a futuristic prop. On a technical level, this project is pretty much as simple as it gets. But we appreciated seeing some of the techniques brought to bear on this project, and perhaps more importantly, really like the channel’s overall goal of creating affordable sci-fi props using common components. We don’t plan on filming our own space epic anytime soon…but we like to know the option is there.</p>
 		
-			<a href="https://ghariib.ir/posts/see-pinned-ubuntu-dock-apps-in-the-application-grid/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/seh-overflow-i-vulnserver-gmon/">SEH Overflow I - Vulnserver GMON</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>Introduzione Con questo articolo continuiamo la serie Stack Overflow passando ad un nuovo argomento, ossia il SEH Structured exception handling. Un gestore di eccezioni è un costrutto di programmazione utilizzato per fornire un modo strutturato per gestire le condizioni di errore a livello di sistema e di applicazione. A livello di codice solitamente si trova sotto forma di un costrutto di questo tipo try { //fai qualcosa } catch { //se va in errore fai altro } Ogni volta che viene incontrato un try block, un puntatore al corrispondente exception handler è salvato sullo stack nella struttura _EXCEPTION_REGISTRATION_RECORD.</p>
-		
-			<a href="https://ghariib.ir/posts/seh-overflow-i-vulnserver-gmon/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/seh-overflow-ii-efs-easy-chat-server-3-1/">SEH Overflow II - EFS Easy Chat Server 3.1</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>Introduzione Secondo articolo della serie SEH Buffer Overflow, target: EFS Easy Chat Server 3.1 Altri post in questa serie: 5. SEH Overflow I - Vulnserver GMON 5. SEH Overflow II - EFS Easy Chat Server 3.1 5. SEH Overflow III - Easy File Sharing Web Server 7.2 5. SEH Overflow IV - DocPrint Pro 8.0 L’ordine non è casuale, se non viene spiegato qualche dettaglio è perchè è stato spiegato in articoli precedenti.</p>
-		
-			<a href="https://ghariib.ir/posts/seh-overflow-ii-efs-easy-chat-server-3-1/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/seh-overflow-iii-easy-file-sharing-web-server-7-2/">SEH Overflow III - Easy File Sharing Web Server 7.2</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>Introduzione Terzo articolo della serie SEH Buffer Overflow, target: Easy File Sharing Web Server 7.2 Altri post in questa serie: 5. SEH Overflow I - Vulnserver GMON 5. SEH Overflow II - EFS Easy Chat Server 3.1 5. SEH Overflow III - Easy File Sharing Web Server 7.2 5. SEH Overflow IV - DocPrint Pro 8.0 L’ordine non è casuale, se non viene spiegato qualche dettaglio è perchè è stato spiegato in articoli precedenti.</p>
-		
-			<a href="https://ghariib.ir/posts/seh-overflow-iii-easy-file-sharing-web-server-7-2/">Read more...</a>
+			<a href="https://ghariib.ir/posts/light-brite-turned-sci-fi-console-on-the-cheap/">Read more...</a>
 		
 	</div>
 </article>
@@ -238,7 +191,7 @@ You may have noticed (or not) that if an app is pinned to the Ubuntu Dock you do
 
 	<a href="/page/410/">Previous Page</a>
 
-411 of 424
+411 of 436
 
 	<a href="/page/412/">Next Page</a>
 

@@ -40,172 +40,11 @@
 		
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/beware-of-the-magic-spell-part-1-cve-2018-1273/">Beware of the Magic SpEL(L) - Part 1 (CVE-2018-1273)</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
+	<h1><a href="https://ghariib.ir/posts/it-leaders-guide-to-two-factor-authentication/">IT Leader’s Guide to Two-Factor Authentication</a></h1>
+	<b><time>23.01.2025 00:00</time></b>
 	
 	<div>
-		<p>
-<figure>
-  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjieBCHbDnWgSpgeNXdh5el_cqQEeF33UfD_zIsI7BVC_JH9aPWf_o4AM1po1uBXEY4-4qHZfbh273gG5u1xDjjYfljVR6QNOeW1JmSOXqxHGAxWUHJpI9Ugp3FNXUgFCqcW2jZAg8hNrPl/s320/spring-el.png" alt="" />
-</figure>
-
-
-</p>
-<p>This February, we ran a Find Security Bugs scan on over at least one hundred components from the Spring Framework, including the core components (spring-core, spring-mvc) but also optional components (spring-data, spring-social, spring-oauth, etc.). From this exercise, we reported some vulnerabilities. In this blog post, we are going to give more details on a SpEL injection vulnerability. While some proof of concept code and exploitation details have already surfaced on Twitter, we will add a focus on how these vulnerabilities were found, followed by a thorough review of the proposed fix.</p>
-		
-			<a href="https://ghariib.ir/posts/beware-of-the-magic-spell-part-1-cve-2018-1273/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/beware-of-the-magic-spell-part-2-cve-2018-1260/">Beware of the Magic SpEL(L) – Part 2 (CVE-2018-1260)</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<div>
-		<p>
-<figure>
-  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj_EUzFEi_nPDSoSmzQz_gG5EAxsJ9oNtznOCZZYlHG72s1iAwFp8hyphenhyphentAOX2e2WEQwpNXHJIJwkV5tU7UA8G3dAufDqByKehkteiObXhtL5yu6MCcNbIB9059VWSa8o6V8SphkdpDnzZD58/s320/spring-oauth2.png" alt="" />
-</figure>
-
-
-</p>
-<p>On Tuesday, we released the details of RCE vulnerability affecting Spring Data (CVE-2018-1273). We are now repeating the same exercise for a similar RCE vulnerability in Spring Security OAuth2 (CVE-2018-1260). We are going to present the attack vector, its discovery method and the conditions required for exploitation. This vulnerability also has similarities with another vulnerability disclosed in 2016. The resemblance will be discussed in the section where we review the fix.</p>
-<h2 id="analyzing-a-potential-vulnerability">Analyzing a potential vulnerability</h2>
-<p>It all started by the report of the bug pattern SPEL_INJECTION by Find Security Bugs. It reported the use of <code>SpelExpressionParser.parseExpression()</code> with a dynamic parameter, the same API used in the previous vulnerability we had found. The expression parser is used to parse expressions placed between curly brackets &ldquo;${&hellip;}&rdquo;.</p>
-<pre tabindex="0"><code>public SpelView(String template) {
-    this.template = template;
-    this.prefix = new RandomValueStringGenerator().generate() + &#34;{&#34;;
-    this.context.addPropertyAccessor(new MapAccessor());
-    this.resolver = new PlaceholderResolver() {
-        public String resolvePlaceholder(String name) {
-            Expression expression = parser.parseExpression(name); //Expression parser
-            Object value = expression.getValue(context);
-            return value == null ? null : value.toString();
-        }
-    };
-}
-</code></pre><p>The controller class <code>WhitelabelApprovalEndpoint</code> uses this SpelView class to build the approval page for OAuth2 authorization flow. The SpelView class evaluates the string named &ldquo;template&rdquo; - see code below - as a Spring Expression.</p>
-<pre tabindex="0"><code>@RequestMapping(&#34;/oauth/confirm_access&#34;)
-public ModelAndView getAccessConfirmation(Map&lt;String, Object&gt; model, HttpServletRequest request) throws Exception {
-   String template = createTemplate(model, request);
-   if (request.getAttribute(&#34;_csrf&#34;) != null) {
-      model.put(&#34;_csrf&#34;, request.getAttribute(&#34;_csrf&#34;));
-   }
-   return new ModelAndView(new SpelView(template), model); //template variable is a SpEL
-}
-</code></pre><p>Following the methods createTemplate() and createScopes(), we can see that the attribute &ldquo;scopes&rdquo; is appended to the HTML template which will be evaluated as an expression. The only model parameter bound to the template is a CSRF token. However, the CSRF token will not be under the control of a remote user.</p>
-<pre tabindex="0"><code>protected String createTemplate(Map&lt;String, Object&gt; model, HttpServletRequest request) {
-   String template = TEMPLATE;
-   if (model.containsKey(&#34;scopes&#34;) || request.getAttribute(&#34;scopes&#34;) != null) { 
-      template = template.replace(&#34;%scopes%&#34;, createScopes(model, request)).replace(&#34;%denial%&#34;, &#34;&#34;);
-   }
-
-[...]
-
-private CharSequence createScopes(Map&lt;String, Object&gt; model, HttpServletRequest request) {
-   StringBuilder builder = new StringBuilder(&#34;&lt;ul&gt;&#34;);
-   @SuppressWarnings(&#34;unchecked&#34;)
-   Map&lt;String, String&gt; scopes = (Map&lt;String, String&gt;) (model.containsKey(&#34;scopes&#34;) ? model.get(&#34;scopes&#34;) : request
-         .getAttribute(&#34;scopes&#34;));  //Scope attribute loaded here
-   for (String scope : scopes.keySet()) {
-      String approved = &#34;true&#34;.equals(scopes.get(scope)) ? &#34; checked&#34; : &#34;&#34;;
-      String denied = !&#34;true&#34;.equals(scopes.get(scope)) ? &#34; checked&#34; : &#34;&#34;;
-      String value = SCOPE.replace(&#34;%scope%&#34;, scope).replace(&#34;%key%&#34;, scope).replace(&#34;%approved%&#34;, approved)
-            .replace(&#34;%denied%&#34;, denied);
-      builder.append(value);
-   }
-   builder.append(&#34;&lt;/ul&gt;&#34;);
-   return builder.toString();
-}
-</code></pre><p>At this point, we are unsure if the scopes attribute can be controlled by the remote user. While attribute (req.getAttribute(..)) represents session values stored server-side, scope is an optional parameter part of OAuth2 flow. The parameter might be accessible to the user, saved to the server-side attributes and finally loaded into the previous template.<br>
-After some research in the documentation and some manual tests, we found that &ldquo;scope&rdquo; is a GET parameter part of the implicit OAuth2 flow. Therefore, the implicit mode would be required for our vulnerable application.</p>
-<h2 id="proof-of-concept-and-limitations">Proof-of-Concept and Limitations</h2>
-<p>When testing our application, we realized that the scopes were validated against a scopes whitelist defined by the user/client. If this whitelist is configured, we can&rsquo;t be creative with the parameter scope. If the scopes are simply not defined, no validation is applied to the name of the scopes. This limitation will likely make most Spring OAuth2 applications safe.<br>
-This first request made used the scope &ldquo;${1338-1}&rdquo;, see picture below. Based on the response, we now have a confirmation that the scope parameter&rsquo;s value can reach the SpelView expression evaluation. We can see in the resulting HTML multiples instances of the string &ldquo;scope.1337&rdquo;.</p>
-<table>
-  <thead>
-      <tr>
-          <th>
-<figure>
-  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgBRxeuEyK1xwqLTgdDIig_VdsmEXGIMU-LEc2sW9Yaajyh8hS7Sv83fPZDkywg5OZLXRwNZOQWMXJv2L_fjQwwH4z1scj71gmVB7vmcFCdFFpcAJJYrWBkev9bhGJN_5O6y88BdzyAvO8Q/s640/spel1.png" alt="" />
-</figure>
-
-
-</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>Pushing the probe value ${1338-1}</td>
-      </tr>
-  </tbody>
-</table>
-<p>A second test was made using the expression &ldquo;${T(java.lang.Runtime).getRuntime().exec(&ldquo;calc.exe&rdquo;)}&rdquo; to verify that the expressions are not limited to simple arithmetic operations.</p>
-<table>
-  <thead>
-      <tr>
-          <th>
-<figure>
-  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEguUEbrAlV3kvr9fkscJPJfiqZDa5L-iOJonbTGMoeMfhC6E-HUA9tq1ayX5vBFWTYrs15cfx9QajcIwBtuOmpshdW6j5FmI1mlc1gst5grv8qoFTM1I7EbwyY9qeg7Dmj8MTJ3peC7h-Sf/s640/spel2.png" alt="" />
-</figure>
-
-
-</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>Simple proof-of-concept request spawning a calc.exe subprocess</td>
-      </tr>
-  </tbody>
-</table>
-<p>For easier reproduction, here is the raw HTTP request from the previous screenshot. Some characters - mainly curly brackets - were not supported by the web container and needed to be URL encoded in order to reach the application. { -&gt; %7b</p>
-<pre tabindex="0"><code>POST /oauth/authorize?response_type=code&amp;client_id=client&amp;username=user&amp;password=user&amp;grant_type=password&amp;scope=%24%7bT(java.lang.Runtime).getRuntime().exec(%22calc.exe%22)%7d&amp;redirect_uri=http://csrf.me HTTP/1.1
-Host: localhost:8080
-Authorization: Bearer 1f5e6d97-7448-4d8d-bb6f-4315706a4e38
-Content-Type: application/x-www-form-urlencoded
-Accept: */*
-Content-Length: 0
-</code></pre><h2 id="reviewing-the-fix">Reviewing The Fix</h2>
-<p>The solution chosen by the Pivotal team was to replace SpelView with a simpler view, with basic concatenation. This eliminates all possible paths to a SpEL evaluation. The first patch proposed introduced a potential XSS vulnerability, but luckily this was spotted before any release was made. The scope values are now properly escaped and free from any injection.<br>
-More importantly, this solution improved the security of another endpoint: WhitelabelErrorEndpoint. The endpoint is also no longer uses a Spel View. It was found vulnerable to an identical attack vector in 2016. Spring-OAuth2 also used the SpelView class to build the error page. The interesting twist is that the template parameter was static, but the parameters bound to the template were evaluated recursively. This means that any value in the model could lead to a Remote Code Execution.</p>
-		
-			<a href="https://ghariib.ir/posts/beware-of-the-magic-spell-part-2-cve-2018-1260/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/bringing-multiple-windows-to-flutter-desktop-apps/">Bringing multiple windows to Flutter desktop apps</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<div>
-		<p>Over the past 5 years, Canonical has been contributing to Flutter, including building out Linux support for Flutter applications, publishing libraries to help integrate into the Linux desktop and building modern applications for Ubuntu, including our software store. Last year we announced at the Ubuntu Summit that we’ve been working on bringing support for multiple windows to Flutter desktop apps.</p>
-<p>
-<figure>
-  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_1568,h_1600/https://ubuntu.com/wp-content/uploads/94a6/image.png" alt="" />
-</figure>
-
-
-</p>
-<h2 id="why-multiple-windows-support-for-flutter-desktop-apps-is-needed">Why multiple windows support for Flutter desktop apps is needed</h2>
-<p>One current limitation that Flutter desktop apps have is that they are confined to a single window. This makes sense on mobile where an app takes up the whole screen but for Flutter desktop apps there’s much more space to take advantage of. We know that many members of the Flutter community – including us here at Canonical – have been waiting patiently to break out of that single window.</p>
-		
-			<a href="https://ghariib.ir/posts/bringing-multiple-windows-to-flutter-desktop-apps/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/browserstack-and-bitrise-partner-to-help-mobile-developers-build-test-and-release-apps-faster-with-confidence-bitrise-blog/">BrowserStack and Bitrise partner to help mobile developers build, test and release apps faster with confidence - Bitrise Blog</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<div>
-		<p>Bitrise is partnering with BrowserStack to improve your mobile DevOps experience, giving access to best-in-class mobile-first CI/CD and automated mobile device testing, plus an incredible free product offer.</p>
+		<p>Cybersecurity threats are multiplying with each passing year. They are growing more sophisticated, as shown by the continued success enjoyed by ransomware and other scams. Two-factor authentication is a time-tested way to minimize the threat of a breach and protect the organization as well as the individual from attacks. Drew Robb, writing for TechRepublic Premium, &hellip;</p>
 <p>Go to Source</p>
 		
 	</div>
@@ -213,139 +52,192 @@ More importantly, this solution improved the security of another endpoint: Whit
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/bypassing-certificate-pinning-on-flutter-based-android-apps-a-new-guide/">Bypassing Certificate Pinning on Flutter-based Android Apps. A new guide.</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<a href="/tags/certificate-pinning">certificate-pinning</a>
-	
-	<a href="/tags/flutter">flutter</a>
-	
-	<a href="/tags/reverse-engineering">reverse-engineering</a>
+	<h1><a href="https://ghariib.ir/posts/its-never-too-late-for-a-fixed-simcity-2000/">It’s Never Too Late For a Fixed SimCity 2000</a></h1>
+	<b><time>23.01.2025 00:00</time></b>
 	
 	<div>
 		<p>
 <figure>
-  <img src="https://blogger.googleusercontent.com/img/a/AVvXsEiLZOgVn35LqPDpfHUk6wcqLOjrvV6JioR2CPitS6-4WhuB6jSaudX8wXAwTaHk3U7ebucLS-R5vO6GRTF2dC-cjzUcm-qv1IQLhkB-zDUYLavj06fTkgqAbwsix1lSP2klyN8rqETtdsCcQFAv_FOKE9AGSNQ0TOyi3q5sxBSkyE_lhziAZbmO1DDnroxg" alt="" />
+  <img src="https://hackaday.com/wp-content/uploads/2025/01/simcity-2000-packart.avif?w=800" alt="" />
 </figure>
 
 
 </p>
-<p>One of the preliminary activities when analyzing mobile application, <em>more usually than not</em>, is to be able to sniff HTTP/S traffic via <strong>a MitM proxy</strong>. </p>
-<p>This is quite straightforward in the case of naive applications, but can be quite challenging when applications use certificate pinning techniques. In this post I&rsquo;ll try to explain the methodology I used to make this possible for a <strong>Flutter-based</strong> <strong>Android</strong> sample application in a reliable way.</p>
+<p>Some retro games need a little help running on modern systems, and it’s not always straightforward. <em>SimCity 2000 Special Edition</em> is one such game and [araxestroy]’s sc2kfix bugfix DLL shows that the process can require a nontrivial amount of skill and finesse. The result? A <em>SimCity 2000 Special Edition</em> that can run without crash or compromise on modern Windows machines, surpassing previous fixes.</p>
+<p><em>SimCity 2000 Special Edition</em> was a release for Windows 95 that allowed the game to work in windowed glory. The executable is capable of running under modern Windows systems (and at high resolutions!) but it’s got a few problems lurking under the hood.</p>
 		
-			<a href="https://ghariib.ir/posts/bypassing-certificate-pinning-on-flutter-based-android-apps-a-new-guide/">Read more...</a>
+			<a href="https://ghariib.ir/posts/its-never-too-late-for-a-fixed-simcity-2000/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/bypassing-modsecurity-waf/">Bypassing ModSecurity WAF</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<a href="/tags/libinjection">libinjection</a>
-	
-	<a href="/tags/modsecurity">modsecurity</a>
-	
-	<a href="/tags/mysql">mysql</a>
-	
-	<a href="/tags/waf">waf</a>
+	<h1><a href="https://ghariib.ir/posts/ivanti-csa-exploit-chains-examined-in-joint-cisa-fbi-advisory/">Ivanti CSA exploit chains examined in joint CISA, FBI advisory</a></h1>
+	<b><time>23.01.2025 00:00</time></b>
 	
 	<div>
-		<p>Being able to bypass Web Application Firewall (WAF) depends on your knowledge about their behavior. Here is a cool technique that involve <strong>expressions that are ignored in MySQL SQL parser</strong> (MySQL &lt;= 5.7). This post summarizes the impact on libinjection. The libinjection library is used by WAF such as ModSecurity and SignalScience. For more details on AWS Cloudfront impact, read the original GoSecure article.</p>
+		<p>Attacks with the chained vulnerabilities have been thwarted by three organizations, with the first preventing compromise following sysadmin identification of suspicious user accounts and the second averting the breach after an endpoint protection platform detected web shell-creating base64-encoded scripts, according to a joint CISA and FBI advisory.</p>
+<p>Go to Source</p>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/jumpstart-and-expand-automation-across-your-it-operation/">Jumpstart and expand automation across your IT operation</a></h1>
+	<b><time>23.01.2025 00:00</time></b>
+	
+	<div>
+		<p>At Red Hat, we enjoy sharing the benefits of IT automation with you, helping you understand what is possible when you automate IT throughout an organization. Applying automation across your IT operation can free up your time so you can innovate faster, enable consistent and accurate management by teams with varying skills and improve efficiency across your operation. Red Hat Ansible Automation Platform enables you to do more, giving you the flexibility to apply automation to your operational challenges in many different ways. Even if you already have some areas of automation in your environmen</p>
+		
+			<a href="https://ghariib.ir/posts/jumpstart-and-expand-automation-across-your-it-operation/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/malware-deployed-via-new-clickfix-attack-variant-using-silk-road-founder-as-lure/">Malware deployed via new ClickFix attack variant using Silk Road founder as lure</a></h1>
+	<b><time>23.01.2025 00:00</time></b>
+	
+	<div>
+		<p>Attackers who made fraudulent but verified Ross Ulbricht accounts on X, formerly Twitter, sought to lure users into joining Telegram channels purporting to be Ulbricht portals, which provided a walk through on the bogus Safeguard identity verification process leading to a Telegram mini app with a hoax verification dialog.</p>
+<p>Go to Source</p>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/meet-junie-your-coding-agent-by-jetbrains/">Meet Junie, Your Coding Agent by JetBrains</a></h1>
+	<b><time>23.01.2025 00:00</time></b>
+	
+	<a href="/tags/dev">dev</a>
+	
+	<a href="/tags/developers">developers</a>
+	
+	<a href="/tags/development">development</a>
+	
+	<a href="/tags/jetbrains">jetbrains</a>
+	
+	<a href="/tags/linux">linux</a>
+	
+	<a href="/tags/software">software</a>
+	
+	<div>
+		<p>At JetBrains, we aim to enable and scale the next generation of technologies to make software development a more productive and enjoyable experience. To empower and support developers, we build a variety of products for professional development, including powerful AI tools and features that have already enhanced productivity and opened new horizons for creativity. But […]</p>
 <p>
 <figure>
-  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhPVnidYg-zDcbocWT8PLVe-A3XzqWbXSUIOdIu3iFJMr5MSMm9yFg3hsyGDbuWrpqbgrpUj9XY2JyIdgNJv50IlUdIgeIHjNmBjqVYz8Vz8YO-e3toUt6Bd_Dwf9etJAumCHr8Mq89KQGT/s16000/s1bwt2caxl3q8m5d3rdc%255B1%255D.jpg" alt="" />
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/Blog_1280x720.png" alt="" />
 </figure>
 
 
 </p>
-<h2 id="scientific-expression-in-mysql">Scientific expression in MySQL</h2>
-<p>When MySQL sees <code>1.e(abc)</code>, it will ignore the <code>1.e(</code> portion because the following characters do not form a valid numeric value.</p>
+<p>At JetBrains, we aim to enable and scale the next generation of technologies to make software development a more productive and enjoyable experience. To empower and support developers, we build a variety of products for professional development, including powerful AI tools and features that have already enhanced productivity and opened new horizons for creativity. But can we go beyond that and boost productivity even further – improve code quality, unlock future innovations, help execute complex tasks, and change the way you work with code? </p>
 		
-			<a href="https://ghariib.ir/posts/bypassing-modsecurity-waf/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/cis-control-05-account-management/">CIS Control 05: Account Management</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<div>
-		<p>Knowing who has credentials, how those credentials are granted, and how they are being used is the foundation of any secure environment. It begins with user accounts and the credentials they use. Maintaining a thorough inventory of all accounts and verifying any changes to those accounts as authorized and intentional vs unintended is paramount to establishing a secure environment, and this includes service accounts. Establishing and maintaining visibility on all accounts can protect assets in multiple ways. If an adversary is able to attack from a different vector that we do not have any&hellip;</p>
-		
-			<a href="https://ghariib.ir/posts/cis-control-05-account-management/">Read more...</a>
+			<a href="https://ghariib.ir/posts/meet-junie-your-coding-agent-by-jetbrains/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/cisa-releases-three-industrial-control-systems-advisories/">CISA Releases Three Industrial Control Systems Advisories</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
+	<h1><a href="https://ghariib.ir/posts/microsoft-is-finally-making-a-smaller-surface-pro/">Microsoft is finally making a smaller Surface Pro</a></h1>
+	<b><time>23.01.2025 00:00</time></b>
 	
 	<div>
-		<p>CISA released three Industrial Control Systems (ICS) advisories on January 21, 2025. These advisories provide timely information about current security issues, vulnerabilities, and exploits surrounding ICS.</p>
+		<p>Microsoft has been working on a smaller Surface Pro for a while, and it seems to finally be happening in the coming weeks.</p>
+<p>Microsoft is reportedly preparing to launch smaller versions of the Surface Pro and Surface Laptop in the near future, and they could be launching sooner than you think. The company had already been reported to be working on a smaller Surface Pro last year, but plans for that seemingly fell through, as the Surface Pro 11 launched in the same 13-inch size as always.</p>
+		
+			<a href="https://ghariib.ir/posts/microsoft-is-finally-making-a-smaller-surface-pro/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/modernizing-legacy-code-with-github-copilot-tips-and-examples/">Modernizing legacy code with GitHub Copilot: Tips and examples</a></h1>
+	<b><time>23.01.2025 00:00</time></b>
+	
+	<a href="/tags/development">development</a>
+	
+	<a href="/tags/file">file</a>
+	
+	<a href="/tags/git">git</a>
+	
+	<a href="/tags/github">github</a>
+	
+	<a href="/tags/gitlab">gitlab</a>
+	
+	<a href="/tags/software">software</a>
+	
+	<a href="/tags/terminallastcommand">terminallastcommand</a>
+	
+	<a href="/tags/terminalselection">terminalselection</a>
+	
+	<a href="/tags/web">web</a>
+	
+	<div>
+		<p>Learn how to modernize legacy code with GitHub Copilot with real-world examples.</p>
+<p>The post Modernizing legacy code with GitHub Copilot: Tips and examples appeared first on The GitHub Blog.</p>
+<p>Let’s talk about legacy code—you know, the code that’s old enough to drive and definitely old enough to haunt your dreams. Maybe it’s a sprawling COBOL system or an early version of C++ written back when “Y2K” was a serious concern. Now, decades later, you’re being asked to “look into it” and modernize it (while wondering if you need to send a note to that person who retired a few years ago and may know how this thing works).</p>
+		
+			<a href="https://ghariib.ir/posts/modernizing-legacy-code-with-github-copilot-tips-and-examples/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/monitoring-github-hosted-runners-with-dynatrace/">Monitoring GitHub-hosted runners with Dynatrace</a></h1>
+	<b><time>23.01.2025 00:00</time></b>
+	
+	<div>
+		<p>
+<figure>
+  <img src="https://dt-cdn.net/wp-content/uploads/2023/02/github-dark-300x169.png" alt="Dynatrace | GitHub" />
+</figure>
+
+
+</p>
+<p>As more organizations embrace DevOps and CI/CD pipelines, GitHub-hosted runners and GitHub Actions have emerged as powerful tools for automating workflows. But as with many other automation tools, it can be difficult to maintain the performance and visibility of these workflows. That’s where Dynatrace business events and automation workflows come into play to provide a comprehensive view of your CI/CD pipelines.</p>
+<p>Let’s explore some of the advantages of monitoring GitHub runners using Dynatrace.</p>
+		
+			<a href="https://ghariib.ir/posts/monitoring-github-hosted-runners-with-dynatrace/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/myscada-mypro-manager/">mySCADA myPRO Manager</a></h1>
+	<b><time>23.01.2025 00:00</time></b>
+	
+	<div>
+		<p><strong>View CSAF</strong></p>
+<h2 id="1-executive-summary">1. EXECUTIVE SUMMARY</h2>
 <ul>
-<li>ICSA-25-021-01 Traffic Alert and Collision Avoidance System (TCAS) II</li>
-<li>ICSA-25-021-02 Siemens SIMATIC S7-1200 CPUs</li>
-<li>ICSA-25-021-03 ZF Roll Stability Support Plus (RSSPlus)</li>
+<li><strong>CVSS v4 9.3</strong></li>
+<li><strong>ATTENTION</strong>: Exploitable remotely/low attack complexity</li>
+<li><strong>Vendor</strong>: mySCADA</li>
+<li><strong>Equipment</strong>: myPRO</li>
+<li><strong>Vulnerabilities</strong>: Improper Neutralization of Special Elements used in an OS Command (&lsquo;OS Command Injection&rsquo;)</li>
 </ul>
-<p>CISA encourages users and administrators to review newly released ICS advisories for technical details and mitigations.</p>
-<p>Go to Source</p>
+<h2 id="2-risk-evaluation">2. RISK EVALUATION</h2>
+<p>Successful exploitation of these vulnerabilities could allow a remote attacker to execute arbitrary commands or disclose sensitive information.</p>
+<h2 id="3-technical-details">3. TECHNICAL DETAILS</h2>
+<h3 id="31-affected-products">3.1 AFFECTED PRODUCTS</h3>
+<p>The following mySCADA products are affected:</p>
+<ul>
+<li>myPRO Manager: Versions prior to 1.3</li>
+<li>myPRO Runtime: Versions prior to 9.2.1</li>
+</ul>
+<h3 id="32-vulnerability-overview">3.2 VULNERABILITY OVERVIEW</h3>
+<h4 id="321-improper-neutralization-of-special-elements-used-in-an-os-command-"><strong>3.2.1</strong> <strong>Improper Neutralization of Special Elements used in an OS Command (&lsquo;OS Command Injection&rsquo;) CWE-78</strong></h4>
+<p>mySCADA myPRO does not properly neutralize POST requests sent to a specific port with email information. This vulnerability could be exploited by an attacker to execute arbitrary commands on the affected system.</p>
 		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/creating-a-custom-view-for-websocket-in-zap/">Creating A Custom View for WebSocket in ZAP</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<a href="/tags/pentesting">pentesting</a>
-	
-	<a href="/tags/plugin">plugin</a>
-	
-	<a href="/tags/websocket">websocket</a>
-	
-	<a href="/tags/zap">zap</a>
-	
-	<div>
-		<p>
-<figure>
-  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbETbc1fXDey2o7NC3ZLEq1k5hZCqEoEpz4lzxWVtKG6ansPGEuxnVY7LV1Xm_5A3G8-jtvQgT16MtRSi-_y3AdyshZ_wi7yGDHzP8yn0a0iwo-k3z1JEDsPAHxie17ohTSnkf-uv-s1UD/s320/websocket-in-zap-image-feature%255B1%255D.png" alt="" />
-</figure>
-
-
-</p>
-<p>When we were looking at the interactions between the Outlook and the LinkedIn APIs, we encountered WebSocket communications that used some additional encoding. The encoding was nothing too complex, but it was uncommon. It turned out to be LZip compression. However, the inability to read the content of the requests with Burp, ZAP or Web developer consoles in real-time made it difficult to analyze the API.</p>
-<p>While our proxy of choice is usually Burp Suite, it did not allow us to extend WebSocket views. We turn ourselves to the open-source project Zed Attack Proxy. It reveals to be easily extendable for custom WebSocket tooling. In this blog post, we will explain how you can implement your own custom view to display complex WebSocket messages.</p>
-		
-			<a href="https://ghariib.ir/posts/creating-a-custom-view-for-websocket-in-zap/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/cve-2023-37777-synnefo-internet-management-software-sql-injection-vulnerability/">CVE-2023-37777 - Synnefo Internet Management Software SQL Injection Vulnerability</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<a href="/tags/cve">cve</a>
-	
-	<a href="/tags/cybersecurity">cybersecurity</a>
-	
-	<a href="/tags/security">security</a>
-	
-	<div>
-		<p><strong>CVE ID :</strong> CVE-2023-37777<br>
-<strong>Published :</strong> Jan. 22, 2025, 4:15 p.m. | 14 minutes ago<br>
-<strong>Description :</strong> Synnefo Internet Management Software 2023 was discovered to contain a SQL injection vulnerability.<br>
-<strong>Severity:</strong> 0.0 | NA<br>
-Visit the link for more details, such as CVSS details, affected products, timeline, and more&hellip;</p>
-<p>Go to Source</p>
+			<a href="https://ghariib.ir/posts/myscada-mypro-manager/">Read more...</a>
 		
 	</div>
 </article>
@@ -355,7 +247,7 @@ Visit the link for more details, such as CVSS details, affected products, timeli
 
 	<a href="/page/111/">Previous Page</a>
 
-112 of 424
+112 of 436
 
 	<a href="/page/113/">Next Page</a>
 

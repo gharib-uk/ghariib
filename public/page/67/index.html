@@ -40,246 +40,147 @@
 		
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/getting-started-with-nlp-using-bert-on-kaggle/">Getting started with NLP using Bert on Kaggle</a></h1>
+	<h1><a href="https://ghariib.ir/posts/new-vpn-backdoor/">&lt;div&gt;New VPN Backdoor&lt;/div&gt;</a></h1>
 	<b><time>29.01.2025 00:00</time></b>
 	
 	<div>
-		<h2 id="1import-and-eda">1、Import and EDA</h2>
-<pre tabindex="0"><code>import os
-iskaggle = os.environ.get(&#39;KAGGLE_KERNEL_RUN_TYPE&#39;, &#39;&#39;)
-from pathlib import Path
-if iskaggle:
-    path = Path(&#39;/kaggle/input/us-patent-phrase-to-phrase-matching&#39;)
-</code></pre><pre tabindex="0"><code>import pandas as pd
-df = pd.read_csv(path/&#39;train.csv&#39;)
-df[&#39;input&#39;] = &#39;TEXT1: &#39; + df.context + &#39;; TEXT2: &#39; + df.target + &#39;; ANC1: &#39; + df.anchor
-df.input.head()
-</code></pre><h2 id="2tokenization">2、Tokenization</h2>
-<pre tabindex="0"><code>from datasets import Dataset, DatasetDict
-ds = Dataset.from_pandas(df)
-import warnings,logging,torch
-warnings.simplefilter(&#39;ignore&#39;)
-logging.disable(logging.WARNING)
-model_nm = &#39;anferico/bert-for-patents&#39;
-# Load model directly
-from transformers import AutoModelForSequenceClassification, AutoTokenizer
-model = AutoModelForSequenceClassification.from_pretrained(model_nm, num_labels=1)
-tokenizer = AutoTokenizer.from_pretrained(&#39;anferico/bert-for-patents&#39;)
-</code></pre><pre tabindex="0"><code>def tok_func(x):
-    return tokenizer(x[&#39;input&#39;])
-# Tokenize all the sentences using the tokenizer
-tok_ds = ds.map(tok_func, batched=True)
-tok_ds = tok_ds.rename_columns({&#39;score&#39;:&#39;labels&#39;})
-</code></pre><h2 id="3test-and-validation-sets">3、Test and Validation sets</h2>
-<pre tabindex="0"><code>eval_df = pd.read_csv(path/&#39;test.csv&#39;)
-dds = tok_ds.train_test_split(0.25, seed=42)
-eval_df[&#39;input&#39;] = &#39;TEXT1: &#39; + eval_df.context + &#39;; TEXT2: &#39; + eval_df.target + &#39;; ANC1: &#39; + eval_df.anchor
-eval_ds = Dataset.from_pandas(eval_df).map(tok_func, batched=True)
-</code></pre><h2 id="4metrics-and-correlation">4、Metrics and Correlation</h2>
-<pre tabindex="0"><code>import numpy as np
-def corr(x,y): 
-    ## change the 2-d array into 1-d array
-    return np.corrcoef(x.flatten(), y)[0,1]
-def corr_d(eval_pred): return {&#39;pearson&#39;: corr(*eval_pred)}
-</code></pre><h2 id="5training-our-model">5、Training our model</h2>
-<pre tabindex="0"><code>from transformers import TrainingArguments,Trainer
-bs = 128
-epochs = 4
-lr = 8e-5
-args = TrainingArguments(&#39;outputs&#39;, learning_rate=lr, warmup_ratio=0.1, lr_scheduler_type=&#39;cosine&#39;, fp16=True,
-    evaluation_strategy=&#34;epoch&#34;, per_device_train_batch_size=bs, per_device_eval_batch_size=bs*2,
-    num_train_epochs=epochs, weight_decay=0.01, report_to=&#39;none&#39;)
-trainer = Trainer(model, args, train_dataset=dds[&#39;train&#39;], eval_dataset=dds[&#39;test&#39;],
-                  tokenizer=tokenizer, compute_metrics=corr_d)
-trainer.train()
-</code></pre><p>
-<figure>
-  <img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fials6lciimf07ahsxw39.png" alt="Image description" />
-</figure>
-
-
-</p>
+		<p>A newly discovered VPN backdoor uses some interesting tactics to avoid detection:</p>
+<blockquote>
+<p>When threat actors use backdoor malware to gain access to a network, they want to make sure all their hard work can’t be leveraged by competing groups or detected by defenders. One countermeasure is to equip the backdoor with a passive agent that remains dormant until it receives what’s known in the business as a “magic packet.” On Thursday, researchers revealed that a never-before-seen backdoor that quietly took hold of dozens of enterprise VPNs running Juniper Network’s Junos OS has been doing just that&hellip;</p>
 		
-			<a href="https://ghariib.ir/posts/getting-started-with-nlp-using-bert-on-kaggle/">Read more...</a>
+			<a href="https://ghariib.ir/posts/new-vpn-backdoor/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/hackers-stolen-85-million-worth-of-cryptocurrency-from-phemex/">Hackers Stolen $85 Million Worth of Cryptocurrency from Phemex</a></h1>
+	<h1><a href="https://ghariib.ir/posts/secure-compliant-and-ai-powered-get-to-know-3-new-gitlab-features/">&lt;div&gt;Secure, compliant, and AI-powered: Get to know 3 new GitLab features&lt;/div&gt;</a></h1>
 	<b><time>29.01.2025 00:00</time></b>
 	
-	<a href="/tags/peckshieldalert">peckshieldalert</a>
+	<a href="/tags/development">development</a>
 	
-	<a href="/tags/phemex">phemex</a>
+	<a href="/tags/git">git</a>
+	
+	<a href="/tags/github">github</a>
+	
+	<a href="/tags/gitlab">gitlab</a>
+	
+	<a href="/tags/software">software</a>
 	
 	<div>
-		<p>Phemex, a cryptocurrency exchange based in Singapore, suffered a significant cyberattack that resulted in the theft of $85 million worth of digital assets. </p>
-<p>The platform’s hot wallets, which are linked to the internet for real-time transactions, were the primary target of the hack. These wallets are more susceptible to intrusions than cold wallets, which stay offline.</p>
-<p>Phemex has since implemented emergency measures to safeguard user funds and initiated a comprehensive investigation into the incident.</p>
+		<p>AI capabilities are rapidly reshaping how teams build, secure, and deploy applications. As part of our ongoing commitment to helping you navigate the evolving marketplace, GitLab has introduced more than 440 improvements in the past three releases. We&rsquo;re excited to spotlight three standout features making an immediate impact on how teams approach AI-powered DevSecOps. In addition, we announced we are partnering with AWS to launch GitLab Duo with Amazon Q, combining our strengths to transform software development. We&rsquo;re creating an experience, together, that makes AI-powered development feel seamless and upholds the security, compliance, and reliability that enterprises require.</p>
 		
-			<a href="https://ghariib.ir/posts/hackers-stolen-85-million-worth-of-cryptocurrency-from-phemex/">Read more...</a>
+			<a href="https://ghariib.ir/posts/secure-compliant-and-ai-powered-get-to-know-3-new-gitlab-features/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/how-can-i-build-devops-dashboard/">How can i build devops dashboard?</a></h1>
+	<h1><a href="https://ghariib.ir/posts/this-cool-raspberry-pi-project-visualizes-your-boards-cpu-load-with-a-light-show/">&lt;div&gt;This cool Raspberry Pi project visualizes your board&#39;s CPU load with a light show&lt;/div&gt;</a></h1>
 	<b><time>29.01.2025 00:00</time></b>
 	
 	<div>
-		<p>
-<figure>
-  <img src="https://www.bestdevops.com/wp-content/uploads/2025/01/image-41-1024x578.png" alt="" />
-</figure>
-
-
-</p>
-<p>A DevOps dashboard is a visual representation of key metrics, data, and KPIs (Key Performance Indicators) that allow teams to track the performance of their applications, infrastructure, and DevOps processes. These dashboards provide insights into the health of the system, streamline communication between development, operations, and business teams, and help organizations make data-driven decisions.</p>
-<p>Building a DevOps dashboard involves selecting the right metrics to track, integrating various data sources, and ensuring that the dashboard is user-friendly and actionable. In this post, we will walk through the process of building a DevOps dashboard, focusing on its major features and how it can drive improvements in efficiency, monitoring, and decision-making.</p>
+		<p>The pretty lights mean you&rsquo;re torturing your processor.</p>
+<p>If you want to keep tabs on your Raspberry Pi&rsquo;s CPU usage, you can always use the built-in tools on your OS or download an app that can give you stats on how it&rsquo;s doing. However, where&rsquo;s the fun in that? Sometimes, the best use of a Raspberry Pi is to replicate what you could already do, but do it even cooler. Such is the case with this Raspberry Pi project that keeps an eye on how your Pi&rsquo;s CPU is doing and uses a light show to communicate how much load it&rsquo;s experiencing.</p>
 		
-			<a href="https://ghariib.ir/posts/how-can-i-build-devops-dashboard/">Read more...</a>
+			<a href="https://ghariib.ir/posts/this-cool-raspberry-pi-project-visualizes-your-boards-cpu-load-with-a-light-show/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/how-can-i-find-devops-jobs/">How can i find DevOps jobs?</a></h1>
+	<h1><a href="https://ghariib.ir/posts/top-7-upgrades-were-hoping-for-with-switch-2/">&lt;div&gt;Top 7 upgrades we&#39;re hoping for with Switch 2&lt;/div&gt;</a></h1>
 	<b><time>29.01.2025 00:00</time></b>
 	
 	<div>
-		<p>
-<figure>
-  <img src="https://www.bestdevops.com/wp-content/uploads/2025/01/Screenshot-2025-01-28-150502-1024x462.png" alt="" />
-</figure>
-
-
-</p>
-<p>DevOps has become one of the most sought-after skills in the technology industry due to its ability to improve collaboration between development and operations teams. Organizations are increasingly adopting DevOps practices to streamline their development processes, improve system reliability, and speed up delivery. As a result, the demand for skilled DevOps professionals has skyrocketed across various industries.</p>
-<p>Finding a DevOps job requires a combination of the right skills, experience, and strategies. In this post, we will explore how you can find DevOps jobs, highlighting the major features of the job search process, including skill-building, networking, and using job boards effectively.</p>
+		<p>With the announcement of the Nintentdo Switch 2, we&rsquo;re hoping for a few needed upgrades.</p>
+<p>If you want a top-notch portable gaming machine, sure you could get yourself a laptop or a tablet, but gaming handhelds are all the rage. And the Nintendo Switch is still one of the best gaming handhelds around. But the Switch 2 is on the way, and it&rsquo;s slated to bring a ton of changes with it.</p>
 		
-			<a href="https://ghariib.ir/posts/how-can-i-find-devops-jobs/">Read more...</a>
+			<a href="https://ghariib.ir/posts/top-7-upgrades-were-hoping-for-with-switch-2/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/how-can-i-implement-devops-using-chatgpt/">How can i implement devops using ChatGPT?</a></h1>
+	<h1><a href="https://ghariib.ir/posts/vulnerability-management-cybersecurity-trends-to-look-for-in-2025/">&lt;div&gt;Vulnerability Management &amp; Cybersecurity Trends to Look For in 2025&lt;/div&gt;</a></h1>
 	<b><time>29.01.2025 00:00</time></b>
 	
 	<div>
-		<p>
-<figure>
-  <img src="https://www.bestdevops.com/wp-content/uploads/2025/01/hq720.jpg" alt="" />
-</figure>
-
-
-</p>
-<p>DevOps is a set of practices that combine software development and IT operations, aiming to shorten the development lifecycle, enhance collaboration, and deliver high-quality software. One of the emerging tools that can significantly aid in implementing DevOps practices is ChatGPT. As an AI-driven language model, ChatGPT can assist teams in various ways, including automation, documentation, communication, and problem-solving within DevOps pipelines. By integrating ChatGPT into your DevOps workflows, teams can enhance productivity, reduce errors, and streamline processes.</p>
+		<p>Phew. What a year 2024 was. High-profile attacks, rapid digital transformation, and the elephant in the room, AI, of course. These events have changed the cybersecurity world and will have longstanding ramifications! But what about cybersecurity trends in 2025? The year 2025 is set to redefine the cybersecurity landscape and could be a significant year […]</p>
+<p>The post Vulnerability Management &amp; Cybersecurity Trends to Look For in 2025 appeared first on SecPod Blog.</p>
 		
-			<a href="https://ghariib.ir/posts/how-can-i-implement-devops-using-chatgpt/">Read more...</a>
+			<a href="https://ghariib.ir/posts/vulnerability-management-cybersecurity-trends-to-look-for-in-2025/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/how-data-brokers-sell-your-identity/">How Data Brokers Sell Your Identity</a></h1>
+	<h1><a href="https://ghariib.ir/posts/you-can-manage-your-self-hosted-containers-like-a-pro-with-portainer-heres-how/">&lt;div&gt;You can manage your self-hosted containers like a pro with Portainer - here&#39;s how&lt;/div&gt;</a></h1>
 	<b><time>29.01.2025 00:00</time></b>
 	
 	<div>
-		<p>
-<figure>
-  <img src="https://www.mcafee.com/blogs/wp-content/uploads/2024/06/300x200_Blog_060424-1.png" alt="" />
-</figure>
-
-
-</p>
-<p>Data Privacy Week is here, and there’s no better time to shine a spotlight on one of the biggest players in the personal information economy: data brokers. These entities collect, buy, and sell hundreds—sometimes thousands—of data points on individuals like you. But how do they manage to gather so much information, and for what purpose? From your browsing habits and purchase history to your location data and even more intimate details, these digital middlemen piece together surprisingly comprehensive profiles. The real question is: where are they getting it all, and why is your personal data so valuable to them? Let’s unravel the mystery behind the data broker industry.</p>
+		<p>Need a beginner-friendly GUI that&rsquo;s laden with all the essential features to manage your containers? Portainer has your back!</p>
+<p>Containers are perfect when you want to isolate your self-hosted services without the extra overhead of virtual machines. While the Docker CLI is the ideal way to manage your containers, running commands for simple operations can get tiresome at times. Docker Desktop is a decent option, but it’s rather rudimentary in its functionality.</p>
 		
-			<a href="https://ghariib.ir/posts/how-data-brokers-sell-your-identity/">Read more...</a>
+			<a href="https://ghariib.ir/posts/you-can-manage-your-self-hosted-containers-like-a-pro-with-portainer-heres-how/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/how-devops-works/">How devops works?</a></h1>
+	<h1><a href="https://ghariib.ir/posts/-the-ultimate-list-of-27-frontend-libraries-for-creative-developers/">🚀 The Ultimate List of 27 Frontend Libraries for Creative Developers</a></h1>
 	<b><time>29.01.2025 00:00</time></b>
 	
 	<div>
-		<p>
-<figure>
-  <img src="https://www.bestdevops.com/wp-content/uploads/2025/01/image-39-1024x468.png" alt="" />
-</figure>
-
-
-</p>
-<h2 id="introduction-to-devops-a-modern-approach-to-software-development">Introduction to DevOps: A Modern Approach to Software Development</h2>
-<p>DevOps is a set of practices, tools, and cultural philosophies that aim to improve collaboration and productivity between software development (Dev) and IT operations (Ops) teams. The goal of DevOps is to shorten the development lifecycle and provide continuous delivery with high software quality. By emphasizing automation, collaboration, and monitoring, DevOps ensures that applications can be developed, tested, and deployed faster, more reliably, and with greater stability.</p>
+		<p>Are you ready to level up your frontend game ? Whether you&rsquo;re building a sleek portfolio site, crafting interactive web apps, or just experimenting with web magic, this list of frontend libraries will have you yelling, &ldquo;Why didn’t I know about this before ?!&rdquo; From stunning UI components to jaw-dropping animations, these tools are here to make your coding life easier and way more fun.</p>
+<p>Let’s dive in, and don&rsquo;t forget your 🎩, because these libraries are pure magic!</p>
 		
-			<a href="https://ghariib.ir/posts/how-devops-works/">Read more...</a>
+			<a href="https://ghariib.ir/posts/-the-ultimate-list-of-27-frontend-libraries-for-creative-developers/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/how-dynatrace-is-using-devops-in-monitoring-and-observability/">How dynatrace is using devops in Monitoring and Observability?</a></h1>
+	<h1><a href="https://ghariib.ir/posts/10-reasons-why-i-use-the-opera-gx-browser/">10 Reasons why I use the Opera GX browser</a></h1>
 	<b><time>29.01.2025 00:00</time></b>
 	
 	<div>
-		<p>
-<figure>
-  <img src="https://www.bestdevops.com/wp-content/uploads/2025/01/image-45-1024x574.png" alt="" />
-</figure>
-
-
-</p>
-<p>Dynatrace is a powerful software intelligence platform that plays a crucial role in the DevOps lifecycle by providing end-to-end monitoring and observability for applications and infrastructure. It helps DevOps teams monitor system health, track performance metrics, detect anomalies, and deliver seamless user experiences. Through its deep integration with modern DevOps pipelines and cloud environments, Dynatrace empowers teams to continuously improve performance, troubleshoot effectively, and respond to incidents faster.</p>
-<p>As DevOps practices focus on automation, collaboration, and continuous delivery, Dynatrace’s monitoring capabilities align perfectly with these goals, allowing organizations to ensure that their applications remain reliable and performant as they scale. This post will explore how Dynatrace leverages DevOps in monitoring and observability, highlighting the major features that make it a valuable tool for DevOps teams.</p>
+		<p>If you&rsquo;re looking for a different browser, see why I used Opera GX.</p>
+<p>We all wish our browsers could do things better, but we generally stick to mainstream options like Google Chrome or Microsoft Edge because we&rsquo;re stuck in their ecosystem and put faith in their abilities. Still, variety is the spice of life, and it&rsquo;s worth trying some forgotten browsers to check out their unique features and design choices, which might surprise you.</p>
 		
-			<a href="https://ghariib.ir/posts/how-dynatrace-is-using-devops-in-monitoring-and-observability/">Read more...</a>
+			<a href="https://ghariib.ir/posts/10-reasons-why-i-use-the-opera-gx-browser/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/how-golden-paths-improve-developer-productivity/">How golden paths improve developer productivity</a></h1>
+	<h1><a href="https://ghariib.ir/posts/10-ways-ai-can-help-organizations-tackle-cyberattacks/">10 Ways AI Can Help Organizations Tackle Cyberattacks</a></h1>
 	<b><time>29.01.2025 00:00</time></b>
 	
 	<div>
-		<p>Building software is hard enough without getting bogged down by repetitive tasks, endless approval chains, and inconsistent tooling. Enter golden paths—the shortcuts every developer wishes they had. They’re not just about speed. They’re about freeing your brain to focus on the good stuff: writing code, solving problems, and shipping features.</p>
-<p>This guide explores how golden paths and software templates can transform your workflow from chaos to cosmos. We’ll cover how to set them up, why they matter, and where they might trip you up. By the end, you’ll have a clear map to hyperspace your way to faster, more secure, and less frustrating development.</p>
-		
-			<a href="https://ghariib.ir/posts/how-golden-paths-improve-developer-productivity/">Read more...</a>
+		<p>Legacy security measures, while offering a baseline level of protection, heavily rely on predefined signatures and a narrow definition of the “abnormal.” They often follow a reactive approach, can be siloed, limiting information sharing, and lack the scalability to handle the terabytes of data generated by today’s complex IT systems. This is where artificial intelligence &hellip;</p>
+<p>Go to Source</p>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/how-open-source-is-shaping-the-future-of-innovation/">How open-source is shaping the future of innovation</a></h1>
+	<h1><a href="https://ghariib.ir/posts/2024-c5-type-2-attestation-report-available-with-179-services-in-scope/">2024 C5 Type 2 attestation report available with 179 services in scope</a></h1>
 	<b><time>29.01.2025 00:00</time></b>
 	
 	<div>
-		<p><strong>Open-source technology</strong> has significantly shaped how industries approach complex technical challenges and foster innovation. It has expanded beyond software to impact hardware and systems design, opening up new pathways for researchers, engineers, and tech enthusiasts to develop advanced solutions. This collective approach fuels innovation and contributes to sustainable development by creating accessible, adaptable tools that solve real-world problems at scale.</p>
-<h2 id="ai-awards--summit-2025-enter-the-ai-awards-and-be-a-part-of-the-future">
-<figure>
-  <img src="https://www.softwaretestingnews.co.uk/wp-content/uploads/2024/11/AI-webpost-1.jpg" alt="AI Awards &amp; Summit 2025: Enter the AI Awards and be a part of the future." />
-</figure>
-
-
-</h2>
-<h2 id="democratising-open-source-technology-and-science"><strong>Democratising open-source technology and science</strong></h2>
-<p>Open-source technology fundamentally changes how we access and utilise high-tech tools. Traditionally, advanced instruments like oscilloscopes, signal generators, and spectrum analysers were accessible primarily to well-funded research labs. With open-source tools such as Red Pitaya’s “pocket lab,” engineers and students can now access powerful measurement and testing capabilities in a compact, cost-effective format. This allows universities, startups, and even independent researchers and enthusiasts to innovate without being restricted by cost or proprietary limitations.</p>
+		<p>Amazon Web Services (AWS) is pleased to announce a successful completion of the 2024 Cloud Computing Compliance Controls Catalogue (C5) attestation cycle with 179 services in scope. This alignment with C5 requirements demonstrates our ongoing commitment to adhere to the heightened expectations for cloud service providers. AWS customers in Germany and across Europe can run their applications in the AWS Regions that are in scope of the C5 report with the assurance that AWS aligns with C5 criteria.</p>
 		
-			<a href="https://ghariib.ir/posts/how-open-source-is-shaping-the-future-of-innovation/">Read more...</a>
+			<a href="https://ghariib.ir/posts/2024-c5-type-2-attestation-report-available-with-179-services-in-scope/">Read more...</a>
 		
 	</div>
 </article>
@@ -289,7 +190,7 @@ trainer.train()
 
 	<a href="/page/66/">Previous Page</a>
 
-67 of 424
+67 of 436
 
 	<a href="/page/68/">Next Page</a>
 

@@ -51,7 +51,7 @@
 <p>Garble&rsquo;s string encryption, while relatively straightforward, significantly hinders static analysis. In this blog post, we&rsquo;ll detail garble’s string transformations and the process of automatically deobfuscating them.</p>
 <p>We&rsquo;re also introducing GoStringUngarbler, a command-line tool written in Python that automatically decrypts strings found in garble-obfuscated Go binaries. This tool can streamline the reverse engineering process by producing a deobfuscated binary with all strings recovered and shown in plain text, thereby simplifying static analysis, malware detection, and classification.</p>
 <p>aside_block</p>
-<p>&lt;ListValue: [StructValue([(&rsquo;title&rsquo;, &lsquo;Get GoStringUngarbler!&rsquo;), (&lsquo;body&rsquo;, &lt;wagtail.rich_text.RichText object at 0x3e38454b3dc0&gt;), (&lsquo;btn_text&rsquo;, &lsquo;Download now&rsquo;), (&lsquo;href&rsquo;, &lsquo;<a href="https://github.com/mandiant/gostringungarbler')">https://github.com/mandiant/gostringungarbler')</a>, (&lsquo;image&rsquo;, None)])]&gt;</p>
+<p>&lt;ListValue: [StructValue([(&rsquo;title&rsquo;, &lsquo;Get GoStringUngarbler!&rsquo;), (&lsquo;body&rsquo;, &lt;wagtail.rich_text.RichText object at 0x3ead400fefd0&gt;), (&lsquo;btn_text&rsquo;, &lsquo;Download now&rsquo;), (&lsquo;href&rsquo;, &lsquo;<a href="https://github.com/mandiant/gostringungarbler')">https://github.com/mandiant/gostringungarbler')</a>, (&lsquo;image&rsquo;, None)])]&gt;</p>
 <h2 id="garble-obfuscating-compiler">Garble Obfuscating Compiler</h2>
 <p>Before detailing the GoStringUngarbler tool, we want to briefly explain how the garble compiler modifies the build process of Go binaries. By wrapping around the official Go compiler, garble performs transformations on the source code during compilation through Abstract Syntax Tree (AST) manipulation using Go’s <a href="https://pkg.go.dev/go/ast">go/ast</a> library. Here, the obfuscating compiler modifies program elements to obfuscate the produced binary while preserving the semantic integrity of the program. Once transformed by garble, the program’s AST is fed back into the Go compilation pipeline, producing an executable that is harder to reverse engineer and analyze statically. </p>
 <p>While garble can apply a variety of transformations to the source code, this blog post will focus on its &ldquo;literal&rdquo; transformations. When garble is executed with the <code>-literals</code> flag, it transforms all literal strings in the source code and imported Go libraries into an obfuscated form. Each string is encoded and wrapped behind a decrypting function, thwarting static string analysis. </p>
@@ -583,15 +583,15 @@ ret                                        ; return the decrypted string
 		<div>
 			<ul>
 				
-				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				<li><a href="/posts/2025-03-20-cve-2025-2557---audi-utr-dashcam-20-com/">CVE-2025-2557 - Audi UTR Dashcam 20 Command API Local Network Access Control Vulnerability</a></li>
 				
-				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				<li><a href="/posts/2025-03-20-cve-2025-29980---etrakitnet-sql-injecti/">CVE-2025-29980 - eTRAKiTnet SQL Injection Vulnerability</a></li>
 				
-				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				<li><a href="/posts/2025-03-20-cve-2025-30160---redlib-deflate-decompr/">CVE-2025-30160 - Redlib DEFLATE Decompression Bomb Denial-of-Service Vulnerability</a></li>
 				
-				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				<li><a href="/posts/2025-03-20-cve-2025-29217---tenda-w18e-stack-overf/">CVE-2025-29217 - Tenda W18E Stack Overflow Denial of Service Vulnerability</a></li>
 				
-				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				<li><a href="/posts/2025-03-20-cve-2025-29218---tenda-w18e-stack-overf/">CVE-2025-29218 - Tenda W18E Stack Overflow Vulnerability</a></li>
 				
 			</ul>
 		</div>
