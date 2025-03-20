@@ -3,8 +3,6 @@ title: "New global report How to stand out in an AI-savvy world"
 date: Tue, 04 Mar 2025 16:00:00 +0000
 draft: false
 type: posts
-categories: 
-- AI + machine learning,Mobile
 ---
 # New global report How to stand out in an AI-savvy world
 

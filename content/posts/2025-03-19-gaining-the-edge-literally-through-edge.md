@@ -3,8 +3,6 @@ title: "Gaining the Edge Literally Through Edge Computing"
 date: Tue, 18 Mar 2025 20:58:29 -0700
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Gaining the Edge Literally Through Edge Computing
 

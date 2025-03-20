@@ -3,8 +3,6 @@ title: "StealthCup"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # StealthCup
 

@@ -3,8 +3,6 @@ title: "Whats new in Azure Elastic SAN"
 date: Wed, 05 Mar 2025 16:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Compute
 ---
 # Whats new in Azure Elastic SAN
 

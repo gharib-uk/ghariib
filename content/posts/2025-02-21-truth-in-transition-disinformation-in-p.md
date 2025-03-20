@@ -3,8 +3,6 @@ title: "Truth in Transition Disinformation in Post-Assad Syria"
 date: Fri, 21 Feb 2025 15:55:51 +0000
 draft: false
 type: posts
-categories: 
-- News,Disinformation
 ---
 # Truth in Transition Disinformation in Post-Assad Syria
 

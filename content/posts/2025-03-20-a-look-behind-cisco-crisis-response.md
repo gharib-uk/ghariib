@@ -3,8 +3,6 @@ title: "A Look Behind Cisco Crisis Response"
 date: Thu, 20 Mar 2025 16:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Our Corporate Purpose,Cisco Purpose,FY24 Purpose Report,Social Impact and Inclusion Office
 ---
 # A Look Behind Cisco Crisis Response
 

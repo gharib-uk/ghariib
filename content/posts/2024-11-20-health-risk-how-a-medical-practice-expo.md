@@ -3,8 +3,6 @@ title: "Health Risk How a Medical Practice Exposed Details for 40000 Patients Up
 date: Wed, 20 Nov 2024 09:02:04 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Health Risk How a Medical Practice Exposed Details for 40000 Patients UpGuard
 

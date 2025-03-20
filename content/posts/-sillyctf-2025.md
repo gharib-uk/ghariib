@@ -3,8 +3,6 @@ title: "SillyCTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # SillyCTF 2025
 

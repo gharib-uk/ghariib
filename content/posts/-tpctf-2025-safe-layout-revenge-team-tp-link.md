@@ -3,8 +3,6 @@ title: "TPCTF 2025 safe layout revenge team TP-Link"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # TPCTF 2025 safe layout revenge team TP-Link
 

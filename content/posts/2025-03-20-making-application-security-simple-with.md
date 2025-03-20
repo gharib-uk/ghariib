@@ -3,8 +3,6 @@ title: "Making Application Security simple with a new unified dashboard experien
 date: Thu, 20 Mar 2025 13:00:00 GMT
 draft: false
 type: posts
-categories: 
-- Security Week,Application Security,Dashboard,WAF,Bot Management
 ---
 # Making Application Security simple with a new unified dashboard experience
 

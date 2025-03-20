@@ -3,8 +3,6 @@ title: "KalmarCTF 2025 Ez v3 team BunkyoWesterns"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # KalmarCTF 2025 Ez v3 team BunkyoWesterns
 

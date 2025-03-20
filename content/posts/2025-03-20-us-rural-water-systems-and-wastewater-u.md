@@ -3,8 +3,6 @@ title: "US Rural Water Systems and Wastewater Utilities Seek Cybersecurity Boost
 date: Thu, 20 Mar 2025 06:35:51 +0000
 draft: false
 type: posts
-categories: 
-- Critical Infrastructure Security,Latest News,News & Analysis,Security
 ---
 # US Rural Water Systems and Wastewater Utilities Seek Cybersecurity Boost
 

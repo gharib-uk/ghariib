@@ -3,8 +3,6 @@ title: "Getting Started Using LLMs in Application Testing With an MVP"
 date: Tue, 18 Feb 2025 00:00:00 -0500
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Getting Started Using LLMs in Application Testing With an MVP
 

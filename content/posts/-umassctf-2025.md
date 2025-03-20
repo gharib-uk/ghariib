@@ -3,8 +3,6 @@ title: "UMassCTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # UMassCTF 2025
 

@@ -3,8 +3,6 @@ title: "Exploring NTDSdit Part 1 Cracking the Surface with DIT Explorer"
 date: Thu, 20 Feb 2025 00:00:00 -0500
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Exploring NTDSdit Part 1 Cracking the Surface with DIT Explorer
 

@@ -3,8 +3,6 @@ title: "Introducing the AWS Trust Center"
 date: Fri, 14 Feb 2025 17:47:59 +0000
 draft: false
 type: posts
-categories: 
-- Announcements,Featured,Security, Identity, & Compliance
 ---
 # Introducing the AWS Trust Center
 

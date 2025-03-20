@@ -3,8 +3,6 @@ title: "Three SPI Busses Are One Too Many on This Cheap Yellow Display"
 date: Thu, 20 Mar 2025 15:30:45 +0000
 draft: false
 type: posts
-categories: 
-- Microcontrollers,Cheap Yellow Display,ESP32,spi
 ---
 # Three SPI Busses Are One Too Many on This Cheap Yellow Display
 

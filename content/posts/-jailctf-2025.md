@@ -3,8 +3,6 @@ title: "jailCTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # jailCTF 2025
 

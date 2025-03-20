@@ -3,8 +3,6 @@ title: "AWS completes the annual UAE Information Assurance Regulation compliance
 date: Tue, 18 Mar 2025 16:26:43 +0000
 draft: false
 type: posts
-categories: 
-- Announcements,Foundational (100),Security, Identity, & Compliance,Abu Dhabi,Auditing,AWS security,Cloud Services Provider,Compliance,CSP,Dubai,IAR,Information Assurance Regulation,MEA,Middle East,Security,Security Blog,UAE
 ---
 # AWS completes the annual UAE Information Assurance Regulation compliance assessment
 

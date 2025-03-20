@@ -3,8 +3,6 @@ title: "Hunyuan3D-2-Turbo fast high-quality shape generation in 1s on a 4090"
 date: Thu, 20 Mar 2025 01:58:29 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Hunyuan3D-2-Turbo fast high-quality shape generation in 1s on a 4090
 

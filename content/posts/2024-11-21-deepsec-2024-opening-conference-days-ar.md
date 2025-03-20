@@ -3,8 +3,6 @@ title: "DeepSec 2024 Opening Conference Days are now live"
 date: Thu, 21 Nov 2024 08:00:05 +0000
 draft: false
 type: posts
-categories: 
-- Conference,DeepSec
 ---
 # DeepSec 2024 Opening Conference Days are now live
 

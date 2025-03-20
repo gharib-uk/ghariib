@@ -3,8 +3,6 @@ title: "Using ntopng as Generic Flow Collector log files firewall events MQTT"
 date: Thu, 06 Feb 2025 08:14:19 +0000
 draft: false
 type: posts
-categories: 
-- ntopng
 ---
 # Using ntopng as Generic Flow Collector log files firewall events MQTT
 

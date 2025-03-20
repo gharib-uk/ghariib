@@ -3,8 +3,6 @@ title: "PiEEG Kit is a Self-Contained Biosignal Laboratory"
 date: Thu, 20 Mar 2025 08:00:22 +0000
 draft: false
 type: posts
-categories: 
-- Raspberry Pi,biosignals,eeg,electroencephalogram,PiEEG
 ---
 # PiEEG Kit is a Self-Contained Biosignal Laboratory
 

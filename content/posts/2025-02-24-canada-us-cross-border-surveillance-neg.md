@@ -3,8 +3,6 @@ title: "Canada-US Cross-Border Surveillance Negotiations Raise Constitutional an
 date: Mon, 24 Feb 2025 16:05:52 +0000
 draft: false
 type: posts
-categories: 
-- Transparency and Accountability,canada-us border,CLOUD Act,cross-border surveillance,data privacy,digital surveillance,legal analysis
 ---
 # Canada-US Cross-Border Surveillance Negotiations Raise Constitutional and Human Rights Whirlwind under US CLOUD Act
 

@@ -3,8 +3,6 @@ title: "The Hidden Costs of Manual GRC in a Cloud-First World"
 date: Fri, 07 Mar 2025 13:53:20 -0800
 draft: false
 type: posts
-categories: 
-- 
 ---
 # The Hidden Costs of Manual GRC in a Cloud-First World
 

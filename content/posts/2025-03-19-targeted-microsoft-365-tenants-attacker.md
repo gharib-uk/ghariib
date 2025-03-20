@@ -3,8 +3,6 @@ title: "Targeted Microsoft 365 Tenants Attackers Exploit Billing Emails for Phis
 date: Wed, 19 Mar 2025 04:11:50 +0000
 draft: false
 type: posts
-categories: 
-- BEC,Attacks,Latest News,News & Analysis,Phishing
 ---
 # Targeted Microsoft 365 Tenants Attackers Exploit Billing Emails for Phishing
 

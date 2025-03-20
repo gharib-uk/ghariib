@@ -3,8 +3,6 @@ title: "OpenAI Audio Models"
 date: Thu, 20 Mar 2025 17:18:00 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # OpenAI Audio Models
 

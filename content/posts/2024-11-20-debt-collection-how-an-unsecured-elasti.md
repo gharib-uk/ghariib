@@ -3,8 +3,6 @@ title: "Debt Collection How an Unsecured ElasticSearch Instance Exposed Thousand
 date: Wed, 20 Nov 2024 06:36:57 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Debt Collection How an Unsecured ElasticSearch Instance Exposed Thousands of Borrowers UpGuard
 

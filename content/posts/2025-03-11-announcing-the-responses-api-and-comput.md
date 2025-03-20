@@ -3,8 +3,6 @@ title: "Announcing the Responses API and Computer-Using Agent in Azure AI Foundr
 date: Tue, 11 Mar 2025 20:30:00 +0000
 draft: false
 type: posts
-categories: 
-- AI + machine learning,AI
 ---
 # Announcing the Responses API and Computer-Using Agent in Azure AI Foundry
 

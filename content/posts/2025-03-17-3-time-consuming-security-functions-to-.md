@@ -3,8 +3,6 @@ title: "3 Time-Consuming Security Functions to Automate in 2025"
 date: Mon, 17 Mar 2025 13:48:28 -0700
 draft: false
 type: posts
-categories: 
-- 
 ---
 # 3 Time-Consuming Security Functions to Automate in 2025
 

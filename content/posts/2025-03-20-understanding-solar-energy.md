@@ -3,8 +3,6 @@ title: "Understanding Solar Energy"
 date: Thu, 20 Mar 2025 12:09:32 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Understanding Solar Energy
 

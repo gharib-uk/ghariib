@@ -3,8 +3,6 @@ title: "How we train AI to uncover malicious JavaScript intent and make web surf
 date: Wed, 19 Mar 2025 13:00:00 GMT
 draft: false
 type: posts
-categories: 
-- Security Week,Page Shield,AI,Machine Learning,Malicious JavaScript,JavaScript
 ---
 # How we train AI to uncover malicious JavaScript intent and make web surfing safer
 

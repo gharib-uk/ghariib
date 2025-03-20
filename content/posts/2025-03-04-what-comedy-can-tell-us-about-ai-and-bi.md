@@ -3,8 +3,6 @@ title: "What Comedy Can Tell Us About AI and Big Data"
 date: Tue, 04 Mar 2025 15:38:21 -0800
 draft: false
 type: posts
-categories: 
-- 
 ---
 # What Comedy Can Tell Us About AI and Big Data
 

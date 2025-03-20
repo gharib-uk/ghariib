@@ -3,8 +3,6 @@ title: "Navigating 2025 Zero Trust and Privileged Access Management for IT and O
 date: Wed, 12 Mar 2025 09:15:00 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Navigating 2025 Zero Trust and Privileged Access Management for IT and OT Security
 

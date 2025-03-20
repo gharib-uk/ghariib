@@ -3,8 +3,6 @@ title: "DeepSec 2024 Keynote The Mind Bomb"
 date: Sun, 01 Dec 2024 16:10:09 +0000
 draft: false
 type: posts
-categories: 
-- Conference
 ---
 # DeepSec 2024 Keynote The Mind Bomb
 

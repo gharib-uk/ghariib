@@ -3,8 +3,6 @@ title: "Household Names How Tetrad Exposed Data on 120 Million Consumers UpGuard
 date: Wed, 20 Nov 2024 06:36:57 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Household Names How Tetrad Exposed Data on 120 Million Consumers UpGuard
 

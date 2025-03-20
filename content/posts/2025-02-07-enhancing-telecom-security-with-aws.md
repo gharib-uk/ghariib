@@ -3,8 +3,6 @@ title: "Enhancing telecom security with AWS"
 date: Fri, 07 Feb 2025 18:04:34 +0000
 draft: false
 type: posts
-categories: 
-- Best Practices,Intermediate (200),Security, Identity, & Compliance,Thought Leadership,Cloud security,Network security,Security,Security Blog,Telecom
 ---
 # Enhancing telecom security with AWS
 

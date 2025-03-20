@@ -3,8 +3,6 @@ title: "North Korean hackers posing as IT workers steal over 1B in cyberattack"
 date: Fri, 29 Nov 2024 10:31:36 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # North Korean hackers posing as IT workers steal over 1B in cyberattack
 

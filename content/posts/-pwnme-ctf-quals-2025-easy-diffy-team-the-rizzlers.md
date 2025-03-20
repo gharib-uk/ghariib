@@ -3,8 +3,6 @@ title: "PwnMe CTF Quals 2025 Easy Diffy team the rizzlers"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # PwnMe CTF Quals 2025 Easy Diffy team the rizzlers
 

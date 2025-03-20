@@ -3,8 +3,6 @@ title: "Introducing Cloudy Cloudflares AI agent for simplifying complex configur
 date: Thu, 20 Mar 2025 13:00:00 GMT
 draft: false
 type: posts
-categories: 
-- Workers AI,Cloudflare Workers,Developer Platform,Developers,LLM,WAF,Cloudflare One,Zero Trust,Cloudflare Zero Trust,SASE,Secure Web Gateway,Beta,Network Services
 ---
 # Introducing Cloudy Cloudflares AI agent for simplifying complex configurations
 

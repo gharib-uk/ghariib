@@ -3,8 +3,6 @@ title: "DaVinciCTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # DaVinciCTF 2025
 

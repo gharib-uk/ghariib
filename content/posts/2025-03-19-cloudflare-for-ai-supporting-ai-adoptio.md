@@ -3,8 +3,6 @@ title: "Cloudflare for AI supporting AI adoption at scale with a security-first 
 date: Wed, 19 Mar 2025 13:10:00 GMT
 draft: false
 type: posts
-categories: 
-- Security Week,AI,Security
 ---
 # Cloudflare for AI supporting AI adoption at scale with a security-first approach
 

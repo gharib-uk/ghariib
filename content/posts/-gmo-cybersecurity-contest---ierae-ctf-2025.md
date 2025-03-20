@@ -3,8 +3,6 @@ title: "GMO Cybersecurity Contest - IERAE CTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # GMO Cybersecurity Contest - IERAE CTF 2025
 

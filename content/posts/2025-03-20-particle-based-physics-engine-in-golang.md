@@ -3,8 +3,6 @@ title: "Particle Based Physics Engine in Golang"
 date: Thu, 20 Mar 2025 13:41:35 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Particle Based Physics Engine in Golang
 

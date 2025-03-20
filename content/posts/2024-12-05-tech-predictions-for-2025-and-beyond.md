@@ -3,8 +3,6 @@ title: "Tech predictions for 2025 and beyond"
 date: Thu, 05 Dec 2024 05:00:00 -0700
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Tech predictions for 2025 and beyond
 

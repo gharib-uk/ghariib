@@ -3,8 +3,6 @@ title: "Connect your on-premises Kubernetes cluster to AWS APIs using IAM Roles 
 date: Mon, 24 Feb 2025 16:25:01 +0000
 draft: false
 type: posts
-categories: 
-- Advanced (300),Security, Identity, & Compliance,Technical How-to,authentication,authorization,EKS,IAM,IAM Roles Anywhere,Identity,Security,Security Blog,Security token service,X.509 certificate
 ---
 # Connect your on-premises Kubernetes cluster to AWS APIs using IAM Roles Anywhere
 

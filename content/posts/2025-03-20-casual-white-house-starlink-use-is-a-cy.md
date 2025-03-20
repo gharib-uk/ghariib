@@ -3,8 +3,6 @@ title: "Casual White House Starlink Use Is A Cybersecurity Nightmare A Transpare
 date: Thu, 20 Mar 2025 10:39:46 +0000
 draft: false
 type: posts
-categories: 
-- Commentaries and Analyses,Government Sector
 ---
 # Casual White House Starlink Use Is A Cybersecurity Nightmare A Transparency Problem And A Weird Marketing Stunt
 

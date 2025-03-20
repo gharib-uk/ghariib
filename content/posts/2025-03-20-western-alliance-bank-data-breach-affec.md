@@ -3,8 +3,6 @@ title: "Western Alliance Bank Data Breach Affects Nearly 22000 Individuals"
 date: Thu, 20 Mar 2025 06:50:29 +0000
 draft: false
 type: posts
-categories: 
-- Data Breach,Attacks,Data Loss Prevention,Latest News,News & Analysis
 ---
 # Western Alliance Bank Data Breach Affects Nearly 22000 Individuals
 

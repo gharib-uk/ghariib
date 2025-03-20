@@ -3,8 +3,6 @@ title: "Grease An Open-Source Tool for Uncovering Hidden Vulnerabilities in Bina
 date: Thu, 20 Mar 2025 13:57:30 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Grease An Open-Source Tool for Uncovering Hidden Vulnerabilities in Binary Code
 

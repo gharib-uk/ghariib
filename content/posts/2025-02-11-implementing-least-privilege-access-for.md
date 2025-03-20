@@ -3,8 +3,6 @@ title: "Implementing least privilege access for Amazon Bedrock"
 date: Tue, 11 Feb 2025 18:11:37 +0000
 draft: false
 type: posts
-categories: 
-- Amazon Bedrock,Best Practices,Expert (400),Security, Identity, & Compliance,Thought Leadership,Security Blog
 ---
 # Implementing least privilege access for Amazon Bedrock
 

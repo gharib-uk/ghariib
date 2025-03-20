@@ -3,8 +3,6 @@ title: "Telecommunications Breakdown How Russian Telco Infrastructure was Expose
 date: Wed, 20 Nov 2024 09:02:04 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Telecommunications Breakdown How Russian Telco Infrastructure was Exposed UpGuard
 

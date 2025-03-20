@@ -3,8 +3,6 @@ title: "BSidesSF 2025 CTF"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # BSidesSF 2025 CTF
 

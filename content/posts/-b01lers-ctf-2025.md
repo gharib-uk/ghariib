@@ -3,8 +3,6 @@ title: "b01lers CTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # b01lers CTF 2025
 

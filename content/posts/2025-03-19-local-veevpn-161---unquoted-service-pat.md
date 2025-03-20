@@ -3,8 +3,6 @@ title: "local VeeVPN 161 - Unquoted Service Path"
 date: Wed, 19 Mar 2025 00:00:00 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # local VeeVPN 161 - Unquoted Service Path
 

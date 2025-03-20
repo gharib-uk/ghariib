@@ -3,8 +3,6 @@ title: "Data Warehouse How a Vendor for Half the Fortune 100 Exposed a Terabyte 
 date: Thu, 16 Jan 2025 00:55:47 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Data Warehouse How a Vendor for Half the Fortune 100 Exposed a Terabyte of Backups UpGuard
 

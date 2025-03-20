@@ -3,8 +3,6 @@ title: "New Release Tor Browser 1407"
 date: 2025-03-04T00:00:00Z
 draft: false
 type: posts
-categories: 
-- 
 ---
 # New Release Tor Browser 1407
 

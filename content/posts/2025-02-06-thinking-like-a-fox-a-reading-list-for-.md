@@ -3,8 +3,6 @@ title: "Thinking like a fox A reading list for the future"
 date: Thu, 06 Feb 2025 05:30:00 -0800
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Thinking like a fox A reading list for the future
 

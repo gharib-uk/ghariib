@@ -3,8 +3,6 @@ title: "TAMUctf 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # TAMUctf 2025
 

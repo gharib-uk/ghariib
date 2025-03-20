@@ -3,8 +3,6 @@ title: "Introducing the inaugural Now Go Build CTO Fellows"
 date: Thu, 21 Nov 2024 05:30:00 -0800
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Introducing the inaugural Now Go Build CTO Fellows
 

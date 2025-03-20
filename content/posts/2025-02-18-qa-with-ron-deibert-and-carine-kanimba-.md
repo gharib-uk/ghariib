@@ -3,8 +3,6 @@ title: "QA with Ron Deibert and Carine Kanimba in Digital Front Lines"
 date: Tue, 18 Feb 2025 14:32:37 +0000
 draft: false
 type: posts
-categories: 
-- In the Media,spyware,Surveillance
 ---
 # QA with Ron Deibert and Carine Kanimba in Digital Front Lines
 

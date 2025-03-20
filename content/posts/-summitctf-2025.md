@@ -3,8 +3,6 @@ title: "SummitCTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # SummitCTF 2025
 

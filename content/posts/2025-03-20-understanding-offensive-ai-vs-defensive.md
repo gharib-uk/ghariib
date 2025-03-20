@@ -3,8 +3,6 @@ title: "Understanding Offensive AI vs Defensive AI in Cybersecurity"
 date: Wed, 19 Mar 2025 17:06:46 -0700
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Understanding Offensive AI vs Defensive AI in Cybersecurity
 

@@ -3,8 +3,6 @@ title: "Undutmaning 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Undutmaning 2025
 

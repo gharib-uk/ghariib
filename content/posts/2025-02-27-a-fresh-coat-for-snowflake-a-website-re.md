@@ -3,8 +3,6 @@ title: "A fresh coat for Snowflake a website refresh to help more people get onl
 date: 2025-02-27T00:00:00Z
 draft: false
 type: posts
-categories: 
-- 
 ---
 # A fresh coat for Snowflake a website refresh to help more people get online
 

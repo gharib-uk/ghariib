@@ -3,8 +3,6 @@ title: "DiceCTF 2025 Quals"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # DiceCTF 2025 Quals
 

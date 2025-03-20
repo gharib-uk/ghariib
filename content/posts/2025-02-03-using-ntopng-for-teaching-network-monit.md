@@ -3,8 +3,6 @@ title: "Using ntopng for Teaching Network Monitoring and Administration"
 date: Mon, 03 Feb 2025 19:56:18 +0000
 draft: false
 type: posts
-categories: 
-- ntop
 ---
 # Using ntopng for Teaching Network Monitoring and Administration
 

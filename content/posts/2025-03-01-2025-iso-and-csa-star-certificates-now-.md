@@ -3,8 +3,6 @@ title: "2025 ISO and CSA STAR certificates now available with four additional se
 date: Sat, 01 Mar 2025 01:04:26 +0000
 draft: false
 type: posts
-categories: 
-- Announcements,Foundational (100),Security, Identity, & Compliance,AWS CSA STAR,AWS CSA STAR Certificates,AWS ISO,AWS ISO Certificates,AWS ISO20000,AWS ISO22301,AWS ISO27001,AWS ISO27017,AWS ISO27018,AWS ISO27701,AWS ISO9001,Compliance,Security Blog
 ---
 # 2025 ISO and CSA STAR certificates now available with four additional services
 

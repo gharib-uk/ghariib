@@ -3,8 +3,6 @@ title: "Hunting for the warez other dodgy stuff people install download part 2"
 date: Sat, 08 Mar 2025 22:19:50 +0000
 draft: false
 type: posts
-categories: 
-- Threat Hunting
 ---
 # Hunting for the warez other dodgy stuff people install download part 2
 

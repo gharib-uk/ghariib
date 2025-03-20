@@ -3,8 +3,6 @@ title: "PlaidCTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # PlaidCTF 2025
 

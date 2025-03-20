@@ -3,8 +3,6 @@ title: "Public Relations How a Marketing PR Platform Exposed Thousands of Users 
 date: Wed, 20 Nov 2024 06:53:49 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Public Relations How a Marketing PR Platform Exposed Thousands of Users UpGuard
 

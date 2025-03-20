@@ -3,8 +3,6 @@ title: "String analysis for n00bs"
 date: Sun, 23 Feb 2025 14:06:52 +0000
 draft: false
 type: posts
-categories: 
-- Anti-Forensics,Malware Analysis,Tips & Tricks
 ---
 # String analysis for n00bs
 

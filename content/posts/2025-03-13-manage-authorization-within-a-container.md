@@ -3,8 +3,6 @@ title: "Manage authorization within a containerized workload using Amazon Verifi
 date: Thu, 13 Mar 2025 19:26:58 +0000
 draft: false
 type: posts
-categories: 
-- Advanced (300),Amazon Elastic Kubernetes Service,Amazon Verified Permissions,Best Practices,Containers,Security, Identity, & Compliance,Technical How-to,Amazon EKS,Security Blog
 ---
 # Manage authorization within a containerized workload using Amazon Verified Permissions
 

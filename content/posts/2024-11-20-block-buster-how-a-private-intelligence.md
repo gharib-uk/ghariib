@@ -3,8 +3,6 @@ title: "Block Buster How A Private Intelligence Platform Leaked 48 Million Perso
 date: Wed, 20 Nov 2024 07:33:14 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Block Buster How A Private Intelligence Platform Leaked 48 Million Personal Data Records UpGuard
 

@@ -3,8 +3,6 @@ title: "Cisco Introduces the State of AI Security Report for 2025 Key Developmen
 date: Thu, 20 Mar 2025 12:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Security,Artificial Intelligence AI,Security for AI
 ---
 # Cisco Introduces the State of AI Security Report for 2025 Key Developments Trends and Predictions in AI Security
 

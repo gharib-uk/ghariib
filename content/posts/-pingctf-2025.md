@@ -3,8 +3,6 @@ title: "pingCTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # pingCTF 2025
 

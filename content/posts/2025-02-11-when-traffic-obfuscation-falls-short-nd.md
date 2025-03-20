@@ -3,8 +3,6 @@ title: "When Traffic Obfuscation Falls Short nDPI vs NordWhisper NordVPN"
 date: Tue, 11 Feb 2025 08:37:24 +0000
 draft: false
 type: posts
-categories: 
-- nDPI
 ---
 # When Traffic Obfuscation Falls Short nDPI vs NordWhisper NordVPN
 

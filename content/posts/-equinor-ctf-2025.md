@@ -3,8 +3,6 @@ title: "Equinor CTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Equinor CTF 2025
 

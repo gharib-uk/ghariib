@@ -3,8 +3,6 @@ title: "KalmarCTF 2025 basic sums team idek"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # KalmarCTF 2025 basic sums team idek
 

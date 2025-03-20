@@ -3,8 +3,6 @@ title: "Command Line Underdog WMIC in Action"
 date: Tue, 14 Jan 2025 00:00:00 -0500
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Command Line Underdog WMIC in Action
 

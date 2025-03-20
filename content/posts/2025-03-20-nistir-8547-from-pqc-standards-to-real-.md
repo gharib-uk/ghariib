@@ -3,8 +3,6 @@ title: "NISTIR 8547 From PQC Standards to Real-World Implementations"
 date: Thu, 20 Mar 2025 10:30:39 -0700
 draft: false
 type: posts
-categories: 
-- 
 ---
 # NISTIR 8547 From PQC Standards to Real-World Implementations
 

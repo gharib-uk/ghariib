@@ -3,8 +3,6 @@ title: "XDR vs SIEM Security Information and Event Management"
 date: Fri, 29 Nov 2024 12:53:23 +0000
 draft: false
 type: posts
-categories: 
-- Endpoint Security
 ---
 # XDR vs SIEM Security Information and Event Management
 

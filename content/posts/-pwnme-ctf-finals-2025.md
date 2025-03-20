@@ -3,8 +3,6 @@ title: "PwnMe CTF Finals 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # PwnMe CTF Finals 2025
 

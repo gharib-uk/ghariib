@@ -3,8 +3,6 @@ title: "VolgaCTF 2025 Qualifier"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # VolgaCTF 2025 Qualifier
 

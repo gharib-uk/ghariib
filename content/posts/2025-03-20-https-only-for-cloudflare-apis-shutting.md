@@ -3,8 +3,6 @@ title: "HTTPS-only for Cloudflare APIs shutting the door on cleartext traffic"
 date: Thu, 20 Mar 2025 13:00:00 GMT
 draft: false
 type: posts
-categories: 
-- Security Week,HTTPS,API,Addressing,Research
 ---
 # HTTPS-only for Cloudflare APIs shutting the door on cleartext traffic
 

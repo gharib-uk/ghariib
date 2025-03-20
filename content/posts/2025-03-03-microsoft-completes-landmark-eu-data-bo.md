@@ -3,8 +3,6 @@ title: "Microsoft completes landmark EU Data Boundary offering enhanced data res
 date: Mon, 03 Mar 2025 20:55:33 +0000
 draft: false
 type: posts
-categories: 
-- Hybrid + multicloud
 ---
 # Microsoft completes landmark EU Data Boundary offering enhanced data residency and transparency
 

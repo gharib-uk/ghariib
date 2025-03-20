@@ -3,8 +3,6 @@ title: "2024 PiTuKri ISAE 3000 Type II attestation report available with 179 ser
 date: Thu, 06 Feb 2025 23:09:14 +0000
 draft: false
 type: posts
-categories: 
-- Announcements,Foundational (100),Security, Identity, & Compliance,AWS Compliance,AWS PiTuKri,AWS security,cybersecurity,Finland,Finnish Public Sector,PiTuKri Compliance,Security Blog
 ---
 # 2024 PiTuKri ISAE 3000 Type II attestation report available with 179 services in scope
 

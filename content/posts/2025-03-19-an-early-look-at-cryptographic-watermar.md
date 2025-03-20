@@ -3,8 +3,6 @@ title: "An early look at cryptographic watermarks for AI-generated content"
 date: Wed, 19 Mar 2025 13:00:00 GMT
 draft: false
 type: posts
-categories: 
-- Security Week,AI,Cryptography
 ---
 # An early look at cryptographic watermarks for AI-generated content
 

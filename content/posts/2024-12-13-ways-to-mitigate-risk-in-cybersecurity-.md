@@ -3,8 +3,6 @@ title: "Ways to Mitigate Risk in Cybersecurity Cybersecurity Risk Management"
 date: Fri, 13 Dec 2024 12:04:08 +0000
 draft: false
 type: posts
-categories: 
-- Leaks
 ---
 # Ways to Mitigate Risk in Cybersecurity Cybersecurity Risk Management
 

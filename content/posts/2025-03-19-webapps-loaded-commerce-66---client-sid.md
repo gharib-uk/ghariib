@@ -3,8 +3,6 @@ title: "webapps Loaded Commerce 66 - Client-Side Template InjectionCSTI"
 date: Wed, 19 Mar 2025 00:00:00 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # webapps Loaded Commerce 66 - Client-Side Template InjectionCSTI
 

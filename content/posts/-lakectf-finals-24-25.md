@@ -3,8 +3,6 @@ title: "LakeCTF Finals 24-25"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # LakeCTF Finals 24-25
 

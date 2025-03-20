@@ -3,8 +3,6 @@ title: "AWS renews MTCS Level 3 certification under the SS5842020 standard"
 date: Wed, 05 Feb 2025 21:30:13 +0000
 draft: false
 type: posts
-categories: 
-- Announcements,Foundational (100),Security, Identity, & Compliance,Compliance reports,MTCS,Security Blog
 ---
 # AWS renews MTCS Level 3 certification under the SS5842020 standard
 

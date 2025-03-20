@@ -3,8 +3,6 @@ title: "CloudGoat Official Walkthrough Series sqs_flag_shop"
 date: Tue, 03 Dec 2024 14:05:00 +0000
 draft: false
 type: posts
-categories: 
-- Research
 ---
 # CloudGoat Official Walkthrough Series sqs_flag_shop
 

@@ -3,8 +3,6 @@ title: "N0PSctf"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # N0PSctf
 

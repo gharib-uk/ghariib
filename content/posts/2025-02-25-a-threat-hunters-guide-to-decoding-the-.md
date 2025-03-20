@@ -3,8 +3,6 @@ title: "A Threat Hunters Guide to Decoding the Cloud"
 date: Tue, 25 Feb 2025 00:00:00 -0500
 draft: false
 type: posts
-categories: 
-- 
 ---
 # A Threat Hunters Guide to Decoding the Cloud
 

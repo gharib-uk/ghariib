@@ -3,8 +3,6 @@ title: "PwnMe CTF Quals 2025 My BetterZED team the rizzlers"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # PwnMe CTF Quals 2025 My BetterZED team the rizzlers
 

@@ -3,8 +3,6 @@ title: "SwampCTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # SwampCTF 2025
 

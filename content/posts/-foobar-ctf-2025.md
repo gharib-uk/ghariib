@@ -3,8 +3,6 @@ title: "FooBar CTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # FooBar CTF 2025
 

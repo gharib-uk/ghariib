@@ -3,8 +3,6 @@ title: "Microsoft Cost Management updatesMarch 2025"
 date: Wed, 12 Mar 2025 15:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Management and governance,Migration
 ---
 # Microsoft Cost Management updatesMarch 2025
 

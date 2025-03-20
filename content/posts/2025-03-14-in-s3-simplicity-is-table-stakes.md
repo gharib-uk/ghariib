@@ -3,8 +3,6 @@ title: "In S3 simplicity is table stakes"
 date: Fri, 14 Mar 2025 04:30:00 -0800
 draft: false
 type: posts
-categories: 
-- 
 ---
 # In S3 simplicity is table stakes
 

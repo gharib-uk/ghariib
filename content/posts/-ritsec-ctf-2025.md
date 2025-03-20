@@ -3,8 +3,6 @@ title: "RITSEC CTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # RITSEC CTF 2025
 

@@ -3,8 +3,6 @@ title: "NNS CTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # NNS CTF 2025
 

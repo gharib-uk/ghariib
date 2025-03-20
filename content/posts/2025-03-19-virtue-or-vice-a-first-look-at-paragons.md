@@ -3,8 +3,6 @@ title: "Virtue or Vice A First Look at Paragons Proliferating Spyware Operations
 date: Wed, 19 Mar 2025 11:55:03 +0000
 draft: false
 type: posts
-categories: 
-- Targeted Threats,Canada,Graphite,Israel,Italy,Mercenary Spyware,OPP,Paragon Solutions
 ---
 # Virtue or Vice A First Look at Paragons Proliferating Spyware Operations
 

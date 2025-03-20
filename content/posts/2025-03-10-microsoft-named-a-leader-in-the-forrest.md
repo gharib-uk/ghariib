@@ -3,8 +3,6 @@ title: "Microsoft named a leader in The Forrester Wave Public Cloud Platforms 20
 date: Mon, 10 Mar 2025 15:00:00 +0000
 draft: false
 type: posts
-categories: 
-- DevOps,Forrester
 ---
 # Microsoft named a leader in The Forrester Wave Public Cloud Platforms 2024
 

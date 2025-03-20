@@ -3,8 +3,6 @@ title: "2024 H2 IRAP report is now available on AWS Artifact for Australian cust
 date: Tue, 18 Mar 2025 17:57:53 +0000
 draft: false
 type: posts
-categories: 
-- Announcements,Security, Identity, & Compliance,Auditing,Australia,Australia Regions,AWS Artifact,AWS security,Compliance,Compliance reports,IRAP,IRAP PROTECTED,Security,Security Blog
 ---
 # 2024 H2 IRAP report is now available on AWS Artifact for Australian customers
 

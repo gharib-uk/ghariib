@@ -3,8 +3,6 @@ title: "CrewCTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # CrewCTF 2025
 

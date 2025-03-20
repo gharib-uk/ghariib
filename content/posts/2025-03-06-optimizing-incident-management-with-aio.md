@@ -3,8 +3,6 @@ title: "Optimizing incident management with AIOps using the Triangle System"
 date: Thu, 06 Mar 2025 16:00:00 +0000
 draft: false
 type: posts
-categories: 
-- AI + machine learning,AI
 ---
 # Optimizing incident management with AIOps using the Triangle System
 

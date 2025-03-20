@@ -3,8 +3,6 @@ title: "THCon 2K25 CTF"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # THCon 2K25 CTF
 

@@ -3,8 +3,6 @@ title: "The Pain That Is GitHub Actions"
 date: Thu, 20 Mar 2025 03:37:31 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # The Pain That Is GitHub Actions
 

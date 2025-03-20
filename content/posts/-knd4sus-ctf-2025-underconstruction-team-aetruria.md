@@ -3,8 +3,6 @@ title: "Knd4SUS CTF 2025 UnderConstruction team aetruria"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Knd4SUS CTF 2025 UnderConstruction team aetruria
 

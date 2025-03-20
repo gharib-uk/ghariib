@@ -3,8 +3,6 @@ title: "Crypto CTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Crypto CTF 2025
 

@@ -3,8 +3,6 @@ title: "The importance of encryption and how AWS can help"
 date: Wed, 12 Feb 2025 19:18:47 +0000
 draft: false
 type: posts
-categories: 
-- AWS CloudHSM,AWS Key Management Service,AWS Wickr,Foundational (100),Security, Identity, & Compliance,AES,AWS KMS,Encryption,Key management,OpenSSL,s2n,Security Blog,TLS
 ---
 # The importance of encryption and how AWS can help
 

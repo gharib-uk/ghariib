@@ -3,8 +3,6 @@ title: "Silenced by Surveillance The Impacts of Digital Transnational Repression
 date: Thu, 06 Mar 2025 17:53:13 +0000
 draft: false
 type: posts
-categories: 
-- Digital Transnational Repression,News
 ---
 # Silenced by Surveillance The Impacts of Digital Transnational Repression on Journalists Human Rights Defenders and Dissidents in Exile
 

@@ -3,8 +3,6 @@ title: "Password reuse is rampant nearly half of observed user logins are compro
 date: Mon, 17 Mar 2025 13:00:00 GMT
 draft: false
 type: posts
-categories: 
-- Security Week,Authentication,Account Takeover,Password-reuse,Statistics,Bots
 ---
 # Password reuse is rampant nearly half of observed user logins are compromised
 

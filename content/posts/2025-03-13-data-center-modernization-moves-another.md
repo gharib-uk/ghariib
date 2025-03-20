@@ -3,8 +3,6 @@ title: "Data Center Modernization Moves Another Step Forward with Next-Gen UCS S
 date: Thu, 13 Mar 2025 16:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Data Center,Cisco Intersight,Cisco UCS,data center,data center modernization,Intel Xeon
 ---
 # Data Center Modernization Moves Another Step Forward with Next-Gen UCS Servers
 

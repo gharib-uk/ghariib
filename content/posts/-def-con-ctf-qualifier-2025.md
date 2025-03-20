@@ -3,8 +3,6 @@ title: "DEF CON CTF Qualifier 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # DEF CON CTF Qualifier 2025
 

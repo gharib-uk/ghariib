@@ -3,8 +3,6 @@ title: "Public Domain How Configuration Information For the Worlds Largest Domai
 date: Wed, 20 Nov 2024 06:29:45 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Public Domain How Configuration Information For the Worlds Largest Domain Name Registrar Was Exposed UpGuard
 

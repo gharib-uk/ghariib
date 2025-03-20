@@ -3,8 +3,6 @@ title: "Massive RSA Encryption Flaw Exposes Millions of IoT Devices to Attack"
 date: Tue, 18 Mar 2025 07:18:58 +0000
 draft: false
 type: posts
-categories: 
-- Encryption,Data Protection,Identity & Access Management,Internet of Things Security,Latest News,News & Analysis,Security
 ---
 # Massive RSA Encryption Flaw Exposes Millions of IoT Devices to Attack
 

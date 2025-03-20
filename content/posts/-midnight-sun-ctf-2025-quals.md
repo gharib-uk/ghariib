@@ -3,8 +3,6 @@ title: "Midnight Sun CTF 2025 Quals"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Midnight Sun CTF 2025 Quals
 

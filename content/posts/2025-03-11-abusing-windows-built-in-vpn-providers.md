@@ -3,8 +3,6 @@ title: "Abusing Windows Built-in VPN Providers"
 date: Tue, 11 Mar 2025 00:00:00 -0400
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Abusing Windows Built-in VPN Providers
 

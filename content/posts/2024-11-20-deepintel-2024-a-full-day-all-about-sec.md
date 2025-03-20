@@ -3,8 +3,6 @@ title: "DeepINTEL 2024 a full Day all about Security Intelligence"
 date: Wed, 20 Nov 2024 08:00:06 +0000
 draft: false
 type: posts
-categories: 
-- Conference,DeepIntel
 ---
 # DeepINTEL 2024 a full Day all about Security Intelligence
 

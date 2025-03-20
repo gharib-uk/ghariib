@@ -3,8 +3,6 @@ title: "PwnMe CTF Quals 2025 Back to the past team 3ndByt3"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # PwnMe CTF Quals 2025 Back to the past team 3ndByt3
 

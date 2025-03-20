@@ -3,8 +3,6 @@ title: "How I accepted myself into Canadas largest AI hackathon"
 date: Thu, 20 Mar 2025 05:42:21 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # How I accepted myself into Canadas largest AI hackathon
 

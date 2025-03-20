@@ -3,8 +3,6 @@ title: "Cybersecurity 2025 Cloudy with a Chance of Breaches"
 date: Wed, 01 Jan 2025 14:00:00 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Cybersecurity 2025 Cloudy with a Chance of Breaches
 

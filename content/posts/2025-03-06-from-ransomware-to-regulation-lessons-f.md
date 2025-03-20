@@ -3,8 +3,6 @@ title: "From Ransomware to Regulation Lessons from the Worst Year of Healthcare 
 date: Thu, 06 Mar 2025 11:35:03 -0800
 draft: false
 type: posts
-categories: 
-- 
 ---
 # From Ransomware to Regulation Lessons from the Worst Year of Healthcare Cyber Breaches
 

@@ -3,8 +3,6 @@ title: "System Shock How A Cloud Leak Exposed Accentures Business UpGuard"
 date: Thu, 16 Jan 2025 00:55:47 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # System Shock How A Cloud Leak Exposed Accentures Business UpGuard
 

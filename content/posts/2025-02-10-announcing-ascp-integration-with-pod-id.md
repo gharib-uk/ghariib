@@ -3,8 +3,6 @@ title: "Announcing ASCP integration with Pod Identity Enhanced security for secr
 date: Mon, 10 Feb 2025 20:32:49 +0000
 draft: false
 type: posts
-categories: 
-- Advanced (300),AWS Secrets Manager,Security, Identity, & Compliance,Technical How-to,Security Blog
 ---
 # Announcing ASCP integration with Pod Identity Enhanced security for secrets management in Amazon EKS
 

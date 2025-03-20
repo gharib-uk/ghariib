@@ -3,8 +3,6 @@ title: "Insomnihack 2025 v0l4til3 team C8H10N4O2"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Insomnihack 2025 v0l4til3 team C8H10N4O2
 

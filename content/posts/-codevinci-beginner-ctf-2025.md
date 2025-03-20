@@ -3,8 +3,6 @@ title: "CodeVinci Beginner CTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # CodeVinci Beginner CTF 2025
 

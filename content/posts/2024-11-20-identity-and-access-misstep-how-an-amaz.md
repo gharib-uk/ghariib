@@ -3,8 +3,6 @@ title: "Identity and Access Misstep How an Amazon Engineer Exposed Credentials a
 date: Wed, 20 Nov 2024 06:36:57 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Identity and Access Misstep How an Amazon Engineer Exposed Credentials and More UpGuard
 

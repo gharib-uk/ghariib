@@ -3,8 +3,6 @@ title: "Dreamhack CTF Season 7 Round 6 Div 2"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Dreamhack CTF Season 7 Round 6 Div 2
 

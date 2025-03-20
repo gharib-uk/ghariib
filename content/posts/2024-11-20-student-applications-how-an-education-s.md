@@ -3,8 +3,6 @@ title: "Student Applications How an Education Software Company Exposed Millions 
 date: Wed, 20 Nov 2024 06:36:57 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Student Applications How an Education Software Company Exposed Millions of Files UpGuard
 

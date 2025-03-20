@@ -3,8 +3,6 @@ title: "Blackout Engineering Firm Exposes Critical Infrastructure Data UpGuard"
 date: Wed, 20 Nov 2024 09:02:04 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Blackout Engineering Firm Exposes Critical Infrastructure Data UpGuard
 

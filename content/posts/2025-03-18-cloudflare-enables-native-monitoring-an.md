@@ -3,8 +3,6 @@ title: "Cloudflare enables native monitoring and forensics with Log Explorer and
 date: Tue, 18 Mar 2025 13:00:00 GMT
 draft: false
 type: posts
-categories: 
-- Security Week,Analytics,Logs,Security,R2 Storage,SIEM,Product News,Connectivity Cloud
 ---
 # Cloudflare enables native monitoring and forensics with Log Explorer and custom dashboards
 

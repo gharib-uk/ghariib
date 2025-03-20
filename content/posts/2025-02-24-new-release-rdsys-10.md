@@ -3,8 +3,6 @@ title: "New Release Rdsys 10"
 date: 2025-02-24T00:00:00Z
 draft: false
 type: posts
-categories: 
-- 
 ---
 # New Release Rdsys 10
 

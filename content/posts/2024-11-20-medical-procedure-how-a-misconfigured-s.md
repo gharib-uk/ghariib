@@ -3,8 +3,6 @@ title: "Medical Procedure How a Misconfigured Storage Bucket Exposed Medical Dat
 date: Wed, 20 Nov 2024 09:02:04 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Medical Procedure How a Misconfigured Storage Bucket Exposed Medical Data UpGuard
 

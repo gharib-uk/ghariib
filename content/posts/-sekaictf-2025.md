@@ -3,8 +3,6 @@ title: "SekaiCTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # SekaiCTF 2025
 

@@ -3,8 +3,6 @@ title: "More than a hint that dark energy isnt what astronomers thought"
 date: Thu, 20 Mar 2025 04:57:12 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # More than a hint that dark energy isnt what astronomers thought
 

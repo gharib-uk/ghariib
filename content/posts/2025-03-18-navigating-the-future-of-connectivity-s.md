@@ -3,8 +3,6 @@ title: "Navigating the Future of Connectivity Services Opportunities around Cisc
 date: Tue, 18 Mar 2025 15:00:11 +0000
 draft: false
 type: posts
-categories: 
-- Partner,#GoManaged,Cisco Catalyst,Cisco Managed Services,Cisco Meraki,Cisco Partners,Enterprise Networking,Managed Service Provider (MSP),ThousandEyes,Wi-Fi,Wi-Fi 7,wireless
 ---
 # Navigating the Future of Connectivity Services Opportunities around Ciscos Wi-Fi 7
 

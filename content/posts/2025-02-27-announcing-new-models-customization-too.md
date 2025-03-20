@@ -3,8 +3,6 @@ title: "Announcing new models customization tools and enterprise agent upgrades 
 date: Thu, 27 Feb 2025 20:30:00 +0000
 draft: false
 type: posts
-categories: 
-- AI + machine learning,AI
 ---
 # Announcing new models customization tools and enterprise agent upgrades in Azure AI Foundry
 

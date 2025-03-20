@@ -3,8 +3,6 @@ title: "WolvCTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # WolvCTF 2025
 

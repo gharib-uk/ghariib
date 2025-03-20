@@ -3,8 +3,6 @@ title: "Email Security now available for free for political parties and campaign
 date: Mon, 17 Mar 2025 13:00:00 GMT
 draft: false
 type: posts
-categories: 
-- Security Week,Impact,Email Security
 ---
 # Email Security now available for free for political parties and campaigns through Cloudflare for Campaigns
 

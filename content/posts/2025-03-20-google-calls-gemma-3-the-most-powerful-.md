@@ -3,8 +3,6 @@ title: "Google calls Gemma 3 the most powerful AI model you can run on one GPU"
 date: Thu, 20 Mar 2025 18:32:11 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Google calls Gemma 3 the most powerful AI model you can run on one GPU
 

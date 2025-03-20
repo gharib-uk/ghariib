@@ -3,8 +3,6 @@ title: "Simplify allowlist management and lock down origin access with Cloudflar
 date: Thu, 20 Mar 2025 13:00:00 GMT
 draft: false
 type: posts
-categories: 
-- Security Week,Aegis,Egress,IPv4,IPv6
 ---
 # Simplify allowlist management and lock down origin access with Cloudflare Aegis
 

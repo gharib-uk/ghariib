@@ -3,8 +3,6 @@ title: "Want even tinier chips Use a particle accelerator"
 date: Mon, 17 Mar 2025 18:35:41 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Want even tinier chips Use a particle accelerator
 

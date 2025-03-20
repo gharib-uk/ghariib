@@ -3,8 +3,6 @@ title: "Midnight Flag CTF - INSURRECTION"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Midnight Flag CTF - INSURRECTION
 

@@ -3,8 +3,6 @@ title: "Public Option How Medical Records and Patient-Doctor Recordings Were Exp
 date: Wed, 20 Nov 2024 09:02:04 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Public Option How Medical Records and Patient-Doctor Recordings Were Exposed UpGuard
 

@@ -3,8 +3,6 @@ title: "DamCTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # DamCTF 2025
 

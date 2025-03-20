@@ -3,8 +3,6 @@ title: "Support Canadas CCCS PBHVA overlay compliance with the Landing Zone Acce
 date: Mon, 24 Feb 2025 21:33:54 +0000
 draft: false
 type: posts
-categories: 
-- Announcements,Foundational (100),Public Sector,Security, Identity, & Compliance,AWS Artifact,AWS Canada (Central) Region,AWS Shared Responsibility Model,Canada,CCCS,CCCS Assessment,classification,Cloud security,Compliance,Cyber Security,cybersecurity,Federal,Government,Government of Canada (GC),ITSG-33,Medium Cloud Security Profile,PBMM,Protected B,Security,Security architecture,Security Blog
 ---
 # Support Canadas CCCS PBHVA overlay compliance with the Landing Zone Accelerator on AWS
 

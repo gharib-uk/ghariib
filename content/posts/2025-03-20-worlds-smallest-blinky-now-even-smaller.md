@@ -3,8 +3,6 @@ title: "Worlds Smallest Blinky Now Even Smaller"
 date: Thu, 20 Mar 2025 05:00:11 +0000
 draft: false
 type: posts
-categories: 
-- Microcontrollers,ATtiny20,blinky,led,microcontroller,microsoldering,tantalum
 ---
 # Worlds Smallest Blinky Now Even Smaller
 

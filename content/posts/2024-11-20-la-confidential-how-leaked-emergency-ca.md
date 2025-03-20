@@ -3,8 +3,6 @@ title: "LA Confidential How Leaked Emergency Call Records Exposed LA Countys Abu
 date: Wed, 20 Nov 2024 09:02:04 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # LA Confidential How Leaked Emergency Call Records Exposed LA Countys Abuse Crisis Victims UpGuard
 

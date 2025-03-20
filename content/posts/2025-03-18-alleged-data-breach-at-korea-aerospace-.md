@@ -3,8 +3,6 @@ title: "Alleged Data Breach at Korea Aerospace Research Institute Sparks Major I
 date: Tue, 18 Mar 2025 11:46:00 +0000
 draft: false
 type: posts
-categories: 
-- Insider,Miscellaneous,Non-U.S.
 ---
 # Alleged Data Breach at Korea Aerospace Research Institute Sparks Major Investigation
 

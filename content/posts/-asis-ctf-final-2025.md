@@ -3,8 +3,6 @@ title: "ASIS CTF Final 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # ASIS CTF Final 2025
 

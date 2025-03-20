@@ -3,8 +3,6 @@ title: "KalmarCTF 2025 DNXSS-over-HTTPS team CYberMouflons"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # KalmarCTF 2025 DNXSS-over-HTTPS team CYberMouflons
 

@@ -3,8 +3,6 @@ title: "SAS CTF 2025 Quals"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # SAS CTF 2025 Quals
 

@@ -3,8 +3,6 @@ title: "By Design How Default Permissions on Microsoft Power Apps Exposed Millio
 date: Wed, 20 Nov 2024 06:36:57 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # By Design How Default Permissions on Microsoft Power Apps Exposed Millions UpGuard
 

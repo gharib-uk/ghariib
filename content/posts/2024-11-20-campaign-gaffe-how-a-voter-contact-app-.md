@@ -3,8 +3,6 @@ title: "Campaign Gaffe How a Voter Contact App Exposed Credentials and Code UpGu
 date: Wed, 20 Nov 2024 06:50:40 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Campaign Gaffe How a Voter Contact App Exposed Credentials and Code UpGuard
 

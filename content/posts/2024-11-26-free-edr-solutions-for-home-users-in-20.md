@@ -3,8 +3,6 @@ title: "Free EDR Solutions for Home Users in 2025"
 date: Tue, 26 Nov 2024 07:46:59 +0000
 draft: false
 type: posts
-categories: 
-- Leaks
 ---
 # Free EDR Solutions for Home Users in 2025
 

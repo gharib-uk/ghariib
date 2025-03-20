@@ -3,8 +3,6 @@ title: "Cyber Apocalypse CTF 2025 Tales from Eldoria"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Cyber Apocalypse CTF 2025 Tales from Eldoria
 

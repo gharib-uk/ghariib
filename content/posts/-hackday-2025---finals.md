@@ -3,8 +3,6 @@ title: "HackDay 2025 - Finals"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # HackDay 2025 - Finals
 

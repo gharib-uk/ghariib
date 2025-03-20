@@ -3,8 +3,6 @@ title: "ICCSDFAI"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # ICCSDFAI
 

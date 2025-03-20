@@ -3,8 +3,6 @@ title: "New Release Tails 613"
 date: 2025-03-06T00:00:00Z
 draft: false
 type: posts
-categories: 
-- 
 ---
 # New Release Tails 613
 

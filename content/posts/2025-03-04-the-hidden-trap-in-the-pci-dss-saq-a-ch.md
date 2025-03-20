@@ -3,8 +3,6 @@ title: "The Hidden Trap in the PCI DSS SAQ A Changes"
 date: Tue, 04 Mar 2025 00:00:00 -0500
 draft: false
 type: posts
-categories: 
-- 
 ---
 # The Hidden Trap in the PCI DSS SAQ A Changes
 

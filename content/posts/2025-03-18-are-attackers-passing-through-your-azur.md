@@ -3,8 +3,6 @@ title: "Are Attackers Passing Through Your Azure App Proxy"
 date: Tue, 18 Mar 2025 00:00:00 -0400
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Are Attackers Passing Through Your Azure App Proxy
 

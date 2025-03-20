@@ -3,8 +3,6 @@ title: "Pearl CTF Lost_Thoughts team CTFLive"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Pearl CTF Lost_Thoughts team CTFLive
 

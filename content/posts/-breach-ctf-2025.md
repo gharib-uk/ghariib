@@ -3,8 +3,6 @@ title: "Breach CTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Breach CTF 2025
 

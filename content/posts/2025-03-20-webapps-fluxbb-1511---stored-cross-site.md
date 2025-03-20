@@ -3,8 +3,6 @@ title: "webapps FluxBB 1511 - Stored Cross-Site Scripting XSS"
 date: Thu, 20 Mar 2025 00:00:00 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # webapps FluxBB 1511 - Stored Cross-Site Scripting XSS
 

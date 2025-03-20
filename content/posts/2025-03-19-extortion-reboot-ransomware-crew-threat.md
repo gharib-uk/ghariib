@@ -3,8 +3,6 @@ title: "Extortion Reboot Ransomware Crew Threatens Leak to Snowden"
 date: Wed, 19 Mar 2025 11:00:02 +0000
 draft: false
 type: posts
-categories: 
-- Malware
 ---
 # Extortion Reboot Ransomware Crew Threatens Leak to Snowden
 

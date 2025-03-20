@@ -3,8 +3,6 @@ title: "OpenAI is at war with its own Sora video testers following brief public 
 date: Fri, 29 Nov 2024 10:31:36 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # OpenAI is at war with its own Sora video testers following brief public leak
 

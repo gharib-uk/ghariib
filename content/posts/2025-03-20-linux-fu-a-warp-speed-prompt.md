@@ -3,8 +3,6 @@ title: "Linux Fu A Warp Speed Prompt"
 date: Thu, 20 Mar 2025 14:00:32 +0000
 draft: false
 type: posts
-categories: 
-- Hackaday Columns,Linux Hacks,bash,linux,prompt,zsh
 ---
 # Linux Fu A Warp Speed Prompt
 

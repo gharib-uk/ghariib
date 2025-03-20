@@ -3,8 +3,6 @@ title: "Embracing the AI Era Cisco Secure AI Factory with NVIDIA"
 date: Tue, 18 Mar 2025 20:00:19 +0000
 draft: false
 type: posts
-categories: 
-- Executive Platform,AI,AI Cybersecurity,Cisco AI Defense,Cisco Hypershield,Cisco Nvidia partnership,Cisco Partners,networking,Secure AI Factory
 ---
 # Embracing the AI Era Cisco Secure AI Factory with NVIDIA
 

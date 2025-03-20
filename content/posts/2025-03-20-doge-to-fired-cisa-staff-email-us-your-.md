@@ -3,8 +3,6 @@ title: "DOGE to Fired CISA Staff Email Us Your Personal Data"
 date: Thu, 20 Mar 2025 11:31:32 +0000
 draft: false
 type: posts
-categories: 
-- Government Sector
 ---
 # DOGE to Fired CISA Staff Email Us Your Personal Data
 

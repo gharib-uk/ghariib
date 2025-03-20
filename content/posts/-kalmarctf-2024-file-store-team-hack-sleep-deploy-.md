@@ -3,8 +3,6 @@ title: "KalmarCTF 2024 File Store team Hack Sleep Deploy Repeat"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # KalmarCTF 2024 File Store team Hack Sleep Deploy Repeat
 

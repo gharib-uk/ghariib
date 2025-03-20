@@ -3,8 +3,6 @@ title: "Enterprise Scale How Public Storage Buckets Leaked Private Credentials U
 date: Wed, 20 Nov 2024 06:26:56 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Enterprise Scale How Public Storage Buckets Leaked Private Credentials UpGuard
 

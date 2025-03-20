@@ -3,8 +3,6 @@ title: "One platform to manage your companys predictive security posture with Cl
 date: Tue, 18 Mar 2025 13:00:00 GMT
 draft: false
 type: posts
-categories: 
-- Security Week,Security Posture Management,Security,Security Center,SAAS Security,Application Security,API Security,Email Security
 ---
 # One platform to manage your companys predictive security posture with Cloudflare
 

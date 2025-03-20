@@ -3,8 +3,6 @@ title: "Take control of public AI application security with Cloudflares Firewall
 date: Wed, 19 Mar 2025 13:00:00 GMT
 draft: false
 type: posts
-categories: 
-- Security Week,Security,LLM,Web Asset Discovery
 ---
 # Take control of public AI application security with Cloudflares Firewall for AI
 

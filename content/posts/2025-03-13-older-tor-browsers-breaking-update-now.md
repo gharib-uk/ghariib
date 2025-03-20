@@ -3,8 +3,6 @@ title: "Older Tor Browsers Breaking Update Now"
 date: 2025-03-13T00:00:00Z
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Older Tor Browsers Breaking Update Now
 

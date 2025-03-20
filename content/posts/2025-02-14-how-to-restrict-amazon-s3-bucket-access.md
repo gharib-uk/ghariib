@@ -3,8 +3,6 @@ title: "How to restrict Amazon S3 bucket access to a specific IAM role"
 date: Fri, 14 Feb 2025 21:18:59 +0000
 draft: false
 type: posts
-categories: 
-- Amazon Simple Storage Service (S3),AWS Identity and Access Management (IAM),How-To,Identity,Top Posts,Best of,IAM roles,NotPrincipal element,Security Blog
 ---
 # How to restrict Amazon S3 bucket access to a specific IAM role
 

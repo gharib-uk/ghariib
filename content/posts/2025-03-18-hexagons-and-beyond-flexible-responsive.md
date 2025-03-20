@@ -3,8 +3,6 @@ title: "Hexagons and Beyond Flexible Responsive Grid Patterns Sans Media Queries
 date: Tue, 18 Mar 2025 13:23:57 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Hexagons and Beyond Flexible Responsive Grid Patterns Sans Media Queries 20
 

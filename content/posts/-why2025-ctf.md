@@ -3,8 +3,6 @@ title: "WHY2025 CTF"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # WHY2025 CTF
 

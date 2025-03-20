@@ -3,8 +3,6 @@ title: "It takes a Global Village to Fight Censorship"
 date: 2025-03-12T00:00:00Z
 draft: false
 type: posts
-categories: 
-- 
 ---
 # It takes a Global Village to Fight Censorship
 

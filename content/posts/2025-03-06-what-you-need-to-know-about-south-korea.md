@@ -3,8 +3,6 @@ title: "What you need to know about South Koreas AI Basic Act"
 date: Thu, 06 Mar 2025 11:49:08 -0800
 draft: false
 type: posts
-categories: 
-- 
 ---
 # What you need to know about South Koreas AI Basic Act
 

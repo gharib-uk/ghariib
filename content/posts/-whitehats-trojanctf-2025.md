@@ -3,8 +3,6 @@ title: "WhiteHats TrojanCTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # WhiteHats TrojanCTF 2025
 

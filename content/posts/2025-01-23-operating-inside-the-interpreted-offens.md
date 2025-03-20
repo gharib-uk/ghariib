@@ -3,8 +3,6 @@ title: "Operating Inside the Interpreted Offensive Python"
 date: Thu, 23 Jan 2025 00:00:00 -0500
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Operating Inside the Interpreted Offensive Python
 

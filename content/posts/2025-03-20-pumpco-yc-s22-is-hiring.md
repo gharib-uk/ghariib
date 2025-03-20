@@ -3,8 +3,6 @@ title: "Pumpco YC S22 Is Hiring"
 date: Thu, 20 Mar 2025 17:01:08 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Pumpco YC S22 Is Hiring
 

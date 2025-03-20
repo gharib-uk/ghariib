@@ -3,8 +3,6 @@ title: "2024 FINMA ISAE 3000 Type II attestation report available with 179 servi
 date: Thu, 06 Feb 2025 23:07:49 +0000
 draft: false
 type: posts
-categories: 
-- Announcements,Foundational (100),Security, Identity, & Compliance,Auditing,AWS Compliance,AWS FINMA,AWS security,Compliance,cybersecurity,Security,Security Blog,Switzerland
 ---
 # 2024 FINMA ISAE 3000 Type II attestation report available with 179 services in scope
 

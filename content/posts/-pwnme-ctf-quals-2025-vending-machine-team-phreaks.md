@@ -3,8 +3,6 @@ title: "PwnMe CTF Quals 2025 Vending Machine team PHREAKS 2600"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # PwnMe CTF Quals 2025 Vending Machine team PHREAKS 2600
 

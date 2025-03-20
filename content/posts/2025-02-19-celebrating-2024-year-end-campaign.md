@@ -3,8 +3,6 @@ title: "Celebrating 2024 year-end campaign"
 date: 2025-02-19T00:00:00Z
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Celebrating 2024 year-end campaign
 

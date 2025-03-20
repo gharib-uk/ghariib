@@ -3,8 +3,6 @@ title: "Upgraded Turnstile Analytics enable deeper insights faster investigation
 date: Tue, 18 Mar 2025 13:00:00 GMT
 draft: false
 type: posts
-categories: 
-- Security Week,Turnstile,Analytics
 ---
 # Upgraded Turnstile Analytics enable deeper insights faster investigations and improved security
 

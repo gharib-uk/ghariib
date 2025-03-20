@@ -3,8 +3,6 @@ title: "Chemistry Meets Mechatronics in This Engaging Art Piece"
 date: Thu, 20 Mar 2025 11:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Art,anthocyanin,cabbage,electrooxidation,electroreduction,gantry,peristaltic,pigment
 ---
 # Chemistry Meets Mechatronics in This Engaging Art Piece
 

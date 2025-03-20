@@ -3,8 +3,6 @@ title: "The Frontend Treadmill"
 date: Thu, 20 Mar 2025 12:25:31 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # The Frontend Treadmill
 

@@ -3,8 +3,6 @@ title: "Pick Up A Pebble Again"
 date: Thu, 20 Mar 2025 02:00:00 +0000
 draft: false
 type: posts
-categories: 
-- Wearable Hacks,pebble,smartwatch,wearable
 ---
 # Pick Up A Pebble Again
 

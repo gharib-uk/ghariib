@@ -3,8 +3,6 @@ title: "KalmarCTF 2025 G0tchaberg team BunkyoWesterns"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # KalmarCTF 2025 G0tchaberg team BunkyoWesterns
 

@@ -3,8 +3,6 @@ title: "Police Procedural How South Carolina Arrest Records Were Exposed UpGuard
 date: Wed, 20 Nov 2024 06:52:36 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Police Procedural How South Carolina Arrest Records Were Exposed UpGuard
 

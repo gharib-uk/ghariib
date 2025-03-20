@@ -3,8 +3,6 @@ title: "From RAGs to Riches Using LLMs and RAGs to Enhance Your Ops"
 date: Tue, 11 Feb 2025 00:00:00 -0500
 draft: false
 type: posts
-categories: 
-- 
 ---
 # From RAGs to Riches Using LLMs and RAGs to Enhance Your Ops
 

@@ -3,8 +3,6 @@ title: "Double Indemnity How An Insurer Exposed Its Customers UpGuard"
 date: Wed, 20 Nov 2024 09:02:04 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Double Indemnity How An Insurer Exposed Its Customers UpGuard
 

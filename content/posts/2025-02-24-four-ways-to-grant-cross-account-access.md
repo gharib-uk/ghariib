@@ -3,8 +3,6 @@ title: "Four ways to grant cross-account access in AWS"
 date: Mon, 24 Feb 2025 20:01:05 +0000
 draft: false
 type: posts
-categories: 
-- AWS Identity and Access Management (IAM),Best Practices,Intermediate (200),Security, Identity, & Compliance,Technical How-to,AWS IAM,AWS IAM policies,AWS Identity and Access Management,IAM,IAM policies,least privilege,Security Blog
 ---
 # Four ways to grant cross-account access in AWS
 

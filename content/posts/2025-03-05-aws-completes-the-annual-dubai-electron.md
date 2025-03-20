@@ -3,8 +3,6 @@ title: "AWS completes the annual Dubai Electronic Security Centre certification 
 date: Wed, 05 Mar 2025 18:52:32 +0000
 draft: false
 type: posts
-categories: 
-- Announcements,Foundational (100),Security, Identity, & Compliance,Abu Dhabi,Auditing,AWS security,Cloud Service Provider,Compliance,CSA STAR,CSP,DESC,Dubai,Dubai Electronic Security Centre,Emirate of Dubai,Government,IAR,Information Security Regulation,ISO,Licence,Middle East,Public Sector,Security,Security Blog,UAE
 ---
 # AWS completes the annual Dubai Electronic Security Centre certification audit to operate as a Tier 1 cloud service provider in the Emirate of Dubai
 

@@ -3,8 +3,6 @@ title: "Insomnihack 2025 The quiet fruit team SeBC"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Insomnihack 2025 The quiet fruit team SeBC
 

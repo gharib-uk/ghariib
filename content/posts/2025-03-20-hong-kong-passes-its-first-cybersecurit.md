@@ -3,8 +3,6 @@ title: "Hong Kong passes its first cybersecurity bill covering critical infrastr
 date: Thu, 20 Mar 2025 10:39:53 +0000
 draft: false
 type: posts
-categories: 
-- Legislation,Non-U.S.
 ---
 # Hong Kong passes its first cybersecurity bill covering critical infrastructure
 

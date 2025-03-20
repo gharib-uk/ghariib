@@ -3,8 +3,6 @@ title: "From log analysis to rule creation How AWS Network Firewall automates do
 date: Fri, 21 Feb 2025 18:22:22 +0000
 draft: false
 type: posts
-categories: 
-- Announcements,AWS Network Firewall,Featured,Intermediate (200),Security, Identity, & Compliance,Technical How-to,Security Blog
 ---
 # From log analysis to rule creation How AWS Network Firewall automates domain-based security for outbound traffic
 

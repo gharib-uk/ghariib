@@ -3,8 +3,6 @@ title: "One Percent Better Can Change Your World"
 date: Thu, 13 Mar 2025 10:54:28 -0700
 draft: false
 type: posts
-categories: 
-- 
 ---
 # One Percent Better Can Change Your World
 

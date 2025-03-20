@@ -3,8 +3,6 @@ title: "Improved support for private applications and reusable access policies w
 date: Thu, 20 Mar 2025 05:00:00 GMT
 draft: false
 type: posts
-categories: 
-- Security Week,Cloudflare Access,Cloudflare One,Cloudflare Zero Trust
 ---
 # Improved support for private applications and reusable access policies with Cloudflare Access
 

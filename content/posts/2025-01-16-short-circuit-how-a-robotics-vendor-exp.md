@@ -3,8 +3,6 @@ title: "Short Circuit How a Robotics Vendor Exposed Confidential Data for Major 
 date: Thu, 16 Jan 2025 00:55:47 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Short Circuit How a Robotics Vendor Exposed Confidential Data for Major Manufacturing Companies UpGuard
 

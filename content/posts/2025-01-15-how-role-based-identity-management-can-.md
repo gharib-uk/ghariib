@@ -3,8 +3,6 @@ title: "How Role-Based Identity Management Can Protect Against AD- And Entra ID-
 date: Wed, 15 Jan 2025 13:00:00 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # How Role-Based Identity Management Can Protect Against AD- And Entra ID-Related Risk
 

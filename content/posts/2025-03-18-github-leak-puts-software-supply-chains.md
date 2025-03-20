@@ -3,8 +3,6 @@ title: "GitHub Leak Puts Software Supply Chains at Risk Thousands of Secrets Exp
 date: Tue, 18 Mar 2025 06:22:39 +0000
 draft: false
 type: posts
-categories: 
-- Supply Chain Security,Attacks,Data Breach,Latest News,News & Analysis,Security,Software Development Security
 ---
 # GitHub Leak Puts Software Supply Chains at Risk Thousands of Secrets Exposed
 

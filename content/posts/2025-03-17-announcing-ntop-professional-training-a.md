@@ -3,8 +3,6 @@ title: "Announcing ntop Professional Training at ntop Conference PacketFest and 
 date: Mon, 17 Mar 2025 10:49:20 +0000
 draft: false
 type: posts
-categories: 
-- ntop
 ---
 # Announcing ntop Professional Training at ntop Conference PacketFest and June 2025
 

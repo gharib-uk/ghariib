@@ -3,8 +3,6 @@ title: "Zero Trust Architecture"
 date: Mon, 02 Dec 2024 10:43:16 +0000
 draft: false
 type: posts
-categories: 
-- Leaks
 ---
 # Zero Trust Architecture
 

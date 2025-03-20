@@ -3,8 +3,6 @@ title: "GlacierCTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # GlacierCTF 2025
 

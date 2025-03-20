@@ -3,8 +3,6 @@ title: "Why GRC is key to safely unlocking ROI from design hosting and AI"
 date: Wed, 05 Mar 2025 13:22:48 -0800
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Why GRC is key to safely unlocking ROI from design hosting and AI
 

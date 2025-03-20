@@ -3,8 +3,6 @@ title: "DownUnderCTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # DownUnderCTF 2025
 

@@ -3,8 +3,6 @@ title: "Meet the ntop Team at FOSDEM Brussels Feb 1-2"
 date: Sun, 26 Jan 2025 09:23:41 +0000
 draft: false
 type: posts
-categories: 
-- Uncategorized
 ---
 # Meet the ntop Team at FOSDEM Brussels Feb 1-2
 

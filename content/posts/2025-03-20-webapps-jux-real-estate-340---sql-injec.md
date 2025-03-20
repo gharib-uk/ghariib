@@ -3,8 +3,6 @@ title: "webapps JUX Real Estate 340 - SQL Injection"
 date: Thu, 20 Mar 2025 00:00:00 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # webapps JUX Real Estate 340 - SQL Injection
 

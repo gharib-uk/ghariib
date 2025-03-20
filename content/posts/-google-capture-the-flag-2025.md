@@ -3,8 +3,6 @@ title: "Google Capture The Flag 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Google Capture The Flag 2025
 

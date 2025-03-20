@@ -3,8 +3,6 @@ title: "JerseyCTF V"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # JerseyCTF V
 

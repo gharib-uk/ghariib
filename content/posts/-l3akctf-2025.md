@@ -3,8 +3,6 @@ title: "L3akCTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # L3akCTF 2025
 

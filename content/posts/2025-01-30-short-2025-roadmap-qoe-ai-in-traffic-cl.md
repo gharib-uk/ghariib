@@ -3,8 +3,6 @@ title: "Short 2025 Roadmap QoE AI in Traffic Classification Distributed Architec
 date: Thu, 30 Jan 2025 09:59:59 +0000
 draft: false
 type: posts
-categories: 
-- Announce
 ---
 # Short 2025 Roadmap QoE AI in Traffic Classification Distributed Architecture SuperNICs
 

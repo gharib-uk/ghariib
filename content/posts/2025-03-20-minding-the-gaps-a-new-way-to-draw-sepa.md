@@ -3,8 +3,6 @@ title: "Minding the gaps A new way to draw separators in CSS"
 date: Thu, 20 Mar 2025 08:00:54 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Minding the gaps A new way to draw separators in CSS
 

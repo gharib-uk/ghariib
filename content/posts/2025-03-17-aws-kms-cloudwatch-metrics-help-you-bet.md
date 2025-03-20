@@ -3,8 +3,6 @@ title: "AWS KMS CloudWatch metrics help you better track and understand how your
 date: Mon, 17 Mar 2025 17:35:16 +0000
 draft: false
 type: posts
-categories: 
-- AWS Key Management Service,Best Practices,Intermediate (200),Security, Identity, & Compliance,Technical How-to,AWS Key Management Service (KMS),Security Blog
 ---
 # AWS KMS CloudWatch metrics help you better track and understand how your KMS keys are being used
 

@@ -3,8 +3,6 @@ title: "VishwaCTF 2025 Quadrants team CTFLive"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # VishwaCTF 2025 Quadrants team CTFLive
 

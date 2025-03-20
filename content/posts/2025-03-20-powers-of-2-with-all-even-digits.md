@@ -3,8 +3,6 @@ title: "Powers of 2 with all even digits"
 date: Thu, 20 Mar 2025 11:55:13 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Powers of 2 with all even digits
 

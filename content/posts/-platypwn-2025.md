@@ -3,8 +3,6 @@ title: "Platypwn 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Platypwn 2025
 

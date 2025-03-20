@@ -3,8 +3,6 @@ title: "What Is a Security Operations Center SOC"
 date: Mon, 02 Dec 2024 07:51:03 +0000
 draft: false
 type: posts
-categories: 
-- Leaks
 ---
 # What Is a Security Operations Center SOC
 

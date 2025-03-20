@@ -3,8 +3,6 @@ title: "Found on VirusTotal The worlds first UEFI bootkit for Linux"
 date: Fri, 29 Nov 2024 10:31:36 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Found on VirusTotal The worlds first UEFI bootkit for Linux
 

@@ -3,8 +3,6 @@ title: "Secure cloud innovation starts at reInforce 2025"
 date: Thu, 13 Mar 2025 19:59:02 +0000
 draft: false
 type: posts
-categories: 
-- Announcements,AWS re:Inforce,Foundational (100),Security, Identity, & Compliance,Security Blog
 ---
 # Secure cloud innovation starts at reInforce 2025
 

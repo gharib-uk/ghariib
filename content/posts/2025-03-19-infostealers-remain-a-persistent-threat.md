@@ -3,8 +3,6 @@ title: "Infostealers Remain a Persistent Threat in 2024 Cybercrime Landscape KEL
 date: Wed, 19 Mar 2025 05:06:01 +0000
 draft: false
 type: posts
-categories: 
-- Malware,Attacks,Data Breach,Data Protection,News & Analysis
 ---
 # Infostealers Remain a Persistent Threat in 2024 Cybercrime Landscape KELA Report Finds
 

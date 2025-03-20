@@ -3,8 +3,6 @@ title: "Out of Commission How the Oklahoma Department of Securities Leaked Milli
 date: Wed, 20 Nov 2024 06:29:46 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Out of Commission How the Oklahoma Department of Securities Leaked Millions of Files UpGuard
 

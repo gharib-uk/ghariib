@@ -3,8 +3,6 @@ title: "Mobile Data How a Quiz App Exposed Account Details for Millions UpGuard"
 date: Wed, 20 Nov 2024 06:50:23 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Mobile Data How a Quiz App Exposed Account Details for Millions UpGuard
 

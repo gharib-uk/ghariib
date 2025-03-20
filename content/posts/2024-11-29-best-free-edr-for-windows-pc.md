@@ -3,8 +3,6 @@ title: "Best Free EDR for Windows PC"
 date: Fri, 29 Nov 2024 11:19:32 +0000
 draft: false
 type: posts
-categories: 
-- Leaks
 ---
 # Best Free EDR for Windows PC
 

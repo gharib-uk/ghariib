@@ -3,8 +3,6 @@ title: "ChatGPT hit with privacy complaint over defamatory hallucinations"
 date: Thu, 20 Mar 2025 16:44:10 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # ChatGPT hit with privacy complaint over defamatory hallucinations
 

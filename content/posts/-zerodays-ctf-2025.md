@@ -3,8 +3,6 @@ title: "ZeroDays CTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # ZeroDays CTF 2025
 

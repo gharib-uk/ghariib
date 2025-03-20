@@ -3,8 +3,6 @@ title: "HICAThon 10"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # HICAThon 10
 

@@ -3,8 +3,6 @@ title: "Insomnihack 2025 The wheel of luck team Soudure au beurre"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Insomnihack 2025 The wheel of luck team Soudure au beurre
 

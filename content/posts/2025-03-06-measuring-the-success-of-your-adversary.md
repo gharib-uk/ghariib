@@ -3,8 +3,6 @@ title: "Measuring the Success of Your Adversary Simulations"
 date: Thu, 06 Mar 2025 00:00:00 -0500
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Measuring the Success of Your Adversary Simulations
 

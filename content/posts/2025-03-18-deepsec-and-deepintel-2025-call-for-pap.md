@@ -3,8 +3,6 @@ title: "DeepSec and DeepINTEL 2025 Call for Papers"
 date: Tue, 18 Mar 2025 23:01:33 +0000
 draft: false
 type: posts
-categories: 
-- Administrivia,Call for Papers,Conference,DeepIntel,Announcement,CfP,DeepINTEL,DeepSec 2025
 ---
 # DeepSec and DeepINTEL 2025 Call for Papers
 

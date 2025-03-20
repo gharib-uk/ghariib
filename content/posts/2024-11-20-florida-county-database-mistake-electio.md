@@ -3,8 +3,6 @@ title: "Florida County Database Mistake Election Officials Logins Among Exposed 
 date: Wed, 20 Nov 2024 06:36:57 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Florida County Database Mistake Election Officials Logins Among Exposed Data UpGuard
 

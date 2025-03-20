@@ -3,8 +3,6 @@ title: "Codegate CTF 2025 Preliminary"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Codegate CTF 2025 Preliminary
 

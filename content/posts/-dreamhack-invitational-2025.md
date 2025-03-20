@@ -3,8 +3,6 @@ title: "Dreamhack Invitational 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Dreamhack Invitational 2025
 

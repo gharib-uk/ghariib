@@ -3,8 +3,6 @@ title: "Sixth Sense GPS and AI Data Exposed for Assistive Devices UpGuard"
 date: Sun, 02 Feb 2025 23:58:32 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Sixth Sense GPS and AI Data Exposed for Assistive Devices UpGuard
 

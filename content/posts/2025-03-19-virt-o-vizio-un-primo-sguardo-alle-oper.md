@@ -3,8 +3,6 @@ title: "Virt o vizio Un primo sguardo alle operazioni in espansione dello spywar
 date: Wed, 19 Mar 2025 11:55:59 +0000
 draft: false
 type: posts
-categories: 
-- Targeted Threats,Translations
 ---
 # Virt o vizio Un primo sguardo alle operazioni in espansione dello spyware di Paragon
 

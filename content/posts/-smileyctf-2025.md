@@ -3,8 +3,6 @@ title: "smileyCTF 2025"
 date: 
 draft: false
 type: posts
-categories: 
-- 
 ---
 # smileyCTF 2025
 

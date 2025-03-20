@@ -3,8 +3,6 @@ title: "Cisco IR8100 Among First Products Certified for Wi-SUN FAN 11"
 date: Wed, 19 Mar 2025 13:01:58 +0000
 draft: false
 type: posts
-categories: 
-- Industrial IoT,Cisco Industrial IoT (IIoT),Cisco Resilient Mesh,Utilities,Wi-Sun
 ---
 # Cisco IR8100 Among First Products Certified for Wi-SUN FAN 11
 

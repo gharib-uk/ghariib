@@ -3,8 +3,6 @@ title: "Data breach at stalkerware SpyX affects close to 2 million including tho
 date: Thu, 20 Mar 2025 13:07:55 +0000
 draft: false
 type: posts
-categories: 
-- Business Sector
 ---
 # Data breach at stalkerware SpyX affects close to 2 million including thousands of Apple users
 

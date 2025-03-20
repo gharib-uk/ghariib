@@ -3,8 +3,6 @@ title: "Extending Cloudflare Radars security insights with new DDoS leaked crede
 date: Tue, 18 Mar 2025 13:00:00 GMT
 draft: false
 type: posts
-categories: 
-- Security Week,Radar,DDoS,Bots,Passwords,Security
 ---
 # Extending Cloudflare Radars security insights with new DDoS leaked credentials and bots datasets
 

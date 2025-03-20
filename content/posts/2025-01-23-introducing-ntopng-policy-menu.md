@@ -3,8 +3,6 @@ title: "Introducing ntopng Policy Menu"
 date: Thu, 23 Jan 2025 09:41:35 +0000
 draft: false
 type: posts
-categories: 
-- Announce,Guides,ntop,ntopng,howto,visibility
 ---
 # Introducing ntopng Policy Menu
 

@@ -3,8 +3,6 @@ title: "Home Economics How Life in 123 Million American Households Was Exposed O
 date: Wed, 20 Nov 2024 06:29:45 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Home Economics How Life in 123 Million American Households Was Exposed Online UpGuard
 

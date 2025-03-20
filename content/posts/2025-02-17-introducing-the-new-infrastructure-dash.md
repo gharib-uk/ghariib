@@ -3,8 +3,6 @@ title: "Introducing the New Infrastructure Dashboard in ntopng"
 date: Mon, 17 Feb 2025 05:29:27 +0000
 draft: false
 type: posts
-categories: 
-- Announce,ntop,ntopng
 ---
 # Introducing the New Infrastructure Dashboard in ntopng
 

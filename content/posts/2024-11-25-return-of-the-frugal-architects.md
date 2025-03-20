@@ -3,8 +3,6 @@ title: "Return of The Frugal Architects"
 date: Mon, 25 Nov 2024 05:30:00 -0800
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Return of The Frugal Architects
 

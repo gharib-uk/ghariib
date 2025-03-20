@@ -3,8 +3,6 @@ title: "Losing Face Two More Cases of Third-Party Facebook App Data Exposure UpG
 date: Thu, 16 Jan 2025 00:55:47 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Losing Face Two More Cases of Third-Party Facebook App Data Exposure UpGuard
 

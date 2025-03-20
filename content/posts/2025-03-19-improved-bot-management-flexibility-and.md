@@ -3,8 +3,6 @@ title: "Improved Bot Management flexibility and visibility with new high-precisi
 date: Wed, 19 Mar 2025 13:00:00 GMT
 draft: false
 type: posts
-categories: 
-- Security Week,Bots,Bot Management,Application Security,Machine Learning,Heuristics,Edge Rules,Security
 ---
 # Improved Bot Management flexibility and visibility with new high-precision heuristics
 

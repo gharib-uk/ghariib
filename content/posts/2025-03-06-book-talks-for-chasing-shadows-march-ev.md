@@ -3,8 +3,6 @@ title: "Book Talks for Chasing Shadows March Events"
 date: Thu, 06 Mar 2025 22:37:28 +0000
 draft: false
 type: posts
-categories: 
-- Events,Ron Deibert,chasing shadows
 ---
 # Book Talks for Chasing Shadows March Events
 

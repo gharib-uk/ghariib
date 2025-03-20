@@ -3,8 +3,6 @@ title: "The Hogue Report was a missed opportunity to tackle transnational repres
 date: Fri, 21 Feb 2025 15:33:05 +0000
 draft: false
 type: posts
-categories: 
-- In the Media,foreign interference
 ---
 # The Hogue Report was a missed opportunity to tackle transnational repression Op-ed for the Globe Mail
 

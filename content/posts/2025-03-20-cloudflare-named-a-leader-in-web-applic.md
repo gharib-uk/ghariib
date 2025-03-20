@@ -3,8 +3,6 @@ title: "Cloudflare named a leader in Web Application Firewall Solutions in 2025 
 date: Thu, 20 Mar 2025 14:00:00 GMT
 draft: false
 type: posts
-categories: 
-- Security Week,Application Security,WAF,Web Application Firewall,API Security,Forrester
 ---
 # Cloudflare named a leader in Web Application Firewall Solutions in 2025 Forrester report
 

@@ -3,8 +3,6 @@ title: "The Aggregate IQ Files Part One How a Political Engineering Firm Exposed
 date: Wed, 20 Nov 2024 06:29:46 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # The Aggregate IQ Files Part One How a Political Engineering Firm Exposed Their Code Base UpGuard
 

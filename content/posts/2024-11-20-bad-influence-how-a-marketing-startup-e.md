@@ -3,8 +3,6 @@ title: "Bad Influence How A Marketing Startup Exposed Thousands of Social Media 
 date: Wed, 20 Nov 2024 06:29:45 GMT
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Bad Influence How A Marketing Startup Exposed Thousands of Social Media Stars UpGuard
 

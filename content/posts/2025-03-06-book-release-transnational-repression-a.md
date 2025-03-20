@@ -3,8 +3,6 @@ title: "Book release Transnational Repression and International Law co-authored 
 date: Thu, 06 Mar 2025 17:44:54 +0000
 draft: false
 type: posts
-categories: 
-- Books,Digital Transnational Repression,News
 ---
 # Book release Transnational Repression and International Law co-authored by Siena Anstis
 

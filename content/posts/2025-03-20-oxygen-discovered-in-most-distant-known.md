@@ -3,8 +3,6 @@ title: "Oxygen discovered in most distant known galaxy"
 date: Thu, 20 Mar 2025 13:21:34 +0000
 draft: false
 type: posts
-categories: 
-- 
 ---
 # Oxygen discovered in most distant known galaxy
 

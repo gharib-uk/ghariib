@@ -3,8 +3,6 @@ title: "HowTo Use Host Policy to Detect Misbehaving Hosts"
 date: Wed, 12 Mar 2025 06:00:41 +0000
 draft: false
 type: posts
-categories: 
-- ntopng
 ---
 # HowTo Use Host Policy to Detect Misbehaving Hosts
 
