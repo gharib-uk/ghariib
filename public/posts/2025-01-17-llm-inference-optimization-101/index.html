@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>LLM Inference Optimization 101</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>LLM Inference Optimization 101</h1>
+			<b><time>17.01.2025 12:31</time></b>
+		       
+
+			<div>
+				<h1 id="llm-inference-optimization-101">LLM Inference Optimization 101</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Large Language Models (LLMs) generate coherent, natural language responses, effectively automating a multitude of tasks that were previously exclusive to humans. As many key players in the field, such as <a href="https://youtu.be/k82RwXqZHY8?t=412">Jensen Huang</a> and <a href="https://youtu.be/YD-9NG1Ke5Y?t=853">Ilya Sutskever</a>, have recently alluded to, we’re in an era of agentic AI. This new paradigm seeks to revolutionize various aspects of our lives, from personalized medicine and education to intelligent assistants, and beyond.</p>
+<p>However, it is important to be aware that while these models are getting increasingly powerful, widespread adoption is hindered by the massive costs to run them, frustrating wait times that render certain real-world applications impractical, as well as, of course, their growing carbon footprint. To reap the benefits of this technology, while mitigating cost and power consumption, it is critical that we continue to optimize every aspect of LLM inference.</p>
+<p>The goal of this article is to give readers an overview of current ways in which researchers and deep learning practitioners are optimizing LLM inference.</p>
+<h2 id="what-is-llm-inference"><a href="#what-is-llm-inference">What is LLM inference?</a><a href="#what-is-llm-inference"></a></h2>
+<p>Similar to how one uses what they learned to solve a new problem, inference is when a trained AI model uses patterns detected during training to infer and make predictions on new data. This inference process is what enables LLMs to perform tasks like text completion, translation, summarization, and conversation.</p>
+<h2 id="text-generation-inference-with-1-click-models"><a href="#text-generation-inference-with-1-click-models">Text Generation Inference with 1-click Models</a><a href="#text-generation-inference-with-1-click-models"></a></h2>
+<p>DigitalOcean has partnered with HuggingFace to offer <a href="/products/ai-ml/1-click-models">1-click models</a>. This allows for the integration of GPU Droplets with state-of-the-art open-source LLMs in <a href="https://huggingface.co/docs/text-generation-inference/index">Text Generation Inference</a> (TGI)-optimized container applications. This means many of the inference optimizations covered in this article (ex: tensor parallelism, quantization, flashattention, paged attention) are already taken care of and maintained by HuggingFace. For information on how to use these 1-click models, check out our article <a href="/community/tutorials/llm-for-social-media-analytics">Getting Started with LLMs</a>.</p>
+<h2 id="prerequisites"><a href="#prerequisites">Prerequisites</a><a href="#prerequisites"></a></h2>
+<p>While this article includes some introductory deep learning concepts, many topics discussed are relatively advanced. Those determined to better understand inference optimization are encouraged to explore the links scattered throughout the article and in the references section.</p>
+<p>It is advised that readers have an understanding of <a href="https://www.youtube.com/watch?v=aircAruvnKk">neural network fundamentals</a>, <a href="https://www.youtube.com/watch?v=eMlx5fFNoYc">the attention mechanism</a>, <a href="https://www.youtube.com/watch?v=bCz4OMemCcA">the transformer</a>, and <a href="https://newsletter.maartengrootendorst.com/i/145531349/common-data-types">data types</a> before proceeding.</p>
+<p>It would also help to be knowledgeable about the <a href="/community/tutorials/the-hidden-bottleneck-how-gpu-memory-hierarchy-affects-your-computing-experience">GPU memory hierarchy</a>.</p>
+<p>The article,<a href="/community/tutorials/an-introduction-to-gpu-optimization">Introduction to GPU Performance Optimization</a>, provides context on how GPUs can be programmed to accelerate neural network training and inference. It also explains key terms such as latency and throughput.</p>
+<h2 id="the-two-phases-of-llm-inference"><a href="#the-two-phases-of-llm-inference">The Two Phases of LLM Inference</a><a href="#the-two-phases-of-llm-inference"></a></h2>
+<p><em>The prefill phase can be likened to reading an entire document at once and processing all the words simultaneously to write the first word whereas the decode phase can be compared to continuing to write this response word by word, where the choice of each word depends on what was written before.</em></p>
+<p>LLM inference can be divided into two phases: <strong>prefill</strong> and <strong>decode</strong>. These stages are separated due to the different computational requirements of each stage. While prefill, a highly-parallelized matrix-matrix operation that saturates GPU utilization, is compute-bound, decode, a matrix-vector operation that underutilizes the GPU compute capability, is memory-bound.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/inferenceoptimization101/kvcaching.png" alt="KV caching" />
+</figure>
+
+
+</p>
+<p>Let’s explore why prefill is compute-bound and decode is memory-bound.</p>
+<h3 id="prefill"><a href="#prefill">Prefill</a><a href="#prefill"></a></h3>
+<p>In the prefill stage, the LLM processes the entire input prompt at once to generate the first response token. This involves performing a full forward pass through the transformer layers for every token in the prompt simultaneously. While memory access is needed during prefill, the computational work of processing the tokens in parallel dominate the performance profile.</p>
+<h3 id="decode"><a href="#decode">Decode</a><a href="#decode"></a></h3>
+<p>In the decode stage, text is generated <strong>autoregressively</strong> where the next token is predicted one at time given all previous tokens. The decoding process is memory-bound due to its need to repeatedly access historical context. For each new token generated, the model must load the attention cache (key/value states, AKA KV cache) from all previous tokens, requiring frequent memory accesses that become more intensive as the sequence grows longer.</p>
+<p>Metrics can be used to assess performance and identify areas of potential bottlenecks during these two inference stages.</p>
+<h2 id="metrics"><a href="#metrics">Metrics</a><a href="#metrics"></a></h2>
+<p>Metric</p>
+<p>Definition</p>
+<p>Why do we care?</p>
+<p>Time-to-First-Token (<a href="https://docs.nvidia.com/nim/benchmarking/llm/latest/metrics.html#time-to-first-token-ttft">TTFT</a>)</p>
+<p>Time to process the prompt and generate the first token. TTFT tells us how long prefill took.</p>
+<p>The longer the prompt, the longer the TTFT as the attention mechanism needs the whole input sequence to compute the KV cache. Inference optimization seeks to minimize TTFT.</p>
+<p>Inter-token Latency (<a href="https://docs.nvidia.com/nim/benchmarking/llm/latest/metrics.html#inter-token-latency-itl">ITL</a>) AKA Time per Output Token</p>
+<p>Average time between consecutive tokens. ITL tells us the rate at which decoding (token generation) occurs.</p>
+<p>Consistent ITLs are ideal as they are indicative of efficient memory management, high GPU memory bandwidth, and well-optimized attention computation.</p>
+<h2 id="optimizing-prefill-and-decode"><a href="#optimizing-prefill-and-decode">Optimizing Prefill and Decode</a><a href="#optimizing-prefill-and-decode"></a></h2>
+<h3 id="speculative-decoding"><a href="#speculative-decoding">Speculative Decoding</a><a href="#speculative-decoding"></a></h3>
+<p><a href="https://research.google/blog/looking-back-at-speculative-decoding/">Speculative Decoding</a> uses a smaller, faster model to generate multiple tokens simultaneously, and then verifies them with the larger target model. Since the generated samples come from exactly the same probability distribution as those produced by naïve decoding, speculative decoding results in speed-ups in inference, while maintaining the same quality of responses.</p>
+<h3 id="chunked-prefills-and-decode-maximal-batching"><a href="#chunked-prefills-and-decode-maximal-batching">Chunked Prefills and Decode-Maximal Batching</a><a href="#chunked-prefills-and-decode-maximal-batching"></a></h3>
+<p><a href="https://arxiv.org/pdf/2308.16369">SARATHI</a> shows how chunked prefills can enable the division of large prefills into manageable chunks, which can then be batched with decode requests (decode-maximal batching) for more efficient processing.</p>
+<h2 id="batching"><a href="#batching">Batching</a><a href="#batching"></a></h2>
+<p>Batching groups inference requests together, with larger batch sizes corresponding to higher throughput. However, batch sizes can only be increased up to a certain extent due to limited GPU on-chip memory.</p>
+<h3 id="batch-size"><a href="#batch-size">Batch Size</a><a href="#batch-size"></a></h3>
+<p>To achieve maximum utilization of the hardware, one can try to find <a href="https://youtu.be/HTcnp9NEHGY?t=394">the critical ratio</a> where there’s a balance between two key limiting factors:</p>
+<ul>
+<li>The time needed to transfer weights between memory and compute units (limited by memory bandwidth)</li>
+<li>The time required for actual computational operations (limited by FLOPS)</li>
+</ul>
+<p>While these two times are equal, the batch size can be increased without incurring any performance penalty. Beyond this point, increasing batch size would create bottlenecks in either memory transfer or computation. To determine an optimal batch size, profiling is important.</p>
+<p><a href="https://medium.com/@plienhar/llm-inference-series-4-kv-caching-a-deeper-look-4ba9a77746c8">KV cache management</a> plays a critical role in determining the maximum batch size and improving inference. Thus, <strong>the rest of the article will focus on managing the KV cache.</strong></p>
+<h2 id="kv-cache-management"><a href="#kv-cache-management">KV Cache Management</a><a href="#kv-cache-management"></a></h2>
+<p>When looking at how memory is allocated in the GPU during serving, the model weights remain fixed and the activations only utilize a fraction of the GPU’s memory resources compared to the KV cache. Therefore, freeing up space for the KV cache is critical. This can be achieved by reducing the model weight memory footprint through quantization, reducing the KV cache memory footprint with modified architectures and attention variants, as well as pooling memory from multiple GPUs with parallelism.</p>
+<h2 id="quantization"><a href="#quantization">Quantization</a><a href="#quantization"></a></h2>
+<p><a href="https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-quantization">Quantization</a> reduces the number of bits needed to store the model’s parameters (ex: weights, activations, and gradients). This technique reduces inference latency by exchanging memory for accuracy.</p>
+<h2 id="attention-and-its-variants"><a href="#attention-and-its-variants">Attention and its variants</a><a href="#attention-and-its-variants"></a></h2>
+<p>Review of Queries, Keys, and Values:</p>
+<p><strong>Queries:</strong> Represent the context or question.</p>
+<p><strong>Keys:</strong> Represent the information being attended to.</p>
+<p><strong>Values:</strong> Represent the information being retrieved.</p>
+<p>Attention weights are computed by comparing queries with keys, and then used to weight values, producing the final output representation.</p>
+<p>Query (Prompt) → Attention Weights → Relevant Information (Values)</p>
+<p>Attention Variant</p>
+<p>Description</p>
+<p>Visual Representation</p>
+<p>Scaled Dot-Product Attention 
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/inferenceoptimization101/sdpa.png" alt="sdpa" />
+</figure>
+
+
+</p>
+<p><a href="https://arxiv.org/pdf/1706.03762">Scaled Dot-Product Attention (SDPA)</a> is a key component of the <a href="https://jalammar.github.io/illustrated-transformer/">Transformer</a> architecture, and is a type of self-attention mechanism that allows the model to attend to different parts of the input sequence simultaneously and weigh their relevance.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/inferenceoptimization101/attention%20calculation.png" alt="attention calculation" />
+</figure>
+
+
+</p>
+<p>Multi-Head Attention 
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/inferenceoptimization101/MHA.png" alt="mha" />
+</figure>
+
+
+</p>
+<p>In <a href="https://arxiv.org/pdf/1706.03762">Multi-Head Attention (MHA)</a>, multiple SDPA heads operate in parallel resulting in richer relationships between different aspects of the input sequence to be captured.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/inferenceoptimization101/MHA2.png" alt="multi-head attention" />
+</figure>
+
+
+</p>
+<p>Multi-Query Attention</p>
+<p><a href="https://arxiv.org/pdf/1911.02150">Multi-Query Attention (MQA)</a> is a memory-efficient refinement to MHA where one key-value head is shared across multiple attention heads. <strong>MQA reduces the size of KV-cache memory</strong> allowing space for larger batch sizes. While MQA results in faster decoder inference than MHA, there may be quality degradation.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/inferenceoptimization101/MQA.png" alt="MQA" />
+</figure>
+
+
+</p>
+<p>Grouped-Query Attention</p>
+<p><a href="https://arxiv.org/pdf/2305.13245v2">Grouped-Query Attention (GQA)</a> modifies MQA to have groupings of queries for multiple key-value heads. The number of key-value heads is more than one as in MQA, but less than the number of queries as in MHA. <strong>By striking a balance between MQA and MHA, GQA achieves comparable quality to MHA, while also achieving speed similar to MQA.</strong></p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/inferenceoptimization101/GQA.png" alt="GQA" />
+</figure>
+
+
+</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/inferenceoptimization101/SWA.png" alt="SWA" />
+</figure>
+
+
+</p>
+<p><a href="https://paperswithcode.com/method/sliding-window-attention">Sliding Window Attention (SWA)</a> or local attention, restricts attention to a fixed-size window that slides over the sequence. While SWA is not efficient to scale to long inputs, <a href="https://research.character.ai/optimizing-inference/?ref=blog.character.ai#:~:text=Hybrid%20Attention%20Horizons">Character AI</a> saw that speed and quality wasn’t impacted with long sequences when interleaving SWA and global attention, with adjacent global attention layers sharing a KV cache <a href="https://arxiv.org/pdf/2405.12981">(cross-layer attention)</a>.</p>
+<h4 id="local-attention-vs-global-attention">Local Attention vs. Global Attention</h4>
+<p>Local and global attention mechanisms differ in key aspects. Local attention uses less computation (O(n * w)) and memory by focusing on token windows, enabling faster inference especially for long sequences, but may miss long-range dependencies. Global attention, while computationally more expensive (O(n^2)) and memory-intensive due to processing all token pairs, is able to better capture full context and long-range dependencies at the cost of slower inference speed.</p>
+<h3 id="paged-attention"><a href="#paged-attention">Paged Attention</a><a href="#paged-attention"></a></h3>
+<p>Inspired by virtual memory allocation, <a href="https://arxiv.org/pdf/2309.06180">PagedAttention</a> proposed a framework for optimizing KV cache that takes the variation of the number of tokens across requests into consideration.</p>
+<h3 id="flashattention"><a href="#flashattention">FlashAttention</a><a href="#flashattention"></a></h3>
+<p>There are three variations of FlashAttention, with <a href="https://arxiv.org/pdf/2407.08608">FlashAttention-3</a> being the latest release and optimized for Hopper GPUs. Each iteration of this algorithm takes a hardware-aware approach to make the attention computation as fast as possible. Past articles written on FlashAttention include: <a href="/community/tutorials/flashattention">Designing Hardware-Aware Algorithms: FlashAttention</a> and <a href="/community/tutorials/flashattention2">FlashAttention-2</a></p>
+<h2 id="model-architectures-dense-models-vs-mixture-of-experts"><a href="#model-architectures-dense-models-vs-mixture-of-experts">Model Architectures: Dense Models vs. Mixture of Experts</a><a href="#model-architectures-dense-models-vs-mixture-of-experts"></a></h2>
+<p><strong>Dense LLMs</strong> are the standard where all parameters are actively engaged during inference.</p>
+<p><strong>Mixture of Experts (MoE) LLMs</strong> are composed of multiple specialized sub-networks with a routing mechanism. Because only relevant experts are activated for each input, improved parameter efficiency and faster inference than dense models is often observed.</p>
+<h2 id="parallelism"><a href="#parallelism">Parallelism</a><a href="#parallelism"></a></h2>
+<p>Larger models often require multiple GPUs to run effectively. There are a number of different parallelization strategies that allow for multi-GPU inference.</p>
+<p>Parallelism Type</p>
+<p>Partions</p>
+<p>Description</p>
+<p>Purpose</p>
+<p>Data</p>
+<p>Data</p>
+<p>Splits different batches of data across devices.</p>
+<p>Distribution of memory and computation for large datasets that wouldn’t fit on a single device</p>
+<p><a href="https://arxiv.org/pdf/1909.08053">Tensor</a></p>
+<p>Weight Tensors</p>
+<p>Splits tensors across multiple devices either row-wise or column-wise</p>
+<p>Distribution of memory and computation for large tensors that wouldn’t fit on a single device</p>
+<p><a href="https://arxiv.org/pdf/1811.06965">Pipeline</a></p>
+<p>Model Layers (vertically)</p>
+<p>Splits different stages of the full model pipeline in parallel</p>
+<p>Improves throughput by overlapping computation of different model stages</p>
+<p><a href="https://arxiv.org/pdf/2411.01783">Context</a></p>
+<p>Input Sequences</p>
+<p>Divides input sequences into segments across devices</p>
+<p>Reduces memory bottleneck for long sequence inputs</p>
+<p><a href="https://proceedings.mlr.press/v162/rajbhandari22a/rajbhandari22a.pdf">Expert</a></p>
+<p>MoE models</p>
+<p>Splits experts, where each expert is a smaller model, across devices</p>
+<p>Allows for larger models with improved performance by distributing computation across multiple experts</p>
+<p><a href="https://engineering.fb.com/2021/07/15/open-source/fsdp/">Fully Sharded Data</a></p>
+<p>Data, model, optimizer, and gradients</p>
+<p>Shards components across devices, processes data in parallel, and synchronizes after each training step. Parameters are fetched and reconstructed from shards as needed, used for computation, and then promptly discarded, reducing memory footprint.</p>
+<p>Enables training of extremely large models that exceed the memory capacity of a single device by distributing both model parameters and activations.</p>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a><a href="#conclusion"></a></h2>
+<p>It’s undeniable that inference is an exciting area of research and optimization. The field moves fast, and to keep up, inference needs to move faster. In addition to more agentic workflows, we’re seeing more dynamic inference strategies that allow models to “think longer” on harder problems. For example, reasoning models like OpenAI’s o1 model shows consistent performance improvements on challenging mathematical and programming tasks when more computational resources are devoted during inference.</p>
+<p>Thanks so much for reading! This article is certainly not conclusive to all there is in inference optimization. Stay tuned for more exciting articles on this topic and adjacent ones.</p>
+<h2 id="references-and-other-excellent-resources"><a href="#references-and-other-excellent-resources">References and Other Excellent Resources</a><a href="#references-and-other-excellent-resources"></a></h2>
+<p>Blog posts:</p>
+<p><a href="https://developer.nvidia.com/blog/mastering-llm-techniques-inference-optimization/">Mastering LLM Techniques: Inference Optimization | NVIDIA Technical Blog</a></p>
+<p><a href="https://huggingface.co/blog/martinigoyanes/llm-inference-at-scale-with-tgi">LLM Inference at scale with TGI</a></p>
+<p><a href="https://research.google/blog/looking-back-at-speculative-decoding/">Looking back at speculative decoding</a> (Google Research)</p>
+<p><a href="https://medium.com/@plienhar/llm-inference-series-4-kv-caching-a-deeper-look-4ba9a77746c8">LLM Inference Series: 4. KV caching, a deeper look | by Pierre Lienhart | Medium</a></p>
+<p><a href="https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-quantization">A Visual Guide to Quantization - by Maarten Grootendorst</a></p>
+<p><a href="https://research.character.ai/optimizing-inference/">Optimizing AI Inference at Character.AI</a></p>
+<p><a href="https://research.character.ai/optimizing-ai-inference-at-character-ai-part-deux/">Optimizing AI Inference at Character.AI (Part Deux)</a></p>
+<p>Papers:</p>
+<p><a href="https://arxiv.org/pdf/2411.00136">LLM-Inference-Bench: Inference Benchmarking of Large Language Models on AI Accelerators</a></p>
+<p><a href="https://arxiv.org/pdf/2309.06180">Efficient Memory Management for Large Language Model Serving with PagedAttention</a></p>
+<p><a href="https://arxiv.org/pdf/2308.16369">SARATHI: Efficient LLM Inference by Piggybacking Decodes with Chunked Prefills</a></p>
+<p><a href="https://ai.meta.com/research/publications/the-llama-3-herd-of-models/">The LLama 3 Herd of Models</a></p>
+<p><a href="https://arxiv.org/pdf/2411.01783">Context Parallelism for Scalable Million-Token Inference</a></p>
+<p>Talks:</p>
+<p><a href="https://www.youtube.com/watch?v=9tvJ_GYJA-o">Mastering LLM Inference Optimization From Theory to Cost Effective Deployment: Mark Moyou</a></p>
+<p><a href="https://www.youtube.com/watch?v=k82RwXqZHY8">NVIDIA CEO Jensen Huang Keynote at CES 2025</a></p>
+<p><a href="https://www.janestreet.com/tech-talks/building-machine-learning-systems-for-a-trillion-trillion-floating-point-operations/">Building Machine Learning Systems for a Trillion Trillion Floating Point Operations :: Jane Street</a></p>
+<p><a href="https://youtu.be/hobvps-H38o?t=2461">Dylan Patel - Inference Math, Simulation, and AI Megaclusters - Stanford CS 229S - Autumn 2024</a></p>
+<p><a href="https://www.youtube.com/watch?v=HTcnp9NEHGY">How does batching work on modern GPUs?</a></p>
+<p>GitHub Links:</p>
+<p><a href="https://github.com/mlops-discord/gpu-optimization-workshop/blob/main/Talk%202%20-%20High%20Performance%20LLM%20Serving%20on%20Nvidia%20GPUs%20-%20Sharan%20Chetlur%20-Nvidia/Presentation%20Slides%20-%20High%20Performance%20LLM%20Serving%20on%20Nvidia%20GPUs.pdf">Sharan Chetlur -Nvidia/Presentation Slides - High Performance LLM Serving on Nvidia GPUs</a></p>
+<p><a href="https://github.com/huggingface/search-and-learn">GitHub - huggingface/search-and-learn: Recipes to scale inference-time compute of open models</a></p>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/llm-inference-optimization">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

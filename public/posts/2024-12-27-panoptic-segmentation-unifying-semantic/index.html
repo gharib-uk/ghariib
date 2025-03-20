@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Panoptic Segmentation Unifying Semantic and Instance Segmentation</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Panoptic Segmentation Unifying Semantic and Instance Segmentation</h1>
+			<b><time>27.12.2024 06:55</time></b>
+		       
+
+			<div>
+				<h1 id="panoptic-segmentation-unifying-semantic-and-instance-segmentation">Panoptic Segmentation Unifying Semantic and Instance Segmentation</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>The quest for scene understanding in computer vision has led to many segmentation tasks. Panoptic segmentation is a new approach that combines semantic and instance segmentation into one framework.</p>
+<p>This technique identifies each pixel captured within an image while distinguishing distinct instances belonging to the same object classes. This article will dive into the details of panoptic segmentation, applications, and challenges.</p>
+<h2 id="prerequisites"><a href="#prerequisites">Prerequisites</a><a href="#prerequisites"></a></h2>
+<p>To understand panoptic segmentation, familiarize yourself with:</p>
+<ul>
+<li><strong>Semantic Segmentation</strong> - Assigning a class label to every pixel in an image (e.g., background, road, sky).</li>
+<li><strong>Instance Segmentation</strong> - Identifying and segmenting each object instance (e.g., individual cars, people).</li>
+</ul>
+<h2 id="panoptic-segmentation"><a href="#panoptic-segmentation">Panoptic Segmentation</a><a href="#panoptic-segmentation"></a></h2>
+<p>Panoptic segmentation is a pretty interesting problem in computer vision these days. <strong>The goal is to split an image into two types - semantic regions and instance regions.</strong> The semantic areas are the parts of the image that belong to certain object classes, like a person or car. The instance regions are like the individual people or vehicles.</p>
+<p>Unlike traditional semantic segmentation, which labels pixels as belonging to specific categories like “person” or “car,” panoptic segmentation goes deeper. It labels pixels with their class and distinguishes between individual instances in the image. This approach aims to provide more information in a single output, a more detailed understanding of the scene than what traditional methods can do.</p>
+<h2 id="task-format-explanation"><a href="#task-format-explanation">Task Format Explanation</a><a href="#task-format-explanation"></a></h2>
+<p>Labels under “stuff” are continuous areas with no boundaries or countable features like sky, roadways, and grass. These regions are segmented using Fully Convolutional Networks (FCNs), which are good at segmenting broad background areas. The classification for distinct objects with recognizable features like people, cars, or animals falls under the label “thing.”</p>
+<p>These objects are segmented using instance segmentation networks, which can identify and isolate individual instances. It can also assign a unique id to each object. This uses a dual labeling method to ensure all objects in the map have semantic information and precise instance delineation.</p>
+<h2 id="introduction-to-the-panoptic-quality-pq-metric"><a href="#introduction-to-the-panoptic-quality-pq-metric">Introduction to the Panoptic Quality (PQ) Metric</a><a href="#introduction-to-the-panoptic-quality-pq-metric"></a></h2>
+<p>The latest innovation in evaluation metrics is The Panoptic Quality (PQ). It was built to fix the problems with traditional segmentation evaluation methods. PQ is for panoptic segmentation, combining semantic and instance segmentation by assigning a class label and an instance ID to each pixel in the image.</p>
+<h3 id="segment-matching-process"><a href="#segment-matching-process">Segment Matching Process</a><a href="#segment-matching-process"></a></h3>
+<p>The initial step in the PQ metric computation is to perform a segment-matching process. This involves matching predicted segments with ground truth segments based on their Intersection over Union (IoU) values.</p>
+<p>A match is deemed to have occurred when the Intersection over Union (IoU) value - a ratio that measures the overlap between predicted and ground truth segments - surpasses a predefined threshold commonly set at 0.5. This can be expressed in mathematical terms as follows:</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2024/07/sementmacthing.png" alt="image" />
+</figure>
+
+
+</p>
+<p>IoU-dased segment matching for PQ metric</p>
+<p>The threshold as mentioned above ensures that only those segments that demonstrate substantial overlap are regarded as viable matches. As a result, correctly segmented regions can be accurately identified while mitigating false positives and negatives.</p>
+<h3 id="pq-computation"><a href="#pq-computation">PQ Computation</a><a href="#pq-computation"></a></h3>
+<p>Upon successful matching of the segments, computation of the PQ metric ensues through an assessment of segmentation quality (SQ) and recognition quality(RQ).</p>
+<p><strong>The segmentation quality (SQ) metric assesses the average intersection over union (IoU) of the match segments</strong>. It indicates how well the predicted segments overlap with the ground truth.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2024/07/sqcomputation.png" alt="image" />
+</figure>
+
+
+</p>
+<h3 id="segmentation-quality"><a href="#segmentation-quality">Segmentation quality</a><a href="#segmentation-quality"></a></h3>
+<p>The recognition quality (RQ) measures the F1 score of the matched segments, balancing precision and recall.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2024/07/rqcomputation.png" alt="image" />
+</figure>
+
+
+</p>
+<p>Recognition quality</p>
+<p>Here, TP stands for true positives, FP for false positives, and FN for false negatives. The PQ metric is then calculated as the product of these two components:</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2024/07/pqcomputation.png" alt="image" />
+</figure>
+
+
+</p>
+<p>Components of PQ metric<a href="https://arxiv.org/pdf/1801.00868">(image source</a>)</p>
+<p>The formula above encapsulates the components of the PQ metric. We can visualize the process of computing PQ in the diagram below.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2024/07/metrics.jpg" alt="image" />
+</figure>
+
+
+</p>
+<p>Visualization of the PQ metric computation process</p>
+<h2 id="advantages-over-existing-metrics"><a href="#advantages-over-existing-metrics">Advantages Over Existing Metrics</a><a href="#advantages-over-existing-metrics"></a></h2>
+<p><strong>The PQ metric confers several benefits over existing metrics utilized for assessing segmentation tasks.</strong> Conventional metrics, such as mean Intersection over Union (mIoU) or Average Precision (AP), focus solely on semantic segmentation or instance segmentation individually, but not both.</p>
+<p>The PQ metric presents a consolidated assessment framework that evaluates the performance of panoptic segmentation models. This approach proves especially advantageous for applications where thorough scene understanding is essential. Examples include autonomous driving and robotics. Object classification and individual instance identification assume pivotal significance in such scenarios.</p>
+<h2 id="machine-performance-on-panoptic-segmentation"><a href="#machine-performance-on-panoptic-segmentation">Machine Performance on Panoptic Segmentation</a><a href="#machine-performance-on-panoptic-segmentation"></a></h2>
+<p>State-of-the-art Panoptic Segmentation methods combine the latest instance and semantic segmentation techniques through a heuristic merging process.</p>
+<p>The method starts by generating separate, non-overlapping predictions for <em>things</em> and <em>stuff</em> using the latest techniques. These are then combined to get a panoptic segmentation of the image.</p>
+<p>In cases where there’s a conflict between <em>thing</em> and <em>stuff</em> prediction, our heuristic approach favors the <em>thing</em> class. This results in consistent performance for <em>thing</em> classes (PQTh) and slightly worse performance for <em>stuff</em> classes (PQSt).</p>
+<p>Across various datasets, there are notable disparities when comparing machine performance with human consistency. On Cityscapes, <a href="https://paperswithcode.com/dataset/ade20k">ADE20k</a>, and <a href="https://paperswithcode.com/dataset/mapillary-vistas-dataset">Mapillary Vistas</a>, humans deliver superior results compared to machines.</p>
+<p>The gap is especially evident in the Recognition Quality (RQ) metric, which measures F1 score accuracy. On the ADE20k dataset, humans get an RQ of 78.6%, and machines get around 43.2%.</p>
+<p>The Segmentation Quality (SQ) metric, which measures the average IoU of matched segments, shows a smaller gap between humans and machine. <strong>Machines are getting better at segmentation but struggle to recognize and classify objects and regions.</strong></p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/james/Screenshot%202024-12-17%20at%2012.40.35%E2%80%AFPM.png" alt="image" />
+</figure>
+
+
+</p>
+<p>The table above shows the human vs machine performance across different datasets and metrics. The findings underscore critical areas where improvements are imperative for machines’ Panoptic Segmentation algorithms.</p>
+<h2 id="panoptic-segmentation-using-detr"><a href="#panoptic-segmentation-using-detr">Panoptic Segmentation Using DETR</a><a href="#panoptic-segmentation-using-detr"></a></h2>
+<p>we demonstrate how to explore the panoptic segmentation capabilities of DETR. The prediction occurs in several steps:</p>
+<h3 id="installing-the-required-packages-and-importing-the-necessary-libraries"><a href="#installing-the-required-packages-and-importing-the-necessary-libraries">Installing the Required Packages and Importing the Necessary Libraries</a><a href="#installing-the-required-packages-and-importing-the-necessary-libraries"></a></h3>
+<p>The code below is a set of Python imports and configurations commonly used in computer vision and image-processing tasks.</p>
+<pre tabindex="0"><code>from PIL import Image
+import requests
+import io
+import math
+import matplotlib.pyplot as plt
+%config InlineBackend.figure_format = &#39;retina&#39;
+
+import torch
+from torch import nn
+from torchvision.models import resnet50
+import torchvision.transforms as T
+import numpy
+torch.set_grad_enabled(False);
+</code></pre><h3 id="install-the-coco-2018-panoptic-segmentation-task-api"><a href="#install-the-coco-2018-panoptic-segmentation-task-api">Install the COCO 2018 Panoptic Segmentation Task API</a><a href="#install-the-coco-2018-panoptic-segmentation-task-api"></a></h3>
+<p>The following command installs the COCO 2018 Panoptic Segmentation Task API. This API is used to work with the COCO dataset, a large-scale object detection, segmentation, and captioning dataset.</p>
+<pre tabindex="0"><code>pip install git+https://github.com/cocodataset/panopticapi.git
+</code></pre><h3 id="import-the-coco-2018-panoptic-segmentation-task-api-and-its-utility-functions"><a href="#import-the-coco-2018-panoptic-segmentation-task-api-and-its-utility-functions">Import the COCO 2018 Panoptic Segmentation Task API and its Utility Functions</a><a href="#import-the-coco-2018-panoptic-segmentation-task-api-and-its-utility-functions"></a></h3>
+<p>The code below imports the COCO 2018 Panoptic Segmentation Task API and its utility functions <code>id2rgb</code> and <code>rgb2id</code>.</p>
+<p><em>id2rgb</em> takes a panoptic segmentation map that uses ID numbers for each pixel and converts it into an RGB image. The input is a 2D array of integers that represent class IDs. The output is a 3D array of integers where each integer is the RGB color of the corresponding pixel. It’s converting from a map that shows what object or class each pixel represents to an image where we see the actual colors.</p>
+<p>The <em>rgb2id</em> function converts a panoptic segmentation map from its RGB representation to an ID representation.</p>
+<pre tabindex="0"><code>import panopticapi
+from panopticapi.utils import id2rgb, rgb2id
+</code></pre><h3 id="starting-point-for-working-with-coco-dataset-and-api"><a href="#starting-point-for-working-with-coco-dataset-and-api">Starting Point for Working with COCO Dataset and API</a><a href="#starting-point-for-working-with-coco-dataset-and-api"></a></h3>
+<p>In the code below, the CLASSES list has all the names of the different objects in the COCO dataset. The <code>coco2d2</code> dictionary converts the class IDs in the COCO dataset to a different numbering scheme used by the Detectron2 library. The <em>transform</em> is a PyTorch library that prepares images before they go into a model. It resizes to 800x800, turns into a tensor variable, and normalizes the pixel values using the mean and standard deviation of the ImageNet dataset.</p>
+<pre tabindex="0"><code># These are the COCO classes
+CLASSES = [
+    &#39;N/A&#39;, &#39;person&#39;, &#39;bicycle&#39;, &#39;car&#39;, &#39;motorcycle&#39;, &#39;airplane&#39;, &#39;bus&#39;,
+    &#39;train&#39;, &#39;truck&#39;, &#39;boat&#39;, &#39;traffic light&#39;, &#39;fire hydrant&#39;, &#39;N/A&#39;,
+    &#39;stop sign&#39;, &#39;parking meter&#39;, &#39;bench&#39;, &#39;bird&#39;, &#39;cat&#39;, &#39;dog&#39;, &#39;horse&#39;,
+    &#39;sheep&#39;, &#39;cow&#39;, &#39;elephant&#39;, &#39;bear&#39;, &#39;zebra&#39;, &#39;giraffe&#39;, &#39;N/A&#39;, &#39;backpack&#39;,
+    &#39;umbrella&#39;, &#39;N/A&#39;, &#39;N/A&#39;, &#39;handbag&#39;, &#39;tie&#39;, &#39;suitcase&#39;, &#39;frisbee&#39;, &#39;skis&#39;,
+    &#39;snowboard&#39;, &#39;sports ball&#39;, &#39;kite&#39;, &#39;baseball bat&#39;, &#39;baseball glove&#39;,
+    &#39;skateboard&#39;, &#39;surfboard&#39;, &#39;tennis racket&#39;, &#39;bottle&#39;, &#39;N/A&#39;, &#39;wine glass&#39;,
+    &#39;cup&#39;, &#39;fork&#39;, &#39;knife&#39;, &#39;spoon&#39;, &#39;bowl&#39;, &#39;banana&#39;, &#39;apple&#39;, &#39;sandwich&#39;,
+    &#39;orange&#39;, &#39;broccoli&#39;, &#39;carrot&#39;, &#39;hot dog&#39;, &#39;pizza&#39;, &#39;donut&#39;, &#39;cake&#39;,
+    &#39;chair&#39;, &#39;couch&#39;, &#39;potted plant&#39;, &#39;bed&#39;, &#39;N/A&#39;, &#39;dining table&#39;, &#39;N/A&#39;,
+    &#39;N/A&#39;, &#39;toilet&#39;, &#39;N/A&#39;, &#39;tv&#39;, &#39;laptop&#39;, &#39;mouse&#39;, &#39;remote&#39;, &#39;keyboard&#39;,
+    &#39;cell phone&#39;, &#39;microwave&#39;, &#39;oven&#39;, &#39;toaster&#39;, &#39;sink&#39;, &#39;refrigerator&#39;, &#39;N/A&#39;,
+    &#39;book&#39;, &#39;clock&#39;, &#39;vase&#39;, &#39;scissors&#39;, &#39;teddy bear&#39;, &#39;hair drier&#39;,
+    &#39;toothbrush&#39;
+]
+
+# Detectron2 uses a different numbering scheme, we build a conversion table
+coco2d2 = {}
+count = 0
+for i, c in enumerate(CLASSES):
+  if c != &#34;N/A&#34;:
+    coco2d2[i] = count
+    count+=1
+
+# standard PyTorch mean-std input image normalization
+transform = T.Compose([
+    T.Resize(800),
+    T.ToTensor(),
+    T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+])
+</code></pre><h3 id="load-the-detr-model-for-panoptic-segmentation"><a href="#load-the-detr-model-for-panoptic-segmentation">Load the DETR Model for Panoptic Segmentation</a><a href="#load-the-detr-model-for-panoptic-segmentation"></a></h3>
+<p>The code below loads the DETR model for panoptic segmentation from the Facebook Research GitHub repository using the PyTorch Hub API. Here is an overview of the code:</p>
+<pre tabindex="0"><code>model, postprocessor = torch.hub.load(&#39;facebookresearch/detr&#39;, &#39;detr_resnet101_panoptic&#39;, pretrained=True, return_postprocessor=True, num_classes=250)
+model.eval();
+</code></pre><p><strong>Note:</strong> The image used here is taken from that <a href="http://images.cocodataset.org/val2017/000000281759.jpg">source</a></p>
+<h3 id="download-and-open-the-image"><a href="#download-and-open-the-image">Download and Open the Image</a><a href="#download-and-open-the-image"></a></h3>
+<p>The code below downloads and opens an image from the COCO dataset using the Pillow library.</p>
+<pre tabindex="0"><code>url = &#34;http://images.cocodataset.org/val2017/000000281759.jpg&#34;
+im = Image.open(requests.get(url, stream=True).raw)
+</code></pre><ul>
+<li>The <code>requests.get()</code> function sends an HTTP GET request to the URL and retrieves the image data. The <code>stream=True</code> argument specifies that the response should be streamed rather than downloaded simultaneously.</li>
+<li>The <code>raw</code> attribute of the response object is used to access the raw image data.</li>
+<li>The <code>Image.open()</code> function from the Pillow library is used to open the raw image data and create a new <code>Image</code> object. The <code>Image</code> object can then perform various image processing and manipulation tasks.</li>
+</ul>
+<h3 id="run-the-prediction"><a href="#run-the-prediction">Run the Prediction</a><a href="#run-the-prediction"></a></h3>
+<p>The code <code>img = transform(im).unsqueeze(0)</code> is used to preprocess an image using a PyTorch transform and convert it to a tensor. The <code>im</code> variable contains the image data as a Pillow <code>Image</code> object.</p>
+<pre tabindex="0"><code># mean-std normalize the input image (batch-size: 1)
+img = transform(im).unsqueeze(0)
+out = model(img)
+</code></pre><h3 id="plot-the-predicted-segmentation-masks"><a href="#plot-the-predicted-segmentation-masks">Plot the Predicted Segmentation Masks</a><a href="#plot-the-predicted-segmentation-masks"></a></h3>
+<p>The following code is related to plotting the predicted segmentation masks for objects detected in an image using the DETR model for panoptic segmentation. Here is an overview of the code.</p>
+<pre tabindex="0"><code># compute the scores, excluding the &#34;no-object&#34; class (the last one)
+scores = out[&#34;pred_logits&#34;].softmax(-1)[..., :-1].max(-1)[0]
+# threshold the confidence
+keep = scores &gt; 0.85
+
+# Plot all the remaining masks
+ncols = 5
+fig, axs = plt.subplots(ncols=ncols, nrows=math.ceil(keep.sum().item() / ncols), figsize=(18, 10))
+for line in axs:
+    for a in line:
+        a.axis(&#39;off&#39;)
+for i, mask in enumerate(out[&#34;pred_masks&#34;][keep]):
+    ax = axs[i // ncols, i % ncols]
+    ax.imshow(mask, cmap=&#34;cividis&#34;)
+    ax.axis(&#39;off&#39;)
+fig.tight_layout()
+</code></pre><p>This code first calculates the scores for the predicted masks, not including the no-object category. Then, it sets a threshold only to keep masks that scored higher than 0. 85 confidence. The remaining masks are plotted out in a grid with five columns, and the number of rows is figured based on how many masks met the threshold. The out variable passed in is assumed to be a dictionary with the predicted masks and logit values.</p>
+<h3 id="detrs-postprocessor"><a href="#detr-s-postprocessor">DETR’s Postprocessor</a><a href="#detr-s-postprocessor"></a></h3>
+<pre tabindex="0"><code># the post-processor expects as input the target size of the predictions (which we set here to the image size)
+result = postprocessor(out, torch.as_tensor(img.shape[-2:]).unsqueeze(0))[0]
+</code></pre><p>The above code takes the output out and runs it through a post-processor, generating a result. It passes the image size into the <em>postprocessor</em> function, which takes the intended prediction size as input and spits out a processed output. The <code>result</code> variable contains the processed output of the post-processor applied to the input image.</p>
+<h3 id="visualization"><a href="#visualization">Visualization</a><a href="#visualization"></a></h3>
+<p>The code below imports the <em>itertools</em> and <em>seaborn</em> libraries and creates a color palette using <em>itertools.cycle</em> and <em>seaborn.color_palette()</em>. It then opens a special-format PNG file and retrieves the IDs corresponding to each mask. Finally, it colors each mask individually using the color palette and displays the resulting image using matplotlib. We can do a simple visualization of the result</p>
+<pre tabindex="0"><code>import itertools
+import seaborn as sns
+palette = itertools.cycle(sns.color_palette())
+
+# The segmentation is stored in a special-format png
+panoptic_seg = Image.open(io.BytesIO(result[&#39;png_string&#39;]))
+panoptic_seg = numpy.array(panoptic_seg, dtype=numpy.uint8).copy()
+# We retrieve the ids corresponding to each mask
+panoptic_seg_id = rgb2id(panoptic_seg)
+
+# Finally we color each mask individually
+panoptic_seg[:, :, :] = 0
+for id in range(panoptic_seg_id.max() + 1):
+  panoptic_seg[panoptic_seg_id == id] = numpy.asarray(next(palette)) * 255
+plt.figure(figsize=(15,15))
+plt.imshow(panoptic_seg)
+plt.axis(&#39;off&#39;)
+plt.show()
+</code></pre><p><strong>Output:</strong></p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2024/07/panopticimage2.png" alt="image" />
+</figure>
+
+
+</p>
+<h2 id="panoptic-segmentation-with-detectron2"><a href="#panoptic-segmentation-with-detectron2">Panoptic Segmentation with Detectron2</a><a href="#panoptic-segmentation-with-detectron2"></a></h2>
+<p>In this section, we demonstrate how to obtain a better-looking visualization by leveraging Detectron2’s plotting utilities.</p>
+<h3 id="import-libraries"><a href="#import-libraries">Import Libraries</a><a href="#import-libraries"></a></h3>
+<p>The code below installs <em>detectron2</em> from its GitHub repository. The <em>Visualizer</em> class from the <em>utils</em> module of <em>detectron2</em> is imported to facilitate efficient visualization of detection results. The <em>MetadataCatalog</em> from the data module of <em>detectron2</em> is imported to access metadata pertaining to datasets.</p>
+<pre tabindex="0"><code># Install detectron2
+pip install &#39;git+https://github.com/facebookresearch/detectron2.git&#39;
+from copy import deepcopy
+import io
+import numpy as np
+import torch
+from PIL import Image
+import matplotlib.pyplot as plt
+from detectron2.data import MetadataCatalog
+from detectron2.utils.visualizer import Visualizer
+</code></pre><h3 id="visualizing-panoptic-segmentation-predictions-with-detr-and-detectron2"><a href="#visualizing-panoptic-segmentation-predictions-with-detr-and-detectron2">Visualizing Panoptic Segmentation Predictions with DETR and Detectron2</a><a href="#visualizing-panoptic-segmentation-predictions-with-detr-and-detectron2"></a></h3>
+<p>This code extracts and processes segmentation data from DETR’s predictions, adjusting class IDs to match <em>detectron2</em>. It defines the <em>rgb2id</em> function, copies segment info, reads the panoptic result from a PNG image, and converts it into an <em>ID</em> map using <em>numpy</em> and <em>torch</em>. Class IDs are then converted to align with detectron2’s <em>COCO</em> format before visualizing the results using detectron2’s <em>Visualizer</em>.</p>
+<pre tabindex="0"><code># Define the rgb2id function
+def rgb2id(color):
+    if isinstance(color, np.ndarray) and len(color.shape) == 3:
+        color = color.astype(np.int32)
+        return color[:, :, 0] + 256 * color[:, :, 1] + 256 * 256 * color[:, :, 2]
+    return color
+
+# We extract the segments info and the panoptic result from DETR&#39;s prediction
+segments_info = deepcopy(result[&#34;segments_info&#34;])
+# Panoptic predictions are stored in a special format png
+panoptic_seg = Image.open(io.BytesIO(result[&#39;png_string&#39;]))
+final_w, final_h = panoptic_seg.size
+# We convert the png into a segment id map
+panoptic_seg = np.array(panoptic_seg, dtype=np.uint8)
+panoptic_seg = torch.from_numpy(rgb2id(panoptic_seg))
+
+# Detectron2 uses a different numbering of coco classes, here we convert the class ids accordingly
+meta = MetadataCatalog.get(&#34;coco_2017_val_panoptic_separated&#34;)
+for i in range(len(segments_info)):
+    c = segments_info[i][&#34;category_id&#34;]
+    segments_info[i][&#34;category_id&#34;] = meta.thing_dataset_id_to_contiguous_id[c] if segments_info[i][&#34;isthing&#34;] else meta.stuff_dataset_id_to_contiguous_id[c]
+
+# Finally we visualize the prediction
+v = Visualizer(np.array(im.copy().resize((final_w, final_h)))[:, :, ::-1], meta, scale=1.0)
+v._default_font_size = 20
+v = v.draw_panoptic_seg_predictions(panoptic_seg, segments_info, area_threshold=0)
+
+# Display the image using matplotlib
+result_img = v.get_image()
+plt.figure(figsize=(12, 8))
+plt.imshow(result_img)
+plt.axis(&#39;off&#39;)  # Turn off axis
+plt.show()
+</code></pre><p><strong>Output:</strong></p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2024/07/panopticsegmentation.png" alt="image" />
+</figure>
+
+
+</p>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a><a href="#conclusion"></a></h2>
+<p>Panoptic segmentation represents a notable leap forward in the computer vision field by unifying semantic and instance segmentation under a consolidated framework. This approach affords an extensive understanding of scenes through pixel labeling and differentiation between diverse instances of similar object classes.</p>
+<p>Panoptic Quality (PQ) metrics help to evaluate the effectiveness of panoptic models while identifying areas for improvement. While progress has been made, machine performance falls short compared to human consistency. Integrating DETR and Detectron2 highlights how further developments can be leveraged towards autonomous driving or robotics applications.</p>
+<h2 id="references"><a href="#references">References</a><a href="#references"></a></h2>
+<ul>
+<li><a href="https://github.com/facebookresearch/detr">DETR Github</a></li>
+<li><a href="https://arxiv.org/abs/1801.00868">Panoptic segmentation research paper</a></li>
+</ul>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/panoptic-segmentation">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

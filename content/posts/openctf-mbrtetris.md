@@ -1,8 +1,10 @@
 ---
 title: "OpenCTF : mbrtetris"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
   - "general"
+tags: 
+  - "ces"
 ---
 
 **Category:** Forensics
@@ -74,3 +76,5 @@ s1mPl3_0n_linux_sux0rZ_oN_winb10w$
 # Flag
 
 **s1mPl3\_0n\_linux\_sux0rZ\_oN\_winb10w$**
+
+Go to Source

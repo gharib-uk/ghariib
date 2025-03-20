@@ -1,6 +1,6 @@
 ---
 title: "OpenCTF : SQL 10"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
   - "general"
 ---
@@ -48,3 +48,5 @@ This returns the flag in the one other row in the database
 # Flag
 
 **Th@tW@53@5yHuh**
+
+Go to Source

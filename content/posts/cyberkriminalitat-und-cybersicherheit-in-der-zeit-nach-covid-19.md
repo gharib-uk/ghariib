@@ -1,6 +1,6 @@
 ---
 title: "Cyberkriminalität und Cybersicherheit in der Zeit nach COVID-19"
-date: 2025-03-19
+date: 2025-01-06
 ---
 
 The COVID-19 pandemic has changed the world. As we forge on into the second half of 2020, what does this mean for cybercrime and enterprise security?

@@ -1,6 +1,6 @@
 ---
 title: "The 2023 Counter Ransomware Initiative Summit | Stepping Up Global Collaboration in Cybersecurity"
-date: 2025-03-19
+date: 2025-01-06
 ---
 
 Explore key outcomes of the 2023 CRI Summit, the latest global strategies, and AI's role in combating ransomware threats.

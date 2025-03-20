@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Removing an Annoying Compiler Optimization with a Hex-Rays Microcode Plugin</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Removing an Annoying Compiler Optimization with a Hex-Rays Microcode Plugin</h1>
+			<b><time>22.01.2019 22:39</time></b>
+		       
+
+			<div>
+				<h1 id="removing-an-annoying-compiler-optimization-with-a-hex-rays-microcode-plugin">Removing an Annoying Compiler Optimization with a Hex-Rays Microcode Plugin</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>In brief, testing individual bits within a quantity is a common pattern in C and C++ programming. For example, in the Windows API, after you have retrieved the attributes for a file, you might check to see if the file is a directory with an expression such as &ldquo;(fileAttributes &amp; FILE_ATTRIBUTE_DIRECTORY) != 0&rdquo;. The most obvious assembly-language implementation is simply with a &ldquo;test&rdquo; instruction against the constant:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1548196137396-0CUAMROK0QA352QAEYRJ/ASM-unoptimized-impl.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>However, in the binaries I&rsquo;ve been analyzing lately, I frequently see a pattern such as the following, involving shifting the bit in question to the lowest position and performing an &ldquo;and&rdquo; or a &ldquo;test&rdquo;:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1548196202717-SX4R0F35108F7CDQ07U3/ASM-optimized-impl.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>Honestly, I am not sure why this is an optimization. My first thought was that the shift/test sequence would be smaller, but they are actually the same size. The pattern manifests itself in the Hex-Rays decompilation as follows:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1548196233043-94LKJWR3J0EF2AW91BVK/decomp-no-NOT.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>Or, an even uglier variant involving a bitwise NOT:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1548196243902-CVK90O6F32MP5U0NKMT5/decomp-NOT.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>Because this optimization gets rid of the original constant value, we can&rsquo;t make use of Hex-Rays&rsquo; nice features to convert constant values into enumeration elements. That means every time I see this pattern, I have to look up which enumeration element is being used, and leave the information in a comment. Obviously, it would be preferable to simply be able to use enumerations.</p>
+<p>The problem was on my to-do list for long enough, and I finally got bored enough, that I did something about it. I wrote a small Hex-Rays Microcode API plugin to detect instances of the pattern and rewrite them using the proper constants, as in:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1548196263261-NW7P8OEY4VENHN8H7FCL/decomp-altered-no-NOT.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>And, for the bitwise NOT variant:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1548196276849-3LFNQP1EOSGQM3LPKMIH/decomp-altered-NOT.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>Much better. It took some extra work, but I also added the ability to change the constant to an enumeration. (The way Hex-Rays stores information about constants from the disassembly in the decompilation listing, and the rules under which you can convert them to enumeration elements, are somewhat complicated. The source code discusses them in more detail, along with some other information that might benefit Microcode plugin developers.) Here&rsquo;s an example:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1548196292954-Q2OHZW6OJBNB80S7DHKN/decomp-enum.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>Mission accomplished. In retrospect, it would have been easier and faster to write this as a CTREE plugin rather than a Microcode plugin, but I suppose all that matters is that it works. Maybe somebody else will find it useful.</p>
+<h4 id="source"><a href="https://www.msreverseengineering.com/blog/2019/1/22/removing-an-annoying-compiler-optimization-with-a-hex-rays-microcode-plugin">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

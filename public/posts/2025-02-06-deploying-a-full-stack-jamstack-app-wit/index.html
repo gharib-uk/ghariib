@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Deploying a Full-Stack JAMstack App with DigitalOcean and Netlify</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Deploying a Full-Stack JAMstack App with DigitalOcean and Netlify</h1>
+			<b><time>06.02.2025 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="deploying-a-full-stack-jamstack-app-with-digitalocean-and-netlify">Deploying a Full-Stack JAMstack App with DigitalOcean and Netlify</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><a href="/community/tutorials/jamstack-the-what-the-why-and-the-how">JAMstack</a> (JavaScript, APIs, and Markup) is a modern architecture for building fast and scalable web applications. It offers numerous benefits, including improved performance, enhanced security, and simplified maintenance.</p>
+<p>This architecture is best suited for developers and organizations seeking to create dynamic, data-driven applications with a focus on user experience. Some common use cases for JAMstack include e-commerce platforms, blogs, and single-page applications.</p>
+<p>In this tutorial, you’ll learn how to deploy a full-stack JAMstack application using:</p>
+<ul>
+<li><a href="https://www.netlify.com/">Netlify</a> for hosting the app.</li>
+<li><a href="/products/managed-databases-mongodb">DigitalOcean Managed MongoDB</a> for the database.</li>
+<li><a href="/blog/announcing-digitalocean-netlify-extension">DigitalOcean Netlify Extension</a> to manage database connections seamlessly.</li>
+</ul>
+<p>By the end of this guide, you’ll have a working JAMstack app deployed on Netlify with a connected MongoDB database on DigitalOcean and by using the <a href="https://www.netlify.com/blog/introducing-netlify-extensions/">Netlify Extensions</a>.</p>
+<h2 id="prerequisites"><a href="#prerequisites">Prerequisites</a><a href="#prerequisites"></a></h2>
+<p>Before you begin, ensure you have:</p>
+<ul>
+<li>A <a href="https://cloud.digitalocean.com/">DigitalOcean cloud account</a> to deploy <a href="https://cloud.digitalocean.com/databases/new">Managed MongoDB database</a>.</li>
+<li>A <a href="https://app.netlify.com/">Netlify</a> account.</li>
+<li>Node.js and npm <a href="https://docs.npmjs.com/downloading-and-installing-node-js-and-npm/">installed locally</a>.</li>
+<li><a href="https://git-scm.com/downloads/linux">Git installed</a> locally.</li>
+<li>A basic understanding of JavaScript and React.</li>
+</ul>
+<h2 id="step-1---set-up-digitalocean-managed-mongodb"><a href="#step-1-set-up-digitalocean-managed-mongodb">Step 1 - Set Up DigitalOcean Managed MongoDB</a><a href="#step-1-set-up-digitalocean-managed-mongodb"></a></h2>
+<p>First, you will create a Managed MongoDB cluster deployed on DigitalOcean. You can easily create production-ready MongoDB databases on DigitalOcean. For a step-by-step guide, watch this video:</p>
+<p>
+<figure>
+  <img src="https://embed-ssl.wistia.com/deliveries/5ad65a54872e322c9157edc909120de1074e7a31.jpg?image_play_button_size=2x&amp;image_crop_resized=960x623&amp;image_play_button=1&amp;image_play_button_color=2949E5e0" alt="Steps to create a Managed MongoDB cluster on DigitalOcean" />
+</figure>
+
+
+ <a href="/products/managed-databases-mongodb?wvideo=j46m7nkz3c">Steps to create a Managed MongoDB cluster on DigitalOcean</a></p>
+<p>You can also refer to this tutorial on <a href="/community/tutorial-series/how-to-manage-data-with-mongodb">How to Manage Data with MongoDB</a>.</p>
+<p>The steps are simple:</p>
+<ul>
+<li>Log in to your <a href="https://cloud.digitalocean.com/">DigitalOcean account</a>.</li>
+<li>Navigate to <strong>Databases → Create Database Cluster</strong>.</li>
+<li>Select <strong>MongoDB</strong> as the database engine.</li>
+<li>Once created, copy the connection string by going to <strong>Overview → Connection Details</strong>(with credentials included) and store it to a notepad file locally(You will need it later in the tutorial while adding DigitalOcean as a Netlify extension).</li>
+</ul>
+<h2 id="step-2---enable-netlify-extension-for-digitalocean-mongodb"><a href="#step-2-enable-netlify-extension-for-digitalocean-mongodb">Step 2 - Enable Netlify Extension for DigitalOcean MongoDB</a><a href="#step-2-enable-netlify-extension-for-digitalocean-mongodb"></a></h2>
+<p>In this step you will install the DigitalOcean Netlify extension. You will use this extension to connect to your DigitalOcean account and start deploying and connecting cloud resources to your Netlify sites.</p>
+<p>You need to login to your <a href="https://app.netlify.com/">Netlify account</a>. Sign up and go to <strong>Extensions</strong> tab from the sidebar.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/Netlify-Tutorial-2025/Screenshot%202025-01-31%20at%207.50.28%E2%80%AFPM.png" alt="Install the Netlify Extension" />
+</figure>
+
+
+</p>
+<h2 id="step-3---create-a-full-stack-jamstack-app"><a href="#step-3-create-a-full-stack-jamstack-app">Step 3 - Create a Full-Stack JAMstack App</a><a href="#step-3-create-a-full-stack-jamstack-app"></a></h2>
+<p>Let’s start creating a full-stack JAMstack App.</p>
+<p>You will use a React and Vite frontend template to interact with MongoDB.</p>
+<p>Go to your terminal and use the below commands to setup an application template:</p>
+<pre tabindex="0"><code>npx create-vite my-jamstack-app --template react
+cd my-jamstack-app
+npm install
+npm install mongodb
+</code></pre><p><strong>Note:</strong> If you don’t have Node.js and <code>npm</code> installed, then you can refer the documentation on <a href="https://docs.npmjs.com/downloading-and-installing-node-js-and-npm/">Installing Node.js and npm</a>.</p>
+<p>The above command should setup a basic application template.</p>
+<p>Now go inside <code>src</code> directory, create a file <code>Api.js</code> to fetch data from the serverless function:</p>
+<p>my-jamstack-app/src/Api.js</p>
+<pre tabindex="0"><code>import { useState, useEffect } from &#34;react&#34;;
+
+// Function to handle the state of items and new item input
+function App() {
+  // Initialize state for items and new item input
+  const [items, setItems] = useState([]);
+  const [newItem, setNewItem] = useState(&#34;&#34;);
+
+  // UseEffect hook to fetch items from MongoDB on component mount
+  useEffect(() =&gt; {
+    // Fetch data from the serverless function
+    fetch(&#34;/.netlify/functions/connectMongo&#34;)
+      .then((res) =&gt; res.json())
+      .then((data) =&gt; setItems(data));
+  }, []);
+
+  // Function to add a new item to MongoDB
+  const addItem = () =&gt; {
+    // POST request to the serverless function to add a new item
+    fetch(&#34;/.netlify/functions/connectMongo&#34;, {
+      method: &#34;POST&#34;,
+      headers: { &#34;Content-Type&#34;: &#34;application/json&#34; },
+      body: JSON.stringify({ name: newItem })
+    }).then(() =&gt; {
+      // Reload the window to reflect the changes
+      window.location.reload();
+    });
+  };
+
+  // JSX to render the items list, input for new item, and an add button
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;MongoDB Items&lt;/h1&gt;
+      &lt;ul&gt;{items.map((item) =&gt; (&lt;li key={item._id}&gt;{item.name}&lt;/li&gt;))}&lt;/ul&gt;
+      &lt;input value={newItem} onChange={(e) =&gt; setNewItem(e.target.value)} /&gt;
+      &lt;button onClick={addItem}&gt;Add Item&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+export default App;
+</code></pre><h3 id="build-the-api-with-netlify-serverless-functions"><a href="#build-the-api-with-netlify-serverless-functions">Build the API with Netlify Serverless Functions</a><a href="#build-the-api-with-netlify-serverless-functions"></a></h3>
+<p>Let’s create a <code>functions</code> directory inside the root directory of this project. You can read more about <a href="https://docs.netlify.com/functions/overview/">Netlify Functions</a>.</p>
+<pre tabindex="0"><code>mkdir functions
+cd functions/
+</code></pre><p>Next, inside the <code>functions</code> directory let’s create a file <code>connectMongo.js</code>.</p>
+<p>my-jamstack-app/functions/connectMongo.js</p>
+<pre tabindex="0"><code>// Importing the MongoClient class from the mongodb package
+const { MongoClient } = require(&#34;mongodb&#34;);
+
+// Defining the serverless function
+exports.handler = async function (event) {
+  // Creating a new MongoClient instance with the MongoDB URL from the environment variables
+  const client = new MongoClient(process.env.MONGODB_URL);
+  try {
+    // Connecting to the MongoDB server
+    await client.connect();
+    // Accessing the &#34;mydatabase&#34; database
+    const db = client.db(&#34;mydatabase&#34;);
+    // Accessing the &#34;items&#34; collection
+    const collection = db.collection(&#34;items&#34;);
+
+    // Handling GET requests
+    if (event.httpMethod === &#34;GET&#34;) {
+      // Fetching all items from the collection and converting the result to an array
+      const data = await collection.find({}).toArray();
+      // Returning a 200 status code and the fetched data
+      return {
+        statusCode: 200,
+        body: JSON.stringify(data)
+      };
+    }
+
+    // Handling POST requests
+    if (event.httpMethod === &#34;POST&#34;) {
+      // Parsing the request body to get the new item
+      const newItem = JSON.parse(event.body);
+      // Inserting the new item into the collection
+      await collection.insertOne(newItem);
+      // Returning a 201 status code and a success message
+      return {
+        statusCode: 201,
+        body: JSON.stringify({ message: &#34;Item added successfully&#34; })
+      };
+    }
+
+    // Handling other HTTP methods
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: &#34;Method Not Allowed&#34; })
+    };
+  } catch (error) {
+    // Handling any errors that occur during the execution of the function
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message })
+    };
+  } finally {
+    // Closing the MongoDB client connection
+    await client.close();
+  }
+};
+</code></pre><h3 id="create-a-git-repository-and-push-code-to-github"><a href="#create-a-git-repository-and-push-code-to-github">Create a Git Repository and Push Code to GitHub</a><a href="#create-a-git-repository-and-push-code-to-github"></a></h3>
+<p>Initialize a Git repository in your project directory i.e., inside <code>my-jamstack-app</code>:</p>
+<pre tabindex="0"><code>git init
+</code></pre><p>Add all project files to Git:</p>
+<pre tabindex="0"><code>git add .
+</code></pre><p>Commit the changes:</p>
+<pre tabindex="0"><code>git commit -m &#34;Initial commit&#34;
+</code></pre><p>Now, go to your <a href="https://github.com/new">GitHub account</a> and create a new repository.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/Netlify-Tutorial-2025/Screenshot%202025-01-31%20at%208.22.21%E2%80%AFPM.png" alt="Create a new GitHub Repository" />
+</figure>
+
+
+</p>
+<p>Next, add the remote origin:</p>
+<pre tabindex="0"><code>git remote add origin https://github.com/your-username/your-repo.git
+</code></pre><p>Push your code to GitHub:</p>
+<pre tabindex="0"><code>git push -u origin main
+</code></pre><h2 id="step-4---build-and-deploy-backend-with-netlify-functions"><a href="#step-4-build-and-deploy-backend-with-netlify-functions">Step 4 - Build and Deploy Backend with Netlify Functions</a><a href="#step-4-build-and-deploy-backend-with-netlify-functions"></a></h2>
+<p>You will use the <a href="https://docs.netlify.com/cli/get-started/">Netlify ClI</a> to create a new <strong>“Site”</strong> and do a mannual deploy from command line.</p>
+<p>Using Netlify CLI you configure continuous deployment straight from the command line. You can use Netlify CLI to run a local development server that you can share with others, run a <a href="https://docs.netlify.com/cli/get-started/#run-builds-locally">local build and plugins</a>, and <a href="https://docs.netlify.com/cli/get-started/#manual-deploys">deploy your site</a>.</p>
+<p>Let’s install the Netlify CLI:</p>
+<pre tabindex="0"><code>npm install -g netlify-cli
+</code></pre><h3 id="manually-build--deploy-from-cmdline"><a href="#manually-build-deploy-from-cmdline">Manually Build &amp; Deploy from cmdline</a><a href="#manually-build-deploy-from-cmdline"></a></h3>
+<p>Use the following command to deploy the site manually from command line.</p>
+<pre tabindex="0"><code>netlify deploy
+</code></pre><p>Follow the on-sreen instructions to create a new site and other settings.</p>
+<pre tabindex="0"><code>OutputThis folder isn&#39;t linked to a site yet
+? What would you like to do? +  Create &amp; configure a new site
+? Team: asinghwalia’s team
+? Site name (leave blank for a random name; you can change it later): netlify-digitalocean-app
+
+Site Created
+
+Admin URL: https://app.netlify.com/sites/netlify-digitalocean-app
+URL:       https://netlify-digitalocean-app.netlify.app
+Site ID:   985f40e7-8892-4b9d-9e36-5ea74c494874
+
+
+Adding local .netlify folder to .gitignore file...
+Linked to netlify-digitalocean-app
+Please provide a publish directory (e.g. &#34;public&#34; or &#34;dist&#34; or &#34;.&#34;):
+? Publish directory /my-jamstack-app
+Deploy path: /my-jamstack-app
+Deploying to draft URL...
+⠋ Uploading blobs to deploy store...
+
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+
+❯ Version
+  @netlify/build 29.58.8
+
+❯ Flags
+  deployId: 679dc88c9705fce5ffd42051
+  open: false
+  prod: false
+  prodIfUnlocked: false
+  skipFunctionsCache: false
+
+❯ Current directory
+  /my-jamstack-app
+
+❯ Config file
+  No config file was defined: using default values.
+
+❯ Context
+✔ Finished uploading blobs to deploy store
+✔ No cached functions were found
+✔ Finished hashing 
+✔ CDN requesting 4 files
+✔ Finished uploading 4 assets
+✔ Deploy is live!
+
+Build logs:         https://app.netlify.com/sites/netlify-digitalocean-app/deploys/679dc88c9705fce5ffd42051
+Function logs:      https://app.netlify.com/sites/netlify-digitalocean-app/logs/functions?scope=deploy:679dc88c9705fce5ffd42051
+Edge function Logs: https://app.netlify.com/sites/netlify-digitalocean-app/logs/edge-functions?scope=deployid:679dc88c9705fce5ffd42051
+Website draft URL:  https://679dc88c9705fce5ffd42051--netlify-digitalocean-app.netlify.app
+
+If everything looks good on your draft URL, deploy it to your main site URL with the --prod flag.
+netlify deploy --prod
+</code></pre><p>Now if you go to <a href="https://app.netlify.com/">Netlify Sites</a>, you should see a new Site created.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/Netlify-Tutorial-2025/Screenshot%202025-02-01%20at%2012.41.44%E2%80%AFPM.png" alt="Site configuration" />
+</figure>
+
+
+</p>
+<p>Now you will need to link the Git repository, created in the last step.</p>
+<p>Go to <strong>Site Configuration</strong> from the left side panel and click <strong>“Build &amp; deploy”</strong> and <strong>“Link repository”</strong>.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/Netlify-Tutorial-2025/Screenshot%202025-02-01%20at%2012.49.37%E2%80%AFPM.png" alt="Link a Git repository" />
+</figure>
+
+
+</p>
+<p>Select <strong>“Github”</strong> and add your repository and configure the build settings.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/Netlify-Tutorial-2025/Screenshot%202025-02-01%20at%2012.49.49%E2%80%AFPM.png" alt="Build Settings" />
+</figure>
+
+
+</p>
+<p>Now, select your Github repository:</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/Netlify-Tutorial-2025/Screenshot%202025-02-01%20at%2012.52.23%E2%80%AFPM.png" alt="Build" />
+</figure>
+
+
+</p>
+<p>Now configure and add build settings and then deploy the site.</p>
+<p><strong>Note:</strong> Make sure to set the <strong>“Functions Directory”</strong> to <strong>“/functions”</strong> which we created in this tutorial. You can leave the remaining build settings as default.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/Netlify-Tutorial-2025/Screenshot%202025-02-01%20at%2012.53.16%E2%80%AFPM.png" alt="Build settings" />
+</figure>
+
+
+</p>
+<p>You can go to <strong>“Site Overview”</strong> to check the deployment status:</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/Netlify-Tutorial-2025/Screenshot%202025-02-01%20at%201.16.25%E2%80%AFPM.png" alt="Deployed Site" />
+</figure>
+
+
+</p>
+<h3 id="add-the-digitalocean-extension"><a href="#add-the-digitalocean-extension">Add the DigitalOcean Extension</a><a href="#add-the-digitalocean-extension"></a></h3>
+<p>Now head over to <strong>“Extensions”</strong> and add the MongoDB connection String saved earlier in this tutorial.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/Netlify-Tutorial-2025/Screenshot%202025-02-01%20at%201.23.06%E2%80%AFPM.png" alt="Add MongoDB Connection String" />
+</figure>
+
+
+</p>
+<p>The connection string will now be available in your Netlify project’s environment variables. It can now be accessed by your Netlify Functions.</p>
+<p>You can also go to <strong>“Site Configuration” -&gt; “Environment variables”</strong> and check the automatically added MongoDB environment variable by using the DigitalOcean extension.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/Netlify-Tutorial-2025/Screenshot%202025-02-01%20at%201.28.13%E2%80%AFPM.png" alt="Env variable" />
+</figure>
+
+
+</p>
+<h2 id="test-the-database-with-curl"><a href="#test-the-database-with-curl">Test the Database with cURL</a><a href="#test-the-database-with-curl"></a></h2>
+<p>Now let’s check the netlify function endpoint and perform some database operations.</p>
+<p>You can find the function endpoint by going to <strong>Sites -&gt; Logs -&gt; Functions</strong>.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/Netlify-Tutorial-2025/Screenshot%202025-02-01%20at%201.32.14%E2%80%AFPM.png" alt="Function endpoint" />
+</figure>
+
+
+</p>
+<p>Use the below <code>curl</code> command to store some data to the MongoDB database.</p>
+<pre tabindex="0"><code>curl -X POST https://netlify-digitalocean-app.netlify.app/.netlify/functions/connectMongo \
+     -H &#34;Content-Type: application/json&#34; \
+     -d &#39;{&#34;Item 1&#34;: &#34;New Item 1&#34;}&#39;
+</code></pre><p>You should see the following output:</p>
+<pre tabindex="0"><code>Output{&#34;message&#34;:&#34;Item added successfully&#34;}
+</code></pre><p>Let’s execute a <code>GET</code> request to retrive the data:</p>
+<pre tabindex="0"><code>curl -X GET https://netlify-digitalocean-app.netlify.app/.netlify/functions/connectMongo
+</code></pre><pre tabindex="0"><code>Output[{&#34;_id&#34;:&#34;679dcdd3d9dc4d82c9de1ddd&#34;,&#34;name&#34;:&#34;New Item&#34;},{&#34;_id&#34;:&#34;679dcdebd9dc4d82c9de1dde&#34;,&#34;Item 2&#34;:&#34;New Item 2&#34;},{&#34;_id&#34;:&#34;679dd3ab2849e603f9d5813b&#34;,&#34;Item 3&#34;:&#34;New Item 3&#34;}]%  
+</code></pre><p>You can also verify the <code>POST</code> operation’s success by going to the function endpoint in your browser.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/Netlify-Tutorial-2025/Screenshot%202025-02-01%20at%201.33.48%E2%80%AFPM.png" alt="Function endpoint in browser" />
+</figure>
+
+
+</p>
+<h2 id="faqs"><a href="#faqs">FAQs</a><a href="#faqs"></a></h2>
+<h3 id="1-what-features-does-digitaloceans-managed-mongodb-offer"><a href="#1-what-features-does-digitalocean-s-managed-mongodb-offer">1. What features does DigitalOcean’s Managed MongoDB offer?</a><a href="#1-what-features-does-digitalocean-s-managed-mongodb-offer"></a></h3>
+<p><a href="/products/managed-databases-mongodb">DigitalOcean’s Managed MongoDB</a> provides several features that make it a powerful and convenient choice for developers:</p>
+<ul>
+<li><strong>Automated Backups</strong>: Daily backups with point-in-time recovery options.</li>
+<li><strong>High Availability</strong>: Managed replica sets ensure uptime and data redundancy.</li>
+<li><strong>Scalability</strong>: Easily scale storage and compute resources as your app grows.</li>
+<li><strong>Integrated Monitoring</strong>: Built-in performance monitoring and alerting.</li>
+<li><strong>Security &amp; Encryption</strong>: TLS encryption, firewall protection, and private networking for secure access.</li>
+</ul>
+<h3 id="2-how-do-i-install-the-digitalocean-netlify-extension"><a href="#2-how-do-i-install-the-digitalocean-netlify-extension">2. How do I install the DigitalOcean Netlify Extension?</a><a href="#2-how-do-i-install-the-digitalocean-netlify-extension"></a></h3>
+<p>To install the <a href="https://app.netlify.com/extensions/digitalocean">DigitalOcean Netlify Extension</a>:</p>
+<ol>
+<li>Log in to your <a href="https://app.netlify.com/">Netlify account</a>.</li>
+<li>Go to <strong>Extensions</strong> tab from the sidebar.</li>
+<li>Search for <strong>DigitalOcean</strong>.</li>
+<li>Click <strong>Install</strong>, and then add this extension to you Netlify Site.</li>
+<li>Configure your connection by providing your MongoDB URI and authentication details.</li>
+</ol>
+<h3 id="3-what-benefits-does-this-integration-provide-for-developers"><a href="#3-what-benefits-does-this-integration-provide-for-developers">3. What benefits does this integration provide for developers?</a><a href="#3-what-benefits-does-this-integration-provide-for-developers"></a></h3>
+<p>This integration simplifies the deployment and database management process for developers:</p>
+<ol>
+<li><strong>Seamless Connectivity</strong>: Connect <a href="https://www.netlify.com/platform/core/functions/">Netlify serverless functions</a> to <a href="https://docs.digitalocean.com/products/databases/mongodb/">DigitalOcean MongoDB</a> with minimal configuration.</li>
+<li><strong>Fully Managed Database</strong>: Offload database management, including scaling and backups, to <a href="https://docs.digitalocean.com/products/databases/mongodb/">DigitalOcean</a>.</li>
+<li><strong>Serverless Architecture</strong>: Use Netlify’s serverless functions to interact with MongoDB without setting up a backend server.</li>
+<li><strong>Enhanced Performance</strong>: Netlify’s global CDN speeds up frontend performance, while DigitalOcean ensures optimized database performance.</li>
+<li><strong>Secure Data Handling</strong>: Store database credentials securely in Netlify environment variables.</li>
+</ol>
+<h3 id="4-is-mongodb-the-only-database-option-available"><a href="#4-is-mongodb-the-only-database-option-available">4. Is MongoDB the only database option available?</a><a href="#4-is-mongodb-the-only-database-option-available"></a></h3>
+<p>No, <a href="/products/managed-databases">DigitalOcean</a> provides a range of managed databases, including:</p>
+<ol>
+<li><a href="/products/managed-databases-postgresql">PostgreSQL</a></li>
+<li><a href="/products/managed-databases-kafka">Kafka</a></li>
+<li><a href="/products/managed-databases-mysql">MySQL</a></li>
+<li><a href="/products/managed-databases-opensearch">OpenSearch</a></li>
+<li><a href="/products/managed-databases-redis">Redis Caching</a></li>
+</ol>
+<h3 id="5-how-does-this-integration-handle-security"><a href="#5-how-does-this-integration-handle-security">5. How does this integration handle security?</a><a href="#5-how-does-this-integration-handle-security"></a></h3>
+<p>Security is a key focus of this integration, and it is handled through multiple layers:</p>
+<ol>
+<li><strong>Environment Variables</strong>: Netlify securely stores sensitive credentials (e.g., MONGO_URI) to prevent exposure in code.</li>
+<li><strong>TLS Encryption</strong>: DigitalOcean ensures all MongoDB connections are encrypted using TLS for secure data transmission.</li>
+<li><strong>Private Networking</strong>: If you deploy on DigitalOcean, you can enable <a href="/products/vpc">VPC (Virtual Private Cloud)</a> to isolate database access from the public internet.</li>
+<li><strong>Role-Based Access Control (RBAC)</strong>: <a href="/blog/introducing-new-predefined-roles-for-rbac">DigitalOcean</a> allows you to assign granular permissions to different users and services.</li>
+<li><strong>Firewall Rules</strong>: You can configure IP-based restrictions to allow only specific sources to access your MongoDB database.</li>
+</ol>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a><a href="#conclusion"></a></h2>
+<p>Congratulations! You have successfully deployed a full-stack JAMstack application using DigitalOcean MongoDB and Netlify. Your application now features a practical React frontend that interacts with MongoDB.</p>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/netlify-extension">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

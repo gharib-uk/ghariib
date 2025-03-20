@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Java Constructor Tutorial Learn Basics and Best Practices</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Java Constructor Tutorial Learn Basics and Best Practices</h1>
+			<b><time>12.02.2025 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="java-constructor-tutorial-learn-basics-and-best-practices">Java Constructor Tutorial Learn Basics and Best Practices</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Constructor in java is used to create the instance of the class. Constructors are almost similar to methods except for two things - its name is the same as the class name and it has no return type. Sometimes constructors are also referred to as special methods to initialize an object.</p>
+<h2 id="constructor-in-java"><a href="#constructor-in-java">Constructor in Java</a><a href="#constructor-in-java"></a></h2>
+<p>Whenever we use <code>new</code> keyword to create an instance of a class, the constructor is invoked and the object of the class is returned. Since constructor can only return the object to class, it’s implicitly done by java runtime and we are not supposed to add a return type to it. If we add a return type to a constructor, then it will become a method of the class. This is the way java runtime distinguish between a normal method and a constructor. Let’s assume we have following code in <code>Employee</code> class.</p>
+<pre tabindex="0"><code>public Employee() {
+ System.out.println(&#34;Employee Constructor&#34;);
+}
+
+public Employee Employee() {
+ System.out.println(&#34;Employee Method&#34;);
+ return new Employee();
+}
+</code></pre><p>Here the first one is a constructor, notice that there is no return type and no return statement. The second one is a normal method where we are again calling the first constructor to get Employee instance and return it. It’s recommended to not have method name same as the class name because it creates confusion.</p>
+<h2 id="types-of-constructor-in-java"><a href="#types-of-constructor-in-java">Types of Constructor in Java</a><a href="#types-of-constructor-in-java"></a></h2>
+<p>There are three types of constructor in java.</p>
+<ol>
+<li>Default Constructor</li>
+<li>No-Args constructor</li>
+<li>Parameterized constructor</li>
+</ol>
+<p>Let’s look into all these constructor types with example programs.</p>
+<h3 id="default-constructor-in-java"><a href="#default-constructor-in-java">Default Constructor in Java</a><a href="#default-constructor-in-java"></a></h3>
+<p>It’s not required to always provide a constructor implementation in the class code. If we don’t provide a constructor, then java provides default constructor implementation for us to use. Let’s look at a simple program where default constructor is being used since we will not explicitly define a constructor.</p>
+<pre tabindex="0"><code>package com.journaldev.constructor;
+
+public class Data {
+
+ public static void main(String[] args) {
+  Data d = new Data();
+ }
+}
+</code></pre><ol>
+<li>Default constructor only role is to initialize the object and return it to the calling code.</li>
+<li>Default constructor is always without argument and provided by java compiler only when there is no existing constructor defined.</li>
+<li>Most of the time we are fine with default constructor itself as other properties can be accessed and initialized through getter setter methods.</li>
+</ol>
+<h3 id="no-args-constructor"><a href="#no-args-constructor">No-Args Constructor</a><a href="#no-args-constructor"></a></h3>
+<p>Constructor without any argument is called a no-args constructor. It’s like overriding the default constructor and used to do some pre-initialization stuff such as checking resources, network connections, logging, etc. Let’s have a quick look at the no-args constructor in java.</p>
+<pre tabindex="0"><code>package com.journaldev.constructor;
+
+public class Data {
+        //no-args constructor
+ public Data() {
+  System.out.println(&#34;No-Args Constructor&#34;);
+ }
+ public static void main(String[] args) {
+  Data d = new Data();
+ }
+}
+</code></pre><p>Now when we will call <code>new Data()</code>, then our no-args constructor will be called. Below image illustrates this behavior, check the console output of the program. 
+<figure>
+  <img src="https://journaldev.nyc3.cdn.digitaloceanspaces.com/2018/02/no-args-constructor-in-java.png" alt="no args constructor in java" />
+</figure>
+
+
+</p>
+<h3 id="parameterized-constructor"><a href="#parameterized-constructor">Parameterized Constructor</a><a href="#parameterized-constructor"></a></h3>
+<p>Constructor with arguments is called parameterized constructor. Let’s look at the example of parameterized constructor in java.</p>
+<pre tabindex="0"><code>package com.journaldev.constructor;
+
+public class Data {
+
+ private String name;
+
+ public Data(String n) {
+  System.out.println(&#34;Parameterized Constructor&#34;);
+  this.name = n;
+ }
+
+ public String getName() {
+  return name;
+ }
+
+ public static void main(String[] args) {
+  Data d = new Data(&#34;Java&#34;);
+  System.out.println(d.getName());
+ }
+
+}
+</code></pre><p>
+<figure>
+  <img src="https://journaldev.nyc3.cdn.digitaloceanspaces.com/2018/02/parameterized-constructor-in-java.png" alt="java class constructor with parameters" />
+</figure>
+
+
+</p>
+<h2 id="constructor-overloading-in-java"><a href="#constructor-overloading-in-java">Constructor Overloading in Java</a><a href="#constructor-overloading-in-java"></a></h2>
+<p>When we have more than one constructors, then it’s constructor overloading in java. Let’s look at an example of constructor overloading in java program.</p>
+<pre tabindex="0"><code>package com.journaldev.constructor;
+
+public class Data {
+
+ private String name;
+ private int id;
+
+ //no-args constructor
+ public Data() {
+  this.name = &#34;Default Name&#34;;
+ }
+ //one parameter constructor
+ public Data(String n) {
+  this.name = n;
+ }
+ //two parameter constructor
+ public Data(String n, int i) {
+  this.name = n;
+  this.id = i;
+ }
+
+ public String getName() {
+  return name;
+ }
+
+ public int getId() {
+  return id;
+ }
+
+ @Override
+ public String toString() {
+  return &#34;ID=&#34;+id+&#34;, Name=&#34;+name;
+ }
+ public static void main(String[] args) {
+  Data d = new Data();
+  System.out.println(d);
+  
+  d = new Data(&#34;Java&#34;);
+  System.out.println(d);
+  
+  d = new Data(&#34;Pankaj&#34;, 25);
+  System.out.println(d);
+  
+ }
+
+}
+</code></pre><h2 id="private-constructor-in-java"><a href="#private-constructor-in-java">Private Constructor in Java</a><a href="#private-constructor-in-java"></a></h2>
+<p>Note that we can’t use <a href="/community/tutorials/abstract-class-in-java">abstract</a>, final, <a href="/community/tutorials/static-keyword-in-java">static</a> and synchronized keywords with constructors. However we can use access modifiers to control the instantiation of class object. Using <code>public</code> and <code>default</code> access is still fine, but what is the use of making a constructor private? In that case any other class won’t be able to create the instance of the class. Well, a constructor is made private in case we want to implement <a href="/community/tutorials/java-singleton-design-pattern-best-practices-examples">singleton design pattern</a>. Since java automatically provides default constructor, we have to explicitly create a constructor and keep it private. Client classes are provided with a utility static method to get the instance of the class. An example of private constructor for <code>Data</code> class is given below.</p>
+<pre tabindex="0"><code>// private constructor
+private Data() {
+ //empty constructor for singleton pattern implementation
+ //can have code to be used inside the getInstance() method of class
+}
+</code></pre><h2 id="constructor-chaining-in-java"><a href="#constructor-chaining-in-java">Constructor Chaining in Java</a><a href="#constructor-chaining-in-java"></a></h2>
+<p>When a constructor calls another constructor of the same class, it’s called constructor chaining. We have to use <code>this</code> keyword to call another constructor of the class. Sometimes it’s used to set some default values of the class variables. Note that another constructor call should be the first statement in the code block. Also, there should not be recursive calls that will create an infinite loop. Let’s see an example of constructor chaining in java program.</p>
+<pre tabindex="0"><code>package com.journaldev.constructor;
+
+public class Employee {
+
+ private int id;
+ private String name;
+ 
+ public Employee() {
+  this(&#34;John Doe&#34;, 999);
+  System.out.println(&#34;Default Employee Created&#34;);
+ }
+ 
+ public Employee(int i) {
+  this(&#34;John Doe&#34;, i);
+  System.out.println(&#34;Employee Created with Default Name&#34;);
+ }
+ public Employee(String s, int i) {
+  this.id = i;
+  this.name = s;
+  System.out.println(&#34;Employee Created&#34;);
+ }
+ public static void main(String[] args) {
+
+  Employee emp = new Employee();
+  System.out.println(emp);
+  Employee emp1 = new Employee(10);
+  System.out.println(emp1);
+  Employee emp2 = new Employee(&#34;Pankaj&#34;, 20);
+  System.out.println(emp2);
+ }
+
+ @Override
+ public String toString() {
+  return &#34;ID = &#34;+id+&#34;, Name = &#34;+name;
+ }
+ public int getId() {
+  return id;
+ }
+
+ public void setId(int id) {
+  this.id = id;
+ }
+
+ public String getName() {
+  return name;
+ }
+
+ public void setName(String name) {
+  this.name = name;
+ }
+
+}
+</code></pre><p>I have overridden the <a href="/community/tutorials/java-long-to-string">toString()</a> method to print some useful information about Employee object. Below is the output produced by above program.</p>
+<pre tabindex="0"><code>Employee Created
+Default Employee Created
+ID = 999, Name = John Doe
+Employee Created
+Employee Created with Default Name
+ID = 10, Name = John Doe
+Employee Created
+ID = 20, Name = Pankaj
+</code></pre><p>Notice how one constructor is being called from another constructor, that’s called constructor chaining process.</p>
+<h2 id="java-super-constructor"><a href="#java-super-constructor">Java Super Constructor</a><a href="#java-super-constructor"></a></h2>
+<p>Sometimes a class is inherited from a superclass, in that case, if we have to call superclass constructor then we can do it using <code>super</code> keyword. Let’s have a look at an example of using super class constructor. Note that super constructor call should be the first statement in the child class constructor. Also when instantiating child class constructor, java first initializes the super class and then child class. So if the super class constructor is not explicitly called then default or no-args constructor is called by java runtime. Let’s understand these concepts through some example program. Let’s assume we have two classes like below.</p>
+<pre tabindex="0"><code>package com.journaldev.constructor;
+
+public class Person {
+
+ private int age;
+
+ public Person() {
+  System.out.println(&#34;Person Created&#34;);
+ }
+
+ public Person(int i) {
+  this.age = i;
+  System.out.println(&#34;Person Created with Age = &#34; + i);
+ }
+
+}
+</code></pre><pre tabindex="0"><code>package com.journaldev.constructor;
+
+public class Student extends Person {
+
+ private String name;
+
+ public Student() {
+  System.out.println(&#34;Student Created&#34;);
+ }
+
+ public Student(int i, String n) {
+  super(i); // super class constructor called
+  this.name = n;
+  System.out.println(&#34;Student Created with name = &#34; + n);
+ }
+
+}
+</code></pre><p>Now if we create a Student object like below;</p>
+<pre tabindex="0"><code>Student st = new Student();
+</code></pre><p>What will be the output produced? The output of the above code will be:</p>
+<pre tabindex="0"><code>Person Created
+Student Created
+</code></pre><p>So the call went to the no-args constructor of Student class since there was no super call in the first statement the no-args or default constructor of Person class is called. Hence the output. What if we are using parameterized constructor of Student class as <code>Student st = new Student(34, &quot;Pankaj&quot;);</code>, the output will be:</p>
+<pre tabindex="0"><code>Person Created with Age = 34
+Student Created with name = Pankaj
+</code></pre><p>Here the output is clear because we are explicitly calling superclass constructor, so Java doesn’t need to do any extra work from their side.</p>
+<h2 id="java-copy-constructor"><a href="#java-copy-constructor">Java Copy Constructor</a><a href="#java-copy-constructor"></a></h2>
+<p>Java copy constructor takes the object of the same class as an argument and creates a copy of it. Sometimes we need a copy of another object to do some processing. We can do this by following ways:</p>
+<ol>
+<li>implement <a href="/community/tutorials/java-clone-object-cloning-java">cloning</a></li>
+<li>providing a utility method for <a href="/community/tutorials/java-string-copy">deep copy</a> of the object.</li>
+<li>Having a copy constructor</li>
+</ol>
+<p>Now let’s see how to write a copy constructor. Suppose we have a class <code>Fruits</code> like below.</p>
+<pre tabindex="0"><code>package com.journaldev.constructor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Fruits {
+
+ private List&lt;String&gt; fruitsList;
+
+ public List&lt;String&gt; getFruitsList() {
+  return fruitsList;
+ }
+
+ public void setFruitsList(List&lt;String&gt; fruitsList) {
+  this.fruitsList = fruitsList;
+ }
+
+ public Fruits(List&lt;String&gt; fl) {
+  this.fruitsList = fl;
+ }
+ 
+ public Fruits(Fruits fr) {
+  List&lt;String&gt; fl = new ArrayList&lt;&gt;();
+  for (String f : fr.getFruitsList()) {
+   fl.add(f);
+  }
+  this.fruitsList = fl;
+ }
+}
+</code></pre><p>Notice that <code>Fruits(Fruits fr)</code> is performing a deep copy to return the copy of the object. Let’s look at a test program to understand why it’s better to have copy constructor to copy an object.</p>
+<pre tabindex="0"><code>package com.journaldev.constructor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class CopyConstructorTest {
+
+ public static void main(String[] args) {
+  List&lt;String&gt; fl = new ArrayList&lt;&gt;();
+  fl.add(&#34;Mango&#34;);
+  fl.add(&#34;Orange&#34;);
+
+  Fruits fr = new Fruits(fl);
+
+  System.out.println(fr.getFruitsList());
+
+  Fruits frCopy = fr;
+  frCopy.getFruitsList().add(&#34;Apple&#34;);
+
+  System.out.println(fr.getFruitsList());
+
+  frCopy = new Fruits(fr);
+  frCopy.getFruitsList().add(&#34;Banana&#34;);
+  System.out.println(fr.getFruitsList());
+  System.out.println(frCopy.getFruitsList());
+
+ }
+
+}
+</code></pre><p>The output of the above program is:</p>
+<pre tabindex="0"><code>[Mango, Orange]
+[Mango, Orange, Apple]
+[Mango, Orange, Apple]
+[Mango, Orange, Apple, Banana]
+</code></pre><p>Notice that when copy constructor is used, both the original object and its copy are unrelated to each other and any modifications in one of them will not reflect into other. That’s all for the constructor in java.</p>
+<h2 id="advanced-use-cases-of-constructors-in-frameworks"><a href="#advanced-use-cases-of-constructors-in-frameworks">Advanced Use Cases of Constructors in Frameworks</a><a href="#advanced-use-cases-of-constructors-in-frameworks"></a></h2>
+<h3 id="constructors-in-spring-and-hibernate"><a href="#constructors-in-spring-and-hibernate">Constructors in Spring and Hibernate</a><a href="#constructors-in-spring-and-hibernate"></a></h3>
+<p>Constructors play a crucial role in Java frameworks such as <strong><a href="/community/tutorials/spring-framework">Spring</a></strong> and <strong><a href="/community/tutorials/hibernate-tutorial">Hibernate</a></strong>:</p>
+<ol>
+<li>
+<p><strong>Spring Framework</strong>: Uses <strong>constructor injection</strong> to enforce dependency management, particularly for <strong>immutable beans</strong>.</p>
+<pre tabindex="0"><code>   // This is a Spring component class for UserService.
+   // It is used to manage the user data and operations.
+   @Component
+   public class UserService {
+      // This is a final field for UserRepository.
+      // It is used to access the user data.
+      private final UserRepository userRepository;
+
+      // This is a constructor for UserService.
+      // It is used to initialize the UserRepository.
+      @Autowired
+      public UserService(UserRepository userRepository) {
+         this.userRepository = userRepository;
+      }
+   }
+</code></pre></li>
+<li>
+<p><strong>Hibernate ORM</strong>: Hibernate ORM uses default (no-argument) constructors to instantiate objects when retrieving data from the database. The default constructor is essential because Hibernate creates objects using reflection and needs a way to instantiate an entity before setting its properties.</p>
+<pre tabindex="0"><code>
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = &#34;users&#34;)
+public class User {
+
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   private Long id;
+
+   private String name;
+   private String email;
+
+   // **Default Constructor (Required by Hibernate)**
+   public User() {
+   }
+
+   // **Parameterized Constructor (For Custom Initialization)**
+   public User(String name, String email) {
+      this.name = name;
+      this.email = email;
+   }
+
+   // Getters and Setters
+   public Long getId() {
+      return id;
+   }
+
+   public void setId(Long id) {
+      this.id = id;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   public String getEmail() {
+      return email;
+   }
+
+   public void setEmail(String email) {
+      this.email = email;
+   }
+
+}
+</code></pre></li>
+</ol>
+<h2 id="faqs"><a href="#faqs">FAQs</a><a href="#faqs"></a></h2>
+<h3 id="1-what-is-a-constructor-in-java"><a href="#1-what-is-a-constructor-in-java">1. What is a constructor in Java?</a><a href="#1-what-is-a-constructor-in-java"></a></h3>
+<p>A constructor in Java is a special method that initializes objects. It is automatically called when an object is instantiated. Unlike regular methods, constructors do not have a return type, not even <code>void</code>. Constructors help in setting up initial values for object properties and ensure that an object is in a valid state from the beginning.</p>
+<h3 id="2-what-are-the-four-types-of-constructors-in-java"><a href="#2-what-are-the-four-types-of-constructors-in-java">2. What are the four types of constructors in Java?</a><a href="#2-what-are-the-four-types-of-constructors-in-java"></a></h3>
+<p>Java supports different types of constructors, which include:</p>
+<ul>
+<li><strong>Default Constructor</strong> – A no-argument constructor that initializes instance variables with default values.</li>
+<li><strong>Parameterized Constructor</strong> – Allows passing arguments to set initial values for object properties.</li>
+<li><strong>Copy Constructor</strong> – Creates a new object by copying an existing object’s values.</li>
+<li><strong>Private Constructor</strong> – Restricts object instantiation from outside the class, commonly used in the Singleton pattern. You can refer to this tutorial on <a href="/community/tutorials/builder-design-pattern-in-java">Builder Design Pattern in Java</a>.</li>
+</ul>
+<h3 id="3-why-use-a-constructor-instead-of-a-method"><a href="#3-why-use-a-constructor-instead-of-a-method">3. Why use a constructor instead of a method?</a><a href="#3-why-use-a-constructor-instead-of-a-method"></a></h3>
+<p>Constructors and methods differ in purpose. A constructor is called automatically when an object is created, ensuring proper initialization. Methods, on the other hand, must be explicitly invoked and are used to define behavior. Additionally, a constructor cannot return a value, whereas methods can return results based on business logic.</p>
+<p><strong>Feature</strong></p>
+<p><strong>Constructors</strong></p>
+<p><strong>Methods</strong></p>
+<p><strong>Purpose</strong></p>
+<p>Initialize objects</p>
+<p>Define behavior</p>
+<p><strong>Invocation</strong></p>
+<p>Automatically called</p>
+<p>Explicitly invoked</p>
+<p><strong>Return Type</strong></p>
+<p>No return type</p>
+<p>Can return a value</p>
+<p><strong>Overloading</strong></p>
+<p>Yes</p>
+<p>Yes</p>
+<p><strong>Overriding</strong></p>
+<p>No</p>
+<p>Yes</p>
+<p><strong>Access Modifiers</strong></p>
+<p>Yes</p>
+<p>Yes</p>
+<p><strong>Static</strong></p>
+<p>No</p>
+<p>Yes</p>
+<p><strong>Final</strong></p>
+<p>No</p>
+<p>Yes</p>
+<p><strong>Abstract</strong></p>
+<p>No</p>
+<p>Yes</p>
+<p><strong>Synchronized</strong></p>
+<p>No</p>
+<p>Yes</p>
+<h3 id="4-what-is-the-difference-between-a-constructor-and-an-object-in-java"><a href="#4-what-is-the-difference-between-a-constructor-and-an-object-in-java">4. What is the difference between a constructor and an object in Java?</a><a href="#4-what-is-the-difference-between-a-constructor-and-an-object-in-java"></a></h3>
+<ul>
+<li>A <strong>constructor</strong> is a block of code within a class that initializes an object.</li>
+<li>An <strong>object</strong> is an instance of a class created using the <code>new</code> keyword.</li>
+<li>The constructor is <strong>executed only once</strong> per object creation, while objects persist in memory and can be used multiple times.</li>
+</ul>
+<p><strong>Feature</strong></p>
+<p><strong>Constructors</strong></p>
+<p><strong>Objects</strong></p>
+<p><strong>Purpose</strong></p>
+<p>Initializes objects</p>
+<p>Represents an instance of a class</p>
+<p><strong>Creation</strong></p>
+<p>Executed once per object creation</p>
+<p>Created using the <code>new</code> keyword</p>
+<p><strong>Duration</strong></p>
+<p>Executes once</p>
+<p>Persists in memory and can be used multiple times</p>
+<p><strong>Role</strong></p>
+<p>Sets initial state of an object</p>
+<p>Represents a real-world entity or concept</p>
+<h3 id="5-what-is-the-benefit-of-using-a-constructor-in-java"><a href="#5-what-is-the-benefit-of-using-a-constructor-in-java">5. What is the benefit of using a constructor in Java?</a><a href="#5-what-is-the-benefit-of-using-a-constructor-in-java"></a></h3>
+<p>Constructors provide multiple benefits, including:</p>
+<ul>
+<li><strong>Automatic Object Initialization</strong>: Ensures an object starts in a valid state.</li>
+<li><strong>Code Reusability</strong>: Reduces redundancy by centralizing initialization logic.</li>
+<li><strong>Encapsulation &amp; Immutability</strong>: Used in frameworks like Spring and Hibernate to enforce dependency injection and configuration settings. You can refer to this tutorial on <a href="/community/tutorials/java-reflection-example-tutorial">Java Reflection Example</a>.</li>
+</ul>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a><a href="#conclusion"></a></h2>
+<p>Constructors are an essential part of Java programming, playing a crucial role in object initialization and class design. From simple default constructors to more advanced constructor chaining and dependency injection in frameworks like Spring and Hibernate, understanding how constructors work can help developers build robust, maintainable applications.</p>
+<p>By leveraging constructors effectively, you can enforce immutability, promote reusability, and optimize performance.</p>
+<p>You can check out these related tutorials to learn more:</p>
+<ul>
+<li><a href="/community/tutorials/builder-design-pattern-in-java">Builder Design Pattern in Java</a></li>
+<li><a href="/community/tutorials/java-reflection-example-tutorial">Java Reflection Example Tutorial</a></li>
+<li><a href="/community/tutorials/scanner-class-in-java">Scanner Class in Java</a></li>
+</ul>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/constructor-in-java">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

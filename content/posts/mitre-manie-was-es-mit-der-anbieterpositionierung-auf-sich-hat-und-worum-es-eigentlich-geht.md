@@ -1,6 +1,6 @@
 ---
 title: "MITRE-Manie: Was es mit der Anbieterpositionierung auf sich hat und worum es eigentlich geht"
-date: 2025-03-19
+date: 2025-01-06
 ---
 
 As ATT&CK Evaluations 2021 results publish next week, how do you navigate the flurry of vendor positioning to focus on the metrics that really matter?

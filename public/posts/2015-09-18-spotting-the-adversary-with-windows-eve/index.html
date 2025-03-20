@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Spotting the Adversary with Windows Event Log Monitoring</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Spotting the Adversary with Windows Event Log Monitoring</h1>
+			<b><time>17.09.2015 21:51</time></b>
+		       
+
+			<div>
+				<h1 id="spotting-the-adversary-with-windows-event-log-monitoring">Spotting the Adversary with Windows Event Log Monitoring</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Part I.</p>
+<p><a href="http://www.redblue.team/2015/09/spotting-adversary-with-windows-event_21.html">Update: Part 2 can be found here.</a></p>
+<p>O.K. you have purchased a SIEM, added your Windows servers and you&rsquo;re ready to create your use-cases. You draw a blank. The amazing part about a SIEM is that you can build use-cases for literally thousands of scenarios. Unfortunately, however, the problem with a SIEM is that you have to create literally tens of thousands of alerts to monitor said use-cases. Monitoring for five failed logins followed by a successful login is great, but what good is the alert if the account locks after three failed attempts? Or if you have 10,000 users to monitor? To add to this, according to <a href="http://www.verizonenterprise.com/resources/reports/rp_data-breach-investigations-report-2013_en_xg.pdf">Verizon&rsquo;s 2013 Data Breach Report</a>, 76% of breaches involved stolen or weak credentials. So what to monitor for?</p>
+<p>I find that it is often best to start with the basics-to report and/or alert on basic system functionality at the start, and to build more advanced use-cases based on abnormal behaviour outside of your companies policies.</p>
+<p>Fortunately, the friendly folks at the NSA have written <a href="https://www.nsa.gov/ia/_files/app/spotting_the_adversary_with_windows_event_log_monitoring.pdf">Spotting the Adversary with Windows Event Log Monitoring</a>, a great guide that walks you through what they have determined are the 16 primary categories to focus on within Windows event logs to ensure system security. We will be going through the first eight in part I, and the second eight in <a href="http://www.redblue.team/2015/09/spotting-adversary-with-windows-event_21.html">part II</a>.</p>
+<ol>
+<li>Clearing Event Logs</li>
+<li>Account Usage</li>
+<li>Remote Desktop Logon Detection</li>
+<li>Windows Defender Activities</li>
+<li>Application Crashes</li>
+<li>Software and Service Installation</li>
+<li>External Media Detection</li>
+<li>Pass the Hash Detection</li>
+<li>AppLocker</li>
+<li>System or Service Failures</li>
+<li>Windows Update Errors</li>
+<li>Kernel Driver Signing</li>
+<li>Group Policy Errors</li>
+<li>Mobile Device Activities</li>
+<li>Printing Services</li>
+<li>Windows Firewall</li>
+</ol>
+<p>Before I start I want to clarify a not-so-obvious gotcha about Windows event logs for newcomers&ndash;Windows NT to Windows 2003 event IDs are identified via three digits; however, Windows Vista/Windows 2008 and beyond event IDs are identified by a four-digit ID. Therefore, any event ID with three digits is only applicable to Windows 2003 and before (and four digits beyond 2003.) Another useful tip is <a href="https://www.ultimatewindowssecurity.com/">Randy&rsquo;s Ultimate Windows Security</a>, which provides detailed information on nearly every Windows security event.</p>
+<h3 id="1-clearing-event-logs">1. Clearing Event Logs</h3>
+<p>This is often the first alert I will install in a client&rsquo;s environment. There are very few reasons to clear the audit log directly, if the audit log is too large the event log&rsquo;s maximum size should be <a href="https://technet.microsoft.com/en-us/library/cc759052(v=ws.10).aspx">set</a> to a smaller size. As such, outside of an improperly configured device an event log would only be cleared to hide malicious activities. As such, a simple alert looking for the following events is usually sufficient.</p>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgsOuvkfl9chy-TDwf9t46QbtzqMP90EzV9xAgZYf66WXuGqQpdqF3k2GzTBLYtXpw2EDFFHaaCjzQ-xF-4eJ8AP44qO-ab7krcnp6FxjQdI1lSodwupi6pQiVOxr3F6xv_x0UMk8OzxHLH/s1600/4.6+Clearing+Event+Logs.png">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgsOuvkfl9chy-TDwf9t46QbtzqMP90EzV9xAgZYf66WXuGqQpdqF3k2GzTBLYtXpw2EDFFHaaCjzQ-xF-4eJ8AP44qO-ab7krcnp6FxjQdI1lSodwupi6pQiVOxr3F6xv_x0UMk8OzxHLH/s1600/4.6&#43;Clearing&#43;Event&#43;Logs.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Table-1: Event Log Cleared</p>
+<h3 id="2-account-usage">2. Account Usage</h3>
+<p>A proper set of alerts and reports for improper account activity is key to a useful SIEM. Setting an alert for X failed logins may drive your SOC crazy every Monday morning after a long weekend, but setting this threshold to alert when it occurs after-hours or on non-user systems could indicate malicious behaviour.</p>
+<p>The size of your environment and your companies security policies will weigh heavily on the value of certain actions being an alert or a report&ndash;a team of 200 may have a weekly report on created users, whereas a team of 20,000 may have a daily report. As such I will make my recommendations based on generalizations of a business with 1,000 users:</p>
+<ul>
+<li>A weekly report for created users and users added to privileged groups;</li>
+<li>An alert for Security-enabled group modifications;</li>
+<li>An alert for service account failed logins or account lockouts, although this is prone to alert-spamming in the case of an incorrectly configured script or service continually trying to log in;</li>
+<li>An alert for three non-service failed logins to a non-user system after-hours;</li>
+<li>Interactive logins by a service account; and</li>
+<li>A successful user login from a non-whitelisted country</li>
+</ul>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgeEUksNKrJCDG4sDxuAG6rqL9aPmhGHbZpNz4U3FmpSIWudBX9nUAMwUyIYWEyPwfuELUxb8GKZYQclK3ymy8zKbUJ9_eaLHWG_seei1DH909Ts4Ac_BswfJA8fChXMvD81wht4K3dmqAv/s1600/4.8+Account+Usage.png">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgeEUksNKrJCDG4sDxuAG6rqL9aPmhGHbZpNz4U3FmpSIWudBX9nUAMwUyIYWEyPwfuELUxb8GKZYQclK3ymy8zKbUJ9_eaLHWG_seei1DH909Ts4Ac_BswfJA8fChXMvD81wht4K3dmqAv/s1600/4.8&#43;Account&#43;Usage.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Table-2: Account Usage</p>
+<p>Of course this is not a complete list of recommended alerts or reports, rather a couple of examples to get you started.</p>
+<h3 id="3-remote-desktop-logon-detection">3. Remote Desktop Logon Detection</h3>
+<p>Remote desktop alerts and reports are tricky. Datacenter jumpboxes are the most used machines&ndash;they are the most heavily used, store endless amounts of &rsquo;temporary&rsquo; data, and are often the most sought after machine by a hacker. Typically once a hacker gains access to a jumpbox they have access to your most valuable resources, so tracking access is very important.</p>
+<p>But how do you identify when access is malicious? In a 24h SOC access will be made 24 hours a day, so after-hour logins are not useful. This is something that I usually need to discuss in length with a client to really understand their environment before making remote desktop alerts. Some general concepts are:</p>
+<ul>
+<li>If your jumpbox is accessed from a specific subnet, alert when the connection is made from a different subnet, such as the DMZ.</li>
+<li>Alert when a service account attempts to connect to a jumpbox</li>
+<li>Alert or report for after-hour connections during non-change-window hours</li>
+</ul>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgtmVvEf9TQ6wBzzkiXh3nEux09SZc9kMdXhEcckNMbOP6lmRGAsmevWoB71mh0LP_MYBTRGOEQKshnIpnv9xnMd5bObD_lbI1Kr-uQrts5mZoTuXJgZ7BGms2Oi9lXBuBD7wZN55tE4ejD/s1600/4.16+Remote+Desktop+Logon+Detection.png">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgtmVvEf9TQ6wBzzkiXh3nEux09SZc9kMdXhEcckNMbOP6lmRGAsmevWoB71mh0LP_MYBTRGOEQKshnIpnv9xnMd5bObD_lbI1Kr-uQrts5mZoTuXJgZ7BGms2Oi9lXBuBD7wZN55tE4ejD/s1600/4.16&#43;Remote&#43;Desktop&#43;Logon&#43;Detection.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Table-3: Remote Desktop Logins</p>
+<p>A remote desktop login is a standard login with a Logon Type of 10. Logon types are indicators of the login methodology used during the login&ndash;interactive, network, batch service, etc. They are essential for understanding how someone accessed a system. There is a large difference between a user logging in after hours via an RDP session and a new scheduled task.</p>
+<h3 id="4-windows-defender-activities">4. Windows Defender Activities</h3>
+<p>This is pretty straight forward&ndash;a windows defender event shows detected malware/failed scan/failed update, etc. Essentially all events should be an alert.</p>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhSXagPdQFUhvGwgVaWgxkUFB3Qcia-yebkZYY0eHFWYW-GBPeXIL4-netNBZhcwX592zMc1i0jRAQ1qQNxA4-vRvPyNokmWcxvkRrNRfvI7qWZOR_l8O8L4nzy1tmxsF9QO-YeLYgndFcx/s1600/4.11+Windows+Defender+Activities.png">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhSXagPdQFUhvGwgVaWgxkUFB3Qcia-yebkZYY0eHFWYW-GBPeXIL4-netNBZhcwX592zMc1i0jRAQ1qQNxA4-vRvPyNokmWcxvkRrNRfvI7qWZOR_l8O8L4nzy1tmxsF9QO-YeLYgndFcx/s1600/4.11&#43;Windows&#43;Defender&#43;Activities.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Table-4: Windows Defender</p>
+<h3 id="5-application-crashes">5. Application Crashes</h3>
+<p>Application crashes are difficult to judge whether they will be effective alerts or reports in a client&rsquo;s environment. I tend to try to determine if the company has the resources available to perform an active investigation as towards why the application crashed. In the least a report or alert should be made for your high-value assets. That said, application crashes can be an indication of malicious code interfacing with an application to exploit it or replace it.</p>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiEDCuKU72lvSnU-pFn70WUO-MQ4ZQ147WfClt2_FDD7ZzWx17T8qW6PpYAW-cSQnbN-xX2wzYrZbVOF2mWPJcIC0_eFSq474e1PDor0NFKxf_C6PTBhRcoRQFCry-qU-ZEAtq26DowtLIx/s1600/4.2+Application+Crashes.png">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiEDCuKU72lvSnU-pFn70WUO-MQ4ZQ147WfClt2_FDD7ZzWx17T8qW6PpYAW-cSQnbN-xX2wzYrZbVOF2mWPJcIC0_eFSq474e1PDor0NFKxf_C6PTBhRcoRQFCry-qU-ZEAtq26DowtLIx/s1600/4.2&#43;Application&#43;Crashes.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Table-5: Application Crashes</p>
+<h3 id="6-software-and-service-installation">6. Software and Service Installation</h3>
+<p>Installed software and services should be at the least a report, and an alert for high priority assets (although change-window time frames can be excluded to avoid false-positives.)</p>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgPRgr9iq_hALH8cqDG_0XTrxA9BDp8pugMyBsz0Uq2nr-Pv5qP5lQtK4Z3z7nafv8Z38dxbSFP7GqTrKc7C_OFNSoAUxPj441N4f3-3GRGBnkO3RoiVK74Hq9xv4J8ozwjujPXov27iFv0/s1600/4.7+Software+and+Service+Installation.png">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgPRgr9iq_hALH8cqDG_0XTrxA9BDp8pugMyBsz0Uq2nr-Pv5qP5lQtK4Z3z7nafv8Z38dxbSFP7GqTrKc7C_OFNSoAUxPj441N4f3-3GRGBnkO3RoiVK74Hq9xv4J8ozwjujPXov27iFv0/s1600/4.7&#43;Software&#43;and&#43;Service&#43;Installation.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Table-5: Software and Service Installation</p>
+<h3 id="7-external-media-detection">7. External Media Detection</h3>
+<p>There should always be a legitimate reason for plugging an external device into a high-value asset. An alert is recommended for medium to high severity events, and it is good to monitor external devices that are plugged in a new service is run within a few minutes on the system as this often indicates that something has executed off of the external media.</p>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhqDB-8cv1rwvN7l4LCywHLWBzAz9XcED5xLShYHSemBtHbu5Mo77DzKHJt7eCAsvMCXIow0NzEhF0tbUxog1ThTvbhqybxKuDl7Y4BDi3vh69OQcgn_Kz5OoPWlKy8h6obnRlsuj5SgCSX/s1600/4.13+External+Media+Detection.png">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhqDB-8cv1rwvN7l4LCywHLWBzAz9XcED5xLShYHSemBtHbu5Mo77DzKHJt7eCAsvMCXIow0NzEhF0tbUxog1ThTvbhqybxKuDl7Y4BDi3vh69OQcgn_Kz5OoPWlKy8h6obnRlsuj5SgCSX/s1600/4.13&#43;External&#43;Media&#43;Detection.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Table-6: External Media Detection</p>
+<h3 id="8-pass-the-hash-detection">8. Pass the Hash Detection</h3>
+<p>Tracking user accounts for detecting Pass the Hash (PtH) requires creating a custom view with XML to configure more advanced filtering options. The event query language is based on XPath, a query language for selecting <a href="https://en.wikipedia.org/wiki/Node_(computer_science)" title="Node (computer science)">nodes</a> from an <a href="https://en.wikipedia.org/wiki/XML" title="XML">XML</a> document. </p>
+<p>Spotting the Adversary has defined a QueryList described below that is limited in detecting PtH attacks. These queries focus on discovering lateral movement by an attacker using local accounts that are not part of the domain. The QueryList captures events that show a local account attempting to connect remotely to another machine not part of the domain. This event is a rarity so any occurrence should be treated as suspicious.</p>
+<p>In the QueryList below, substitute the <!-- raw HTML omitted --> section with the desired domain name.<br>
+<!-- raw HTML omitted --><br>
+<!-- raw HTML omitted --><br>
+<!-- raw HTML omitted --><br>
+*[System[(Level=4 or Level=0) and (EventID=4624)]]<br>
+and<br>
+*[EventData[Data[@Name=&lsquo;LogonType&rsquo;] and (Data=&lsquo;3&rsquo;)]]<br>
+and<br>
+*[EventData[Data[@Name=&lsquo;AuthenticationPackageName&rsquo;] = &lsquo;NTLM&rsquo;]]<br>
+and<br>
+*[EventData[Data[@Name=&lsquo;TargetUserName&rsquo;] != &lsquo;ANONYMOUS LOGON&rsquo;]]<br>
+and<br>
+*[EventData[Data[@Name=&lsquo;TargetDomainName&rsquo;] != &lsquo;<!-- raw HTML omitted -->&rsquo;]]<br>
+<!-- raw HTML omitted --><br>
+<!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<p>These XPath queries are used for the Event Viewer’s Custom Views, and are not applicable to a SIEM itself.</p>
+<p>The successful use of PtH for lateral movement between workstations would trigger the following:<br>
+   - Event ID <strong>4624</strong> <br>
+   - Event level <strong>Information</strong> <br>
+   - LogonType of <strong>3</strong> <br>
+   - Logon method is <strong>NTLM</strong> authentication <br>
+   - A <strong>not-domain</strong> logon and not <strong>ANONYMOUS</strong> account. </p>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtp5HExSPDCOUjLPcIVhO1umB-wUri9P_onvr7lHmHFOV-4rZDyxKS0JpftWM6MaSfoUr7D-XRCejzr6YLpfJnyD9uV6wYDVUDEy_u0LdCn2N-EAqwRIJUE5Ju5SjJnw8TihgXiSSHTTb4/s1600/4.15+Pass+the+Hash+Detection.png">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtp5HExSPDCOUjLPcIVhO1umB-wUri9P_onvr7lHmHFOV-4rZDyxKS0JpftWM6MaSfoUr7D-XRCejzr6YLpfJnyD9uV6wYDVUDEy_u0LdCn2N-EAqwRIJUE5Ju5SjJnw8TihgXiSSHTTb4/s1600/4.15&#43;Pass&#43;the&#43;Hash&#43;Detection.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Table-8: Pass the Hash Successful Logon Properties</p>
+<p>A failed PtH logon attempt would have all of the above properties except Event ID <strong>4625</strong> indicating a failed logon:</p>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgeJgcD6_e8nHxgR_mAh2_vqbZckgmHemHWwRw3NIGONMl8qrWrvjFK_-RQEM-HyHNNtoKlOvqHj1azzIx-tvySIP3P7Ipw-q1g0qJqKHiSDhT1yowKxvDHxd5f3j81s_pjahNBoi316lHL/s1600/4.15+Pass+the+Hash+Detection-2.png">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgeJgcD6_e8nHxgR_mAh2_vqbZckgmHemHWwRw3NIGONMl8qrWrvjFK_-RQEM-HyHNNtoKlOvqHj1azzIx-tvySIP3P7Ipw-q1g0qJqKHiSDhT1yowKxvDHxd5f3j81s_pjahNBoi316lHL/s1600/4.15&#43;Pass&#43;the&#43;Hash&#43;Detection-2.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Table-9: Pass the Hash Failed Logon Properties</p>
+<h3 id="conclusion"><strong>Conclusion</strong></h3>
+<p>The NSA&rsquo;s <a href="https://www.nsa.gov/ia/_files/app/spotting_the_adversary_with_windows_event_log_monitoring.pdf">Spotting the Adversary with Windows Event Log Monitoring</a> provides an excellent breakdown of key Windows events when creating an initial set of alerts and reports for key windows assets. Part two will break down the second half of the event categories</p>
+<h4 id="source"><a href="https://www.redblue.team/feeds/2649483001019921344/comments/default">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

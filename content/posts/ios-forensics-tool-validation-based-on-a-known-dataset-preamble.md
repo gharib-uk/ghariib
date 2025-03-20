@@ -1,13 +1,12 @@
 ---
 title: "iOS Forensics: tool validation based on a known dataset - Preamble"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
-  - "cybersecurity"
-  - "cybersecurity-awareness"
-  - "forensics"
-  - "security"
-  - "security-awareness"
-  - "security-awareness-3-0"
+  - "general"
+tags: 
+  - "ces"
+  - "edge"
+  - "hardware"
 ---
 
 Hello world, it’s been a while since my last series of blog posts! But now I am ready to share with you the results of my recent research.

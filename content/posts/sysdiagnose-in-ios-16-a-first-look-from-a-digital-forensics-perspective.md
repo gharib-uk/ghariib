@@ -1,13 +1,13 @@
 ---
 title: "Sysdiagnose in iOS 16: a first look from a Digital Forensics perspective"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
-  - "cybersecurity"
-  - "cybersecurity-awareness"
-  - "forensics"
-  - "security"
-  - "security-awareness"
-  - "security-awareness-3-0"
+  - "general"
+tags: 
+  - "ces"
+  - "edge"
+  - "hardware"
+  - "pcs"
 ---
 
 Back in May 2019, along with my colleagues Heather Mahalik and Adrian Leong, we wrote the paper "**Using Apple “Bug Reporting” for forensic purposes**" and some scripts to parse data stored in Sysdiagnose logs.

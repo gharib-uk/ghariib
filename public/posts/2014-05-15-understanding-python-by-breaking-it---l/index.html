@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Understanding Python by breaking it - Lvl 2</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Understanding Python by breaking it - Lvl 2</h1>
+			<b><time>15.05.2014 17:51</time></b>
+		       
+
+			<div>
+				<h1 id="understanding-python-by-breaking-it---lvl-2">Understanding Python by breaking it - Lvl 2</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>If you have not read my <a href="http://blog.hakril.net/articles/0-understanding-python-by-breaking-it.html">previous article</a>, here is what you need to know:</p>
+<ul>
+<li>the <code>ctypes</code> module allows you to manipulate C structure from Python,</li>
+<li>we can map a <code>ctypes</code> structure on a given address using <code>struct.from_address</code>,</li>
+<li>in CPython: <code>id(obj)</code> returns the address of obj.</li>
+</ul>
+<h2 id="using-ctypesstructure">Using <code>ctypes.Structure</code></h2>
+<p>Last time, I only used <code>id(obj)</code> to access the internal variables of an object. This time we need to do more complex things, so I am going to use the <code>ctypes.Structure</code> type for more readability.<br>
+Here is an example:</p>
+<pre tabindex="0"><code>import ctypes
+&gt;&gt;&gt; class PyObj(ctypes.Structure):
+...     _fields_ = [(&#34;ob_refcnt&#34;, ctypes.c_size_t),
+...                 (&#34;ob_type&#34;, ctypes.c_void_p)] # Must be casted
+
+# Inheritance of ctypes.Structure: PyVarObj will also have the fields of PyObj
+&gt;&gt;&gt; class PyVarObj(PyObj):
+...     _fields_ = [(&#34;ob_size&#34;, ctypes.c_size_t)]
+
+&gt;&gt;&gt; l = [1,2,3,4] 
+&gt;&gt;&gt; lm = PyVarObj.from_address(id(l))
+&gt;&gt;&gt; lm.ob_refcnt
+1L
+&gt;&gt;&gt; lm.ob_size
+4L
+&gt;&gt;&gt; lm.ob_size = 2
+&gt;&gt;&gt; l
+[1,2]
+</code></pre><p>Now we have a nice way to access to C-only data with readable and explicite names!</p>
+<p>So, let&rsquo;s get to work !</p>
+<h2 id="dummy-code-execution">Dummy code execution</h2>
+<h3 id="instruction-pointer-control">Instruction Pointer Control</h3>
+<p>Before having a nice and reliable native code execution, the first step is having code execution at all. The most obvious type we want to check is <em>built-in function</em>, this is a Python type that represents native code.</p>
+<p>Let&rsquo;s have a look at the structure of a <em>built-in function</em>:</p>
+<pre tabindex="0"><code>/** My own comments begin by &#39;**&#39; **/
+/** From: Include/methodobject.h **/
+
+typedef PyObject *(*PyCFunction)(PyObject *, PyObject *); /** A standard function pointer **/
+
+struct PyMethodDef {
+    const char  *ml_name;   /* The name of the built-in function/method */
+    PyCFunction  ml_meth;   /* The C function that implements it */
+    int      ml_flags;  /* Combination of METH_xxx flags, which mostly
+                   describe the args expected by the C func */
+    const char  *ml_doc;    /* The __doc__ attribute, or NULL */
+};
+
+typedef struct {
+    PyObject_HEAD
+    PyMethodDef *m_ml; /* Description of the C function to call */
+    PyObject    *m_self; /* Passed as &#39;self&#39; arg to the C func, can be NULL */
+    PyObject    *m_module; /* The __module__ attribute, can be anything */
+} PyCFunctionObject;
+</code></pre><p>We can see that a <code>PyCFunctionObject</code> is just a C function pointer with some meta-data.<br>
+Here is the <code>ctypes</code> structure that represents those two structs:</p>
+<pre tabindex="0"><code>class PyMethodDef(ctypes.Structure):
+    _fields_ = [(&#34;ml_name&#34;, ctypes.POINTER(ctypes.c_char)), (&#34;ml_meth&#34;, ctypes.c_void_p),
+            (&#34;ml_flags&#34;, ctypes.c_int), (&#34;ml_doc&#34;, ctypes.POINTER(ctypes.c_char))]
+
+# Reuse of PyObj from the first example
+class PyCFunctionObject(PyObj):
+    _fields_ = [(&#34;m_ml&#34;, ctypes.POINTER(PyMethodDef)),
+        (&#34;m_self&#34;, ctypes.c_void_p), (&#34;m_module&#34;, ctypes.c_void_p)]
+
+# The only new thing is ctypes.POINTER.
+# This represent a pointer to another type, the
+# content can be accessed by using `.contents`
+
+&gt;&gt;&gt; mabs = PyCFunctionObject.from_address(id(abs))
+&gt;&gt;&gt; mabs.m_ml.contents.ml_name[0:3]
+&#39;abs&#39;
+</code></pre><p>It seems to work. Now we need to see if code execution works too.</p>
+<pre tabindex="0"><code># Launching Python into GDB to nicely handle the crash
+$ gdb -q -args `which python` -i intro_type.py
+...
+# Get the address of the builtin `abs`
+(gdb) x/i &#39;builtin_abs.32990&#39;
+   0x51c8f0 &lt;builtin_abs.32990&gt;:        sub    $0x8,%rsp 
+(gdb) r
+...
+&gt;&gt;&gt; # repeat code of last example
+# See if the `abs` C code match with what we found in gdb
+&gt;&gt;&gt; mabs.m_ml.contents.ml_meth
+&#39;0x51c8f0&#39;
+&gt;&gt;&gt; mabs.m_ml.contents.ml_meth = 0x42424242
+&gt;&gt;&gt; abs(-1)
+# Yeah!
+Program received signal SIGSEGV, Segmentation fault.
+0x0000000042424242 in ?? ()
+(gdb)
+</code></pre><p>That was easy! but this part was the simple one. If we want to get reliable code execution many steps remain.</p>
+<h3 id="executing-our-code">Executing our code</h3>
+<p>The next step is to actually execute some of our code. For that, I chose the <code>mmap</code> module to create executable pages and stuff them with code and data.</p>
+<p>There is only two problems with the <code>mmap</code> module:</p>
+<ul>
+<li>the <code>mmap</code> type doesn&rsquo;t expose the actual address of the page to Python (as usual we will use <code>ctypes</code> to figure that out),</li>
+<li>the <code>mmap</code> &ldquo;API&rdquo; is not the same for Linux and Windows (I have simply created my own platform-independant wrapper for that).</li>
+</ul>
+<p>How to get the real address of the mmaped page? same procedure as usual:</p>
+<pre tabindex="0"><code>typedef struct {
+    PyObject_HEAD
+    char *      data;
+    size_t      size;
+    size_t      pos;    /* relative to offset */
+    ... /** Other fields that are non-relevant to our goal **/
+} mmap_object;
+</code></pre><p>All we need is the first field, which points to our page. In the following examples, all <code>PyObj</code> that I describe can be found in the file <code>intro_type.py</code>.</p>
+<pre tabindex="0"><code>import intro_type
+import mmap
+# Ctypes object for introspection
+class PyMmap(intro_type.PyObj):
+    _fields_ = [(&#34;ob_addr&#34;, ctypes.c_size_t)]
+
+
+# Specific mmap class for code injection
+class MyMap(mmap.mmap):
+    &#34;&#34;&#34; A mmap that is never unmaped and that contains the page address &#34;&#34;&#34;
+    def __init__(self, *args, **kwarg):
+        # Get the page address by introspection of the C struct
+        m = PyMmap.from_address(id(self))
+        self.addr = m.ob_addr
+        # Prevent garbage collection (and so the unmapping) of the page
+        m.ob_refcnt += 1
+
+    @classmethod
+    def get_map(cls, size) 
+    &#34;&#34;&#34; Returns a page of size &#39;size&#39;: the implementation is not important for our example.
+        See the repository if you want the actual code. ;)
+    &#34;&#34;&#34;
+</code></pre><p>Now, to be sure that our first step (simple code execution) works, we will replace the <code>abs</code> builtin by an <code>identity</code> one, equivalent to <code>lambda x : x</code>.</p>
+<p>I run a <code>64 bits</code> Python so the example of native code here is 64 bits, if you want the 32 bits version: look at the repository. ;)<br>
+The payload used for identity is:</p>
+<pre tabindex="0"><code>    # All ctypes structs and MyMap classes are in the intro_type.py file.
+    import intro_type
+
+    # RSI is the first argument we pass and RAX is the return value.
+    # So we just return our first argument.
+
+    # Normally, the first argument of a function is RDI but builtins receive a &#39;self&#39; as the actual first argument.
+    payload = &#34;4889F0&#34; + &#34;C3&#34;  # mov rax, rsi ; ret
+    payload = payload.decode(&#39;hex&#39;)
+
+    # Get a page.
+    page = intro_type.MyMap.get_map(0x1000)
+    # Put our payload at the beginning.
+    page[0:len(payload)] = payload
+    mabs = intro_type.PyCFunctionObject.from_address(id(abs))
+    # Change the function pointer to the address of our payload.
+    mabs.m_ml.contents.ml_meth = page.addr
+
+    &gt;&gt;&gt; abs(4)
+    4
+    # Well it doesn&#39;t segfault: good news!
+    &gt;&gt;&gt; abs(-4)
+    -4 
+    # Well this is not the real abs anymore: another good news!
+    &gt;&gt;&gt; x = (1,2,3)
+    &gt;&gt;&gt; abs(x)
+    (1,2,3)
+    &gt;&gt;&gt; abs(x)
+    &lt;refcnt 0 at 0x7f48b121eaa0&gt;
+    # Yep, do not forget that our function doesn&#39;t increment the refcount of the returned object.
+    # This version can lead to crash!
+</code></pre><p>Perfect, our dummy code execution works!</p>
+<h2 id="object-hand-crafting">Object hand-crafting</h2>
+<p>The next step of our journey is the hand-crafting of some Python objects.<br>
+Why? because it&rsquo;s fun and it will be useful for our final goal!</p>
+<h3 id="writing-raw-objects-in-memory">Writing raw objects in memory</h3>
+<p>The first step of object crafting is to write the object data in memory.<br>
+For that, we are going to use the <code>struct</code> module (another really useful module). In this example we write the data for an <code>int</code> object (in 64 bits Python):</p>
+<pre tabindex="0"><code>/** here is the struct that represents an int **/
+typedef struct {
+    PyObject_HEAD
+    long ob_ival;
+} PyIntObject;
+</code></pre><p>So:</p>
+<pre tabindex="0"><code>import struct
+
+&gt;&gt;&gt; help(struct.pack_into)
+pack_into(...)
+   Pack the values v1, v2, ... according to fmt.
+   Write the packed bytes into the writable buffer buf starting at offset.
+# This module heavily uses the struct format.
+# Doc is here: https://docs.python.org/2/library/struct.html.
+
+# Write three unsigned long long in little endian at offset 0 of &#39;page&#39;.
+&gt;&gt;&gt; struct.pack_into(&#34;&lt;QQQ&#34;, page, 0,
+        2,       #ob_refcnt
+        id(int), # ob_type            
+        42)      # ob_ival
+
+# That&#39;s all!
+# Problem is: I have no way to prove you that it works before the next sub-step. :(
+# Trust me!
+</code></pre><p>The problem is: even if we have crafted a valid <code>int</code> in memory, it is not usable since the Python interpreter as no reference to it.<br>
+The next step is to create a reference to our crafted objet.</p>
+<h3 id="giving-life-to-the-crafted-object">Giving life to the crafted object</h3>
+<p>Here is the problem:</p>
+<ul>
+<li>we have a valid object in memory,</li>
+<li>we have its address,</li>
+<li>the Python interpreter have no reference to it,</li>
+<li>we need to create the reference to give life to our object.</li>
+</ul>
+<p>All we have to do is call a function that can return arbitrary valid references.</p>
+<p>The easiest way is to return the address (so the object) corresponding to the value of the <code>int</code> we receive as parameter.<br>
+Think of it as the reverse <code>id</code> function:</p>
+<pre tabindex="0"><code># How our function should work:
+&gt;&gt;&gt; x = (1,2,3)
+&gt;&gt;&gt; id(x)
+140147953449472
+&gt;&gt;&gt; my_func(140147953449472)
+(1,2,3)
+</code></pre><p>If this description is not enough, here is what the C code should be:</p>
+<pre tabindex="0"><code>PyObject* my_func(PyIntObject* i)
+{
+    return (PyObject *) i-&gt;ob_ival;
+}
+/** Here we can see can the function can be harmful if wrongly used **/
+</code></pre><p>So, here are the payloads for this function:</p>
+<pre tabindex="0"><code># int-to-object payloads:
+
+# 64bits
+# mov rax, [rsi + 0x10] # rsi is the address of the int; [rsi + 0x10] the ob_ival of the int
+# ret
+bootstrap_64 = &#34;48 8b 46 10 C3&#34;.replace(&#34; &#34;, &#34;&#34;).decode(&#34;hex&#34;)
+
+# 32bits
+# mov eax, [esp + 8] # [esp + 8] -&gt; builtin argument
+# mov eax, [eax + 0x8] # [eax + 14] ob_ival
+# ret
+bootstrap_32 = &#34;8B 44 24 08 8B 40 08 C3&#34;.replace(&#34; &#34;, &#34;&#34;).decode(&#34;hex&#34;)
+</code></pre><p>Putting everything together, we get:</p>
+<pre tabindex="0"><code>import struct
+import intro_type
+
+# Write our object into a page.
+&gt;&gt;&gt; page = intro_type.MyMap.get_map(0x1000)
+&gt;&gt;&gt; struct.pack_into(&#34;&lt;QQQ&#34;, page, 0, 2, id(int), 42)
+# Put the payload just after our int object in the page.
+&gt;&gt;&gt; bootstrap_64 = &#34;48 8b 46 10 C3&#34;.replace(&#34; &#34;, &#34;&#34;).decode(&#34;hex&#34;)
+&gt;&gt;&gt; page[24:24 + len(bootstrap_64)] = bootstrap_64
+# Replace abs by our function.
+&gt;&gt;&gt; mabs = intro_type.PyCFunctionObject.from_address(id(abs))
+&gt;&gt;&gt; mabs.m_ml.contents.ml_meth = page.addr + 24
+# Give life to our int!
+&gt;&gt;&gt; x = abs(int(page.addr))
+#IT&#39;S ALIVE!!
+&gt;&gt;&gt; x
+42
+# Proof that our int is not the original 42 (addresses comparaison).
+&gt;&gt;&gt; x is 42
+False
+# Proof that we have an object at the beginning of our page.
+&gt;&gt;&gt; hex(id(x))
+&#39;0x7ffff7ff8000L&#39;
+&gt;&gt;&gt; hex(page.addr)
+&#39;0x7ffff7ff8000L&#39;
+</code></pre><p>We are now able to create Python objects out of the great void! We are near our goal.</p>
+<h2 id="reliable-native-code-execution">Reliable native code execution</h2>
+<p>The problems with the previous dummy code execution are:</p>
+<ul>
+<li>we have a limited number of different functions (limited by the number of existing builtins),</li>
+<li>each time we create a new dummy-execution we lose a builtin,</li>
+<li>we put the interpreter in an instable state as any part of the code could potentially use a replaced buitlin without knowing.</li>
+</ul>
+<p>With the tools we acquired previously, the obvious solution to these problems is: <strong>we are going to craft our own builtin objects!</strong></p>
+<p>By doing so, we can have any number of different native functions without putting the interpreter in an unstable state by replacing builtins.</p>
+<p>So here are the steps to create a complete builtin object:</p>
+<ul>
+<li>
+<p>Write our payload on a page.</p>
+</li>
+<li>
+<p>Write a <code>PyMethodDef</code> on the page with the following values:</p>
+<ul>
+<li><code>ml_name</code>: address of a C string (using <code>ctypes.addressof(ctypes.create_string_buffer(name))</code>),</li>
+<li><code>ml_math</code>: address of the payload,</li>
+<li><code>ml_flags</code>: <code>8</code> for <code>METH_O</code> (method with a simple object, can be changed depending of our need),</li>
+<li><code>ml_doc</code>: <code>0</code> (no need to document so <code>None</code> is cool) or address of a C string.</li>
+</ul>
+</li>
+<li>
+<p>Write a <code>PyCFunctionObject</code> on the page with the following values:</p>
+<ul>
+<li><code>ob_refcnt</code>: <code>0x42</code> (we really don&rsquo;t want it to be collected since not allocated by Python),</li>
+<li><code>ob_type</code>: <code>&lt;type 'builtin_function_or_method'&gt;</code> so <code>id(type(abs))</code> is fine,</li>
+<li><code>m_ml</code>: address of <code>PyMethodDef</code>,</li>
+<li><code>m_self</code>: <code>0</code>,</li>
+<li><code>m_module</code>: <code>0</code> (or any <code>PyObj</code> address).</li>
+</ul>
+</li>
+<li>
+<p>Give life to our object (see previous section).</p>
+</li>
+</ul>
+<p>Here is a demo for <code>x86_64</code>:</p>
+<pre tabindex="0"><code>import struct
+import intro_type 
+def create_builtin(code, name=&#34;crafted builtin&#34;):
+    &#34;&#34;&#34; Dummy implementation of &#39;create_builtins&#39; for x86_64&#34;&#34;&#34;
+    # Create page.
+    m = intro_type.MyMap.get_map(0x1000)
+    # Get a C string with the name.
+    cname = ctypes.create_string_buffer(name)
+    name_addr = ctypes.addressof(cname)
+    # Write the payload on the page.
+    m[0:len(code)] = code
+    # Write the PyMethodDef on the page.
+    struct.pack_into(&#34;&lt;QQQQ&#34;, m, 0x100,
+        name_addr, m.addr, 8, name_addr)
+    # Write the PyCFunctionObject on the page.
+    struct.pack_into(&#34;&lt;QQQQQ&#34;, m, 0x200,
+        42, id(type(min)), m.addr + 0x100, 0, 0)
+    # Give life to our object.
+    return give_life_to_obj(int(m.addr + 0x200))
+
+
+# Create page with our `give_life_to_obj` payload.
+code_page = intro_type.MyMap.get_map(0x1000)
+bootstrap_64 = &#34;48 8b 46 10 C3&#34;.replace(&#34; &#34;, &#34;&#34;).decode(&#34;hex&#34;)
+code_page[0:len(bootstrap_64)] = bootstrap_64
+# Replace abs by our function.
+mabs = intro_type.PyCFunctionObject.from_address(id(abs))
+mabs.m_ml.contents.ml_meth = code_page.addr
+give_life_to_obj = abs
+# A builtin that trigger a breakpoint when executed.
+breakpoint = create_builtin(&#34;\xcc&#34;, &#34;breakpoint&#34;)
+
+&gt;&gt;&gt; breakpoint
+&lt;built-in function breakpoint&gt;
+&gt;&gt;&gt; breakpoint.__name__
+&#39;breakpoint&#39;
+&gt;&gt;&gt; breakpoint(None)
+[1]    4870 trace trap (core dumped)  python -i demo.py
+# woot! breakpoint triggered \o/
+</code></pre><p>The only problem now is the bootstrap of <code>give_life_to_obj</code>: to give life to a new builtin object we would need to already have the dummy execution. So we are going to:</p>
+<ul>
+<li>replace <code>abs</code> by our <code>give_life_to_object</code> payload,</li>
+<li>create our first builtin: <code>real_give_life_to_object</code>,</li>
+<li>put back the original code of <code>abs</code>,</li>
+<li>use our new builtin to create the builtin objects.</li>
+</ul>
+<p>Bootstrap code:</p>
+<pre tabindex="0"><code>def bootstrap():
+    payload_64 = &#34;48 8b 46 24 C3&#34;.replace(&#34; &#34;, &#34;&#34;).decode(&#34;hex&#34;)
+    # &#39;replace_builtin&#39; replaces the code of its first argument and returns the old &#39;ml_meth&#39; for restoration.
+    old_abs = replace_builtin(abs, payload_64)
+    # In my final code &#39;give_life_to_object&#39; is named &#39;get_obj_at&#39;.
+    get_obj_at = abs
+    new_obj_at = self.create_builtin(payload_64, &#34;get_obj_at&#34;)
+    # Just restore old code of builtin abs.
+    restore_builtins(abs, old_abs)
+    get_obj_at = new_obj_at
+</code></pre><p>With that, we are able to create all the builtins we want!</p>
+<h3 id="windowslinux-and-3264-bits-compatibility">Windows/Linux and 32/64 bits compatibility</h3>
+<p>Before releasing the code I worked at getting a working Linux and Windows version for both the 32 and 64 architectures.<br>
+Here are what I had to do:</p>
+<p>Windows/Linux:</p>
+<ul>
+<li>No change except MyMap class (mmap wrapper).</li>
+<li>Get the OS using <code>platform.system()</code>.</li>
+<li>Call <code>mmap</code> with correct arguments depending on the system.</li>
+</ul>
+<p>32/64 bits:</p>
+<ul>
+<li>
+<p>Get the architecture using: <code>platform.architecture()[0]</code>.</p>
+</li>
+<li>
+<p>Adapt:</p>
+<ul>
+<li>the payload for <code>obj_at</code> (describe as <code>give_life_to_obj</code> in the article),</li>
+<li>the format strings for <code>struct.pack_into</code>.</li>
+</ul>
+</li>
+</ul>
+<p>Last problem I had was with the way I gave life to object. It doesn&rsquo;t work very well on 32 bits systems because <code>int(addr)</code> may return a <code>long</code>, which is not compatible with our payload.</p>
+<p>So in the final version, I use the <code>str</code> type and a string such as <code>&quot;\x41\x42\x43\x44&quot;</code> to pass the address of the object I want to give life to. This only change the way the payload is called, and how the offset the payload is looked for in the object.</p>
+<h3 id="final-result">Final result</h3>
+<p>The final result is pretty simple, all the magic is put into the <code>CodeInjector</code> class in the file <code>code_injection.py</code>. Just use it like this:</p>
+<pre tabindex="0"><code>&gt;&gt;&gt; import code_injection
+&gt;&gt;&gt; code_injection.CodeInjector
+&lt;class &#39;code_injection.CodeInjector&#39;&gt;
+&gt;&gt;&gt; ci = code_injection.CodeInjector()
+&gt;&gt;&gt; b = ci.create_builtin(&#34;\xcc&#34;, &#34;my_breakpoint_builtin&#34;)
+&gt;&gt;&gt; b
+&lt;built-in function my_breakpoint_builtin&gt;
+</code></pre><h3 id="conclusion">Conclusion</h3>
+<p>I had a LOT of fun creating new objects and having Python interface so nicely with my own native payloads. Of course, this kind of horrible stuff (Pythonicly speaking) should not be used in real projects&hellip;<br>
+I hope you enjoyed this article and learned something (I did !).<br>
+Also, <code>struct</code> is a super-useful module for low level stuff! I discovered it during my first CTF and use it at almost every CTFs now.</p>
+<p>The complete implementation is avalaible at <a href="https://bitbucket.org/Hakril/python-native-execution/">https://bitbucket.org/Hakril/python-native-execution/</a>.</p>
+<h4 id="source"><a href="http://blog.hakril.net/articles/1-understanding-python-by-breaking-it---lvl-2.html">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

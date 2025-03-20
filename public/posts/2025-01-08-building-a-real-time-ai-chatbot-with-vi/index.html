@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Building a Real-time AI Chatbot with Vision and Voice Capabilities using OpenAI LiveKit and Deepgram on GPU Droplets</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Building a Real-time AI Chatbot with Vision and Voice Capabilities using OpenAI LiveKit and Deepgram on GPU Droplets</h1>
+			<b><time>08.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="building-a-real-time-ai-chatbot-with-vision-and-voice-capabilities-using-openai-livekit-and-deepgram-on-gpu-droplets">Building a Real-time AI Chatbot with Vision and Voice Capabilities using OpenAI LiveKit and Deepgram on GPU Droplets</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>In this tutorial, you will learn how to build a real-time AI chatbot with vision and voice capabilities using <a href="https://platform.openai.com/">OpenAI</a>, <a href="https://livekit.io/">LiveKit</a> and <a href="https://deepgram.com/">Deepgram</a> deployed on <a href="/products/gpu-droplets">DigitalOcean GPU Droplets</a>. This chatbot will be able to engage in real-time conversations with users, analyze images captured from your camera, and provide accurate and timely responses.</p>
+<h2 id="enhancing-chatbot-capabilities-with-advanced-technologies"><a href="#enhancing-chatbot-capabilities-with-advanced-technologies">Enhancing Chatbot Capabilities with Advanced Technologies</a><a href="#enhancing-chatbot-capabilities-with-advanced-technologies"></a></h2>
+<p>In this tutorial, you will leverage three powerful technologies to build your <a href="/resources/articles/conversational-ai-platforms">real-time AI chatbot</a>, each serving a specific purpose that enhances the chatbot’s capabilities, all while utilizing the robust infrastructure provided by DigitalOcean’s GPU Droplets:</p>
+<ol>
+<li>
+<p><strong><a href="https://platform.openai.com/">OpenAI API</a></strong>: The OpenAI API will generate human-like text responses based on user input. By employing advanced models like GPT-4o, our chatbot will be able to understand context, engage in meaningful conversations, and provide accurate answers to user queries. This is crucial for creating an interactive experience where users feel understood and valued.</p>
+</li>
+<li>
+<p><strong><a href="https://livekit.io/">LiveKit</a></strong>: LiveKit will facilitate real-time audio and video communication between users and the chatbot. It allows us to create a seamless interaction experience, enabling users to speak to the chatbot and receive voice responses. This is essential for building a voice-enabled chatbot that can naturally engage users, making the interaction feel more personal and intuitive.</p>
+</li>
+<li>
+<p><strong><a href="https://deepgram.com/">Deepgram</a></strong>: Deepgram will be employed for speech recognition, converting spoken language into text. This allows the chatbot to process user voice inputs effectively. By integrating Deepgram’s capabilities, you can ensure that the chatbot accurately understands user commands and queries, enhancing the overall interaction quality. This is particularly important in a real-time setting where quick and accurate responses are necessary for maintaining user engagement.</p>
+</li>
+</ol>
+<p><strong>Why GPU Droplets?</strong>: Utilizing DigitalOcean’s <a href="/products/gpu-droplets">GPU Droplets</a> is particularly beneficial for this setup as they provide the necessary computational and GPU infrastructure to power and handle the intensive processing required by these AI models and real-time communication. The GPUs are optimized for running <a href="/resources/articles/how-to-choose-a-cloud-gpu">AI/ML workloads</a>, significantly speeding up model inference and video processing tasks. This ensures the chatbot can deliver responses quickly and efficiently, even under heavy load, improving user experience and engagement.</p>
+<h2 id="prerequisites"><a href="#prerequisites">Prerequisites</a><a href="#prerequisites"></a></h2>
+<p>Before you begin, ensure you have:</p>
+<ul>
+<li>A <a href="https://cloud.digitalocean.com/">DigitalOcean Cloud account</a>.</li>
+<li>A <a href="https://cloud.digitalocean.com/gpus">GPU Droplet</a> deployed and running.</li>
+<li>Basic knowledge of Python programming.</li>
+<li>An <a href="https://platform.openai.com/signup">OpenAI API key</a> set up for using the GPT-4o model.</li>
+<li>A <a href="https://docs.livekit.io/home/self-hosting/local/#install-livekit-server">LiveKit server</a> up and running on your GPU Droplet.</li>
+<li>A <a href="https://developers.deepgram.com/docs/create-additional-api-keys">Deepgram API Key</a>.</li>
+</ul>
+<h2 id="step-1---set-up-the-gpu-droplet"><a href="#step-1-set-up-the-gpu-droplet">Step 1 - Set Up the GPU Droplet</a><a href="#step-1-set-up-the-gpu-droplet"></a></h2>
+<p>1.<strong>Create a New Project</strong> - You will need to <a href="https://docs.digitalocean.com/products/projects/how-to/create/">create a new project</a> from the cloud control panel and tie it to a GPU Droplet.</p>
+<p>2.<strong>Create a GPU Droplet</strong> - Log into your <a href="https://cloud.digitalocean.com/login">DigitalOcean account</a>, create a new GPU Droplet, and choose <strong>AI/ML Ready</strong> as the OS. This OS image installs all the necessary NVIDIA GPU Drivers. You can refer to our official documentation on <a href="https://docs.digitalocean.com/products/droplets/how-to/gpu/create/">how to create a GPU Droplet</a>.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/GPU-Droplets-Content/photogrammetry-anish/Screenshot%202024-10-17%20at%204.34.05%E2%80%AFPM.png" alt="Create-a-gpu-droplet which is AI/ML Ready" />
+</figure>
+
+
+</p>
+<p>3.<strong>Add an SSH Key for authentication</strong> - An <a href="/community/tutorial-collections/how-to-set-up-ssh-keys">SSH key</a> is required to authenticate with the GPU Droplet and by adding the SSH key, you can login to the GPU Droplet from your terminal.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/GPU-Droplets-Content/photogrammetry-anish/Screenshot%202024-10-07%20at%202.45.12%E2%80%AFPM.png" alt="Add an SSH key for authentication" />
+</figure>
+
+
+</p>
+<p>4.<strong>Finalize and Create the GPU Droplet</strong> - Once all of the above steps are completed, finalize and create a new GPU Droplet.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/GPU-Droplets-Content/Real-time-ai-chatbot-using-livekit-openai-deepgram/Screenshot%202024-12-30%20at%202.43.24%E2%80%AFPM.png" alt="Create a GPU Droplet" />
+</figure>
+
+
+</p>
+<h2 id="step-2---setup-a-livekit-account-and-install-the-cli-on-gpu-droplet"><a href="#step-2-setup-a-livekit-account-and-install-the-cli-on-gpu-droplet">Step 2 - Setup a LiveKit account and install the CLI on GPU Droplet</a><a href="#step-2-setup-a-livekit-account-and-install-the-cli-on-gpu-droplet"></a></h2>
+<p>Firstly, you will need to create an account or sign in to your <a href="https://cloud.livekit.io/">LiveKit Cloud account</a> and create a <a href="https://cloud.livekit.io/">LiveKit Project</a>. Please note down the <code>LIVEKIT_URL</code>, <code>LIVEKIT_API_KEY</code> and the <code>LIVEKIT_API_SECRET</code> environment variables from the <strong>Project Settings</strong> page as you will need them later in the tutorial.</p>
+<h3 id="install-the-livekit-cli"><a href="#install-the-livekit-cli">Install the LiveKit CLI</a><a href="#install-the-livekit-cli"></a></h3>
+<p>The below command will install the LiveKit CLI on your GPU Droplet.</p>
+<pre tabindex="0"><code>curl -sSL https://get.livekit.io/cli | bash
+</code></pre><p>For LiveKit Cloud users, you can authenticate the CLI with your Cloud project to create an API key and secret. This allows you to use the CLI without manually providing credentials each time.</p>
+<pre tabindex="0"><code>lk cloud auth
+</code></pre><p>Then, follow instructions and log in from a browser.</p>
+<p>You will be asked to add the device and authorize access to your LiveKit Project you creted earlier in this step.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/GPU-Droplets-Content/Real-time-ai-chatbot-using-livekit-openai-deepgram/Screenshot%202024-12-30%20at%201.03.02%E2%80%AFPM.png" alt="Authorize the app" />
+</figure>
+
+
+</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/GPU-Droplets-Content/Real-time-ai-chatbot-using-livekit-openai-deepgram/Screenshot%202024-12-30%20at%201.04.18%E2%80%AFPM.png" alt="Access granted" />
+</figure>
+
+
+</p>
+<h2 id="step-3---bootstrap-an-agent-from-an-existing-livekit-template"><a href="#step-3-bootstrap-an-agent-from-an-existing-livekit-template">Step 3 - Bootstrap an agent from an existing LiveKit template</a><a href="#step-3-bootstrap-an-agent-from-an-existing-livekit-template"></a></h2>
+<p>The template provides a working voice assistant to build on. The template includes:</p>
+<ul>
+<li>Basic voice interaction</li>
+<li>Audio-only track subscription</li>
+<li>Voice activity detection (VAD)</li>
+<li>Speech-to-text (STT)</li>
+<li>Language model (LLM)</li>
+<li>Text-to-speech (TTS)</li>
+</ul>
+<p><strong>Note:</strong> By default, the example agent uses Deepgram for STT and OpenAI for TTS and LLM. However, you aren’t required to use these providers.</p>
+<p>Clone the starter template for a simple Python voice agent:</p>
+<pre tabindex="0"><code>lk app create
+</code></pre><p>This will give you multiple existing LiveKit templates that you can use to deploy an app.</p>
+<pre tabindex="0"><code>Outputvoice-assistant-frontend                                                                                                                                        
+transcription-frontend                                                                                                                                        
+token-server                                                                                                                                               
+multimodal-agent-python                                                                                                                                                 
+multimodal-agent-node                                                                                                  
+voice-pipeline-agent-python                                                                                                                       
+voice-pipeline-agent-node                                                                                                                                                     
+android-voice-assistant                                                                                                                                                         
+voice-assistant-swift                                                                                                                                                                
+outbound-caller-python
+</code></pre><p>You will use the <code>voice-pipeline-agent-python</code> template.</p>
+<pre tabindex="0"><code>lk app create --template voice-pipeline-agent-python
+</code></pre><p>Now, enter your <strong>Application name</strong>, <strong>OpenAI API Key</strong> and <strong>Deepgram API Key</strong> when prompted. If you aren’t using Deepgram and OpenAI, you can checkout other <a href="https://docs.livekit.io/agents/quickstarts/voice-agent/#customizing-plugins">supported plugins</a>.</p>
+<pre tabindex="0"><code>OutputCloning template...
+Instantiating environment...
+Cleaning up...
+To setup and run the agent:
+
+       cd /root/do-voice-vision-bot
+       python3 -m venv venv
+       source venv/bin/activate
+       pip install -r requirements.txt
+       python3 agent.py dev
+</code></pre><h2 id="step-4---install-dependencies-and-create-a-virtual-environment"><a href="#step-4-install-dependencies-and-create-a-virtual-environment">Step 4 - Install dependencies and create a Virtual Environment</a><a href="#step-4-install-dependencies-and-create-a-virtual-environment"></a></h2>
+<p>First, switch to your applications’s directory which was created in the last step.</p>
+<pre tabindex="0"><code>cd &lt;app_name&gt;
+</code></pre><p>You can list the files that were created from the template.</p>
+<pre tabindex="0"><code>ls
+</code></pre><pre tabindex="0"><code>OutputLICENSE  README.md  agent.py  requirements.txt
+</code></pre><p>Here <code>agent.py</code> is the main application file which contains the logic and source code for the AI chatbot.</p>
+<p>Now, you will create and activate a python virtual environment using the below commands:</p>
+<pre tabindex="0"><code>apt install python3.10-venv
+python3 -m venv venv
+</code></pre><p>Add the following API keys in your environment:</p>
+<pre tabindex="0"><code>export LIVEKIT_URL=&lt;&gt;
+export LIVEKIT_API_KEY=&lt;&gt;
+export LIVEKIT_API_SECRET=&lt;&gt;
+export DEEPGRAM_API_KEY=&lt;&gt;
+export OPENAI_API_KEY=&lt;&gt;
+</code></pre><p>You can find the <code>LIVEKIT_URL</code>, <code>LIVEKIT_API_KEY</code> and the <code>LIVEKIT_API_SECRET</code> on the <a href="https://cloud.livekit.io/">LiveKit Projects Settings</a> page.</p>
+<p>Activate the virtual environment:</p>
+<pre tabindex="0"><code>source venv/bin/activate
+</code></pre><p><strong>Note:</strong> On Debian/Ubuntu systems, you need to install the <code>python3-venv</code> package using the following command.</p>
+<pre tabindex="0"><code>apt install python3.10-venv
+</code></pre><p>Now, let’s install the dependencies required for the app to work.</p>
+<pre tabindex="0"><code>python3 -m pip install -r requirements.txt
+</code></pre><h2 id="step-5---add-vision-capabilities-to-your-ai-agent"><a href="#step-5-add-vision-capabilities-to-your-ai-agent">Step 5 - Add Vision Capabilities to your AI agent</a><a href="#step-5-add-vision-capabilities-to-your-ai-agent"></a></h2>
+<p>To add the vision capabilities to your agent you will need to modify the <code>agent.py</code> file with the below imports and functions.</p>
+<p>First, let’s start off by adding these imports alongside the existing ones. Open your <code>agent.py</code> file using a text editor like <code>vi</code> or <code>nano</code>.</p>
+<pre tabindex="0"><code>vi agent.py
+</code></pre><p>Copy the below imports alongside the existing ones:</p>
+<p>agent.py</p>
+<pre tabindex="0"><code>from livekit import rtc
+from livekit.agents.llm import ChatMessage, ChatImage
+</code></pre><p>These new imports include:</p>
+<ul>
+<li><code>rtc</code>: Access to LiveKit’s video functionality</li>
+<li><code>ChatMessage</code> and <code>ChatImage</code>: Classes you’ll use to send images to the LLM</li>
+</ul>
+<h3 id="enable-video-subscription"><a href="#enable-video-subscription">Enable video subscription</a><a href="#enable-video-subscription"></a></h3>
+<p>Find the <code>ctx.connect()</code> line in the <code>entrypoint</code> function. Change <code>AutoSubscribe.AUDIO_ONLY</code> to <code>AutoSubscribe.SUBSCRIBE_ALL</code>:</p>
+<p>agent.py</p>
+<pre tabindex="0"><code>await ctx.connect(auto_subscribe=AutoSubscribe.SUBSCRIBE_ALL)
+</code></pre><p><strong>Note:</strong> If it is difficult for you to edit and modify <code>agent.py</code> file using the <code>vi</code> or <code>nano</code> text editor on the GPU Droplet. You can copy the <code>agent.py</code> file content to your local system and make the required edits in a Code editor like VSCode etc, and then copy-paste the updated code.</p>
+<p>This will enable the assistant to receive video tracks as well as audio.</p>
+<h3 id="add-video-frame-handling"><a href="#add-video-frame-handling">Add video frame handling</a><a href="#add-video-frame-handling"></a></h3>
+<p>Add these two helper functions <strong>after your imports</strong> but before the <code>prewarm</code> function:</p>
+<p>agent.py</p>
+<pre tabindex="0"><code>async def get_video_track(room: rtc.Room):
+   &#34;&#34;&#34;Find and return the first available remote video track in the room.&#34;&#34;&#34;
+   for participant_id, participant in room.remote_participants.items():
+       for track_id, track_publication in participant.track_publications.items():
+           if track_publication.track and isinstance(
+               track_publication.track, rtc.RemoteVideoTrack
+           ):
+               logger.info(
+                   f&#34;Found video track {track_publication.track.sid} &#34;
+                   f&#34;from participant {participant_id}&#34;
+               )
+               return track_publication.track
+   raise ValueError(&#34;No remote video track found in the room&#34;)
+</code></pre><p>This function searches through all participants to find an available video track. It’s used to locate the video feed to process.</p>
+<p>Now, you will add the frame capture function</p>
+<p>agent.py</p>
+<pre tabindex="0"><code>async def get_latest_image(room: rtc.Room):
+   &#34;&#34;&#34;Capture and return a single frame from the video track.&#34;&#34;&#34;
+   video_stream = None
+   try:
+       video_track = await get_video_track(room)
+       video_stream = rtc.VideoStream(video_track)
+       async for event in video_stream:
+           logger.debug(&#34;Captured latest video frame&#34;)
+           return event.frame
+   except Exception as e:
+       logger.error(f&#34;Failed to get latest image: {e}&#34;)
+       return None
+   finally:
+       if video_stream:
+           await video_stream.aclose()
+</code></pre><p>The purpose of this function is to capture a single frame from the video track and ensures proper cleanup of resources. Using <code>aclose()</code> releases system resources like memory buffers and video decoder instances, which helps prevent memory leaks.</p>
+<h3 id="add-the-llm-callback"><a href="#add-the-llm-callback">Add the LLM Callback</a><a href="#add-the-llm-callback"></a></h3>
+<p>Now, inside the <code>entrypoint</code> function, add the below callback function which will inject the latest video frame just before the LLM generates a response. Search for the <code>entrypoint</code> function inside the <code>agent.py</code> file:</p>
+<p>agent.py</p>
+<pre tabindex="0"><code>async def before_llm_cb(assistant: VoicePipelineAgent, chat_ctx: llm.ChatContext):
+       &#34;&#34;&#34;
+       Callback that runs right before the LLM generates a response.
+       Captures the current video frame and adds it to the conversation context.
+       &#34;&#34;&#34;
+       try:
+           if not hasattr(assistant, &#39;_room&#39;):
+               logger.warning(&#34;Room not available in assistant&#34;)
+               return
+           latest_image = await get_latest_image(assistant._room)
+           if latest_image:
+               image_content = [ChatImage(image=latest_image)]
+               chat_ctx.messages.append(ChatMessage(role=&#34;user&#34;, content=image_content))
+               logger.debug(&#34;Added latest frame to conversation context&#34;)
+           else:
+               logger.warning(&#34;No image captured from video stream&#34;)
+       except Exception as e:
+           logger.error(f&#34;Error in before_llm_cb: {e}&#34;)
+</code></pre><p>This callback is the key to efficient context management — it will only add visual information when the assistant is about to respond. If visual information was added to every message, it would quickly fill up the LLMs context window which would be highly inefficient and costly.</p>
+<h3 id="update-the-system-prompt"><a href="#update-the-system-prompt">Update the system prompt</a><a href="#update-the-system-prompt"></a></h3>
+<p>Find the <code>initial_ctx</code> creation inside the <code>entrypoint</code> function and update it to include vision capabilities:</p>
+<p>agent.py</p>
+<pre tabindex="0"><code>initial_ctx = llm.ChatContext().append(
+   role=&#34;system&#34;,
+   text=(
+       &#34;You are a voice assistant created by LiveKit that can both see and hear. &#34;
+       &#34;You should use short and concise responses, avoiding unpronounceable punctuation. &#34;
+       &#34;When you see an image in our conversation, naturally incorporate what you see &#34;
+       &#34;into your response. Keep visual descriptions brief but informative.&#34;
+   ),
+)
+</code></pre><h3 id="update-the-assistant-configuration"><a href="#update-the-assistant-configuration">Update the assistant configuration</a><a href="#update-the-assistant-configuration"></a></h3>
+<p>Find the <code>VoicePipelineAgent</code> creation inside the <code>entrypoint</code> function and add the callback:</p>
+<p>agent.py</p>
+<pre tabindex="0"><code>assistant = VoicePipelineAgent(
+   vad=ctx.proc.userdata[&#34;vad&#34;],
+   stt=openai.STT(),
+   llm=openai.LLM(),
+   tts=openai.TTS(),
+   chat_ctx=initial_ctx,
+   before_llm_cb=before_llm_cb
+)
+</code></pre><p>The major update here is the <code>before_llm_cb</code> parameter, which uses the callback created earlier to inject the latest video frame into the conversation context.</p>
+<h3 id="final"><a href="#final-agent-py-file-with-voice-vision-capabilities">Final <code>agent.py</code> file with voice &amp; vision capabilities</a><a href="#final-agent-py-file-with-voice-vision-capabilities"></a></h3>
+<p>This is how the <code>agent.py</code> file would look after adding all the necessary functions and imports:</p>
+<p>agent.py</p>
+<pre tabindex="0"><code>from asyncio.log import logger
+from livekit import rtc
+from livekit.agents.llm import ChatMessage, ChatImage
+import logging
+from dotenv import load_dotenv
+from livekit.agents import (
+   AutoSubscribe,
+   JobContext,
+   JobProcess,
+   WorkerOptions,
+   cli,
+   llm,
+)
+from livekit.agents.pipeline import VoicePipelineAgent
+from livekit.plugins import openai, deepgram, silero
+
+async def get_video_track(room: rtc.Room):
+   &#34;&#34;&#34;Find and return the first available remote video track in the room.&#34;&#34;&#34;
+   for participant_id, participant in room.remote_participants.items():
+       for track_id, track_publication in participant.track_publications.items():
+           if track_publication.track and isinstance(
+               track_publication.track, rtc.RemoteVideoTrack
+           ):
+               logger.info(
+                   f&#34;Found video track {track_publication.track.sid} &#34;
+                   f&#34;from participant {participant_id}&#34;
+               )
+               return track_publication.track
+   raise ValueError(&#34;No remote video track found in the room&#34;)
+
+async def get_latest_image(room: rtc.Room):
+   &#34;&#34;&#34;Capture and return a single frame from the video track.&#34;&#34;&#34;
+   video_stream = None
+   try:
+       video_track = await get_video_track(room)
+       video_stream = rtc.VideoStream(video_track)
+       async for event in video_stream:
+           logger.debug(&#34;Captured latest video frame&#34;)
+           return event.frame
+   except Exception as e:
+       logger.error(f&#34;Failed to get latest image: {e}&#34;)
+       return None
+   finally:
+       if video_stream:
+           await video_stream.aclose()
+
+def prewarm(proc: JobProcess):
+   proc.userdata[&#34;vad&#34;] = silero.VAD.load()
+
+async def entrypoint(ctx: JobContext):
+
+   async def before_llm_cb(assistant: VoicePipelineAgent, chat_ctx: llm.ChatContext):
+       &#34;&#34;&#34;
+       Callback that runs right before the LLM generates a response.
+       Captures the current video frame and adds it to the conversation context.
+       &#34;&#34;&#34;
+       try:
+           if not hasattr(assistant, &#39;_room&#39;):
+               logger.warning(&#34;Room not available in assistant&#34;)
+               return
+           latest_image = await get_latest_image(assistant._room)
+           if latest_image:
+               image_content = [ChatImage(image=latest_image)]
+               chat_ctx.messages.append(ChatMessage(role=&#34;user&#34;, content=image_content))
+               logger.debug(&#34;Added latest frame to conversation context&#34;)
+           else:
+               logger.warning(&#34;No image captured from video stream&#34;)
+       except Exception as e:
+           logger.error(f&#34;Error in before_llm_cb: {e}&#34;)
+
+   initial_ctx = llm.ChatContext().append(
+       role=&#34;system&#34;,
+       text=(
+           &#34;You are a voice assistant created by LiveKit that can both see and hear. &#34;
+           &#34;You should use short and concise responses, avoiding unpronounceable punctuation. &#34;
+           &#34;When you see an image in our conversation, naturally incorporate what you see &#34;
+           &#34;into your response. Keep visual descriptions brief but informative.&#34;
+       ),
+   )
+
+   logger.info(f&#34;connecting to room {ctx.room.name}&#34;)
+   await ctx.connect(auto_subscribe=AutoSubscribe.SUBSCRIBE_ALL)
+
+   # Wait for the first participant to connect
+   participant = await ctx.wait_for_participant()
+   logger.info(f&#34;starting voice assistant for participant {participant.identity}&#34;)
+
+   # Configure the voice pipeline agent
+   agent = VoicePipelineAgent(
+       vad=ctx.proc.userdata[&#34;vad&#34;],
+       stt=deepgram.STT(),
+       llm=openai.LLM(),
+       tts=openai.TTS(),
+       chat_ctx=initial_ctx,
+       before_llm_cb=before_llm_cb  # Add the callback here
+   )
+
+   agent.start(ctx.room, participant)
+
+   # Greet the user when the agent starts
+   await agent.say(&#34;Hey, how can I help you today?&#34;, allow_interruptions=True)
+
+if __name__ == &#34;__main__&#34;: 
+   cli.run_app(
+       WorkerOptions(
+           entrypoint_fnc=entrypoint,
+           prewarm_fnc=prewarm,
+       ),
+   )
+</code></pre><h2 id="testing-your-agent"><a href="#testing-your-agent">Testing your agent</a><a href="#testing-your-agent"></a></h2>
+<p>Start your assistant and test the below:</p>
+<pre tabindex="0"><code>python3 agent.py dev
+</code></pre><ul>
+<li>
+<p><strong>Test Voice Interaction:</strong> Speak into your microphone and see the chatbot respond.</p>
+</li>
+<li>
+<p><strong>Test Vision Capability:</strong> Ask the chatbot to identify objects through your video cam stream.</p>
+</li>
+</ul>
+<p>You would obeseve the following logs in your console:</p>
+<pre tabindex="0"><code>Output2024-12-30 08:32:56,167 - DEBUG asyncio - Using selector: EpollSelector
+2024-12-30 08:32:56,168 - DEV  livekit.agents - Watching /root/do-voice-vision-bot
+2024-12-30 08:32:56,774 - DEBUG asyncio - Using selector: EpollSelector
+2024-12-30 08:32:56,778 - INFO livekit.agents - starting worker {&#34;version&#34;: &#34;0.12.5&#34;, &#34;rtc-version&#34;: &#34;0.18.3&#34;}
+2024-12-30 08:32:56,819 - INFO livekit.agents - registered worker {&#34;id&#34;: &#34;AW_cjS8QXCEnFxy&#34;, &#34;region&#34;: &#34;US East&#34;, &#34;protocol&#34;: 15, &#34;node_id&#34;: &#34;NC_OASHBURN1A_BvkfVkdYVEWo&#34;}
+</code></pre><p>Now, you will need to connect the app to the LiveKit room with a client that publishes both audio and video. The easiest way to do this is by using the <a href="https://agents-playground.livekit.io/">hosted agent playground</a>.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/GPU-Droplets-Content/Real-time-ai-chatbot-using-livekit-openai-deepgram/Screenshot%202024-12-30%20at%202.16.36%E2%80%AFPM.png" alt="Connect your Project to Hosted Playground" />
+</figure>
+
+
+</p>
+<p>Since, this agent requires a frontend application to communicate with. You can use one of our example frontends in <a href="https://github.com/livekit-examples/">livekit-examples</a>, create your own following one of the <a href="https://docs.livekit.io/realtime/quickstarts/">client quickstarts</a>, or test instantly against one of the hosted <a href="https://cloud.livekit.io/projects/p_/sandbox">Sandbox</a> frontends.</p>
+<p>In this example you will use an existing <a href="https://agents-playground.livekit.io/">hosted agent playground</a>. Simply open this <code>https://agents-playground.livekit.io/</code> in your system’s browser and connect your LiveKit Project. It should auto-populate with your Project.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/GPU-Droplets-Content/Real-time-ai-chatbot-using-livekit-openai-deepgram/Screenshot%202024-12-30%20at%202.19.05%E2%80%AFPM.png" alt="Hosted AI agent deployed on GPU Droplet" />
+</figure>
+
+
+</p>
+<h2 id="how-it-works"><a href="#how-it-works">How it works</a><a href="#how-it-works"></a></h2>
+<p>With these above changes to your agent, your assistant can now:</p>
+<ol>
+<li>
+<p>Connects to both audio and video streams.</p>
+</li>
+<li>
+<p>Listens for user speech as before.</p>
+</li>
+<li>
+<p>Just before generating each response:</p>
+</li>
+</ol>
+<ul>
+<li>Captures the current video frame.</li>
+<li>Adds it to the conversation context.</li>
+<li>Uses it to inform the response.</li>
+</ul>
+<p>4.Keep the context clean by only adding frames when needed.</p>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a><a href="#conclusion"></a></h2>
+<p>Congratulations! You have successfully built a real-time AI chatbot with vision and voice capabilities using OpenAI, LiveKit, and Deepgram on DigitalOcean GPU Droplets. This powerful combination enables efficient, scalable and real-time interactions for your applications.</p>
+<p>You can refer to <a href="https://docs.livekit.io/">LiveKit’s official documentation</a> and it’s <a href="https://docs.livekit.io/reference/">API reference</a> for more details on building AI agents.</p>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/build-realtime-ai-chatbot-on-gpu-droplets">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

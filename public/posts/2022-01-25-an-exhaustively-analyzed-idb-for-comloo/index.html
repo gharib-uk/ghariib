@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>An Exhaustively Analyzed IDB for ComLook</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>An Exhaustively Analyzed IDB for ComLook</h1>
+			<b><time>25.01.2022 20:37</time></b>
+		       
+
+			<div>
+				<h1 id="an-exhaustively-analyzed-idb-for-comlook">An Exhaustively Analyzed IDB for ComLook</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Like the previous two entries in this series on <a href="https://www.msreverseengineering.com/blog/2020/8/31/an-exhaustively-analyzed-idb-for-comrat-v4">ComRAT v4</a> and <a href="https://www.msreverseengineering.com/blog/2021/3/2/an-exhaustively-analyzed-idb-for-flawedgrace">FlawedGrace</a>, I did this analysis as part of my preparation for an upcoming class on C++ reverse engineering. The analysis took about a one and a half days (done on Friday and Saturday). ComLook is an Outlook plugin that masquerades as Antispam Marisuite v1.7.4 for The Bat!. It is fairly standard as far as remote-access trojans go; it spawns a thread to retrieve messages from a C&amp;C server over IMAP, and processes incoming messages in a loop. Its command vocabulary is limited; it can only read and write files to the victim server, run commands and retrieve the output, and update/retrieve the current configuration (which is saved persistently in the registry). See the IDB for complete details.</p>
+<p>(Note that if you are interested in the forthcoming C++ training class, it is nearing completion, and should be available in Q2 2022. More generally, remote public classes (where individual students can sign up) are temporarily suspended; remote private classes (multiple students on behalf of the same organization) are currently available. If you would like to be notified when public classes become available, or when the C++ course is ready, please sign up on our <a href="https://www.msreverseengineering.com/training-classes">no-spam, very low-volume, course notification mailing list</a>. (Click the button that says &ldquo;Provide your email to be notified of public course availability&rdquo;.) )</p>
+<p>This analysis was performed with IDA Pro 7.7 and Hex-Rays 32-bit. All analysis has been done in Hex-Rays; go there for all the gory details, and don&rsquo;t expect much from the disassembly listing. All of the programmer-created data structures have been recovered and applied to the proper Hex-Rays variables. The functionality has been organized into folders, as in the following screenshot:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/631bb955-0147-4203-9d35-336b8f256bf8/ComLook-folders.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>The binary was compiled with MSVC 10.0 with RTTI, and uses standard C++ template containers:</p>
+<ul>
+<li>
+<p>string/wstring</p>
+</li>
+<li>
+<p>shared_ptr</p>
+</li>
+<li>
+<p>vector</p>
+</li>
+<li>
+<p>list</p>
+</li>
+<li>
+<p>map</p>
+</li>
+</ul>
+<p>The primary difficulty in analyzing this sample was that it was compiled in debug mode. Although this does simplify some parts of the analysis (e.g., error message contain the raw STL typenames), it also slows the speed of comprehension due to a lack of inlining, and includes a huge amount of code to validate so-called C++ debug iterators. This makes locating the real programmer-written functionality more time-consuming. STL functions involving iterators that, in a release build, would have consumed less than a page of decompilation, often consumed five or more pages due to debug iterator validation.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/a772f765-cafa-48ac-93fa-f38c862b4724/ComLook-debug-iterators.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<h4 id="source"><a href="https://www.msreverseengineering.com/blog/2022/1/25/an-exhaustively-analyzed-idb-for-comlook">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

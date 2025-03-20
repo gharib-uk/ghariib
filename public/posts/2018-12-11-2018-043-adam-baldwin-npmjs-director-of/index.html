@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>2018-043-Adam-Baldwin npmjs Director of Security event stream post mortem and making your package system more secure</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>2018-043-Adam-Baldwin npmjs Director of Security event stream post mortem and making your package system more secure</h1>
+			<b><time>11.12.2018 05:50</time></b>
+		       
+
+			<div>
+				<h1 id="2018-043-adam-baldwin-npmjs-director-of-security-event-stream-post-mortem-and-making-your-package-system-more-secure">2018-043-Adam-Baldwin npmjs Director of Security event stream post mortem and making your package system more secure</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Director of Security, npm</p>
+<p><a href="https://foundation.nodejs.org/">https://foundation.nodejs.org/</a></p>
+<p><a href="https://spring.io/understanding/javascript-package-managers">https://spring.io/understanding/javascript-package-managers</a></p>
+<p>Role in the NodeJS project</p>
+<p>    Advisory? Active role? Maintain security modules?</p>
+<p>    Are there any requirements to being a dev?</p>
+<p>    Are there different roles in the NodeJS environment?</p>
+<p>    Is there any review of system sensitive packages? (or has that ship sailed…)</p>
+<p>Discussion of timeline from NodeJS security team</p>
+<p>    When were you notified? (or were you notified at all?)</p>
+<p>    What steps were taken to fix the issue?</p>
+<p>    Lessons learned?</p>
+<p>Official npm security policy: <a href="https://www.npmjs.com/policies/security">https://www.npmjs.com/policies/security</a> (good stuff!)</p>
+<p>Event-stream (initial bug report):   <a href="https://github.com/dominictarr/event-stream/issues/116">https://github.com/dominictarr/event-stream/issues/116</a></p>
+<p>Only affected bitcoin Wallets from ‘Copay’</p>
+<p>                    <a href="https://nakedsecurity.sophos.com/2018/11/28/javascript-library-used-for-sneak-attack-on-copay-bitcoin-wallet/">https://nakedsecurity.sophos.com/2018/11/28/javascript-library-used-for-sneak-attack-on-copay-bitcoin-wallet/</a></p>
+<p>“Cue relief, mixed with frustration, for anyone not targeted. Developer Chris Northwood <a href="https://medium.com/@cnorthwood/todays-javascript-trash-fire-and-pile-on-f3efcf8ac8c7">wrote</a> :</p>
+<p>We’ve wiped our brows as we’ve got away with it, we didn’t have malicious code running on our dev machines, our CI servers, or in prod. This time.” (</p>
+<p><a href="https://medium.com/@jsoverson/exploiting-developer-infrastructure-is-insanely-easy-9849937e81d4">https://medium.com/@jsoverson/exploiting-developer-infrastructure-is-insanely-easy-9849937e81d4</a></p>
+<p>“The damage this could have caused is incredible to think about. The projects that depend on this aren’t trivial either, <a href="https://www.npmjs.com/package/azure-cli"><em>Microsoft’s original Azure CLI depends on event-stream</em></a><em>!</em> Think of the systems that either develop that tool or run that tool. Each one of those potentially had this malicious code installed.”</p>
+<p><a href="https://thehackernews.com/2018/11/nodejs-event-stream-module.html">https://thehackernews.com/2018/11/nodejs-event-stream-module.html</a></p>
+<p>“The malicious code detected earlier this week was added to Event-Stream version 3.3.6, published on September 9 via NPM repository, and had since been downloaded by nearly <strong>8 million application programmers</strong>.”</p>
+<p><a href="https://www.analyticsvidhya.com/blog/2018/07/using-power-deep-learning-cyber-security/">https://www.analyticsvidhya.com/blog/2018/07/using-power-deep-learning-cyber-security/</a></p>
+<p>Hacker News (with comments): <a href="https://news.ycombinator.com/item?id=18534392">https://news.ycombinator.com/item?id=18534392</a></p>
+<p>Official npm blog post: <a href="https://blog.npmjs.org/post/180565383195/details-about-the-event-stream-incident">https://blog.npmjs.org/post/180565383195/details-about-the-event-stream-incident</a></p>
+<p><a href="https://blog.npmjs.org/post/175824896885/incident-report-npm-inc-operations-incident-of">https://blog.npmjs.org/post/175824896885/incident-report-npm-inc-operations-incident-of</a></p>
+<p><a href="https://resources.whitesourcesoftware.com/blog-whitesource/top-5-open-source-security-vulnerabilities-november-2018">https://resources.whitesourcesoftware.com/blog-whitesource/top-5-open-source-security-vulnerabilities-november-2018</a></p>
+<p>2017 package/user stats: <a href="https://www.linux.com/news/event/Nodejs/2016/state-union-npm">https://www.linux.com/news/event/Nodejs/2016/state-union-npm</a></p>
+<p>According to npmjs.org: over 800,000 packages **(**<strong>854,000 packages, 7 million+ individual versions)</strong></p>
+<p>Dependency hell in NodeJS:</p>
+<p><a href="https://blog.risingstack.com/controlling-node-js-security-risk-npm-dependencies/">https://blog.risingstack.com/controlling-node-js-security-risk-npm-dependencies/</a></p>
+<p>    “Roughly 76% of Node shops use vulnerable packages, some of which are extremely severe; and open source projects regularly grow stale, neglecting to fix security flaws.”</p>
+<p>History of NodeJS security issues:</p>
+<p>ESLINT: <a href="https://nodesource.com/blog/a-high-level-post-mortem-of-the-eslint-scope-security-incident/">https://nodesource.com/blog/a-high-level-post-mortem-of-the-eslint-scope-security-incident/</a></p>
+<p>Left-pad: <a href="https://www.theregister.co.uk/2016/03/23/npm_left_pad_chaos/">https://www.theregister.co.uk/2016/03/23/npm_left_pad_chaos/</a></p>
+<p>How to ensure this type of issue doesn’t happen again? (or is that possible, considering the ecosystem?)</p>
+<p>What can devs, blueteams, or companies that live and die by NodeJS do to increase security, or assist in making NPM Security team’s job easier?</p>
+<p>What the responsibility is of consumers of open source?</p>
+<p>What can be done to ensure vetting for ‘important’ packages?</p>
+<p>Can someone manage turnover? (or is that ship sailed?)</p>
+<p>Security scanners:</p>
+<p><a href="https://geekflare.com/nodejs-security-scanner/">https://geekflare.com/nodejs-security-scanner/</a></p>
+<p><a href="https://techbeacon.com/13-tools-checking-security-risk-open-source-dependencies-0">https://techbeacon.com/13-tools-checking-security-risk-open-source-dependencies-0</a></p>
+<p>Threat assessment or ‘what could go wrong in the future’?</p>
+<p>    Bad code</p>
+<p>    “Trust issues”</p>
+<p>    Repo corruption</p>
+<p>    Hijacking packages</p>
+<p>Keep up to date on NodeJS security issues:</p>
+<p><a href="https://nodejs.org/en/security/">https://nodejs.org/en/security/</a></p>
+<p><a href="https://groups.google.com/forum/#!forum/nodejs-sec">https://groups.google.com/forum/#!forum/nodejs-sec</a></p>
+<p>^ this is great for node, but if you want to stay up to date with security advisories in the ecosystem?</p>
+<p>npmjs.com/advisories or @npmjs on twitter</p>
+<p><a href="https://rubysec.com/">https://rubysec.com/</a> -Ruby security group</p>
+<p>Check out our Store on Teepub! <strong><a href="https://brakesec.com/store">https://brakesec.com/store</a></strong></p>
+<p><strong>Join us on our #Slack Channel! Send a request to @brakesec on Twitter or email <a href="mailto:bds.podcast@gmail.com">bds.podcast@gmail.com</a></strong></p>
+<p>#<strong>Brakesec</strong> Store!:<a href="https://www.teepublic.com/user/bdspodcast">https://www.teepublic.com/user/bdspodcast</a></p>
+<p><strong>#Spotify</strong>: <a href="https://brakesec.com/spotifyBDS">https://brakesec.com/spotifyBDS</a></p>
+<p><strong>#RSS</strong>: <a href="https://brakesec.com/BrakesecRSS">https://brakesec.com/BrakesecRSS</a></p>
+<p><strong>#Youtube Channel</strong>:  <a href="http://www.youtube.com/c/BDSPodcast">http://www.youtube.com/c/BDSPodcast</a></p>
+<p><strong>#iTunes</strong> Store Link: <a href="https://brakesec.com/BDSiTunes">https://brakesec.com/BDSiTunes</a></p>
+<p><strong>#Google Play</strong> Store: <a href="https://brakesec.com/BDS-GooglePlay">https://brakesec.com/BDS-GooglePlay</a></p>
+<p>Our main site:  <a href="https://brakesec.com/bdswebsite">https://brakesec.com/bdswebsite</a></p>
+<p><strong>#iHeartRadio</strong> App:  <a href="https://brakesec.com/iHeartBrakesec">https://brakesec.com/iHeartBrakesec</a></p>
+<p><strong>#SoundCloud</strong>: <a href="https://brakesec.com/SoundcloudBrakesec">https://brakesec.com/SoundcloudBrakesec</a></p>
+<p>Comments, Questions, Feedback: <strong><a href="mailto:bds.podcast@gmail.com">bds.podcast@gmail.com</a></strong></p>
+<p>Support Brakeing Down Security Podcast by using our <strong>#Paypal</strong>: <a href="https://brakesec.com/PaypalBDS">https://brakesec.com/PaypalBDS</a> OR our <strong>#Patreon</strong></p>
+<p><a href="https://brakesec.com/BDSPatreon">https://brakesec.com/BDSPatreon</a></p>
+<p><strong>#Twitter</strong>: <a href="https://twitter.com/brakesec">@brakesec</a> <a href="https://twitter.com/boettcherpwned">@boettcherpwned</a> <a href="https://twitter.com/bryanbrake">@bryanbrake</a> <a href="https://twitter.com/infosystir">@infosystir</a></p>
+<p><strong>#Player.FM</strong> : <a href="https://brakesec.com/BDS-PlayerFM">https://brakesec.com/BDS-PlayerFM</a></p>
+<p><strong>#Stitcher</strong> Network: <a href="https://brakesec.com/BrakeSecStitcher">https://brakesec.com/BrakeSecStitcher</a></p>
+<p><strong>#TuneIn</strong> Radio App: <a href="https://brakesec.com/TuneInBrakesec">https://brakesec.com/TuneInBrakesec</a></p>
+<h4 id="source"><a href="http://brakeingsecurity.com/2018-043-adam-baldwin-npmjs-director-of-security-event-stream-post-mortem-and-making-your-package-system-more-secure">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

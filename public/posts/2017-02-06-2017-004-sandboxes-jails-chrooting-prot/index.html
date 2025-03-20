@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>2017-004-sandboxes jails chrooting protecting applications and analyzing malware</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>2017-004-sandboxes jails chrooting protecting applications and analyzing malware</h1>
+			<b><time>06.02.2017 00:30</time></b>
+		       
+
+			<div>
+				<h1 id="2017-004-sandboxes-jails-chrooting-protecting-applications-and-analyzing-malware">2017-004-sandboxes jails chrooting protecting applications and analyzing malware</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Developers use it to create additional protections, or even to create defenses to ward off potential attack vectors.</p>
+<p>We discuss sandboxes and sandboxing technology, jails, chrooting of applications, and even tools that keep applications honest, in particular, the pledge(2) function in OpenBSD</p>
+<p>-&mdash;&mdash;&mdash;</p>
+<p>HITB announcement:</p>
+<p>“Tickets for attendance and training are on sale, And entering special code &lsquo;<strong>brakeingsecurity</strong>&rsquo; at checkout gets you a 10% discount&quot;. Brakeing Down Security thanks #Sebastian Paul #Avarvarei and all the organizers of #Hack In The Box (#HITB) for this opportunity! You can follow them on Twitter @HITBSecConf. Hack In the Box will be held from 10-14 April 2017. Find out more information here: <a href="http://conference.hitb.org/hitbsecconf2017ams/">http://conference.hitb.org/hitbsecconf2017ams/</a></p>
+<p>-&mdash;&mdash;&ndash;</p>
+<p> Direct Link: <a href="http://traffic.libsyn.com/brakeingsecurity/2017-004-Sandboxing_technology.mp3">http://traffic.libsyn.com/brakeingsecurity/2017-004-Sandboxing_technology.mp3</a></p>
+<p>iTunes: <a href="https://itunes.apple.com/us/podcast/2017-004-sandboxes-jails-chrooting/id799131292?i=1000380833781&amp;mt=2">https://itunes.apple.com/us/podcast/2017-004-sandboxes-jails-chrooting/id799131292?i=1000380833781&amp;mt=2</a></p>
+<p>YouTube: <a href="https://www.youtube.com/watch?v=LqMZ9aGzYXA">https://www.youtube.com/watch?v=LqMZ9aGzYXA</a></p>
+<p>Join our #Slack Channel! Sign up at <strong><a href="https://brakesec.signup.team">https://brakesec.signup.team</a></strong></p>
+<p>#RSS: <a href="http://www.brakeingsecurity.com/rss">http://www.brakeingsecurity.com/rss</a></p>
+<p>#Google Play Store: <a href="https://play.google.com/music/m/Ifp5boyverbo4yywxnbydtzljcy?t=Brakeing">https://play.google.com/music/m/Ifp5boyverbo4yywxnbydtzljcy?t=Brakeing</a>_Down_Security_podcast</p>
+<p>#SoundCloud: <a href="https://www.soundcloud.com/bryan-brake">https://www.soundcloud.com/bryan-brake</a></p>
+<p>Comments, Questions, Feedback, or Suggestions?  Contact us via Email: <a href="mailto:bds.podcast@gmail.com">bds.podcast@gmail.com</a></p>
+<p>#Twitter: @brakesec @boettcherpwned @bryanbrake @infosystir</p>
+<p>#Facebook: <a href="https://www.facebook.com/BrakeingDownSec/">https://www.facebook.com/BrakeingDownSec/</a></p>
+<p>#Tumblr: <a href="http://brakeingdownsecurity.tumblr.com/">http://brakeingdownsecurity.tumblr.com/</a></p>
+<p>#Player.FM : <a href="https://player.fm/series/brakeing-down-security-podcast">https://player.fm/series/brakeing-down-security-podcast</a></p>
+<p>#Stitcher Network: <a href="http://www.stitcher.com/s?fid=80546&amp;refid=stpr">http://www.stitcher.com/s?fid=80546&amp;refid=stpr</a></p>
+<p>#TuneIn Radio App: <a href="http://tunein.com/radio/Brakeing-Down-Security-Podcast-p801582">http://tunein.com/radio/Brakeing-Down-Security-Podcast-p801582</a></p>
+<p>-&mdash;&mdash;&mdash;-</p>
+<p>Show notes:</p>
+<p>Sandboxing tech  -  <a href="https://hangouts.google.com/call/yrpzdahvjjdbfhesvjltk4ahgmf">https://hangouts.google.com/call/yrpzdahvjjdbfhesvjltk4ahgmf</a></p>
+<p>A sandbox is implemented by executing the software in a restricted operating system environment, thus controlling the resources (for example, <a href="https://en.wikipedia.org/wiki/File_descriptor">file descriptors</a>, memory, file system space, etc.) that a process may use.</p>
+<p>Various types of sandbox tech</p>
+<p>Jails - freebsd</p>
+<p>    Much like Solaris 10’s zones, restricted operating system, also able to install OSes inside, like Debian</p>
+<p>        <a href="http://devil-detail.blogspot.com/2013/08/debian-linux-freebsd-jail-zfs.html">http://devil-detail.blogspot.com/2013/08/debian-linux-freebsd-jail-zfs.html</a></p>
+<p>Pledge(8)  - new to OpenBSD</p>
+<p>    Program says what it should use, if it steps outside those lines, it’s killed</p>
+<p>    <a href="http://www.tedunangst.com/flak/post/going-full-pledge">http://www.tedunangst.com/flak/post/going-full-pledge</a></p>
+<p>    <a href="http://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man2/pledge.2?query=pledge">http://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man2/pledge.2?query=pledge</a></p>
+<p>    <a href="http://www.openbsd.org/papers/hackfest2015-pledge/mgp00008.html">http://www.openbsd.org/papers/hackfest2015-pledge/mgp00008.html</a></p>
+<p>Chroot - openbsd, linux (chroot jails)</p>
+<p>    “A <strong>chroot</strong> on Unix operating systems is an operation that changes the apparent root directory for the current running process and its children”</p>
+<p>    Example: “www” runs in /var/www. A chrooted www website must contain all the necessary files and libraries inside of /var/www, because to the application /var/www is ‘/’</p>
+<p>Rules based execution - AppArmor, PolicyKit, SeLinux</p>
+<p>    Allows users to set what will be ran, and which apps can inject DLLs or objects.</p>
+<p>    “It also can control file/registry security (what programs can read and write to the file system/registry). In such an environment, viruses and trojans have fewer opportunities of infecting a computer.”</p>
+<p><a href="https://en.wikipedia.org/wiki/Seccomp">https://en.wikipedia.org/wiki/Seccomp</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Linux_Security_Modules">https://en.wikipedia.org/wiki/Linux_Security_Modules</a></p>
+<p>Android VMs</p>
+<p>Virtual machines - sandboxes in their own right</p>
+<p>    Snapshot capability</p>
+<p>    Revert once changes have occurred</p>
+<p>    CON: some malware will detect VM environments, change ways of working</p>
+<p>Containers (docker, kubernetes, vagrant, etc)</p>
+<p>    Quick standup of images</p>
+<p>    Blow away without loss of host functionality</p>
+<p>    Helpful to run containers as an un-privileged user.</p>
+<p><a href="https://blog.jessfraz.com/post/getting-towards-real-sandbox-containers/">https://blog.jessfraz.com/post/getting-towards-real-sandbox-containers/</a></p>
+<p>Chrome sandbox: <a href="https://chromium.googlesource.com/chromium/src/+/master/docs/linux_sandboxing.md">https://chromium.googlesource.com/chromium/src/+/master/docs/linux_sandboxing.md</a></p>
+<p>Emulation Vs. Virtualization</p>
+<p><a href="http://labs.lastline.com/different-sandboxing-techniques-to-detect-advanced-malware">http://labs.lastline.com/different-sandboxing-techniques-to-detect-advanced-malware</a>  &ndash;seems like a good link</p>
+<p>VMware Thinapp (emulator):</p>
+<p><a href="https://kb.vmware.com/selfservice/microsites/search.do?language=en_US&amp;cmd=displayKC&amp;externalId=1030224">https://kb.vmware.com/selfservice/microsites/search.do?language=en_US&amp;cmd=displayKC&amp;externalId=1030224</a></p>
+<p>(continued next page)</p>
+<p>Malware lab creation (Alienvault blog):</p>
+<p><a href="https://www.alienvault.com/blogs/security-essentials/building-a-home-lab-to-become-a-malware-hunter-a-beginners-guide">https://www.alienvault.com/blogs/security-essentials/building-a-home-lab-to-become-a-malware-hunter-a-beginners-guide</a></p>
+<p><a href="https://www.reverse.it/">https://www.reverse.it/</a></p>
+<p>News: (assuming it goes short)</p>
+<p>SHA-1 generated certs will be deprecated soon - <a href="https://threatpost.com/sha-1-end-times-have-arrived/123061/">https://threatpost.com/sha-1-end-times-have-arrived/123061/</a></p>
+<p>(whitelisting files in Apache)</p>
+<p><a href="https://isc.sans.edu/diary/Whitelisting+File+Extensions+in+Apache/21937">https://isc.sans.edu/diary/Whitelisting+File+Extensions+in+Apache/21937</a></p>
+<p><a href="http://blog.erratasec.com/2017/01/the-command-line-for-cybersec.html">http://blog.erratasec.com/2017/01/the-command-line-for-cybersec.html</a></p>
+<p><a href="https://github.com/robertkuhar/java_coding_guidelines">https://github.com/robertkuhar/java_coding_guidelines</a></p>
+<p><a href="https://www.us-cert.gov/sites/default/files/publications/South%20Korean%20Malware%20Attack_1.pdf">https://www.us-cert.gov/sites/default/files/publications/South%20Korean%20Malware%20Attack_1.pdf#</a></p>
+<p><a href="https://www.concise-courses.com/security/conferences-of-2017/">https://www.concise-courses.com/security/conferences-of-2017/</a></p>
+<h4 id="source"><a href="http://brakeingsecurity.com/2017-004-sandboxes-jails-chrooting-protecting-applications-and-analyzing-malware">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

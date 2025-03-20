@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>2018-039-Ian Coldwater kubernetes container security</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>2018-039-Ian Coldwater kubernetes container security</h1>
+			<b><time>12.11.2018 22:18</time></b>
+		       
+
+			<div>
+				<h1 id="2018-039-ian-coldwater-kubernetes-container-security">2018-039-Ian Coldwater kubernetes container security</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>@IanColdwater  <a href="https://www.redteamsecure.com/">https://www.redteamsecure.com/</a> *new gig*</p>
+<p>So many different moving parts</p>
+<p>Plugins</p>
+<p>Code</p>
+<p>Hardware</p>
+<p>She’s working on speaking schedule for 2019</p>
+<p>How would I use these at home?</p>
+<p>    <a href="https://kubernetes.io/docs/setup/minikube/">https://kubernetes.io/docs/setup/minikube/</a></p>
+<p>Kubernetes - up and running</p>
+<p>    <a href="https://www.amazon.com/Kubernetes-Running-Dive-Future-Infrastructure/dp/1491935677">https://www.amazon.com/Kubernetes-Running-Dive-Future-Infrastructure/dp/1491935677</a></p>
+<p>General wikipedia article (with architecture diagram): <a href="https://en.wikipedia.org/wiki/Kubernetes">https://en.wikipedia.org/wiki/Kubernetes</a></p>
+<p><a href="https://twitter.com/alicegoldfuss">https://twitter.com/alicegoldfuss</a> - Alice Goldfuss</p>
+<p>Derbycon Talk: <a href="http://www.irongeek.com/i.php?page=videos/derbycon8/track-3-10-perfect-storm-taking-the-helm-of-kubernetes-ian-coldwater">http://www.irongeek.com/i.php?page=videos/derbycon8/track-3-10-perfect-storm-taking-the-helm-of-kubernetes-ian-coldwater</a></p>
+<p>Tesla mis-configured Kubes env:</p>
+<p>From the talk: <a href="https://arstechnica.com/information-technology/2018/02/tesla-cloud-resources-are-hacked-to-run-cryptocurrency-mining-malware/">https://arstechnica.com/information-technology/2018/02/tesla-cloud-resources-are-hacked-to-run-cryptocurrency-mining-malware/</a></p>
+<p>Redlock report mentioned in Ars article:  <a href="https://redlock.io/blog/cryptojacking-tesla">https://redlock.io/blog/cryptojacking-tesla</a></p>
+<p>Setup your own K8s environment: <a href="https://kubernetes.io/docs/setup/pick-right-solution/#local-machine-solutions">https://kubernetes.io/docs/setup/pick-right-solution/#local-machine-solutions</a> (many options to choose from)</p>
+<p>Securing K8s implementations: <a href="https://kubernetes.io/docs/tasks/administer-cluster/securing-a-cluster/">https://kubernetes.io/docs/tasks/administer-cluster/securing-a-cluster/</a></p>
+<p><a href="https://github.com/aquasecurity/kube-hunter">https://github.com/aquasecurity/kube-hunter</a> -</p>
+<p>Threat Model<br>
+    What R U protecting?</p>
+<p>    Who R U protecting from?</p>
+<p>    What R your Adversary’s capabilities?</p>
+<p>    What R your capabilities?</p>
+<p>Defenders think in Lists</p>
+<p>Attackers think in Graphs</p>
+<p>What are some of the visible ports used in K8S?</p>
+<p>    44134/tcp - Helmtiller, weave, calico</p>
+<p>    10250/tcp - kubelet (kublet exploit)</p>
+<p>        No authN, completely open</p>
+<p>    10255/tcp - kublet port (read-only)</p>
+<p>    4194/tcp - cAdvisor</p>
+<p>    2379/tcp - etcd</p>
+<p>        Etcd holds all the configs</p>
+<p>        Config storage</p>
+<p>Engineering workflow:</p>
+<p>    Ephemeral -  </p>
+<p>CVE for K8S subpath - <a href="https://kubernetes.io/blog/2018/04/04/fixing-subpath-volume-vulnerability/">https://kubernetes.io/blog/2018/04/04/fixing-subpath-volume-vulnerability/</a></p>
+<p>Final points:</p>
+<p>    Advice securing K8S is standard security advice</p>
+<p>    Use Defense in Depth, and least Privilege</p>
+<p>    Be aware of your attack surface</p>
+<p>    Keep your threat model in mind</p>
+<p>David Cybuck (questions from Slack channel)</p>
+<p>My questions are: 1. Talk telemetry?  What is the best first step for having my containers or kubernetes report information?  (my overlords want metrics dashboards which lead to useful metrics).</p>
+<ol start="2">
+<li>
+<p>How do you threat model your containers?  Has she ever or how would she begin to run a table-top exercise, a cross between a threat model and a disaster recovery walk through, for the container infrastructure?</p>
+</li>
+<li>
+<p>Mitre Att&amp;ck framework, there is a spin off for mobile.  Do we need one for Kube, swarm, or DC/OS?</p>
+</li>
+</ol>
+<p>heck out our Store on Teepub! <strong><a href="https://brakesec.com/store">https://brakesec.com/store</a></strong></p>
+<p><strong>Join us on our #Slack Channel! Send a request to @brakesec on Twitter or email <a href="mailto:bds.podcast@gmail.com">bds.podcast@gmail.com</a></strong></p>
+<p>#<strong>Brakesec</strong> Store!:<a href="https://www.teepublic.com/user/bdspodcast">https://www.teepublic.com/user/bdspodcast</a></p>
+<p><strong>#Spotify</strong>: <a href="https://brakesec.com/spotifyBDS">https://brakesec.com/spotifyBDS</a></p>
+<p><strong>#RSS</strong>: <a href="https://brakesec.com/BrakesecRSS">https://brakesec.com/BrakesecRSS</a></p>
+<p><strong>#Youtube Channel</strong>:  <a href="http://www.youtube.com/c/BDSPodcast">http://www.youtube.com/c/BDSPodcast</a></p>
+<p><strong>#iTunes</strong> Store Link: <a href="https://brakesec.com/BDSiTunes">https://brakesec.com/BDSiTunes</a></p>
+<p><strong>#Google Play</strong> Store: <a href="https://brakesec.com/BDS-GooglePlay">https://brakesec.com/BDS-GooglePlay</a></p>
+<p>Our main site:  <a href="https://brakesec.com/bdswebsite">https://brakesec.com/bdswebsite</a></p>
+<p><strong>#iHeartRadio</strong> App:  <a href="https://brakesec.com/iHeartBrakesec">https://brakesec.com/iHeartBrakesec</a></p>
+<p><strong>#SoundCloud</strong>: <a href="https://brakesec.com/SoundcloudBrakesec">https://brakesec.com/SoundcloudBrakesec</a></p>
+<p>Comments, Questions, Feedback: <strong><a href="mailto:bds.podcast@gmail.com">bds.podcast@gmail.com</a></strong></p>
+<p>Support Brakeing Down Security Podcast by using our <strong>#Paypal</strong>: <a href="https://brakesec.com/PaypalBDS">https://brakesec.com/PaypalBDS</a> OR our <strong>#Patreon</strong></p>
+<p><a href="https://brakesec.com/BDSPatreon">https://brakesec.com/BDSPatreon</a></p>
+<p><strong>#Twitter</strong>: <a href="https://twitter.com/brakesec">@brakesec</a> <a href="https://twitter.com/boettcherpwned">@boettcherpwned</a> <a href="https://twitter.com/bryanbrake">@bryanbrake</a> <a href="https://twitter.com/infosystir">@infosystir</a></p>
+<p><strong>#Player.FM</strong> : <a href="https://brakesec.com/BDS-PlayerFM">https://brakesec.com/BDS-PlayerFM</a></p>
+<p><strong>#Stitcher</strong> Network: <a href="https://brakesec.com/BrakeSecStitcher">https://brakesec.com/BrakeSecStitcher</a></p>
+<p><strong>#TuneIn</strong> Radio App: <a href="https://brakesec.com/TuneInBrakesec">https://brakesec.com/TuneInBrakesec</a></p>
+<h4 id="source"><a href="http://brakeingsecurity.com/2018-039-ian-coldwater-kubernetes-container-security">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

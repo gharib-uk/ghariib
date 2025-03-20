@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>The February 2025 Security Update Review</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>The February 2025 Security Update Review</h1>
+			<b><time>11.02.2025 19:08</time></b>
+		       
+
+			<div>
+				<h1 id="the-february-2025-security-update-review">The February 2025 Security Update Review</h1>
+<p><a href="https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/1739300901440-KRJMX9HVVAID1T4XQ3I7/Patch+Blog+Title+Card.png?format=1500w">https://images.squarespace-cdn.com/content/v1/5894c269e4fcb5e65a1ed623/1739300901440-KRJMX9HVVAID1T4XQ3I7/Patch+Blog+Title+Card.png?format=1500w</a>
+<!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<p><strong>Adobe Patches for February 2025</strong></p>
+<p>For February, Adobe released seven bulletins addressing 45 CVEs in Adobe InDesign, Commerce, Substance 3D Stager, InCopy, Illustrator, Substance 3D Designer, and Adobe Photoshop Elements. The largest by far is the update for <a href="https://helpx.adobe.com/security/products/magento/apsb25-08.html">Commerce</a> with 31 CVEs addressed. While there are some cross-site scripting (XSS) bugs addressed, there are also some security feature bypasses and Critical-rated code execution bugs, too. The update for <a href="https://helpx.adobe.com/security/products/indesign/apsb25-01.html">InDesign</a> fixes seven bugs, four of which are rated Critical. The three bugs in <a href="https://helpx.adobe.com/security/products/illustrator/apsb25-11.html">Illustrator</a> are also rated Critical and could lead to arbitrary code execution when opening a malicious file.</p>
+<p>The patch for <a href="https://helpx.adobe.com/security/products/substance3d_stager/apsb25-09.html">Substance 3D Stager</a> fixes a single DoS bug. The fix for <a href="https://helpx.adobe.com/security/products/incopy/apsb25-10.html">InCopy</a> is also a single bug, but this one is a Critical-rated code execution. That’s the same case of the <a href="https://helpx.adobe.com/security/products/substance3d_designer/apsb25-12.html">Substance 3D Designer</a> patch. The final Adobe patch for February covers an Important-rated privilege escalation in <a href="https://helpx.adobe.com/security/products/photoshop_elements/apsb25-13.html">Photoshop Elements</a>.</p>
+<p>None of the bugs fixed by Adobe this month are listed as publicly known or under active attack at the time of release. Adobe categorizes these updates as a deployment priority rating of 3.</p>
+<p><strong>Microsoft Patches for February 2025</strong></p>
+<p>This month, Microsoft released 57 new CVEs in Windows and Windows Components, Office and Office Components, Azure, Visual Studio, and Remote Desktop Services. Two of these were submitted through the Trend ZDI program. With the addition of the third-party CVEs, the entire release tops out at 67 CVEs.</p>
+<p>Of the patches released today, four are rated Critical, 52 are rated Important, and one is rated Moderate in severity. After a couple of record-breaking releases, this volume of fixes is more in line with expectations. Let’s hope this trend, rather than monster releases, remains the norm for 2025.</p>
+<p>Two of these bugs are listed as publicly known, and two others are listed as under active attack at the time of release. Let’s take a closer look at some of the more interesting updates for this month, starting with the bugs currently being exploited:</p>
+<p>-  <a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21391"><strong>CVE-2025-21391</strong></a> <strong>- Windows Storage Elevation of Privilege Vulnerability</strong>This is one of the bugs being exploited in the wild receiving a patch in this month’s release, and it’s a type of bug we haven’t seen exploited publicly. The vulnerability allows an attacker to delete targeted files. How does this lead to privilege escalation? My colleague Simon Zuckerbraun details the technique <a href="https://www.zerodayinitiative.com/blog/2022/3/16/abusing-arbitrary-file-deletes-to-escalate-privilege-and-other-great-tricks">here</a>. While we’ve seen similar issues in the past, this does appear to be the first time the technique has been exploited in the wild. It’s also likely paired with a code execution bug to completely take over a system. Test and deploy this quickly.</p>
+<p>-   <a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21418"><strong>CVE-2025-21418</strong></a> <strong>- Windows Ancillary Function Driver for WinSock Elevation of Privilege Vulnerability</strong>This is the other bug being actively exploited, but it’s a more traditional privilege escalation than the other one. In this case, an authenticated user would need to run a specially-crafted program that ends up executing code with SYSTEM privileges. That’s why these types of bugs are usually paired with a code execution bug to take over a system. Microsoft doesn’t provide any information on how widespread these attacks are, but regardless of how targeted the attacks may be, I would test and deploy these patches quickly.</p>
+<p>-   <a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21376"><strong>CVE-2025-21376</strong></a> <strong>- Windows Lightweight Directory Access Protocol (LDAP) Remote Code Execution Vulnerability</strong>This vulnerability allows a remote, unauthenticated attacker to run their code on an affected system simply by sending a maliciously crafted request to the target. Since there’s no user interaction involved, that makes this bug wormable between affected LDAP servers. Microsoft lists this as “Exploitation Likely”, so even though this may be unlikely, I would treat this as an impending exploitation. Test and deploy the patch quickly.</p>
+<p>-  <a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21387"><strong>CVE-2025-21387</strong></a> <strong>- Microsoft Excel Remote Code Execution Vulnerability</strong>This is one of several Excel fixes where the Preview Pane is an attack vector, which is confusing as Microsoft also notes that user interaction is required. They also note that multiple patches are required to address this vulnerability fully. This likely can be exploited either by opening a malicious Excel file or previewing a malicious attachment in Outlook. Either way, make sure you get <em>all</em> the needed patches tested and deployed.</p>
+<p>Here’s the full list of CVEs released by Microsoft for February 2025:</p>
+<p>CVE</p>
+<p>Title</p>
+<p>Severity</p>
+<p>CVSS</p>
+<p>Public</p>
+<p>Exploited</p>
+<p>Type</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21418">CVE-2025-21418</a></p>
+<p>Windows Ancillary Function Driver for WinSock Elevation of Privilege Vulnerability</p>
+<p>Important</p>
+<p>7.8</p>
+<p>No</p>
+<p>Yes</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21391">CVE-2025-21391</a></p>
+<p>Windows Storage Elevation of Privilege Vulnerability</p>
+<p>Important</p>
+<p>7.1</p>
+<p>No</p>
+<p>Yes</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21194">CVE-2025-21194</a></p>
+<p>Microsoft Surface Security Feature Bypass Vulnerability</p>
+<p>Important</p>
+<p>7.1</p>
+<p>Yes</p>
+<p>No</p>
+<p>SFB</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21377">CVE-2025-21377</a></p>
+<p>NTLM Hash Disclosure Spoofing Vulnerability</p>
+<p>Important</p>
+<p>6.5</p>
+<p>Yes</p>
+<p>No</p>
+<p>Spoofing</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21379">CVE-2025-21379</a></p>
+<p>DHCP Client Service Remote Code Execution Vulnerability</p>
+<p>Critical</p>
+<p>7.1</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21177">CVE-2025-21177</a></p>
+<p>Microsoft Dynamics 365 Sales Elevation of Privilege Vulnerability</p>
+<p>Critical</p>
+<p>8.7</p>
+<p>No</p>
+<p>No</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21376">CVE-2025-21376</a></p>
+<p>Windows Lightweight Directory Access Protocol (LDAP) Remote Code Execution Vulnerability</p>
+<p>Critical</p>
+<p>8.1</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21381">CVE-2025-21381</a></p>
+<p>Microsoft Excel Remote Code Execution Vulnerability</p>
+<p>Critical</p>
+<p>7.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21188">CVE-2025-21188</a></p>
+<p>Azure Network Watcher VM Extension Elevation of Privilege Vulnerability</p>
+<p>Important</p>
+<p>6</p>
+<p>No</p>
+<p>No</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21179">CVE-2025-21179</a></p>
+<p>DHCP Client Service Denial of Service Vulnerability</p>
+<p>Important</p>
+<p>4.8</p>
+<p>No</p>
+<p>No</p>
+<p>DoS</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2023-32002">CVE-2023-32002 *</a></p>
+<p>HackerOne: CVE-2023-32002 Node.js `Module._load()` policy Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>9.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21212">CVE-2025-21212</a></p>
+<p>Internet Connection Sharing (ICS) Denial of Service Vulnerability</p>
+<p>Important</p>
+<p>6.5</p>
+<p>No</p>
+<p>No</p>
+<p>DoS</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21216">CVE-2025-21216</a></p>
+<p>Internet Connection Sharing (ICS) Denial of Service Vulnerability</p>
+<p>Important</p>
+<p>6.5</p>
+<p>No</p>
+<p>No</p>
+<p>DoS</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21254">CVE-2025-21254</a></p>
+<p>Internet Connection Sharing (ICS) Denial of Service Vulnerability</p>
+<p>Important</p>
+<p>6.5</p>
+<p>No</p>
+<p>No</p>
+<p>DoS</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21352">CVE-2025-21352</a></p>
+<p>Internet Connection Sharing (ICS) Denial of Service Vulnerability</p>
+<p>Important</p>
+<p>6.5</p>
+<p>No</p>
+<p>No</p>
+<p>DoS</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21375">CVE-2025-21375</a></p>
+<p>Kernel Streaming WOW Thunk Service Driver Elevation of Privilege Vulnerability</p>
+<p>Important</p>
+<p>7.8</p>
+<p>No</p>
+<p>No</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-24036">CVE-2025-24036</a></p>
+<p>Microsoft AutoUpdate (MAU) Elevation of Privilege Vulnerability</p>
+<p>Important</p>
+<p>7</p>
+<p>No</p>
+<p>No</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21368">CVE-2025-21368</a></p>
+<p>Microsoft Digest Authentication Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>8.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21369">CVE-2025-21369</a></p>
+<p>Microsoft Digest Authentication Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>8.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21279">CVE-2025-21279 *</a></p>
+<p>Microsoft Edge (Chromium-based) Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>6.5</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21283">CVE-2025-21283 *</a></p>
+<p>Microsoft Edge (Chromium-based) Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>6.5</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21342">CVE-2025-21342 *</a></p>
+<p>Microsoft Edge (Chromium-based) Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>8.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21408">CVE-2025-21408 *</a></p>
+<p>Microsoft Edge (Chromium-based) Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>8.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21383">CVE-2025-21383</a></p>
+<p>Microsoft Excel Information Disclosure Vulnerability</p>
+<p>Important</p>
+<p>7.8</p>
+<p>No</p>
+<p>No</p>
+<p>Info</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21386">CVE-2025-21386</a></p>
+<p>Microsoft Excel Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>7.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21387">CVE-2025-21387 †</a></p>
+<p>Microsoft Excel Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>7.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21390">CVE-2025-21390 †</a></p>
+<p>Microsoft Excel Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>7.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21394">CVE-2025-21394</a></p>
+<p>Microsoft Excel Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>7.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21198">CVE-2025-21198</a></p>
+<p>Microsoft High Performance Compute (HPC) Pack Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>9</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21181">CVE-2025-21181</a></p>
+<p>Microsoft Message Queuing (MSMQ) Denial of Service Vulnerability</p>
+<p>Important</p>
+<p>7.5</p>
+<p>No</p>
+<p>No</p>
+<p>DoS</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21392">CVE-2025-21392</a></p>
+<p>Microsoft Office Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>7.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21397">CVE-2025-21397</a></p>
+<p>Microsoft Office Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>7.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21259">CVE-2025-21259</a></p>
+<p>Microsoft Outlook Spoofing Vulnerability</p>
+<p>Important</p>
+<p>5.3</p>
+<p>No</p>
+<p>No</p>
+<p>Spoofing</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21322">CVE-2025-21322</a></p>
+<p>Microsoft PC Manager Elevation of Privilege Vulnerability</p>
+<p>Important</p>
+<p>7.8</p>
+<p>No</p>
+<p>No</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21400">CVE-2025-21400</a></p>
+<p>Microsoft SharePoint Server Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-24039">CVE-2025-24039</a></p>
+<p>Visual Studio Code Elevation of Privilege Vulnerability</p>
+<p>Important</p>
+<p>7.3</p>
+<p>No</p>
+<p>No</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-24042">CVE-2025-24042</a></p>
+<p>Visual Studio Code JS Debug Extension Elevation of Privilege Vulnerability</p>
+<p>Important</p>
+<p>7.3</p>
+<p>No</p>
+<p>No</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21206">CVE-2025-21206</a></p>
+<p>Visual Studio Installer Elevation of Privilege Vulnerability</p>
+<p>Important</p>
+<p>7.3</p>
+<p>No</p>
+<p>No</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21351">CVE-2025-21351</a></p>
+<p>Windows Active Directory Domain Services API Denial of Service Vulnerability</p>
+<p>Important</p>
+<p>7.5</p>
+<p>No</p>
+<p>No</p>
+<p>DoS</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21184">CVE-2025-21184</a></p>
+<p>Windows Core Messaging Elevation of Privileges Vulnerability</p>
+<p>Important</p>
+<p>7</p>
+<p>No</p>
+<p>No</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21358">CVE-2025-21358</a></p>
+<p>Windows Core Messaging Elevation of Privileges Vulnerability</p>
+<p>Important</p>
+<p>7.8</p>
+<p>No</p>
+<p>No</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21414">CVE-2025-21414</a></p>
+<p>Windows Core Messaging Elevation of Privileges Vulnerability</p>
+<p>Important</p>
+<p>7</p>
+<p>No</p>
+<p>No</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21347">CVE-2025-21347</a></p>
+<p>Windows Deployment Services Denial of Service Vulnerability</p>
+<p>Important</p>
+<p>6</p>
+<p>No</p>
+<p>No</p>
+<p>DoS</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21420">CVE-2025-21420</a></p>
+<p>Windows Disk Cleanup Tool Elevation of Privilege Vulnerability</p>
+<p>Important</p>
+<p>7.8</p>
+<p>No</p>
+<p>No</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21373">CVE-2025-21373</a></p>
+<p>Windows Installer Elevation of Privilege Vulnerability</p>
+<p>Important</p>
+<p>7.8</p>
+<p>No</p>
+<p>No</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21350">CVE-2025-21350</a></p>
+<p>Windows Kerberos Denial of Service Vulnerability</p>
+<p>Important</p>
+<p>5.9</p>
+<p>No</p>
+<p>No</p>
+<p>DoS</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21359">CVE-2025-21359</a></p>
+<p>Windows Kernel Security Feature Bypass Vulnerability</p>
+<p>Important</p>
+<p>7.8</p>
+<p>No</p>
+<p>No</p>
+<p>SFB</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21337">CVE-2025-21337</a></p>
+<p>Windows NTFS Elevation of Privilege Vulnerability</p>
+<p>Important</p>
+<p>3.3</p>
+<p>No</p>
+<p>No</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21349">CVE-2025-21349</a></p>
+<p>Windows Remote Desktop Configuration Service Tampering Vulnerability</p>
+<p>Important</p>
+<p>6.8</p>
+<p>No</p>
+<p>No</p>
+<p>Tampering</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21182">CVE-2025-21182</a></p>
+<p>Windows Resilient File System (ReFS) Deduplication Service Elevation of Privilege Vulnerability</p>
+<p>Important</p>
+<p>7.4</p>
+<p>No</p>
+<p>No</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21183">CVE-2025-21183</a></p>
+<p>Windows Resilient File System (ReFS) Deduplication Service Elevation of Privilege Vulnerability</p>
+<p>Important</p>
+<p>7.4</p>
+<p>No</p>
+<p>No</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21208">CVE-2025-21208</a></p>
+<p>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>8.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21410">CVE-2025-21410</a></p>
+<p>Windows Routing and Remote Access Service (RRAS) Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>8.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21419">CVE-2025-21419</a></p>
+<p>Windows Setup Files Cleanup Elevation of Privilege Vulnerability</p>
+<p>Important</p>
+<p>7.1</p>
+<p>No</p>
+<p>No</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21201">CVE-2025-21201</a></p>
+<p>Windows Telephony Server Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>8.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21190">CVE-2025-21190</a></p>
+<p>Windows Telephony Service Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>8.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21200">CVE-2025-21200</a></p>
+<p>Windows Telephony Service Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>8.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21371">CVE-2025-21371</a></p>
+<p>Windows Telephony Service Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>8.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21406">CVE-2025-21406</a></p>
+<p>Windows Telephony Service Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>8.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21407">CVE-2025-21407</a></p>
+<p>Windows Telephony Service Remote Code Execution Vulnerability</p>
+<p>Important</p>
+<p>8.8</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21367">CVE-2025-21367</a></p>
+<p>Windows Win32 Kernel Subsystem Elevation of Privilege Vulnerability</p>
+<p>Important</p>
+<p>7.8</p>
+<p>No</p>
+<p>No</p>
+<p>EoP</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21253">CVE-2025-21253</a></p>
+<p>Microsoft Edge for IOS and Android Spoofing Vulnerability</p>
+<p>Moderate</p>
+<p>5.3</p>
+<p>No</p>
+<p>No</p>
+<p>Spoofing</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21267">CVE-2025-21267 *</a></p>
+<p>Microsoft Edge (Chromium-based) Spoofing Vulnerability</p>
+<p>Low</p>
+<p>4.4</p>
+<p>No</p>
+<p>No</p>
+<p>Spoofing</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21404">CVE-2025-21404 *</a></p>
+<p>Microsoft Edge (Chromium-based) Spoofing Vulnerability</p>
+<p>Low</p>
+<p>4.3</p>
+<p>No</p>
+<p>No</p>
+<p>Spoofing</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-0444">CVE-2025-0444 *</a></p>
+<p>Chromium: CVE-2025-0444 Use after free in Skia</p>
+<p>High</p>
+<p>N/A</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-0445">CVE-2025-0445 *</a></p>
+<p>Chromium: CVE-2025-0445 Use after free in V8</p>
+<p>High</p>
+<p>N/A</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-0451">CVE-2025-0451 *</a></p>
+<p>Chromium: CVE-2025-0451 Inappropriate implementation in Extensions API</p>
+<p>Medium</p>
+<p>N/A</p>
+<p>No</p>
+<p>No</p>
+<p>RCE</p>
+<p><em>* Indicates this CVE had been released by a third party and is now being included in Microsoft releases</em>.<br>
+<em>† Indicates further administrative actions are required to fully address the vulnerability.</em></p>
+<p>Moving on to the other Critical-rated bugs, there’s a code execution bug in the DHCP server, but it can only be accessed by Adjacent attackers. It also requires a machine-in-the-middle (MITM) exploit, so this bug is definitely unlikely to be exploited in the wild. The other Critical-rated bug is in Microsoft Dynamics 365 and has already been addressed by Microsoft, so there’s no action here.</p>
+<p>Looking at the other code execution bugs, many patches impact Excel and other Office components. Many of the Excel bugs have the Preview Pane as an attack vector as well, but again, Microsoft notes that user interaction is required. Some of these updates require multiple patches, so please pay attention when you’re deploying updates. The bug in SharePoint does require special privileges, but anyone who can create a site in SharePoint has the appropriate privileges. Two bugs in Digest Authentication can be hit remotely, but they do require authentication. The Telephony Service and Routing and Remote Access Service (RRAS) have several fixes, but none of these are likely to be exploited. The final RCE bug is in the High Performance Compute (HPC) Pack that could allow attackers the ability to perform RCE on other clusters or nodes connected to the targeted head node. HPC Clusters are often complex, but there’s just a single patch to test and deploy here.</p>
+<p>There are a handful of privilege escalation bugs receiving fixes in this month’s release, and most of these either lead to SYSTEM-level code execution or administrative privileges if an authenticated user runs specially crafted code. One of these was reported by Trend ZDI’s Simon Zuckerbraun. <a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21373">CVE-2025-21373</a> is a link-following bug. Though the “msiserver” service is protected by the Redirection Guard mitigation, the mitigation can be bypassed if the attacker can mount an NTFS-formatted removable drive such as a USB drive. In this case, a low-privileged user can use this vulnerability to escalate privileges and execute code as SYSTEM.</p>
+<p>There are some exceptions to this style of privilege escalation bugs. The vulnerability Windows Setup Files could allow a file deletion, similar to the bug being actively exploited. The bug in NTFS could list folder contents, but it’s not clear how this could lead to an escalation. The bug in AutoUpdate is only in the macOS version and leads to root permissions. Microsoft doesn’t provide details about the bug in Azure Network Watcher other than to say an attack would need Contributor or Owner permissions. Finally, the bugs in Visual Studio would allow an attacker to gain the rights of the user running the affected application.</p>
+<p>There are two security feature bypass (SFB) bugs included in this release, and the bug in Microsoft Surface is listed as publicly known. This could allow an attacker to avoid UEFI protections, but there are a mountain of caveats to exploitation. The bug in the kernel is interesting from a policy perspective. The vulnerability allows an attacker to bypass the user access control (UAC) prompt. Microsoft used to not fix bugs of this nature as they claimed UAC was not a security boundary – therefore, UAC bypasses weren’t a security bug. With this fix, Microsoft quietly announces it has changed its mind about this policy.</p>
+<p>There’s only one information disclosure bug this month, and that’s for Excel. It only results in info leaks consisting of unspecified memory contents. There’s also a single Tampering bug in Remote Desktop, but Microsoft doesn’t say what is being tampered with. They do note it requires a MITM attack.</p>
+<p>There are nine different Denial-of-Service (DoS) bugs getting fixed this month, and as usual, details are sparse. The bugs in the DHCP server and Internet Connection Sharing (ICS) service require a network adjacent attacker. Others require attackers to send specially crafted messages to the target. However, the bug in Windows Deployment Services is different. To begin with, it’s a local bug and requires authentication. The attacker could overwrite file contents and cause the service to be unavailable.</p>
+<p>Finally, there are three spoofing bugs fixed in the release. The first is a publicly known bug in NTLM. As expected, NTLM spoofing means relaying an NTLMv2 hash. The spoofing bug in Outlook impacts your Junk folder and could make it appear as though the sender is someone else. Microsoft provides no information about the bug in Edge for iOS and Android. If you’re one of the dozens out there using Edge on iOS or Android, go to your respective app store and download the updates.</p>
+<p>No new advisories are being released this month.</p>
+<p><strong>Looking Ahead</strong></p>
+<p>The next Patch Tuesday of 2025 will be on March 11, and I’ll return with my analysis and thoughts about the release. Until then, stay safe, happy patching, and may all your reboots be smooth and clean!</p>
+<h4 id="source"><a href="https://www.thezdi.com/blog/2025/2/11/the-february-2025-security-update-review">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

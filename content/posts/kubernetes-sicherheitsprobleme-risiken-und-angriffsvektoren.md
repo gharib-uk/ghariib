@@ -1,6 +1,6 @@
 ---
 title: "Kubernetes – Sicherheitsprobleme, Risiken und Angriffsvektoren"
-date: 2025-03-19
+date: 2025-01-06
 ---
 
 The rapid adoption of Kubernetes and containerization poses some real security challenges. We review best practices for keeping your K8s clusters secure.

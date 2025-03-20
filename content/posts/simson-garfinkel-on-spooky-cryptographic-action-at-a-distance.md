@@ -1,15 +1,17 @@
 ---
 title: "Simson Garfinkel on Spooky Cryptographic Action at a Distance"
-date: 2025-03-19
+date: 2025-01-06
 categories: 
   - "cryptography"
   - "cryptography-library"
   - "cybersecurity"
   - "cybersecurity-awareness"
   - "encryption"
-  - "quantum-cryptography"
   - "security"
-  - "security-bloggers-network"
+tags: 
+  - "dataprivacy"
+  - "dataprotection"
+  - "quantumcryptography"
 ---
 
 Excellent read. One example:

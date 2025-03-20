@@ -1,6 +1,6 @@
 ---
 title: "<div>OpenCTF : Baby's First ROP</div>"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
   - "general"
 ---
@@ -182,3 +182,5 @@ p.sendline(payload)
 # Flag
 
 **OpenCTF{Itz\_0nly\_45\_c0Mpl1c4t3d\_as\_you\_want\_itTOBE}**
+
+Go to Source

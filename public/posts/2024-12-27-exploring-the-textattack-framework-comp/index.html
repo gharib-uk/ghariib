@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Exploring the TextAttack Framework Components Features and Practical Applications</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Exploring the TextAttack Framework Components Features and Practical Applications</h1>
+			<b><time>27.12.2024 13:02</time></b>
+		       
+
+			<div>
+				<h1 id="exploring-the-textattack-framework-components-features-and-practical-applications">Exploring the TextAttack Framework Components Features and Practical Applications</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Over the last few years, a growing interest has been in testing the adversarial robustness of natural language processing (NLP) models. The research in this area covers new techniques for generating adversarial examples and defending against them. Comparing these attacks directly is challenging because they are evaluated on different data and victim models.</p>
+<p>Replicating earlier work as a baseline takes time and increases the risk of errors because of missing source code. Perfectly replicating results is also challenging because of the tiny details left out of the publications. These issues create challenges for benchmark comparisons in this space.</p>
+<p>Frameworks like TextAttack have been developed to address these challenges. It’s an NLP Python framework for adversarial attacks, data augmentation, and adversarial training. This framework addresses current challenges and inspires progress in adversarial robustness. Exploring TextAttack, this post goes into the details of its components. Additionally, practical implementations will be examined through in-depth code examples.</p>
+<h2 id="prerequisites"><a href="#prerequisites">Prerequisites</a><a href="#prerequisites"></a></h2>
+<ul>
+<li>Basic Understanding of NLP: Familiarity with Natural Language Processing (NLP) concepts such as tokenization, embeddings, and sequence models (e.g., Transformers).</li>
+<li>Python Programming Skills: Experience with Python, including installing libraries, writing scripts, and handling data.</li>
+<li>PyTorch Knowledge: A foundational understanding of PyTorch, as TextAttack often integrates with PyTorch-based models.</li>
+<li>TextAttack Installation: Install the TextAttack framework in your environment using <code>pip install textattack</code>. Ensure dependencies like NumPy, pandas, and PyTorch are installed.</li>
+<li>Dataset Familiarity: Understanding how to handle datasets such as those available in the Hugging Face Datasets library.</li>
+</ul>
+<h2 id="key-components-of-textattack"><a href="#key-components-of-textattack">Key Components of TextAttack</a><a href="#key-components-of-textattack"></a></h2>
+<p>TextAttack unifies adversarial attack methods by decomposing NLP attacks into four components:</p>
+<ul>
+<li>Goal Function: The objective of the attack is defined by the Goal Function, which can include altering the model’s prediction or fooling it into making a particular error.</li>
+<li>Set of Constraints: They are rules that the attack must adhere to, for example limiting the number of words or guaranteeing that all modifications made are grammatically accurate.</li>
+<li>Transformation: The transformation determines how the input text is modified to generate an adversarial example. For example, the substitution of words with their synonyms or insertion/deletion of words.</li>
+<li>Search Method: This component determines how the attack explores the space of possible modifications to find the most effective adversarial example, such as using gradient-based methods or random search algorithms.</li>
+</ul>
+<h2 id="main-features-of-textattack"><a href="#main-features-of-textattack">Main features of TextAttack</a><a href="#main-features-of-textattack"></a></h2>
+<p>At the heart of TextAttack’s modular design are four main components, as we have mentioned above.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2024/07/attack.PNG" alt="image" />
+</figure>
+
+
+</p>
+<p><a href="https://arxiv.org/pdf/2005.05909">Image source</a></p>
+<p>In the diagram the Attack Module section shows TextAttack’s ability to re-implement attacks from the literature. This section mentions that there are 16 papers and pre-built attack recipes that we can use.</p>
+<p>The diagram shows how to use TextAttack to build attacks in two ways, creating new attacks and benchmarking existing ones. Users can create new adversarial strategies by combining new and existing components.</p>
+<p>TextAttack has over 82 pre-trained models, so researchers can test their new attacks against standard models. This allows them to compare their results with previous work.</p>
+<p>The figure shows two methods of attack: data augmentation and adversarial training. By using the Augmenter Module, user models can improve by generating new samples to augment the existing training dataset. With TextAttack’s training pipeline, we can create adversarial examples and feed them into a training process to improve our model.</p>
+<h2 id="textattacks-pre-trained-models-and-datasets"><a href="#textattack-s-pre-trained-models-and-datasets">TextAttack’s Pre-trained Models and Datasets</a><a href="#textattack-s-pre-trained-models-and-datasets"></a></h2>
+<p>TextAttack’s pre-trained models include word-level LSTM and CNN modules alongside transformer-based BERT variants. These models have undergone pre-training on diverse datasets supplied by HuggingFace.</p>
+<p>Integration of <em>TextAttack</em> with the NLP library enables automatic loading of corresponding pre-trained models for test and validation datasets. While much prior literature has focused on classification and entailment, TextAttack’s range of pre-trained models provides a new avenue for research. This allows researchers to delve into studies regarding model robustness across all GLUE tasks.</p>
+<h2 id="adversarial-training"><a href="#adversarial-training">Adversarial Training</a><a href="#adversarial-training"></a></h2>
+<p>TextAttack enables the creation of new training sets of adversarial examples. The process involves several steps:</p>
+<ul>
+<li>Initial training: The model is trained for a number of epochs on the clean training set.</li>
+<li>Adversarial example generation: An attack makes an adversarial version of each input.</li>
+<li>Dataset substitution: This process involves replacing the original dataset with a perturbed variant.</li>
+<li>Periodic regeneration: The adversarial dataset is periodically regenerated according to the model’s current weaknesses.</li>
+</ul>
+<p>The table below illustrates the accuracy of a standard LSTM classifier with and without adversarial training against various attack recipes used in _TextAtt_ack.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2024/07/lstmmodel.PNG" alt="image" />
+</figure>
+
+
+</p>
+<p><a href="https://arxiv.org/pdf/2005.05909">Image source</a></p>
+<p>It shows the LSTM model’s performance against <em>deepwordbug</em>, <em>textfooler, pruthi, hotflip</em>, and <em>bae</em> attacks compared to its baseline <em>Carlini</em> score on the clean training set. The table compares accuracy with and without attacks, evaluating the model’s robustness against <em>deepwordbug</em> at 20 and 75 epochs respectively. It also assesses the model’s vulnerability to <em>textfooler</em> at 20 epochs.</p>
+<h2 id="benchmarking-existing-attacks-with-attack-recipes"><a href="#benchmarking-existing-attacks-with-attack-recipes">Benchmarking Existing Attacks with Attack Recipes</a><a href="#benchmarking-existing-attacks-with-attack-recipes"></a></h2>
+<p><em>TextAttack</em> allows for a modular structure to combine multiple past research attacks into one framework. This is achieved by adding one or two new components and we get more flexibility and productivity in creating new attack plans.</p>
+<p>An attack recipe is a set of pre-defined steps and configurations used to produce adversarial examples for NLP models. Each attack recipe has four main components (Goal Function, Constraints, Transformation, Search Method)</p>
+<p>Attack recipes are the best practices and techniques distilled from the latest research. They speed up the production of adversarial examples. Helping both researchers and practitioners in their work these allow us to implement complex attack strategies without having to know all the underlying details. We have illustrated some common types of attacks in the diagram below:</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2024/07/Adversarial-Attacks-2.jpg" alt="image" />
+</figure>
+
+
+</p>
+<p>Overview of adversarial attacks</p>
+<h2 id="practical-use-case-sentiment-analysis"><a href="#practical-use-case-sentiment-analysis">Practical Use Case: Sentiment Analysis</a><a href="#practical-use-case-sentiment-analysis"></a></h2>
+<p>Let’s consider that we have a sentiment analysis model that classifies movie reviews into positive or negative categories. We want to test the strength and robustness of this model using <em>textfooler</em> attack recipe. The input given was “<em>The movie was great</em>” and the model predicted positive sentiment. Let’s see the process in the diagram below.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2024/07/attackrecipe.jpg" alt="image" />
+</figure>
+
+
+</p>
+<p>Adversarial attack process for our sentiment analysis model</p>
+<p>To start the attack process, we must find important words related to positive sentiment in a statement. For example, “<em>fantastic</em>” can be replaced with synonyms using the WordNet database.</p>
+<p>We want to preserve grammatical correctness and original meaning as much as possible. We use an iterative approach in the greedy algorithm where the model’s prediction is checked at each replacement. The process continues until no more substitutions that achieve the desired result can be made or a change in the prediction occurs. A successful attack on the model may occur by replacing the word “fantastic” with an equivalent like “great,” which flips sentiments from positive to negative. In this case, the initial statement “<em>The movie was fantastic</em>” has been changed to “<em>The movie was great,</em>” as we can see the model’s prediction has changed from positive to negative. This is proof of a vulnerability in the model.</p>
+<p>_textfooler i_s a clever scheme designed to expose deficiencies in sentiment analysis models. This technique can significantly influence model predictions by substituting keywords with their synonyms while maintaining contextual coherence. This compels us to prioritize training and evaluation frameworks that minimize vulnerability to such adversarial attacks.</p>
+<h2 id="enhancing-adversarial-nlp-attacks-with-textattacks-attackedtext-object"><a href="#enhancing-adversarial-nlp-attacks-with-textattack-s-attackedtext-object">Enhancing Adversarial NLP Attacks with TextAttack’s AttackedText Object</a><a href="#enhancing-adversarial-nlp-attacks-with-textattack-s-attackedtext-object"></a></h2>
+<p>When using conventional NLP attack implementations, making changes to tokenized text can often lead to problems with capitalization and word segmentation. Tokenization involves breaking down the text into separate words or tokens, which may cause disruptions in its initial capital letters and boundaries between words.</p>
+<p>Tokenizing <em>“The movie was fantastic!”</em> could lead to <em>“the”, “movie”, “was”, or “fantastic!”</em> which omits the capitalized letter at the beginning. This makes transformations more difficult. Such concerns can weaken adversarial examples’ consistency and validity while impeding accurate assessments of NLP models’ resilience.</p>
+<p>TextAttack’s <em>AttackedText</em> object tackles these issues by enabling transformations to be performed directly on the original text instead of tokenized versions. The object keeps hold of the initial input and preserves all its attributes, such as capitalization and word boundaries.</p>
+<p>The helper methods included with this object facilitate controlled modifications. They can manage challenges like transformations in capitalization or adjustments for specific word boundaries. Let’s consider as an example a transformation that substitutes “Hello” with “Hi”. It will not produce an erroneous output like “hi World!” but rather correctly transforms “Hello World!” into &ldquo;“Hi World!”.</p>
+<p>The utilization of the <em>AttackedText</em> object bestows various advantages. It generates adversarial examples by maintaining the authenticity of the original text structure and capitalization during transformations. The precision in word segmentation and capitalization augments the reliability of attacks on models. This leads to a trustworthy evaluation process for model robustness.</p>
+<p>Moreover, developers can focus on producing efficient changes devoid of tokenization hurdles that hinder the adoption of new attacks. In essence, the <em>AttackedText</em> component amplifies and enhances TextAttack’s adversarial transformation abilities by a great margin.</p>
+<p>During an attack using TextAttack’s search methods, it is common to encounter the same input multiple times. In such instances, storing (or caching) previously computed results can greatly improve efficiency.</p>
+<h2 id="improving-efficiency-in-textattack-with-caching"><a href="#improving-efficiency-in-textattack-with-caching">Improving Efficiency in TextAttack with Caching</a><a href="#improving-efficiency-in-textattack-with-caching"></a></h2>
+<p>During an attack using TextAttack’s search methods, it is common to meet the same input multiple times. Storing (or caching) previously computed results can improve efficiency in such instances.</p>
+<p><em>TextAttack</em> can expedite the retrieval of pre-calculated model output and verify if all constraints were met without repeating the task. This process is known as memoization. Through this optimization technique, search methods execute faster and enhance overall efficiency during an attack.</p>
+<p>Let’s consider an application of <em>TextAttack</em> in which we assess the robustness of a sentiment analysis model by testing it with adversarial examples. Let’s visualize and explain the process in the diagram below.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2024/07/cache-1.jpg" alt="image" />
+</figure>
+
+
+</p>
+<p><code>Adversarial example generation with caching</code></p>
+<ul>
+<li>Initial Input: The opening statement reads, “The movie was fantastic.” The sentiment analyzer accurately recognizes the emotional tone that characterizes it as a positive sentiment.</li>
+<li>Adversarial Attack: <em>TextAttack</em> uses an adversarial attack technique where cunning modifications are applied to the original sentence to manipulate the model’s prediction. Examples with altered wording - for instance, “The movie was fantastic!” or “The movie was fantastic” may be part of this process.</li>
+<li>Caching: Engaging the power of caching, Variations posing as duplicates are identified and sorted out in real-time to optimize efficiency, preventing needless reprocessing. For instance, if “<em>The movie was fantastic</em>.” is generated repeatedly - either verbatim or with slight modifications - the system will use cached responses that were previously computed upon the first encounter. Constraints are always cross-checked for coherence before any further action is taken on a particular piece of language under scrutiny by <em>TextAttack</em>’s sophisticated algorithmic models.</li>
+<li>Efficiency Gain: TextAttack’s efficiency gain is impressive. Imagine encountering the same delightful phrase, “The movie was fantastic,” while continuing our search journey. Our tool no longer needs to compute its output or monitor for any constraints because it retrieves cached results. This spares our precious time, conserves computing power, and leads to a smoother ride toward successful results.</li>
+</ul>
+<h2 id="custom-transformation"><a href="#custom-transformation">Custom Transformation</a><a href="#custom-transformation"></a></h2>
+<p>A straightforward transformation will be attempted to initiate the creation of transformations in TextAttack: changing any word with the word “banana.” Within <em>TextAttack</em>, an abstract class called <em>WordSwap</em> undertakes to break down sentences into words while avoiding swapping stopwords. By extending WordSwap and executing only one function - _<em>get_replacement_words</em> – all terms can be substituted with “<em>banana</em>”.</p>
+<p>Prior to executing the subsequent codes, please run the following command in your environment:</p>
+<pre tabindex="0"><code>pip3 install textattack[tensorflow]
+</code></pre><p>The following code defines a custom transformation class <em>BananaWordSwap</em> that inherits from <em>WordSwap</em>. It replaces any given word in the input with the word “banana”.</p>
+<pre tabindex="0"><code>from textattack.transformations import WordSwap
+
+
+class BananaWordSwap(WordSwap):
+    &#34;&#34;&#34;Transforms an input by replacing any word with &#39;banana&#39;.&#34;&#34;&#34;
+
+    # We don&#39;t need a constructor, since our class doesn&#39;t require any parameters.
+
+    def _get_replacement_words(self, word):
+        &#34;&#34;&#34;Returns &#39;banana&#39;, no matter what &#39;word&#39; was originally.
+
+        Returns a list with one item, since `_get_replacement_words` is intended to
+            return a list of candidate replacement words.
+        &#34;&#34;&#34;
+        return [&#34;banana&#34;]
+</code></pre><h2 id="using-transformation"><a href="#using-transformation">Using transformation</a><a href="#using-transformation"></a></h2>
+<p>The transformation has been selected. However, a few items are still missing for the attack to be completed. The search method and constraints must also be chosen to fulfill the attack. Furthermore, we require a goal function, model, and dataset before using this strategy. (The goal function indicates the task our model performs – in this case, classification – and the type of attack – in this case, we’ll perform an untargeted attack.)</p>
+<h2 id="creating-the-goal-function-model-and-dataset"><a href="#creating-the-goal-function-model-and-dataset">Creating the Goal Function, Model, and Dataset</a><a href="#creating-the-goal-function-model-and-dataset"></a></h2>
+<p>Our mission is to launch an attack on a classification model. Therefore, we shall employ the <em>UntargetedClassification</em> class. For our task, let’s go for BERT, refined specifically for news categorization using the AG News dataset. No need to worry as many models are prepared and conveniently stored in <a href="https://huggingface.co/textattack">HuggingFace’s Model Hub</a>. TextAttack synergistically merges with any of these high-quality models and their datasets.</p>
+<pre tabindex="0"><code># Import the model
+import transformers
+from textattack.models.wrappers import HuggingFaceModelWrapper
+
+model = transformers.AutoModelForSequenceClassification.from_pretrained(
+    &#34;textattack/bert-base-uncased-ag-news&#34;
+)
+tokenizer = transformers.AutoTokenizer.from_pretrained(
+    &#34;textattack/bert-base-uncased-ag-news&#34;
+)
+
+model_wrapper = HuggingFaceModelWrapper(model, tokenizer)
+
+# Create the goal function using the model
+from textattack.goal_functions import UntargetedClassification
+
+goal_function = UntargetedClassification(model_wrapper)
+
+# Import the dataset
+from textattack.datasets import HuggingFaceDataset
+
+dataset = HuggingFaceDataset(&#34;ag_news&#34;, None, &#34;test&#34;)
+</code></pre><h2 id="creating-the-attack"><a href="#creating-the-attack">Creating the Attack</a><a href="#creating-the-attack"></a></h2>
+<p>Let’s use a greedy search method. We’ll not use any constraints for now.</p>
+<pre tabindex="0"><code>from textattack.search_methods import GreedySearch
+from textattack.constraints.pre_transformation import (
+    RepeatModification,
+    StopwordModification,
+)
+from textattack import Attack
+
+# We&#39;re going to use our Banana word swap class as the attack transformation.
+transformation = BananaWordSwap()
+# We&#39;ll constrain modification of already modified indices and stopwords
+constraints = [RepeatModification(), StopwordModification()]
+# We&#39;ll use the Greedy search method
+search_method = GreedySearch()
+# Now, let&#39;s make the attack from the 4 components:
+attack = Attack(goal_function, constraints, transformation, search_method)
+</code></pre><p>We can print our attack to see all the parameters:</p>
+<pre tabindex="0"><code>print(attack)
+</code></pre><p>Output:</p>
+<pre tabindex="0"><code>Attack(
+  (search_method): GreedySearch
+  (goal_function):  UntargetedClassification
+  (transformation):  BananaWordSwap
+  (constraints):
+    (0): RepeatModification
+    (1): StopwordModification
+  (is_black_box):  True
+)
+</code></pre><h2 id="using-the-attack"><a href="#using-the-attack">Using the Attack</a><a href="#using-the-attack"></a></h2>
+<p>Let’s use our attack to successfully attack 10 samples.</p>
+<pre tabindex="0"><code>from tqdm import tqdm  # tqdm provides us a nice progress bar.
+from textattack.loggers import CSVLogger  # tracks a dataframe for us.
+from textattack.attack_results import SuccessfulAttackResult
+from textattack import Attacker
+from textattack import AttackArgs
+from textattack.datasets import Dataset
+
+attack_args = AttackArgs(num_examples=10)
+
+attacker = Attacker(attack, dataset, attack_args)
+
+attack_results = attacker.attack_dataset()
+
+# The following legacy tutorial code shows how the Attack API works in detail.
+
+# logger = CSVLogger(color_method=&#39;html&#39;)
+
+# num_successes = 0
+# i = 0
+# while num_successes &lt; 10:
+# result = next(results_iterable)
+#    example, ground_truth_output = dataset[i]
+#    i += 1
+#    result = attack.attack(example, ground_truth_output)
+#    if isinstance(result, SuccessfulAttackResult):
+#        logger.log_attack_result(result)
+#        num_successes += 1
+#       print(f&#39;{num_successes} of 10 successes complete.&#39;)
+</code></pre><p>Output:</p>
+<pre tabindex="0"><code>+-------------------------------+--------+
+| Attack Results                |        |
++-------------------------------+--------+
+| Number of successful attacks: | 8      |
+| Number of failed attacks:     | 2      |
+| Number of skipped attacks:    | 0      |
+| Original accuracy:            | 100.0% |
+| Accuracy under attack:        | 20.0%  |
+| Attack success rate:          | 80.0%  |
+| Average perturbed word %:     | 18.71% |
+| Average num. words per input: | 63.0   |
+| Avg num queries:              | 934.0  |
++-------------------------------+--------+
+</code></pre><p>In the code above, the <em>TextAttack</em> library is utilized to carry out an adversarial attack on a dataset. Essential modules are imported, including <em>tqdm</em> for progress bars and <em>CSVLogger</em> for recording attack outcomes. To run the attack on 10 examples, we have used the <em>AttackArgs</em> class.</p>
+<p>We have created the <em>Attacker</em> object with a designated attack type, corresponding dataset, and any necessary arguments. Next, we have executed the <em>attack_dataset</em> method to carry out the attack and obtain the result. Alternatively, we can log successful attacks manually by going through each element in the dataset, performing the attack, and logging the results if the attack is successful. – as evidenced by code contained in a commented-out section of this script snippet.</p>
+<p>A success rate of 80% was achieved in the adversarial attack on the text classification model. Of the ten attempts made, eight successfully led to misclassification of inputs by causing a drop in accuracy from its previous perfect score to just 20%.</p>
+<p>The attack strategy proved its robustness and effectiveness, as no skipped attacks were recorded. On average, each query had 18.71% of the words modified in an input that contained approximately 63 words. Moreover, the model was queried around 934 times per input during the attack process.</p>
+<h2 id="visualizing-attack-results"><a href="#visualizing-attack-results">Visualizing Attack Results</a><a href="#visualizing-attack-results"></a></h2>
+<p>In the below code, we have used  <em>CSVLogger</em> method to log <em>AttackResult</em> objects. This logger effectively stores all resulting attacks into a data frame. It facilitates easy accessibility and display of information. By setting <em>color_method</em> to ‘<em>html</em>’, disparities in attack results are represented via <em>HTML</em> coloring for increased visual clarity. We have used <em>IPython</em> utilities and <em>pandas</em> in this process.</p>
+<pre tabindex="0"><code>import pandas as pd
+
+pd.options.display.max_colwidth = (
+    480  # increase colum width so we can actually read the examples
+)
+
+logger = CSVLogger(color_method=&#34;html&#34;)
+
+for result in attack_results:
+    if isinstance(result, SuccessfulAttackResult):
+        logger.log_attack_result(result)
+
+from IPython.core.display import display, HTML
+
+results = pd.DataFrame.from_records(logger.row_list)
+display(HTML(results[[&#34;original_text&#34;, &#34;perturbed_text&#34;]].to_html(escape=False)))
+</code></pre><p>Note: The reader can launch the code and visualize the result.</p>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a><a href="#conclusion"></a></h2>
+<p>This article offers an extensive analysis of adversarial robustness within NLP models, specifically emphasizing the TextAttack Python framework. It’s a Python-based framework intended to streamline and enhance the generation process and defense mechanisms against adverse attacks.</p>
+<p>This framework presents a modular architecture incorporating fundamental components such as Goal Function, Constraints, Transformation, and Search Method. This structure empowers the users to create customized attacks efficiently. It also facilitates easy adaptation and standardized performance evaluation through benchmarking.</p>
+<p>The framework extends support towards adversarial training practices with data augmentation techniques. This enhances model robustness in real-world application scenarios. The efficiency of this framework is demonstrated through empirical illustrations. These highlight its practical utility across various domains.</p>
+<h2 id="references"><a href="#references">References</a><a href="#references"></a></h2>
+<ul>
+<li>
+<p><a href="https://arxiv.org/pdf/2005.05909">TextAttack paper</a></p>
+</li>
+<li>
+<p><a href="https://textattack.readthedocs.io/en/master/">TextAttack Documentation</a></p>
+</li>
+<li>
+<p><a href="https://github.com/QData/TextAttack/blob/master/docs/2notebook/1_Introduction_and_Transformations.ipynb">Code reference</a></p>
+</li>
+</ul>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/textattack-framework-nlp-data-augmentation">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

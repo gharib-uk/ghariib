@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Weekend Project A Custom IDA Loader Module for the Hidden Bee Malware Family</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Weekend Project A Custom IDA Loader Module for the Hidden Bee Malware Family</h1>
+			<b><time>02.09.2018 23:20</time></b>
+		       
+
+			<div>
+				<h1 id="weekend-project-a-custom-ida-loader-module-for-the-hidden-bee-malware-family">Weekend Project A Custom IDA Loader Module for the Hidden Bee Malware Family</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>While reading <a href="https://blog.malwarebytes.com/threat-analysis/2018/08/reversing-malware-in-a-custom-format-hidden-bee-elements/">hasherezade&rsquo;s research on the Hidden Bee malware family&rsquo;s custom file format</a> (samples <a href="https://github.com/InQuest/malware-samples">here</a>), I was struck with the thought that this use-case seemed particularly well-suited for an IDA custom loader module. The IDA loader module approach has a few advantages over the previous approach: it&rsquo;s fully automated, requiring no additional programs, plugins, or scripts; the imports have proper names and type information, allowing IDA&rsquo;s ordinary P.I.T. algorithms to propagate the information; and the user can relocate the database to an arbitrary base address.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1535930250175-ZMIM5IH6PWQDL759D0VN/LoaderScreen.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>Given that custom loaders are the only variety of IDA plugin that I haven&rsquo;t yet written, this seemed like a nice small-scope project for the weekend to round out my knowledge. My very minor contribution with this entry is the IDA custom loader for the Hidden Bee format, which can be found on <a href="https://github.com/RolfRolles/HiddenBeeLoader/blob/master/HBLoad.py">my GitHub</a>. The IDAPython code requires that <a href="https://github.com/erocarrera/pefile">Ero Carrera&rsquo;s pefile module</a> be installed, say via pip. </p>
+<h1 id="hidden-bee">Hidden Bee</h1>
+<p>In brief, the Hidden Bee malware family distributes payloads in a customized file format, which is a majorly stripped-down version of the PE file format. You can see all of the details in <a href="https://blog.malwarebytes.com/threat-analysis/2018/08/reversing-malware-in-a-custom-format-hidden-bee-elements/">hasherezade&rsquo;s write-up</a>. I did no original malware analysis for this project; I merely read her blog entry, figured out how to convert the details into a loader plugin, and then debugged it against the sample links she gave. As usual, <a href="https://nostarch.com/idapro2.htm">Chris Eagle&rsquo;s The IDA Pro Book, 2nd Edition</a> was useful. Some details about the loader API have changed with the IDA 7.x API port, but <a href="https://www.hex-rays.com/products/ida/7.0/docs/api70_porting_guide.shtml">Hex-Rays&rsquo; porting guide</a> was informative, and the loader examples in the IDA 7.1 SDK have also been ported to the newest API.</p>
+<h1 id="ida-loader-modules-in-brief">IDA Loader Modules in Brief</h1>
+<p>An IDA loader module is simply an IDA plugin with a well-defined interface. IDA loader modules will be called when loading any file into IDA. They have two primary responsibilities: </p>
+<ol>
+<li>Given access to the bytes of a file, determine whether the file is of a format that the loader module can handle. Every IDA loader module must export a function named accept_file for this purpose. This function returns 0 if it can&rsquo;t recognize the file format, or a non-zero value if it can.</li>
+<li>If the file type can be loaded by the module, and the user chooses to use this module to load the file, perform the actual loading process e.g. creating segments within the IDB, copying bytes out of the file into the segments, processing relocations, parsing imports, adding entrypoints, and so on. Every IDA loader module must export a function named load_file for this purpose.</li>
+</ol>
+<p>Both of these functions take as input an <a href="https://www.hex-rays.com/products/ida/support/idapython_docs/ida_idaapi.loader_input_t-class.html">&ldquo;linput_t *&rdquo; object</a> that behaves like a C FILE * object, which supports seeking to specified positions, reading byte arrays out of the file, and so on. Since Hidden Bee&rsquo;s format includes relocations, I chose to implement a third, optional IDA loader module function: move_segm. This function will be called by the IDA kernel when the user requests that the database be relocated to another address.</p>
+<h1 id="writing-a-loader-module-for-hidden-bee">Writing a Loader Module for Hidden Bee</h1>
+<p>After reading the aforementioned write-up, I figured that the only difficulties in loading Hidden Bee images in IDA would be A) that the Hidden Bee customized header specifies API imports via hash rather than by name, and B) that it includes relocation information. Relocations and import lookup via hash are simple enough conceptually, but the precise details about how best to integrate them with IDA are not obvious. Sadly, I did not feel confident in these tasks even after reading the loader module examples in the SDK. Four out of the five hours I spent on this project were reverse engineering %IDADIR%\loaders\pe.dll &ndash; the loader module for the PE file format &ndash; focusing in particular on its handling of relocations and imports. As expected, the results are idiosyncratic and I don&rsquo;t expect them to generalize well. </p>
+<h2 id="imports">Imports</h2>
+<p>For dealing with the imports by hash, hasherezade&rsquo;s toolchain ultimately generates a textual file with the addresses of the import hash names and their corresponding plaintext API string. Then, she uses one of her other plugins to create repeating comments at the addresses of the import hash DWORDs. Instead, I wanted IDA to show me the import information the same way it would in a normal binary &ndash; i.e., I wanted IDA to set the proper type signature on each import. I figured this might be difficult, but after a few hours reverse engineering the virtual functions for the pe_import_visitor_t class (partially documented in %IDASDK%\ldr\pe\common.hpp), it turns out that all you have to do to trigger this functionality is simply to set the name of the DWORD to something from a loaded type library.</p>
+<p>Here&rsquo;s a screenshot showing IDA successfully applying the type information to the APIs:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1535930318142-QBMM6UVN9M0MA55X7SAJ/ImportNames.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<h2 id="relocations">Relocations</h2>
+<p>For the IMAGE_REL_BASED_HIGHLOW relocations common in PE files, each can ultimately be processed via straightforward translation of the relocation information into IDA&rsquo;s fixup_data_t data structures, and then passing them to the set_fixup API. The SDK examples did not give a straightforward idea of what I needed to do to handle PE IMAGE_REL_BASED_HIGHLOW relocations properly, so I reverse engineered pe.dll to figure out exactly what needed to happen with the relocations. (Fortunately, reverse engineering IDA is trivial due to the availability of its SDK.) If you wish, you can see the results in the do_reloc function. Don&rsquo;t ask me to explain why it works; however, it does work.</p>
+<p>Here&rsquo;s a before and after comparison of rebasing the database from base address 0x0 to base address 0x12340000. Note particularly that the red underlined bytes change. Before:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1535930378327-FVT7Z2APB9NYJHT9QA2N/RebaseBefore.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>After:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1535930406102-B10P7BVHCYXIMWQ7BFIF/RebaseAfter.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<h4 id="source"><a href="https://www.msreverseengineering.com/blog/2018/9/2/weekend-project-a-custom-ida-loader-module-for-the-hidden-bee-malware-family">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

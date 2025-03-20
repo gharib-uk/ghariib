@@ -1,11 +1,12 @@
 ---
 title: "Microsoft officially supports running Windows 11 on M1 and M2 Macs"
-date: 2025-03-19
+date: 2025-01-12
 categories: 
-  - "apple"
   - "microsoft"
-  - "software"
   - "virtualization"
+tags: 
+  - "apple"
+  - "software"
   - "windows-11"
 ---
 

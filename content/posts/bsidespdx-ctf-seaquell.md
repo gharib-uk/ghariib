@@ -1,8 +1,10 @@
 ---
 title: "BSidesPDX CTF : SeaQuell"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
   - "general"
+tags: 
+  - "passwords"
 ---
 
 **Category:** Web
@@ -65,3 +67,5 @@ Send your get request but append `?.html` to the end of the flag url so that it 
 # Flag
 
 **BSidesPDX{7h3\_se4w33d\_i5\_alw4s\_gr33n3r\_wh3n\_y0u\_hav3\_cr3ds}**
+
+Go to Source

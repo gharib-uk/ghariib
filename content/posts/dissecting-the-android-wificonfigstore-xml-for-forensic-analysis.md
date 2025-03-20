@@ -1,13 +1,8 @@
 ---
 title: "Dissecting the Android WiFiConfigStore.xml for forensic analysis"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
-  - "cybersecurity"
-  - "cybersecurity-awareness"
-  - "forensics"
-  - "security"
-  - "security-awareness"
-  - "security-awareness-3-0"
+  - "general"
 ---
 
 A smartphone is often connected to a Wi-Fi network: think of how much time we spend at home, in our office, or even in a public place while studying or exercising. As soon as we can reach a (hopefully trusted) Wi-Fi network, we connect to it!

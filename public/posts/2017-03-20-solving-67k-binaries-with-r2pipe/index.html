@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Solving 67k binaries with r2pipe</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Solving 67k binaries with r2pipe</h1>
+			<b><time>20.03.2017 15:08</time></b>
+		       
+
+			<div>
+				<h1 id="solving-67k-binaries-with-r2pipe">Solving 67k binaries with r2pipe</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<blockquote>
+<p>Here are 67k binaries, well more accurately 67,139 binaries. Solve every single one, append the results together in order (shouldn’t be too difficult as the binaries are numbered) and then from there I’m sure you can figure it out.</p></blockquote>
+<p>There are probably a hundred ways to solve this challenge, but I decided to give it a go using radare2’s <a href="https://github.com/radare/radare2-r2pipe">r2pipe</a>.</p>
+<p>Disclaimer: This was the first time I’d used r2pipe, so I apologize for the noobness. After much Googling and fiddling, I ended up with a hacky script that solved the challenge. The script can definitely be improved upon, and I’d love to hear suggestions from those who are more experienced with r2pipe or radare2 scripting.</p>
+<p>I loaded 00000.exe into radare2 for some static analysis:</p>
+<p>
+<figure>
+  <img src="/images/2017-03-20/01.png" alt="" />
+</figure>
+
+
+</p>
+<p><code>entry0</code> is where the program starts. This function basically breaks down to:</p>
+<ul>
+<li>get a number from the user</li>
+<li>set eax to a value stored at an address (in this case 0x403000). I’ll call this value <code>x</code></li>
+<li>set ecx to a constant value (in this case 0xa1a8a7ed). I’ll call this value <code>y</code></li>
+<li>call a function, I’ll call it <code>do_op()</code>, that returns the result of an operation (in this case <code>eax-ecx</code>)</li>
+</ul>
+<p>Here’s what <code>do_op()</code> looks like:</p>
+<p>
+<figure>
+  <img src="/images/2017-03-20/02.png" alt="" />
+</figure>
+
+
+</p>
+<p>The return value of this function, I’ll call it <code>z</code>, is compared against the user’s input. If they are identical it follows a branch that does the following:</p>
+<ul>
+<li>set cl to a value stored at an address (in this case 0x403007)</li>
+<li>shift <code>z</code> by cl bits and store the result in eax</li>
+<li>do a bitwise <code>and</code> on eax and print out the result</li>
+</ul>
+<p>Nothing complicated. The goal is to enter the correct input expected by each binary and concatenate its output to get the flag. I examined a handful of binaries and found the following:</p>
+<ul>
+<li>the values for <code>x</code> and <code>y</code> differ for each binary</li>
+<li>the operation performed by function <code>do_op()</code> can be one of <code>add</code>, <code>sub</code>, or <code>xor</code>; however it’s always <code>op eax, ecx</code></li>
+</ul>
+<p>So in order to solve each binary without having to run it, I needed to calculate <code>z</code>, do a shift arithmetic right on it by a certain number of bits, and finally do a bitwise <code>and</code> on the result.</p>
+<p>Scripting the whole thing with r2pipe was actually pretty easy. For instance, here’s how I got the address of <code>do_op()</code></p>
+<pre tabindex="0"><code>r2p = r2pipe.open(sys.argv[1])  # open the binary
+r2p.cmd(&#34;aaa&#34;)                  # analyze it
+
+t = r2p.cmd(&#34;aflj&#34;)             # list all functions; should return two results: entry0 and fcn.????????
+                                # returns the result in JSON
+
+d = json.loads(t)               # get the results in a dictionary
+fc_name = d[0][&#34;name&#34;]          # there are 2 dictionaries returned; check if the first one is fcn.????????
+if fc_name == &#34;entry0&#34;:         # if not, get it from the second dictionary
+    fc_name = d[1][&#34;name&#34;]
+print &#34;do_op() is&#34;, fc_name
+</code></pre><p>If I run this I get</p>
+<p>
+<figure>
+  <img src="/images/2017-03-20/03.png" alt="" />
+</figure>
+
+
+</p>
+<p>Basically it’s all about using <code>r2p.cmd()</code> to run a radare2 command and parsing its output. In this case I’ve chosen to return the results of the command in JSON for easier parsing. If there’s a better way, I’m all ears!</p>
+<p>Here’s the full script:</p>
+<pre tabindex="0"><code>#!/usr/bin/env python
+
+import r2pipe
+import json
+import sys
+
+if __name__ == &#34;__main__&#34;:
+    r2p = r2pipe.open(sys.argv[1])
+    r2p.cmd(&#34;aaa&#34;)
+
+    # get the address of do_foo()
+    t = r2p.cmd(&#34;aflj&#34;)
+    d = json.loads(t)
+    fc_name = d[0][&#34;name&#34;]
+    if fc_name == &#34;entry0&#34;:
+        fc_name = d[1][&#34;name&#34;]
+
+    # determine if sub, add, or xor is used; just want the opcode at this point
+    t = r2p.cmd(&#34;pdj 1@%s&#34; %( fc_name))     # &lt;op&gt; eax, ecx
+    d = json.loads(t)
+    ins = d[0][&#34;opcode&#34;]
+
+    # get the value of EAX
+    t = r2p.cmd(&#34;pdj 1@entry0+0x1f&#34;)        #  mov eax, dword [0xNNNNNNNN]
+    d = json.loads(t)
+    pointer = d[0][&#34;esil&#34;].split(&#34;,&#34;)[0]
+    pointer = int(pointer, 16)
+
+    t = r2p.cmd(&#34;pxrj 4@%d&#34; % (pointer,))   # get value pointed to by 0xNNNNNNNN
+    d = json.loads(t)
+    eax = d[0][&#34;value&#34;]
+
+    # get the value of ECX
+    t = r2p.cmd(&#34;pdj 1@entry0+0x24&#34;)        #  mov ecx, 0xMMMMMMMM
+    d = json.loads(t)
+    ecx = d[0][&#34;opcode&#34;].split()[-1]
+    ecx = int(ecx, 16)
+
+    # determine the operation used by do_foo()
+    answer = 0
+    if &#34;sub&#34; in ins:
+        answer = eax - ecx
+    elif &#34;xor&#34; in ins:
+        answer = eax ^ ecx
+    elif &#34;add&#34; in ins:
+        answer = eax + ecx
+
+    # get value to use for SAR operation
+    t = r2p.cmd(&#34;pdj 1@entry0+0x36&#34;)        # mov cl, byte [0xNNNNNNNN]
+    d = json.loads(t)
+    pointer = d[0][&#34;esil&#34;].split(&#34;,&#34;)[0]
+    pointer = int(pointer, 16)
+
+    t = r2p.cmd(&#34;pxrj 4@%d&#34; % (pointer,))   # get value pointed to by 0xNNNNNNNN
+    t = t.replace(&#34;\\x&#34;, &#34;&#34;)                # get rid of escapes json doesn&#39;t like
+    d = json.loads(t)
+    val = d[0][&#34;value&#34;]
+    cl = val &amp; 0xff
+
+    # get the solution to the challenge
+    solve = answer &gt;&gt; cl
+    solve = solve &amp; 0xff
+    sys.stdout.write(&#34;%c&#34; % (solve,))
+</code></pre><p>The script is commented so hopefully it makes sense, It basically figures out what the expected input is and what the binary’s output will be.</p>
+<p>To demonstrate the script, I’ve copied a handful of the binaries to a sample directory and ran it:</p>
+<p>
+<figure>
+  <img src="/images/2017-03-20/04.png" alt="" />
+</figure>
+
+
+</p>
+<p>So it looks like the binaries will create some obfuscated Javascript code, specifically <a href="https://github.com/alcuadrado/hieroglyphy">hieroglyphy</a>. Running the script against all the binaries took a few hours, but it worked! I executed the Javascript contents in my browser and got the flag:</p>
+<p>
+<figure>
+  <img src="/images/2017-03-20/05.png" alt="" />
+</figure>
+
+
+</p>
+<p>I’ve attached the completed output and the challenge binaries <a href="https://gist.github.com/superkojiman/8e40c4579c36d541f5aa6fe9eaa6b6ba">here</a> if you’d like to play with it as well</p>
+<p>Overall this was a great learning experiencef or me. I’ll be doing some more reading on r2pipe to see what else I can do with it.</p>
+<h4 id="source"><a href="http://blog.techorganic.com/2017/03/20/solving-67k-binaries-with-r2pipe/">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

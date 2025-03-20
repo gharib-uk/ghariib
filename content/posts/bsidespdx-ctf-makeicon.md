@@ -1,6 +1,6 @@
 ---
 title: "BSidesPDX CTF : MakeIcon"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
   - "general"
 ---
@@ -46,3 +46,5 @@ I uploaded the read\_file.mvg file a total of 5 times, modifying the `image over
 # Flag
 
 **BSidesPDX{alw4ys\_ch3ck\_f0r\_1day\_b4\_y0u\_l00k\_f0r\_0day}**
+
+Go to Source

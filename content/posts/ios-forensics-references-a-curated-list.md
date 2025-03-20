@@ -1,13 +1,10 @@
 ---
 title: "iOS Forensics References: a curated list"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
-  - "cybersecurity"
-  - "cybersecurity-awareness"
-  - "forensics"
-  - "security"
-  - "security-awareness"
-  - "security-awareness-3-0"
+  - "general"
+tags: 
+  - "ces"
 ---
 
 Following up my previous blog post, I decided to create a curated list of iOS Forensics References, organized by folder with specific references (links to blog post, research paper, articles, and so on) for each interesting file. 

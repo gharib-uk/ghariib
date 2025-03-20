@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>12 Days of DigitalOcean Day 7 - Building and Deploying the Email-Based Receipt Processor</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>12 Days of DigitalOcean Day 7 - Building and Deploying the Email-Based Receipt Processor</h1>
+			<b><time>27.12.2024 14:00</time></b>
+		       
+
+			<div>
+				<h1 id="12-days-of-digitalocean-day-7---building-and-deploying-the-email-based-receipt-processor">12 Days of DigitalOcean Day 7 - Building and Deploying the Email-Based Receipt Processor</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>If you enjoyed the <a href="/community/tutorials/setting-up-postgresql-database-for-birthday-reminders">Birthday Reminder Service</a>, you’ll love this next step. It’s another practical, production-ready app that highlights how DigitalOcean can help you turn ideas into real, working solutions. By the end of this tutorial, your Flask app will be live on the web and ready to process receipt data like a pro.</p>
+<h2 id="-why-this-app"><a href="#why-this-app">✨ Why This App?</a><a href="#why-this-app"></a></h2>
+<p>We’ve all been there—scrambling to find a specific receipt for tax season or reimbursements. It’s not fun. This app aims to solve that by automating the whole process.</p>
+<h2 id="how-the-app-works"><a href="#how-the-app-works"><strong>How the App Works</strong></a><a href="#how-the-app-works"></a></h2>
+<ol>
+<li><strong>You forward a receipt to a specific email address.</strong></li>
+<li><strong>The app extracts details</strong> like the vendor, amount, and date using smart tools.</li>
+<li><strong>Those details are stored in a database</strong>, like <a href="/community/tutorials/setting-up-postgresql-database-for-birthday-reminders">PostgreSQL</a>, where they’re neatly organized.</li>
+<li><strong>You get a confirmation</strong>—via email or SMS—once the receipt is processed.</li>
+</ol>
+<p>It’s simple, efficient, and takes a tedious task off your plate. <strong>Today</strong>, we’re focusing on building the backend system with Flask, setting it up for production with <a href="https://gunicorn.org">Gunicorn</a>, and deploying it to <a href="https://docs.digitalocean.com/products/app-platform/">DigitalOcean’s App Platform</a>.</p>
+<h2 id="-what-youll-learn"><a href="#what-you-ll-learn">🚀 What You’ll Learn</a><a href="#what-you-ll-learn"></a></h2>
+<p>Here’s what we’ll cover today:</p>
+<ol>
+<li><strong>Set up a Flask app</strong> to serve as the foundation of your receipt processor.</li>
+<li><strong>Configure Gunicorn</strong> to handle production workloads smoothly.</li>
+<li><strong>Use GitHub</strong> for version control and collaboration.</li>
+<li><strong>Deploy the app to <a href="https://cloud.digitalocean.com/apps/new">DigitalOcean’s App Platform</a></strong> so it’s live and ready to use.</li>
+</ol>
+<p>This tutorial will give you hands-on experience with deploying a real-world Flask app while keeping things manageable and fun.</p>
+<h2 id="-what-youll-need"><a href="#what-you-ll-need">🛠 What You’ll Need</a><a href="#what-you-ll-need"></a></h2>
+<p>Before diving in, make sure you have:</p>
+<ul>
+<li>A <strong>DigitalOcean account</strong>. If you don’t have one, you can <a href="https://cloud.digitalocean.com/registrations/new">sign up here</a>.</li>
+<li><strong>Python 3.8+</strong> installed on your local machine.</li>
+<li><strong>Git</strong> installed and ready to use.</li>
+</ul>
+<h2 id="-recipe-for-day-7-building-and-deploying-a-flask-app"><a href="#recipe-for-day-7-building-and-deploying-a-flask-app">🧑‍🍳 Recipe for Day 7: Building and Deploying a Flask App</a><a href="#recipe-for-day-7-building-and-deploying-a-flask-app"></a></h2>
+<h3 id="step-1-set-up-your-flask-app"><a href="#step-1-set-up-your-flask-app">Step 1: Set Up Your Flask App</a><a href="#step-1-set-up-your-flask-app"></a></h3>
+<p>Flask will serve as the backbone of this project, handling all incoming requests and processing the receipt data. Let’s get started by setting up the basics.</p>
+<ol>
+<li>
+<p><strong>Create Your Project Directory</strong>:<br>
+Keeping everything in a dedicated folder makes managing your project easier as it grows. Run the following commands to set up the directory:</p>
+<pre tabindex="0"><code>mkdir email-receipt-processor
+cd email-receipt-processor
+</code></pre></li>
+<li>
+<p><strong>Set Up a Virtual Environment</strong>:<br>
+A virtual environment is like a sandbox for your project. It keeps your dependencies isolated, so you don’t accidentally break other Python projects or your system’s Python setup.</p>
+<pre tabindex="0"><code>pip install virtualenv
+virtualenv -p python3 venv
+</code></pre></li>
+<li>
+<p><strong>Activate the Virtual Environment</strong>: Activate your virtual environment to install dependencies locally for the project:</p>
+<pre tabindex="0"><code>source venv/bin/activate
+</code></pre></li>
+<li>
+<p><strong>Install Flask and Gunicorn</strong>:<br>
+Flask will be your web framework, and Gunicorn will handle production server duties.</p>
+<pre tabindex="0"><code>pip install Flask gunicorn
+</code></pre></li>
+<li>
+<p><strong>Save Your Dependencies</strong>:<br>
+A <code>requirements.txt</code> file ensures everyone (and every machine) running your project has the same setup.</p>
+<pre tabindex="0"><code>pip freeze &gt; requirements.txt
+</code></pre></li>
+<li>
+<p><strong>Write Your Flask App</strong>:<br>
+Let’s start with a simple Flask app. Create a file called <code>app.py</code> and add the following code:</p>
+<pre tabindex="0"><code>from flask import Flask
+
+app = Flask(__name__)
+
+@app.route(&#39;/&#39;)
+def home():
+    return &#34;Welcome to the Email-Based Receipt Processor!&#34;
+
+if __name__ == &#34;__main__&#34;:
+    app.run()
+</code></pre></li>
+<li>
+<p><strong>Test It Locally</strong>:<br>
+Fire up the app and check it in your browser:</p>
+<pre tabindex="0"><code>python app.py
+</code></pre><p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/Postgressql-birthday/email_receipt_processor_code_screenshot.png" alt="Email Receipt Processor Code Screenshot" />
+</figure>
+
+
+</p>
+<p>Open your browser and navigate to <code>http://localhost:5000</code>. You should see: <strong>“Welcome to the Email-Based Receipt Processor!”</strong></p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/Postgressql-birthday/email_based_receipt_processor_welcome_screen.png" alt="Welcome Screen" />
+</figure>
+
+
+</p>
+</li>
+</ol>
+<h3 id="step-2-add-gunicorn-configuration"><a href="#step-2-add-gunicorn-configuration">Step 2: Add Gunicorn Configuration</a><a href="#step-2-add-gunicorn-configuration"></a></h3>
+<p>Flask’s built-in server is great for development, but it’s not designed to handle the traffic and performance needs of a production app. That’s where Gunicorn comes in.</p>
+<ol>
+<li>
+<p><strong>Create a Gunicorn Config File</strong>:<br>
+Gunicorn needs a configuration file to know how to run your app. Create one with:</p>
+<pre tabindex="0"><code>touch gunicorn_config.py
+</code></pre></li>
+<li>
+<p><strong>Configure Gunicorn</strong>:<br>
+Open <code>gunicorn_config.py</code> and add:</p>
+<pre tabindex="0"><code>bind = &#34;0.0.0.0:8080&#34;
+workers = 2
+</code></pre><ul>
+<li><code>bind</code>: Makes the app accessible over the web on port 8080</li>
+<li><code>workers</code>: Sets the number of simultaneous requests the app can handle. Two is a good starting point for small apps.</li>
+</ul>
+</li>
+</ol>
+<h3 id="step-3-push-to-github"><a href="#step-3-push-to-github">Step 3: Push to GitHub</a><a href="#step-3-push-to-github"></a></h3>
+<p>GitHub is where the magic happens—it’s how we’ll version control the app and integrate it with DigitalOcean.</p>
+<ol>
+<li>
+<p><strong>Initialize a Git Repository</strong>:<br>
+A <code>.gitignore</code> file prevents unnecessary files (like your virtual environment) from being tracked by Git. Run:</p>
+<pre tabindex="0"><code>git init
+echo &#34;venv/&#34; &gt; .gitignore
+echo &#34;*.pyc&#34; &gt;&gt; .gitignore
+git add .
+git commit -m &#34;Initial Flask app with Gunicorn&#34;
+</code></pre><p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/Postgressql-birthday/terminal_flask_app_setup.png" alt="Terminal Flask App Setup" />
+</figure>
+
+
+</p>
+<p>Here’s what your project should look like in VS Code, for example:</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/Postgressql-birthday/visual_studio_code_workspace_setup.png" alt="VS Code Workspace Setup" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Create a GitHub Repository</strong>:<br>
+Head to GitHub, create a new repo called <code>email-receipt-processor</code>, and follow the steps to set it up.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/Postgressql-birthday/github_repository_setup_instructions.png" alt="GitHub Repository Setup Instructions" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Push Your Code to GitHub</strong>:</p>
+<p>Back in your terminal, type:</p>
+<pre tabindex="0"><code>git branch -M main
+git remote add origin https://github.com/&lt;your-github-username&gt;/email-receipt-processor.git
+git push -u origin main
+</code></pre></li>
+</ol>
+<p>Replace <code>&lt;your-github-username&gt;</code> with your <strong>GitHub username</strong></p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/Postgressql-birthday/terminal_git_commands_email_receipt_processor.png" alt="Terminal Git Commands for Email Receipt Processor" />
+</figure>
+
+
+</p>
+<h3 id="step-4-deploy-to-digitaloceans-app-platform"><a href="#step-4-deploy-to-digitalocean-s-app-platform">Step 4: Deploy to DigitalOcean’s App Platform</a><a href="#step-4-deploy-to-digitalocean-s-app-platform"></a></h3>
+<p>Now it’s time to deploy your app! DigitalOcean makes this easy with its App Platform.</p>
+<h4 id="create-a-new-app-on-digitalocean"><strong>Create a New App on DigitalOcean</strong></h4>
+<ol>
+<li>
+<p>Log in to your <strong>DigitalOcean dashboard</strong> and go to <a href="https://cloud.digitalocean.com/apps">Apps</a>.</p>
+</li>
+<li>
+<p>Click <strong>Create App</strong>, select <strong>GitHub</strong>, and connect your <code>email-receipt-processor</code> repo.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/Postgressql-birthday/digitalocean_create_app_github_connection.png" alt="DigitalOcean GitHub Connection" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Click “Connect GitHub Account”</strong>: You will be redirected to GitHub to authorize DigitalOcean. If prompted, log into GitHub and grant DigitalOcean access to your repositories.</p>
+</li>
+<li>
+<p><strong>Select the Repository</strong>: Choose the <code>email-receipt-processor</code> repository you created earlier from the list of available repositories. &lt;$&gt;[note] <strong>Tip:</strong> Ensure that you have selected the correct branch (e.g., <code>main</code>) for deployment. &lt;$&gt;</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/Postgressql-birthday/github_repository_permissions.png" alt="GitHub Repository Permissions" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Click Save and Continue</strong>: This redirects you back to the DigitalOcean App Platform configuration screen.</p>
+</li>
+</ol>
+<h4 id="configure-deployment-settings"><strong>Configure Deployment Settings</strong></h4>
+<ol>
+<li>
+<p><strong>Select the Repository from the Dropdown</strong>: Once back in the App Platform, you’ll see a dropdown listing your connected repositories. Select <code>email-receipt-processor</code>.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/Postgressql-birthday/create_app_resources_from_source.png" alt="Create App Resources from Source" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Choose Resources</strong>: You can adjust the resource allocations (RAM, CPU, and bandwidth) for your app.</p>
+<ul>
+<li>Click <strong>Edit</strong> to modify these settings. For this tutorial, we recommend the following configuration:
+<ul>
+<li><strong>RAM</strong>: 512 MB</li>
+<li><strong>CPU</strong>: 1vCPU</li>
+<li><strong>Bandwidth</strong>: 50 GB</li>
+</ul>
+</li>
+</ul>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/Postgressql-birthday/create_app_resources_page.png" alt="Create App Resources Page" />
+</figure>
+
+
+</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/Postgressql-birthday/create_app_email_receipt_processor_settings.png" alt="Create App Email Receipt Processor Settings" />
+</figure>
+
+
+</p>
+</li>
+</ol>
+<h4 id="set-the-run-command">Set the Run Command</h4>
+<ol>
+<li>
+<p><strong>Scroll Down to the Run Command Section</strong>: This step ensures DigitalOcean knows how to start your app in the production environment.</p>
+</li>
+<li>
+<p><strong>Click “Edit”</strong>: Replace the default command with the following:</p>
+<pre tabindex="0"><code>gunicorn --worker-tmp-dir /dev/shm -c gunicorn_config.py app:app
+</code></pre><ul>
+<li>
+<p>This command uses Gunicorn to serve your Flask app.</p>
+</li>
+<li>
+<p>The <code>--worker-tmp-dir /dev/shm</code> flag optimizes performance in containerized environments.</p>
+</li>
+</ul>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/Postgressql-birthday/digitalocean_app_deployment_settings.png" alt="DigitalOcean App Deployment Settings" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Review Configuration</strong>: On the final screen, review your app’s settings. Ensure the resource allocations and run command are correct. Then click <strong>Back</strong> to get back to Resources.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/Postgressql-birthday/email_receipt_processor_settings.png" alt="Email Receipt Processor Settings" />
+</figure>
+
+
+</p>
+</li>
+</ol>
+<h4 id="finalize-deployment-settings">Finalize Deployment Settings</h4>
+<ol>
+<li>
+<p><strong>Environment Variables</strong>: On the next screen, you’ll see an option to set environment variables. For now, leave everything as default and click <strong>Next</strong>.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/Postgressql-birthday/create_app_environment_variables.png" alt="Create App Environment Variables" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>App Region</strong>: Choose a deployment region close to your target audience or leave it as the default.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/Postgressql-birthday/create_app_info_screen.png" alt="Create App Info Screen" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Create Resources</strong>: On the final screen, review your app’s settings. Then click on <strong>Create Resources</strong>. This starts the deployment process. Sit back while DigitalOcean sets everything up!</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/Postgressql-birthday/create_app_review_screen.png" alt="Create App Review Screen" />
+</figure>
+
+
+</p>
+</li>
+</ol>
+<h4 id="verify-the-deployment">Verify the Deployment</h4>
+<ol>
+<li>
+<p><strong>Deployment Status</strong>: Once your app is deployed, you’ll see a confirmation screen with a link to your app’s public URL.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/Postgressql-birthday/hammerhead_app_deployment_status.png" alt="Hammerhead App Deployment Status" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Test Your App</strong>: Visit the URL in your browser. You should see the message: <strong>“Welcome to the Email-Based Receipt Processor!”</strong></p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/Postgressql-birthday/email_based_receipt_processor_screenshot.png" alt="Email-Based Receipt Processor Screenshot" />
+</figure>
+
+
+</p>
+</li>
+</ol>
+<h2 id="-wrap-up"><a href="#wrap-up">🎁 Wrap-Up</a><a href="#wrap-up"></a></h2>
+<p>You did it! Here’s what you accomplished today:</p>
+<ol>
+<li>Built a Flask app to kickstart your receipt processor.</li>
+<li>Configured Gunicorn to make it production-ready.</li>
+<li>Deployed your app to <a href="https://cloud.digitalocean.com/apps/new">DigitalOcean’s App Platform</a>, making it live and ready to use.</li>
+</ol>
+<p>Your app is now up and running—an important milestone in this series. In the next tutorial, you’ll take things further by integrating <a href="https://postmarkapp.com">Postmark</a> to handle email forwarding. Get ready to level up your app—it will be awesome! 🚀</p>
+<p>Here is the next tutorial from this series on <a href="/community/tutorials/setting-up-postmark-for-receipts">Day 8: Connecting Postmark to Your Flask App</a>.</p>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/deploying-flask-app">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

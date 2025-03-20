@@ -1,26 +1,27 @@
 ---
 title: "Microsoft Azure AI Adds GPT-4 and New Virtual Machines"
-date: 2025-03-19
+date: 2025-01-12
 categories: 
-  - "amazon-web-services"
   - "artificial-intelligence"
+  - "microsoft"
+  - "networking"
+  - "nvidia"
+  - "security"
+  - "virtualization"
+tags: 
+  - "amazon-web-services"
   - "datarobot"
   - "google-ai"
   - "h2o-ai"
   - "ibm-watson"
   - "international"
-  - "microsoft"
   - "microsoft-azure"
-  - "networking"
-  - "nvidia"
   - "openai"
   - "oracle-cloud-infrastructure"
   - "salesforce-einstein"
-  - "security"
   - "servicenow-aiops"
   - "software"
   - "united-kingdom"
-  - "virtualization"
 ---
 
 Microsoft is working on creating guidelines for red teams making sure generative AI is secure and responsible.

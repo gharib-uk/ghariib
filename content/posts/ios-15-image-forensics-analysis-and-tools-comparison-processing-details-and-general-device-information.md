@@ -1,13 +1,8 @@
 ---
 title: "iOS 15 Image Forensics Analysis and Tools Comparison  - Processing details and general device information"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
-  - "cybersecurity"
-  - "cybersecurity-awareness"
-  - "forensics"
-  - "security"
-  - "security-awareness"
-  - "security-awareness-3-0"
+  - "general"
 ---
 
 As explained in the first blog post, I would like to start discussing the acquisition and processing details.

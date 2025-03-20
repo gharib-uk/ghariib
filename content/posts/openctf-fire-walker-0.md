@@ -1,6 +1,6 @@
 ---
 title: "OpenCTF : fire walker 0"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
   - "general"
 ---
@@ -37,3 +37,5 @@ pr1vil3ge_h4s_its_privile9e5
 # Flag
 
 **pr1vil3ge\_h4s\_its\_privile9e5**
+
+Go to Source

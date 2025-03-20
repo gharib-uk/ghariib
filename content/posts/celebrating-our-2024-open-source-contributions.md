@@ -1,6 +1,6 @@
 ---
 title: "Celebrating our 2024 open-source contributions"
-date: 2025-03-19
+date: 2025-01-25
 categories: 
   - "analytics-intelligence"
   - "application-security"

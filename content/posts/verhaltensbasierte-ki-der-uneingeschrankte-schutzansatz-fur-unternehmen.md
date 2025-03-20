@@ -1,6 +1,6 @@
 ---
 title: "Verhaltensbasierte KI: Der uneingeschränkte Schutzansatz für Unternehmen"
-date: 2025-03-19
+date: 2025-01-06
 ---
 
 What is Behavioral AI and how does it work? What makes it superior to the old EPP and EDR solutions in protecting the enterprise from today's threats?

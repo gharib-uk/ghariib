@@ -1,6 +1,6 @@
 ---
 title: "Das Gute, das Schlechte und das Hässliche in der Cybersicherheit – Woche 28"
-date: 2025-03-19
+date: 2025-01-06
 ---
 
 Researchers crack macOS ransomware encryption, USBs pose increased risk to critical infrastructure, and 15bn stolen credentials are for sale on the DarkNet.

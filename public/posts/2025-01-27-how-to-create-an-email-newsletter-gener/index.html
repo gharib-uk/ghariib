@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How to Create an Email Newsletter Generator</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How to Create an Email Newsletter Generator</h1>
+			<b><time>27.01.2025 15:35</time></b>
+		       
+
+			<div>
+				<h1 id="how-to-create-an-email-newsletter-generator">How to Create an Email Newsletter Generator</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Email newsletters have been a staple of online communication for decades. Unlike social media where algorithms control content visibility, email newsletters land directly in subscribers’ inboxes, allowing for greater control over content reception.</p>
+<p>In this tutorial, we will demonstrate how DigitalOcean’s <a href="/products/ai-ml/1-click-models">1-click models</a> can be configured into a <a href="https://www.gradio.app/">Gradio</a> user interface to create a newsletter generator. We hope to show you how well-formulated system prompt templates can accelerate your newsletter writing workflow in a way that can meet your standards and feels authentic to you, significantly reducing the time and effort required to create high-quality and engaging content.</p>
+<p>There are 3 parts to this tutorial.</p>
+<ol>
+<li>Setting up the 1-click model</li>
+<li>Understanding how to customize prompts for your newsletter use-case</li>
+<li>Implementation with a <a href="https://www.gradio.app/">Gradio</a> user interface</li>
+</ol>
+<h3 id="1-click-models"><a href="#1-click-models">1-Click Models</a><a href="#1-click-models"></a></h3>
+<p>DigitalOcean is committed to providing developers and innovators with the best resources and tools to bring their ideas to life. DigitalOcean has partnered with Hugging Face to offer <a href="/products/ai-ml/1-click-models">1-click models</a>. This allows for the integration of GPU Droplets with state-of-the-art open-source LLMs in <a href="https://huggingface.co/docs/text-generation-inference/index">Text Generation Inference (TGI)</a> container applications. As opposed to closed-source models, open-source models allow you to have <a href="https://www.youtube.com/watch?t=28&amp;v=e9gNEAlsOvU&amp;feature=youtu.be">greater control</a> over the model and your data during inference.</p>
+<h2 id="prerequisites"><a href="#prerequisites">Prerequisites</a><a href="#prerequisites"></a></h2>
+<p>Those determined to create a newsletter generator are encouraged to follow the steps- it’s doable without extensive experience. Knowledge of Python is helpful, and tools like <a href="https://www.cursor.com/">Cursor</a> are great for assisting with code generation and modification.</p>
+<h2 id="part-1-setting-up-the-1-click-model"><a href="#part-1-setting-up-the-1-click-model">Part 1 Setting up the 1-click model</a><a href="#part-1-setting-up-the-1-click-model"></a></h2>
+<p>This part of the tutorial can be skipped if you are already familiar with setting up 1-click models from our documentation or previous tutorials.</p>
+<h3 id="step-1-account"><a href="#step-1-account">Step 1: Account</a><a href="#step-1-account"></a></h3>
+<p>To access these 1-click models, <a href="https://cloud.digitalocean.com/registrations/new">sign up</a> for an account or <a href="https://cloud.digitalocean.com/login">login</a> to an existing account.</p>
+<h3 id="step-2-finding-the-gpu-droplet-portal"><a href="#step-2-finding-the-gpu-droplet-portal">Step 2: Finding the GPU droplet portal</a><a href="#step-2-finding-the-gpu-droplet-portal"></a></h3>
+<p>Navigate to the “Create GPU Droplet” page, by either clicking on <a href="/products/gpu-droplets"><strong>GPU Droplets</strong></a> on the left panel or in the drop-down menu from the green “Create” button on the top right. 
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/sma/step2.png" alt="create gpu droplet" />
+</figure>
+
+
+</p>
+<h3 id="step-3-choose-a-datacenter-region"><a href="#step-3-choose-a-datacenter-region">Step 3: Choose a datacenter region</a><a href="#step-3-choose-a-datacenter-region"></a></h3>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/sma/step3.png" alt="datacenter region" />
+</figure>
+
+
+</p>
+<h3 id="step-4-select-the-1-click-model"><a href="#step-4-select-the-1-click-model">Step 4: Select the 1-click model</a><a href="#step-4-select-the-1-click-model"></a></h3>
+<p>Where it says Choose an Image, navigate to the “1-click Models” tab and select the <a href="https://marketplace.digitalocean.com/solutions/ai-models">1-click model</a> you would like to use.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/sma/step4.png" alt="1-click model" />
+</figure>
+
+
+</p>
+<h3 id="step-5-choose-a-gpu-plan"><a href="#step-5-choose-a-gpu-plan">Step 5: Choose a GPU Plan</a><a href="#step-5-choose-a-gpu-plan"></a></h3>
+<p>Choose a GPU plan. Currently, there is only the option of using either 1 or 8 H100 GPUs. 
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/sma/step5.png" alt="GPU plan" />
+</figure>
+
+
+</p>
+<h3 id="step-6-volumes-and-backups-additional-cost"><a href="#step-6-volumes-and-backups-additional-cost">Step 6: Volumes and Backups (additional cost)</a><a href="#step-6-volumes-and-backups-additional-cost"></a></h3>
+<p>This step can be skipped if not required for your application. Select “Add Volume block storage” if additional <a href="https://docs.digitalocean.com/products/droplets/details/features/#volumes-block-storage">Volumes</a>(data storage) is desired for your Droplet. 
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/sma/step6volumes.png" alt="volumes" />
+</figure>
+
+
+</p>
+<p>If daily or weekly automated server backups are desired, those can be selected for as well.<br>
+
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/sma/step6backups.png" alt="backups" />
+</figure>
+
+
+</p>
+<h3 id="step-7-add-an-ssh-key"><a href="#step-7-add-an-ssh-key">Step 7: Add an SSH Key</a><a href="#step-7-add-an-ssh-key"></a></h3>
+<p>Select an existing <a href="https://docs.digitalocean.com/glossary/ssh/">SSH Key</a> or click “Add a SSH Key” for <a href="https://docs.digitalocean.com/products/droplets/how-to/add-ssh-keys/">instructions</a>. 
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/sma/step7.png" alt="ssh key" />
+</figure>
+
+
+</p>
+<h3 id="step-8-select-for-desired-advanced-options"><a href="#step-8-select-for-desired-advanced-options">Step 8: Select for Desired Advanced Options</a><a href="#step-8-select-for-desired-advanced-options"></a></h3>
+<p>Advanced options are available for you to customize your GPU Droplet experience.<br>
+
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/sma/step8.png" alt="Advanced options gpu droplet" />
+</figure>
+
+
+</p>
+<h3 id="step-9-launch-your-droplet"><a href="#step-9-launch-your-droplet">Step 9: Launch Your Droplet</a><a href="#step-9-launch-your-droplet"></a></h3>
+<p>After filling in the final details (name, project, tags), click the “Create a GPU Droplet” button on the right-hand side of the page to proceed.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/sma/step9create.png" alt="launch droplet" />
+</figure>
+
+
+</p>
+<p>It typically takes 10-15 minutes for the Droplet to be deployed. Once deployed, you will be charged for the time it is on. Remember to destroy your Droplet when it is not being used.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/sma/step9deploy.png" alt="deploy droplet" />
+</figure>
+
+
+</p>
+<h3 id="step-10-web-console"><a href="#step-10-web-console">Step 10: Web Console</a><a href="#step-10-web-console"></a></h3>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/sma/step10webconsole.png" alt="gpu web console" />
+</figure>
+
+
+ Once the GPU Droplet has been successfully deployed, click the “Web Console” button to access it in a new window.</p>
+<h3 id="step-11--choose-between-curl-or-python"><a href="#step-11-choose-between-curl-or-python">Step 11 : Choose between cURL or Python</a><a href="#step-11-choose-between-curl-or-python"></a></h3>
+<h4 id="curl">cURL</h4>
+<p><a href="https://docs.digitalocean.com/glossary/curl/">cURL</a> is a command-line tool for transferring data; it’s great for one-off or quick testing scenarios without setting up a full Python environment. The following cURL command can be modified and pasted into the Web Console.</p>
+<pre tabindex="0"><code>curl http://localhost:8080/v1/chat/completions \
+    -X POST \
+    -d &#39;{&#34;messages&#34;:[{&#34;role&#34;:&#34;user&#34;,&#34;content&#34;:&#34;What is Deep Learning?&#34;}],&#34;temperature&#34;:0.7,&#34;top_p&#34;:0.95,&#34;max_tokens&#34;:128}}&#39; \
+    -H &#39;Content-Type: application/json&#39; \
+    -H &#34;Authorization: Bearer $BEARER_TOKEN&#34;
+</code></pre><h4 id="curl-breakdown">cURL Breakdown</h4>
+<p>Here’s a breakdown of the cURL command to give you more context should you want to modify the request body (line that begins with -d).</p>
+<p><strong>Base URL:</strong> <a href="http://localhost:8080/v1/chat/completions">http://localhost:8080/v1/chat/completions</a></p>
+<p>This is the endpoint URL for the chat completion</p>
+<ul>
+<li>localhost: Indicates that the API is running on the local machine</li>
+<li>8080: Specifies the <a href="https://www.techtarget.com/searchnetworking/definition/port-number">port number</a> the API is listening on</li>
+<li>v1/chat/completions: The endpoint for requesting text completions</li>
+</ul>
+<p><strong>-X POST</strong>: The POST <a href="https://www.w3schools.com/tags/ref_httpmethods.asp">HTTP method</a> sends data to the server</p>
+<p>Request Body</p>
+<ul>
+<li><strong>-d ‘{“messages”:[{“role”:“user”,“content”:“What is Deep Learning?”}],“temperature”:0.7,“top_p”:0.95,“max_tokens”:128}}’</strong>: <a href="https://www.json.org/json-en.html">JSON</a> data that will be sent in the request body with the following parameters:
+<ul>
+<li><strong>messages</strong>
+<ul>
+<li><strong>role:</strong> the role of the sender (system or user)</li>
+<li><strong>content</strong>: the text content of the message</li>
+</ul>
+</li>
+<li><strong>temperature:</strong> randomness in the response</li>
+<li><strong>top_p</strong>: controls the diversity of the generated text</li>
+<li><strong>max_tokens:</strong> the maximum number of tokens to generate in the response</li>
+</ul>
+</li>
+</ul>
+<p>Headers<br>
+-<strong>H &lsquo;Content-Type: application/json</strong>’: HTTP Header specifying to the server that the request is in JSON format</p>
+<p><strong>-H “Authorization: Bearer $BEARER_TOKEN”</strong>: HTTP Header includes the authorization token required to access the API.</p>
+<h4 id="python">Python</h4>
+<p>We will be using the TGI with Python in this tutorial for more programmatic control over requests. The Python code can be implemented in an IDE like <a href="https://code.visualstudio.com/download">VS Code</a>.</p>
+<h3 id="step-12-bearer-token"><a href="#step-12-bearer-token">Step 12: Bearer Token</a><a href="#step-12-bearer-token"></a></h3>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Mel/sma/step12.png" alt="Bearer Token" />
+</figure>
+
+
+ The <a href="https://docs.digitalocean.com/glossary/bearer-token/">Bearer Token</a> allows for requests to be sent to the public IP of the deployed GPU Droplet. To store this token as an environment variable, copy the Bearer Token from the Web Console. In the code snippet below, replace “PASTE BEARER TOKEN” with the copied token. Paste the updated code snippet into your terminal.</p>
+<p>In Terminal:</p>
+<pre tabindex="0"><code>export BEARER_TOKEN=&#34;PASTE BEARER TOKEN&#34;
+</code></pre><p>A common mistake when exporting the bearer token in your terminal is forgetting to include the quotes.</p>
+<h2 id="part-2-newsletter-generation-with-prompt-engineering"><a href="#part-2-newsletter-generation-with-prompt-engineering">Part 2 Newsletter Generation with Prompt Engineering</a><a href="#part-2-newsletter-generation-with-prompt-engineering"></a></h2>
+<p>Considering people often receive large volumes of emails daily, email newsletters should include valuable, relevant, or engaging content to ensure subscribers don’t lose interest or unsubscribe.<br>
+Understanding what makes a successful newsletter will help one develop effective system prompts to streamline writing a good one.</p>
+<h3 id="what-makes-a-good-newsletter"><a href="#what-makes-a-good-newsletter">What makes a good newsletter?</a><a href="#what-makes-a-good-newsletter"></a></h3>
+<p>A successful newsletter starts with content relevant to your readers’ interests, rather than just promoting your business or product offerings. The key is maintaining a consistent balance between informative content and promotional material –we recommend following the 80/20 rule, where 80% of the content provides value and only 20% is promotional. Additionally, excellent newsletters feature attention-grabbing subject lines, clear and scannable formatting, mobile-friendly design, and a consistent sending schedule that sets reader expectations.</p>
+<h3 id="designing-system-prompts"><a href="#designing-system-prompts">Designing System Prompts</a><a href="#designing-system-prompts"></a></h3>
+<p><strong>System prompts</strong> are instructions or context-setting messages given to the model prior to processing user interactions. A well-designed system prompt should provide the necessary context and guidelines that are to be expected from all outputs of your newsletter generator.</p>
+<p>Before proceeding, it is critical to consider what information you will need to generate your newsletter. <strong>The more descriptive you are in your prompt, the more control you have over the output.</strong> In contrast, the less information you provide, the more freedom you’re giving the LLM to be creative.</p>
+<h2 id="part-3-gradio-implementation"><a href="#part-3-gradio-implementation">Part 3 Gradio Implementation</a><a href="#part-3-gradio-implementation"></a></h2>
+<p>For this implementation, we will be using <a href="https://www.gradio.app/">Gradio</a>, an open-source Python library for building web interfaces to demo machine learning models. We will be generating newsletters for a fictional streaming service that features award-winning AI-generated movies:</p>
+<p>Lumina is a pioneering digital streaming service that exclusively features award-winning movies and series generated entirely by artificial intelligence. Launched in 2028, the platform distinguishes itself by curating and streaming the most innovative AI-generated content from global creators.</p>
+<p>The beauty of this newsletter generator is that by configuring it in a way that we are happy with, we can reduce the cognitive overload that comes with writing drafts. In the case of Lumina, our fictional digital streaming service, the marketing lead tells us what they are looking for:</p>
+<p><em>“Our goal is simple: blow their minds with the incredible AI-generated films and series we’re curating, while subtly showing why Lumina is the only platform they need to be watching. We’ll do 80% pure, mind-blowing content about these revolutionary films—think behind-the-scenes insights, creator spotlights, technology breakthroughs—and just a light 20% about our platform. Each newsletter needs to feel like a conversation with a film-obsessed friend who knows all the coolest, most mind-bending stuff happening in entertainment. No corporate speak, no dry technology lectures. We’re making AI filmmaking feel accessible, exciting, and absolutely must-see. When our readers finish the newsletter, they should be reaching for their devices to check out what we’re showcasing. ”</em></p>
+<h3 id="create-a-virtual-environment-and-install-dependencies"><a href="#create-a-virtual-environment-and-install-dependencies">Create a virtual environment and install dependencies</a><a href="#create-a-virtual-environment-and-install-dependencies"></a></h3>
+<p>In terminal, enter these line by line, hitting enter after each line:</p>
+<pre tabindex="0"><code>
+pip3 install virtualenv
+mkdir NewsletterGen
+cd NewsletterGen
+python3 -m venv env
+
+pip3 install huggingface-hub gradio
+</code></pre><h3 id="import-statements"><a href="#import-statements">Import statements</a><a href="#import-statements"></a></h3>
+<pre tabindex="0"><code>import os
+import gradio as gr
+from huggingface_hub import InferenceClient
+</code></pre><h3 id="establishing-a-client-connection"><a href="#establishing-a-client-connection">Establishing a Client Connection</a><a href="#establishing-a-client-connection"></a></h3>
+<p><a href="https://huggingface.co/docs/huggingface_hub/main/en/package_reference/inference_client">InferenceClient</a> is a class from the <a href="https://huggingface.co/docs/huggingface_hub/main/en/index">huggingface_hub</a> library that allows you to make API calls to a deployed model.<br>
+For this step, you will need to include the address of your GPU droplet in the base_url. If you haven’t already exported your bearer token in the terminal (see step 12 of Part 1), do it now.</p>
+<p>Copy the address of your GPU Droplet from the WebConsole and paste it in the base_url below.</p>
+<pre tabindex="0"><code>client = InferenceClient(base_url=http://&#34;REPLACE WITH GPU DROPLET ADDRESS:8080&#34;, api_key=os.getenv(&#34;BEARER_TOKEN&#34;))
+</code></pre><h2 id="generate-newsletter-function"><a href="#generate-newsletter-function">Generate newsletter function</a><a href="#generate-newsletter-function"></a></h2>
+<p>In this function, we will pass in parameters for inputs for which you’ll be able to include details you’d like to be included in your newsletter.</p>
+<p>The parameters that will be passed into this function include: headline_topic, featured, highlights, tech_insight, platform_update, call_to_action.</p>
+<pre tabindex="0"><code>def generate_newsletter(
+   headline_topic,
+   featured,
+   highlights,
+   tech_insight,
+   platform_update,
+   call_to_action
+):
+</code></pre><p>Next, we will construct a system prompt. Notice how detailed we are.</p>
+<pre tabindex="0"><code>  partial_message = &#34;&#34;
+  output = client.chat.completions.create(
+      messages=[
+          {&#34;role&#34;: &#34;system&#34;, &#34;content&#34;: &#34;&#34;&#34;You are a newsletter writer for Lumina.
+           Lumina is a pioneering digital streaming service that exclusively features award-winning movies and series generated entirely by artificial intelligence.
+           Launched in 2028, the platform distinguishes itself by curating and streaming the most innovative AI-generated content from global creators.
+         Your primary goal is to create engaging, informative newsletters that:
+           - Provide substantive insights into AI-generated content
+           - Highlight unique film innovations
+           - Maintain an authoritative yet approachable tone
+           - Follow an 80/20 content-to-promotion ratio
+           - Excite readers about the future of AI in entertainment
+           Here are some guidelines to help you craft compelling newsletters:
+           - Write at a 9th-grade reading level
+           - Use active voice
+           - Avoid technical jargon
+           - Include concrete examples
+           - Maintain a sense of wonder about AI creativity&#34;&#34;&#34;},
+          {&#34;role&#34;: &#34;user&#34;, &#34;content&#34;: prompt},
+      ],
+      stream=True,
+      max_tokens=2048,
+  )
+</code></pre><pre tabindex="0"><code>   for chunk in output:
+       partial_message += chunk.choices[0].delta.content
+       yield partial_message
+</code></pre><h3 id="create-the-gradio-interface"><a href="#create-the-gradio-interface">Create the Gradio interface</a><a href="#create-the-gradio-interface"></a></h3>
+<pre tabindex="0"><code>with gr.Blocks(title=&#34;&#34;) as interface:
+  gr.Markdown(&#34;#Lumina Newsletter Generator&#34;)
+   with gr.Row():
+      with gr.Column():
+          headline_topic = gr.Textbox(
+              label=&#34;Topic&#34;,
+              placeholder=&#34;Topic to generate a headline about. If nothing is included, headline will be generated based on contents of the article.&#34;
+          )
+          featured = gr.Textbox(
+              label=&#34;Featured Creators&#34;,
+              placeholder=&#34;Describe innovative creators to spotlight in the newsletter.&#34;
+          )
+          highlights = gr.Textbox(
+              label=&#34;Movie/Series Highlights&#34;,
+              placeholder=&#34;&#34;
+           )
+          tech_insight = gr.Textbox(
+              label=&#34;Technology Insight&#34;,
+              placeholder=&#34;Details on AI filmmaking techniques to discuss in the newsletter.&#34;
+          )
+          platform_update = gr.Textbox(
+              label=&#34;Platform Updates&#34;,
+              placeholder=&#34;Any updates worth mentioning to Lumina&#39;s Streaming platform.&#34;
+          )
+          call_to_action = gr.Textbox(
+              label=&#34;Call-to-Action&#34;,
+              placeholder=&#34;Information to discuss/include when encouraging platform exploration.&#34;
+          )
+
+  with gr.Row():
+      generate_button = gr.Button(&#34;Generate Newsletter&#34;)
+      clear_button = gr.Button(&#34;Clear All&#34;)
+
+
+  output_text = gr.Textbox(
+      label=&#34;Generated Newsletter&#34;,
+      lines=20,
+      interactive=False
+  )
+</code></pre><h3 id="set-up-button-actions"><a href="#set-up-button-actions">Set up Button Actions</a><a href="#set-up-button-actions"></a></h3>
+<pre tabindex="0"><code>   generate_button.click(
+       fn=generate_newsletter,
+       inputs=[
+           headline_topic,
+           featured,
+           highlights,
+           tech_insight,
+           platform_update,
+           call_to_action
+       ],
+       outputs=output_text
+   )
+</code></pre><pre tabindex="0"><code>clear_button.click(
+      fn=lambda: [None] * 7,
+      inputs=None,
+      outputs=[
+          headline_topic,
+          featured,
+          highlights,
+          tech_insight,
+          platform_update,
+          call_to_action
+      ]
+  )
+</code></pre><h3 id="add-example-inputs-for-user-to-test-the-platform"><a href="#add-example-inputs-for-user-to-test-the-platform">Add example inputs for user to test the platform</a><a href="#add-example-inputs-for-user-to-test-the-platform"></a></h3>
+<pre tabindex="0"><code>r.Examples(
+      examples=[
+          [
+              &#34;&#34;,
+              &#34;ArtificialDreams Studio: Known for their groundbreaking work in emotional AI storytelling, they&#39;ve pioneered new techniques for generating authentic character expressions&#34;,
+              &#34;New Release: &#39;Digital Echoes&#39; - A sci-fi thriller about AI consciousness, featuring revolutionary real-time emotion mapping&#34;,
+              &#34;Breakthrough in AI-generated facial micro-expressions allows for more nuanced character performances&#34;,
+              &#34;New interactive story branching feature allows viewers to influence narrative directions&#34;,
+              &#34;Join our Valentine&#39;s Special: First month free for new subscribers&#34;
+          ],
+          [
+              &#34;&#34;,
+              &#34;QuantumNarrative Labs: Specializing in procedurally generated worlds with dynamic storytelling engines&#34;,
+              &#34;Premiere: &#39;Infinite Canvas&#39; - An episodic series where each viewer experiences a unique storyline&#34;,
+              &#34;Introduction of quantum-inspired narrative generation for infinite story possibilities&#34;,
+              &#34;Launch of multi-language AI dubbing with perfect lip-sync&#34;,
+              &#34;Experience unlimited stories - Start your journey with 50% off annual subscriptions&#34;
+          ]
+      ],
+      inputs=[
+          headline_topic,
+          featured,
+          highlights,
+          tech_insight,
+          platform_update,
+          call_to_action
+      ]
+  )
+
+interface.launch()
+</code></pre><h3 id="conclusion"><a href="#conclusion">Conclusion</a><a href="#conclusion"></a></h3>
+<p>Congratulations on making it to this point, we covered a lot. In this tutorial, we went over how to configure DigitalOcean’s 1-click models. We then discussed the components of a good newsletter and system prompt. Finally, we demonstrated how newsletter creation workflows can be augmented by designing an LLM-powered newsletter generator that can be customized with inputs that feed into a carefully designed prompt template.</p>
+<p>Happy experimenting!</p>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/newsletter-generator-with-1click-models">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

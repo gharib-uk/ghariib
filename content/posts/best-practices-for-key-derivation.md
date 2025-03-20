@@ -1,6 +1,6 @@
 ---
 title: "Best practices for key derivation"
-date: 2025-03-19
+date: 2025-02-01
 categories: 
   - "cryptography"
   - "cryptography-library"

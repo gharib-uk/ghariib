@@ -1,6 +1,8 @@
 ---
 title: "Comrades in Arms? | North Korea Compromises Sanctioned Russian Missile Engineering Company"
-date: 2025-03-19
+date: 2025-01-03
+categories: 
+  - "security"
 ---
 
 North Korean threat actors attempt to further missile program by compromising sanctioned Russian defense company with OpenCarrot backdoor.
@@ -30,7 +32,7 @@ We are highly confident that the emails related to this activity originate from 
 
 <figure>
 
-![Example of unrelated email alerts from Russian CERT to NPO Mash](https://www.sentinelone.com/wp-content/uploads/2023/08/npomash_1.jpg)
+![Example of unrelated email alerts from Russian CERT to NPO Mash](https://de.sentinelone.com/wp-content/uploads/sites/3/2023/12/npomash_1.jpg)
 
 <figcaption>
 
@@ -70,7 +72,7 @@ Its backdoor commands are indexed by consecutive integers, a common trait of Laz
 
 <figure>
 
-![Backdoor command indexing](https://www.sentinelone.com/wp-content/uploads/2023/08/npomash_6.jpg)
+![Backdoor command indexing](https://de.sentinelone.com/wp-content/uploads/sites/3/2023/12/npomash_6.jpg)
 
 <figcaption>
 
@@ -90,7 +92,7 @@ OpenCarrot implements relatively long sleep time periods. To avoid remaining idl
 
 <figure>
 
-![Disk drive monitoring](https://www.sentinelone.com/wp-content/uploads/2023/08/npomash_2.jpg)
+![Disk drive monitoring](https://de.sentinelone.com/wp-content/uploads/sites/3/2023/12/npomash_2.jpg)
 
 <figcaption>
 
@@ -110,7 +112,7 @@ We link the NPO Mashinostroyeniya email discussing suspicious networking communi
 
 <figure>
 
-![Email between NPO Mash Employees sharing beaconing process details](https://www.sentinelone.com/wp-content/uploads/2023/08/npomash_4.jpg)
+![Email between NPO Mash Employees sharing beaconing process details](https://de.sentinelone.com/wp-content/uploads/sites/3/2023/12/npomash_4.jpg)
 
 <figcaption>
 
@@ -124,7 +126,7 @@ This set of malicious infrastructure was served via CrownCloud (Australia) and O
 
 <figure>
 
-![Infrastructure and Timeline](https://www.sentinelone.com/wp-content/uploads/2023/08/npomash-2_fixed-scaled.jpg)
+![Infrastructure and Timeline](https://de.sentinelone.com/wp-content/uploads/sites/3/2023/12/npomash-2_fixed-scaled.jpg)
 
 <figcaption>
 
@@ -142,7 +144,7 @@ The collection of activity stemming from the `dallynk[.]com` domain contains mal
 
 <figure>
 
-![Infrastructure ScarCruft Link](https://www.sentinelone.com/wp-content/uploads/2023/08/npomash-3_fixed-scaled.jpg)
+![Infrastructure ScarCruft Link](https://de.sentinelone.com/wp-content/uploads/sites/3/2023/12/npomash-3_fixed-scaled.jpg)
 
 <figcaption>
 

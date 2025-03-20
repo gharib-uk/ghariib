@@ -1,13 +1,10 @@
 ---
 title: "McAFuse - open source McAfee FDE decryption"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
-  - "cybersecurity"
-  - "cybersecurity-awareness"
-  - "forensics"
-  - "security"
-  - "security-awareness"
-  - "security-awareness-3-0"
+  - "general"
+tags: 
+  - "technology"
 ---
 
 This post is a _guest_ post, where **Andrea Canepa** (_recently_ graduated at University of Genoa, Computer Science) will explain his **Master Thesis**. The topic is _how to handle McAfee FDE acquisitions_ when doing a DFIR investigations.

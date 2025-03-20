@@ -1,6 +1,6 @@
 ---
 title: "Der Unterschied zwischen EDR, SIEM, SOAR und XDR"
-date: 2025-03-19
+date: 2025-01-06
 ---
 
 Confused by vendor offerings and wondering how to tell one product label from another? We untangle the alphabet soup around EDR, SIEM, SOAR and XDR.

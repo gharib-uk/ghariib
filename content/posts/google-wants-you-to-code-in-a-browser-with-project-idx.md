@@ -1,18 +1,19 @@
 ---
 title: "Google Wants You to Code in a Browser With Project IDX"
-date: 2025-03-19
+date: 2025-01-12
 categories: 
   - "artificial-intelligence"
   - "cloud"
+  - "microsoft"
+  - "open-source"
+  - "virtualization"
+tags: 
   - "codepen"
   - "codespaces"
   - "developer"
   - "google"
-  - "microsoft"
-  - "open-source"
   - "replit"
   - "stackblitz"
-  - "virtualization"
   - "visual-studio-code"
 ---
 

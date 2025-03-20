@@ -1,13 +1,12 @@
 ---
 title: "Oh no! I have a wiped iPhone, now what?"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
-  - "cybersecurity"
-  - "cybersecurity-awareness"
-  - "forensics"
-  - "security"
-  - "security-awareness"
-  - "security-awareness-3-0"
+  - "general"
+tags: 
+  - "amd"
+  - "ces"
+  - "report"
 ---
 
 One of the most common questions I got asked during presentations and conferences is: "**During a search and seizure we found a wiped iPhone, what can we do next?**"

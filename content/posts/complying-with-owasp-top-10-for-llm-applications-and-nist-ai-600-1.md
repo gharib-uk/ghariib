@@ -1,6 +1,8 @@
 ---
 title: "Complying with OWASP Top 10 for LLM Applications and NIST AI 600-1"
-date: 2025-03-19
+date: 2025-01-03
+categories: 
+  - "security"
 ---
 
 Rapid advancement in artificial intelligence (AI) and the availability of accessible developer tools have made it relatively easy to incorporate sophisticated AI capabilities into applications. In the past two years, we’ve seen countless AI-powered applications launched. At the same time, developers have been discovering how to enhance existing software with conversational interfaces, predictive analytics, automated customer support, and similar features.
@@ -15,7 +17,7 @@ In today’s blog post, we look at two of the main security standards for AI and
 
 **NIST AI 600-1****,** also known as the AI Risk Management Framework developed by the National Institute of Standards and Technology (NIST), offers guidance to help organizations manage risks associated with AI systems. It provides a structured approach for identifying, assessing and mitigating AI-related risks across various domains, including privacy, security and fairness, as well as for addressing concerns such as bias, transparency and accountability in AI systems.
 
-It’s worth noting that while both standards are voluntary, organizations across industries are widely adopting them. For many companies still early in their AI journey, the standards help establish a baseline of secure practices and policies. For those closer to deployment, they help maintain customer trust and a foundation for additional governance efforts.
+It’s worth noting that while both standards are voluntary, organizations across industries are adopted. For many companies still early in their AI journey, the standards help establish a baseline of secure practices and policies. For those closer to deployment, they help maintain customer trust and a foundation for additional governance efforts.
 
 What about regulations? While the regulatory landscape for AI is still unclear (with near-certain regional differences), complying with industry standards will most likely shorten the time to compliance with binding regulations, whenever they come into play.
 

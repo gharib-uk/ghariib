@@ -1,21 +1,22 @@
 ---
 title: "The Race is on to Solve the Quantum Computing Security Challenge"
-date: 2025-03-19
+date: 2025-01-06
 categories: 
   - "cryptography"
   - "cryptography-library"
-  - "cyber"
   - "cybersecurity"
   - "cybersecurity-awareness"
   - "encryption"
-  - "quantum-computing"
   - "security"
   - "security-awareness"
-  - "security-boulevard-original"
+tags: 
+  - "cyber"
+  - "dataprivacy"
+  - "dataprotection"
+  - "quantumcomputing"
   - "social-facebook"
   - "social-linkedin"
-  - "social-x"
-  - "threat-intelligence"
+  - "threatintelligence"
 ---
 
 ![quantum computing, cryptography, cryptographic, cybersecurity quantum](https://securityboulevard.com/wp-content/uploads/2022/08/canstockphoto17667969.jpg)

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Vision Transformers ViTs Computer Vision with Transformer Models</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Vision Transformers ViTs Computer Vision with Transformer Models</h1>
+			<b><time>13.01.2025 15:49</time></b>
+		       
+
+			<div>
+				<h1 id="vision-transformers-vits-computer-vision-with-transformer-models">Vision Transformers ViTs Computer Vision with Transformer Models</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Unlike CNNs, ViTs divide input images into patches, serialize them into vectors, and reduce their dimensionality using matrix multiplication. A transformer encoder then processes these vectors as token embeddings. In this article, we’ll explore vision transformers and their main differences from convolutional neural networks. What makes them particularly interesting is their ability to understand global patterns in an image, which is something CNNs can struggle with.</p>
+<h2 id="prerequisites"><a href="#prerequisites"><strong>Prerequisites</strong></a><a href="#prerequisites"></a></h2>
+<ol>
+<li><strong>Basics of Neural Networks</strong>: Understanding of how neural networks process data.</li>
+<li><strong>Convolutional Neural Networks (CNNs)</strong>: Familiarity with CNNs and their role in computer vision.</li>
+<li><strong>Transformer Architecture</strong>: Knowledge of transformers, particularly their use in NLP.</li>
+<li><strong>Image Processing</strong>: Understanding basic concepts like image representation, channels, and pixel arrays.</li>
+<li><strong>Attention Mechanism</strong>: Understanding self-attention and its ability to model relationships across inputs.</li>
+</ol>
+<h2 id="what-are-vision-transformers"><a href="#what-are-vision-transformers">What are vision transformers?</a><a href="#what-are-vision-transformers"></a></h2>
+<p>Vision transformers use the concept of attention and transformers to process images—this is similar to transformers in a natural language processing (NLP) context. However, instead of using tokens, the image is split into patches and provided as a sequence of linear embedded. These patches are treated the same way tokens or words are treated in NLP.</p>
+<p>Instead of looking at the whole picture simultaneously, a ViT cuts the image into small pieces like a jigsaw puzzle. Each piece is turned into a list of numbers (a vector) that describes its features, and then the model looks at all the pieces and figures out how they relate to each other using a <a href="/community/tutorials/transformers-for-language-translation-classification"><strong>transformer mechanism</strong></a>.</p>
+<p>Unlike CNNs, ViTs works by applying specific filters or kernels over an image to detect specific features, such as edge patterns. This is the convolution process which is very similar to a printer scanning an image. These filters slide through the entire image and highlight significant features. The network then stacks up multiple layers of these filters, gradually identifying more complex patterns.<br>
+With CNNs, pooling layers reduce the size of the feature maps. These layers analyze the extracted features to make predictions useful for image recognition, object detection, etc. However, CNNs have a fixed receptive field, thereby limiting the ability to model long-range dependencies.</p>
+<p><strong>How CNN views images?</strong> 
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Shaoni/vision_transformers/cnn_view_images.png" alt="image" />
+</figure>
+
+
+</p>
+<p>ViTs, despite having more parameters, use self-attention mechanisms for better feature representation and reduce the need for deeper layers. CNNs require significantly deeper architecture to achieve a similar representational power, which leads to increased computational cost.</p>
+<p>Additionally, CNNs cannot capture global-level image patterns because their filters focus on local regions of an image. To understand the entire image or distant relationships, CNNs rely on stacking many layers and pooling, expanding the field of view. However, this process can lose global information as it aggregates details step-by-step.</p>
+<p>ViTs, on the other hand, divide the image into patches that are treated as individual input tokens. Using self-attention, ViTs compare all patches simultaneously and learn how they relate. This allows them to capture patterns and dependencies across the whole image without building them up layer by layer.</p>
+<h2 id="what-is-inductive-bias"><a href="#what-is-inductive-bias">What is Inductive Bias?</a><a href="#what-is-inductive-bias"></a></h2>
+<p>Before going further, it’s important to understand the concept of <a href="https://en.wikipedia.org/wiki/Inductive_bias">inductive bias</a>. Inductive bias refers to the assumption a model makes about data structure; during training, this helps the model be more generalized and reduce bias. In CNNs, inductive biases include:</p>
+<ol>
+<li><strong>Locality</strong>: Features in images (like edges or textures) are localized within small regions.</li>
+<li><strong>Two-dimensional neighborhood structure</strong>: Nearby pixels are more likely to be related, so filters operate on spatially adjacent regions.</li>
+<li><strong>Translation equivariance</strong>: Features detected in one part of the image, like an edge, retain the same meaning if they appear in another part.</li>
+</ol>
+<p>These biases make CNNs highly efficient for image tasks, as they are inherently designed to exploit images’ spatial and structural properties.</p>
+<p>Vision Transformers (ViTs) have significantly less image-specific inductive bias than CNNs. In ViTs:</p>
+<ul>
+<li><strong>Global processing</strong>: Self-attention layers operate on the entire image, making the model capture global relationships and dependencies without being restricted by local regions.</li>
+<li><strong>Minimal 2D structure</strong>: The 2D structure of the image is used only at the beginning (when the image is divided into patches) and during fine-tuning (to adjust positional embeddings for different resolutions). Unlike CNNs, ViTs do not assume that nearby pixels are necessarily related.</li>
+<li><strong>Learned spatial relations</strong>: Positional embeddings in ViTs do not encode specific 2D spatial relationships at initialization. Instead, the model learns all spatial relationships from the data during training.</li>
+</ul>
+<h2 id="how-vision-transformers-work"><a href="#how-vision-transformers-work">How Vision Transformers Work</a><a href="#how-vision-transformers-work"></a></h2>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Shaoni/vision_transformers/vision_transformers.png" alt="iamge" />
+</figure>
+
+
+</p>
+<p>Vision Transformers uses the standard Transformer architecture developed for 1D text sequences. To process the 2D images, they are divided into smaller patches of fixed size, such as P P pixels, which are flattened into vectors. If the image has dimensions H W with C channels, the total number of patches is N = H W / P P the effective input sequence length for the Transformer. These flattened patches are then linearly projected into a fixed-dimensional space D, called the <a href="https://medium.com/@fernandopalominocobo/demystifying-visual-transformers-with-pytorch-understanding-patch-embeddings-part-1-3-ba380f2aa37f"><strong>patch embeddings</strong></a>.</p>
+<p>A special learnable token, similar to the [CLS] token in BERT, is prepended to the sequence of patch embeddings. This token learns a global image representation that is later used for classification. Additionally, positional embeddings are added to the patch embeddings to encode positional information, helping the model understand the spatial structure of the image.</p>
+<p>The sequence of embeddings is passed through the Transformer encoder, which alternates between two main operations: <a href="/community/tutorials/attention-mechanisms-in-computer-vision-cbam"><strong>Multi-Headed Self-Attention (MSA)</strong></a> and a feedforward neural network, also called an MLP block. Each layer includes <a href="https://paperswithcode.com/method/layer-normalization"><strong>Layer Normalization</strong></a> <strong>(LN)</strong> applied before these operations and residual connections added afterward to stabilize training. The output of the Transformer encoder, specifically the state of the [CLS] token, is used as the image’s representation.</p>
+<p>A simple head is added to the final [CLS] token for classification tasks. During pretraining, this head is a small multi-layer perceptron (MLP), while in fine-tuning, it is typically a single linear layer. This architecture allows ViTs to effectively model global relationships between patches and utilize the full power of self-attention for image understanding.</p>
+<p>In a hybrid Vision Transformer model, instead of directly dividing raw images into patches, the input sequence is derived from feature maps generated by a CNN. The CNN processes the image first, extracting meaningful spatial features, which are then used to create patches. These patches are flattened and projected into a fixed-dimensional space using the same trainable linear projection as in standard Vision Transformers. A special case of this approach is using patches of size 1×1, where each patch corresponds to a single spatial location in the CNN’s feature map.</p>
+<p>In this case, the spatial dimensions of the feature map are flattened, and the resulting sequence is projected into the Transformer’s input dimension. As with the standard ViT, a classification token and positional embeddings are added to retain positional information and to enable global image understanding. This hybrid approach leverages the local feature extraction strengths of CNNs while combining them with the global modeling capabilities of Transformers.</p>
+<h2 id="code-demo"><a href="#code-demo">Code Demo</a><a href="#code-demo"></a></h2>
+<p>Here is the code block on how to use the vision transformers on images.</p>
+<pre tabindex="0"><code># Install the necessary libraries  
+pip install -q transformers
+</code></pre><pre tabindex="0"><code>from transformers import ViTForImageClassification  
+from PIL import Image  
+from transformers import ViTImageProcessor
+</code></pre><pre tabindex="0"><code>import requests  
+import torch
+</code></pre><pre tabindex="0"><code># Load the model and move it to ‘GPU’  
+device = torch.device(&#39;cuda&#39; if torch.cuda.is_available() else &#39;cpu&#39;)
+
+model = ViTForImageClassification.from_pretrained(&#39;google/vit-base-patch16-224&#39;)  
+model.to(device)
+</code></pre><pre tabindex="0"><code># Load the image to perform predictions  
+url = &#39;link to your image&#39;  
+image = Image.open(requests.get(url, stream=True).raw)
+
+processor = ViTImageProcessor.from_pretrained(&#39;google/vit-base-patch16-224&#39;)  
+inputs = processor(images=image, return_tensors=&#34;pt&#34;).to(device)  
+pixel_values = inputs.pixel_values  
+# print(pixel_values.shape)
+</code></pre><p>The ViT model processes the image. It comprises a BERT-like encoder and a linear classification head situated on top of the final hidden state of the [CLS] token.</p>
+<pre tabindex="0"><code>with torch.no_grad():  
+  outputs = model(pixel_values)  
+logits = outputs.logits
+
+# logits.shape
+
+prediction = logits.argmax(-1)  
+print(&#34;Predicted class:&#34;, model.config.id2label[prediction.item()])
+</code></pre><p>Here’s a basic Vision Transformer (ViT) implementation using PyTorch. This code includes the core components: patch embedding, positional encoding, and the Transformer encoder.This can be used for simple classification tasks.</p>
+<pre tabindex="0"><code>import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class VisionTransformer(nn.Module):
+    def __init__(self, img_size=224, patch_size=16, num_classes=1000, dim=768, depth=12, heads=12, mlp_dim=3072, dropout=0.1):
+        super(VisionTransformer, self).__init__()
+        
+        # Image and patch dimensions
+        assert img_size % patch_size == 0, &#34;Image size must be divisible by patch size&#34;
+        self.num_patches = (img_size // patch_size) ** 2
+        self.patch_dim = (3 * patch_size ** 2)  # Assuming 3 channels (RGB)
+        
+        # Layers
+        self.patch_embeddings = nn.Linear(self.patch_dim, dim)
+        self.position_embeddings = nn.Parameter(torch.randn(1, self.num_patches + 1, dim))
+        self.cls_token = nn.Parameter(torch.randn(1, 1, dim))
+        self.dropout = nn.Dropout(dropout)
+        
+        # Transformer Encoder
+        self.transformer = nn.TransformerEncoder(
+            nn.TransformerEncoderLayer(d_model=dim, nhead=heads, dim_feedforward=mlp_dim, dropout=dropout),
+            num_layers=depth
+        )
+        
+        # MLP Head for classification
+        self.mlp_head = nn.Sequential(
+            nn.LayerNorm(dim),
+            nn.Linear(dim, num_classes)
+        )
+    
+    def forward(self, x):
+        # Flatten patches and embed
+        batch_size, channels, height, width = x.shape
+        patch_size = height // int(self.num_patches ** 0.5)
+
+        x = x.unfold(2, patch_size, patch_size).unfold(3, patch_size, patch_size)
+        x = x.contiguous().view(batch_size, 3, patch_size, patch_size, -1)
+        x = x.permute(0, 4, 1, 2, 3).flatten(2).permute(0, 2, 1)
+        x = self.patch_embeddings(x)
+        
+        # Add positional embeddings
+        cls_tokens = self.cls_token.expand(batch_size, -1, -1)
+        x = torch.cat((cls_tokens, x), dim=1)
+        x = x + self.position_embeddings
+        x = self.dropout(x)
+        
+        # Transformer Encoder
+        x = self.transformer(x)
+        
+        # Classification Head
+        x = x[:, 0]  # CLS token
+        return self.mlp_head(x)
+
+# Example usage
+if __name__ == &#34;__main__&#34;:
+    model = VisionTransformer(img_size=224, patch_size=16, num_classes=10, dim=768, depth=12, heads=12, mlp_dim=3072)
+    print(model)
+    
+    dummy_img = torch.randn(8, 3, 224, 224)  # Batch of 8 images, 3 channels, 224x224 size
+    preds = model(dummy_img)
+    print(preds.shape)  # Output: [8, 10] (Batch size, Number of classes)
+</code></pre><h2 id="key-components"><a href="#key-components"><strong>Key Components:</strong></a><a href="#key-components"></a></h2>
+<ol>
+<li><strong>Patch Embedding</strong>: Images are divided into smaller patches, flattened, and linearly transformed into embeddings.</li>
+<li><strong>Positional Encoding</strong>: Positional information is added to the patch embeddings, as Transformers are position-agnostic.</li>
+<li><strong>Transformer Encoder</strong>: Applies self-attention and feed-forward layers to learn relationships between patches.</li>
+<li><strong>Classification Head</strong>: Outputs the class probabilities using the CLS token.</li>
+</ol>
+<p>You can train this model on any image dataset using an optimizer like Adam and a loss function like cross-entropy. For better performance, consider pretraining on a large dataset before fine-tuning.</p>
+<h2 id="popular-follow-up-work"><a href="#popular-follow-up-work">Popular Follow-up Work</a><a href="#popular-follow-up-work"></a></h2>
+<ul>
+<li>
+<p><strong>DeiT (<a href="https://paperswithcode.com/method/deit">Data-efficient Image Transformers</a>)</strong> by Facebook AI: These are vision transformers trained efficiently with knowledge distillation. DeiT offers four variants: <em>deit-tiny</em>, <em>deit-small</em>, and two <em>deit-base</em> models. Use <code>DeiTImageProcessor</code> to prepare images.</p>
+</li>
+<li>
+<p><strong>BEiT (<a href="/community/tutorials/how-to-train-question-answering-machine-learning-models">BERT pre-training of Image Transformers</a>)</strong> by Microsoft Research: Inspired by BERT, BEiT uses self-supervised masked image modeling and outperforms supervised ViTs. It relies on VQ-VAE for training.</p>
+</li>
+<li>
+<p><strong>DINO (<a href="/community/tutorials/grounding-dino-1-5-open-set-object-detection">Self-supervised Vision Transformer Training</a>)</strong> by Facebook AI: DINO-trained ViTs can segment objects without explicit training. Checkpoints are available online.</p>
+</li>
+<li>
+<p><strong>MAE (<a href="https://www.geeksforgeeks.org/masked-autoencoders-in-deep-learning/">Masked Autoencoders</a>)</strong> by Facebook pre-train ViTs by reconstructing masked patches (75%). When fine-tuned, this simple method surpasses supervised pre-training.</p>
+</li>
+</ul>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a><a href="#conclusion"></a></h2>
+<p>In conclusion, ViTs are an excellent alternative for CNNs as they apply transformers to image recognition, minimize inductive bias, and treat images as sequence patches. This simple yet scalable approach has demonstrated state-of-the-art performance on many image classification benchmarks, especially when paired with pre-training on large datasets. However, potential challenges remain, which include extending ViTs to tasks like object detection and segmentation, further improving self-supervised pre-training methods, and exploring the potential of scaling ViTs for even better performance.</p>
+<h2 id="additional-resources"><a href="#additional-resources"><strong>Additional Resources</strong></a><a href="#additional-resources"></a></h2>
+<ul>
+<li><a href="https://huggingface.co/docs/transformers/en/model_doc/vit#using-scaled-dot-product-attention-sdpa">Vision Transformer (ViT)</a></li>
+<li><a href="https://arxiv.org/pdf/2010.11929v2">AN IMAGE IS WORTH 16X16 WORDS: TRANSFORMERS FOR IMAGE RECOGNITION AT SCALE</a></li>
+<li><a href="/community/tutorials/writing-cnns-from-scratch-in-pytorch">Writing CNNs from Scratch in PyTorch</a></li>
+</ul>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/vision-transformer-for-computer-vision">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

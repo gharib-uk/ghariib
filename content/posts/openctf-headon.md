@@ -1,6 +1,6 @@
 ---
 title: "OpenCTF : HeadOn"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
   - "general"
 ---
@@ -79,3 +79,5 @@ And open flag.pdf in your preferred pdf viewer.
 # Flag
 
 **Flag{SDG7qJ734rIw6f3f90832r}**
+
+Go to Source

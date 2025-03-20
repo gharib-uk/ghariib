@@ -1,6 +1,8 @@
 ---
 title: "Discover, Protect and Respond with AWS and Prisma Cloud"
-date: 2025-03-19
+date: 2025-01-03
+categories: 
+  - "security"
 ---
 
 ## The Problem — The Complexity of Cloud Environments

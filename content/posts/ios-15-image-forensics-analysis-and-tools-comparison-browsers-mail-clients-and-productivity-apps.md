@@ -1,13 +1,8 @@
 ---
 title: "iOS 15 Image Forensics Analysis and Tools Comparison  - Browsers, Mail Clients, and Productivity apps"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
-  - "cybersecurity"
-  - "cybersecurity-awareness"
-  - "forensics"
-  - "security"
-  - "security-awareness"
-  - "security-awareness-3-0"
+  - "general"
 ---
 
 The fifth episode is dedicated to three categories of third-party apps: browsers, mail clients, and productivity apps.

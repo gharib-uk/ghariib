@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Finetune Multimodel LLMIDEFICS 9B using A100</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Finetune Multimodel LLMIDEFICS 9B using A100</h1>
+			<b><time>11.03.2025 10:37</time></b>
+		       
+
+			<div>
+				<h1 id="finetune-multimodel-llmidefics-9b-using-a100">Finetune Multimodel LLMIDEFICS 9B using A100</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>In this article, we will learn how to run inference using the quantized version of IDEFICS and fine-tune <a href="https://huggingface.co/HuggingFaceM4/idefics-9b-instruct">IDEFICS-9b</a> using an A100 GPU. We will also fine-tune IDEFICS 9B, a variant of the innovative visual language model. This fine-tuning process uses techniques like <a href="/community/tutorials/training-a-lora-model-for-stable-diffusion-xl-with-paperspace">LoRa</a> to improve the model’s performance in targeted areas.</p>
+<p>When running inference and fine-tuning IDEFICS-9 b, the high processing power of A100 GPUs can significantly speed up the process, allowing you to iterate and experiment more quickly.</p>
+<h2 id="prerequisites-for-fine-tuning-idefics-9b-on-a100"><a href="#prerequisites-for-fine-tuning-idefics-9b-on-a100">Prerequisites for Fine-Tuning IDEFICS 9B on A100</a><a href="#prerequisites-for-fine-tuning-idefics-9b-on-a100"></a></h2>
+<ul>
+<li><strong>Hardware Requirements:</strong> Access to an <strong>NVIDIA A100</strong> GPU with at least <strong>40GB VRAM</strong> for efficient model training.</li>
+<li><strong>Software Setup:</strong>
+<ul>
+<li><strong>Python 3.8+</strong> installed</li>
+<li><strong>PyTorch with CUDA support</strong> (<code>torch&gt;=2.0, torchvision</code>)</li>
+<li><strong>Hugging Face Transformers &amp; Datasets</strong> (<code>transformers</code>, <code>datasets</code>)</li>
+</ul>
+</li>
+<li><strong>Dataset:</strong> A well-prepared multimodal dataset (text + image pairs) in a format compatible with Hugging Face <code>datasets</code>.</li>
+<li><strong>Basic Knowledge:</strong> Understanding of LLM fine-tuning, prompt engineering, and multimodal architectures.</li>
+<li><strong>Storage &amp; Compute:</strong> At least <strong>500GB of storage</strong> for model weights and datasets, and a cloud or on-prem environment supporting distributed training if needed.</li>
+</ul>
+<h2 id="what-is-idefics"><a href="#what-is-idefics">What is IDEFICS?</a><a href="#what-is-idefics"></a></h2>
+<p><a href="https://huggingface.co/blog/idefics">IDEFICS</a> (Image-aware Decoder Enhanced à la Flamingo with Interleaved Cross-attentionS) is an open-access visual language model that can process sequences of images and text to produce text outputs, similar to GPT-4.</p>
+<p>The model is based on <a href="https://deepmind.google/">DeepMind’s</a> Flamingo model, which is not publicly available. IDEFICS utilizes publicly accessible data and models, specifically <a href="/community/tutorials/llama">LLaMA</a> v1 and OpenCLIP. It is offered in two versions: a base version and an instructed version. Each of these versions is available in two sizes—9 billion parameters and 80 billion parameters.</p>
+<p>Recently, <a href="https://huggingface.co/blog/idefics2">IDEFICS2</a> was released. The model is trained to answer questions about images, such as ‘What color is the car?’ or &lsquo;How many people are in the picture? &lsquo;. It can also describe visual content, create stories grounded in multiple images, extract information from documents, and perform basic arithmetic operations.</p>
+<h2 id="what-is-fine-tuning"><a href="#what-is-fine-tuning">What is fine-tuning?</a><a href="#what-is-fine-tuning"></a></h2>
+<p><a href="/community/tutorials/fine-tune-llama-3">Fine-tuning</a> is a process that involves taking a pre-trained model and training it for a specific task using a specific dataset. This process involves updating the model’s weights based on the new task’s data, typically with a lower learning rate, to make slight adjustments without drastically altering the pre-trained knowledge.</p>
+<p>Pre-trained models are typically trained on large, diverse datasets and capture many features. They are trained to perform well on a specific task, such as <a href="/community/tutorials/how-to-train-a-neural-network-for-sentiment-analysis">sentiment analysis</a>, <a href="/community/tutorials/deep-learning-metrics-precision-recall-accuracy">image classification</a>, or any domain-specific application. Using data specific to the new task, the model can learn the nuances and specifics of that data, leading to improved accuracy and performance.</p>
+<p>Fine-tuning requires significantly less computational resources and time than training a model from scratch.</p>
+<p>In this case, we will use <a href="https://huggingface.co/datasets/TheFusion21/PokemonCards">‘TheFusion21/PokemonCards’</a> to fine-tune the model. Here is the data structure of this dataset.</p>
+<pre tabindex="0"><code>{
+  &#34;id&#34;: &#34;pl1-1&#34;,
+  &#34;image_url&#34;: &#34;https://images.pokemontcg.io/pl1/1_hires.png&#34;,
+  &#34;caption&#34;: &#34;A Stage 2 Pokemon Card of type Lightning with the title &#34;&#34;Ampharos&#34;&#34; and 130 HP of rarity &#34;&#34;Rare Holo&#34;&#34; evolved from Flaaffy from the set Platinum and the flavor text: &#34;&#34;None&#34;&#34;. It has the attack &#34;&#34;Gigavolt&#34;&#34; with the cost Lightning, Colorless, the energy cost 2 and the damage of 30+ with the description: &#34;&#34;Flip a coin. If heads, this attack does 30 damage plus 30 more damage. If tails, the Defending Pokemon is now Paralyzed.&#34;&#34;. It has the attack &#34;&#34;Reflect Energy&#34;&#34; with the cost Lightning, Colorless, Colorless, the energy cost 3 and the damage of 70 with the description: &#34;&#34;Move an Energy card attached to Ampharos to 1 of your Benched Pokemon.&#34;&#34;. It has the ability &#34;&#34;Damage Bind&#34;&#34; with the description: &#34;&#34;Each Pokemon that has any damage counters on it (both yours and your opponent&#39;s) can&#39;t use any Poke-Powers.&#34;&#34;. It has weakness against Fighting +30. It has resistance against Metal -20.&#34;,
+  &#34;name&#34;: &#34;Ampharos&#34;,
+  &#34;hp&#34;: &#34;130&#34;,
+  &#34;set_name&#34;: &#34;Platinum&#34;
+}
+</code></pre><h2 id="installation"><a href="#installation">Installation</a><a href="#installation"></a></h2>
+<p>We will start by installing a few necessary packages. We recommend that our users spin up a Jupyter Notebook and start working.</p>
+<pre tabindex="0"><code>!pip install -q datasets
+!pip install -q git+https://github.com/huggingface/transformers.git
+!pip install -q bitsandbytes sentencepiece accelerate loralib
+!pip install -q -U git+https://github.com/huggingface/peft.git
+!pip install accelerate==0.27.2
+</code></pre><p>We will install the datasets library. This library provides tools for accessing and managing datasets for training and evaluating machine learning models. We are also installing transformers and bits and bytes for efficient fine-tuning.</p>
+<p>Bitsandbytes is an incredible library that allows loading models in 4-bit precision, making it extremely useful for fine-tuning large language models with <a href="https://www.redhat.com/en/topics/ai/lora-vs-qlora">Qlora</a>.</p>
+<p>Once these packages are successfully installed, we will import the necessary libraries.</p>
+<pre tabindex="0"><code>#import the libraries
+
+import torch
+from datasets import load_dataset
+from peft import LoraConfig, get_peft_model
+from PIL import Image
+from transformers import IdeficsForVisionText2Text, AutoProcessor, Trainer, TrainingArguments, BitsAndBytesConfig
+import torchvision.transforms as transforms
+</code></pre><h2 id="load-the-quantized-model"><a href="#load-the-quantized-model">Load the Quantized Model</a><a href="#load-the-quantized-model"></a></h2>
+<p>Next, we will load the quantized version of the model, so let’s get the load the model. We will select the device as ‘CUDA’; if ‘CUDA’ is unavailabl, we will use <a href="/resources/articles/what-is-cpu">CPU</a>.</p>
+<pre tabindex="0"><code>device = &#34;cuda&#34; if torch.cuda.is_available() else &#34;cpu&#34;
+checkpoint = &#34;HuggingFaceM4/idefics-9b&#34;
+
+#load the model in 4-bit precision 
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_use_double_quant=True,
+    bnb_4bit_quant_type=&#34;nf4&#34;,
+    bnb_4bit_compute_dtype=torch.float16,
+    llm_int8_skip_modules=[&#34;lm_head&#34;, &#34;embed_tokens&#34;],
+)
+processor = AutoProcessor.from_pretrained(checkpoint, use_auth_token=True)
+</code></pre><p>We will load the model with 4-bit precision, which reduces memory usage and can speed up processing. Additionally, we will use double quantization, which can improve the accuracy of the 4-bit quantized model. Next, a processor is initialized to handle the model’s inputs and outputs using the pre-trained checkpoint.</p>
+<pre tabindex="0"><code>model = IdeficsForVisionText2Text.from_pretrained(checkpoint, quantization_config=bnb_config, device_map=&#34;auto&#34;)
+</code></pre><p>This code initializes the IdeficsForVisionText2Text model by loading a pre-trained version from the specified checkpoint. Next, we will apply the quantization settings defined in bnb_config to load the model in an efficient 4-bit precision format.</p>
+<p>Additionally, the code uses automatic device mapping to distribute the model’s components across the available hardware, optimizing for performance and resource utilization.</p>
+<p>Once the downloads are over, we will print the model using print(model). This prints the entire model pipeline with the layer and embedding details.</p>
+<pre tabindex="0"><code>print(model)
+</code></pre><p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2024/05/Screenshot-2024-05-24-at-8.39.50-PM.png" alt="Model" />
+</figure>
+
+
+</p>
+<p>This prints the entire model pipeline with the layer and embedding details.</p>
+<h2 id="inference"><a href="#inference">Inference</a><a href="#inference"></a></h2>
+<p>We will use this model for inference and test the model.</p>
+<pre tabindex="0"><code>def model_inference(model, processor, prompts, max_new_tokens=50):
+    tokenizer = processor.tokenizer
+    bad_words = [&#34;&lt;image&gt;&#34;, &#34;&lt;fake_token_around_image&gt;&#34;]
+    if len(bad_words) &gt; 0:
+        bad_words_ids = tokenizer(bad_words, add_special_tokens=False).input_ids
+
+    eos_token = &#34;&lt;/s&gt;&#34;
+    eos_token_id = tokenizer.convert_tokens_to_ids(eos_token)
+
+    inputs = processor(prompts, return_tensors=&#34;pt&#34;).to(device)
+    generated_ids = model.generate(**inputs, eos_token_id=[eos_token_id], bad_words_ids=bad_words_ids, max_new_tokens=max_new_tokens, early_stopping=True)
+    generated_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
+    print(generated_text)
+</code></pre><p>The function processes input prompts, generates text using the model while filtering out unwanted tokens, and prints the resulting text. The function utilizes the tokenizer and processor to handle text tokenization and decoding, which ensures that the generated text adheres to specified constraints.</p>
+<pre tabindex="0"><code>url = &#34;https://hips.hearstapps.com/hmg-prod/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg?crop=0.752xw:1.00xh;0.175xw,0&amp;resize=1200:*&#34;
+prompts = [
+    # &#34;Instruction: provide an answer to the question. Use the image to answer.\n&#34;,
+    url,
+    &#34;Question: What&#39;s on the picture? Answer:&#34;,
+]
+model_inference(model, processor, prompts, max_new_tokens=5)
+</code></pre><p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2024/05/Screenshot-2024-05-24-at-8.45.55-PM.png" alt="A cute puppy" />
+</figure>
+
+
+</p>
+<p><a href="https://hips.hearstapps.com/hmg-prod/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg?">Source</a></p>
+<p>Question: What’s on the picture? Answer: A puppy.<br>
+We will prepare the dataset that we will use for our fine-tuning task.</p>
+<pre tabindex="0"><code>def convert_to_rgb(image):
+    # `image.convert(&#34;RGB&#34;)` would only work for .jpg images, as it creates a wrong background
+    # for transparent images. The call to `alpha_composite` handles this case
+    if image.mode == &#34;RGB&#34;:
+        return image
+
+    image_rgba = image.convert(&#34;RGBA&#34;)
+    background = Image.new(&#34;RGBA&#34;, image_rgba.size, (255, 255, 255))
+    alpha_composite = Image.alpha_composite(background, image_rgba)
+    alpha_composite = alpha_composite.convert(&#34;RGB&#34;)
+    return alpha_composite
+
+def ds_transforms(example_batch):
+    image_size = processor.image_processor.image_size
+    image_mean = processor.image_processor.image_mean
+    image_std = processor.image_processor.image_std
+
+    image_transform = transforms.Compose([
+        convert_to_rgb,
+        transforms.RandomResizedCrop((image_size, image_size), scale=(0.9, 1.0), interpolation=transforms.InterpolationMode.BICUBIC),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=image_mean, std=image_std),
+    ])
+
+    prompts = []
+    for i in range(len(example_batch[&#39;caption&#39;])):
+        # We split the captions to avoid having very long examples, which would require more GPU ram during training
+        caption = example_batch[&#39;caption&#39;][i].split(&#34;.&#34;)[0]
+        prompts.append(
+            [
+                example_batch[&#39;image_url&#39;][i],
+                f&#34;Question: What&#39;s on the picture? Answer: This is {example_batch[&#39;name&#39;][i]}. {caption}&lt;/s&gt;&#34;,
+            ],
+        )
+
+    inputs = processor(prompts, transform=image_transform, return_tensors=&#34;pt&#34;).to(device)
+
+    inputs[&#34;labels&#34;] = inputs[&#34;input_ids&#34;]
+
+    return inputs
+
+
+# load and prepare dataset
+ds = load_dataset(&#34;TheFusion21/PokemonCards&#34;)
+ds = ds[&#34;train&#34;].train_test_split(test_size=0.002)
+train_ds = ds[&#34;train&#34;]
+eval_ds = ds[&#34;test&#34;]
+train_ds.set_transform(ds_transforms)
+eval_ds.set_transform(ds_transforms)
+</code></pre><p>The convert_to_rgb function ensures images are in RGB format to handle different types of images. The ds_transforms function processes a batch of examples by transforming images, preparing text prompts, and converting everything into a format suitable for model training or inference. The function helps to apply necessary transformations, tokenizes the prompts, and sets up the inputs and labels for the model.</p>
+<p>As suggested by hugging face, we will load the <a href="https://huggingface.co/datasets/TheFusion21/PokemonCards">‘TheFusion21/PokemonCards’</a> to fine-tune the model. However, please feel free to use any dataset with the correct format.</p>
+<h2 id="lora"><a href="#lora">LoRA</a><a href="#lora"></a></h2>
+<p>Low-rank adaptation (<a href="/community/tutorials/mistral-7b-fine-tuning">LoRA</a>) is a PEFT technique that reduces a large matrix into two smaller low-rank matrices within the attention layers, significantly reducing the number of parameters that need fine-tuning.</p>
+<pre tabindex="0"><code>model_name = checkpoint.split(&#34;/&#34;)[1]
+config = LoraConfig(
+    r=16,
+    lora_alpha=32,
+    target_modules=[&#34;q_proj&#34;, &#34;k_proj&#34;, &#34;v_proj&#34;],
+    lora_dropout=0.05,
+    bias=&#34;none&#34;,
+)
+model = get_peft_model(model, config)
+</code></pre><p>This code configures and applies Low-Rank Adaptation (LoRA) to our model IDEFICS9b:</p>
+<ol>
+<li>Extract the Model Name: From the checkpoint, extract the model.</li>
+<li>Configure LoRA: Set LoRA parameters, including the rank of the low-rank matrices to 16, target modules, dropout, and bias handling.</li>
+<li>Set Dropout: Sets a dropout rate of 5% for LoRA. Dropout is a regularization technique to prevent overfitting by randomly setting some input units to zero during training.</li>
+<li>Apply LoRA to the Model: Modify the model to include LoRA in the specified layers with the provided configuration.</li>
+</ol>
+<pre tabindex="0"><code>model.print_trainable_parameters()
+</code></pre><p>trainable params: 19,750,912 || all params: 8,949,430,544 || trainable%: 0.2206946230030432</p>
+<h2 id="training"><a href="#training">Training</a><a href="#training"></a></h2>
+<p>Next, we will finetune the model,</p>
+<pre tabindex="0"><code>training_args = TrainingArguments(
+    output_dir=f&#34;{model_name}-pokemon&#34;,
+    learning_rate=2e-4,
+    fp16=True,
+    per_device_train_batch_size=2,
+    per_device_eval_batch_size=2,
+    gradient_accumulation_steps=8,
+    dataloader_pin_memory=False,
+    save_total_limit=3,
+    evaluation_strategy=&#34;steps&#34;,
+    save_strategy=&#34;steps&#34;,
+    save_steps=40,
+    eval_steps=20,
+    logging_steps=20,
+    max_steps=20,
+    remove_unused_columns=False,
+    push_to_hub=False,
+    label_names=[&#34;labels&#34;],
+    load_best_model_at_end=True,
+    report_to=None,
+    optim=&#34;paged_adamw_8bit&#34;,
+)
+
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=train_ds,
+    eval_dataset=eval_ds,
+)
+
+trainer.train()
+</code></pre><p>[20/20 , Epoch 0/1]</p>
+<p>Step</p>
+<p>Training Loss</p>
+<p>Validation Loss</p>
+<p>20</p>
+<p>1.450000</p>
+<p>0.880157</p>
+<p>40</p>
+<p>0.702000</p>
+<p>0.675355</p>
+<pre tabindex="0"><code>
+Out[23]:TrainOutput(global_step=40, training_loss=1.0759869813919067, metrics={&#39;train_runtime&#39;: 403.1999, &#39;train_samples_per_second&#39;: 1.587, &#39;train_steps_per_second&#39;: 0.099, &#39;total_flos&#39;: 1445219210656320.0, &#39;train_loss&#39;: 1.0759869813919067, &#39;epoch&#39;: 0.05})
+</code></pre><p>This code will start the training process according to the specified parameters, such as the learning rate, precision, batch sizes, gradient accumulation, and check pointing strategy. We use a 16-bit floating point precision for faster and more efficient training and will use the optimizer for 8-bit precision.</p>
+<pre tabindex="0"><code># check generation after finetuning
+
+url = &#34;https://images.pokemontcg.io/pop6/2_hires.png&#34;
+prompts = [
+    url,
+    &#34;Question: What&#39;s on the picture? Answer:&#34;,
+]
+</code></pre><p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2024/05/Screenshot-2024-05-24-at-10.12.00-PM.png" alt="Lucario Pokemon Image" />
+</figure>
+
+
+</p>
+<pre tabindex="0"><code># check generation again after finetuning
+check_inference(model, processor, prompts, max_new_tokens=100)
+</code></pre><p>Question: What’s in the picture? Answer: This is Lucario. A Stage 2 Pokemon Card of type Fighting with the title Lucario and 90 HP of rarity Rare evolved from Pikachu from the set Neo Destiny and the flavor text: It can use its tail as a whip.</p>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a><a href="#conclusion"></a></h2>
+<p>This concludes our exploration of fine-tuning a large language model. We have prepared our model by successfully fine-tuning it using the Pokemon dataset for inference tasks. The model can now be pushed to Hugging Face and utilized for various applications.</p>
+<p>Fine-tuning multimodal models demands carefully balancing computational resources and training strategies to achieve the best outcomes.</p>
+<p>The NVIDIA A100 GPU’s high performance, large memory capacity, and scalability make it an excellent choice for fine-tuning multimodal models. These features enable it to efficiently handle the complex, large-scale tasks involved in integrating visual and textual data, leading to faster and more effective model training and deployment. Additionally, <a href="/products/gpu-droplets">GPU Droplets</a> present another great option for fine-tuning large language models.</p>
+<h2 id="references"><a href="#references">References</a><a href="#references"></a></h2>
+<ul>
+<li>The notebook is contributed by <em>Léo Tronchon, Younes Belkada, and Stas Bekman</em>, additionally, the IDEFICS model has been contributed by: <em>Lucile Saulnier, Léo Tronchon, Hugo Laurençon, Stas Bekman, Amanpreet Singh, Siddharth Karamcheti, and Victor Sanh</em> <a href="https://github.com/huggingface/notebooks/blob/main/examples/idefics/finetune_image_captioning_peft.ipynb">Code reference</a></li>
+<li><a href="https://huggingface.co/blog/idefics2">Introducing Idefics2: A Powerful 8B Vision-Language Model for the community</a></li>
+<li><a href="https://huggingface.co/datasets/TheFusion21/PokemonCards">Dataset Used</a></li>
+</ul>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/finetune-llm-idefics-9b-a100">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

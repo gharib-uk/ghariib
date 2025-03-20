@@ -1,8 +1,8 @@
 ---
 title: "Red Hat Performance and Scale Engineering"
-date: 2025-03-19
+date: 2025-02-01
 ---
 
-Red Hat's most recent posts about Performance, Scale, Chaos and more.LATEST BLOGSScalable Database Performance with OpenShift Virtualization, Out-of-the-BoxFebruary 25, 2025 Jenifer Abrams Robert Krawitz Peter Lauterbach Sanjay Rao Douglas ShakshoberCustomers demand predictable and scalable performance from their virtualization platform. We will demonstrate how OpenShift Virtualization provides robust performance for demanding production workloads like databases. Many customers are seeking virtualization alternatives without sacrificing performance. You can run and manage these workloads at s
+Red Hat's most recent posts about Performance, Scale, Chaos and more.LATEST BLOGSRoCE multi-node AI training on Red Hat OpenShiftJanuary 30, 2025 Boaz Ben ShabatThis learning path will demonstrate how anyone can run a distributed AI workload on Red Hat OpenShift using just a few nodes and GPUs. We’ll start with a straightforward manual training setup to grasp the basics and keep things simple, and then we’ll move on to a fully automated training procedure. This will give you a solid foundation that you can expand upon to tailor your infrastructure to your specific needs. This path will gu
 
 Go to Source

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>The Atredis BlackHat 2018 CTF Challenge</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>The Atredis BlackHat 2018 CTF Challenge</h1>
+			<b><time>24.07.2018 21:27</time></b>
+		       
+
+			<div>
+				<h1 id="the-atredis-blackhat-2018-ctf-challenge">The Atredis BlackHat 2018 CTF Challenge</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h1 id="initial-recon">Initial Recon</h1>
+<p>As you can see from the screenshot in the tweet linked above, and reproduced below, once you connect to the network service on arkos.atredis.com:4444, the system prints information about the firmware and hardware version, as well as the memory map. Following that is the message-of-the-day, which contains a reference to 8-bit computing. </p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1532466840508-LNB7V5EYPCO8E5XVE96U/AtredisChall.jpg?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>It also prints the contents of an email, which makes reference to an attachment having been written to disk. It seems like the immediate goal of the challenge is clear: retrieve the attachment from disk.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1532466870815-ZK41VTZDR2Q8YHAGATDF/AtredisMail.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>At about 8:30PM, I logged into the system for the first time. The challenge had been released at 2PM and I figured many people would have already solved it. Not knowing what to do at the prompt, I typed &ldquo;help&rdquo;. The system replied by printing information about two commands: &ldquo;help&rdquo; and &ldquo;read&rdquo;, with an example of how to use &ldquo;read&rdquo;:</p>
+<p>&lsquo;read F400&rsquo; reads the byte at $F400</p>
+<p>I ran that command and it came back with the value 31, or &lsquo;1&rsquo; in ASCII. I ran the command for a few adjacent addresses and this location seemed to contain the hardware version string &ldquo;1.0.3 rev A&rdquo;, part of what was printed initially in the first messages upon connecting to the service.</p>
+<h1 id="dumping-the-firmware">Dumping the Firmware</h1>
+<p>At first blush, there wasn&rsquo;t much more to do than read bytes off of the system at specified addresses. However, this challenge was not my first rodeo in the embedded reverse engineering space. I was immediately reminded of an exploit I once wrote for a SOHO router, where, once I obtained its memory map, I used an arbitrary read vulnerability to dump its memory contents so I could further analyze the software in IDA. I decided to do something very similar here, minus the need for an arbitrary read vulnerability.</p>
+<p>Although I don&rsquo;t like Python much as a programming language, I do have to credit it for having an absurdly large standard library. In particular, while previously writing the aforementioned exploit, I made use of <a href="https://docs.python.org/2/library/telnetlib.html">Python&rsquo;s Telnetlib module</a> to automate interaction with the router. Nothing seemed to be stopping me from doing the same thing in this situation, so I spent about 10 minutes writing a <a href="https://github.com/RolfRolles/Atredis2018/tree/master/DumpMem.py">30-or so line Python script</a> to log into the device, repeatedly send &ldquo;read&rdquo; commands, parse the resulting output, and save the results to a binary file. That functionality combined with the memory map printed by the device upon connection was all that was needed. You can find the dumped memory as .bin files <a href="https://github.com/RolfRolles/Atredis2018/tree/master/MemoryDump/">here</a>.</p>
+<p>My script took nearly four hours to dump the memory. I don&rsquo;t know how much of that was related to the crappy Wi-Fi at my hotel, and how much had to do with other contestants hammering the server. Nevertheless, by the time I had the memory dump, it was 12:15AM and I had a business engagement in the morning. I needed to finish quickly so I could sleep.</p>
+<h1 id="inspecting-the-firmware">Inspecting the Firmware</h1>
+<p>I began by briefly inspecting the dumped memory contents in a hex editor. The three regions which, in total, encompassed the range 0x0000-0x1FFF, were entirely zero. Only a few bytes within 0xF000-0xFEFF were non-zero. In the range 0xFF00-0xFFFF, only the final three words were non-zero.</p>
+<p>The most interesting dumped memory range was 0x4000-0xEFFF. It began with the strings that the server printed upon connection, as well as others that had not been printed. The most interesting strings were &ldquo;write&rdquo; and &ldquo;call&rdquo;, which seem like they might have been commands that the user could execute on the system. After these strings, the memory dump had zeroes until address 0x8000.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1532466911599-GUJ6YVFN2Q6FAFXYPEH6/Strings.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>At address 0x8000, there were 0x542 bytes of unknown binary data, with the remainder of the region being zeroes. Now that I&rsquo;ve inspected the entire memory space, if this thing has any code in it at all, it must be the bytes at 0x8000-0x8542. The only other non-zero, unknown data is the few sporadic, isolated bytes previously mentioned in the range of 0xF000-0xFFF.</p>
+<p>I connected to the system again and tried executing the &ldquo;call&rdquo; command I had discovered in the strings. I provided it the address 8000, which seemed to be the beginning of the code in the memory image. The thing printed:</p>
+<p>JSR $8000</p>
+<p>Apart from that, nothing happened. Next, I executed &ldquo;call 7FFF&rdquo; and the system reset. I took that as a positive sign.</p>
+<h1 id="determining-the-architecture">Determining the Architecture</h1>
+<p>At this point, I did not know what architecture I was dealing with. I had two hints. First, the message-of-the-day string made reference to 8-bit computing. Second, the &ldquo;call&rdquo; command had printed the string &ldquo;JSR&rdquo;, which on some architectures is a mnemonic for &ldquo;jump to subroutine&rdquo; (i.e., the same functionality known as &ldquo;call&rdquo; on x86). The best logical guess right now is that we are dealing with an 8-bit architecture where the mnemonic for the call instruction is &ldquo;JSR&rdquo;.</p>
+<p>I wish I could tell you I used a systematic procedure in searching for such an architecture, but I would be lying. In retrospect, I could have loaded %IDASDK%\include\allins.hpp and searched for &ldquo;jsr&rdquo;. The string occurs 32 times in that file, which would have given me a pile of possibilities:</p>
+<ul>
+<li>Angstrem KR1878</li>
+<li>DEC ALPHA</li>
+<li>DEC PDP-11</li>
+<li>Freescale M68HC12 or M68HC16 or HCS12 </li>
+<li>Java bytecode</li>
+<li>Mitsubishi 740 or 7700 or 7900</li>
+<li>MOS M65 [e.g. 6502] or M65816</li>
+<li>Motorola 6809 or 68000</li>
+<li>Motorola DSP56000</li>
+<li>Panasonic MN102</li>
+<li>Renesas H8, H8500, SuperH, or M16C</li>
+<li>Rockwell C39</li>
+</ul>
+<p>Instead what I ended up doing was searching Google for things like &ldquo;assembly jsr&rdquo;. For any architecture suggested by one of my search results, I loaded the .bin file for the memory at 0x4000, changed the processor type to the one I was testing, and tried to disassemble the file using the relevant processor module. I ran through a few theories, among them System/360 and 68K. For each of my theories, IDA either refused to disassemble most of the code, or the resulting disassembly was gibberish. For example, when loaded as 68000, IDA refused to disassemble much of the code:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1532466942613-QVI6820IGR37Z3MTCB00/68000-gibberish-disasm.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>I almost gave up after about 15 minutes, since I had to be somewhere in the morning. But, a final Google search for &ldquo;8-bit assembly jsr&rdquo; brought me to a <a href="https://en.wikibooks.org/wiki/6502_Assembly">Wikibooks page on 6502 assembly language</a>, which also has a &ldquo;jsr&rdquo; instruction. I loaded the binary as 6502, and lo and behold, the resulting disassembly listing looked legitimate. There were, for example, several loads followed by compares, followed by relatively-encoded short jumps to the same nearby location; loads of 0 or 1 immediately before a RTS (return) instruction, and so on.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1532466968253-ENSVHF6SJ43BOEG21SJ8/M6502-legit-looking-disasm.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>It looked like I had found my winner.</p>
+<h1 id="loading-the-binary-properly">Loading the Binary Properly</h1>
+<p>Now that I seemed to know the architecture, I needed to load all of the memory dumps into a single IDA database for analysis. This is easy if you know what you&rsquo;re doing. If you do, you may as well skip this section. If you don&rsquo;t know how to do this, read on.</p>
+<p>First, I loaded the file for memory range 0x4000-0xEFFF into IDA and changed the processor type to M6502.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1532466990972-HR6BU0HBS0HOXKMK4LCC/LoadAsM6502.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>Next I had to change the loading offset and the region that IDA considered as containing the ROM.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1532467019598-HZ751AY20NMXWUS8E6I3/LoadConfig.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>From there, I loaded each of the remaining memory dumps as additional binary files.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1532467044848-K7GFUYJS36R5AY3EOBX7/LoadBinaryFile.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>For each of those, I had to change their loading offset so they&rsquo;d be represented at the proper location within the database.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1532467104588-DDAK10LR9TF8V1QG30DX/LoadBinaryFileConfig.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>That&rsquo;s all; now the IDB has all of the memory ranges properly loaded. The clean IDB can be found <a href="https://github.com/RolfRolles/Atredis2018/tree/master/CleanNotAnalyzed.idb">here</a>.</p>
+<h1 id="reverse-engineering-the-binary">Reverse Engineering the Binary</h1>
+<p>I only have a few notes on the process of statically reverse engineering this particular binary. That&rsquo;s because, for the most part, I used the same process as I would while statically reverse engineering any binary on any architecture. In particular, I followed the same procedure that I teach in my <a href="https://www.msreverseengineering.com/training-classes">static reverse engineering training classes</a>. The whole process took 30-40 minutes. You can find the final IDB <a href="https://github.com/RolfRolles/Atredis2018/tree/master/Analyzed.idb">here</a>.</p>
+<h2 id="reset-vector">Reset Vector</h2>
+<p>It&rsquo;s often useful to know where execution begins when a system or program executes. For embedded devices, the &ldquo;system entrypoint&rdquo; is often held as a pointer in the system&rsquo;s reset vector. For example, on 16-bit x86, the memory location F000:FFF0 contains the address to which the processor should branch upon reset.</p>
+<p>For this binary, I noticed that the final three words in the memory dump &ndash; at addresses 0xFFFA, 0xFFFC, and 0xFFFE &ndash; all contained the value 0x8530, which happens to be near the end of the region with the code in it. It seems likely that this is our entrypoint. I renamed this location BOOTLOC and began reading.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1532467133550-CN61HK6J63ARBR8Y6WCR/Bootloc.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<h2 id="6502-documentation-and-auto-comments">6502 Documentation and Auto Comments</h2>
+<p>Now my job is to analyze and document 1300 bytes of 6502 code. A slight problem is that I don&rsquo;t know anything in particular about 6502 beyond some tutorials I read years ago. Nevertheless, this was not a major impediment to reverse engineering this binary. Two things helped. First, the <a href="https://en.wikibooks.org/wiki/6502_Assembly">Wikibooks web page</a> I had found previously (which had tipped me off that the binary might be 6502) was a reasonably good layman&rsquo;s guide to the instruction set. Whenever I wanted to know more about a particular mnemonic, I searched for it on that page. Most of my questions were answered immediately; a few required me to correlate information from a few different parts within the document. It was good enough that I didn&rsquo;t have to consult any outside sources.</p>
+<p>The second feature that helped me was IDA&rsquo;s &ldquo;auto comments&rdquo; feature, under Options-&gt;General-&gt;Auto Comments.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1532467181815-AY7T145A6C0ZCY2HBFLE/AutoComments.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>Once enabled, IDA leaves brief one-line descriptions of the mnemonics in the same color that it uses for repeating comments. You can see an example in the screenshot below. Although the comments may confuse you if you don&rsquo;t know 6502, the Wikibooks link above was enough to fill in the missing details, at which point the auto comments assisted in rapidly disassembling the binary.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1532467209320-JLMV9ZVWP8E4BJQMQOUF/AutoCommentsDisasm.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<h2 id="disjointed-references">Disjointed References</h2>
+<p>One slightly abnormal feature of this binary &ndash; probably 6502 binaries in general &ndash; is the fact that the instructions usually operate on 8-bit values, but the memory addresses are 16-bits. Thus, when the code needs to write a value into memory that is more than 8 bits, it does so one byte at a time. The following screenshot illustrates:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1532467234083-S3ANCNPDLN9ZHYYIO7AA/StringRefsDisasmCode.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>Lines 0x817D-0x8183 write the constant 0x405F into memory (at location 0x80) as a little-endian word. Lines 0x8188-0x818E writes the constant 0x406C to the same location. Lines 0x8193-0x8199 write the constant 0x4081 to the same location.</p>
+<p>Those constants stuck out to me as being in the area where the strings are located. Indeed, here&rsquo;s the view of that location:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1532467262034-G5UTOPCMK6STH1XDGZ17/DisasmStrings.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>Thus, the addresses written by the code previously are those of the first three strings making up the textual description of the memory map that is printed when connecting to the system. (The string references also tip us off that the called function likely prints strings.)</p>
+<p>Although splitting larger constants into smaller ones is not unique to M6502 &ndash; for example, compiled binaries for most processors with fixed-width instructions do this &ndash; nevertheless, as far as I know, IDA&rsquo;s support for recognizing and recombining these constructs into macroinstructions must be implemented per processor (as part of the processor module). Evidently, the 6502 processor module does not support fusing writes into pseudo-operations. Therefore, we have to resolve these references manually while reverse engineering. Nevertheless, this is not difficult (and we only have about 1300 bytes of code to analyze). Simply use the &ldquo;G&rdquo; keyboard shortcut to jump to the referenced locations when you see them. For strings, just copy and paste the string at the referencing location.</p>
+<h2 id="memory-mapped-io">Memory-Mapped I/O</h2>
+<p>When the system prints its memory map upon startup, the region from 0xF000-0xFF00 is labeled &ldquo;MMIO&rdquo;, which presumably is short for memory-mapped I/O. Memory-mapped I/O addresses are effectively global variables stored in memory. When you write to a memory-mapped I/O location, the data is accessible to other components such as peripherals (i.e., a screen controller or a disk controller). Similarly, peripherals can also share data with the 6502 component via memory-mapped I/O, such as keyboard input or the results of disk I/O.</p>
+<p>Reverse engineering the variables in this range is effectively the same as reverse engineering accesses to any global variable, although you must keep in mind that MMIO output locations might never be read, and MMIO input locations might never be written.</p>
+<h1 id="system-description">System Description</h1>
+<p>Once familiar with the basics of 6502, and the particular points described above, I statically reverse engineered the binary&rsquo;s scant 25 functions.</p>
+<ul>
+<li>Upon boot, the system prints the diagnostic messages we see in the screenshot at the top of this post. </li>
+<li>Next, it loads the message-of-the-day off of the file system (from the file /etc/motd) and prints it. </li>
+<li>Next, it checks mail (under the file /var/mail/spool/atredis) and prints it. </li>
+<li>Finally, it enters into an infinite loop processing user input and dispatching commands.</li>
+</ul>
+<p>Reading the code for the final step &ndash; command dispatch &ndash; we can see indeed that &ldquo;write&rdquo; and &ldquo;call&rdquo; are valid, undocumented commands. The &ldquo;write&rdquo; command is ultimately very straightforward: it converts the address and value arguments into hexadecimal, and then write the value to the address. The &ldquo;call&rdquo; command is also straightforward, but I found it neat. It creates 6502 code at runtime for a JSR and RTS instruction, which it then invokes. My daily work does not usually involve examining JIT code generation on archaic platforms.</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1532467280691-JQELBQZH76N4RZ8VG23R/CallImpl.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<h1 id="file-io">File I/O</h1>
+<p>It&rsquo;s been a while since we mentioned it, but recall from the introduction that when we connected to the system, it printed the most recent mail, and dropped a hint about the attachment having been written to disk. Our ultimate goal in reverse engineering this binary is to find and exfiltrate this mystery file from the disk. The message did not actually give us a filename, or anything of that sort. Let&rsquo;s take a closer look at how the system loads and prints files off of the disk, such as the message-of-the-day and the most recent email.</p>
+<p>The full details can be found in the IDB, but the process generally works like this:</p>
+<ul>
+<li>PrintMOTD() writes a pointer to &ldquo;/etc/motd&rdquo; into a global variable X, then calls Load()</li>
+<li>Load() reads, in a loop, each of the 0x40 disk sectors into a global array Y and compares the first bytes of Y against X</li>
+<li>Once found, Load() returns 1. The contents of the disk sector are still in Y.</li>
+<li>If Load() succeeded, PrintMOTD() calls PrintDiskSectors().</li>
+<li>At this point, the global buffer Y contains not only the name of the file, but also two words; let&rsquo;s call them Z and W. Z indicates the number of the first disk sector which contains the file&rsquo;s contents, and W is the number of sectors that the file occupies.</li>
+<li>PrintDiskSectors() then consults Z and W from within the global array. Beginning at sector Z, it prints the raw contents of the file onto the screen, and repeats for W sectors.</li>
+</ul>
+<p>(My analysis at the time was slightly sloppier than the above. I did not fully understand the role of the values I&rsquo;ve called Z and W.)</p>
+<h1 id="enumerating-the-disk-contents-finishing-the-challenge">Enumerating the Disk Contents, Finishing the Challenge</h1>
+<p>I now had a rough understanding of the mechanism of how files were read from disk and printed to the screen. My understanding also indicated that I could dump the underlying sectors of the disk without needing to know the names of the files comprising those sectors.</p>
+<p>In particular: PrintDiskSectors(), at address 0x822C, reads its two arguments from global memory. Those arguments are: 1) Z, i.e., which sector to begin dumping data from, and 2) W, i.e., how many sectors to dump.</p>
+<p>And so it was immediately obvious that I could use the undocumented &ldquo;write&rdquo; and &ldquo;call&rdquo; commands to write whatever I wanted into Z and W and then invoke PrintDiskSectors(). I tried it out in netcat and it worked on the first try &ndash; I was able to dump sector #0.</p>
+<p>Thus, I incorporated this functionality into my scripts based on Python&rsquo;s Telnetlib that I had previously used to dump the memory. Since my understanding at the time was a bit off, I ended up with a loop that executed 0x40 times (the number of sectors), which wrote 0x0000 in for Z (i.e., start reading at sector 0), and each iteration of the loop wrote an increasing value into W, starting with 1 and ending with 0x3F. The script would dump the returned data as a binary file, as well as printing it onto the screen. You can find the script <a href="https://github.com/RolfRolles/Atredis2018/tree/master/DumpDisk.py">here</a>, and its output <a href="https://github.com/RolfRolles/Atredis2018/tree/master/DiskDump/">here</a>.</p>
+<p>I let my script run and once it got to the final iteration of the loop, there was a message congratulating me and telling me where to send an email, as well at what the contents should be. I immediately sent an email at 1:35AM, about 80 minutes after I&rsquo;d first dumped the memory off of the device. Shortly thereafter, I received a personalized email congratulating me on my second-place finish.</p>
+<h4 id="source"><a href="https://www.msreverseengineering.com/blog/2018/7/24/the-atredis-blackhat-2018-ctf-challenge">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

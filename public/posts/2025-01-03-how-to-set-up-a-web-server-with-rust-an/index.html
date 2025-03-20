@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How to Set Up a Web Server with Rust and Actix</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How to Set Up a Web Server with Rust and Actix</h1>
+			<b><time>03.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="how-to-set-up-a-web-server-with-rust-and-actix">How to Set Up a Web Server with Rust and Actix</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>In this tutorial, you’ll learn how to build a web server with <code>Rust</code> and the <code>Actix-web</code> framework on a <a href="/products/droplets">DigitalOcean Droplet</a>. You’ll set up a basic server and create routes to manage a simple list of Todo items, supporting common RESTful operations like retrieving and creating Todos.</p>
+<h2 id="prerequisites"><a href="#prerequisites">Prerequisites</a><a href="#prerequisites"></a></h2>
+<p>Before you begin, ensure you have the following:</p>
+<ul>
+<li>A <a href="https://cloud.digitalocean.com/">DigitalOcean Cloud account</a> to spin up a Droplet.</li>
+<li>An <a href="https://cloud.digitalocean.com/droplets/new">Ubuntu Droplet</a> up and running.</li>
+<li><a href="https://www.rust-lang.org/">Rust</a> installed on the Droplet.</li>
+<li>Familiarity with <a href="https://www.rust-lang.org/learn">Rust basics</a>, including variables, functions, and traits.</li>
+</ul>
+<h2 id="step-1---setting-up-the-ubuntu-droplet"><a href="#step-1-setting-up-the-ubuntu-droplet">Step 1 - Setting up the Ubuntu Droplet</a><a href="#step-1-setting-up-the-ubuntu-droplet"></a></h2>
+<ol>
+<li>
+<p><strong>SSH into your DigitalOcean Droplet</strong>: Open your terminal and use the following command to SSH into your Droplet. Replace <code>your_username</code> with your actual username and <code>your_droplet_ip</code> with the IP address of your Droplet:</p>
+<pre tabindex="0"><code>ssh your_username@your_droplet_ip
+</code></pre></li>
+<li>
+<p><strong>Update the package list</strong>: Once logged in, update the package list to ensure you have the latest information on available packages:</p>
+<pre tabindex="0"><code>sudo apt update
+</code></pre></li>
+<li>
+<p><strong>Install Rust</strong>: To install Rust, use the following command, which downloads and runs the Rust installation script:</p>
+<pre tabindex="0"><code>curl --proto &#39;=https&#39; --tlsv1.2 -sSf https://sh.rustup.rs | sh
+</code></pre><p>Follow the on-screen instructions to complete the installation. After installation, you may need to restart your terminal or run:</p>
+<pre tabindex="0"><code>source $HOME/.cargo/env
+</code></pre></li>
+<li>
+<p><strong>Install necessary libraries</strong>: Install the required libraries for building Rust applications. You can install <code>build-essential</code> and <code>libssl-dev</code> using:</p>
+<pre tabindex="0"><code>sudo apt install build-essential libssl-dev
+</code></pre></li>
+<li>
+<p><strong>Verify Rust installation</strong>: To confirm that Rust has been installed correctly, check the version:</p>
+<pre tabindex="0"><code>rustc --version
+</code></pre></li>
+<li>
+<p><strong>Install Cargo (Rust package manager)</strong>: Cargo is installed automatically with Rust. You can verify its installation by checking the version:</p>
+<pre tabindex="0"><code>cargo --version
+</code></pre></li>
+</ol>
+<h2 id="step-2---setting-up-the-project"><a href="#step-2-setting-up-the-project">Step 2 - Setting Up the Project</a><a href="#step-2-setting-up-the-project"></a></h2>
+<p>Let’s create a new rust project <code>sammy_todos</code> using <code>cargo</code></p>
+<pre tabindex="0"><code>cargo new sammy_todos
+</code></pre><p>Next, find the <code>Cargo.toml</code> file. Navigate to the root directory of your Rust project. The <code>Cargo.toml</code> file is located in the same directory where you created your project (e.g., <code>sammy_todos</code>). You can use the following command to change to your project directory:</p>
+<pre tabindex="0"><code>cd sammy_todos/
+ls
+</code></pre><p>Below are the Rust project files files which are automatically generated:</p>
+<pre tabindex="0"><code>OutputCargo.toml  src
+</code></pre><p>Add <code>actix-web</code> and <code>serde</code> as dependencies in <code>Cargo.toml</code>. Here, <code>serde</code> is needed for Serialization and Deserialization.</p>
+<pre tabindex="0"><code>vi Cargo.toml
+</code></pre><p>And add the following lines under the <code>dependencies</code>.</p>
+<pre tabindex="0"><code>[dependencies]
+actix-web = &#34;4.0&#34;
+serde = { version = &#34;1.0&#34;, features = [&#34;derive&#34;] }
+serde_json = &#34;1.0&#34;
+</code></pre><p>Now to download and compile dependencies use the below command:</p>
+<pre tabindex="0"><code>cargo build
+</code></pre><h2 id="step-3---creating-a-basic-server"><a href="#step-3-creating-a-basic-server">Step 3 - Creating a Basic Server</a><a href="#step-3-creating-a-basic-server"></a></h2>
+<p>In <code>main.rs</code>, add the following lines of code to set up a basic server. You must navigate to the <code>src</code> directory inside your Project.</p>
+<p>main.rs</p>
+<pre tabindex="0"><code>use actix_web::{get, App, HttpServer, HttpResponse, Responder,web};
+
+#[get(&#34;/&#34;)]
+async fn index() -&gt; impl Responder {
+    HttpResponse::Ok().body(&#34;Welcome to the Sammy Todo API!&#34;)
+}
+
+#[actix_web::main]
+async fn main() -&gt; std::io::Result&lt;()&gt; {
+    HttpServer::new(|| {
+        App::new()
+            .service(index)
+    })
+    .bind(&#34;127.0.0.1:8080&#34;)?
+    .run()
+    .await
+}
+</code></pre><p>Run the server:</p>
+<pre tabindex="0"><code>cargo run
+</code></pre><p>To test the server, open a new terminal session and run the following command:</p>
+<pre tabindex="0"><code>curl http://127.0.0.1:8080
+</code></pre><p>You should get the following response:</p>
+<pre tabindex="0"><code>OutputWelcome to the Sammy Todo API!
+</code></pre><h2 id="step-4---adding-a-todo-model"><a href="#step-4-adding-a-todo-model">Step 4 - Adding a Todo Model</a><a href="#step-4-adding-a-todo-model"></a></h2>
+<p>Todo model is needed to serialize and deserialize the request and response. Add the following lines of code inside the <code>main.rs</code> file.</p>
+<p>main.rs</p>
+<pre tabindex="0"><code>use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize)]
+struct Todo {
+    id: i32,
+    title: String,
+    completed: bool,
+}
+</code></pre><h2 id="step-5---implement-create-todo"><a href="#step-5-implement-create-todo">Step 5 - Implement Create todo</a><a href="#step-5-implement-create-todo"></a></h2>
+<p>This API creates todo, and this is a dummy API that returns your todo only, but you can implement it with databases to make it persistent</p>
+<p>main.rs</p>
+<pre tabindex="0"><code>#[get(&#34;/todos&#34;)]
+async fn create_todo(todo: web::Json&lt;Todo&gt;) -&gt; impl Responder {
+    HttpResponse::Ok().body(serde_json::to_string(&amp;todo).unwrap())
+}
+</code></pre><h2 id="step-6---implement-get-todo"><a href="#step-6-implement-get-todo">Step 6 - Implement Get todo</a><a href="#step-6-implement-get-todo"></a></h2>
+<p>This API returns todo by id:</p>
+<p>main.rs</p>
+<pre tabindex="0"><code>#[get(&#34;/todos/{id}&#34;)]
+async fn get_todo(id: web::Path&lt;i32&gt;) -&gt; impl Responder {
+    let todo = Todo {
+        id: id.into_inner(),
+        title: &#34;Learn Actix-Web&#34;.to_string(),
+        completed: false,
+    };
+    HttpResponse::Ok().body(serde_json::to_string(&amp;todo).unwrap())
+}
+</code></pre><h2 id="bind-the-services-with-our-server"><a href="#bind-the-services-with-our-server">Bind the services with our server</a><a href="#bind-the-services-with-our-server"></a></h2>
+<p>This is how the rust server <code>main.rs</code> would look like:</p>
+<p>main.rs</p>
+<pre tabindex="0"><code>use actix_web::{get, App, HttpServer, HttpResponse, Responder, web};
+
+#[get(&#34;/&#34;)]
+async fn index() -&gt; impl Responder {
+    HttpResponse::Ok().body(&#34;Welcome to the Sammy Todo API!&#34;)
+}
+
+#[actix_web::main]
+async fn main() -&gt; std::io::Result&lt;()&gt; {
+    HttpServer::new(|| {
+        App::new()
+            .service(index)
+            .service(get_todo)
+            .service(create_todo)
+    })
+    .bind(&#34;127.0.0.1:8080&#34;)?
+    .run()
+    .await
+}
+
+use serde::{Serialize, Deserialize}; // Added Deserialize to imports
+
+#[derive(Serialize, Deserialize)] // Ensure Deserialize is imported
+struct Todo {
+    id: i32,
+    title: String,
+    completed: bool,
+}
+
+#[get(&#34;/todos&#34;)]
+async fn create_todo(todo: web::Json&lt;Todo&gt;) -&gt; impl Responder {
+    HttpResponse::Ok().body(serde_json::to_string(&amp;todo).unwrap())
+}
+
+#[get(&#34;/todos/{id}&#34;)]
+async fn get_todo(id: web::Path&lt;i32&gt;) -&gt; impl Responder {
+    let todo = Todo {
+        id: id.into_inner(),
+        title: &#34;Learn Actix-Web&#34;.to_string(),
+        completed: false,
+    };
+    HttpResponse::Ok().body(serde_json::to_string(&amp;todo).unwrap())
+}
+</code></pre><p>Now, you can test it by sending a <code>POST</code> request with <code>curl</code>:</p>
+<pre tabindex="0"><code>curl -X POST -H &#34;Content-Type: application/json&#34; -d &#39;{&#34;title&#34;: &#34;Buy groceries&#34;}&#39; http://127.0.0.1:8080/todos
+</code></pre><h2 id="conclusion"><a href="#conclusion">Conclusion</a><a href="#conclusion"></a></h2>
+<p>Congratulations! You have successfully set up a basic web server using Rust and Actix. This tutorial taught you to create endpoints to retrieve and create Todo items, providing a solid foundation for building more complex applications. To enhance your app further, consider integrating a database solution for data persistence, allowing you to store and manage your Todo items effectively. Keep exploring, and happy coding!</p>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/how-to-setup-a-webserver-using-rust-actix">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

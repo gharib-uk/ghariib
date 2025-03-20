@@ -1,13 +1,11 @@
 ---
 title: "Has the user ever used the XYZ application? aka traces of application execution on mobile devices"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
-  - "cybersecurity"
-  - "cybersecurity-awareness"
-  - "forensics"
-  - "security"
-  - "security-awareness"
-  - "security-awareness-3-0"
+  - "general"
+tags: 
+  - "amd"
+  - "ces"
 ---
 
 A common question during a forensic investigation of a digital device is: "**Has the user ever used the XYZ application?**".

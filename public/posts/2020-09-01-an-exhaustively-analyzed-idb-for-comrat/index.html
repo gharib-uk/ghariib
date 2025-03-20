@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>An Exhaustively-Analyzed IDB for ComRAT v4</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>An Exhaustively-Analyzed IDB for ComRAT v4</h1>
+			<b><time>01.09.2020 16:45</time></b>
+		       
+
+			<div>
+				<h1 id="an-exhaustively-analyzed-idb-for-comrat-v4">An Exhaustively-Analyzed IDB for ComRAT v4</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>More specifically, an IDB for the sample with hash 0139818441431C72A1935E7F740A1CC458A63452, which was mentioned in the <a href="https://www.welivesecurity.com/2020/05/26/agentbtz-comratv4-ten-year-journey/">ESET report</a> (see especially its <a href="https://www.welivesecurity.com/wp-content/uploads/2020/05/ESET_Turla_ComRAT.pdf">attached PDF</a>), and which is available online on <a href="https://www.hybrid-analysis.com/">Hybrid Analysis</a>. All of the analysis has been performed in Hex-Rays 64-bit, so the results will be less interesting to IDA users who do not own Hex-Rays 64-bit. That is to say, if you open the IDB, you should definitely use Hex-Rays to view the function decompilations, as that is where all of the naming and commenting has taken place. It is rich with detail, in comparison to the disassembly listing&rsquo;s barrenness.</p>
+<p>This analysis took roughly six weeks of full-time work. I have spent the pandemic working on a new training class on C++ reverse engineering; part of the preparation includes large-scale analysis of C++ programs. As such, ESET&rsquo;s report of ComRAT&rsquo;s use of C++ caught my eye. ComRAT has a beautiful architecture, and many sophisticated components, all of which I believe deserve a detailed report unto themselves. I had begun writing such a report, but decided that it was side-tracking me from my ultimate goals with my new training class. Hence, I had decided to wait until the class was ready, and release a collection of reports on the software architectures of C++ malware families (perhaps as a book) after I was done. Thus, my write-up on ComRAT&rsquo;s architecture will have to wait. You can consider this release, instead, as a supplement to the ESET report.</p>
+<p>(Note that if you are interested in the forthcoming C++ training class, it probably will not be available for roughly another year. More generally, remote public classes (where individual students can sign up) are temporarily suspended; remote private classes (multiple students on behalf of the same organization) are currently available. If you would like to be notified when public classes become available, or when the C++ course is ready, please sign up on our <a href="https://www.msreverseengineering.com/training-classes">no-spam, very low-volume, course notification mailing list</a>. (Click the button that says &ldquo;Provide your email to be notified of public course availability&rdquo;.) )</p>
+<p>(Note also that I have more analyses like this waiting to be released. FlawedGrace and XAgent are ready; Kelihos is in progress. If you can provide me with a bundle of Careto SGH samples, preferably Windows 64-bit, please get in touch.)</p>
+<h1 id="about-the-analysis">About the Analysis</h1>
+<p>This analysis was conducted purely statically, without access to RTTI, or any other form of debug information. The only external information I had was the ESET report. I have reverse engineered every function in the binary that is not part of the C++ standard library, and some of those that are. To get an idea of what the sample looks like before and after analysis, here&rsquo;s a screenshot of the binary freshly loaded into IDA on the left, versus the analyzed one on the right. See if you can spot the difference:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1598940218026-FY0ADHHKQCZR79BCS9MS/Analysis-Side-By-Side.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>Although I believe that the IDB could probably be loaded in versions of IDA prior to 7.5, I nevertheless recommend using IDA 7.5 to view it. The reason for that is because I have made extensive use of 7.5&rsquo;s new &ldquo;folders&rdquo; feature to organize the functions and local types windows, which I found massively useful for large-scale reverse engineering. Those two windows have a nearly identical organization; if you were to dock the windows side-by-side, you would see something like this:</p>
+<p>
+<figure>
+  <img src="https://images.squarespace-cdn.com/content/v1/53a64cc2e4b0c63fc41a3320/1598940250618-HE8A2YBLUAUTL7GENZWP/Folders-Side-By-Side.png?format=1000w" alt="" />
+</figure>
+
+
+</p>
+<p>As a result of this analysis, I wrote many Hex-Rays plugins, and devised a number of techniques in C++ reverse engineering that were new to me. Eventually, I will publish on topics such as the following:</p>
+<ul>
+<li>
+<p>A Hex-Rays plugin for navigating virtual function cross-references</p>
+</li>
+<li>
+<p>Reverse engineering STL containers, the easy way</p>
+</li>
+<li>
+<p>A Hex-Rays plugin for virtual inheritance</p>
+</li>
+<li>
+<p>Tips for reverse engineering multiple inheritance</p>
+</li>
+<li>
+<p>Automated creation of VTable structure types</p>
+</li>
+<li>
+<p>Automation for detecting inlined functions, and the addition of stock comments</p>
+</li>
+</ul>
+<p>ComRAT uses a lot of C++ features; a mostly complete list follows. If you&rsquo;re interested in learning how to reverse engineer C++ programs, you might do well to study how I analyzed the parts of the binary that interact with them.</p>
+<ul>
+<li>
+<p>Inheritance</p>
+</li>
+<li>
+<p>Polymorphism (virtual functions)</p>
+</li>
+<li>
+<p>Custom templates</p>
+</li>
+<li>
+<p>Multiple and virtual inheritance (due to iostreams)</p>
+</li>
+<li>
+<p>STL, listed in descending order of usage frequency:</p>
+<ul>
+<li>
+<p>shared_ptr<!-- raw HTML omitted --></p>
+</li>
+<li>
+<p>vector<!-- raw HTML omitted --></p>
+</li>
+<li>
+<p>string</p>
+</li>
+<li>
+<p>wstring</p>
+</li>
+<li>
+<p>locale</p>
+</li>
+<li>
+<p>unique_ptr<!-- raw HTML omitted --></p>
+</li>
+<li>
+<p>wstringstream</p>
+</li>
+<li>
+<p>stringstream</p>
+</li>
+<li>
+<p>fstream</p>
+</li>
+<li>
+<p>list<!-- raw HTML omitted --></p>
+</li>
+<li>
+<p>map&lt;K,V&gt;</p>
+</li>
+<li>
+<p>regex</p>
+</li>
+<li>
+<p>wstring_convert</p>
+</li>
+<li>
+<p>random</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="notes-on-the-sample">Notes on the Sample</h1>
+<ol>
+<li>
+<p>Although the use of Gmail as a covert channel was a major aspect of the ESET report, I could not get my hands on any samples that had that feature. However, this sample does contain some of the Gmail communication code &ndash; the Gumbo library is compiled into it, and the configuration in the virtual file system contains a &ldquo;mail&rdquo; subdirectory, with similar entries to those in the ESET report. Perhaps that feature was still in development, or was deliberately not compiled into my sample for whatever reason.</p>
+</li>
+<li>
+<p>One striking feature of the ESET report was that their sample had RTTI information compiled into it, which provided the names of many of the classes used within ComRAT. I.e., section 4.3 of the ESET report mentions specific class names, as created by the ComRAT programmers. However, my sample had no such RTTI information. Therefore, all of my analysis had to be done from scratch. I used the few names provided in the report as a guide when creating my own.</p>
+</li>
+<li>
+<p>To the extent I was able to verify their claims, everything in the ESET report is accurate. There are a few minor technical details in my sample that were different, but are barely worth mentioning, and might have legitimately changed between the creation of my sample and the non-public one they analyzed.</p>
+</li>
+</ol>
+<h4 id="source"><a href="https://www.msreverseengineering.com/blog/2020/8/31/an-exhaustively-analyzed-idb-for-comrat-v4">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

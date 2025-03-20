@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Beyond Vectors - Knowledge Graphs RAG Using GenAI</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Beyond Vectors - Knowledge Graphs RAG Using GenAI</h1>
+			<b><time>20.03.2025 17:02</time></b>
+		       
+
+			<div>
+				<h1 id="beyond-vectors---knowledge-graphs-rag-using-genai">Beyond Vectors - Knowledge Graphs RAG Using GenAI</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/Beyond-Vectors-A-Guided-Tour-of-Knowledge-Graphs-for-RAG/graph-retrieval.png" alt="Benefits of RAG Agents using Graph Databases" />
+</figure>
+
+
+</p>
+<p>In this tutorial, we’ll walk through how to use a graph database to power a RAG pipeline. We’ll explore ingestion steps, where we combine <a href="/resources/articles/natural-language-processing">Named Entity Recognition</a> (NER) with graph modeling, then see how to build queries that fetch relevant context for your Large Language Model. By the end, you’ll have a foundation for a graph-based approach that handles both structured and unstructured data in a single workflow.</p>
+<h2 id="-what-youll-learn"><a href="#what-you-ll-learn">🚀 What You’ll Learn</a><a href="#what-you-ll-learn"></a></h2>
+<p>In this tutorial, you’ll learn how to build a <a href="https://www.google.com/url?q=https://www.digitalocean.com/community/conceptual-articles/ai-hallucinations-with-rag-and-knowledge-graphs&amp;sa=D&amp;source=docs&amp;ust=1742493110310504&amp;usg=AOvVaw3B2D0-1hka60eTx921XT2-">Retrieval-Augmented Generation</a> (RAG) agent using a graph database. We’ll cover how to ingest data into a graph database with Named Entity Recognition to create rich relationships, and then query these relationships to extract contextual snippets that drive better responses from a language model. Finally, you’ll see how to adapt the code to work with DigitalOcean’s <a href="/products/gen-ai">GenAI Agent</a> or <a href="/products/ai-ml/1-click-models">1-Click Models</a> using an OpenAI-compatible API, providing a clear, step-by-step guide to combining structured graph data with powerful language generation.</p>
+<h2 id="-what-youll-need"><a href="#what-you-ll-need">🛠 What You’ll Need</a><a href="#what-you-ll-need"></a></h2>
+<p>To make the most out of this tutorial, you should ensure you have:</p>
+<ul>
+<li>A Linux or Mac-based Developer’s Laptop
+<ul>
+<li>Windows Users should use a VM or Cloud Instance</li>
+</ul>
+</li>
+<li>Python Installed: version 3.10 or higher</li>
+<li>(Recommended) Using a miniconda or venv virtual environment</li>
+<li><a href="https://docs.docker.com/desktop/">Docker</a> (Linux or MacOS) Installed: for running a local Neo4j instance</li>
+<li>Basic familiarity with shell operations</li>
+<li><a href="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/Beyond-Vectors-A-Guided-Tour-of-Knowledge-Graphs-for-RAG/bbc.zip">Download the Dataset</a> used in this Tutorial. <a href="https://www.kaggle.com/datasets/shivamkushwaha/bbc-full-text-document-classification?resource=download">Source: BBC Full Text Document Classification</a></li>
+</ul>
+<h2 id="why-choose-graph-databases-for-rag"><a href="#why-choose-graph-databases-for-rag">Why Choose Graph Databases for RAG?</a><a href="#why-choose-graph-databases-for-rag"></a></h2>
+<p>RAG systems live and die by their ability to retrieve the right information. Vector stores are fast and excel at finding semantically similar passages, but they ignore the web of relationships that can matter in real-world data. For example, you might have customers, suppliers, orders, and products—each with relationships that go beyond text similarity. Graph databases track these links, letting you do multi-hop queries that answer more complex questions.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/Beyond-Vectors-A-Guided-Tour-of-Knowledge-Graphs-for-RAG/graph-rag.gif" alt="Graph Databases for RAG Agents" />
+</figure>
+
+
+</p>
+<p>Another big benefit is transparency. Graph structures are easier to visualize and debug. If a model cites the wrong piece of information, you can trace the node and edge connections to see where it came from. This approach reduces hallucinations, increases trust, and helps developers fix issues quickly.</p>
+<h3 id="step-1-setup-project-dependencies"><a href="#step-1-setup-project-dependencies">Step 1: Setup Project Dependencies</a><a href="#step-1-setup-project-dependencies"></a></h3>
+<ul>
+<li>
+<p>Add the Python dependencies using pip.</p>
+<pre tabindex="0"><code>pip install neo4j \
+  requests \
+  ctransformers \
+  spacy \
+  flask \
+  openai
+</code></pre></li>
+<li>
+<p>Create a <a href="https://neo4j.com/">Neo4j</a> graph database using <a href="https://docs.docker.com/desktop/">Docker</a></p>
+<pre tabindex="0"><code>docker run \
+    -d \
+    --publish=7474:7474 --publish=7687:7687 \
+    -v $HOME/neo4j/data:/data \
+    -v $HOME/neo4j/logs:/logs \
+    -v $HOME/neo4j/import:/var/lib/neo4j/import \
+    -v $HOME/neo4j/plugins:/plugins \
+    neo4j:5
+</code></pre></li>
+</ul>
+<h3 id="step-2-ingest-the-dataset-into-our-graph-database"><a href="#step-2-ingest-the-dataset-into-our-graph-database">Step 2: Ingest The Dataset Into Our Graph Database</a><a href="#step-2-ingest-the-dataset-into-our-graph-database"></a></h3>
+<p>Before we query, we need to ingest. Below is a sample Python script that uses <a href="https://spacy.io/">spaCy for NER and Neo4j</a> as a storage layer. The script loops through text files in a BBC dataset, tags the content with named entities, and creates connections in the database:</p>
+<ul>
+<li>
+<p>Ingest the dataset into <code>Neo4j</code> using the Python application below.</p>
+<pre tabindex="0"><code>import os
+import uuid
+import spacy
+from neo4j import GraphDatabase
+
+NEO4J_URI = &#34;bolt://localhost:7687&#34;
+NEO4J_USER = &#34;&lt;YOUR PASSWORD&gt;&#34;
+NEO4J_PASSWORD = &#34;&lt;YOUR USERNAME&gt;&#34;
+
+DATASET_PATH = &#34;./bbc&#34;  # Path to the unzipped BBC dataset folder
+
+def ingest_bbc_documents_with_ner():
+  # Load spaCy for NER
+  nlp = spacy.load(&#34;en_core_web_sm&#34;)
+
+  driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
+  with driver.session() as session:
+      # Optional: clear old data
+      session.run(&#34;MATCH (n) DETACH DELETE n&#34;)
+
+      for category in os.listdir(DATASET_PATH):
+          category_path = os.path.join(DATASET_PATH, category)
+          if not os.path.isdir(category_path):
+              continue  # skip non-directories
+
+          for filename in os.listdir(category_path):
+              if filename.endswith(&#34;.txt&#34;):
+                  filepath = os.path.join(category_path, filename)
+                  # FIX #1: handle potential £ symbol or other characters
+                  # Option 1: Use a different codec
+                  # with open(filepath, &#34;r&#34;, encoding=&#34;latin-1&#34;) as f:
+                  #   text_content = f.read()
+                  #
+                  # Option 2: Replace invalid bytes (keep utf-8):
+                  with open(filepath, &#34;r&#34;, encoding=&#34;utf-8&#34;, errors=&#34;replace&#34;) as f:
+                      text_content = f.read()
+
+                  # Generate a UUID in Python
+                  doc_uuid = str(uuid.uuid4())
+
+                  # Create (or MERGE) the Document node
+                  create_doc_query = &#34;&#34;&#34;
+                  MERGE (d:Document {doc_uuid: $doc_uuid})
+                  ON CREATE SET
+                      d.title = $title,
+                      d.content = $content,
+                      d.category = $category
+                  RETURN d
+                  &#34;&#34;&#34;
+                  session.run(
+                      create_doc_query,
+                      doc_uuid=doc_uuid,
+                      title=filename,
+                      content=text_content,
+                      category=category
+                  )
+
+                  # Named Entity Recognition
+                  doc_spacy = nlp(text_content)
+
+                  # For each entity recognized, MERGE on name+label
+                  for ent in doc_spacy.ents:
+                      # Skip small or numeric or purely punctuation
+                      if len(ent.text.strip()) &lt; 3:
+                          continue
+
+                      # Generate a unique ID for new entities
+                      entity_uuid = str(uuid.uuid4())
+
+                      merge_entity_query = &#34;&#34;&#34;
+                      MERGE (e:Entity { name: $name, label: $label })
+                      ON CREATE SET e.ent_uuid = $ent_uuid
+                      RETURN e.ent_uuid as eUUID
+                      &#34;&#34;&#34;
+                      record = session.run(
+                          merge_entity_query,
+                          name=ent.text.strip(),
+                          label=ent.label_,
+                          ent_uuid=entity_uuid
+                      ).single()
+
+                      ent_id = record[&#34;eUUID&#34;]
+
+                      # Now create relationship by matching on doc_uuid &amp; ent_uuid
+                      rel_query = &#34;&#34;&#34;
+                      MATCH (d:Document { doc_uuid: $docId })
+                      MATCH (e:Entity { ent_uuid: $entId })
+                      MERGE (d)-[:MENTIONS]-&gt;(e)
+                      &#34;&#34;&#34;
+                      session.run(
+                          rel_query,
+                          docId=doc_uuid,
+                          entId=ent_id
+                      )
+
+  print(&#34;Ingestion with NER complete!&#34;)
+
+if __name__ == &#34;__main__&#34;:
+  ingest_bbc_documents_with_ner()
+</code></pre></li>
+</ul>
+<p>This code shows how to merge a Document node, link recognized entities, and store the entire structure. You can swap in your own data, too. The core idea is that once these relationships exist, you can query them to get meaningful insights, rather than just retrieving text passages.</p>
+<h3 id="step-3-query-the-rag-agent-using-our-knowledge-graph"><a href="#step-3-query-the-rag-agent-using-our-knowledge-graph">Step 3: Query The RAG Agent Using Our Knowledge Graph</a><a href="#step-3-query-the-rag-agent-using-our-knowledge-graph"></a></h3>
+<p>After ingesting your documents, you’ll want to ask questions. The next script extracts named entities from a user query, matches those entities to the Neo4j graph, and collects top matching documents. Finally, it sends a combined context to a local language model endpoint:</p>
+<ul>
+<li>
+<p>Query the <a href="https://www.google.com/url?q=https://www.digitalocean.com/community/conceptual-articles/rag-ai-agents-agentic-rag-comparative-analysis&amp;sa=D&amp;source=docs&amp;ust=1742493110310416&amp;usg=AOvVaw19FecI-5mqAp7J5Rt5TdCV">RAG Agent</a> using the Python application below.</p>
+<pre tabindex="0"><code>import spacy
+from neo4j import GraphDatabase
+import openai
+import os
+
+NEO4J_URI = &#34;bolt://localhost:7687&#34;
+NEO4J_USER = &#34;&lt;YOUR PASSWORD&gt;&#34;
+NEO4J_PASSWORD = &#34;&lt;YOUR USERNAME&gt;&#34;
+
+def connect_neo4j():
+  return GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
+
+def extract_entities_spacy(text, nlp):
+  doc = nlp(text)
+  return [(ent.text.strip(), ent.label_) for ent in doc.ents if len(ent.text.strip()) &gt;= 3]
+
+def fetch_documents_by_entities(session, entity_texts, top_k=5):
+  if not entity_texts:
+      return []
+
+  query = &#34;&#34;&#34;
+  MATCH (d:Document)-[:MENTIONS]-&gt;(e:Entity)
+  WHERE toLower(e.name) IN $entity_list
+  WITH d, count(e) as matchingEntities
+  ORDER BY matchingEntities DESC
+  LIMIT $topK
+  RETURN d.title AS title, d.content AS content, d.category AS category, matchingEntities
+  &#34;&#34;&#34;
+  entity_list_lower = [txt.lower() for txt in entity_texts]
+  results = session.run(query, entity_list=entity_list_lower, topK=top_k)
+
+
+  docs = []
+  for record in results:
+      docs.append({
+          &#34;title&#34;: record[&#34;title&#34;],
+          &#34;content&#34;: record[&#34;content&#34;],
+          &#34;category&#34;: record[&#34;category&#34;],
+          &#34;match_count&#34;: record[&#34;matchingEntities&#34;]
+      })
+  return docs
+
+def generate_answer(question, context):
+  &#34;&#34;&#34;
+  Replaces the local LLM server call with a DigitalOcean GenAI Agent call,
+  which is OpenAI API-compatible.
+  &#34;&#34;&#34;
+
+  # Build a RAG-style prompt
+  prompt = f&#34;&#34;&#34;You are given the following context from multiple documents:
+{context}
+
+Question: {question}
+
+Please provide a concise answer.
+Answer:
+&#34;&#34;&#34;
+
+  # Example of using the ChatCompletion endpoint (Chat API)
+  # If you prefer the older Completion endpoint, you can adapt similarly.
+  try:
+      openai_client = openai.OpenAI(
+          # Comment the next 2 lines out to point to a DigitalOcean GenAI Agent
+          # base_url = &#34;https://&lt;YOUR AGENT URL&gt;/api/v1/&#34;,
+          # api_key=os.environ.get(&#34;DIGITALOCEAN_GENAI_ACCESS_TOKEN_GENERIC&#34;),
+      )
+
+      completion = openai_client.chat.completions.create(
+          model=&#34;n/a&#34;,
+          messages=[
+              {&#34;role&#34;: &#34;user&#34;,   &#34;content&#34;: prompt}
+          ],
+      )
+
+      return completion.choices[0].message.content
+  except Exception as e:
+      print(&#34;Error calling the DigitalOcean GenAI Agent:&#34;, e)
+      return &#34;Error generating answer&#34;
+
+
+if __name__ == &#34;__main__&#34;:
+  user_query = &#34;What do these articles say about Ernie Wise?&#34;
+  nlp = spacy.load(&#34;en_core_web_sm&#34;)
+  recognized_entities = extract_entities_spacy(user_query, nlp)
+  entity_texts = [ent[0] for ent in recognized_entities]
+
+  driver = connect_neo4j()
+  with driver.session() as session:
+      docs = fetch_documents_by_entities(session, entity_texts, top_k=5)
+
+  combined_context = &#34;&#34;
+  for doc in docs:
+      snippet = doc[&#34;content&#34;][:300].replace(&#34;\n&#34;, &#34; &#34;)
+      combined_context += f&#34;\n---\nTitle: {doc[&#39;title&#39;]} | Category: {doc[&#39;category&#39;]}\nSnippet: {snippet}...\n&#34;
+
+  final_answer = generate_answer(user_query, combined_context)
+  print(&#34;RAG-based Answer:&#34;, final_answer)
+</code></pre></li>
+</ul>
+<p>The flow goes like this:</p>
+<ul>
+<li>Recognize entities in the user’s question with spaCy.</li>
+<li>Match those entities in Neo4j to find relevant documents.</li>
+<li>Concatenate snippets from those documents into a context string.</li>
+<li>Send the context and question to your local language model.</li>
+</ul>
+<p>This approach helps the model focus on precise information. Instead of searching a huge text index, you retrieve curated data based on structured relationships. That means higher-quality answers and a powerful way to handle complex queries that go beyond simple keyword matching.</p>
+<p>To use a <a href="/products/gen-ai">GenAI Agent</a> or <a href="/products/ai-ml/1-click-models">1-Click Models</a> as the LLM, you can simply remove the commented out code below:</p>
+<pre tabindex="0"><code>openai_client = openai.OpenAI(
+    # Comment the next 2 lines out to point to a DigitalOcean GenAI Agent
+    # base_url = &#34;https://&lt;YOUR AGENT URL&gt;/api/v1/&#34;,
+    # api_key=os.environ.get(&#34;DIGITALOCEAN_GENAI_ACCESS_TOKEN_GENERIC&#34;),
+)
+</code></pre><h2 id="-final-thoughts"><a href="#final-thoughts">🤔 Final Thoughts</a><a href="#final-thoughts"></a></h2>
+<p>Graph databases add a new dimension to <a href="https://www.google.com/url?q=https://www.digitalocean.com/resources/articles/rag-vs-fine-tuning&amp;sa=D&amp;source=docs&amp;ust=1742493110310469&amp;usg=AOvVaw3NjZ7kzP0N3udxCU_bgRI4">RAG workflows</a>. They handle detailed relationships, reduce unhelpful answers, and allow you to track how the system arrives at a conclusion. When you pair them with entity recognition and a large language model, you create a pipeline that captures nuance and context from your data.</p>
+<p>With these code snippets, you have a starting point for building a robust RAG agent. Feel free to expand on this design by introducing your own data, adjusting the query logic, or experimenting with additional graph features. Whether you’re creating a customer-facing chatbot or an internal analytics tool, knowledge graphs can bring clarity and depth to your AI-driven experiences.</p>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/beyond-vectors-knowledge-graphs-and-rag">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,13 +1,12 @@
 ---
 title: "A first look at iOS 18 forensics"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
-  - "cybersecurity"
-  - "cybersecurity-awareness"
-  - "forensics"
-  - "security"
-  - "security-awareness"
-  - "security-awareness-3-0"
+  - "general"
+tags: 
+  - "ces"
+  - "edge"
+  - "report"
 ---
 
 This has been a tough year for me: my mom passed away in June, and I'm still slowly recovering from the hard blow. It's time to start again doing what I love: researching and sharing!

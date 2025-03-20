@@ -1,15 +1,16 @@
 ---
 title: "UK government invests £40 million in 5G"
-date: 2025-03-19
+date: 2025-01-12
 categories: 
+  - "networking"
+  - "virtualization"
+tags: 
   - "5g"
   - "6g"
   - "edge"
   - "innovation"
   - "mobility"
-  - "networking"
   - "united-kingdom"
-  - "virtualization"
   - "wireless-connectivity"
 ---
 

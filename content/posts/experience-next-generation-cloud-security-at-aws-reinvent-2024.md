@@ -1,6 +1,8 @@
 ---
 title: "Experience Next-Generation Cloud Security at AWS re:Invent 2024"
-date: 2025-03-19
+date: 2025-01-03
+categories: 
+  - "security"
 ---
 
 ![](https://www.paloaltonetworks.com/blog/wp-content/uploads/2024/11/word-image-331386-1.jpeg)

@@ -1,6 +1,8 @@
 ---
 title: "Forecasting the 2025 Cloudscape"
-date: 2025-03-19
+date: 2025-01-03
+categories: 
+  - "security"
 ---
 
 ## 2025 Cloud Security Trends and Challenges from Prisma Cloud Leadership

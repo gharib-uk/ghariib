@@ -1,6 +1,6 @@
 ---
 title: "Feature Spotlight – Verbesserte USB- und Bluetooth-Gerätesteuerung"
-date: 2025-03-19
+date: 2025-01-06
 ---
 
 Enterprise needs full visibility and control over USB & Bluetooth devices connecting to the network. Learn all about SentinelOne's enhanced Device Control.

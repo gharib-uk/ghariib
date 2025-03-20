@@ -1,6 +1,8 @@
 ---
 title: "Multiple Vulnerabilities in Mozilla Products Could Allow for Arbitrary Code Execution"
-date: 2025-03-19
+date: 2025-01-02
+categories: 
+  - "security"
 ---
 
 Multiple vulnerabilities have been discovered in Mozilla products, the most severe of which could allow for arbitrary code execution.
@@ -10,7 +12,6 @@ Multiple vulnerabilities have been discovered in Mozilla products, the most seve
 - Mozilla Firefox is a web browser used to access the Internet.
 - Mozilla Firefox ESR is a version of the web browser intended to be deployed in large organizations.
 - Mozilla Thunderbird is an email client.
-- Mozilla Thunderbird ESR is a version of the email client intended to be deployed in large organizations.
 
   
 

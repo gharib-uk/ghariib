@@ -1,6 +1,6 @@
 ---
 title: "Die 10 besten Methoden zum Schutz des Active Directory"
-date: 2025-03-19
+date: 2025-01-06
 ---
 
 While protecting AD is a challenge, it is far from impossible—it just requires the right tools and tactics.

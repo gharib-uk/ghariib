@@ -1,6 +1,6 @@
 ---
 title: "Active Directory-Sicherheit | Worum es dabei geht und was Sie wissen müssen"
-date: 2025-03-19
+date: 2025-01-06
 ---
 
 Heutzutage wird das Active Directory (AD) von Angreifern sehr häufig ins Visier genommen, denn es ist eine Art Generalschlüssel, der den Zugang zum gesamten Netzwerk ermöglicht. AD stellt die Verzeichnisdienste bereit, mit denen Administratoren im gesamten Netzwerk Berechtigungen verwalten und Zugriff auf Ressourcen gewähren. Es ist somit für die täglichen Abläufe eines Unternehmens unverzichtbar – und \[…\]

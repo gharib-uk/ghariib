@@ -1,13 +1,11 @@
 ---
 title: "Analysis of Android settings during a forensic investigation"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
-  - "cybersecurity"
-  - "cybersecurity-awareness"
-  - "forensics"
-  - "security"
-  - "security-awareness"
-  - "security-awareness-3-0"
+  - "general"
+tags: 
+  - "ces"
+  - "eu"
 ---
 
 During the forensic examination of a smartphone, we sometimes need to understand some basic settings of the device. Some simple examples are:

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How to Train YOLO v5 on a Custom Dataset DigitalOcean</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How to Train YOLO v5 on a Custom Dataset DigitalOcean</h1>
+			<b><time>03.03.2025 20:47</time></b>
+		       
+
+			<div>
+				<h1 id="how-to-train-yolo-v5-on-a-custom-dataset-digitalocean">How to Train YOLO v5 on a Custom Dataset DigitalOcean</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h3 id="introduction"><a href="#introduction">Introduction</a><a href="#introduction"></a></h3>
+<p>YOLO, or You Only Look Once, is one of the most widely used deep learning-based object detection algorithms. In this tutorial, we will go over how to train one of its latest variants, YOLOv5, on a custom dataset. More precisely, we will train the YOLO v5 detector on a road sign dataset. By the end of this post, you shall have an object detector that can localize and classify road signs. Before we begin, let me acknowledge that YOLOv5 attracted a lot of controversy when it was released over whether it’s right to call it v5. I’ve addressed this a bit at the end of this article. For now, I’d simply say that I’m referring to the algorithm as YOLOv5 since that is the name of the code repository.</p>
+<p>With that said, let’s get started.</p>
+<p>This post is structured as follows.</p>
+<ul>
+<li>Set up the Code</li>
+<li>Download the Data</li>
+<li>Convert the Annotations into the YOLO v5 Format
+<ul>
+<li>YOLO v5 Annotation Format</li>
+<li>Testing the annotations</li>
+<li>Partition the Dataset</li>
+</ul>
+</li>
+<li>Training Options
+<ul>
+<li>Data Config File</li>
+<li>Hyper-parameter Config File</li>
+<li>Custom Network Architecture</li>
+<li>Train the Model</li>
+</ul>
+</li>
+<li>Inference
+<ul>
+<li>Computing the mAP on the test dataset</li>
+</ul>
+</li>
+<li>Conclusion… and a bit about the naming saga</li>
+</ul>
+<h2 id="prerequisites"><a href="#prerequisites">Prerequisites</a><a href="#prerequisites"></a></h2>
+<ul>
+<li>Python: Beginner knowledge of <a href="/community/tutorial-series/how-to-code-in-python-3">Python</a> code is recommended for all readers to follow along</li>
+<li>RoboFlow: A <a href="http://RoboFlow.com">RoboFlow.com</a> account is useful for creating your custom datasets</li>
+</ul>
+<h2 id="set-up-the-code"><a href="#set-up-the-code">Set up the code</a><a href="#set-up-the-code"></a></h2>
+<p>We begin by cloning the YOLO v5 repository and setting up the dependencies required to run YOLO v5. You might need sudo rights to install some of the packages. In a terminal, type:</p>
+<pre tabindex="0"><code>git clone https://github.com/ultralytics/yolov5
+</code></pre><p>I recommend you create a new <a href="https://anaconda.org/anaconda/conda">conda</a> or a virtualenv environment to run your YOLO v5 experiments as to not mess up dependencies of any existing project. Once you have activated the new environment, install the dependencies using pip. Make sure that the pip you are using is that of the new environment. You can do so by typing in terminal.</p>
+<pre tabindex="0"><code>which pip
+</code></pre><p>For me, it shows something like this.</p>
+<pre tabindex="0"><code>/home/ayoosh/miniconda3/envs/yolov5/bin/pip
+</code></pre><p>It tells me that the pip I’m using is of the new environment called yolov5 that I just created. If you are using a pip belonging to a different environment, your python would be installed to that different library and not to the one you created. With that sorted, let us go ahead with the installation.</p>
+<pre tabindex="0"><code>pip install -r yolov5/requirements.txt
+</code></pre><p>With the dependencies installed, let us now import the required modules to conclude setting up the code.</p>
+<pre tabindex="0"><code>import torch
+from IPython.display import Image  # for displaying images
+import os 
+import random
+import shutil
+from sklearn.model_selection import train_test_split
+import xml.etree.ElementTree as ET
+from xml.dom import minidom
+from tqdm import tqdm
+from PIL import Image, ImageDraw
+import numpy as np
+import matplotlib.pyplot as plt
+
+random.seed(108)
+</code></pre><h2 id="download-the-data"><a href="#download-the-data">Download the Data</a><a href="#download-the-data"></a></h2>
+<p>For this tutorial, we will use an object detection dataset of road signs from <a href="https://makeml.app/datasets/road-signs">MakeML</a>. It is a dataset that contains road signs belonging to 4 classes: Traffic Light Stop Speed Limit Crosswalk</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2021/03/image-24.png" alt="image" />
+</figure>
+
+
+</p>
+<h3 id="road-sign-dataset"><a href="#road-sign-dataset">Road Sign Dataset</a><a href="#road-sign-dataset"></a></h3>
+<p>The dataset is small, containing only 877 images in total. While you may want to train with a larger dataset (like the LISA Dataset) to fully realize YOLO’s capabilities, we use a small dataset in this tutorial to facilitate quick prototyping. Typical training takes less than half an hour, which would allow you to iterate quickly with experiments involving different hyperparameters.</p>
+<p>We created a directory called Road_Sign_Dataset to keep our dataset now. This directory needs to be in the same folder as the yolov5 repository folder we just cloned.</p>
+<pre tabindex="0"><code>mkdir Road_Sign_Dataset
+cd Road_Sign_Dataset
+
+Download the dataset.
+
+```python
+wget -O RoadSignDetectionDataset.zip
+https://arcraftimages.s3-accelerate.amazonaws.com/Datasets/RoadSigns/RoadSignsPascalVOC.zip?region=us-east-2
+
+Unzip the dataset.
+
+```python
+unzip RoadSignDetectionDataset.zip
+</code></pre><p>Delete the files which are not needed.</p>
+<pre tabindex="0"><code>rm -r __MACOSX RoadSignDetectionDataset.zip
+</code></pre><h2 id="convert-the-annotations-into-the-yolo-v5-format"><a href="#convert-the-annotations-into-the-yolo-v5-format">Convert the Annotations into the YOLO v5 Format</a><a href="#convert-the-annotations-into-the-yolo-v5-format"></a></h2>
+<p>In this part, we convert annotations into the format expected by YOLO v5. There are a variety of formats when it comes to annotations for object detection datasets. Annotations for the dataset we downloaded follow the PASCAL VOC XML format, which is a very popular format. Since this is a popular format, you can find online conversion tools. Nevertheless, we are going to write the code for it to give you some idea of how to convert lesser popular formats as well (for which you may not find popular tools). The PASCAL VOC format stores its annotation in XML files where various attributes are described by tags. Let us look at one such annotation file.</p>
+<pre tabindex="0"><code># Assuming you&#39;re in the data folder
+cat annotations/road4.xml
+</code></pre><p>The output looks like the following.</p>
+<pre tabindex="0"><code>&lt;annotation&gt;
+    &lt;folder&gt;images&lt;/folder&gt;
+    &lt;filename&gt;road4.png&lt;/filename&gt;
+    &lt;size&gt;
+        &lt;width&gt;267&lt;/width&gt;
+        &lt;height&gt;400&lt;/height&gt;
+        &lt;depth&gt;3&lt;/depth&gt;
+    &lt;/size&gt;
+    &lt;segmented&gt;0&lt;/segmented&gt;
+    &lt;object&gt;
+        &lt;name&gt;trafficlight&lt;/name&gt;
+        &lt;pose&gt;Unspecified&lt;/pose&gt;
+        &lt;truncated&gt;0&lt;/truncated&gt;
+        &lt;occluded&gt;0&lt;/occluded&gt;
+        &lt;difficult&gt;0&lt;/difficult&gt;
+        &lt;bndbox&gt;
+            &lt;xmin&gt;20&lt;/xmin&gt;
+            &lt;ymin&gt;109&lt;/ymin&gt;
+            &lt;xmax&gt;81&lt;/xmax&gt;
+            &lt;ymax&gt;237&lt;/ymax&gt;
+        &lt;/bndbox&gt;
+    &lt;/object&gt;
+    &lt;object&gt;
+        &lt;name&gt;trafficlight&lt;/name&gt;
+        &lt;pose&gt;Unspecified&lt;/pose&gt;
+        &lt;truncated&gt;0&lt;/truncated&gt;
+        &lt;occluded&gt;0&lt;/occluded&gt;
+        &lt;difficult&gt;0&lt;/difficult&gt;
+        &lt;bndbox&gt;
+            &lt;xmin&gt;116&lt;/xmin&gt;
+            &lt;ymin&gt;162&lt;/ymin&gt;
+            &lt;xmax&gt;163&lt;/xmax&gt;
+            &lt;ymax&gt;272&lt;/ymax&gt;
+        &lt;/bndbox&gt;
+    &lt;/object&gt;
+    &lt;object&gt;
+        &lt;name&gt;trafficlight&lt;/name&gt;
+        &lt;pose&gt;Unspecified&lt;/pose&gt;
+        &lt;truncated&gt;0&lt;/truncated&gt;
+        &lt;occluded&gt;0&lt;/occluded&gt;
+        &lt;difficult&gt;0&lt;/difficult&gt;
+        &lt;bndbox&gt;
+            &lt;xmin&gt;189&lt;/xmin&gt;
+            &lt;ymin&gt;189&lt;/ymin&gt;
+            &lt;xmax&gt;233&lt;/xmax&gt;
+            &lt;ymax&gt;295&lt;/ymax&gt;
+        &lt;/bndbox&gt;
+    &lt;/object&gt;
+&lt;/annotation&gt;
+</code></pre><p>The above annotation file describes a file named road4.jpg with dimensions 267 x 400 x 3. It has 3 object tags, which represent 3 bounding boxes. The class is specified by the name tag, whereas the details of the bounding box are represented by the bndbox tag. A bounding box is described by its top-left (x_min, y_min) corner coordinates and its bottom-right (xmax, ymax) corner.</p>
+<h2 id="yolo-v5-annotation-format"><a href="#yolo-v5-annotation-format">YOLO v5 Annotation Format</a><a href="#yolo-v5-annotation-format"></a></h2>
+<p>YOLO v5 expects annotations for each image in the form of a .txt file, where each line describes a bounding box. Consider the following image.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2021/03/image-25.png" alt="image" />
+</figure>
+
+
+</p>
+<p>The annotation file for the image above looks like the following:</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2021/03/image-26.png" alt="image" />
+</figure>
+
+
+</p>
+<p>There are 3 objects in total (2 persons and one tie). Each line represents one of these objects. The specifications for each line are as follows:</p>
+<ul>
+<li>One row per object</li>
+<li>Each row is class x_center y_center width height format.</li>
+<li>Box coordinates must be normalized by the dimensions of the image (i.e. have values between 0 and 1)</li>
+<li>Class numbers are zero-indexed (start from 0).</li>
+</ul>
+<p>We now write a function that will take the annotations in VOC format and convert them to a format in which information about the bounding boxes is stored in a dictionary.</p>
+<pre tabindex="0"><code># Function to get the data from XML Annotation
+def extract_info_from_xml(xml_file):
+    root = ET.parse(xml_file).getroot()
+    
+    # Initialise the info dict 
+    info_dict = {}
+    info_dict[&#39;bboxes&#39;] = []
+
+    # Parse the XML Tree
+    for elem in root:
+        # Get the file name 
+        if elem.tag == &#34;filename&#34;:
+            info_dict[&#39;filename&#39;] = elem.text
+            
+        # Get the image size
+        elif elem.tag == &#34;size&#34;:
+            image_size = []
+            for subelem in elem:
+                image_size.append(int(subelem.text))
+            
+            info_dict[&#39;image_size&#39;] = tuple(image_size)
+        
+        # Get details of the bounding box 
+        elif elem.tag == &#34;object&#34;:
+            bbox = {}
+            for subelem in elem:
+                if subelem.tag == &#34;name&#34;:
+                    bbox[&#34;class&#34;] = subelem.text
+                    
+                elif subelem.tag == &#34;bndbox&#34;:
+                    for subsubelem in subelem:
+                        bbox[subsubelem.tag] = int(subsubelem.text)            
+            info_dict[&#39;bboxes&#39;].append(bbox)
+    
+    return info_dict
+</code></pre><p>Let us try this function on an annotation file.</p>
+<pre tabindex="0"><code>print(extract_info_from_xml(&#39;annotations/road4.xml&#39;))
+</code></pre><p>This outputs:</p>
+<pre tabindex="0"><code>{&#39;bboxes&#39;: [{&#39;class&#39;: &#39;trafficlight&#39;, &#39;xmin&#39;: 20, &#39;ymin&#39;: 109, &#39;xmax&#39;: 81, &#39;ymax&#39;: 237}, {&#39;class&#39;: &#39;trafficlight&#39;, &#39;xmin&#39;: 116, &#39;ymin&#39;: 162, &#39;xmax&#39;: 163, &#39;ymax&#39;: 272}, {&#39;class&#39;: &#39;trafficlight&#39;, &#39;xmin&#39;: 189, &#39;ymin&#39;: 189, &#39;xmax&#39;: 233, &#39;ymax&#39;: 295}], &#39;filename&#39;: &#39;road4.png&#39;, &#39;image_size&#39;: (267, 400, 3)}
+</code></pre><p>We now write a function to convert information contained in info_dict to YOLO v5 style annotations and write them to a txt file. In case your annotations are different than PASCAL VOC ones, you can write a function to convert them to the info_dict format and use the function below to convert them to YOLO v5 style annotations.</p>
+<pre tabindex="0"><code># Dictionary that maps class names to IDs
+class_name_to_id_mapping = {&#34;trafficlight&#34;: 0,
+                           &#34;stop&#34;: 1,
+                           &#34;speedlimit&#34;: 2,
+                           &#34;crosswalk&#34;: 3}
+
+# Convert the info dict to the required yolo format and write it to disk
+def convert_to_yolov5(info_dict):
+    print_buffer = []
+    
+    # For each bounding box
+    for b in info_dict[&#34;bboxes&#34;]:
+        try:
+            class_id = class_name_to_id_mapping[b[&#34;class&#34;]]
+        except KeyError:
+            print(&#34;Invalid Class. Must be one from &#34;, class_name_to_id_mapping.keys())
+        
+        # Transform the bbox co-ordinates as per the format required by YOLO v5
+        b_center_x = (b[&#34;xmin&#34;] + b[&#34;xmax&#34;]) / 2 
+        b_center_y = (b[&#34;ymin&#34;] + b[&#34;ymax&#34;]) / 2
+        b_width    = (b[&#34;xmax&#34;] - b[&#34;xmin&#34;])
+        b_height   = (b[&#34;ymax&#34;] - b[&#34;ymin&#34;])
+        
+        # Normalise the co-ordinates by the dimensions of the image
+        image_w, image_h, image_c = info_dict[&#34;image_size&#34;]  
+        b_center_x /= image_w 
+        b_center_y /= image_h 
+        b_width    /= image_w 
+        b_height   /= image_h 
+        
+        #Write the bbox details to the file 
+        print_buffer.append(&#34;{} {:.3f} {:.3f} {:.3f} {:.3f}&#34;.format(class_id, b_center_x, b_center_y, b_width, b_height))
+        
+    # Name of the file which we have to save 
+    save_file_name = os.path.join(&#34;annotations&#34;, info_dict[&#34;filename&#34;].replace(&#34;png&#34;, &#34;txt&#34;))
+    
+    # Save the annotation to disk
+    print(&#34;\n&#34;.join(print_buffer), file= open(save_file_name, &#34;w&#34;))
+</code></pre><p>Now we convert all the xml annotations into YOLO style txt ones.</p>
+<pre tabindex="0"><code># Get the annotations
+annotations = [os.path.join(&#39;annotations&#39;, x) for x in os.listdir(&#39;annotations&#39;) if x[-3:] == &#34;xml&#34;]
+annotations.sort()
+
+# Convert and save the annotations
+for ann in tqdm(annotations):
+    info_dict = extract_info_from_xml(ann)
+    convert_to_yolov5(info_dict)
+annotations = [os.path.join(&#39;annotations&#39;, x) for x in os.listdir(&#39;annotations&#39;) if x[-3:] == &#34;txt&#34;]
+</code></pre><h2 id="testing-the-annotations"><a href="#testing-the-annotations">Testing the annotations</a><a href="#testing-the-annotations"></a></h2>
+<p>Just for a sanity check, let us test some of these transformed annotations. We randomly load one of the annotations, plot boxes using the transformed annotations, and visually inspect it to see whether our code has worked as intended. Run the next cell multiple times. Every time, a random annotation is sampled.</p>
+<pre tabindex="0"><code>random.seed(0)
+
+class_id_to_name_mapping = dict(zip(class_name_to_id_mapping.values(), class_name_to_id_mapping.keys()))
+
+def plot_bounding_box(image, annotation_list):
+    annotations = np.array(annotation_list)
+    w, h = image.size
+    
+    plotted_image = ImageDraw.Draw(image)
+
+    transformed_annotations = np.copy(annotations)
+    transformed_annotations[:,[1,3]] = annotations[:,[1,3]] * w
+    transformed_annotations[:,[2,4]] = annotations[:,[2,4]] * h 
+    
+    transformed_annotations[:,1] = transformed_annotations[:,1] - (transformed_annotations[:,3] / 2)
+    transformed_annotations[:,2] = transformed_annotations[:,2] - (transformed_annotations[:,4] / 2)
+    transformed_annotations[:,3] = transformed_annotations[:,1] + transformed_annotations[:,3]
+    transformed_annotations[:,4] = transformed_annotations[:,2] + transformed_annotations[:,4]
+    
+    for ann in transformed_annotations:
+        obj_cls, x0, y0, x1, y1 = ann
+        plotted_image.rectangle(((x0,y0), (x1,y1)))
+        
+        plotted_image.text((x0, y0 - 10), class_id_to_name_mapping[(int(obj_cls))])
+    
+    plt.imshow(np.array(image))
+    plt.show()
+
+# Get any random annotation file 
+annotation_file = random.choice(annotations)
+with open(annotation_file, &#34;r&#34;) as file:
+    annotation_list = file.read().split(&#34;\n&#34;)[:-1]
+    annotation_list = [x.split(&#34; &#34;) for x in annotation_list]
+    annotation_list = [[float(y) for y in x ] for x in annotation_list]
+
+#Get the corresponding image file
+image_file = annotation_file.replace(&#34;annotations&#34;, &#34;images&#34;).replace(&#34;txt&#34;, &#34;png&#34;)
+assert os.path.exists(image_file)
+
+#Load the image
+image = Image.open(image_file)
+
+#Plot the Bounding Box
+plot_bounding_box(image, annotation_list)
+</code></pre><p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2021/03/image-27.png" alt="image" />
+</figure>
+
+
+</p>
+<p>OUTPUT</p>
+<p>Great, we are able to recover the correct annotation from the YOLO v5 format. This means we have implemented the conversion function properly.</p>
+<h2 id="partition-the-dataset"><a href="#partition-the-dataset">Partition the Dataset</a><a href="#partition-the-dataset"></a></h2>
+<p>Next we partition the dataset into train, validation, and test sets containing 80%, 10%, and 10% of the data, respectively. You can change the split values according to your convenience.</p>
+<pre tabindex="0"><code># Read images and annotations
+images = [os.path.join(&#39;images&#39;, x) for x in os.listdir(&#39;images&#39;)]
+annotations = [os.path.join(&#39;annotations&#39;, x) for x in os.listdir(&#39;annotations&#39;) if x[-3:] == &#34;txt&#34;]
+
+images.sort()
+annotations.sort()
+
+# Split the dataset into train-valid-test splits 
+train_images, val_images, train_annotations, val_annotations = train_test_split(images, annotations, test_size = 0.2, random_state = 1)
+val_images, test_images, val_annotations, test_annotations = train_test_split(val_images, val_annotations, test_size = 0.5, random_state = 1)
+</code></pre><p>Create the folders to keep the splits.</p>
+<pre tabindex="0"><code>!mkdir images/train images/val images/test annotations/train annotations/val annotations/test
+</code></pre><p>Move the files to their respective folders.</p>
+<pre tabindex="0"><code>#Utility function to move images 
+def move_files_to_folder(list_of_files, destination_folder):
+    for f in list_of_files:
+        try:
+            shutil.move(f, destination_folder)
+        except:
+            print(f)
+            assert False
+
+# Move the splits into their folders
+move_files_to_folder(train_images, &#39;images/train&#39;)
+move_files_to_folder(val_images, &#39;images/val/&#39;)
+move_files_to_folder(test_images, &#39;images/test/&#39;)
+move_files_to_folder(train_annotations, &#39;annotations/train/&#39;)
+move_files_to_folder(val_annotations, &#39;annotations/val/&#39;)
+move_files_to_folder(test_annotations, &#39;annotations/test/&#39;)
+</code></pre><p>Rename the <code>annotations</code> folder to <code>labels</code>, as this is where YOLO v5 expects the annotations to be located in.</p>
+<pre tabindex="0"><code>mv annotations labels
+cd ../yolov5 
+</code></pre><h2 id="training-options"><a href="#training-options">Training Options</a><a href="#training-options"></a></h2>
+<p>Now, we train the network. We use various flags to set options regarding training.</p>
+<ul>
+<li><strong>img</strong>: Size of image. The image is a square one. The original image is resized while maintaining the aspect ratio. The longer side of the image is resized to this number. The shorter side is padded with grey color.</li>
+</ul>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2021/03/image-28.png" alt="image" />
+</figure>
+
+
+</p>
+<p>An example of letter-boxed image</p>
+<ul>
+<li><strong>batch</strong>: The batch size</li>
+<li><strong>epochs</strong>: Number of epochs to train for</li>
+<li><strong>data</strong>: Data YAML file that contains information about the dataset (path of images, labels)</li>
+<li><strong>workers</strong>: Number of CPU workers</li>
+<li><strong>cfg</strong>: Model architecture. There are 4 choices available: <code>yolo5s.yaml</code>, <code>yolov5m.yaml</code>, <code>yolov5l.yaml</code>, <code>yolov5x.yaml</code>. The size and complexity of these models increases in the ascending order and you can choose a model which suits the complexity of your object detection task. In case you want to work with a custom architecture, you will have to define a <code>YAML</code> file in the <code>models</code> folder specifying the network architecture.</li>
+<li><strong>weights</strong>: Pretrained weights you want to start training from. If you want to train from scratch, use <code>--weights ' '</code></li>
+<li><strong>name</strong>: Various things about training such as train logs. Training weights would be stored in a folder named <code>runs/train/name</code></li>
+<li><strong>hyp</strong>: YAML file that describes hyperparameter choices. For examples of how to define hyperparameters, see <code>data/hyp.scratch.yaml</code>. If unspecified, the file <code>data/hyp.scratch.yaml</code> is used.</li>
+</ul>
+<h3 id="data-config-file"><a href="#data-config-file">Data Config File</a><a href="#data-config-file"></a></h3>
+<p>Details for the dataset you want to train your model on are defined by the data config <code>YAML</code> file. The following parameters have to be defined in a data config file:</p>
+<ol>
+<li><code>train</code>, <code>test</code>, and <code>val</code>: Locations of train, test, and validation images.</li>
+<li><code>nc</code>: Number of classes in the dataset.</li>
+<li><code>names</code>: Names of the classes in the dataset. The index of the classes in this list would be used as an identifier for the class names in the code.</li>
+</ol>
+<p>Create a new file called <code>road_sign_data.yaml</code> and place it in the <code>yolov5/data</code> folder. Then populate it with the following.</p>
+<pre tabindex="0"><code>train: ../Road_Sign_Dataset/images/train/ 
+val:  ../Road_Sign_Dataset/images/val/
+test: ../Road_Sign_Dataset/images/test/
+
+# number of classes
+nc: 4
+
+# class names
+names: [&#34;trafficlight&#34;,&#34;stop&#34;, &#34;speedlimit&#34;,&#34;crosswalk&#34;]
+</code></pre><p>YOLO v5 expects to find the training labels for the images in the folder whose name can be derived by replacing <code>images</code> with <code>labels</code> in the path to dataset images. For example, in the example above, YOLO v5 will look for train labels in <code>../Road_Sign_Dataset/labels/train/</code>.</p>
+<p>Or you can simply download the file.</p>
+<pre tabindex="0"><code>!wget -P data/ https://gist.githubusercontent.com/ayooshkathuria/bcf7e3c929cbad445439c506dba6198d/raw/f437350c0c17c4eaa1e8657a5cb836e65d8aa08a/road_sign_data.yaml
+</code></pre><h2 id="hyperparameter-config-file"><a href="#hyperparameter-config-file">Hyperparameter Config File</a><a href="#hyperparameter-config-file"></a></h2>
+<p>The hyperparameter config file helps us define the hyperparameters for our neural network. We are going to use the default one, <code>data/hyp.scratch.yaml</code>. This is what it looks like.</p>
+<pre tabindex="0"><code># Hyperparameters for COCO training from scratch
+# python train.py --batch 40 --cfg yolov5m.yaml --weights &#39;&#39; --data coco.yaml --img 640 --epochs 300
+# See tutorials for hyperparameter evolution https://github.com/ultralytics/yolov5#tutorials
+
+
+lr0: 0.01  # initial learning rate (SGD=1E-2, Adam=1E-3)
+lrf: 0.2  # final OneCycleLR learning rate (lr0 * lrf)
+momentum: 0.937  # SGD momentum/Adam beta1
+weight_decay: 0.0005  # optimizer weight decay 5e-4
+warmup_epochs: 3.0  # warmup epochs (fractions ok)
+warmup_momentum: 0.8  # warmup initial momentum
+warmup_bias_lr: 0.1  # warmup initial bias lr
+box: 0.05  # box loss gain
+cls: 0.5  # cls loss gain
+cls_pw: 1.0  # cls BCELoss positive_weight
+obj: 1.0  # obj loss gain (scale with pixels)
+obj_pw: 1.0  # obj BCELoss positive_weight
+iou_t: 0.20  # IoU training threshold
+anchor_t: 4.0  # anchor-multiple threshold
+# anchors: 3  # anchors per output layer (0 to ignore)
+fl_gamma: 0.0  # focal loss gamma (efficientDet default gamma=1.5)
+hsv_h: 0.015  # image HSV-Hue augmentation (fraction)
+hsv_s: 0.7  # image HSV-Saturation augmentation (fraction)
+hsv_v: 0.4  # image HSV-Value augmentation (fraction)
+degrees: 0.0  # image rotation (+/- deg)
+translate: 0.1  # image translation (+/- fraction)
+scale: 0.5  # image scale (+/- gain)
+shear: 0.0  # image shear (+/- deg)
+perspective: 0.0  # image perspective (+/- fraction), range 0-0.001
+flipud: 0.0  # image flip up-down (probability)
+fliplr: 0.5  # image flip left-right (probability)
+mosaic: 1.0  # image mosaic (probability)
+mixup: 0.0  # image mixup (probability)
+</code></pre><p>You can edit this file, save a new file, and specify it as an argument to the train script.</p>
+<h2 id="custom-network-architecture"><a href="#custom-network-architecture">Custom Network Architecture</a><a href="#custom-network-architecture"></a></h2>
+<p>YOLO v5 also allows you to define your own custom architecture and anchors if one of the pre-defined networks doesn’t fit the bill for you. For this you will have to define a custom weights config file. For this example, we use the the <code>yolov5s.yaml</code>. This is what it looks like.</p>
+<pre tabindex="0"><code># parameters
+nc: 80  # number of classes
+depth_multiple: 0.33  # model depth multiple
+width_multiple: 0.50  # layer channel multiple
+
+# anchors
+anchors:
+  - [10,13, 16,30, 33,23]  # P3/8
+  - [30,61, 62,45, 59,119]  # P4/16
+  - [116,90, 156,198, 373,326]  # P5/32
+
+# YOLOv5 backbone
+backbone:
+  # [from, number, module, args]
+  [[-1, 1, Focus, [64, 3]],  # 0-P1/2
+   [-1, 1, Conv, [128, 3, 2]],  # 1-P2/4
+   [-1, 3, C3, [128]],
+   [-1, 1, Conv, [256, 3, 2]],  # 3-P3/8
+   [-1, 9, C3, [256]],
+   [-1, 1, Conv, [512, 3, 2]],  # 5-P4/16
+   [-1, 9, C3, [512]],
+   [-1, 1, Conv, [1024, 3, 2]],  # 7-P5/32
+   [-1, 1, SPP, [1024, [5, 9, 13]]],
+   [-1, 3, C3, [1024, False]],  # 9
+  ]
+
+# YOLOv5 head
+head:
+  [[-1, 1, Conv, [512, 1, 1]],
+   [-1, 1, nn.Upsample, [None, 2, &#39;nearest&#39;]],
+   [[-1, 6], 1, Concat, [1]],  # cat backbone P4
+   [-1, 3, C3, [512, False]],  # 13
+
+   [-1, 1, Conv, [256, 1, 1]],
+   [-1, 1, nn.Upsample, [None, 2, &#39;nearest&#39;]],
+   [[-1, 4], 1, Concat, [1]],  # cat backbone P3
+   [-1, 3, C3, [256, False]],  # 17 (P3/8-small)
+
+   [-1, 1, Conv, [256, 3, 2]],
+   [[-1, 14], 1, Concat, [1]],  # cat head P4
+   [-1, 3, C3, [512, False]],  # 20 (P4/16-medium)
+
+   [-1, 1, Conv, [512, 3, 2]],
+   [[-1, 10], 1, Concat, [1]],  # cat head P5
+   [-1, 3, C3, [1024, False]],  # 23 (P5/32-large)
+
+   [[17, 20, 23], 1, Detect, [nc, anchors]],  # Detect(P3, P4, P5)
+  ]
+</code></pre><p>To use a custom network, create a new file and specify it at run time using the <code>cfg</code> flag.</p>
+<h2 id="train-the-model"><a href="#train-the-model">Train the Model</a><a href="#train-the-model"></a></h2>
+<p>We define the location of <code>train</code>, <code>val</code> and <code>test</code>, the number of classes (<code>nc</code>) and the names of the classes. Since the dataset is small, and we don’t have many objects per image, we start with the smallest of pretrained models <code>yolo5s</code> to keep things simple and avoid overfitting. We keep a batch size of <code>32</code>, image size of <code>640</code>, and train for 100 epochs. If you have issues fitting the model into the memory:</p>
+<ul>
+<li>Use a smaller batch size</li>
+<li>Use a smaller network</li>
+<li>Use a smaller image size</li>
+</ul>
+<p>Of course, all of the above might impact the performance. The compromise is a design decision you have to make. You might want to go for a bigger GPU instance as well, depending on the situation.</p>
+<p>We use the name <code>yolo_road_det</code> for our training. The tensorboard training logs can be found at <code>runs/train/yolo_road_det</code>. If you can’t access tensorboard logs, you can setup a <code>wandb</code> <a href="https://wandb.ai/home">account</a> so that the logs are plotted over on your <a href="https://wandb.ai/site">wandb account</a>.</p>
+<p>Finally, run the training:</p>
+<pre tabindex="0"><code>!python train.py --img 640 --cfg yolov5s.yaml --hyp hyp.scratch.yaml --batch 32 --epochs 100 --data road_sign_data.yaml --weights yolov5s.pt --workers 24 --name yolo_road_det
+</code></pre><p>Depending on your hardware, this might take up to 30 minutes to train.</p>
+<h2 id="inference"><a href="#inference">Inference</a><a href="#inference"></a></h2>
+<p>There are many ways to run inference using the <code>detect.py</code> file.</p>
+<p>The <code>source</code> flag defines the source of our detector, which can be:</p>
+<ol>
+<li>A single image</li>
+<li>A folder of images</li>
+<li>Video</li>
+<li>Webcam</li>
+</ol>
+<p>…and various other formats. We want to run it over our test images so we set the <code>source</code> flag to <code>../Road_Sign_Dataset/images/test/</code>.</p>
+<ul>
+<li>The <code>weights</code> flag defines the path of the model which we want to run our detector with.</li>
+<li><code>conf</code> flag is the thresholding objectness confidence.</li>
+<li><code>name</code> flag defines where the detections are stored. We set this flag to <code>yolo_road_det</code>; therefore, the detections would be stored in <code>runs/detect/yolo_road_det/</code>.</li>
+</ul>
+<p>With all options decided, let us run inference over our test dataset.</p>
+<pre tabindex="0"><code>!python detect.py --source ../Road_Sign_Dataset/images/test/ --weights runs/train/yolo_road_det/weights/best.pt --conf 0.25 --name yolo_road_det
+</code></pre><p><code>best.pt</code> contains the best-performing weights saved during training.</p>
+<p>We can now randomly plot one of the detections.</p>
+<pre tabindex="0"><code>detections_dir = &#34;runs/detect/yolo_road_det/&#34;
+detection_images = [os.path.join(detections_dir, x) for x in os.listdir(detections_dir)]
+
+random_detection_image = Image.open(random.choice(detection_images))
+plt.imshow(np.array(random_detection_image))
+</code></pre><p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2021/03/image-30.png" alt="image" />
+</figure>
+
+
+</p>
+<p>OUTPUT</p>
+<p>We can also use other sources for our detector, apart from a folder of images. The command syntax for doing so is described below.</p>
+<pre tabindex="0"><code>python detect.py --source 0  # webcam
+                            file.jpg  # image 
+                            file.mp4  # video
+                            path/  # directory
+                            path/*.jpg  # glob
+                            rtsp://170.93.143.139/rtplive/470011e600ef003a004ee33696235daa  # rtsp stream
+                            rtmp://192.168.1.105/live/test  # rtmp stream
+                            http://112.50.243.8/PLTV/88888888/224/3221225900/1.m3u8  # http stream
+</code></pre><h2 id="computing-the-map-on-the-test-dataset"><a href="#computing-the-map-on-the-test-dataset">Computing the mAP on the test dataset</a><a href="#computing-the-map-on-the-test-dataset"></a></h2>
+<p>We can use the  <code>test</code>  file to compute the mAP on our test set. To perform the evaluation on our test set, we set the <code>task</code> flag to <code>test</code>. We set the name to <code>yolo_det</code>. Things like plots of various curves (F1, AP, Precision curves etc) can be found in the folder <code>runs/test/yolo_road_det</code>. The script calculates for us the Average Precision for each class, as well as mean Average Precision.</p>
+<pre tabindex="0"><code>!python test.py --weights runs/train/yolo_road_det/weights/best.pt --data road_sign_data.yaml --task test --name yolo_det
+</code></pre><p>The output of looks like the following:</p>
+<pre tabindex="0"><code>Fusing layers... 
+Model Summary: 224 layers, 7062001 parameters, 0 gradients, 16.4 GFLOPS
+test: Scanning &#39;../Road_Sign_Dataset/labels/test&#39; for images and labels... 88 fo
+test: New cache created: ../Road_Sign_Dataset/labels/test.cache
+test: Scanning &#39;../Road_Sign_Dataset/labels/test.cache&#39; for images and labels...
+               Class      Images     Targets           P           R      mAP@.5
+                 all          88         126       0.961       0.932       0.944         0.8
+        trafficlight          88          20       0.969        0.75       0.799       0.543
+                stop          88           7           1        0.98       0.995       0.909
+          speedlimit          88          76       0.989           1       0.997       0.906
+           crosswalk          88          23       0.885           1       0.983       0.842
+Speed: 1.4/0.7/2.0 ms inference/NMS/total per 640x640 image at batch-size 32
+Results saved to runs/test/yolo_det2
+</code></pre><p>That’s pretty much it for this tutorial. In it, we trained YOLO v5 on a custom dataset of road signs. If you want to play around with the hyperparameters or train on a different dataset, you can grab the notebook for this tutorial as a starting point.</p>
+<h3 id="yolov5-faqs"><a href="#yolov5-faqs">YOLOv5 FAQs</a><a href="#yolov5-faqs"></a></h3>
+<p><strong>1. What is YOLO and why is it popular for object detection?</strong></p>
+<p>YOLO (You Only Look Once) is a real-time object detection model known for its speed and accuracy. It processes entire images in a single pass, making it efficient for real-time applications like surveillance, autonomous driving, and robotics.</p>
+<p><strong>2. What are the key differences between YOLOv5 and previous versions like YOLOv4?</strong></p>
+<ul>
+<li>YOLOv5 is implemented in PyTorch, while YOLOv4 is in Darknet.</li>
+<li>YOLOv5 supports automatic augmentation, mixed-precision training, and better performance on edge devices.</li>
+<li>It provides smaller model sizes, improved speed, and easier deployment.</li>
+</ul>
+<p><strong>3. Why choose YOLOv5 over other object detection models?</strong></p>
+<ul>
+<li>Faster inference time compared to models like Faster R-CNN.</li>
+<li>Easier to train and deploy with PyTorch support.</li>
+<li>Supports multiple device types (CPU, GPU, TPU).</li>
+<li>Pre-trained models are available for transfer learning.</li>
+</ul>
+<p><strong>4. How do I set up YOLOv5 for training on a custom dataset?</strong></p>
+<ul>
+<li>Clone the YOLOv5 repository from GitHub.</li>
+<li>Install dependencies <code>(pip install -r requirements.txt)</code>.</li>
+<li>Prepare your dataset in YOLO format.</li>
+<li>Configure the <code>data.yaml</code> file with dataset paths.</li>
+<li>Start training using <code>train.py</code>.</li>
+</ul>
+<p><strong>5. What is the YOLOv5 annotation format?</strong></p>
+<p>YOLOv5 uses text files where each image has a corresponding <code>.txt</code> file. Each line represents an object: <code>&lt;class_id&gt; &lt;x_center&gt; &lt;y_center&gt; &lt;width&gt; &lt;height&gt;</code> All values are normalized between 0 and 1.</p>
+<p><strong>6. How can I convert my dataset annotations to the YOLOv5 format?</strong></p>
+<p>You can use tools like LabelImg, Roboflow, or custom scripts to convert COCO, Pascal VOC, or other formats to YOLO format.</p>
+<p><strong>7. How do I partition my dataset for training YOLOv5?</strong></p>
+<p>Split your dataset into:</p>
+<ul>
+<li>Training set (80%) – Used for learning.</li>
+<li>Validation set (10%) – Used for tuning hyperparameters.</li>
+<li>Test set (10%) – Used to evaluate model performance.</li>
+</ul>
+<p><strong>8. What training options are available for YOLOv5?</strong></p>
+<ul>
+<li>Pre-trained models (fine-tuning on custom data).</li>
+<li>Custom training from scratch with new architecture modifications.</li>
+<li>Transfer learning for adapting to specific tasks.</li>
+</ul>
+<p><strong>9. How do I configure the data and hyperparameters for YOLOv5 training?</strong></p>
+<ul>
+<li>Modify <code>data.yaml</code> to specify dataset paths and classes.</li>
+<li>Adjust <code>hyp.scratch-low.yaml</code> for learning rate, momentum, and augmentation settings.</li>
+<li>Use <code>--batch-size</code>, <code>--epochs</code>, and <code>--img-size</code> in <code>train.py</code> for further control.</li>
+</ul>
+<p><strong>10. Can I customize the YOLOv5 network architecture?</strong></p>
+<p>Yes, you can modify the model’s backbone, detection layers, and anchors by editing models/yolov5s.yaml or other architecture files.</p>
+<h2 id="conclusion-and-a-bit-about-the-naming-saga"><a href="#conclusion-and-a-bit-about-the-naming-saga">Conclusion… and a bit about the naming saga</a><a href="#conclusion-and-a-bit-about-the-naming-saga"></a></h2>
+<p>In conclusion, I would like to share my thoughts on the naming controversy caused by YOLO v5. YOLO’s original developer abandoned the project due to concerns about using his research for military purposes. Since then, multiple people have improved YOLO. Afterward, Alexey Bochkovskiy and others released YOLO v4 in April 2020. Alexey was perhaps the most suitable person to do a sequel to YOLO since he had been the long-time maintainer of the second most popular YOLO repo, which, unlike the original version, also worked on Windows.</p>
+<p>YOLO v4 brought many improvements, which helped it greatly outperform YOLO v3. But then Glenn Jocher, maintainer of the Ultralytics YOLO v3 repo (the most popular Python port of YOLO), released YOLO v5, the naming of which drew reservations from many members of the computer vision community. The controversy surrounding YOLO v5 is that, in a traditional sense, it does not introduce any novel architectures, loss functions, or techniques. Additionally, no research paper has yet been released for YOLO v5.</p>
+<p>However, YOLO v5 significantly improves the ease with which users can integrate it into their existing workflows. One of the primary advantages of YOLO v5 is that it is implemented in PyTorch and Python, unlike its predecessors (YOLO v1 to v4), which were coded in C. This transition makes YOLO v5 much more accessible to individuals and companies working within the deep learning field.</p>
+<p>Moreover, YOLO v5 introduces a streamlined method for defining experiments using modular configuration files, mixed precision training, fast inference, better data augmentation techniques, and more. From this perspective, it might be appropriate to label it as v5 if we view YOLO v5 as software rather than as a new algorithm. Perhaps this is what Glenn Jocher had in mind when naming it v5.</p>
+<p>Nonetheless, many members of the community, including Alexey, have strongly disagreed, arguing that it is misleading to refer to it as YOLO v5 since its performance is still inferior to that of YOLO v4.</p>
+<p>For a more in-depth look at this debate, check out the post titled “YOLOv5 Controversy — Is YOLOv5 Real?” It is remarkable how rapidly we are advancing in research and technology. It is noteworthy that the next generation of this popular object detection framework was released so soon after its predecessor. Thank you for learning with the DigitalOcean Community. Explore our offerings for computing, storage, networking, and managing databases.</p>
+<h2 id="resources"><a href="#resources">Resources</a><a href="#resources"></a></h2>
+<ul>
+<li><a href="/community/tutorials/what-is-new-with-yolo">What’s New in YOLOv11 Transforming Object Detection Once Again Part 1</a></li>
+<li><a href="/community/tutorials/train-yolov7-custom-data">Step-by-Step Instructions for Training YOLOv7 on a Custom Dataset</a></li>
+<li><a href="/community/tutorials/yolo-nas-neural-architecture-search">YOLO Object Detection: A Comprehensive Guide</a></li>
+<li><a href="/community/tutorials/yolov8">Training YOLOv8 on Custom Data</a></li>
+<li><a href="/community/tutorials/yolov9-2">YOLOv9 Exploring Object Detection with YOLO Model</a></li>
+</ul>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/train-yolov5-custom-data">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

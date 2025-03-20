@@ -1,6 +1,8 @@
 ---
 title: "Deploying Secure LLM and RAG Applications with Amazon Bedrock and Prisma Cloud"
-date: 2025-03-19
+date: 2025-01-03
+categories: 
+  - "security"
 ---
 
 Rapid advancements in generative AI have enabled organizations to build powerful applications by integrating foundation models with internal data and systems. The potential rewards are high, but so are the risks — from sensitive data exposure and compliance violations to prompt injection and attacks against deployed applications.

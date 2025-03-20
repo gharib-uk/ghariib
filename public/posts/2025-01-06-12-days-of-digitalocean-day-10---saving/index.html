@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>12 Days of DigitalOcean Day 10 - Saving Attachments to DigitalOcean Spaces</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>12 Days of DigitalOcean Day 10 - Saving Attachments to DigitalOcean Spaces</h1>
+			<b><time>06.01.2025 14:00</time></b>
+		       
+
+			<div>
+				<h1 id="12-days-of-digitalocean-day-10---saving-attachments-to-digitalocean-spaces">12 Days of DigitalOcean Day 10 - Saving Attachments to DigitalOcean Spaces</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Today, we’re going to handle that. We’ll teach your app how to extract these attachments, save them securely to DigitalOcean Spaces, and generate public URLs for each file. These URLs will eventually be stored in our database, allowing you to preview the attached files when reviewing expenses.</p>
+<p>Let’s dive in.</p>
+<h2 id="-what-youll-learn"><a href="#what-you-ll-learn">🚀 What You’ll Learn</a><a href="#what-you-ll-learn"></a></h2>
+<p>By the end of today’s session, you’ll know how to:</p>
+<ol>
+<li><a href="https://docs.digitalocean.com/products/spaces/how-to/create/">Create a DigitalOcean Space</a> to store attachments.</li>
+<li>Extract and decode Base64-encoded attachments from <a href="https://postmarkapp.com/blog/attachments-finally-here">Postmark emails</a>.</li>
+<li>Upload attachments to DigitalOcean Spaces using <a href="https://boto3.amazonaws.com/v1/documentation/api/latest/index.html">boto3</a>.</li>
+<li>Generate unique file names with <a href="https://docs.python.org/3/library/uuid.html">uuid</a> to prevent overwrites.</li>
+<li>Orchestrate the entire workflow to handle multiple attachments seamlessly.</li>
+</ol>
+<h2 id="-what-youll-need"><a href="#what-you-ll-need">🛠 What You’ll Need</a><a href="#what-you-ll-need"></a></h2>
+<p>To get the most out of this tutorial, we assume the following:</p>
+<ol>
+<li><strong>A Flask App Already Deployed on DigitalOcean:</strong> If you haven’t deployed a Flask app yet, you can follow the instructions in <a href="/community/tutorials/deploying-flask-app-on-digitalocean#what-you-ll-need">Day 7 - Building and Deploying the Email-Based Receipt Processor</a>.</li>
+<li><strong>Postmark Configured for Email Testing:</strong> To test the email-to-receipt processing pipeline, you’ll need Postmark set up to forward emails to your Flask app. See <a href="/community/tutorials/setting-up-postmark-for-receipts#step-by-step-guide">Day 8 - Connecting Postmark to Your Flask App</a> for a step-by-step guide.</li>
+<li><strong>DigitalOcean Spaces Setup</strong>: We’ll store processed attachments in a DigitalOcean Space. If you don’t have a Space yet, we’ll guide you through creating one in this tutorial.</li>
+</ol>
+<p>&lt;$&gt; [info] <strong>Note:</strong> Even if you don’t have everything set up, you’ll still learn how to:</p>
+<ul>
+<li>
+<p>Create a DigitalOcean Space to store attachments.</p>
+</li>
+<li>
+<p>Decode Base64-encoded attachments programmatically.</p>
+</li>
+<li>
+<p>Upload files to DigitalOcean Spaces using <code>boto3</code>.</p>
+</li>
+<li>
+<p>Seamlessly integrate attachment handling into your Flask app.</p>
+<p>&lt;$&gt;</p>
+</li>
+</ul>
+<h2 id="step-1-create-a-digitalocean-space"><a href="#step-1-create-a-digitalocean-space">Step 1: Create a DigitalOcean Space</a><a href="#step-1-create-a-digitalocean-space"></a></h2>
+<p>First, we need a place to store our attachments. DigitalOcean Spaces is an object storage service, perfect for securely handling files like receipts and invoices. It’s scalable, secure, and integrates seamlessly with our app.</p>
+<h3 id="create-the-space"><a href="#create-the-space">Create the Space</a><a href="#create-the-space"></a></h3>
+<ol>
+<li>
+<p>Log in to the <a href="https://cloud.digitalocean.com/spaces">DigitalOcean dashboard</a>, and click on <strong>Spaces Object Storage</strong>.</p>
+</li>
+<li>
+<p>Then, click <strong>Create Bucket</strong>.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_spaces_object_storage_interface.png" alt="DigitalOcean Spaces Object Storage interface displaying file management options" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p>Choose a <strong>Region</strong> close to your users (e.g., <code>nyc3</code> for New York).</p>
+</li>
+<li>
+<p>Name your Space (e.g., <code>email-receipts</code>)</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/create_spaces_bucket_guide.png" alt="Guide to creating a Spaces bucket on DigitalOcean, highlighting configuration options" />
+</figure>
+
+
+</p>
+</li>
+</ol>
+<p>This will create your bucket named <code>email-receipts</code> available at a URL like <code>https://email-receipts.nyc3.digitaloceanspaces.com</code></p>
+<h3 id="generate-access-keys"><a href="#generate-access-keys">Generate Access Keys</a><a href="#generate-access-keys"></a></h3>
+<p>To interact with your Space programmatically (e.g., via <code>boto3</code>), you’ll need an Access Key and Secret Key.</p>
+<ol>
+<li>
+<p>Open your Space, click <strong>Settings</strong>, and scroll to <strong>Access Keys</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Create Access Key</strong>.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_settings_access_key.png" alt="Settings page in DigitalOcean showing how to create and manage access keys" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p>Set <strong>Permissions</strong> to <strong>All Permissions</strong>, so our app can read, write, and delete files.</p>
+</li>
+<li>
+<p>Name the key (or use the default) and click <strong>Create Access Key</strong>.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_spaces_access_key_creation.png" alt="DigitalOcean interface for creating a new Spaces access key with permissions configuration" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p>Save the Access Key and Secret Key—this is the only time you’ll see the Secret Key!</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_spaces_settings.png" alt="DigitalOcean Spaces settings page showing bucket configurations and access key options" />
+</figure>
+
+
+</p>
+</li>
+</ol>
+<h3 id="update-environment-variables"><a href="#update-environment-variables">Update Environment Variables</a><a href="#update-environment-variables"></a></h3>
+<p>In the DigitalOcean App Platform dashboard:</p>
+<ol>
+<li>
+<p>Go to <strong>Settings &gt; Environment Variables</strong>.</p>
+</li>
+<li>
+<p>Add the following:</p>
+<ul>
+<li>
+<p><code>SPACES_ACCESS_KEY</code>: Your Spaces Access Key ID.</p>
+</li>
+<li>
+<p><code>SPACES_SECRET_KEY</code>: Your Spaces Secret Key.</p>
+</li>
+<li>
+<p><code>SPACES_BUCKET_NAME</code>: The name of your Space (e.g., <code>email-receipts</code>).</p>
+</li>
+<li>
+<p><code>SPACES_REGION</code>: The region of your Space (e.g., <code>nyc3</code>).</p>
+</li>
+</ul>
+</li>
+</ol>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_app_environment_variables.png" alt="DigitalOcean App Platform environment variables configuration page" />
+</figure>
+
+
+</p>
+<h2 id="step-2-process-and-upload-attachments-to-digitalocean-spaces"><a href="#step-2-process-and-upload-attachments-to-digitalocean-spaces">Step 2: Process and Upload Attachments to DigitalOcean Spaces</a><a href="#step-2-process-and-upload-attachments-to-digitalocean-spaces"></a></h2>
+<p>To handle attachments in your app, we’ll update our <code>app.py</code> and write a few new functions. Each function serves a specific purpose, from decoding attachments to uploading them to DigitalOcean Spaces. Let’s walk through these one by one.</p>
+<p><strong>Note:</strong> If you don’t already have the app set up, follow the instructions in <a href="/community/tutorials/deploying-flask-app-on-digitalocean">Day 7 - Building and Deploying the Email-Based Receipt Processor</a> to create and deploy it to DigitalOcean’s App Platform.</p>
+<h3 id="decode-and-save-attachments"><a href="#decode-and-save-attachments">Decode and Save Attachments</a><a href="#decode-and-save-attachments"></a></h3>
+<p>Postmark sends attachments as Base64-encoded data inside the JSON payload. The first step is decoding this data and saving it locally using Python’s <code>base64</code> library. This function ensures each file gets a unique name with the help of the <code>uuid</code> library.</p>
+<p><strong>What is Base64?</strong> It’s like a translator for binary files (like PDFs). It converts them into a plain text format that’s safe to send over the web. Once we decode it back into binary, we can handle it just like any regular file.</p>
+<p><strong>Where Do Files Get Saved?</strong>: We’ll temporarily save the decoded files in <code>/tmp</code>. It’s a short-term storage directory available on most systems. Think of it like a scratchpad—it’s perfect for short-term use, and everything gets cleared once the app stops running.</p>
+<p>Here’s the function to decode the attachment, ensure the filename is unique (thanks to <code>uuid</code>), and save it in <code>/tmp</code>.</p>
+<pre tabindex="0"><code>import os
+import base64
+import uuid
+
+def decode_and_save_attachment(attachment):
+    &#34;&#34;&#34;Decode base64-encoded attachment and save it locally with a unique name.&#34;&#34;&#34;
+    file_name = attachment.get(&#34;Name&#34;)
+    encoded_content = attachment.get(&#34;Content&#34;)
+
+    if not file_name or not encoded_content:
+        logging.warning(&#34;Invalid attachment, skipping.&#34;)
+        return None
+
+    unique_file_name = f&#34;{uuid.uuid4()}_{file_name}&#34;
+    file_path = os.path.join(&#34;/tmp&#34;, unique_file_name)
+
+    try:
+        with open(file_path, &#34;wb&#34;) as file:
+            file.write(base64.b64decode(encoded_content))
+        logging.info(f&#34;Attachment saved locally: {file_path}&#34;)
+        return file_path
+    except Exception as e:
+        logging.error(f&#34;Failed to decode and save attachment {file_name}: {e}&#34;)
+        return None
+</code></pre><h3 id="upload-attachments-to-digitalocean-spaces"><a href="#upload-attachments-to-digitalocean-spaces">Upload Attachments to DigitalOcean Spaces</a><a href="#upload-attachments-to-digitalocean-spaces"></a></h3>
+<p>Now that we’ve decoded and saved the files, the next step is uploading them to DigitalOcean Spaces. We’ll use <code>boto3</code>, a powerful Python SDK for working with AWS-compatible APIs, to handle the upload. Spaces works just like an S3 bucket, so it’s a perfect fit.</p>
+<p>This function uploads the file to your Space and returns a public URL.</p>
+<pre tabindex="0"><code>import boto3
+
+def upload_attachment_to_spaces(file_path):
+    &#34;&#34;&#34;Upload a file to DigitalOcean Spaces and return its public URL.&#34;&#34;&#34;
+    file_name = os.path.basename(file_path)
+    object_name = f&#34;email-receipt-processor/{file_name}&#34;
+    try:
+        s3_client.upload_file(file_path, SPACES_BUCKET, object_name, ExtraArgs={&#34;ACL&#34;: &#34;public-read&#34;})
+        file_url = f&#34;https://{SPACES_BUCKET}.{SPACES_REGION}.cdn.digitaloceanspaces.com/{object_name}&#34;
+        logging.info(f&#34;Attachment uploaded to Spaces: {file_url}&#34;)
+        return file_url
+    except Exception as e:
+        logging.error(f&#34;Failed to upload attachment {file_name} to Spaces: {e}&#34;)
+        return None
+</code></pre><h3 id="process-multiple-attachments"><a href="#process-multiple-attachments">Process Multiple Attachments</a><a href="#process-multiple-attachments"></a></h3>
+<p>Let’s bring it all together. This function orchestrates everything:</p>
+<ol>
+<li>Decodes each attachment.</li>
+<li>Uploads it to Spaces.</li>
+<li>Collects the URLs for the uploaded files.</li>
+</ol>
+<pre tabindex="0"><code>def process_attachments(attachments):
+    &#34;&#34;&#34;Process all attachments and return their URLs.&#34;&#34;&#34;
+    attachment_urls = []
+    for attachment in attachments:
+        file_path = decode_and_save_attachment(attachment)
+        if file_path:
+            file_url = upload_attachment_to_spaces(file_path)
+            if file_url:
+                attachment_urls.append({&#34;file_name&#34;: os.path.basename(file_path), &#34;url&#34;: file_url})
+            os.remove(file_path)  # Clean up local file
+    return attachment_urls
+</code></pre><h3 id="update-the"><a href="#update-the-inbound-route">Update the <code>/inbound</code> Route</a><a href="#update-the-inbound-route"></a></h3>
+<p>Finally, update the <code>/inbound</code> route to include attachment handling. This route will now handle email content processing, attachment decoding and uploading, and returning the final response.</p>
+<pre tabindex="0"><code>@app.route(&#39;/inbound&#39;, methods=[&#39;POST&#39;])
+def handle_inbound_email():
+    &#34;&#34;&#34;Process inbound emails and return extracted JSON.&#34;&#34;&#34;
+    logging.info(&#34;Received inbound email request.&#34;)
+    data = request.json
+
+    email_content = data.get(&#34;TextBody&#34;, &#34;&#34;)
+    attachments = data.get(&#34;Attachments&#34;, [])
+
+    if not email_content:
+        logging.error(&#34;No email content provided.&#34;)
+        return jsonify({&#34;error&#34;: &#34;No email content provided&#34;}), 400
+
+    extracted_data = extract_text_from_email(email_content)
+    attachment_urls = process_attachments(attachments)
+
+    response_data = {
+        &#34;extracted_data&#34;: extracted_data,
+        &#34;attachments&#34;: attachment_urls
+    }
+
+    # Log the final combined data
+    logging.info(&#34;Final Response Data: %s&#34;, response_data)
+
+    return jsonify(response_data)
+</code></pre><h3 id="final-complete-code"><a href="#final-complete-code">Final Complete Code</a><a href="#final-complete-code"></a></h3>
+<p>Here’s the full <code>app.py</code> file with all the updates:</p>
+<pre tabindex="0"><code>from flask import Flask, request, jsonify
+import os
+import base64
+import uuid
+import boto3
+from dotenv import load_dotenv
+from openai import OpenAI
+import logging
+
+# Load environment variables
+load_dotenv()
+
+# Initialize Flask app
+app = Flask(__name__)
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format=&#39;%(asctime)s - %(levelname)s - %(message)s&#39;)
+
+# Initialize DigitalOcean GenAI client
+SECURE_AGENT_KEY = os.getenv(&#34;SECURE_AGENT_KEY&#34;)
+AGENT_BASE_URL = os.getenv(&#34;AGENT_BASE_URL&#34;)
+AGENT_ENDPOINT = f&#34;{AGENT_BASE_URL}/api/v1/&#34;
+client = OpenAI(base_url=AGENT_ENDPOINT, api_key=SECURE_AGENT_KEY)
+
+# DigitalOcean Spaces credentials
+SPACES_ACCESS_KEY = os.getenv(&#34;SPACES_ACCESS_KEY&#34;)
+SPACES_SECRET_KEY = os.getenv(&#34;SPACES_SECRET_KEY&#34;)
+SPACES_BUCKET = os.getenv(&#34;SPACES_BUCKET_NAME&#34;)
+SPACES_REGION = os.getenv(&#34;SPACES_REGION&#34;)
+SPACES_ENDPOINT = f&#34;https://{SPACES_BUCKET}.{SPACES_REGION}.digitaloceanspaces.com&#34;
+
+# Initialize DigitalOcean Spaces client
+session = boto3.session.Session()
+s3_client = session.client(
+    &#39;s3&#39;,
+    region_name=SPACES_REGION,
+    endpoint_url=SPACES_ENDPOINT,
+    aws_access_key_id=SPACES_ACCESS_KEY,
+    aws_secret_access_key=SPACES_SECRET_KEY
+)
+
+def extract_text_from_email(email_content):
+    &#34;&#34;&#34;Extract relevant details from the email content using DigitalOcean GenAI.&#34;&#34;&#34;
+    logging.debug(&#34;Extracting details from email content.&#34;)
+    prompt = (
+        &#34;Extract the following details from the email:\n&#34;
+        &#34;- Date of transaction\n&#34;
+        &#34;- Amount\n&#34;
+        &#34;- Currency\n&#34;
+        &#34;- Vendor name\n\n&#34;
+        f&#34;Email content:\n{email_content}\n\n&#34;
+        &#34;Ensure the output is in JSON format with keys: date, amount, currency, vendor.&#34;
+    )
+    response = client.chat.completions.create(
+        model=&#34;your-model-id&#34;,  # Replace with your GenAI model ID
+        messages=[{&#34;role&#34;: &#34;user&#34;, &#34;content&#34;: prompt}]
+    )
+    logging.debug(&#34;GenAI processing completed.&#34;)
+    return response.choices[0].message.content
+
+def decode_and_save_attachment(attachment):
+    &#34;&#34;&#34;Decode base64-encoded attachment and save it locally with a unique name.&#34;&#34;&#34;
+    file_name = attachment.get(&#34;Name&#34;)
+    encoded_content = attachment.get(&#34;Content&#34;)
+
+    if not file_name or not encoded_content:
+        logging.warning(&#34;Invalid attachment, skipping.&#34;)
+        return None
+
+    unique_file_name = f&#34;{uuid.uuid4()}_{file_name}&#34;
+    file_path = os.path.join(&#34;/tmp&#34;, unique_file_name)
+
+    try:
+        with open(file_path, &#34;wb&#34;) as file:
+            file.write(base64.b64decode(encoded_content))
+        logging.info(f&#34;Attachment saved locally: {file_path}&#34;)
+        return file_path
+    except Exception as e:
+        logging.error(f&#34;Failed to decode and save attachment {file_name}: {e}&#34;)
+        return None
+
+def upload_attachment_to_spaces(file_path):
+    &#34;&#34;&#34;Upload a file to DigitalOcean Spaces and return its public URL.&#34;&#34;&#34;
+    file_name = os.path.basename(file_path)
+    object_name = f&#34;email-receipt-processor/{file_name}&#34;
+    try:
+        s3_client.upload_file(file_path, SPACES_BUCKET, object_name, ExtraArgs={&#34;ACL&#34;: &#34;public-read&#34;})
+        file_url = f&#34;https://{SPACES_BUCKET}.{SPACES_REGION}.cdn.digitaloceanspaces.com/{object_name}&#34;
+        logging.info(f&#34;Attachment uploaded to Spaces: {file_url}&#34;)
+        return file_url
+    except Exception as e:
+        logging.error(f&#34;Failed to upload attachment {file_name} to Spaces: {e}&#34;)
+        return None
+
+def process_attachments(attachments):
+    &#34;&#34;&#34;Process all attachments and return their URLs.&#34;&#34;&#34;
+    attachment_urls = []
+    for attachment in attachments:
+        file_path = decode_and_save_attachment(attachment)
+        if file_path:
+            file_url = upload_attachment_to_spaces(file_path)
+            if file_url:
+                attachment_urls.append({&#34;file_name&#34;: os.path.basename(file_path), &#34;url&#34;: file_url})
+            os.remove(file_path)  # Clean up local file
+    return attachment_urls
+
+@app.route(&#39;/inbound&#39;, methods=[&#39;POST&#39;])
+def handle_inbound_email():
+    &#34;&#34;&#34;Process inbound emails and return extracted JSON.&#34;&#34;&#34;
+    logging.info(&#34;Received inbound email request.&#34;)
+    data = request.json
+
+    email_content = data.get(&#34;TextBody&#34;, &#34;&#34;)
+    attachments = data.get(&#34;Attachments&#34;, [])
+
+    if not email_content:
+        logging.error(&#34;No email content provided.&#34;)
+        return jsonify({&#34;error&#34;: &#34;No email content provided&#34;}), 400
+
+    extracted_data = extract_text_from_email(email_content)
+    attachment_urls = process_attachments(attachments)
+
+    response_data = {
+        &#34;extracted_data&#34;: extracted_data,
+        &#34;attachments&#34;: attachment_urls
+    }
+
+    # Log the final combined data
+    logging.info(&#34;Final Response Data: %s&#34;, response_data)
+
+    return jsonify(response_data)
+
+if __name__ == &#34;__main__&#34;:
+    logging.info(&#34;Starting Flask application.&#34;)
+    app.run(port=5000)
+</code></pre><h2 id="step-3-deploy-to-digitalocean"><a href="#step-3-deploy-to-digitalocean">Step 3: Deploy to DigitalOcean</a><a href="#step-3-deploy-to-digitalocean"></a></h2>
+<p>To deploy the updated Flask app, follow the steps from <a href="/community/tutorials/deploying-flask-app-on-digitalocean#step-4-deploy-to-digitalocean-s-app-platform">Day 7</a>. Here’s a quick summary:</p>
+<ol>
+<li>
+<p><strong>Push Your Updated Code to GitHub</strong>: After making the necessary changes to your Flask app, commit and push the updated code to GitHub. This will trigger an automatic deployment in DigitalOcean’s App Platform.</p>
+<pre tabindex="0"><code>git add .
+git commit -m &#34;Add attachment processing with DigitalOcean Spaces&#34;
+git push origin main
+</code></pre></li>
+<li>
+<p><strong>Monitor Deployment</strong>: You can track the progress in the <strong>Deployments</strong> section of your app’s dashboard.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_project_dashboard.png" alt="DigitalOcean project dashboard showing deployment status" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Verify Your Deployment</strong>: After the deployment completes, navigate to your app’s public URL and test its functionality. You can also check the <strong>runtime logs</strong> in the dashboard to confirm that the app started successfully.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_app_deployment.png" alt="DigitalOcean app deployment status and configuration" />
+</figure>
+
+
+</p>
+</li>
+</ol>
+<h2 id="step-4-test-the-entire-workflow"><a href="#step-4-test-the-entire-workflow">Step 4: Test the Entire Workflow</a><a href="#step-4-test-the-entire-workflow"></a></h2>
+<p>Now that your app is fully configured and ready, it’s time to test the entire workflow. We’ll ensure that the email body is processed, attachments are decoded and uploaded to DigitalOcean<br>
+Spaces, and the final output includes everything we need.</p>
+<p>Here’s how you can test step by step:</p>
+<ol>
+<li>
+<p><strong>Send a Test Email</strong>: Send an email to Postmark with a text body and an attachment. If you’re unsure how to configure Postmark, check <a href="/community/tutorials/setting-up-postmark-for-receipts">Day 8: Connecting Postmark to Your Flask App</a> where we walked through setting up Postmark to forward emails to your app.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/email_invoice_receipt_screenshot.png" alt="Example of an email invoice receipt with highlighted payment details and attachments" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Check Postmark Activity JSON</strong>: In the Postmark dashboard, navigate to the <strong>Activity</strong> tab. Locate the email you sent, and ensure that the JSON payload includes the text body and Base64-encoded attachment data. This confirms Postmark is correctly forwarding the email data to your app.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/postmark_json_encoded_attachments.png" alt="Postmark JSON response showing encoded email attachments with metadata" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Monitor the Logs</strong>: Check the runtime logs in your DigitalOcean App Platform dashboard to ensure the app processes the JSON payload. We covered how to access runtime logs in <a href="/community/tutorials/automating-receipt-parsing-with-digitalocean-genai">Day 9</a>.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_runtime_logs_screenshot_2.png" alt="DigitalOcean runtime logs interface displaying application log entries" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Verify Spaces Upload</strong>: Visit your DigitalOcean Space to confirm that the files were uploaded successfully. You should see the attachments in your bucket.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_files_interface.png" alt="DigitalOcean Spaces interface showing uploaded files with names and metadata" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Check the Final Output</strong>: The app should log the extracted data and the attachment URLs. These logs will include:</p>
+<ul>
+<li>Details extracted from the email body.</li>
+<li>Public URLs for the uploaded attachments.<br>
+Refer to <a href="/community/tutorials/automating-receipt-parsing-with-digitalocean-genai">Day 9</a> for tips on inspecting runtime logs.</li>
+</ul>
+</li>
+</ol>
+<p>By the end of these steps, your workflow will be ready to save data to a database, which we’ll tackle next.</p>
+<h2 id="-wrap-up"><a href="#wrap-up">🎁 Wrap-Up</a><a href="#wrap-up"></a></h2>
+<p>Today, we taught your app to handle attachments like a pro. Here’s what we did:</p>
+<ul>
+<li>Created a DigitalOcean Space for secure, scalable storage.</li>
+<li>Decoded Base64-encoded attachments from Postmark JSON.</li>
+<li>Ensured unique filenames with <code>uuid</code>.</li>
+<li>Uploaded attachments to DigitalOcean Spaces using <code>boto3</code>.</li>
+<li>Generated public URLs for each file, ready to be used in your receipt processor.</li>
+</ul>
+<p><strong>Up next,</strong> we’ll integrate this data into a database. This will allow you to store extracted email details and attachment URLs for long-term use, making your receipt processor even more powerful. Stay tuned!</p>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/configuring-digitalocean-spaces">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

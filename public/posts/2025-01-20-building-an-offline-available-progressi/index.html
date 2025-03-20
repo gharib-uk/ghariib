@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Building an offline-available Progressive Web App News Aggregator using Vite and Vue</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Building an offline-available Progressive Web App News Aggregator using Vite and Vue</h1>
+			<b><time>20.01.2025 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="building-an-offline-available-progressive-web-app-news-aggregator-using-vite-and-vue">Building an offline-available Progressive Web App News Aggregator using Vite and Vue</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>A Progressive Web App (PWA) is a mobile-friendly web application that offers native-like features and improved user experiences. Key benefits include the ability to install the app on any device and access it offline. Essential components of a PWA are a web app manifest and a service worker. The <a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API">IndexedDB API</a> can be utilized for persisting structured data.</p>
+<p>In this tutorial, you will convert a sample website build using <a href="https://vuejs.org/">Vue</a> and <a href="https://vite.dev/">Vite</a> to an offline-available PWA that end users can install on any device. You will create a web app manifest and a service worker to cache the presentation layer of the web app.</p>
+<p>You will also use <a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB">IndexDB</a> to store structured data about the app so that the data is available even while offline.</p>
+<h2 id="prerequisites"><a href="#prerequisites">Prerequisites</a><a href="#prerequisites"></a></h2>
+<p>To follow along with this tutorial, you will need the following:</p>
+<ul>
+<li>A <a href="/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-20-04">Node.js development environment</a> with Node version 18.15 or greater and npm version 9 or greater</li>
+<li>A <a href="/community/tutorials/how-to-install-git-on-ubuntu">git installation</a> in your dev environment</li>
+<li>Some experience developing with <a href="https://vuejs.org/">Vue</a> and <a href="https://vite.dev/">Vite</a>.</li>
+<li>A <a href="https://newsapi.org/">News API</a> account and API key. You can <a href="https://newsapi.org/register">register and get one here</a>.</li>
+</ul>
+<h2 id="step-1---setting-up-the-project"><a href="#step-1-setting-up-the-project">Step 1 - Setting up the project</a><a href="#step-1-setting-up-the-project"></a></h2>
+<p>In this step, you will clone and set up the sample project in your local development environment. It uses Vite with VueJS for a faster and leaner development experience and Tailwind CSS for styling.</p>
+<p>To start, you will clone an already-built Vue app for this tutorial from GitHub. You will be working with the What’s New app - a news aggregator that sources data from the News API, and categorizes and presents them as headlines, general news items and a personalized customizable news feed.</p>
+<p>To clone the project from GitHub, first, you need to create a copy of the <a href="https://github.com/adamichelle/whats-new">What’s New project</a> by clicking on the <strong>Fork</strong> button at the top right-hand corner of the GitHub web interface.</p>
+<p>Then open your command line app and run the following command:</p>
+<pre tabindex="0"><code>git clone https://github.com/{your-github-username}/whats-new.git
+</code></pre><p>You have to replace the part of the URL highlighted in the command above with your actual GitHub username.</p>
+<p>Navigate to the `whats-new`` directory on your command line:</p>
+<pre tabindex="0"><code>cd whats-new
+</code></pre><p>Checkout the starter code branch <code>do/starter-code</code>:</p>
+<pre tabindex="0"><code>git checkout do/starter-code
+</code></pre><p>If you have not registered and retrieved your API key yet, you should do so now.</p>
+<p>Next, using your favourite code editor, create a copy of the <code>.env.example</code> file and rename it to <code>.env</code>.</p>
+<p>Replace the placeholder <code>your-news-api-key</code> value for <code>VITE_NEWS_API_KEY</code> with your API key from <a href="https://newsapi.org/">News API</a> and save the <code>.env</code> file.</p>
+<p>Install the project dependencies:</p>
+<pre tabindex="0"><code>npm install
+</code></pre><p>Run the application:</p>
+<pre tabindex="0"><code>npm run dev
+</code></pre><p>You should see the following output in the terminal:</p>
+<pre tabindex="0"><code>&gt; whats-new@0.0.0 dev
+&gt; vite
+
+  VITE v5.0.10  ready in 3639 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
+</code></pre><p>When you launch the app in your browser, you will see the following screen:</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/W4DO-2025/Building-news-aggregator-app/3yw362u.png" alt="what&rsquo;s new homepage" />
+</figure>
+
+
+</p>
+<p>What’s New Homepage with news items</p>
+<h2 id="step-2---creating-a-web-app-manifest-configuration"><a href="#step-2-creating-a-web-app-manifest-configuration">Step 2 - Creating a web app manifest configuration</a><a href="#step-2-creating-a-web-app-manifest-configuration"></a></h2>
+<p>A web application manifest is a JSON-based file that provides a centralized location for storing the metadata associated with a web application.</p>
+<p>In progressive web app development, a web manifest is used to provide the information that the browser needs to install the web application on a device such as the app name and icon.</p>
+<p>At its core, a web app manifest for a progressive web app should include four top-level keys also known as members for it to be valid. They are: <code>name</code>, <code>icons</code>, <code>start_url</code> and <code>display</code>.</p>
+<p>You can manually write the configuration for your web app manifest file and generate the icons needed. However, for the sake of this tutorial, you will be using this <a href="https://www.simicart.com/manifest-generator.html/">PWA Manifest Generator</a> tool to generate both the configuration and the icons.</p>
+<p>Launch the tool and fill out the form as shown below:</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/W4DO-2025/Building-news-aggregator-app/elUkKXx.png" alt="PWA Manifest Generator Screen" />
+</figure>
+
+
+</p>
+<p>Generating the configuration for a manifest using the PWA Manifest Generator</p>
+<p>For the <strong>icons</strong> field, upload the <code>app-icon-image.png</code> file found at the root of the <code>whats-new</code> project folder.</p>
+<p>Click on the <strong>Generate Manifest</strong> button to generate the manifest. The tool will generate a zipped folder that you can download to your machine. Extract the files from the zipped folder.</p>
+<p>You should see a <code>manifest.webmanifest</code> file and some image files prefixed with the side of each icon. Copy the image files to your application’s <code>/public</code> folder.</p>
+<p>Open the <code>manifest.webmanifest</code> file in any text editor. Its contents should be similar to the snippet shown in the image below.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/W4DO-2025/Building-news-aggregator-app/G1PO9lw.png" alt="Manifest file screenshot" />
+</figure>
+
+
+</p>
+<p>Screenshot the manifest files generated.</p>
+<p>You will need to use the JSON object in the file in the next section.</p>
+<h2 id="step-3---generating-the-web-app-manifest-and-service-worker"><a href="#step-3-generating-the-web-app-manifest-and-service-worker">Step 3 - Generating the web app manifest and service worker</a><a href="#step-3-generating-the-web-app-manifest-and-service-worker"></a></h2>
+<p>In this step, you will generate the web application manifest for the application with the configuration above and create a service worker using a Vite plugin called <a href="https://vite-pwa-org.netlify.app/"><code>vite-plugin-pwa</code></a>.</p>
+<p>This customizable plugin allows you to add PWA capabilities to an existing Vite application.</p>
+<p>To add the plugin to your application, you need to install it via <code>npm</code>:</p>
+<pre tabindex="0"><code>npm install -D vite-plugin-pwa
+</code></pre><p>Next, you configure the plugin for your application by editing your <code>vite.config.js</code> file as shown below:</p>
+<p>vite.config.js</p>
+<pre tabindex="0"><code>import { defineConfig } from &#39;vite&#39;
+import vue from &#39;@vitejs/plugin-vue&#39;
+import { VitePWA } from &#39;vite-plugin-pwa&#39;
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [
+    vue(),
+    VitePWA({})
+  ],
+})
+</code></pre><p>The <code>vite-plugin-pwa</code> package exports a function called <code>VitePWA</code> that receives an object with a set of different options for configuring the plugin as an argument. One of the options you can set for this plugin is the <code>manifest</code> option. By setting this option, you are giving the plugin the manifest configuration you want the plugin to use to generate the web app manifest.</p>
+<p>Add a <code>manifest</code> key to the object in the <code>VitePWA()</code> function call, set it to the JSON object from the generated <code>manifest.webmanifest</code> file and save your changes. You should end up with a Vite configuration object that looks like this:</p>
+<p>vite.config.js</p>
+<pre tabindex="0"><code>export default defineConfig({
+  plugins: [
+    vue(),
+    VitePWA({
+      manifest: {
+        &#34;theme_color&#34;: &#34;#0F172A&#34;,
+        &#34;background_color&#34;: &#34;#f5f8fa&#34;,
+        &#34;display&#34;: &#34;standalone&#34;,
+        &#34;scope&#34;: &#34;/&#34;,
+        &#34;start_url&#34;: &#34;/&#34;,
+        &#34;name&#34;: &#34;What&#39;s New - Vue News Aggregator Site&#34;,
+        &#34;short_name&#34;: &#34;What&#39;s New&#34;,
+        &#34;description&#34;: &#34;A news aggregator pulling news items from News API.&#34;,
+        &#34;icons&#34;: [
+          {
+            &#34;src&#34;: &#34;/icon-192x192.png&#34;,
+            &#34;sizes&#34;: &#34;192x192&#34;,
+            &#34;type&#34;: &#34;image/png&#34;
+          },
+          {
+            &#34;src&#34;: &#34;/icon-256x256.png&#34;,
+            &#34;sizes&#34;: &#34;256x256&#34;,
+            &#34;type&#34;: &#34;image/png&#34;
+          },
+          {
+            &#34;src&#34;: &#34;/icon-384x384.png&#34;,
+            &#34;sizes&#34;: &#34;384x384&#34;,
+            &#34;type&#34;: &#34;image/png&#34;
+          },
+          {
+            &#34;src&#34;: &#34;/icon-512x512.png&#34;,
+            &#34;sizes&#34;: &#34;512x512&#34;,
+            &#34;type&#34;: &#34;image/png&#34;
+          }
+        ]
+      }
+    })
+  ],
+})
+</code></pre><p>You should now have a working installable PWA. Every time you build your app, the plugin generates a web app manifest for your browser and configures it on your application’s entry point which is /. It also creates a service worker and it adds the script to register the service worker in your browser. How can you verify the presence of these artefacts in your browser to ensure that your app is now a PWA?</p>
+<h3 id="verifying-the-pwa"><a href="#verifying-the-pwa">Verifying the PWA</a><a href="#verifying-the-pwa"></a></h3>
+<p>You need to open your browser developer tools and navigate to the <strong>Application</strong> tab. In the course of this tutorial, we will be using the Chrome browser as our reference. To open your developer tools in Chrome, press the keys <code>CTRL+SHIFT+I</code> (windows) or <code>OPTION+CMD+I</code> (MAC). Under the <strong>Application</strong> tab in the sidebar, you should see a section called <strong>Application</strong>. That section has a sub-link called <strong>Manifest</strong>. When you click on that link, you should see some information correlating with what you have provided to the plugin above. However, at this stage, you are presented with the screen below.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/W4DO-2025/Building-news-aggregator-app/8jTBrze.png" alt="Picture of the empty manifest section in the Application tab in the browser dev tools" />
+</figure>
+
+
+</p>
+<p>Empty <strong>Manifest</strong> section in <strong>Application</strong> tab</p>
+<p>Additionally, you will find that there are no service workers registered under the <strong>Service workers</strong> section.</p>
+<p>Also, under the <strong>Storage</strong> section, when you click on <strong>Cache storage</strong>, you should find some cached information but again as with the <strong>Manifest</strong>* section, you will find that it is empty.</p>
+<p>You should also find a desktop with an arrow-down icon button in the browser toolbar section.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/W4DO-2025/Building-news-aggregator-app/Ec1YGA9.png" alt="Browser Toolbar with a desktop with arrow down icon button for installing a PWA." />
+</figure>
+
+
+</p>
+<p>Toolbar with install icon button</p>
+<p>These screens are currently blank and you cannot see the button because you are currently viewing your application in the browser while running it in dev mode. This behaviour is expected because you’re running your application in dev mode and the plugin is configured to generate those artefacts and produce the expected behavior in production mode by default. In the next two sections, you will learn about the options you have to address this issue.</p>
+<h3 id="building-and-previewing-the-app"><a href="#building-and-previewing-the-app">Building and previewing the app</a><a href="#building-and-previewing-the-app"></a></h3>
+<p>You have the option to preview the app by running the <code>npm run build</code> and <code>npm run preview</code> commands consecutively to verify your PWA and launch the URL in the browser.</p>
+<p>The build preview URL is different from the URL generated by the dev server for dev builds.</p>
+<p>Repeat the process described above. You should now see the manifest, some items in the cache storage and the install button (marked in yellow) as shown in the images below:</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/W4DO-2025/Building-news-aggregator-app/LvINxKM.png" alt="Manifest section showing the information specified in the manifest configuration and icons uploaded to the public folder" />
+</figure>
+
+
+</p>
+<p><strong>Manifest</strong> section with configuration data</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/W4DO-2025/Building-news-aggregator-app/il7oggd.png" alt="Cache storage section with newly added cache storage." />
+</figure>
+
+
+</p>
+<p><strong>Cache storage</strong> section</p>
+<p>This option requires rebuilding the app anytime you make any changes to your code and can be quite an inconvenience. The next option eliminates this inconvenience as you will see below. However, it comes with some caveats that you’ll discover in the next main step. However, at this point in the tutorial, for our current purpose, you will learn how to work with the plugin in dev mode.</p>
+<h3 id="using-the"><a href="#using-the-devoptions-option-in-the-vite-pwa-plugin-configuration">Using the <code>devOptions</code> option in the Vite PWA plugin configuration</a><a href="#using-the-devoptions-option-in-the-vite-pwa-plugin-configuration"></a></h3>
+<p>The <code>vite-plugin-pwa</code> package provides a <code>devOptions</code> option to support the ability to view the app as a PWA in dev mode from version <code>v0.11.13</code>. You set the <code>enabled</code> sub-option to <code>true</code> as shown in the lines highlighted in the code block below:</p>
+<p>vite.config.js</p>
+<pre tabindex="0"><code>export default defineConfig({
+  plugins: [
+    vue(),
+    VitePWA({
+      devOptions: {
+        enabled: true
+      },
+      manifest: {...}
+    })
+  ],
+})
+</code></pre><p>When you save the changes and restart the dev server, you will notice some additional lines added to your console output as shown in the highlighted lines below.</p>
+<pre tabindex="0"><code>Output&gt; whats-new@0.0.0 dev
+&gt; vite
+
+  VITE v5.0.10  ready in 1490 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
+
+PWA v0.17.4
+mode      generateSW
+precache  2 entries (0.12 KiB)
+files generated
+  dev-dist\sw.js
+  dev-dist\workbox-9637eeee.js
+12:28:22 p.m. [vite] vite.config.js changed, restarting server...
+12:28:22 p.m. [vite] server restarted.
+</code></pre><p>The logs tell you what mode the plugin is configured to use. It is configured to generate a service worker, hence the <code>generateSW</code> value you see. The logs also show that there are some files generated in the <code>dev-dist</code> folder. The <code>sw.js</code> file is the service worker script that is created by the plugin. This script contains the caching strategy. Because the plugin leverages the <code>workbox-build</code> package, it also generates an id-associated workbox file that is used to build the service worker. Lastly, it also generates a file called <code>registerSW.js</code> which is not shown in the logs. The <code>registerSW.js</code> file is the script that checks if the browser supports service workers and registers the service worker when the application is loaded.</p>
+<p>When the application is launched and loaded in your browser, the <code>registerSW.js</code> file registers the service worker created in <code>sw.js</code> and you can see the updates made to our browser. Retry the steps above to verify the <strong>Manifest</strong> and <strong>Cache storage</strong> interfaces in your browser.</p>
+<p>Additionally, you can see the active Service Worker in the <strong>Service workers</strong> section of the <strong>Application</strong> tab as shown below:</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/W4DO-2025/Building-news-aggregator-app/NTnvf5M.png" alt="Registered and active service worker working in the background for the current application tab showing the dev server code." />
+</figure>
+
+
+</p>
+<p>Active service worker</p>
+<h2 id="step-4---handling-the-caching-of-application-files-and-assets"><a href="#step-4-handling-the-caching-of-application-files-and-assets">Step 4 - Handling the caching of application files and assets</a><a href="#step-4-handling-the-caching-of-application-files-and-assets"></a></h2>
+<p>At this point of the tutorial, your application is a PWA but it is not offline-ready quite yet. If you want to verify this, navigate to the <strong>Network</strong> tab of your browser dev tools and set it to run offline. You’ll find that you are presented with a blank screen.</p>
+<p>You need to cache your application files and assets to support offline behaviour. To do that you need to make additional modifications to your configuration for the Vite PWA plugin as shown in the highlighted lines below:</p>
+<p>vite.config.js</p>
+<pre tabindex="0"><code>export default defineConfig({
+  plugins: [
+    vue(),
+    VitePWA({
+      devOptions: {...},
+      includeAssets: [
+        &#34;**/*&#34;
+      ],
+      manifest: {...},
+      workbox: {
+        globPatterns: [&#34;**/*.{js,css,html,png}&#34;]
+      }
+    })
+  ],
+})
+</code></pre><p>The <code>includeAssets</code> option tells the plugin to include the other static assets found in the <code>public</code> folder in the service worker precache. Examples of such static assets are your website favicon, SVG files and font files you may have added to your <code>public</code> folder.</p>
+<p>The icons added to the <code>public</code> directory earlier are included by default since they were added under the <code>manifest</code> option in the plugin configuration.</p>
+<p>The <code>globPatterns</code> option under <code>workbox</code> is used to restrict the type of application files you want to cache. In this case, you want to cache the <code>.js</code>, <code>.css</code>, <code>.html</code>, and <code>.png</code> files that are your main application files.</p>
+<p>With these new changes, your application should now be able to run in offline mode. To see it in action, you have to open another terminal and rebuild the application using <code>npm run build</code> if you’re currently running it in dev mode.</p>
+<p>You might ask: ‘Why is it different for this situation?’ ‘Doesn’t the <code>devOptions</code> option suffice to handle all things related to making a progressive web application in dev mode?’ The answers to these questions all boil down to revising the difference between the builds generated when running the dev server and production builds.</p>
+<p>When running the application in dev mode in Vite, the development build is managed in memory and not written to disk. In other words, there is no build output of the application files in a <code>dist</code> folder like you would get with a production application build. For that reason, there’s nothing for the service worker to add to the precache. If there is nothing to add to the precache, then nothing would be cached in the cache storage in the browser. The only items added to the precache by default are the <code>index.html</code> file i.e. the entry point and the <code>registerSW.js</code> file.</p>
+<p>The <code>index.html</code> file requires the <code>main.js</code> file to load everything needed for your application as you may already know and since this file or any of the other files it imports are not cached, you will always be presented with a blank screen when you run your application in dev mode as an offline application.</p>
+<p>To verify that they are not cached, after running a production build of your application, compare the contents of the <code>sw.js</code> files in both the <code>dev-dist</code> and <code>dist</code> directories. You should be looking out for the items provided as arguments to a <code>precacheAndRoute</code> function.</p>
+<p>Run the production build of your application using <code>npm run preview</code> and launch it on the browser. You can place it side-by-side with the browser tab running your dev build. Navigate to the <strong>Network</strong> tab of your browser dev tools, set it to run offline and refresh the page. You should still be able to see the application screen.</p>
+<p>This is because when your application was loaded, the service worker was registered and the build files were cached. To see the files, navigate to the <strong>Cache storage</strong> section in the <strong>Application</strong> tab and click on the cached item labeled <strong>workbox-precache-*</strong>. You should see file names corresponding to the files in your application’s <code>dist</code> folder.</p>
+<p>Here is a screenshot for your reference:</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/W4DO-2025/Building-news-aggregator-app/of4zTtW.png" alt="Image showing the domain production build of the application, the number of cache entries and the list of cached build files in the Cache storage" />
+</figure>
+
+
+</p>
+<p><strong>Cache</strong> storage with dist files</p>
+<p>You can also compare it with the cache for your dev server browser tab. Here is another screenshot for your reference:</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/W4DO-2025/Building-news-aggregator-app/gbZSQnh.png" alt="Image showing the domain of dev run of the application, the number of cache entries and the list of cached build files in the Cache storage" />
+</figure>
+
+
+</p>
+<p><strong>Cache</strong> storage without dist files</p>
+<p>Some key things to note are the difference in the number of entries (marked in blue), the port numbers (marked in yellow) and the table of files cached (marked in red).</p>
+<p>If you made it to this point, congratulations! You have thus been able to make your application offline-available successfully. What’s the next step? Your application displays some data fetched from an API. Right now, only the application files are cached. In the next section, you will add indexDB to fix this gap.</p>
+<h2 id="step-5---caching-application-data-using-indexdb"><a href="#step-5-caching-application-data-using-indexdb">Step 5 - Caching application data using IndexDB</a><a href="#step-5-caching-application-data-using-indexdb"></a></h2>
+<p>IndexedDB is a browser API for storing structured data and blobs (binary data) on the client side. It is a transactional database system that stores data as key-value pairs in a JavaScript object-like structure.</p>
+<p>In this section, you will add an IndexedDB database to your application and use it to manage data caching in your application.</p>
+<h3 id="update-the-app-to-retrieve-data-from-api"><a href="#update-the-app-to-retrieve-data-from-api">Update the app to retrieve data from API</a><a href="#update-the-app-to-retrieve-data-from-api"></a></h3>
+<p>To begin, you need to make some changes to the way the data shown on the app is retrieved. Currently, the data being displayed is stored as in-app variables.</p>
+<p>Open the <code>NewsItems.vue</code> file. Delete the <code>testNewsItemsData</code> variable and the associated comment.</p>
+<p>Locate the part of the function called <code>getCustomizedTabNewsItems</code> within the <code>&lt;script setup&gt;</code> tag shown below and do what is said within the comments:</p>
+<p>NewsItems.vue</p>
+<pre tabindex="0"><code>const getCustomizedTabNewsItems = () =&gt; {
+  //...
+  if (definedCustomizations) {
+    //...
+    /** TODO: Remove the the line below after setting up your API KEY and delete this comment */
+    newsItems.value = [
+      {
+        source: {
+          id: &#39;buzzfeed&#39;,
+          name: &#39;Buzzfeed&#39;
+        },
+        author: &#39;Melanie Aman&#39;,
+        title: &#39;37 Beauty Products Under $25 That Don\&#39;t Skimp On Results&#39;,
+        description: &#39;A heavy serving of getting more than you pay for ...don\&#39;t mind if we do.View Entire Post ›&#39;,
+        url: &#39;https://www.buzzfeed.com/melanie_aman/beauty-products-under-25-that-dont-skimp-on-results&#39;,
+        urlToImage: &#39;https://img.buzzfeed.com/buzzfeed-static/static/2023-12/11/20/enhanced/46ff3dce9b4d/original-451-1702327901-3.jpg?crop=4205:2208;0,0%26downsize=1250:*&#39;,
+        publishedAt: &#39;2023-12-24T09:00:03Z&#39;,
+        content: &#39;Psst! Bio-Oil contains retinol, which accelerates skin turnover but can make you more sensitive to the sun so don\&#39;t forget your sunscreen!\r\nPromising review: \&#39;I was skeptical of how amazing the revie… [+689 chars]&#39;
+      },
+      // ...
+    ]
+
+    /** TODO: Uncomment after setting up your API KEY */
+    // const { fetchedNewsItems, getNewsItems } = useNewsItems(requestUrl)
+    // nextTick(async () =&gt; {
+    //   await getNewsItems()
+    //   newsItems.value = fetchedNewsItems.value
+    // })
+  }
+}
+</code></pre><p>Go a little further down the file still within the <code>&lt;script setup&gt;</code> tag and locate the code highlighted below:</p>
+<p>NewsItems.vue</p>
+<pre tabindex="0"><code>if (props.tab.id === APPLICATION_TABS[2].id &amp;&amp; props.retrieveCustomCuratedContent) {
+  // ...
+} else if (props.tab.id === APPLICATION_TABS[2].id &amp;&amp; !props.retrieveCustomCuratedContent) {
+  // ...
+} else {
+  // get news items for other tabs ...
+  // TODO: Remove the the line below after setting up your API KEY and delete this comment
+  newsItems.value = testNewsItemsData
+
+  /** TODO: Uncomment after setting up your API KEY */
+  // const { fetchedNewsItems, getNewsItems } = useNewsItems(requestUrl)
+  // nextTick(async () =&gt; {
+  //   await getNewsItems()
+  //   newsItems.value = fetchedNewsItems.value
+  // })
+}
+</code></pre><p>Also, do what the comment says.</p>
+<p>Finally, open the <code>SourceToggleTokens.vue</code> file and find the code shown below:</p>
+<p>SourceToggleTokens.vue</p>
+<pre tabindex="0"><code>watch(sourcesRetrievalParameters, async (newParams) =&gt; {
+  // ...
+
+  /** TODO: Uncomment after setting up your API KEY */
+  // const { newsSources: apiNewsSources, getNewsSources } = useNewsSources(queryString.value)
+  // await getNewsSources()
+  // newsSources.value = apiNewsSources.value
+})
+</code></pre><p>Uncomment the code as the instructions tell you to and save your changes.</p>
+<p>If you have added your API key as expected in the beginning and updated the files as discussed above, you should be presented with a different set of news items on the home page.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/W4DO-2025/Building-news-aggregator-app/sibRLVg.png" alt="Headline tab with a list of headlines gotten from the API" />
+</figure>
+
+
+</p>
+<p>News Items from API</p>
+<p>Additionally, when you click on the setting icon highlighted in blue above, you will be presented with a long list of news sources similar to the screen shown below:</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/W4DO-2025/Building-news-aggregator-app/HP40T1H.png" alt="Screen showing the setting section where the list of news sources from the API is rendered" />
+</figure>
+
+
+</p>
+<p>News Sources from the API</p>
+<h3 id="determining-what-to-store"><a href="#determining-what-to-store">Determining what to store</a><a href="#determining-what-to-store"></a></h3>
+<p>Until now, you’ve only focused on the visuals of the application. To understand what to store, we’ll go through a brief walkthrough of how the application queries the News API.</p>
+<p>The application has 3 tabs: <strong>Headlines</strong>, <strong>Explore</strong> and <strong>Curated for me</strong>. The file called <code>constants/general.js</code> holds information for each of those tabs in a variable called <code>APPLICATION_TABS</code>. Each tab object has two properties called <code>apiCallURL</code> and <code>apiCallParameters</code>. You’ll notice that each <code>apiCallURL</code> value is a string that starts with a given endpoint for querying the News API and has some placeholder values in curly braces representing the expected request parameters for that endpoint. Those placeholder values are the same as the elements in the corresponding <code>apiCallParameters</code> array for that tab. Take a look at the object for the <strong>Headlines</strong> tab shown below:</p>
+<p>constants/general.js</p>
+<pre tabindex="0"><code>export const APPLICATION_TABS = [
+  {
+    name: &#39;Headlines&#39;,
+    id: &#39;headlines-tab&#39;,
+    target: &#39;#headlines&#39;,
+    ariaControls: &#39;headlines&#39;,
+    apiCallURL: &#39;https://newsapi.org/v2/top-headlines?country={country}&amp;category={category}&#39;,
+    apiCallParameters: [&#39;category&#39;, &#39;country&#39;]
+  },
+  { // ... },
+  { //... }
+]
+</code></pre><p>The URL gets formatted to produce the complete endpoint using a function called <code>parse</code> from the <code>dynamic-string-parser.js</code> util. Then it gets passed as an argument to a function called <code>useNewsItems</code>. The <code>useNewsItems</code> function is a composable that returns two things: <code>fetchedNewsItems</code> - a reactive array that holds the data from the API and <code>getNewsItems</code> - a function that does the actual network fetch and updates the <code>fetchedNewsItems</code> object.</p>
+<p>We call the <code>getNewsItems</code> function and set the returned array to <code>newsItems</code>.</p>
+<p>The snippet below shows the <code>getNewsItems</code> function:</p>
+<p>useNewsItems.js</p>
+<pre tabindex="0"><code>async function getNewsItems() {
+  try {
+   const apiResponse = await fetch(url.value, {
+    headers: {
+     &#39;X-Api-Key&#39;: import.meta.env.VITE_NEWS_API_KEY
+    }
+   })
+   const data = await apiResponse.json()
+   fetchedNewsItems.value = data.articles
+   count.value = data.totalResults
+  } catch (error) {
+
+  }
+ }
+</code></pre><p>You will update this function to store the news items from the API in an indexedDB database that you will create in the next section.</p>
+<h3 id="installing-and-setting-up-an-indexeddb-database-in-the-app"><a href="#installing-and-setting-up-an-indexeddb-database-in-the-app">Installing and setting up an IndexedDB database in the app</a><a href="#installing-and-setting-up-an-indexeddb-database-in-the-app"></a></h3>
+<p>First, you need to install the <a href="https://www.npmjs.com/package/idb"><code>idb</code></a> package from <code>npm</code>:</p>
+<pre tabindex="0"><code>npm install idb
+</code></pre><p>The <code>idb</code> package is a lightweight wrapper for the IndexedDB API used to interact with this client-side storage. The IndexedDB API has a reputation for being a little quirky to use in its raw form and not user-friendly. This package provides enhancements that make it easier to use.</p>
+<p>Next, you need to create a composable file called <code>useIDB</code> and add the following code to it. This composable with contain reusable code that we can plug into our components that fetch data from the News API.</p>
+<p>useIDB.js</p>
+<pre tabindex="0"><code>import { openDB } from &#39;idb&#39;
+import { ref } from &#39;vue&#39;
+
+const versionNumber = ref(1)
+
+const useIDB = () =&gt; {
+    const db = ref(null)
+
+  return {
+   db,
+   versionNumber
+  }
+}
+
+export default useIDB
+</code></pre><p>This composable returns the variable <code>db</code> which will you instantiate soon using the <code>openDB</code> function from <code>idb</code> as well as a global <code>versionNumber.</code> The reason why the <code>versionNumber</code> is at the top of the file is to ensure that it is global to the app at any time during its execution and we do not create a new one each time we call the composable.</p>
+<p>The snippet below builds on the above and assigns the returned value to <code>db</code> after opening a database using <code>openDB</code>.</p>
+<pre tabindex="0"><code>const useIDB = () =&gt; {
+    const db = ref(null)
+    const getDB = async (version, objectStoreName, keyPath) =&gt; {
+        versionNumber.value += 1
+        db.value = await openDB(&#39;whats-new&#39;, version, {
+            upgrade(db, oldVersion) {
+                if (version === 1 &amp;&amp; oldVersion === 0) {
+                    db.createObjectStore(objectStoreName, {
+                        keyPath
+                    })
+                }
+
+                if (version &gt; 1) {
+                    if (!db.objectStoreNames.contains(objectStoreName)) {
+                        db.createObjectStore(objectStoreName, {
+                            keyPath
+                        })
+                    }
+                }
+            }
+        })
+    }
+
+    return {
+        db,
+        versionNumber,
+        getDB
+    }
+}
+</code></pre><p>The new function called <code>getDB</code> is an async function that takes in 3 arguments <code>version</code>, <code>objectStoreName</code> and <code>keyPath</code>. There are several terms used when talking about the IndexedDB API. One is the version of the database. This comes in handy when you need to modify the database in some way. Another is the concept of <em>object stores</em>.</p>
+<p>Think of object stores as similar to tables in an SQL database.</p>
+<p>Finally, we have something known as a <em>keyPath</em>. The <em>keyPath</em> is a unique field or column name in the data you want to add to an object store.</p>
+<p>The <code>getDB</code> function requires these three parameters from the consuming client component to create the database as seen in the code above. After incrementing the <code>versionNumber</code>, the value of <code>db</code> is set to the result of calling <code>openDB</code> with the name of the database we want to create - <code>'whats-new'</code> - and the version number.</p>
+<p>The <code>openDB</code> function also has an object as the third argument. This object contains events used to set up the database.</p>
+<p>In this use case, you only need the <code>upgradeDb</code> event. The <code>upgradeDb</code> event runs when the version number of the database created is greater than that of the existing database. If <code>oldVersion</code> - the current version number of the database existing in the browser - is <code>0</code> and the version we want to create is <code>1</code>, you want to create an object store with the <code>objectStoreName</code> and <code>keyPath</code> provided.</p>
+<p>However, if the version we want to create is greater than 1, you create an object store with the <code>objectStoreName</code> and <code>keyPath</code> provided only if there’s no object store with the given <code>objectStoreName</code>.</p>
+<p>Finally, you return the <code>getDB</code> function.</p>
+<p>The last thing this composable needs to do is provide us with an interface to retrieve data from the <code>db</code> if present. See the code snippet below for how to achieve that:</p>
+<p>useIDB.js</p>
+<pre tabindex="0"><code>const useIDB = () =&gt; {
+    const db = ref(null)
+    // getDB
+
+    const getDataFromObjectStore = async (objectStoreName) =&gt; {
+        let data
+
+        if (db.value) {
+            data = await db.value.getAll(objectStoreName)
+        } else {
+            const db = await openDB(&#39;whats-new&#39;, undefined)
+            data = await db.getAll(objectStoreName)
+        }
+
+        return data
+    }
+
+    return {
+        //...
+        getDataFromObjectStore
+    }
+}
+</code></pre><p>If <code>db.value</code> is not <code>null</code>, retrieve all data from the object store. Otherwise, open the current <code>db</code> in the browser and retrieve all data.</p>
+<p>With the composable created, you can make the needed changes to <code>getNewsItems</code> as shown below:</p>
+<p>useNewsItems.js</p>
+<pre tabindex="0"><code>async function getNewsItems() {
+  const { db, getDB, versionNumber, getDataFromObjectStore } = useIDB()
+
+  try {
+   // ... apiResponse
+   const data = await apiResponse.json()
+   // setting fetchedNewsItems
+
+   await getDB(versionNumber.value, url.value, &#39;url&#39;)
+   data.articles.forEach(async (article) =&gt; {
+    await db.value.put(url.value, article)
+   })
+  } catch (error) {
+   if (error instanceof TypeError &amp;&amp; error.message.includes(&#39;Failed to fetch&#39;)) {
+    const cachedItems = await getDataFromObjectStore(url.value)
+    fetchedNewsItems.value = cachedItems
+   }
+  }
+ }
+</code></pre><p>If the attempt to fetch the articles from the API is successful, you call <code>getDB</code> and store the articles in the database using the <code>put</code> function from the indexedDB API. The <code>put</code> function adds the item to the object store specified as the first parameter.</p>
+<p>If the fetch attempt fails, you check that the error is a fetch error and retrieve the data from the database using <code>getDataFromObjectStore</code>.</p>
+<p>You can do likewise for <code>getNewsSources</code> in <code>useNewsSources</code> as shown below:</p>
+<p>useNewsSources.js</p>
+<pre tabindex="0"><code>async function getNewsSources() {
+  const { db, getDB, versionNumber, getDataFromObjectStore } = useIDB()
+    try {
+      // apiResponse
+      const data = await apiResponse.json()
+      // ...
+      await getDB(versionNumber.value, baseUrl.value, &#39;id&#39;)
+ data.sources.forEach(async (source) =&gt; {
+  await db.value.put(baseUrl.value, source)
+ })
+    } catch (error) {
+  if (error instanceof TypeError &amp;&amp; error.message.includes(&#39;Failed to fetch&#39;)) {
+   const cachedItems = await getDataFromObjectStore(baseUrl.value)
+   newsSources.value = cachedItems
+  }
+    }
+  }
+</code></pre><p>Save your changes, rebuild your app and run it in preview mode using the commands below:</p>
+<pre tabindex="0"><code>npm run build
+</code></pre><pre tabindex="0"><code>npm run preview
+</code></pre><p>Launch the app in your browser. You should see a new entry under the <strong>IndexedDB</strong> sub-section of the <strong>Storage</strong> section in the <strong>Application</strong> tab of your browser dev tools.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/W4DO-2025/Building-news-aggregator-app/sh7kvA1.png" alt="New entry called whats-new under the IndexedDB section in the Application tab of the browser dev tools with two stores corresponding to the URLs fetched" />
+</figure>
+
+
+</p>
+<p>New IndexedDB entry</p>
+<p>Next, navigate to the Network tab. Set the network throttling option to Offline as shown below. You should see a small yellow warning icon.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/W4DO-2025/Building-news-aggregator-app/jEGKLEB.png" alt="Image of the Network tab with the throttling setting set to offline" />
+</figure>
+
+
+</p>
+<p>Network tab set to offline</p>
+<p>Reload the app. Your application should load as before.</p>
+<p>There might be a temporary moment where you get the <code>No internet</code> screen but the app will boot up immediately after.</p>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a><a href="#conclusion"></a></h2>
+<p>In this article, you converted a single-page application in Vue to a progressive web app using service workers and the IndexedDB API. Possible next steps include alerting users about new updates to the page and prompting them to reload the page to see the updated version. The <a href="https://vite-pwa-org.netlify.app/frameworks/vue.html">Vue section</a> in the documentation for the <code>vite-plugin-pwa</code> package provides a good starting point.</p>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/building-news-aggregator-web-app-using-vite-vue">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,13 +1,10 @@
 ---
 title: "Android Forensics References: a curated list"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
-  - "cybersecurity"
-  - "cybersecurity-awareness"
-  - "forensics"
-  - "security"
-  - "security-awareness"
-  - "security-awareness-3-0"
+  - "general"
+tags: 
+  - "ces"
 ---
 
 During the forensic analysis of a mobile device, we often have the need to understand the content of a specific file or folder. This is particularly true when a file or a folder is not parsed by our set of tools. 

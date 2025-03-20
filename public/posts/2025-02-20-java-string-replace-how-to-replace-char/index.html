@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Java String Replace How to Replace Characters and Substrings</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Java String Replace How to Replace Characters and Substrings</h1>
+			<b><time>20.02.2025 01:02</time></b>
+		       
+
+			<div>
+				<h1 id="java-string-replace-how-to-replace-characters-and-substrings">Java String Replace How to Replace Characters and Substrings</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>In this article, you’ll learn a few different ways to remove a character from a <code>String</code> object in Java. Although the <code>String</code> class doesn’t have a <code>remove()</code> method, you can use variations of the <code>replace()</code> method and the <code>substring()</code> method to remove characters from strings.</p>
+<p><strong>Note:</strong> <code>String</code> objects are immutable, which means that they can’t be changed after they’re created. All of the <code>String</code> class methods described in this article return a new <code>String</code> object and do not change the original object. The type of string you use depends on the requirements of your program. Learn more about <a href="/community/tutorials/string-vs-stringbuffer-vs-stringbuilder">other types of string classes</a> and <a href="/community/tutorials/string-immutable-final-java">why strings are immutable in Java</a>.</p>
+<p>The <code>String</code> class has the following methods that you can use to replace or remove characters:</p>
+<ul>
+<li><code>replace(char oldChar, char newChar)</code>: Returns a new <code>String</code> object that replaces all of the occurrences of <code>oldChar</code> in the given string with <code>newChar</code>. You can also use the <code>replace()</code> method, in the format <code>replace(CharSequence target, CharSequence replacement)</code>, to return a new <code>String</code> object that replaces a substring in the given string.</li>
+<li><code>replaceFirst(String regex, String replacement)</code>: Returns a new <code>String</code> object that replaces the first substring that matches the regular expression in the given string with the replacement.</li>
+<li><code>replaceAll(String regex, String replacement)</code>: Returns a new <code>String</code> object that replaces each substring that matches the regular expression in the given string with the replacement.</li>
+<li><code>substring(int start, int end)</code>: Returns a new <code>String</code> object that contains a subsequence of characters currently contained in this sequence. The substring begins at the specified start and extends to the character at index end minus 1.</li>
+</ul>
+<p>Notice that the first argument for the <code>replaceAll()</code> and <code>replaceFirst()</code> methods is a <a href="/community/tutorials/regular-expression-in-java-regex-example">regular expression</a>. You can use a regular expression to remove a pattern from a string.</p>
+<p><strong>Note:</strong> You need to use double quotes to indicate literal string values when you use the <code>replace()</code> methods. If you use single quotes, then the JRE assumes you’re indicating a character constant and you’ll get an error when you compile the program.</p>
+<h2 id="remove-a-character-from-a-string-in-java"><a href="#remove-a-character-from-a-string-in-java">Remove a Character from a String in Java</a><a href="#remove-a-character-from-a-string-in-java"></a></h2>
+<p>You can remove all instances of a character from a string in Java by using the <code>replace()</code> method to replace the character with an empty string. The following example code removes all of the occurrences of lowercase “<code>a</code>” from the given string:</p>
+<pre tabindex="0"><code>String str = &#34;abc ABC 123 abc&#34;;
+String strNew = str.replace(&#34;a&#34;, &#34;&#34;);
+</code></pre><pre tabindex="0"><code>Outputbc ABC 123 bc
+</code></pre><h2 id="remove-spaces-from-a-string-in-java"><a href="#remove-spaces-from-a-string-in-java">Remove Spaces from a String in Java</a><a href="#remove-spaces-from-a-string-in-java"></a></h2>
+<p>You can remove spaces from a string in Java by using the <code>replace()</code> method to replace the spaces with an empty string. The following example code removes all of the spaces from the given string:</p>
+<pre tabindex="0"><code>String str = &#34;abc ABC 123 abc&#34;;
+String strNew = str.replace(&#34; &#34;, &#34;&#34;);
+</code></pre><pre tabindex="0"><code>OutputabcABC123abc
+</code></pre><h2 id="remove-a-substring-from-a-string-in-java"><a href="#remove-a-substring-from-a-string-in-java">Remove a Substring from a String in Java</a><a href="#remove-a-substring-from-a-string-in-java"></a></h2>
+<p>You can remove only the first occurrence of a character or substring from a string in Java by using the <code>replaceFirst()</code> method to replace the character or substring with an empty string. The following example code removes the first occurrence of “<code>ab</code>” from the given string:</p>
+<pre tabindex="0"><code>String str = &#34;abc ABC 123 abc&#34;;
+String strNew = str.replaceFirst(&#34;ab&#34;, &#34;&#34;);
+</code></pre><pre tabindex="0"><code>Outputc ABC 123 abc
+</code></pre><h2 id="remove-all-the-lowercase-letters-from-a-string-in-java"><a href="#remove-all-the-lowercase-letters-from-a-string-in-java">Remove all the Lowercase Letters from a String in Java</a><a href="#remove-all-the-lowercase-letters-from-a-string-in-java"></a></h2>
+<p>You can use a regular expression to remove characters that match a given pattern from a string in Java by using the <code>replace.All()</code> method to replace the characters with an empty string. The following example code removes all of the lowercase letters from the given string:</p>
+<pre tabindex="0"><code>String str = &#34;abc ABC 123 abc&#34;;
+String strNew = str.replaceAll(&#34;([a-z])&#34;, &#34;&#34;);
+</code></pre><pre tabindex="0"><code>OutputABC 123
+</code></pre><h2 id="remove-the-last-character-from-a-string-in-java"><a href="#remove-the-last-character-from-a-string-in-java">Remove the Last Character from a String in Java</a><a href="#remove-the-last-character-from-a-string-in-java"></a></h2>
+<p>There is no specific method to replace or remove the last character from a string, but you can use the <a href="/community/tutorials/java-string-substring">String substring()</a> method to truncate the string. The following example code removes the last character from the given string:</p>
+<pre tabindex="0"><code>String str = &#34;abc ABC 123 abc&#34;;
+String strNew = str.substring(0, str.length()-1);
+</code></pre><pre tabindex="0"><code>Outputabc ABC 123 ab
+</code></pre><h2 id="try-it-out"><a href="#try-it-out">Try it out</a><a href="#try-it-out"></a></h2>
+<p>The following example file defines a class that includes all of the method examples provided in this article, and prints out the results after invoking each method on the given string. You can use this example code to try it out yourself on different strings using different matching patterns and replacement values.</p>
+<p>If you have Java installed, you can create a new file called <code>JavaStringRemove.java</code> and add the following code to the file:</p>
+<p>JavaStringRemove.java</p>
+<pre tabindex="0"><code>
+public class JavaStringRemove {
+
+ public static void main(String[] args) {
+     String str = &#34;abc ABC 123 abc&#34;;
+
+  // Remove a character from a string in Java
+  System.out.println(&#34;String after removing all the &#39;a&#39;s = &#34;+str.replace(&#34;a&#34;, &#34;&#34;));
+
+  // Remove spaces from a string in Java
+  System.out.println(&#34;String after removing all the spaces = &#34;+str.replace(&#34; &#34;, &#34;&#34;));
+
+  // Remove a substring from a string in Java 
+  System.out.println(&#34;String after removing the first &#39;ab&#39; substring = &#34;+str.replaceFirst(&#34;ab&#34;, &#34;&#34;));
+
+  // Remove all the lowercase letters from a string in Java
+  System.out.println(&#34;String after removing all the lowercase letters = &#34;+str.replaceAll(&#34;([a-z])&#34;, &#34;&#34;));
+
+  // Remove the last character from a string in Java
+  System.out.println(&#34;String after removing the last character = &#34;+str.substring(0, str.length()-1));
+ }
+
+}
+</code></pre><p>Compile and run the program:</p>
+<pre tabindex="0"><code>javac JavaStringRemove.java
+java JavaStringRemove
+</code></pre><p>You get the following output:</p>
+<pre tabindex="0"><code>OutputString after removing all the &#39;a&#39;s = bc ABC 123 bc
+String after removing all the spaces = abcABC123abc
+String after removing the first &#39;ab&#39; substring = c ABC 123 abc
+String after removing all the lowercase letters =  ABC 123
+String after removing the last character = abc ABC 123 ab
+</code></pre><p>Each method in the <code>JavaStringRemove</code> example class operates on the given string. The output shows that the characters specified in each method have been removed from the string.</p>
+<h2 id="regex-in-string-replacement"><a href="#regex-in-string-replacement">Regex in String Replacement</a><a href="#regex-in-string-replacement"></a></h2>
+<p>In Java, <code>replaceAll()</code> enables regex pattern replacements. This method uses regular expressions to match patterns in the string and replace them with a specified replacement. Here’s an example of how to use <code>replaceAll()</code> to replace all digits in a string with asterisks:</p>
+<pre tabindex="0"><code>String text = &#34;123abc456&#34;;
+String replaced = text.replaceAll(&#34;\\d&#34;, &#34;*&#34;);
+System.out.println(replaced); // &#34;***abc***&#34;
+</code></pre><p>In this example, the regular expression <code>\\d</code> matches any digit. The <code>replaceAll()</code> method then replaces each matched digit with an asterisk (<code>*</code>).</p>
+<p>You can also read more about regular expressions in this tutorial on <a href="/community/tutorials/regular-expression-in-java-regex-example">Regular Expression in Java - Java Regex Example</a>.</p>
+<h2 id="immutable-strings-in-java"><a href="#immutable-strings-in-java">Immutable Strings in Java</a><a href="#immutable-strings-in-java"></a></h2>
+<p>In Java, strings are immutable, which means that once a string is created, its contents cannot be modified. This immutability is a fundamental property of the <code>String</code> class in Java. When you attempt to modify a string, a new string object is created, and the original string remains unchanged. This behavior is in contrast to mutable objects, which can be modified after creation.</p>
+<p>The immutability of strings in Java has several implications. For instance, when you use methods like <code>replace()</code>, <code>replaceAll()</code>, or <code>substring()</code>, a new string object is created, and the original string is not modified. This can be beneficial for thread safety and caching, as strings can be safely shared without worrying about their contents being modified.</p>
+<p>However, the immutability of strings can also lead to performance issues if not handled properly. For example, if you need to perform multiple modifications on a string, creating a new string object for each modification can be inefficient. To address this, Java provides the <code>StringBuilder</code> class, which is a mutable sequence of characters. Using <code>StringBuilder</code> can improve efficiency when performing multiple string modifications, as it allows you to modify the string without creating a new object for each change.</p>
+<pre tabindex="0"><code>// This code block demonstrates the use of StringBuilder to modify a string in Java.
+// It creates a StringBuilder object with the initial string &#34;hello world&#34;.
+StringBuilder sb = new StringBuilder(&#34;hello world&#34;);
+// The replace method is then used to modify the string by replacing the characters
+// starting from index 6 (inclusive) to 11 (exclusive) with the string &#34;Java&#34;.
+// This effectively changes the original string &#34;hello world&#34; to &#34;hello Java&#34;.
+sb.replace(6, 11, &#34;Java&#34;);
+// Finally, the modified string is printed to the console using the toString method.
+System.out.println(sb.toString()); // &#34;hello Java&#34;
+</code></pre><p>You can refer to this tutorial on <a href="/community/tutorials/java-string">Java strings</a> for more details.</p>
+<h2 id="faqs"><a href="#faqs">FAQs</a><a href="#faqs"></a></h2>
+<h3 id="1-how-do-you-replace-a-character-in-a-java-string"><a href="#1-how-do-you-replace-a-character-in-a-java-string">1. How do you replace a character in a Java string?</a><a href="#1-how-do-you-replace-a-character-in-a-java-string"></a></h3>
+<p>Use the <code>replace()</code> method:</p>
+<pre tabindex="0"><code>String str = &#34;hello&#34;;
+String newStr = str.replace(&#39;l&#39;, &#39;p&#39;);
+System.out.println(newStr); // &#34;heppo&#34;
+</code></pre><h3 id="2-what-is-the-difference-between"><a href="#2-what-is-the-difference-between-replace-and-replaceall">2. What is the difference between <code>replace()</code> and <code>replaceAll()</code>?</a><a href="#2-what-is-the-difference-between-replace-and-replaceall"></a></h3>
+<p>Feature</p>
+<p><code>replace()</code></p>
+<p><code>replaceAll()</code></p>
+<p>Usage</p>
+<p>Works with plain text (characters or substrings).</p>
+<p>Uses regex for replacements.</p>
+<p>Example</p>
+<p><code>String str = &quot;hello&quot;; str.replace(&quot;l&quot;, &quot;p&quot;);</code></p>
+<p><code>String str = &quot;123abc456&quot;; str.replaceAll(&quot;\\d&quot;, &quot;*&quot;);</code></p>
+<h3 id="3-can-i-replace-a-string-using-regex-in-java"><a href="#3-can-i-replace-a-string-using-regex-in-java">3. Can I replace a string using regex in Java?</a><a href="#3-can-i-replace-a-string-using-regex-in-java"></a></h3>
+<p>Yes, use <code>replaceAll()</code>:</p>
+<pre tabindex="0"><code>String text = &#34;123abc456&#34;;
+String replaced = text.replaceAll(&#34;\\d&#34;, &#34;*&#34;);
+System.out.println(replaced); // &#34;***abc***&#34;
+</code></pre><h3 id="4-why-is-my-java-string-not-changing-after-using"><a href="#4-why-is-my-java-string-not-changing-after-using-replace">4 Why is my Java string not changing after using <code>replace()</code>?</a><a href="#4-why-is-my-java-string-not-changing-after-using-replace"></a></h3>
+<p>Java strings are immutable, meaning they cannot be changed once created. This is important to keep in mind when using methods like <code>replace()</code>, as they do not modify the original string but instead return a new string with the modifications. To see the effects of these methods, you must store the result in a variable or use it directly. Here’s an example:</p>
+<pre tabindex="0"><code>String str = &#34;hello&#34;;
+// The replace method returns a new string with the modifications, it does not change the original string.
+// To see the modified string, we need to store the result in a variable or use it directly.
+str = str.replace(&#34;hello&#34;, &#34;hi&#34;);
+System.out.println(str); // &#34;hi&#34;
+</code></pre><h3 id="5-how-can-i-replace-multiple-different-substrings-in-a-java-string"><a href="#5-how-can-i-replace-multiple-different-substrings-in-a-java-string">5. How can I replace multiple different substrings in a Java string?</a><a href="#5-how-can-i-replace-multiple-different-substrings-in-a-java-string"></a></h3>
+<p>Replacing multiple substrings in a Java string can be achieved using two approaches: chaining multiple <code>replace()</code> calls or utilizing regular expressions with <code>replaceAll()</code>. Let’s explore both methods with examples.</p>
+<p><strong>Method 1: Chaining <code>replace()</code> calls</strong></p>
+<p>This approach involves calling the <code>replace()</code> method multiple times on the original string, each time replacing a different substring. Here’s an example:</p>
+<pre tabindex="0"><code>String text = &#34;I love Java and coding.&#34;;
+String replaced = text.replace(&#34;Java&#34;, &#34;Python&#34;).replace(&#34;coding&#34;, &#34;development&#34;);
+System.out.println(replaced); // &#34;I love Python and development.&#34;
+</code></pre><p>In this example, we first replace “Java” with “Python”, and then replace “coding” with “development”. The order of replacements does not matter in this case, as each replacement is independent of the others.</p>
+<p><strong>Method 2: Using regular expressions with <code>replaceAll()</code></strong></p>
+<p>Alternatively, you can use regular expressions to replace multiple substrings in a single call to <code>replaceAll()</code>. Here’s an example:</p>
+<pre tabindex="0"><code>String replaced = text.replaceAll(&#34;Java|coding&#34;, &#34;Python&#34;);
+</code></pre><p>In this example, the regular expression “Java|coding” matches either “Java” or “coding”. The <code>replaceAll()</code> method then replaces each occurrence of these substrings with “Python”. This approach is more concise and efficient when dealing with multiple replacements.</p>
+<p>Both methods are effective for replacing multiple substrings in a Java string. The choice between them depends on the complexity of the replacements and personal preference.</p>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a><a href="#conclusion"></a></h2>
+<p>In this article, you learned various ways to remove characters from strings in Java using methods from the <code>String</code> class, including <code>replace(),</code> <code>replaceAll(),</code> <code>replaceFirst(),</code> and <code>substring().</code> Continue your learning with more <a href="/community/tags/java">Java tutorials</a>.</p>
+<p>Please refer to these tutorials to learn more about String operations in Java:</p>
+<ol>
+<li><a href="/community/tutorials/java-string">Java String Replace: How to Replace Characters and Substrings</a></li>
+<li><a href="/community/tutorials/regular-expression-in-java-regex-example">Regular Expression in Java: Regex Example</a></li>
+<li><a href="/community/tutorials/how-to-use-operators-in-java">How to Use Operators in Java</a></li>
+</ol>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/java-remove-character-string">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

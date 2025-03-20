@@ -1,6 +1,8 @@
 ---
 title: "Prisma Cloud: The Industry’s Only FedRAMP High Authorized CNAPP"
-date: 2025-03-19
+date: 2025-01-03
+categories: 
+  - "security"
 ---
 
 _Prisma Cloud helps federal agencies and public sector partners achieve the most stringent security standards, as the world’s only cloud-native application protection platform (CNAPP) to achieve FedRAMP High Authorization on the_ _FedRAMP Marketplace__._

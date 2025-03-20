@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Mastering Logistic Regression with Scikit-Learn A Complete Guide</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Mastering Logistic Regression with Scikit-Learn A Complete Guide</h1>
+			<b><time>20.03.2025 14:48</time></b>
+		       
+
+			<div>
+				<h1 id="mastering-logistic-regression-with-scikit-learn-a-complete-guide">Mastering Logistic Regression with Scikit-Learn A Complete Guide</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><a href="/community/tutorials/an-introduction-to-machine-learning">Machine learning</a> heavily relies on logistic regression as one of its essential classification techniques. The term “regression” appears in its name because of its historical background, yet logistic regression is mainly used for classification purposes. This Scikit-learn logistic regression tutorial thoroughly covers logistic regression theory and its implementation in Python while detailing Scikit-learn parameters and hyperparameter tuning methods.</p>
+<p>It demonstrates how logistic regression makes binary classification and multiclass problems straightforward.<br>
+At the end of this guide, you will have developed a strong knowledge base to use Python logistic regression code with a dataset. You will also learn how to interpret results and enhance model performance.</p>
+<h2 id="prerequisites"><a href="#prerequisites">Prerequisites</a><a href="#prerequisites"></a></h2>
+<ul>
+<li>Understanding the fundamental concepts of classification, supervised learning, and model evaluation metrics (accuracy, precision, recall).</li>
+<li>The ability to use Python for data manipulation and model training through libraries such as NumPy, Pandas, and Scikit-learn.</li>
+<li>Understanding linear algebra concepts, basic probability theory, and statistics will provide the foundation to grasp the mathematical formulation of logistic regression.</li>
+<li>A basic grasp of gradient descent and loss functions, as logistic regression minimizes a cost function to optimize model performance.</li>
+</ul>
+<h2 id="understanding-scikit-learn-and-its-role-in-machine-learning"><a href="#understanding-scikit-learn-and-its-role-in-machine-learning">Understanding Scikit-learn and Its Role in Machine Learning</a><a href="#understanding-scikit-learn-and-its-role-in-machine-learning"></a></h2>
+<p>Scikit-learn is a widely open-source Python library and an essential tool for machine learning tasks. It offers straightforward and powerful data analysis and mining tools based on NumPy, SciPy, and Matplotlib. Its API documentation and algorithms make it an indispensable resource for machine learning engineers and data scientists.</p>
+<p>Scikit-learn can be described as a complete package for building machine learning models with minimal coding. These models include <a href="/community/tutorials/multiple-linear-regression-python">linear regression</a>, <a href="/community/tutorials/gradient-boosting-for-classification">decision trees</a>, support vector machines, logistic regression, etc…<br>
+The library provides tools for data preprocessing, feature engineering, model selection, and hyperparameter tuning. This Python <a href="/community/tutorials/normalize-data-in-python">Scikit-learn</a> Tutorial provides an introduction to Scikit-learn.</p>
+<h2 id="mathematical-foundation-of-logistic-regression"><a href="#mathematical-foundation-of-logistic-regression">Mathematical Foundation of Logistic Regression</a><a href="#mathematical-foundation-of-logistic-regression"></a></h2>
+<p>Understanding the math behind logistic regression will help us understand how it extends a simple linear model into a powerful tool for handling binary classification tasks.<br>
+The coming sections explore concepts such as the sigmoid function, odds, log-odd interpretations, and the cost function that regulates the logistic regression learning process.</p>
+<h3 id="the-sigmoid-function"><a href="#the-sigmoid-function">The Sigmoid Function</a><a href="#the-sigmoid-function"></a></h3>
+<p>The sigmoid function is the core of logistic regression. This function takes any real number and maps it to a value between 0 and 1. It can be expressed mathematically as:</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2025/Shaoni/Adrien/20Mar/CodeCogsEqn%20%281%29.png" alt="image" />
+</figure>
+
+
+</p>
+<p>where,</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2025/Shaoni/Adrien/20Mar/CodeCogsEqn%20%282%29.png" alt="image" />
+</figure>
+
+
+</p>
+<p>Since σ(z) always returns a value between 0 and 1(no matter the input z), it effectively converts a linear combination of input features into a probability. This allows logistic regression to classify inputs into one of two classes.</p>
+<h3 id="model-interpretation-odds-and-log-odds"><a href="#model-interpretation-odds-and-log-odds">Model Interpretation: Odds and Log-Odds</a><a href="#model-interpretation-odds-and-log-odds"></a></h3>
+<p>Logistic regression looks at the output probability (let’s call it p) through the lens of odds and log odds:</p>
+<ul>
+<li><strong>Odds</strong> are simply the ratio of the probability that an event occurs compared to the probability that it doesn’t:</li>
+</ul>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2025/Shaoni/Adrien/20Mar/CodeCogsEqn%20%283%29.png" alt="image" />
+</figure>
+
+
+</p>
+<ul>
+<li>If you take the natural logarithm of the odds, you will get the <strong>log-odds</strong> (or <strong>logit</strong>), allowing you to form a linear equation:</li>
+</ul>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2025/Shaoni/Adrien/20Mar/CodeCogsEqn%20%284%29.png" alt="image" />
+</figure>
+
+
+</p>
+<ul>
+<li>(beta)o(The Intercept) represents the log odds when all predictors (xi) are set to zero.</li>
+<li>(beta)n(The coefficient of feature n) represents how much the log odds change when you increase the predictor xn by one unit while keeping the other variables constant.</li>
+</ul>
+<p>You can think of odds as the exponential transformation of log odds:</p>
+<ul>
+<li>When the odds are greater than 1, the event is more likely to occur.</li>
+<li>Odds less than 1 indicate that the event is less likely to occur.</li>
+</ul>
+<h3 id="interpreting-logistic-regression-coefficients-mean-radius-and-odds-ratio-in-breast-cancer-prediction"><a href="#interpreting-logistic-regression-coefficients-mean-radius-and-odds-ratio-in-breast-cancer-prediction">Interpreting Logistic Regression Coefficients: Mean Radius and Odds Ratio in Breast Cancer Prediction</a><a href="#interpreting-logistic-regression-coefficients-mean-radius-and-odds-ratio-in-breast-cancer-prediction"></a></h3>
+<p>In the following code, we have trained a logistic regression model on Scikit-learn’s breast cancer dataset and interpreted the coefficient for the mean radius feature. Next, we computed the odds ratio to measure the effect of each unit increase in mean radius on the probability that a tumor would be classified as malignant.</p>
+<pre tabindex="0"><code>from sklearn.datasets import load_breast_cancer
+from sklearn.linear_model import LogisticRegression
+import numpy as np
+
+dataset = load_breast_cancer()
+X, y = dataset.data, dataset.target
+
+model = LogisticRegression().fit(X, y)
+
+# Let&#39;s consider the first feature: mean radius
+coef = model.coef_[0][0]
+oddsratio = np.exp(coef)
+
+print(f&#34;Coeff for mean radius: {coef:.2f}&#34;)
+print(f&#34;Odds ratio for mean radius: {oddsratio:.2f}&#34;)
+
+#Coeff for mean radius: 1.33
+#Odds ratio for mean radius: 3.77
+</code></pre><p>The results show that the mean radius coefficient is 1.33. This means that for every unit increase in the mean radius, the odds of being malignant increase by 1.33.<br>
+An odds ratio of 3.77(The exponential of the coefficient) indicates that as the mean radius increases by one unit, the odds of malignancy nearly triple, specific to about 3.77 times.</p>
+<p>These positions mean radius as a key predictive variable in the model. Analyzing these values can assist healthcare professionals in making informed medical decisions while analyzing <a href="https://builtin.com/data-science/feature-importance">feature importance</a>.</p>
+<h3 id="key-insights-of-logistic-regression"><a href="#key-insights-of-logistic-regression">Key Insights of Logistic Regression</a><a href="#key-insights-of-logistic-regression"></a></h3>
+<ul>
+<li>It keeps the outputs between 0 and 1, ideal for probability classification tasks.</li>
+<li>It captures the relationship between predictors and the log odds of an event instead of looking at the probabilities directly.</li>
+<li>By exponentiating the coefficients, we can better understand how different features affect the probability of an event occurring.</li>
+</ul>
+<h3 id="cost-function-log-loss"><a href="#cost-function-log-loss">Cost Function (Log Loss)</a><a href="#cost-function-log-loss"></a></h3>
+<p>Unlike linear regression, which focuses on minimizing the mean squared error, logistic regression has its own training method. It aims to minimize a <a href="/community/tutorials/loss-functions-in-python">cost function</a>(log loss or binary cross-entropy). This function evaluates how accurately the model’s predicted probabilities match the class labels. It rewards accurate predictions with high confidence and penalizes incorrect ones. The log loss is defined as:</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2025/Shaoni/Adrien/20Mar/CodeCogsEqn.png" alt="image" />
+</figure>
+
+
+</p>
+<p>where:</p>
+<ul>
+<li><em>m</em> stands for the number of training samples we’re dealing with.</li>
+<li>yi represents the true label for the ith sample, which can be 0 or 1.</li>
+<li><em>yi</em> refers to the predicted probability of the positive class for that same sample.</li>
+</ul>
+<p>This loss function penalizes confident but wrong predictions, encouraging the model to provide well-calibrated probability estimates. Using optimization techniques like <a href="/community/tutorials/intro-to-optimization-in-deep-learning-gradient-descent">gradient descent</a> to minimize the log loss, we end up with the parameters β that best fit the data.</p>
+<h2 id="logistic-regression-vs-linear-regression"><a href="#logistic-regression-vs-linear-regression">Logistic Regression vs. Linear Regression</a><a href="#logistic-regression-vs-linear-regression"></a></h2>
+<p>At first glance, logistic regression might seem pretty similar to linear regression, but they serve different purposes:</p>
+<ul>
+<li><strong>Linear regression</strong> predicts continuous values, like home prices or stock market trends. It achieves this by using a linear combination of input features to output a real number.</li>
+<li><strong>Logistic regression</strong> predicts discrete outcomes, such as whether an email is spam. Instead of just outputting a real number, it first computes log odds and then uses the logistic function to turn that result into a probability between 0 and 1.</li>
+</ul>
+<p>Check out our guide on <a href="/community/tutorials/multiple-linear-regression-python">multiple linear regression in Python to learn more about regression techniques</a>. This tutorial focuses on implementing multiple linear regression in Python and covers important topics like data preprocessing, evaluation metrics, and optimizing performance.</p>
+<h2 id="logistic-regression-scikit-learn-example-binary-classification"><a href="#logistic-regression-scikit-learn-example-binary-classification">Logistic Regression Scikit-learn Example (Binary Classification)</a><a href="#logistic-regression-scikit-learn-example-binary-classification"></a></h2>
+<p>The following Python logistic regression example uses the <a href="https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic">Breast Cancer Wisconsin</a> dataset, a standard resource built within Scikit-learn.</p>
+<pre tabindex="0"><code>from sklearn.datasets import load_breast_cancer
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# dataset loading
+dataset = load_breast_cancer()
+X, y = dataset.data, dataset.target
+
+# Split into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=40
+)
+
+# Logistic Regression model initialization
+model = LogisticRegression(
+    penalty=&#39;l2&#39;,
+    C=2.0,
+    solver=&#39;liblinear&#39;,
+    max_iter=1000
+)
+
+# model training
+model.fit(X_train, y_train)
+
+# prédictions
+y_pred = model.predict(X_test)
+
+# model evaluation
+accuracy = accuracy_score(y_test, y_pred)
+
+print(&#34;Accuracy:&#34;, accuracy)
+</code></pre><p>The script above displays a straightforward machine-learning pipeline using Scikit-learn:</p>
+<ul>
+<li>Importing the libraries and loading the Breast Cancer dataset.</li>
+<li>Splitting the data into features and labels.</li>
+<li>We separate it into training and testing sets, where we set a Logistic regression model with a few settings (like <em>L2</em> penalty, <em>C=2.0</em>, using ‘<em>liblinear</em>’ as the solver, and capping the iterations at 1000).</li>
+<li>After training the model, we make some predictions on the test data.</li>
+<li>Finally, we check how well the model performs by computing the accuracy score to see how effectively it classifies unseen data.</li>
+</ul>
+<p>When dealing with imbalanced datasets, you should consider using advanced evaluation metrics, including precision, recall, and F1-score. To explore these evaluation metrics, refer to our guide on <a href="/community/tutorials/deep-learning-metrics-precision-recall-accuracy">deep learning metrics.</a> Although these metrics are described for deep learning purposes, their explanations can be applied to logistic regression.</p>
+<p>In real-world projects, you’ll often encounter tasks such as handling missing values and scaling. To understand how to normalize data in Python, look at our article on <a href="/community/tutorials/normalize-data-in-python">Normalizing Data in Python Using scikit-learn</a>.</p>
+<h2 id="scikit-learn-logistic-regression-parameters-and-solvers"><a href="#scikit-learn-logistic-regression-parameters-and-solvers">Scikit-learn Logistic Regression Parameters and Solvers</a><a href="#scikit-learn-logistic-regression-parameters-and-solvers"></a></h2>
+<p>If working with <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html">LogisticRegression</a> in Scikit-learn, knowing the right parameters can make a difference in the model performance. The table below displays some of the most important scikit-learn logistic regression parameters and the various solvers you can use:</p>
+<p>Parameter</p>
+<p>Description</p>
+<p><strong>penalty</strong></p>
+<p>Defines the type of norm used for regularization. Options include <strong>L1</strong>, <strong>L2</strong>, <strong>elasticnet</strong>, and <strong>none</strong>. L1 promotes sparsity, while L2 stabilizes coefficients.</p>
+<p><strong>C</strong></p>
+<p>Represents the inverse of regularization strength. Smaller values increase regularization (simpler models), while larger values reduce it (more complex models). The default is <strong>1.0</strong>.</p>
+<p><strong>solver</strong></p>
+<p>Algorithm used for optimization. Common solvers: <strong>liblinear</strong>: Supports L1/L2 penalties. <strong>lbfgs</strong>: Default solver for Scikit-learn version. <strong>sag(Stochastic Average Gradient) &amp; saga(Stochastic Average Gradient Augmented)</strong>: Variants of stochastic gradient descent.</p>
+<p><strong>max_iter</strong></p>
+<p>Sets the maximum number of iterations for convergence. Increasing it helps when models struggle to converge.</p>
+<p><strong>fit_intercept</strong></p>
+<p>This determines whether the model calculates the intercept. Setting it to <strong>False</strong> forces the intercept to 0, but <strong>It</strong> is generally recommended to be set to True.</p>
+<p>Understanding these parameters will help you customize the logistic regression model to fit the dataset and specific needs.</p>
+<h3 id="penalty-types-selecting-the-right-regularization-approach"><a href="#penalty-types-selecting-the-right-regularization-approach">Penalty Types: Selecting the Right Regularization Approach</a><a href="#penalty-types-selecting-the-right-regularization-approach"></a></h3>
+<p>Scikit-learn provides three regularization techniques: <em>L1</em> (Lasso), <em>L2</em> (Ridge), and <em>ElasticNet:</em></p>
+<ul>
+<li><em>L1</em> regularization creates sparse models by setting some coefficients to zero. This makes it well-suited for feature selection tasks in datasets with high-dimensional data.</li>
+<li><em>L2</em> regularization shrinks the coefficient towards zero without eliminating them, which leads to better stability and effective multicollinearity management.</li>
+<li>Elastic Net integrates <em>L1</em> and <em>L2</em> regularization through the <em>l1_ratio</em> parameter to achieve feature selection and coefficient stability, particularly in the presence of correlated features.</li>
+</ul>
+<p>The proper penalty selection should align with your objectives: using <em>L1</em> for better interpretability and feature selection capabilities, <em>L2</em> for more stable predictions, and elastic net when both features are required.</p>
+<h3 id="solver-selection-optimization-algorithms-for-different-scenarios"><a href="#solver-selection-optimization-algorithms-for-different-scenarios">Solver Selection: Optimization Algorithms for Different Scenarios</a><a href="#solver-selection-optimization-algorithms-for-different-scenarios"></a></h3>
+<p>The solver parameter determines which optimization algorithm computes the <a href="https://blog.paperspace.com/maximum-likelihood-estimation-parametric-classification/">maximum likelihood estimates</a> for logistic regression. Various solvers display distinct computational properties and compatibility with different penalty types while demonstrating unique performance profiles when handling different dataset sizes.</p>
+<p><strong>liblinear Solver</strong><br>
+<em>liblinear</em> was the default solver in older versions of scikit-learn and continues to perform efficiently with smaller datasets. This solver allows for <em>L1</em> and <em>L2</em> regularization. It works with binary classification and can use the <a href="https://scikit-learn.org/stable/modules/generated/sklearn.multiclass.OneVsRestClassifier.html">one-vs-rest</a> strategy for multiclass problems.</p>
+<p>Usage example:</p>
+<pre tabindex="0"><code>from sklearn.linear_model import LogisticRegression
+liblinear_m = LogisticRegression(solver=&#39;liblinear&#39;, penalty=&#39;l1&#39;, C=1.0)
+</code></pre><p><strong>lbfgs Solver</strong> Scikit-learn uses the Limited-memory Broyden-Fletcher-Goldfarb-Shanno (L-BFGS) algorithm as its default solver. The <a href="https://en.wikipedia.org/wiki/Limited-memory_BFGS">L-BFGS</a> optimization algorithm belongs to the quasi-Newton family. It works by estimating the <a href="https://www.quora.com/What-is-the-inverse-Hessian-matrix">inverse Hessian matrix</a> to find optimal parameters efficiently.<br>
+Usage example:</p>
+<pre tabindex="0"><code>lbfgs_model = LogisticRegression(solver=&#39;lbfgs&#39;, penalty=&#39;l2&#39;, C=1.0)
+</code></pre><p>Multiclass problems with multinomial loss functions benefit from the <em>lbfgs</em> solver when combined with <em>L2</em> regularization. While this solver can complete its process in fewer iterations than other algorithms, it can also be memory-intensive for very large datasets.</p>
+<p><strong>saga Solver</strong><br>
+The SAGA algorithm delivers exceptional performance on large-scale data, particularly when elastic net regularization is used. The solver performs efficiently with L1 and L2 regularization. However, the computational resources required can vary depending on the problem’s complexity. Usage example:</p>
+<pre tabindex="0"><code>saga_model = LogisticRegression(solver=&#39;saga&#39;, penalty=&#39;elasticnet&#39;, l1_ratio=0.5, C=1.0)
+</code></pre><h4 id="summary">Summary</h4>
+<p>The following table displays the solver comparison:</p>
+<p>Solver</p>
+<p>Regularization Supported</p>
+<p>Best Use Case</p>
+<p>Limitations</p>
+<p>l<strong>iblinear</strong></p>
+<p>L1, L2</p>
+<p>Sparse data; suitable for small datasets.</p>
+<p>Inefficient for dense data or unscaled datasets; may struggle with large C values.</p>
+<p><strong>lbfgs</strong></p>
+<p>L2</p>
+<p>Medium to large datasets, especially dense ones.</p>
+<p>Memory-intensive for very large data</p>
+<p><strong>saga</strong></p>
+<p>L1, L2, Elastic Net</p>
+<p>Large-scale or high-dimensional problem</p>
+<p>Performance depends on proper scaling; resource-intensive for some cases</p>
+<h3 id="tips-for-solver-selection"><a href="#tips-for-solver-selection">Tips for Solver Selection</a><a href="#tips-for-solver-selection"></a></h3>
+<ul>
+<li>Choose <em>liblinear</em> for sparse data or binary classification tasks, especially when working with small datasets.</li>
+<li>Opt for <em>lbfgs</em> as your default solver for medium-sized datasets, particularly dense ones.</li>
+<li>Use <em>saga</em> when facing large-scale problems or when elastic net regularization is required.</li>
+</ul>
+<h3 id="other-solvers-in-scikit-learn"><a href="#other-solvers-in-scikit-learn">Other Solvers in Scikit-learn</a><a href="#other-solvers-in-scikit-learn"></a></h3>
+<ul>
+<li><strong>sag:</strong> Large datasets with similarly scaled features work well with this solver. It supports only <em>L2</em> regularization. For the best results, it is recommended that feature scaling be applied for optimal convergence.</li>
+<li><strong>newton-cg(Newton conjugate gradient)</strong>: It can be used for multiclass classification problems since it supports multinomial loss functions. It may be slower than <em>lbfgs</em>.</li>
+<li><strong>newton-cholesky</strong>: It represents an optimized variant of <em>newton-cg</em> designed for highly structured problems.</li>
+</ul>
+<p>You can achieve efficient and accurate logistic regression model training by choosing a solver that matches the dataset size and regularization requirements.</p>
+<h2 id="hyperparameter-tuning-for-logistic-regression"><a href="#hyperparameter-tuning-for-logistic-regression">Hyperparameter Tuning for Logistic Regression</a><a href="#hyperparameter-tuning-for-logistic-regression"></a></h2>
+<p>Tuning hyperparameters like <em>C</em> (which controls regularization strength) and choosing the right <em>penalty</em> and <em>solver</em> can drastically influence performance.</p>
+<h3 id="techniques-for-hyperparameter-tuning"><a href="#techniques-for-hyperparameter-tuning">Techniques for Hyperparameter Tuning</a><a href="#techniques-for-hyperparameter-tuning"></a></h3>
+<p>Let’s consider some techniques for hyperparameter tuning, such as grid search, randomized search, and grid search:</p>
+<ul>
+<li><strong>Grid Search:</strong> Grid Search can help set up various parameters and thoroughly explore to find the best combination. It’s pretty straightforward to implement, but if your grid or dataset is large, it can take more computational power.</li>
+<li><strong>Randomized Search:</strong> Randomized search randomly samples parameter combinations within selected ranges. This often finds good solutions faster than a grid search. It can be implemented using <a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html">RandomizedSearchCV</a>.</li>
+<li><strong>Bayesian Optimization:</strong> This method takes a more advanced approach, building a probabilistic model of the objective function and selecting new hyperparameter values to evaluate based on previous results.</li>
+</ul>
+<h3 id="implementing-grid-search-in-scikit-learn"><a href="#implementing-grid-search-in-scikit-learn">Implementing Grid Search in Scikit-learn</a><a href="#implementing-grid-search-in-scikit-learn"></a></h3>
+<p>For example, we will consider the following code:</p>
+<pre tabindex="0"><code>from sklearn.model_selection import GridSearchCV
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_breast_cancer
+
+# dataset loading
+dataset = load_breast_cancer()
+
+X, y = dataset.data, dataset.target
+
+# Split into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=40
+)
+
+# Parameter grid to explore
+param_grid = {
+    &#39;C&#39;: [0.01, 0.1, 1, 10, 100],
+    &#39;penalty&#39;: [&#39;l2&#39;],
+    &#39;solver&#39;: [&#39;lbfgs&#39;, &#39;saga&#39;]
+}
+
+log_r = LogisticRegression(max_iter=400)
+grid_s = GridSearchCV(
+    estimator=log_r,
+    param_grid=param_grid,
+    cv=5,
+    scoring=&#39;accuracy&#39;,
+    n_jobs=-1
+)
+
+grid_s.fit(X_train, y_train)
+print(&#34;Best Parameters:&#34;, grid_s.best_params_)
+print(&#34;Best Score:&#34;, grid_s.best_score_)
+</code></pre><p>The script above imports the Breast Cancer dataset and splits it into training and testing sets before tuning the logistic regression model’s hyperparameters using <a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html">GridSearchCV.</a> This process tests various regularization parameter <em>C</em> values using <em>lbfgs</em> and <em>saga</em> solvers with an <em>L2</em> penalty. This configuration allows the model to execute for a maximum of 400 iterations.</p>
+<p>You may see the warning: “ConvergenceWarning: lbfgs failed to converge.” This indicates that the <em>lbfgs</em> solver fails to converge within the allocated iteration limit using some combinations of parameters. To fix this issue, increase <em>max_iter</em> or adjust the solver and <em>C</em> values.</p>
+<p>Additionally, you must understand how different parameters work when building the parameter grid. Not all solvers support all penalty types, and some combinations, such as <em>penalty=&lsquo;elasticnet</em>’ with <em>solver=‘lbfgs,’</em> will result in errors.</p>
+<h3 id="the-c-parameter-fine-tuning-regularization-strength"><a href="#the-c-parameter-fine-tuning-regularization-strength">The C Parameter: Fine-Tuning Regularization Strength</a><a href="#the-c-parameter-fine-tuning-regularization-strength"></a></h3>
+<p>When <em>C</em> is small (like 0.001), the model prioritizes simplicity instead of trying to fit the training data perfectly. This can reduce overfitting, but it might also lead to underfitting. On the other hand, when <em>C</em> is quite large (like 100), the model aims to reduce training errors, which might lead to overfitting but can capture more complex patterns in the data.</p>
+<p>A systematic approach to tuning C involves:</p>
+<ul>
+<li>Start by exploring on a logarithmic scale (0.001, 0.01, 0.1, 1, 10, 100, 1000.)</li>
+<li>Finds the range where the performance hits its peak.</li>
+<li>Perform a more granular search within the optimal range identified.</li>
+</ul>
+<p>Dataset characteristics such as feature count, sample size, and noise level critically influence the optimal <em>C</em> value. Datasets with substantial noise require stronger regularization, which can be achieved using lower <em>C</em> values.</p>
+<h3 id="practical-tips-for-hyperparameter-tuning"><a href="#practical-tips-for-hyperparameter-tuning">Practical Tips for Hyperparameter Tuning</a><a href="#practical-tips-for-hyperparameter-tuning"></a></h3>
+<p>This table provides straightforward tips for applying <em>GridSearchCV</em> with Logistic Regression. They will help to improve the hyperparameter tuning results and boost the model’s performance.</p>
+<p>Tip</p>
+<p>Description</p>
+<p><strong>Use a Small C Range and Simple Penalties</strong></p>
+<p>Start with a small set of values for <em>C</em> (like 0.01, 0.1, 1, 10) and use penalties like ‘<em>l1</em>’ or ‘<em>l2</em>’ to keep your first tests simple.</p>
+<p><strong>Choose the Right Solver</strong></p>
+<p>Make sure the solver you choose fits your dataset and penalty. For instance, ‘<em>liblinear</em>’ works with <em>L1</em> and <em>L2</em> but can be slow on larger datasets. On the other hand, <em>‘lbfgs,’</em> ‘<em>saga</em>,’ and ‘<em>newton-cg</em>’ are better suited for handling larger data.</p>
+<p><strong>Handle Convergence Warnings</strong></p>
+<p>If you get warnings about the solver not converging, increase the <em>max_iter</em> or adjust your solver and <em>C</em> values.</p>
+<p><strong>Standardize Features</strong></p>
+<p>Logistic Regression is sensitive to feature magnitude, so apply standardization (e.g., StandardScaler) in a pipeline to help the optimizer converge efficiently.</p>
+<p><strong>Choose Suitable CV Folds</strong></p>
+<p>Depending on your dataset size, use 5- or 10-fold cross-validation. More folds generally provide better hyperparameter estimates and reduce overfitting risk.</p>
+<p><strong>Handle Imbalanced Data</strong></p>
+<p>If the data is imbalanced, consider setting <em>class_weight=&lsquo;balanced</em>’ or defining custom weights to improve the minority class performance.</p>
+<p><strong>Use Multiple Metrics</strong></p>
+<p>Avoid relying solely on accuracy. Use GridSearchCV’s <em>scoring</em> feature to track other metrics, such as F1, precision, or recall, especially when working with imbalanced datasets.</p>
+<p><strong>Inspect Learning Curves</strong></p>
+<p>After finding optimal parameters, check out <a href="https://scikit-learn.org/stable/auto_examples/model_selection/plot_learning_curve.html">learning</a> or validation curves to ensure the model generalizes and isn’t too simplistic or complex.</p>
+<h2 id="multiclass-logistic-regression-in-scikit-learn"><a href="#multiclass-logistic-regression-in-scikit-learn">Multiclass Logistic Regression in Scikit-Learn</a><a href="#multiclass-logistic-regression-in-scikit-learn"></a></h2>
+<p>Although logistic regression is mainly designed for binary outcomes, Scikit-learn provides a way to apply it to multiclass scenarios through two main approaches:</p>
+<ul>
+<li>One-vs-Rest (OvR)</li>
+<li>Multinomial Logistic Regression</li>
+</ul>
+<h3 id="one-vs-rest-ovr-strategy"><a href="#one-vs-rest-ovr-strategy">One-vs-Rest (OvR) Strategy</a><a href="#one-vs-rest-ovr-strategy"></a></h3>
+<p>The One-vs-Rest (OvR) technique transforms an n-class scenario into n individual binary classification problems.</p>
+<p><strong>How It Works:</strong></p>
+<ul>
+<li>A distinct classifier is trained for each class.</li>
+<li>Each classifier learns to separate one class (the positive) from the others combined (the negative).</li>
+<li>When making predictions, all classifiers evaluate the sample, and the one with the highest confidence score is chosen.</li>
+</ul>
+<p>To set up the OvR strategy using Scikit-learn, use the following configuration:</p>
+<pre tabindex="0"><code>model = LogisticRegression(multi_class=&#39;ovr&#39;, solver=&#39;liblinear&#39;, max_iter=200)
+</code></pre><p><strong>Advantages of OvR:</strong></p>
+<ul>
+<li>Easy to implement with straightforward binary classifiers.</li>
+<li>Efficient in terms of computation.</li>
+<li>Works smoothly with all Scikit-learn solvers.</li>
+</ul>
+<h4 id="limitations-of-ovr"><strong>Limitations of OvR:</strong></h4>
+<ul>
+<li>The OvR method can lead to situations where multiple classifiers predict the same instance as positive, which can make determining the final class assignments confusing.</li>
+<li>Doesn’t take into account the potential correlation between classes.</li>
+<li>Might not perform well when classes are unbalanced.</li>
+</ul>
+<h3 id="multinomial-strategy"><a href="#multinomial-strategy">Multinomial Strategy</a><a href="#multinomial-strategy"></a></h3>
+<p>Multinomial logistic regression (Softmax regression) extends binary logistic regression to handle all classes simultaneously.</p>
+<p><strong>How It Works:</strong></p>
+<ul>
+<li>Instead of training separate models for each binary classification, we focus on training just one model.</li>
+<li>The softmax function comes into play, turning raw scores into probabilities across all classes.</li>
+<li>Probabilities sum to 1, ensuring a valid probability distribution.</li>
+<li>Finally, we select the class that has the highest probability.</li>
+</ul>
+<p>To implement this approach in Scikit-learn, use the following configuration:</p>
+<pre tabindex="0"><code>model = LogisticRegression(multi_class=&#39;multinomial&#39;, solver=&#39;lbfgs&#39;, max_iter=400)
+</code></pre><p><strong>Advantages of Multinomial Logistic Regression:</strong></p>
+<ul>
+<li>Models class relationships jointly rather than independently.</li>
+<li>It provides better-calibrated probability estimates overall.</li>
+<li>Tends to perform better when classes overlap.</li>
+</ul>
+<p><strong>Limitations of Multinomial Logistic Regression:</strong></p>
+<ul>
+<li>It requires compatible solvers like ‘<em>lbfgs,</em>’ ‘<em>newton-cg,</em>’ or <em>&lsquo;saga.</em>’</li>
+<li>It’s more computationally intensive.</li>
+</ul>
+<h3 id="choosing-between-ovr-and-multinomial"><a href="#choosing-between-ovr-and-multinomial">Choosing Between OvR and Multinomial</a><a href="#choosing-between-ovr-and-multinomial"></a></h3>
+<p>Choosing the right multiclass strategy depends on a few key factors:</p>
+<ul>
+<li><strong>Dataset size</strong>: If you have a smaller dataset, One-vs-Rest might be a better choice due to its simpler model.</li>
+<li><strong>Class relationships</strong>: The multinomial method often performs better when classes have strong relationships or tend to overlap.</li>
+<li><strong>Computational resources</strong>: For many classes, OvR can be a more resource-efficient option.</li>
+<li><strong>Probability calibration</strong>: multinomial can provide better-calibrated probabilities across different classes.</li>
+</ul>
+<h2 id="comparison-with-other-classification-models"><a href="#comparison-with-other-classification-models">Comparison with Other Classification Models</a><a href="#comparison-with-other-classification-models"></a></h2>
+<p>There are many classification models besides logistic regression, each with strengths and weaknesses. In the following table, we will consider some of them:</p>
+<p>Classification Model</p>
+<p>Pros</p>
+<p>Cons</p>
+<p><strong>Decision Trees</strong></p>
+<p>Simple to interpret, handles non-linear relationships, no need to normalize data</p>
+<p>Prone to overfitting if not pruned or regularized</p>
+<p><strong>Support Vector Machines (SVMs)</strong></p>
+<p>Handles complex, high-dimensional data and supports different kernel functions for higher-dimensional mapping</p>
+<p>Complex parameter tuning (C, kernel settings), slow on large datasets</p>
+<p><strong>Random Forests</strong></p>
+<p>Reduces overfitting via multiple decision trees, high predictive performance</p>
+<p>Less interpretable than logistic regression or single decision trees, slow on large datasets</p>
+<p><strong>Logistic Regression</strong></p>
+<p>Interpretable, suitable for small to medium datasets with linear decision boundaries, provides well-calibrated probabilities</p>
+<p>Limited to linear decision boundaries, not effective for highly non-linear problems</p>
+<h3 id="when-to-use-logistic-regression"><a href="#when-to-use-logistic-regression">When to Use Logistic Regression?</a><a href="#when-to-use-logistic-regression"></a></h3>
+<ul>
+<li>When interpretability remains the main priority(For example, in sectors like healthcare and finance).</li>
+<li>For datasets of small to medium size with linear decision boundaries.</li>
+<li>If you need well-calibrated probabilities.</li>
+</ul>
+<p>Random forests or neural networks can be a better option when your data exhibits high non-linearity or requires high accuracy without concern for model interpretability.</p>
+<h2 id="faq-section"><a href="#faq-section">FAQ SECTION</a><a href="#faq-section"></a></h2>
+<p><strong>How Does Logistic Regression Work in Scikit-Learn?</strong> Scikit-learn uses algorithms such as <em>lbfgs</em> or <em>liblinear</em> to determine coefficients that minimize the logistic loss function. To train a logistic regression model, use the <em>.fit(X, y)</em> function and let scikit-learn handle the remaining processes automatically.</p>
+<p><strong>When Should I Use Logistic Regression Instead of Other Classification Models?</strong> Logistic regression is a good starting point when:</p>
+<ul>
+<li>You need a quick and simple classifier.</li>
+<li>You need to interpret the coefficients (log odds).</li>
+<li>Your data tends to follow linear boundaries in the feature space.</li>
+<li>You have a moderate dataset size.</li>
+</ul>
+<p>However, if the data is large and highly non-linear, or if you aim for top-tier accuracy instead of simplicity, you can consider advanced models like SVMs or neural networks.</p>
+<h3 id="what-is-the-best-solver-for-logistic-regression"><a href="#what-is-the-best-solver-for-logistic-regression"><strong>What Is the Best Solver for Logistic Regression?</strong></a><a href="#what-is-the-best-solver-for-logistic-regression"></a></h3>
+<p>The right method depends on your data’s dimensions and nature. <em>liblinear</em> and <em>lbfgs</em> perform well with datasets from small to medium sizes. When working with large or sparse datasets, <em>saga</em> stands out because it effectively handles <em>L1</em> and <em>L2</em> regularization.</p>
+<h3 id="how-do-i-interpret-coefficients-in-logistic-regression"><a href="#how-do-i-interpret-coefficients-in-logistic-regression"><strong>How Do I Interpret Coefficients in Logistic Regression?</strong></a><a href="#how-do-i-interpret-coefficients-in-logistic-regression"></a></h3>
+<p>The coefficients in logistic regression models show how a unit increase in a feature affects the log-odds outcome. A positive coefficient means that increasing this feature increases the likelihood of a positive outcome, while a negative one suggests the opposite.</p>
+<h3 id="can-logistic-regression-handle-non-linear-relationships"><a href="#can-logistic-regression-handle-non-linear-relationships"><strong>Can Logistic Regression Handle Non-Linear Relationships?</strong></a><a href="#can-logistic-regression-handle-non-linear-relationships"></a></h3>
+<p>Not inherently. Logistic regression requires the relationship between features and log odds to be linear. However, you can generate polynomial features or interaction terms before model input, which allows the model to detect non-linear patterns. Advanced models such as neural networks, random forests, or SVM with kernels enable direct modeling of non-linear relationships.</p>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a><a href="#conclusion"></a></h2>
+<p>The classification model logistic regression stands out as a foundational tool because it provides straightforward implementation and interpretability. It also performs well with linearly separable data. Logistic regression is useful in fields such as healthcare and finance because of the well-calibrated probabilities that deliver the necessary transparency for decision-making. Despite the higher accuracy of random forests and neural networks for certain tasks, logistic regression remains a baseline model for understanding feature importance and decision boundaries.</p>
+<p>Machine learning techniques enable researchers to optimize logistic regression through hyperparameter tuning, regularization, and feature engineering techniques. The versatile design of Scikit-learn enables users to test various solvers and multiclass strategies to achieve optimal results. Logistic regression provides essential value in machine learning applications, whether applied to binary classification tasks or adapted for multiclass problems. This bridges the gap between simplicity and effectiveness.</p>
+<h2 id="references-and-resources"><a href="#references-and-resources">References and resources</a><a href="#references-and-resources"></a></h2>
+<ul>
+<li><a href="https://forecastegy.com/posts/train-logistic-regression-scikit-learn-python/">How To Train A Logistic Regression Using Scikit-Learn (Python)</a></li>
+<li><a href="https://refactored.ai/microcourse/notebook?path=content%2F06-Classification_models_in_Machine_Learning%2F02-Multivariate_Logistic_Regression%2Fmulticlass_logistic-regression.ipynb">Multiclass Logistic Regression</a></li>
+<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html">LogisticRegression</a></li>
+<li><a href="https://scikit-learn.org/stable/modules/grid_search.html">Tuning the hyper-parameters of an estimator</a></li>
+<li><a href="https://scikit-learn.org/stable/auto_examples/linear_model/plot_logistic_multinomial.html">Decision Boundaries of Multinomial and One-vs-Rest Logistic Regression</a></li>
+<li>S<a href="https://www.youtube.com/watch?v=pooXM9mM7FU&amp;t=8s">klearn Logistic Regression hyperparameter optimization</a></li>
+<li><a href="https://scikit-learn.org/stable/modules/linear_model.html">Linear Models</a></li>
+<li><a href="https://stackoverflow.com/questions/76134348/what-is-the-difference-between-newton-cg-and-newton-cholesky-solvers-in-skle">What is the difference between “newton-cg” and “newton-cholesky” solvers in sklearn LogisticRegression?</a></li>
+<li><a href="https://forecastegy.com/posts/train-logistic-regression-scikit-learn-python/">How To Solve Logistic Regression Not Converging in Scikit-Learn</a></li>
+</ul>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/logistic-regression-with-scikit-learn">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

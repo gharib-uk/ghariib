@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Scikit-learn A Beginners Guide to Machine Learning in Python</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Scikit-learn A Beginners Guide to Machine Learning in Python</h1>
+			<b><time>10.03.2025 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="scikit-learn-a-beginners-guide-to-machine-learning-in-python">Scikit-learn A Beginners Guide to Machine Learning in Python</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>
+<figure>
+  <img src="https://journaldev.nyc3.cdn.digitaloceanspaces.com/2018/01/python-scikit-learn.png" alt="python scikit learn tutorial" />
+</figure>
+
+
+.</p>
+<p>Scikit-learn is one of the most widely used Python libraries for machine learning. Whether you’re working on classification, regression, or clustering tasks, Scikit-learn provides simple and efficient tools to build and evaluate models.</p>
+<p>It features several regression, classification, and clustering algorithms, including SVMs, gradient boosting, k-means, random forests, and DBSCAN. It is designed to work with Python <a href="/community/tutorials/python-numpy-tutorial">Numpy</a> and <a href="/community/tutorials/python-tutorial-beginners">SciPy</a>.</p>
+<h2 id="what-is-scikit-learn-in-python"><a href="#what-is-scikit-learn-in-python">What is Scikit-learn in Python?</a><a href="#what-is-scikit-learn-in-python"></a></h2>
+<p><a href="https://scikit-learn.org/">Scikit Learn</a> is written in Python (most of it), and some of its core algorithms are written in <a href="https://cython.org/">Cython</a> for even better performance. Scikit-learn is used to build models and it is not recommended to use it for reading, manipulating and summarizing data as there are better frameworks available for the purpose. It is open source and released under BSD license.</p>
+<p>It provides various tools for:</p>
+<ul>
+<li>
+<p><strong>Classification (e.g., Support Vector Machines, Random Forests)</strong>.</p>
+</li>
+<li>
+<p><strong>Regression (e.g., Linear Regression, Ridge Regression)</strong>.</p>
+</li>
+<li>
+<p><strong>Clustering (e.g., K-Means, DBSCAN)</strong>.</p>
+</li>
+<li>
+<p><strong>Dimensionality Reduction (e.g., PCA, LDA)</strong>.</p>
+</li>
+<li>
+<p><strong>Feature Selection</strong>.</p>
+</li>
+</ul>
+<h2 id="using-scikit-learn"><a href="#using-scikit-learn">Using Scikit Learn</a><a href="#using-scikit-learn"></a></h2>
+<h3 id="install-scikit-learn"><a href="#install-scikit-learn">Install Scikit Learn</a><a href="#install-scikit-learn"></a></h3>
+<p>Scikit assumes you have a running Python 2.7 or above platform with NumPY (1.8.2 and above) and SciPY (0.13.3 and above) packages on your device. Once we have these packages installed we can proceed with the installation. For <a href="/community/tutorials/python-pip">pip</a> installation, run the following command in the terminal:</p>
+<pre tabindex="0"><code>pip install scikit-learn
+</code></pre><p>If you like <code>conda</code>, you can also use the conda for package installation, run the following command:</p>
+<pre tabindex="0"><code>conda install scikit-learn
+</code></pre><h2 id="using-scikit-learn-1"><a href="#using-scikit-learn">Using Scikit-Learn</a><a href="#using-scikit-learn"></a></h2>
+<p>Once you are done with the installation, you can use scikit-learn easily in your Python code by importing it as:</p>
+<pre tabindex="0"><code>import sklearn
+</code></pre><h3 id="scikit-learn-loading-dataset"><a href="#scikit-learn-loading-dataset">Scikit Learn Loading Dataset</a><a href="#scikit-learn-loading-dataset"></a></h3>
+<p>Let’s start with loading a dataset to play with. Let’s load a simple dataset named Iris. It is a dataset of a flower, it contains 150 observations about different measurements of the flower. Let’s see how to load the dataset using scikit-learn.</p>
+<pre tabindex="0"><code># Import scikit learn
+from sklearn import datasets
+# Load data
+iris= datasets.load_iris()
+# Print shape of data to confirm data is loaded
+print(iris.data.shape)
+</code></pre><p>We are printing shape of data for ease, you can also print whole data if you wish so, running the codes gives an output like this: 
+<figure>
+  <img src="https://journaldev.nyc3.cdn.digitaloceanspaces.com/2018/01/python-scikit-load-dataset-1.png" alt="python scikit dataset load" />
+</figure>
+
+
+</p>
+<h3 id="scikit-learn-svm---learning-and-predicting"><a href="#scikit-learn-svm-learning-and-predicting">Scikit Learn SVM - Learning and Predicting</a><a href="#scikit-learn-svm-learning-and-predicting"></a></h3>
+<p>Now we have loaded data, let’s try learning from it and predict on new data. For this purpose we have to create an estimator and then call its fit method.</p>
+<pre tabindex="0"><code>from sklearn import svm
+from sklearn import datasets
+# Load dataset
+iris = datasets.load_iris()
+clf = svm.LinearSVC()
+# learn from the data
+clf.fit(iris.data, iris.target)
+# predict for unseen data
+clf.predict([[ 5.0,  3.6,  1.3,  0.25]])
+# Parameters of model can be changed by using the attributes ending with an underscore
+print(clf.coef_ )
+</code></pre><p>Here is what we get when we run this script: 
+<figure>
+  <img src="https://journaldev.nyc3.cdn.digitaloceanspaces.com/2018/01/python-scikit-predicting.png" alt="Scikit Learn SVM" />
+</figure>
+
+
+</p>
+<h3 id="scikit-learn-linear-regression"><a href="#scikit-learn-linear-regression">Scikit Learn Linear Regression</a><a href="#scikit-learn-linear-regression"></a></h3>
+<p>Creating various models is rather simple using scikit-learn. Let’s start with a simple example of regression.</p>
+<pre tabindex="0"><code>#import the model
+from sklearn import linear_model
+reg = linear_model.LinearRegression()
+# use it to fit a data
+reg.fit ([[0, 0], [1, 1], [2, 2]], [0, 1, 2])
+# Let&#39;s look into the fitted data
+print(reg.coef_)
+</code></pre><p>Running the model should return a point that can be plotted on the same line: 
+<figure>
+  <img src="https://journaldev.nyc3.cdn.digitaloceanspaces.com/2018/01/python-scikit-linear-regression.png" alt="python scikit learn linear regression" />
+</figure>
+
+
+</p>
+<h3 id="k-nearest-neighbour-classifier"><a href="#k-nearest-neighbour-classifier">k-Nearest neighbour classifier</a><a href="#k-nearest-neighbour-classifier"></a></h3>
+<p>Let’s try a simple classification algorithm. This classifier uses an algorithm based on ball trees to represent the training samples.</p>
+<pre tabindex="0"><code>from sklearn import datasets
+# Load dataset
+iris = datasets.load_iris()
+# Create and fit a nearest-neighbor classifier
+from sklearn import neighbors
+knn = neighbors.KNeighborsClassifier()
+knn.fit(iris.data, iris.target)
+# Predict and print the result
+result=knn.predict([[0.1, 0.2, 0.3, 0.4]])
+print(result)
+</code></pre><p>Let’s run the classifier and check results, the classifier should return 0. Let’s try the example: 
+<figure>
+  <img src="https://journaldev.nyc3.cdn.digitaloceanspaces.com/2018/01/python-scikit-k-Nearest-neighbour.png" alt="python scikit learn classification" />
+</figure>
+
+
+</p>
+<h3 id="k-means-clustering"><a href="#k-means-clustering">K-means clustering</a><a href="#k-means-clustering"></a></h3>
+<p>This is the simplest clustering algorithm. The set is divided into ‘k’ clusters and each observation is assigned to a cluster. This is done iteratively until the clusters converge. We will create one such clustering model in the following program:</p>
+<pre tabindex="0"><code>from sklearn import cluster, datasets
+# load data
+iris = datasets.load_iris()
+# create clusters for k=3
+k=3
+k_means = cluster.KMeans(k)
+# fit data
+k_means.fit(iris.data)
+# print results
+print( k_means.labels_[::10])
+print( iris.target[::10])
+</code></pre><p>On running the program we’ll see separate clusters in the list. Here is the output for above code snippet: 
+<figure>
+  <img src="https://journaldev.nyc3.cdn.digitaloceanspaces.com/2018/01/python-scikit-Clustering.png" alt="python scikit learn clustering" />
+</figure>
+
+
+.</p>
+<h2 id="scikit-learn-vs-tensorflow-vs-pytorch"><a href="#scikit-learn-vs-tensorflow-vs-pytorch">Scikit-learn vs. TensorFlow vs. PyTorch</a><a href="#scikit-learn-vs-tensorflow-vs-pytorch"></a></h2>
+<p>Feature</p>
+<p>Scikit-learn</p>
+<p>TensorFlow</p>
+<p>PyTorch</p>
+<p>Use Case</p>
+<p>Traditional ML</p>
+<p>Deep Learning</p>
+<p>Deep Learning</p>
+<p>Ease of Use</p>
+<p>Simple API</p>
+<p>Requires tuning</p>
+<p>More flexible</p>
+<p>Performance</p>
+<p>Efficient for small datasets</p>
+<p>Optimized for large datasets</p>
+<p>GPU-accelerated</p>
+<p>Scalability</p>
+<p>Limited for big data</p>
+<p>Distributed training</p>
+<p>Dynamic computation graphs</p>
+<p>Scikit-learn is ideal for traditional machine learning models, while <a href="https://www.tensorflow.org/">TensorFlow</a> and <a href="https://pytorch.org/">PyTorch</a> excel in deep learning and large-scale AI applications.</p>
+<h2 id="handling-large-datasets-in-scikit-learn"><a href="#handling-large-datasets-in-scikit-learn">Handling Large Datasets in Scikit-learn</a><a href="#handling-large-datasets-in-scikit-learn"></a></h2>
+<p>Scikit-learn is a powerful library for machine learning, but it’s optimized for small to medium-sized datasets. When working with large datasets, you need to handle them efficiently. Here are some strategies:</p>
+<ul>
+<li>
+<p><strong>Use <code>partial_fit()</code>:</strong> This method supports incremental learning for large datasets. It’s particularly useful when you can’t fit the entire dataset into memory at once.</p>
+</li>
+<li>
+<p><strong>Apply Feature Selection</strong>: Reducing the number of features in your dataset can significantly reduce memory usage and computation time.</p>
+</li>
+<li>
+<p><strong>Leverage <code>joblib</code> for Parallel Processing:</strong> This library can be used to distribute tasks across multiple cores, which can greatly speed up your computations.</p>
+</li>
+</ul>
+<p>Here’s an example of using <code>partial_fit()</code>:</p>
+<pre tabindex="0"><code>from sklearn.linear_model import SGDClassifier
+import numpy as np
+
+# Initialize a Stochastic Gradient Descent (SGD) Classifier model
+model = SGDClassifier()
+
+# Loop through 10 batches of data
+for batch in range(10):
+    # Generate a batch of random features (X_batch) with shape (1000, 20)
+    X_batch = np.random.rand(1000, 20)
+    # Generate a batch of random target values (y_batch) with shape (1000,) containing either 0 or 1
+    y_batch = np.random.randint(0, 2, 1000)
+    # Use the partial_fit method to train the model on the current batch of data
+    # This method is particularly useful for large datasets that cannot fit into memory at once
+    # The &#39;classes&#39; parameter is specified to ensure the model is aware of the classes it&#39;s training on
+    model.partial_fit(X_batch, y_batch, classes=[0, 1])
+</code></pre><h2 id="faqs"><a href="#faqs">FAQs</a><a href="#faqs"></a></h2>
+<h3 id="1-what-is-scikit-learn-used-for"><a href="#1-what-is-scikit-learn-used-for">1. What is Scikit-learn used for?</a><a href="#1-what-is-scikit-learn-used-for"></a></h3>
+<p>Scikit-learn is used for traditional machine learning tasks such as classification, <a href="/community/tutorials/multiple-linear-regression-python">regression</a>, clustering, and feature selection.</p>
+<h3 id="2-how-does-scikit-learn-compare-to-tensorflow-and-pytorch"><a href="#2-how-does-scikit-learn-compare-to-tensorflow-and-pytorch">2. How does Scikit-learn compare to TensorFlow and PyTorch?</a><a href="#2-how-does-scikit-learn-compare-to-tensorflow-and-pytorch"></a></h3>
+<p>Scikit-learn is better suited for small-scale, traditional machine learning tasks, while TensorFlow and PyTorch are designed for deep learning and large-scale computations.</p>
+<h3 id="3-can-scikit-learn-handle-deep-learning"><a href="#3-can-scikit-learn-handle-deep-learning">3. Can Scikit-learn handle deep learning?</a><a href="#3-can-scikit-learn-handle-deep-learning"></a></h3>
+<p>No, Scikit-learn is not designed for deep learning. Instead, it integrates well with deep learning libraries when needed.</p>
+<h3 id="4-limitations-of-scikit-learn"><a href="#4-limitations-of-scikit-learn">4. Limitations of Scikit-learn</a><a href="#4-limitations-of-scikit-learn"></a></h3>
+<p>Limitation</p>
+<p>Description</p>
+<p>Not designed for deep learning</p>
+<p>Scikit-learn is not optimized for deep learning tasks, which are better handled by libraries like TensorFlow and PyTorch.</p>
+<p>Limited support for GPU acceleration</p>
+<p>Scikit-learn does not have native support for GPU acceleration, which can limit its performance on large datasets.</p>
+<p>Not optimized for big data</p>
+<p>Scikit-learn is designed for small to medium-sized datasets and can become inefficient when dealing with very large datasets.</p>
+<p>Limited support for dynamic computation graphs</p>
+<p>Scikit-learn does not support dynamic computation graphs, which are useful for complex models and rapid prototyping.</p>
+<h3 id="5-how-do-i-optimize-model-performance-in-scikit-learn"><a href="#5-how-do-i-optimize-model-performance-in-scikit-learn">5. How do I optimize model performance in Scikit-learn?</a><a href="#5-how-do-i-optimize-model-performance-in-scikit-learn"></a></h3>
+<p>Optimizing model performance is crucial to achieve the best results in machine learning. Here are some strategies to optimize model performance in Scikit-learn:</p>
+<p><strong>Hyperparameter Tuning:</strong> Use <a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html">GridSearchCV</a> to perform hyperparameter tuning. This involves searching for the best combination of hyperparameters that result in the best model performance.</p>
+<p><strong>Feature Selection:</strong> Apply feature selection techniques to reduce the dimensionality of your dataset. This can help in reducing overfitting, improving model interpretability, and enhancing model performance.</p>
+<p><strong>Ensemble Methods:</strong> Utilize ensemble methods like Random Forests and Gradient Boosting. These methods combine the predictions of multiple models to produce a more accurate and robust prediction model.</p>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a><a href="#conclusion"></a></h2>
+<p>In this tutorial, you learned about the versatility of Scikit-Learn, which simplifies the implementation of various machine learning algorithms. We have delved into examples of Regression, Classification, and Clustering. Despite being in the development phase and maintained by volunteers, Scikit-Learn is widely popular in the community. We encourage you to experiment with your own examples.</p>
+<p>You can also check out these tutorials:</p>
+<ul>
+<li>
+<p><a href="/community/tutorials/multiple-linear-regression-python">Multiple Linear Regression in Python</a>.</p>
+</li>
+<li>
+<p><a href="/community/tutorials/normalize-data-in-python">Normalize Data in Python</a>.</p>
+</li>
+<li>
+<p><a href="/community/tutorials/deep-learning-metrics-precision-recall-accuracy">Deep Learning Metrics: Precision, Recall, Accuracy</a>.</p>
+</li>
+</ul>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/python-scikit-learn-tutorial">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

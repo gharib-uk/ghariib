@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Building a Custom Real-time Chat Experience with DigitalOceans GenAI Platform</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Building a Custom Real-time Chat Experience with DigitalOceans GenAI Platform</h1>
+			<b><time>29.01.2025 18:26</time></b>
+		       
+
+			<div>
+				<h1 id="building-a-custom-real-time-chat-experience-with-digitaloceans-genai-platform">Building a Custom Real-time Chat Experience with DigitalOceans GenAI Platform</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Imagine building a ChatGPT-like experience that you can fully customize to your needs. With DigitalOcean’s new GenAI Platform, which just launched into Public Preview at this year’s Deploy conference, you can do exactly that.</p>
+<p>What’s particularly exciting about the GenAI Platform is its flexibility. For many use cases, you don’t need to write any code at all – you can simply grab a JavaScript snippet from the DigitalOcean Control Panel and embed a chatbot directly into your application. But as a developer, what really excites me is the ability to use the APIs to build any kind of experience I want.</p>
+<p>In this post, I’ll walk through building a custom chat application that mimics the ChatGPT experience. This example will teach you three key components of building a robust chat application:</p>
+<ol>
+<li>API Authentication - Securely connecting to the GenAI Platform</li>
+<li>Real-time Communication with WebSockets - Setting up bi-directional communication</li>
+<li>Chat Service and Message Processing - Managing conversations and streaming responses</li>
+</ol>
+<p>The best part is that once you understand all the pieces, you can customize it to work the way you want.</p>
+<h2 id="understanding-the-genai-platform"><a href="#understanding-the-genai-platform">Understanding the GenAI Platform</a><a href="#understanding-the-genai-platform"></a></h2>
+<p>The <a href="/blog/introducing-generative-ai-platform">DigitalOcean GenAI Platform</a> is an all-in-one solution for building and scaling AI agents quickly. It provides access to state-of-the-art Generative AI models from organizations like Anthropic, Meta, and Mistral AI, with a focus on making AI development accessible to everyone.</p>
+<p>Here’s what makes it special:</p>
+<ul>
+<li><strong>Instant Deployment</strong>: Build and deploy AI agents in just a few clicks</li>
+<li><strong>Foundation Models</strong>: Access leading models from Anthropic, Meta, and Mistral AI</li>
+<li><strong>Flexible Integration</strong>: Choose between no-code chatbot embedding or full API access</li>
+<li><strong>Built-in Security</strong>: Customizable guardrails to filter harmful content</li>
+<li><strong>Cost-Effective</strong>: Transparent pricing for confident scaling</li>
+<li><strong>Advanced Features</strong>:
+<ul>
+<li>Retrieval-augmented generation (RAG) for knowledge base integration</li>
+<li>Function routing for custom capabilities</li>
+<li>Agent customization and guardrails</li>
+</ul>
+</li>
+</ul>
+<p>The platform takes care of the infrastructure work, letting you focus on building your application regardless of your AI experience level.</p>
+<h2 id="openai-api-compatibility"><a href="#openai-api-compatibility">OpenAI API Compatibility</a><a href="#openai-api-compatibility"></a></h2>
+<p>One of the most powerful aspects of the GenAI Platform is its API compatibility with OpenAI. This means you can use any OpenAI-compatible SDK or library to interact with the platform. If you’ve worked with OpenAI before, you already have all the experience you’ll need to use the GenAI Platform – and if you’re just getting started, you can leverage the extensive ecosystem of tools and libraries built for OpenAI.</p>
+<p>Here’s what this compatibility means for developers:</p>
+<ul>
+<li>Use your favorite OpenAI SDK (Python, Node.js, etc.)</li>
+<li>Leverage existing code and examples</li>
+<li>Access a rich ecosystem of tools and libraries</li>
+<li>Minimal learning curve if you’re familiar with OpenAI</li>
+<li>Easy migration path for existing applications</li>
+</ul>
+<p>For example, in our chat application, we’ll use the OpenAI Node.js SDK:</p>
+<pre tabindex="0"><code>const { OpenAI } = require(&#39;openai&#39;);
+
+const client = new OpenAI({
+    baseURL: agent_endpoint,
+    apiKey: access_token,
+});
+
+const response = await client.chat.completions.create({
+    model: &#34;n/a&#34;, // Model is handled by the GenAI Platform
+    messages: conversationHistory,
+    stream: true,
+});
+</code></pre><p>This compatibility dramatically simplifies development and adoption. Instead of learning a new API or rewriting existing code, you can focus on building features that matter to your users.</p>
+<h2 id="building-the-chat-application"><a href="#building-the-chat-application">Building the Chat Application</a><a href="#building-the-chat-application"></a></h2>
+<p>Before diving into the technical details, it’s worth noting that everything we’re about to explore is available in the <a href="https://github.com/wadewegner/do-genai-customchatbot">sample application on GitHub</a>. You can clone the repository, run it locally, and see these components in action. This makes it easier to follow along and experiment with the code yourself.</p>
+<p>Let me dive into the three key components that make this chat application work.</p>
+<h3 id="api-authentication"><a href="#api-authentication">API Authentication</a><a href="#api-authentication"></a></h3>
+<p>When working with APIs, secure authentication is essential. The GenAI Platform uses access keys to authenticate your requests, providing a simple and secure way to interact with the API without sending sensitive credentials with every call.</p>
+<p>You’ll need to:</p>
+<ol>
+<li>Create an access key in the DigitalOcean Control Panel</li>
+<li>Store it securely in your application</li>
+<li>Use it to authenticate your API requests</li>
+</ol>
+<p>Here’s how we can implement this in our chat application:</p>
+<pre tabindex="0"><code>const { OpenAI } = require(&#39;openai&#39;);
+
+class TokenService {
+    constructor() {
+        this.AGENT_ENDPOINT = process.env.AGENT_ENDPOINT + &#34;/api/v1/&#34;;
+        this.AGENT_KEY = process.env.AGENT_KEY;
+        
+        if (!this.AGENT_ENDPOINT || !this.AGENT_KEY) {
+            throw new Error(&#39;Missing required configuration&#39;);
+        }
+    }
+
+    getClient() {
+        return new OpenAI({
+            baseURL: this.AGENT_ENDPOINT,
+            apiKey: this.AGENT_KEY,
+        });
+    }
+}
+</code></pre><p>This streamlined approach:</p>
+<ul>
+<li>Uses a single access key for authentication</li>
+<li>Requires minimal setup and maintenance</li>
+<li>Follows security best practices</li>
+<li>Works seamlessly with the OpenAI SDK</li>
+</ul>
+<p>When making API calls to the GenAI Platform, we can simply use the client to interact with our agent:</p>
+<pre tabindex="0"><code>const client = tokenService.getClient();
+const response = await client.chat.completions.create({
+    model: &#34;n/a&#34;, // Model is handled by the GenAI Platform
+    messages: conversationHistory,
+    stream: true,
+});
+</code></pre><h3 id="real-time-communication-with-websockets"><a href="#real-time-communication-with-websockets">Real-time Communication with WebSockets</a><a href="#real-time-communication-with-websockets"></a></h3>
+<p>WebSocket is a communication protocol that provides full-duplex communication channels over a single TCP connection. Unlike traditional HTTP requests, WebSockets maintain a persistent connection between the client and server, allowing for:</p>
+<ul>
+<li>Real-time, bi-directional communication</li>
+<li>Lower latency (no need for new handshakes after connection)</li>
+<li>Efficient streaming of data</li>
+<li>Better resource utilization</li>
+</ul>
+<p>For this chat app, WebSockets are ideal because they allow us to:</p>
+<ol>
+<li>Stream AI responses in real-time as they’re generated</li>
+<li>Maintain connection state for each chat session</li>
+<li>Handle reconnection scenarios gracefully</li>
+<li>Provide immediate feedback on connection status</li>
+</ol>
+<h4 id="server-side-implementation">Server-Side Implementation</h4>
+<p>Here we’ve used the <code>ws</code> package, a popular and lightweight WebSocket client and server implementation for Node.js.</p>
+<p>Here’s how we can set up the WebSocket server:</p>
+<pre tabindex="0"><code>const { WebSocketServer } = require(&#39;ws&#39;);
+const WS_PING_INTERVAL = 30000; // 30 seconds
+
+// Create WebSocket server with no direct HTTP server attachment
+const wss = new WebSocketServer({ noServer: true });
+
+// Handle WebSocket connections
+wss.on(&#39;connection&#39;, async (ws, req) =&gt; {
+    // Extract chat session ID from URL parameters
+    const chatId = new URL(req.url, &#39;ws://localhost&#39;).searchParams.get(&#39;chatId&#39;);
+    if (!chatId) {
+        ws.close(1008, &#39;Chat ID is required&#39;);
+        return;
+    }
+
+    try {
+        // Store connection in chat service
+        chatService.addConnection(chatId, ws);
+        
+        // Implement connection health checks
+        const pingInterval = setInterval(() =&gt; {
+            if (ws.readyState === ws.OPEN) ws.ping();
+        }, WS_PING_INTERVAL);
+        
+        // Clean up on connection close
+        ws.on(&#39;close&#39;, () =&gt; {
+            clearInterval(pingInterval);
+            chatService.removeConnection(chatId);
+        });
+    } catch (error) {
+        ws.close(1011, &#39;Failed to initialize connection&#39;);
+    }
+});
+
+// Set up WebSocket upgrade handling
+server.on(&#39;upgrade&#39;, (request, socket, head) =&gt; {
+    wss.handleUpgrade(request, socket, head, (ws) =&gt; {
+        wss.emit(&#39;connection&#39;, ws, request);
+    });
+});
+</code></pre><p>Key aspects of the server implementation:</p>
+<ul>
+<li>Handles WebSocket upgrades manually with <code>noServer: true</code>, giving us more control over the connection process and allowing us to validate session data before accepting connections</li>
+<li>Implements ping/pong for connection health monitoring</li>
+<li>Manages connections per chat session</li>
+<li>Handles cleanup on connection close</li>
+</ul>
+<h4 id="connection-management">Connection Management</h4>
+<p>Managing WebSocket connections properly is crucial for a reliable chat application. We need to track active connections, handle disconnections gracefully, and clean up resources when they’re no longer needed. Here’s how we can maintain active connections in the chat service:</p>
+<pre tabindex="0"><code>class ChatService {
+    constructor() {
+        this.activeConnections = new Map();
+        this.connectionTimeouts = new Map();
+        this.CLEANUP_TIMEOUT = 5 * 60 * 1000; // 5 minutes
+    }
+
+    addConnection(id, ws) {
+        // Remove any existing connection
+        if (this.activeConnections.has(id)) {
+            this.removeConnection(id);
+        }
+
+        // Store new connection
+        this.activeConnections.set(id, ws);
+
+        // Set up cleanup timeout
+        ws.on(&#39;close&#39;, () =&gt; {
+            this.connectionTimeouts.set(id, setTimeout(() =&gt; {
+                this.conversations.delete(id);
+                this.connectionTimeouts.delete(id);
+            }, this.CLEANUP_TIMEOUT));
+        });
+    }
+
+    removeConnection(id) {
+        const connection = this.activeConnections.get(id);
+        if (connection?.readyState === 1) {
+            connection.send(JSON.stringify({ content: &#39;Connection closed&#39; }));
+        }
+        this.activeConnections.delete(id);
+    }
+}
+</code></pre><p>Let’s break down what’s happening here:</p>
+<ol>
+<li><strong>Connection Storage</strong>:
+<ul>
+<li>We use a <code>Map</code> to store active WebSocket connections, keyed by session ID</li>
+<li>Another <code>Map</code> tracks cleanup timeouts for disconnected sessions</li>
+<li>The 5-minute <code>CLEANUP_TIMEOUT</code> gives users time to reconnect without losing context</li>
+</ul>
+</li>
+<li><strong>Adding Connections</strong>:
+<ul>
+<li>Before adding a new connection, we clean up any existing one for that session</li>
+<li>This prevents resource leaks and ensures one active connection per session</li>
+<li>Each connection is associated with a unique chat session ID</li>
+</ul>
+</li>
+<li><strong>Cleanup Handling</strong>:
+<ul>
+<li>When a connection closes, we start a cleanup timer</li>
+<li>If the user doesn’t reconnect within 5 minutes, we remove their conversation history</li>
+<li>This balances keeping context for reconnecting users with freeing up resources</li>
+</ul>
+</li>
+<li><strong>Connection Removal</strong>:
+<ul>
+<li>We notify the client before closing the connection if it’s still active</li>
+<li>All connection resources are properly cleaned up to prevent memory leaks</li>
+</ul>
+</li>
+</ol>
+<p>This careful management of connections helps ensure our chat application remains stable and efficient, even with many concurrent users.</p>
+<h4 id="client-side-implementation">Client-Side Implementation</h4>
+<p>The client-side WebSocket implementation needs to handle several important aspects of real-time communication:</p>
+<ul>
+<li>Establishing and maintaining the connection</li>
+<li>Handling disconnections gracefully</li>
+<li>Processing incoming messages</li>
+<li>Providing visual feedback to users</li>
+</ul>
+<p>Here’s how we can implement these features:</p>
+<pre tabindex="0"><code>const MAX_RECONNECT_ATTEMPTS = 5;
+const RECONNECT_DELAY = 1000; // Start with 1 second
+let reconnectAttempts = 0;
+let ws = null;
+
+function initializeWebSocket() {
+    if (ws) {
+        ws.close();
+        ws = null;
+    }
+
+    // Determine WebSocket protocol based on page protocol
+    const protocol = window.location.protocol === &#39;https:&#39; ? &#39;wss:&#39; : &#39;ws:&#39;;
+    ws = new WebSocket(`${protocol}//${window.location.host}?chatId=${window.chatId}`);
+    
+    // Update UI connection status
+    updateConnectionStatus(&#39;connecting&#39;, &#39;Connecting...&#39;);
+    
+    // Handle incoming messages
+    ws.onmessage = (event) =&gt; {
+        const data = JSON.parse(event.data);
+        if (data.content === &#39;Connected to chat stream&#39;) {
+            // Initial connection successful
+            updateConnectionStatus(&#39;connected&#39;, &#39;Connected&#39;);
+            reconnectAttempts = 0;
+        } else if (data.content) {
+            // Process chat message
+            addMessage(data.content, false);
+        } else if (data.error) {
+            // Handle error messages
+            console.error(&#39;WebSocket Error:&#39;, data.error);
+            addMessage(`Error: ${data.error}`, false);
+        }
+    };
+
+    // Implement reconnection with exponential backoff
+    ws.onclose = (event) =&gt; {
+        updateConnectionStatus(&#39;disconnected&#39;, &#39;Connection lost&#39;);
+        
+        if (reconnectAttempts &lt; MAX_RECONNECT_ATTEMPTS) {
+            // Calculate delay with exponential backoff
+            const delay = Math.min(RECONNECT_DELAY * Math.pow(2, reconnectAttempts), 30000);
+            updateConnectionStatus(&#39;reconnecting&#39;, 
+                `Reconnecting in ${delay/1000} seconds...`);
+            setTimeout(initializeWebSocket, delay);
+            reconnectAttempts++;
+        } else {
+            // Max retries reached
+            updateConnectionStatus(&#39;disconnected&#39;, 
+                &#39;Connection failed. Please refresh the page.&#39;);
+        }
+    };
+
+    // Handle connection errors
+    ws.onerror = (error) =&gt; {
+        console.error(&#39;WebSocket error:&#39;, error);
+        updateConnectionStatus(&#39;error&#39;, &#39;Connection error&#39;);
+    };
+}
+</code></pre><p>Let’s break down the key features:</p>
+<ol>
+<li><strong>Connection Management</strong>:
+<ul>
+<li>Handles both secure (<code>wss:</code>) and non-secure (<code>ws:</code>) connections</li>
+<li>Closes existing connections before creating new ones</li>
+<li>Includes the chat session ID in the connection URL</li>
+<li>Maintains connection state for the UI</li>
+</ul>
+</li>
+<li><strong>Message Processing</strong>:
+<ul>
+<li>Parses incoming JSON messages</li>
+<li>Handles different message types (connection status, chat content, errors)</li>
+<li>Updates the UI with new messages</li>
+<li>Logs errors for debugging</li>
+</ul>
+</li>
+<li><strong>Smart Reconnection</strong>:
+<ul>
+<li>Implements exponential backoff to prevent server flooding</li>
+<li>Starts with a 1-second delay, doubling with each attempt</li>
+<li>Caps maximum delay at 30 seconds</li>
+<li>Limits total reconnection attempts to 5</li>
+<li>Provides clear feedback during reconnection attempts</li>
+</ul>
+</li>
+<li><strong>Error Handling</strong>:
+<ul>
+<li>Catches and logs WebSocket errors</li>
+<li>Updates UI to reflect connection state</li>
+<li>Provides user-friendly error messages</li>
+<li>Suggests actions when connection fails permanently</li>
+</ul>
+</li>
+</ol>
+<p>The client implementation features:</p>
+<ul>
+<li>Protocol detection for secure/non-secure connections</li>
+<li>Visual connection status updates</li>
+<li>Automatic reconnection with exponential backoff</li>
+<li>Maximum retry attempts to prevent infinite loops</li>
+<li>Error handling and user feedback</li>
+</ul>
+<h4 id="connection-status-management">Connection Status Management</h4>
+<p>Building user confidence in a real-time application is crucial, and one simple way to achieve this is by showing the connection state. Since we already track connection status in our WebSocket implementation, we can easily surface this to users:</p>
+<pre tabindex="0"><code>function updateConnectionStatus(status, message) {
+    const statusDot = document.querySelector(&#39;.status-dot&#39;);
+    const statusText = document.querySelector(&#39;.status-text&#39;);
+    
+    // Update visual indicators
+    statusDot.className = `status-dot ${status}`;
+    statusText.textContent = message;
+    
+    // Disable/enable chat input based on connection status
+    const chatInput = document.getElementById(&#39;message-input&#39;);
+    const sendButton = document.querySelector(&#39;button[type=&#34;submit&#34;]&#39;);
+    const isConnected = status === &#39;connected&#39;;
+    
+    chatInput.disabled = !isConnected;
+    sendButton.disabled = !isConnected;
+}
+</code></pre><p>This simple addition gives users immediate feedback about their connection state and automatically disables input when the connection is lost. It’s a small touch that makes the application feel more polished and reliable.</p>
+<h3 id="chat-service-and-message-processing"><a href="#chat-service-and-message-processing">Chat Service and Message Processing</a><a href="#chat-service-and-message-processing"></a></h3>
+<p>When building a chat interface with the GenAI Platform, one of the interesting challenges is handling the streaming responses. The AI model generates text token by token, which raises some interesting questions:</p>
+<ol>
+<li>How might I transform these tiny chunks into a smooth reading experience?</li>
+<li>How can I maintain conversation context for meaningful interactions?</li>
+<li>How can I manage errors that might occur during streaming?</li>
+<li>What’s the best way to maintain a responsive user interface?</li>
+</ol>
+<p>Here’s an approach we can take to address these challenges. Here we’ll implement a buffering strategy that collects tokens into meaningful chunks before sending them to the client, while also maintaining conversation history for context-aware responses.</p>
+<h4 id="message-processing-approach">Message Processing Approach</h4>
+<p>Rather than sending each token as it arrives, we can buffer the content and send it at natural breaking points. Here’s the implementation:</p>
+<pre tabindex="0"><code>async processStream(stream, ws, sessionId) {
+    const conversationHistory = this.conversations.get(sessionId);
+    let currentChunk = [];
+    let fullResponse = [];
+    
+    for await (const chunk of stream) {
+        if (chunk.choices[0]?.delta?.content) {
+            const content = chunk.choices[0].delta.content;
+            currentChunk.push(content);
+            
+            // Send chunk at natural breaks (punctuation or word count)
+            if (this.shouldSendChunk(content, currentChunk)) {
+                const message = currentChunk.join(&#39;&#39;);
+                fullResponse.push(message);
+                ws.send(JSON.stringify({ content: message }));
+                currentChunk = [];
+            }
+        }
+    }
+    
+    // Store the complete response in conversation history
+    if (fullResponse.length &gt; 0) {
+        conversationHistory.push({
+            role: &#39;assistant&#39;,
+            content: fullResponse.join(&#39;&#39;)
+        });
+    }
+}
+</code></pre><p>Let’s look at the key features:</p>
+<ol>
+<li><strong>Smart Chunking</strong>:
+<ul>
+<li>Collects tokens into meaningful chunks</li>
+<li>Sends updates at natural breaking points (punctuation or word count)</li>
+<li>Creates a smoother reading experience for users</li>
+</ul>
+</li>
+<li><strong>Conversation History</strong>:
+<ul>
+<li>Maintains context for each chat session in memory</li>
+<li>Stores both user messages and AI responses during the session</li>
+<li>Enables more coherent and contextual interactions while connected</li>
+<li>Each session has its own independent history, which is cleared after 5 minutes of inactivity</li>
+</ul>
+</li>
+<li><strong>Error Handling</strong>:
+<ul>
+<li>Monitors connection state during streaming</li>
+<li>Gracefully handles disconnections</li>
+<li>Provides clear error messages to users</li>
+<li>Prevents resource leaks</li>
+</ul>
+</li>
+<li><strong>Resource Management</strong>:
+<ul>
+<li>Efficiently processes streaming responses</li>
+<li>Cleans up resources when connections close</li>
+<li>Maintains separate contexts for each session</li>
+<li>Balances memory usage with user experience</li>
+</ul>
+</li>
+</ol>
+<p>This implementation creates a robust chat experience that:</p>
+<ul>
+<li>Feels responsive and natural to users</li>
+<li>Maintains conversation context effectively</li>
+<li>Handles errors gracefully</li>
+<li>Scales well with multiple users</li>
+</ul>
+<p>Of course, this is just one way to approach the problem. You might find other strategies that better suit your specific needs, such as different chunking strategies, alternative error handling approaches, or other ways to manage the conversation state.</p>
+<h2 id="running-the-application"><a href="#running-the-application">Running the Application</a><a href="#running-the-application"></a></h2>
+<p>Reading about building a chat application is one thing, but there’s nothing quite like getting your hands dirty and trying it out yourself. I’ve made it easy to get started with just a few simple steps:</p>
+<ol>
+<li>
+<p>Clone the repository and install dependencies:</p>
+<pre tabindex="0"><code>git clone https://github.com/wadewegner/do-genai-customchatbot.git
+cd do-genai-customchatbot
+npm install
+</code></pre></li>
+<li>
+<p>Create and configure your agent:</p>
+<ul>
+<li>Follow the <a href="https://docs.digitalocean.com/products/genai-platform/getting-started/quickstart/">GenAI Platform Quickstart guide</a> to create your agent</li>
+<li>Make your agent’s endpoint public by following <a href="https://docs.digitalocean.com/products/genai-platform/how-to/manage-ai-agent/use-agent/#call-your-agents-endpoint-in-your-app">these instructions</a></li>
+<li>Copy your agent’s ID, key, and endpoint URL for the next step</li>
+</ul>
+</li>
+<li>
+<p>Set up your environment variables in <code>.env</code>:</p>
+<pre tabindex="0"><code>API_BASE=https://cluster-api.do-ai.run/v1
+AGENT_ID=your-agent-id
+AGENT_KEY=your-agent-key
+AGENT_ENDPOINT=your-agent-endpoint
+SESSION_SECRET=your-session-secret
+</code></pre></li>
+<li>
+<p>Start the server:</p>
+<pre tabindex="0"><code>npm start
+</code></pre></li>
+</ol>
+<p>Now you can open your browser to <code>http://localhost:3000</code> and start chatting! This is your chance to experiment with the application and customize it to your needs. Try modifying the chat interface, adjusting the message processing, or adding new features – the possibilities are endless with the GenAI Platform’s flexibility.</p>
+<p>When you’re ready to share your creation with the world, DigitalOcean’s App Platform is a great place to deploy and run your application publicly.</p>
+<h2 id="beyond-the-chat-bot"><a href="#beyond-the-chat-bot">Beyond the Chat Bot</a><a href="#beyond-the-chat-bot"></a></h2>
+<p>While this example demonstrates a chat interface, the GenAI Platform’s capabilities extend far beyond this use case. You could:</p>
+<ul>
+<li>Build custom knowledge base assistants using RAG pipelines</li>
+<li>Create content generation tools with custom models</li>
+<li>Implement code analysis and generation systems</li>
+<li>Develop language translation services</li>
+<li>Add AI capabilities to existing applications</li>
+</ul>
+<p>What excites me most about building with the GenAI Platform is how it lets you focus on the creative aspects of AI development. The chat application we built here is just scratching the surface – it’s a foundation you can build upon, experiment with, and make entirely your own. I hope this walkthrough has sparked some ideas for your own projects. Now it’s your turn to take these patterns and create something amazing!</p>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/custom-realtime-chat-application">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

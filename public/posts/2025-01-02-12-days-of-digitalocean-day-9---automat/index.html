@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>12 Days of DigitalOcean Day 9 - Automating Receipt Parsing with DigitalOceans GenAI Agent</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>12 Days of DigitalOcean Day 9 - Automating Receipt Parsing with DigitalOceans GenAI Agent</h1>
+			<b><time>02.01.2025 14:00</time></b>
+		       
+
+			<div>
+				<h1 id="12-days-of-digitalocean-day-9---automating-receipt-parsing-with-digitaloceans-genai-agent">12 Days of DigitalOcean Day 9 - Automating Receipt Parsing with DigitalOceans GenAI Agent</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Welcome to <strong>Day 9</strong> of the <strong>12 Days of DigitalOcean</strong>! Over the past few days, we’ve been building an <a href="/community/tutorials/deploying-flask-app-on-digitalocean">Email-Based Receipt Processing Service</a>. The goal is simple: allow users to <a href="/community/tutorials/setting-up-postmark-for-receipts">forward receipts or invoices to a dedicated email address</a>, extract key details like <code>date</code>, <code>amount</code>, <code>currency</code>, and <code>vendor</code>, and store them in a database, or a spreadsheet for easy review later.</p>
+<p>Sounds handy, right? Now, think about doing this manually—digging through emails, copying details one by one, and pasting them into a spreadsheet. It’s repetitive, error-prone, and, let’s be honest, a waste of your time. That’s where AI comes in.</p>
+<p>Instead of writing a parser for every receipt format, you’ll use <a href="/products/gen-ai">DigitalOcean’s GenAI Platform</a> to handle this dynamically. By the end of this tutorial, you’ll have a Flask app that takes messy receipt emails, processes them with AI, and transforms them into clean, structured JSON.</p>
+<h2 id="-why-use-genai-agent-for-this"><a href="#why-use-genai-agent-for-this">🤔 Why Use GenAI Agent for This?</a><a href="#why-use-genai-agent-for-this"></a></h2>
+<p>Emails aren’t standardized. Every vendor formats receipts differently, and writing custom parsers for all those variations is impractical. AI is perfect for this kind of problem. It excels at recognizing patterns in unstructured text and extracting relevant information.</p>
+<p>With <strong>DigitalOcean’s GenAI Platform</strong>, you get access to pre-trained models from <a href="https://docs.digitalocean.com/products/genai-platform/details/models/">Meta, Mistral, and Anthropic</a>. These models are powerful and flexible, and you can even fine-tune them for specific tasks if needed. For this tutorial, we’ll use a pre-trained model to keep things simple.</p>
+<h2 id="-what-youll-learn"><a href="#what-you-ll-learn">✨ What You’ll Learn</a><a href="#what-you-ll-learn"></a></h2>
+<ul>
+<li>How to create and configure a GenAI agent on DigitalOcean.</li>
+<li>How to test your agent to ensure it’s extracting the right details.</li>
+<li>How to integrate the agent with an <a href="/community/tutorials/deploying-flask-app-on-digitalocean">already-deployed Flask app</a>.</li>
+<li>How to test the entire pipeline, from email to JSON output.</li>
+</ul>
+<h2 id="-what-youll-need"><a href="#what-you-ll-need">🛠 What You’ll Need</a><a href="#what-you-ll-need"></a></h2>
+<p>To get the most out of this tutorial, we assume the following:</p>
+<ol>
+<li>A Flask App Already Deployed on DigitalOcean: If you haven’t deployed a Flask app yet, you can follow the instructions in <a href="/community/tutorials/deploying-flask-app-on-digitalocean#what-you-ll-need">Day 7 - Building and Deploying the Email-Based Receipt Processor</a>.</li>
+<li>Postmark Configured for Email Testing: To test the email-to-receipt processing pipeline, you’ll need Postmark set up to forward emails to your Flask app. See <a href="/community/tutorials/setting-up-postmark-for-receipts#step-by-step-guide">Day 8 - Connecting Postmark to Your Flask App</a> for a step-by-step guide.</li>
+</ol>
+<p><strong>Note:</strong> Even if you don’t have these set up, you’ll still learn how to:</p>
+<ul>
+<li>Configure a GenAI agent on DigitalOcean.</li>
+<li>Interact with the agent programmatically to complete tasks using the <a href="https://github.com/openai/openai-python">OpenAI Python SDK</a>.</li>
+</ul>
+<h2 id="-step-by-step-guide"><a href="#step-by-step-guide">🧑‍🍳 Step-by-Step Guide</a><a href="#step-by-step-guide"></a></h2>
+<h3 id="step-1-create-a-genai-agent"><a href="#step-1-create-a-genai-agent">Step 1: Create a GenAI Agent</a><a href="#step-1-create-a-genai-agent"></a></h3>
+<p>Let’s start by creating the core component of this system: a GenAI agent.</p>
+<ul>
+<li>
+<p><strong>Log in to your <a href="https://cloud.digitalocean.com/login">DigitalOcean account</a></strong> and navigate to the <strong><a href="https://cloud.digitalocean.com/gen-ai/">GenAI Platform</a></strong>.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_genai_platform_dashboard.png" alt="DigitalOcean GenAI Platform dashboard showing the main interface" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p>Click <strong>Create Agent</strong>, and give your agent a name like <code>receipt-processor-agent</code>.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/create_agent_configuration.png" alt="Configuration screen for creating a new agent with settings options" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p>Add the following instructions to describe the agent’s task:</p>
+</li>
+</ul>
+<pre tabindex="0"><code>Extract the following details from emails:
+- Date of transaction
+- Amount
+- Currency
+- Vendor name
+
+Ensure the output is in the following JSON format:
+{
+    &#34;date&#34;: &#34;&lt;date&gt;&#34;,
+    &#34;amount&#34;: &#34;&lt;amount&gt;&#34;,
+    &#34;currency&#34;: &#34;&lt;currency&gt;&#34;,
+    &#34;vendor&#34;: &#34;&lt;vendor&gt;&#34;
+}
+</code></pre><p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/create_agent_digitalocean.png" alt="Screen showing the DigitalOcean agent creation interface with instruction input" />
+</figure>
+
+
+</p>
+<ul>
+<li>
+<p><strong>Select a Model</strong>: For this tutorial, select <strong>Llama 3.1 Instruct (8B)</strong>. It’s great for general-purpose instruction-following tasks.</p>
+<p><strong>Pro Tip</strong>: Models can be updated later, even after the agent is created. You can also evaluate models in the <a href="https://cloud.digitalocean.com/gen-ai/model-playground">Model Playground</a> before selecting one. For a complete list of supported models, refer to the <a href="https://docs.digitalocean.com/products/genai-platform/details/models/">DigitalOcean documentation</a>.</p>
+</li>
+</ul>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_droplet_creation.png" alt="DigitalOcean droplet creation interface showing model selection" />
+</figure>
+
+
+</p>
+<ul>
+<li>
+<p><strong>Optional: Add a Knowledge Base</strong> You can enhance your agent by adding a knowledge base. This allows it to learn from specific documents or datasets you provide. For simplicity, we’ll skip this step in this tutorial.</p>
+</li>
+<li>
+<p><strong>Create the Agent</strong>: Scroll down and click <strong>Create Agent</strong> to complete the setup.</p>
+</li>
+</ul>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_create_agent_screen.png" alt="DigitalOcean create agent screen with final configuration options" />
+</figure>
+
+
+</p>
+<h3 id="step-2-test-your-agent"><a href="#step-2-test-your-agent">Step 2: Test Your Agent</a><a href="#step-2-test-your-agent"></a></h3>
+<p>Before hooking the agent into an app, let’s make sure it works. Go to the <strong>Playground</strong> tab in the agent settings. This is a testing area where you can interact with the agent and see how it responds.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_playground_interface.png" alt="DigitalOcean GenAI Playground interface for testing the agent" />
+</figure>
+
+
+</p>
+<ul>
+<li>Paste this “sample email” text into the Playground:</li>
+</ul>
+<pre tabindex="0"><code>Thank you for your purchase! Your order #12345 has been processed.  Total: $35.99. Date: December 29, 2024. Thank you for shopping at Amazon.com
+</code></pre><ul>
+<li>The agent should return:</li>
+</ul>
+<pre tabindex="0"><code>{
+    &#34;date&#34;: &#34;Dec 29, 2024&#34;,
+    &#34;amount&#34;: &#34;35.99&#34;,
+    &#34;currency&#34;: &#34;USD&#34;,
+    &#34;vendor&#34;: &#34;Amazon&#34;
+}
+</code></pre><p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_settings_interface.png" alt="DigitalOcean settings interface showing agent configuration" />
+</figure>
+
+
+</p>
+<ul>
+<li>
+<p>If it doesn’t, adjust the instructions and test again. This step is about making sure the agent understands what you want.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_settings_interface_instructions.png" alt="DigitalOcean settings interface showing instruction configuration" />
+</figure>
+
+
+</p>
+</li>
+</ul>
+<h3 id="step-3-grab-the-endpoint-and-access-key"><a href="#step-3-grab-the-endpoint-and-access-key">Step 3: Grab the Endpoint and Access Key</a><a href="#step-3-grab-the-endpoint-and-access-key"></a></h3>
+<ul>
+<li>Once your agent works, it’s time to connect it to your app. Go to the <strong>Endpoint</strong> tab in the agent settings and copy the URL. It should look something like this:</li>
+</ul>
+<pre tabindex="0"><code>https://agent-1234abcd5678efgh1234-abcde.ondigitalocean.app
+</code></pre><p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_receipt_processor_agent_endpoint.png" alt="DigitalOcean receipt processor agent endpoint configuration" />
+</figure>
+
+
+</p>
+<ul>
+<li>Next, go to the <strong>Settings</strong> tab and create an access key. This key lets your app securely communicate with the agent. Save the key somewhere safe—you’ll need it soon.</li>
+</ul>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_settings_endpoint_access_keys.png" alt="DigitalOcean settings page showing endpoint access keys" />
+</figure>
+
+
+</p>
+<h3 id="step-4-securely-store-environment-variables-in-digitalocean"><a href="#step-4-securely-store-environment-variables-in-digitalocean">Step 4: Securely Store Environment Variables in DigitalOcean</a><a href="#step-4-securely-store-environment-variables-in-digitalocean"></a></h3>
+<p>Now that we have the agent endpoint and secure agent key, we need to store them securely so they’re accessible to our Flask app.</p>
+<ol>
+<li>
+<p><strong>Go to App Settings</strong>: Navigate to your app in the DigitalOcean dashboard and click <strong>Settings</strong>.</p>
+</li>
+<li>
+<p><strong>Locate Environment Variables</strong>: Scroll to the <strong>App-Level Environment Variables</strong> section.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_app_settings_screenshot.png" alt="DigitalOcean app settings page with configuration options" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Add the Following Variables</strong>:</p>
+<ul>
+<li><code>AGENT_BASE_URL</code>: Paste the GenAI agent’s base URL, e.g., <code>https://agent-1234abcd5678efgh1234-abcde.ondigitalocean.app</code>.</li>
+<li><code>SECURE_AGENT_KEY</code>: Paste the secure agent key generated in the GenAI settings.</li>
+</ul>
+</li>
+<li>
+<p><strong>Save and Redeploy</strong>: Save the changes, and DigitalOcean will automatically redeploy your app with the new environment variables.</p>
+</li>
+</ol>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/environment_variable_editor_screenshot.png" alt="Environment variable editor interface showing configuration" />
+</figure>
+
+
+</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_app_platform_environment_variables.png" alt="DigitalOcean App Platform environment variables configuration page" />
+</figure>
+
+
+</p>
+<h3 id="step-5-update-your-flask-app-with-the-openai-sdk"><a href="#step-5-update-your-flask-app-with-the-openai-sdk">Step 5: Update Your Flask App with the OpenAI SDK</a><a href="#step-5-update-your-flask-app-with-the-openai-sdk"></a></h3>
+<p>Now, we’ll update our Flask app to communicate with the GenAI agent using the <a href="https://github.com/openai/openai-python">OpenAI SDK</a>. Here’s how we’ll approach it:</p>
+<ol>
+<li>
+<p><strong>Install Required Libraries</strong>: Run this command to ensure you have the necessary libraries:</p>
+<pre tabindex="0"><code>pip install openai flask python-dotenv
+</code></pre></li>
+<li>
+<p><strong>Freeze Requirements</strong>: Generate a <code>requirements.txt</code> file to track your dependencies:</p>
+<pre tabindex="0"><code>pip freeze &gt; requirements.txt
+</code></pre></li>
+<li>
+<p><strong>Set Up the OpenAI SDK</strong>: In the app, we’ll initialize the OpenAI SDK and configure it to use the DigitalOcean GenAI endpoint. This is what handles communication with the agent we created earlier.</p>
+<pre tabindex="0"><code>from openai import OpenAI
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Secure agent key and endpoint
+SECURE_AGENT_KEY = os.getenv(&#34;SECURE_AGENT_KEY&#34;)
+AGENT_BASE_URL = os.getenv(&#34;AGENT_BASE_URL&#34;)
+AGENT_ENDPOINT = f&#34;{AGENT_BASE_URL}/api/v1/&#34;
+
+# Initialize the OpenAI client
+client = OpenAI(
+    base_url=AGENT_ENDPOINT,
+    api_key=SECURE_AGENT_KEY
+)
+</code></pre></li>
+<li>
+<p><strong>Add a Function to Process Email Content</strong>: Now we’ll add a function to send email content to the GenAI agent, process it using a prompt, and return the result. Here’s how it works:</p>
+<pre tabindex="0"><code>def process_with_ai(email_content):
+    &#34;&#34;&#34;
+    Process email content with GenAI.
+    &#34;&#34;&#34;
+    prompt = (
+        &#34;Extract the following details from the email:\n&#34;
+        &#34;- Date of transaction\n&#34;
+        &#34;- Amount\n&#34;
+        &#34;- Currency\n&#34;
+        &#34;- Vendor name\n\n&#34;
+        f&#34;Email content:\n{email_content}\n\n&#34;
+        &#34;Ensure the output is in JSON format with keys: date, amount, currency, vendor.&#34;
+    )
+
+    response = client.chat.completions.create(
+        model=&#34;your-model-id&#34;,  # Replace with your GenAI model ID
+        messages=[{&#34;role&#34;: &#34;user&#34;, &#34;content&#34;: prompt}]
+    )
+
+    return response.choices[0].message.content
+</code></pre></li>
+<li>
+<p><strong>Update the Flask Endpoint</strong>: Finally, we’ll connect this function to the <code>/inbound</code> route of the Flask app to handle incoming emails. Here’s the updated endpoint:</p>
+<pre tabindex="0"><code>@app.route(&#39;/inbound&#39;, methods=[&#39;POST&#39;])
+def handle_inbound_email():
+    &#34;&#34;&#34;
+    Process inbound emails and return extracted JSON.
+    &#34;&#34;&#34;
+    email_content = request.json.get(&#34;TextBody&#34;, &#34;&#34;)
+    if not email_content:
+        return jsonify({&#34;error&#34;: &#34;No email content provided&#34;}), 400
+
+    extracted_data = process_with_ai(email_content)
+    return jsonify({&#34;extracted_data&#34;: extracted_data})
+</code></pre></li>
+</ol>
+<h4 id="complete-flask-app-with-genai-integration">Complete Flask App with GenAI Integration</h4>
+<p>app.py</p>
+<pre tabindex="0"><code># app.py
+
+from flask import Flask, request, jsonify
+import os
+from dotenv import load_dotenv
+from openai import OpenAI
+import logging
+
+# Load environment variables
+load_dotenv()
+
+# Initialize Flask app
+app = Flask(__name__)
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
+# Secure agent key and endpoint
+SECURE_AGENT_KEY = os.getenv(&#34;SECURE_AGENT_KEY&#34;)
+AGENT_BASE_URL = os.getenv(&#34;AGENT_BASE_URL&#34;)
+AGENT_ENDPOINT = f&#34;{AGENT_BASE_URL}/api/v1/&#34;
+
+# Initialize the OpenAI client for GenAI
+client = OpenAI(
+    base_url=AGENT_ENDPOINT,
+    api_key=SECURE_AGENT_KEY
+)
+
+def process_with_ai(email_content):
+    &#34;&#34;&#34;
+    Process email content with GenAI.
+    &#34;&#34;&#34;
+    prompt = (
+        &#34;Extract the following details from the email:\n&#34;
+        &#34;- Date of transaction\n&#34;
+        &#34;- Amount\n&#34;
+        &#34;- Currency\n&#34;
+        &#34;- Vendor name\n\n&#34;
+        f&#34;Email content:\n{email_content}\n\n&#34;
+        &#34;Ensure the output is in JSON format with keys: date, amount, currency, vendor.&#34;
+    )
+
+    response = client.chat.completions.create(
+        model=&#34;your-model-id&#34;,  # Replace with your GenAI model ID
+        messages=[{&#34;role&#34;: &#34;user&#34;, &#34;content&#34;: prompt}]
+    )
+
+    return response.choices[0].message.content
+
+@app.route(&#39;/inbound&#39;, methods=[&#39;POST&#39;])
+def handle_inbound_email():
+    &#34;&#34;&#34;
+    Process inbound emails and return extracted JSON.
+    &#34;&#34;&#34;
+    email_content = request.json.get(&#34;TextBody&#34;, &#34;&#34;)
+    if not email_content:
+        logging.error(&#34;No email content provided.&#34;)
+        return jsonify({&#34;error&#34;: &#34;No email content provided&#34;}), 400
+
+    extracted_data = process_with_ai(email_content)
+    logging.info(&#34;Extracted Data: %s&#34;, extracted_data)  # Log the extracted data
+
+    return jsonify({&#34;extracted_data&#34;: extracted_data})
+
+if __name__ == &#34;__main__&#34;:
+    app.run(port=5000)
+</code></pre><h3 id="step-6-deploy-to-digitalocean"><a href="#step-6-deploy-to-digitalocean">Step 6: Deploy to DigitalOcean</a><a href="#step-6-deploy-to-digitalocean"></a></h3>
+<p>To deploy the updated Flask app, follow the steps from <a href="/community/tutorials/deploying-flask-app-on-digitalocean#step-4-deploy-to-digitalocean-s-app-platform">Day 7</a>. Here’s a quick summary:</p>
+<ol>
+<li><strong>Push Your Updated Code to GitHub</strong>: After making the necessary changes to your Flask app, commit and push the updated code to GitHub. This will trigger an automatic deployment in DigitalOcean’s App Platform.</li>
+</ol>
+<pre tabindex="0"><code>git add .
+git commit -m &#34;Add GenAI integration for receipt processing&#34;
+git push origin main
+</code></pre><p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/terminal_git_commit_push.png" alt="Terminal showing git commit and push commands" />
+</figure>
+
+
+</p>
+<p>2.<strong>Monitor Deployment</strong>: You can track the progress in the <strong>Deployments</strong> section of your app’s dashboard.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_project_dashboard.png" alt="DigitalOcean project dashboard showing deployment status" />
+</figure>
+
+
+</p>
+<p>3.<strong>Verify Your Deployment</strong>: After the deployment completes, navigate to your app’s public URL and test its functionality. You can also check the <strong>runtime logs</strong> in the dashboard to confirm that the app started successfully.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_app_deployment.png" alt="DigitalOcean app deployment status and configuration" />
+</figure>
+
+
+</p>
+<h3 id="step-7-test-the-entire-pipeline"><a href="#step-7-test-the-entire-pipeline">Step 7: Test the Entire Pipeline</a><a href="#step-7-test-the-entire-pipeline"></a></h3>
+<ol>
+<li>
+<p><strong>Send a Sample Email</strong>: Forward a sample receipt email to the Postmark address you configured in <a href="/community/tutorials/setting-up-postmark-for-receipts">Day 8</a>.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/order_receipt_email.png" alt="Example receipt email showing order details" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Monitor Postmark Activity</strong>: Log in to Postmark and confirm that the email was forwarded to your app. Refer to the <a href="/community/tutorials/setting-up-postmark-for-receipts#monitoring-activity">Day 8 tutorial</a>.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/email_dashboard_screenshot.png" alt="Email dashboard showing message activity" />
+</figure>
+
+
+</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/postmark_api_response_screenshot.png" alt="Postmark API response showing successful delivery" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Check Runtime Logs</strong>: In the DigitalOcean App Platform dashboard, view your app’s runtime logs. You should see the JSON output from the Flask app.</p>
+<p><strong>Expected Output</strong>:</p>
+<pre tabindex="0"><code>2024-12-31 12:34:56,789 INFO Extracted Data: {
+ &#34;date&#34;: &#34;Dec 29, 2024&#34;,
+ &#34;amount&#34;: &#34;35.99&#34;,
+ &#34;currency&#34;: &#34;USD&#34;,
+ &#34;vendor&#34;: &#34;Amazon&#34;
+}
+</code></pre><p>![DigitalOcean runtime logs showing application output](<a href="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_runtime_logs_screenshot">https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_runtime_logs_screenshot</a> _json_response.png)</p>
+</li>
+</ol>
+<h2 id="-wrap-up"><a href="#wrap-up">🎁 Wrap-Up</a><a href="#wrap-up"></a></h2>
+<p>Here’s what we accomplished today:</p>
+<ol>
+<li>Created and configured a GenAI agent on DigitalOcean to process receipt emails.</li>
+<li>Tested the agent interactively and programmatically to ensure it extracted the right details.</li>
+<li>Updated the Flask app to integrate with the GenAI agent using the OpenAI SDK.</li>
+<li>Deployed the updated app to DigitalOcean.</li>
+<li>Tested the entire pipeline, from sending an email to viewing the extracted JSON in logs.</li>
+</ol>
+<p>Here is the previous tutorial from this series on <a href="/community/tutorials/setting-up-postmark-for-receipts">Day 8:Connecting Postmark to Your Flask App</a>.</p>
+<p><strong>Up next</strong>: In the next tutrorial, you’ll complete the pipeline by storing the extracted JSON data into a database. This will make your Email-Based Receipt Processing Service ready for real-world use. Stay tuned—Day 10 is all about tying it all together! 🚀</p>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/automating-receipt-parsing-with-digitalocean-genai">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

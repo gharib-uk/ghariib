@@ -1,6 +1,8 @@
 ---
 title: "Data Security, Meet Remediation: Introducing the New Integration Between Prisma Cloud DSPM and Cortex XSOAR"
-date: 2025-03-19
+date: 2025-01-03
+categories: 
+  - "security"
 ---
 
 Remediation has long been a sore spot in data security posture management (DSPM). Many of the currently available solutions are great at surfacing alerts but offer no real way for Security teams to take action without a separate effort to integrate with external remediation tools.

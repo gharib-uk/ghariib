@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Optimizing AI Models with Quanto</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Optimizing AI Models with Quanto</h1>
+			<b><time>27.12.2024 06:47</time></b>
+		       
+
+			<div>
+				<h1 id="optimizing-ai-models-with-quanto">Optimizing AI Models with Quanto</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>The transformer-based diffusion models are improving day by day and have proven to revolutionize the text-to-image generation model. The capabilities of transformers enhance the scalability and performance of any model, thereby increasing the model’s complexity.</p>
+<p>“<strong>With great power comes great responsibility</strong>”</p>
+<p>In this case, <strong>with great model complexities comes great power and memory consumption</strong>.</p>
+<p>For instance, running inference with models like Stable Diffusion 3 requires a huge <a href="/community/tutorials/gpu-memory-bandwidth">GPU memory</a>, due to the involvement of components—text encoders, diffusion backbones, and image decoders. This high memory requirement causes set back for those using consumer-grade GPUs, which hampers both accessibility and experimentation.</p>
+<p><strong>Enter Model Quantization</strong>. Imagine being able to scale down a resource-hungry model to a more manageable size without sacrificing its effectiveness. Quantization, is like compressing a high-resolution image into a more compact format, transforms the model’s parameters into lower-precision representations. This not only reduces memory usage but also speeds up computations, making complex models more accessible and easier to work with.</p>
+<p>In this post, we explore how Quanto’s quantization tools can significantly enhance the memory efficiency of Transformer-based diffusion pipelines.</p>
+<h3 id="prerequisites"><a href="#prerequisites">Prerequisites</a><a href="#prerequisites"></a></h3>
+<ul>
+<li>Basic Understanding of AI Models: Familiarity with deep learning frameworks, particularly PyTorch.</li>
+<li>Knowledge of Quantization: Basic concepts of model quantization and its purpose in optimizing AI models.</li>
+<li>Setup Environment: Access to a machine with Python installed, and required dependencies such as PyTorch and Optimum.</li>
+<li>Compute Resources: A GPU-enabled environment (e.g., NVIDIA H100) for benchmarking performance.</li>
+<li>Sample Model/Dataset: A pre-trained model or dataset for testing and experimentation with Quanto.</li>
+</ul>
+<h3 id="introducing-quanto-a-versatile-pytorch-quantization-backend"><a href="#introducing-quanto-a-versatile-pytorch-quantization-backend">Introducing Quanto: A Versatile PyTorch Quantization Backend</a><a href="#introducing-quanto-a-versatile-pytorch-quantization-backend"></a></h3>
+<p>Quantization is a crucial technique for reducing the computational and memory demands of Deep Learning Models, making them more suitable for deployment on consumer devices. By using low-precision data types like 8-bit integers (int8) instead of 32-bit floating points (float32), quantization not only decreases memory storage requirements but also enables optimizations for specific hardware, such as int8 or float8 matrix multiplications on CUDA devices.</p>
+<p>Introducing <strong>Quanto</strong>, a new quantization backend for Optimum, designed to offer a versatile and straightforward quantization process. Quanto stands out with its comprehensive support for various features, ensuring compatibility with diverse model configurations and devices:</p>
+<p>Quanto is also a part of <a href="https://github.com/huggingface/optimum">Hugging Face Optimum</a>, a set of tools for hardware optimization</p>
+<ul>
+<li>Eager Mode Compatibility: Works seamlessly with non-traceable models.</li>
+<li>Device Flexibility: Quantized models can be deployed on any device, including CUDA and MPS.</li>
+<li>Automatic Integration: Inserts quantization/dequantization stubs, functional operations, and quantized modules automatically.</li>
+<li>Streamlined Workflow: Provides an effortless transition from a float model to both dynamic and static quantized models.</li>
+<li>Serialization Support: Compatible with PyTorch <code>weight_only</code> and 🤗 Safetensors formats.</li>
+<li>Accelerated Matrix Multiplications: Supports various quantization formats (int8-int8, fp16-int4, bf16-int8, bf16-int4) on CUDA devices.</li>
+<li>Wide Range of Support: Handles int2, int4, int8, and float8 weights and activations.</li>
+</ul>
+<p>While many tools focus on making large AI models smaller, Quanto is designed to be simple and useful for all kinds of models.</p>
+<h2 id="quanto-workflow"><a href="#quanto-workflow">Quanto Workflow</a><a href="#quanto-workflow"></a></h2>
+<p>To install Quanto using pip, please use the code below:-</p>
+<pre tabindex="0"><code>!pip install optimum-quanto
+</code></pre><p>Quantize a Model</p>
+<p>The below code will help to convert a standard model to a quantized model</p>
+<pre tabindex="0"><code>from optimum.quanto import quantize, qint8
+quantize(model, weights=qint8, activations=qint8)
+</code></pre><p>Calibrate</p>
+<p>Quanto’s calibration mode ensures that the quantization parameters are adjusted to the actual data distributions in the model, enhancing the accuracy and efficiency of the quantized model.</p>
+<pre tabindex="0"><code>from optimum.quanto import Calibration
+
+with Calibration(momentum=0.9):
+    model(samples)
+</code></pre><p>Quantization-Aware-Training</p>
+<p>In case the model performance is effected one can tune the model for few epochs to enhance the model performance.</p>
+<pre tabindex="0"><code>import torch
+
+model.train()
+for batch_idx, (data, target) in enumerate(train_loader):
+    data, target = data.to(device), target.to(device)
+    optimizer.zero_grad()
+    output = model(data).dequantize()
+    loss = torch.nn.functional.nll_loss(output, target)
+    loss.backward()
+    optimizer.step()
+</code></pre><p>Freeze integer weights</p>
+<p>While freezing the model, the float weights gets converted to quantized weights.</p>
+<pre tabindex="0"><code>from optimum.quanto import freeze
+freeze(model)
+</code></pre><h2 id="h100-benchmarking-study"><a href="#h100-benchmarking-study">H100 Benchmarking Study</a><a href="#h100-benchmarking-study"></a></h2>
+<p>The H100 GPU is a high-performance graphics card designed specifically for demanding AI tasks, including training and inference for large models like transformers and diffusion models. Here’s why it’s chosen for this benchmark:</p>
+<ul>
+<li>Top-tier Performance: The H100 offers exceptional speed and power, making it ideal for handling complex operations required by large models like text-to-image and text-to-video generation pipelines.</li>
+<li>Support for FP16: This GPU efficiently handles computations in FP16 (half-precision floating point), which reduces memory usage and speeds up calculations without significantly sacrificing accuracy.</li>
+<li>Advanced Hardware Features: The H100 supports optimized operations for mixed-precision training and inference, making it an excellent choice for quantization techniques that aim to reduce model size while maintaining performance.</li>
+</ul>
+<p>In the <a href="https://github.com/huggingface/optimum-quanto">benchmarking study</a>, the main focus is on applying <strong>Quanto</strong>, a new quantization tool, to diffusion models. While quantization is well-known among practitioners of Large Language Models (LLMs), it’s less commonly used with diffusion models. Quanto is used to explore whether it can provide memory savings in these models with little or no loss in quality.</p>
+<p>Here’s what the study involves:</p>
+<h3 id="environment-setup"><a href="#environment-setup">Environment Setup</a><a href="#environment-setup"></a></h3>
+<ul>
+<li>CUDA 12.2: The version of CUDA used, which is crucial for running computations on the H100 GPU.</li>
+<li>PyTorch 2.4.0: The deep learning framework used for model training and inference.</li>
+<li>Diffusers: A library used for building and running diffusion models, installed from a specific commit to ensure consistency.</li>
+<li>Quanto: The quantization tool, also installed from a specific commit.</li>
+<li>Computations in FP16: By default, all computations were performed in FP16 to reduce memory usage and increase speed. However, the VAE (Variational Autoencoder) is not quantized to avoid potential numerical instability. Focus on Key Pipelines: For this study, three transformer-based diffusion pipelines are selected from Diffusers. These pipelines are chosen because they represent some of the most advanced models for text-to-image generation, making them ideal for testing the effectiveness of Quanto in reducing memory usage while maintaining model quality.</li>
+<li>PixArt-Sigma</li>
+<li>Stable Diffusion 3</li>
+<li>Aura Flow</li>
+</ul>
+<p>By using the H100 GPU and focusing on these key models, the study aims to demonstrate the potential of Quanto to bridge the gap between LLMs and diffusion models in terms of quantization, offering significant memory savings with minimal impact on performance.</p>
+<h2 id="applying-quanto-to-quantize-a-diffusionpipeline"><a href="#applying-quanto-to-quantize-a-diffusionpipeline">Applying Quanto to Quantize a DiffusionPipeline</a><a href="#applying-quanto-to-quantize-a-diffusionpipeline"></a></h2>
+<p>Quantizing a model using quanto follows a straightforward process:-</p>
+<p>First install the required packages, here we are installing transformers, quanto, torch, sentencepiece. However please note you might need to install a few more packages as per requirement.</p>
+<pre tabindex="0"><code>!pip install transformers==4.35.0
+!pip install quanto==0.0.11
+!pip install torch==2.1.1
+!pip install sentencepiece==0.2.0
+!pip install optimum-quanto
+</code></pre><p>The <code>quantize()</code> function is called on the module to be quantized, specifying the components targeted for quantization. In this context, only the parameters are being quantized, while the activations remain unchanged. The parameters are quantized to the FP8 data type. Finally, the <code>freeze()</code> function is invoked to replace the original parameters with the newly quantized ones.</p>
+<pre tabindex="0"><code>from optimum.quanto import freeze, qfloat8, quantize
+from diffusers import PixArtSigmaPipeline
+import torch
+
+pipeline = PixArtSigmaPipeline.from_pretrained(
+    &#34;PixArt-alpha/PixArt-Sigma-XL-2-1024-MS&#34;, torch_dtype=torch.float16
+).to(&#34;cuda&#34;)
+
+quantize(pipeline.transformer, weights=qfloat8)
+freeze(pipeline.transformer)
+</code></pre><p>Once done use the pipeline.</p>
+<pre tabindex="0"><code>image = pipeline(&#34;ghibli style, a fantasy landscape with castles&#34;).images[0]
+</code></pre><p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2024/08/Screenshot-2024-08-16-at-12.23.14-PM.png" alt="Image generated using diffusion transformer in FP8" />
+</figure>
+
+
+</p>
+<p>Image generated using diffusion transformer in FP8 (<a href="https://huggingface.co/blog/quanto-diffusers">Image Source</a>)</p>
+<p>The below code can be used to quantize the text encoder.</p>
+<pre tabindex="0"><code>quantize(pipeline.text_encoder, weights=qfloat8)
+freeze(pipeline.text_encoder)
+</code></pre><p>The text encoder, being a transformer model as well, can also be quantized. By quantizing both the text encoder and the diffusion backbone, significantly greater memory savings are achieved.</p>
+<h3 id="llm-pipelines"><a href="#llm-pipelines">LLM Pipelines</a><a href="#llm-pipelines"></a></h3>
+<p><code>optimum-quanto</code> provides helper classes to quantize, save and reload Hugging Face quantized models.</p>
+<p>The code below will load the pre-trained language model (Meta-Llama-3-8B) using the Transformers library. It then applies quantization to the model using the <code>QuantizedModelForCausalLM</code> class from Optimum Quanto, specifically converting the model’s weights to the qint4 data type. The <code>lm_head</code> (output layer) is excluded from quantization to preserve its precision, ensuring that the final output quality remains high.</p>
+<pre tabindex="0"><code>from transformers import AutoModelForCausalLM
+from optimum.quanto import QuantizedModelForCausalLM, qint4
+
+model = AutoModelForCausalLM.from_pretrained(&#39;meta-llama/Meta-Llama-3-8B&#39;)
+qmodel = QuantizedModelForCausalLM.quantize(model, weights=qint4, exclude=&#39;lm_head&#39;)
+</code></pre><pre tabindex="0"><code># quantized model can be saved using save_pretrained
+qmodel.save_pretrained(&#39;./Llama-3-8B-quantized&#39;)
+</code></pre><pre tabindex="0"><code># reload the model using from_pretrained
+from optimum.quanto import QuantizedModelForCausalLM
+qmodel = QuantizedModelForCausalLM.from_pretrained(&#39;Llama-3-8B-quantized&#39;)
+</code></pre><h3 id="integrations-with-the-transformers"><a href="#integrations-with-the-transformers">Integrations with the Transformers</a><a href="#integrations-with-the-transformers"></a></h3>
+<p>Quanto seamlessly integrates with the Hugging Face transformers library. Any model can be quantized by just passing the model through <code>QuantoConfig</code>.</p>
+<pre tabindex="0"><code>from transformers import AutoModelForCausalLM, AutoTokenizer, QuantoConfig
+
+model_id = &#34;facebook/opt-125m&#34;
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+
+quantization_config = QuantoConfig(weights=&#34;int8&#34;)
+
+quantized_model = AutoModelForCausalLM.from_pretrained(
+    model_id,
+    quantization_config= quantization_config
+)
+</code></pre><p>With Quanto you can quantize and run your model regardless if using CPU/GPU/ MPS (Apple Silicon).</p>
+<pre tabindex="0"><code>from transformers import AutoModelForSpeechSeq2Seq
+
+model_id = &#34;openai/whisper-large-v3&#34;
+quanto_config = QuantoConfig(weights=&#34;int8&#34;)
+
+model = AutoModelForSpeechSeq2Seq.from_pretrained(
+   model_id,
+   torch_dtype=torch.float16,
+   device_map=&#34;cuda&#34;,
+   quantization_config=quanto_config
+)
+</code></pre><h2 id="tensors-in-quanto"><a href="#tensors-in-quanto">Tensors in Quanto</a><a href="#tensors-in-quanto"></a></h2>
+<ul>
+<li>What Quanto Does: Quanto works with special Tensors (data structures) that it modifies to fit into smaller data types, like int8 or float8. This makes the model more memory-efficient and faster to run.</li>
+<li>Conversion Process: For floating-point numbers, it simply uses PyTorch’s built-in conversion.</li>
+<li>For integers, it rounds the numbers to fit them into the smaller data type.</li>
+<li>Accuracy: Quanto tries to keep the conversion accurate by avoiding too many extreme values (either too large or too small) that can distort the model’s performance.</li>
+<li>Optimized Operations: Using these smaller data types (lower-bitwidth) allows the model to run faster because the operations for these types are quicker.</li>
+</ul>
+<h2 id="modules-in-quanto"><a href="#modules-in-quanto">Modules in Quanto</a><a href="#modules-in-quanto"></a></h2>
+<ul>
+<li>Replacing Torch Modules: Quanto can swap out regular PyTorch components with special Quanto versions that work with these smaller Tensors.</li>
+<li>Weight Conversion: When the model is still being fine-tuned, the weights (the model’s adjustable parameters) are dynamically converted, which might slow things down a bit. But once the model is finalized (frozen), this conversion stops.</li>
+<li>Biases: Biases (another set of model parameters) aren’t converted because converting them would either reduce accuracy or require very high precision, making it inefficient.</li>
+<li>Activations: The model’s activations (intermediate outputs) are also converted to smaller data types, but only after the model is calibrated to find the best conversion settings.</li>
+</ul>
+<h2 id="modules-that-can-be-quantized"><a href="#modules-that-can-be-quantized">Modules That Can Be Quantized</a><a href="#modules-that-can-be-quantized"></a></h2>
+<ul>
+<li>Linear Layers: These are fully connected layers in the model where weights are always quantized, but biases are left as they are.</li>
+<li>Conv2D Layers: These are convolutional layers often used in image processing. Here, weights are also always quantized, and biases are not.</li>
+<li>LayerNorm: This normalizes data in the model. In Quanto, the outputs can be quantized, but weights and biases are left as they are.</li>
+</ul>
+<p>This setup allows models to become smaller and faster while still maintaining a good level of accuracy.</p>
+<h2 id="final-observations-from-the-study"><a href="#final-observations-from-the-study">Final Observations from the Study</a><a href="#final-observations-from-the-study"></a></h2>
+<p>Quantizing the text encoder in diffusion models, such as those used in Stable Diffusion, can significantly affect performance and memory efficiency. For Stable Diffusion 3, which uses three different text encoders, the observations related to quantizing these encoders are as follows:</p>
+<ol>
+<li>Quantizing the Second Text Encoder: This approach does not work well, likely due to the specific characteristics of the second encoder.</li>
+<li>Quantizing the First Text Encoder (CLIPTextModelWithProjection): This option is recommended and generally effective, as the first encoder’s quantization provides a good balance between memory savings and performance.</li>
+<li>Quantizing the Third Text Encoder (T5EncoderModel): This approach is also recommended. Quantizing the third encoder can lead to substantial memory savings without significantly impacting the model’s performance.</li>
+<li>Quantizing Both the First and Third Text Encoders: Combining the quantization of both the first and third text encoders can be a good strategy for maximizing memory efficiency while maintaining acceptable performance levels.</li>
+</ol>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/content/images/2024/08/Screenshot-2024-08-16-at-1.21.43-PM.png" alt="In terms of memory savings, the table provides details on how much memory can be saved by applying each of these quantization strategies, particularly focusing on the relative benefits and trade-offs between quantizing different combinations of text encoders" />
+</figure>
+
+
+</p>
+<p>In terms of memory savings, the table provides details on how much memory can be saved by applying each of these quantization strategies, particularly focusing on the relative benefits and trade-offs between quantizing different combinations of text encoders(<a href="https://huggingface.co/blog/quanto-diffusers">Image Source</a>).</p>
+<ul>
+<li>Quantizing the diffusion transformer in all cases ensures that the observed memory savings are primarily due to the text encoder quantization.</li>
+<li>Using the bfloat16 can be faster when powerful GPUs such as H100 or 4090 are considered.</li>
+<li><code>qint8</code> is generally faster for inference due to efficient integer operations and hardware optimization.</li>
+<li>Fusing QKV Projections thickens the int8 kernels, which optimizes computation further by reducing the number of operations and leveraging efficient data processing.</li>
+<li>When using <code>qint4</code> with <code>bfloat16</code> on an H100 GPU, results improvements in memory usage because <code>qint4</code> uses only 4 bits per value, which reduces the amount of memory needed to store the weights. However, this comes at the cost of increased inference latency. This is because the H100 GPU still does not support computations with 4-bit integers (<code>int4</code>). Although the weights are stored in a compressed 4-bit format, the actual computations are still performed in <code>bfloat16</code> (a 16-bit floating-point format), which means the hardware has to handle more complex operations, leading to slower processing times.</li>
+</ul>
+<h2 id="conclusions"><a href="#conclusions">Conclusions</a><a href="#conclusions"></a></h2>
+<p>Quanto offers a powerful quantization backend for PyTorch, optimizing model performance by converting weights to lower precision formats. By supporting techniques like <code>qint8</code> and <code>qint4</code>, Quanto reduces memory consumption and speeds up inference. Additionally, Quanto works across different devices (CPU, GPU, MPS) and is compatible with various setups. However, on MPS devices, using <code>float8</code> will cause an error. Overall, Quanto enables more efficient deployment of deep learning models, balancing memory savings with performance trade-offs.</p>
+<h2 id="references"><a href="#references">References</a><a href="#references"></a></h2>
+<ul>
+<li><a href="https://huggingface.co/blog/quanto-diffusers">Memory-efficient Diffusion Transformers with Quanto and Diffusers</a></li>
+<li><a href="https://huggingface.co/blog/quanto-introduction">Quanto: a PyTorch quantization backend for Optimum</a></li>
+<li><a href="https://pypi.org/project/quanto/">quanto 0.2.0</a></li>
+<li><a href="https://github.com/huggingface/optimum-quanto">Optimum Quanto Github</a></li>
+</ul>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/optimizing-ai-models-quanto-h100-gpus">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

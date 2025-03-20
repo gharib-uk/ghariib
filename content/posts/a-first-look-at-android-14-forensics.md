@@ -1,13 +1,12 @@
 ---
 title: "A first look at Android 14 forensics"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
-  - "cybersecurity"
-  - "cybersecurity-awareness"
-  - "forensics"
-  - "security"
-  - "security-awareness"
-  - "security-awareness-3-0"
+  - "general"
+tags: 
+  - "ces"
+  - "eu"
+  - "intel"
 ---
 
 Android 14 was released to the public by the Open Handset Alliance on October 4, 2023, and is now available on various smartphones, including the Google Pixel.

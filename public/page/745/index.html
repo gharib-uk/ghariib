@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta name="generator" content="Hugo 0.145.0">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Gharib Personal Blog</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Gharib Personal Blog">
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2018-08-12-openctf-ellingson-mineral-2/">OpenCTF Ellingson Mineral 2</a></h1>
+	<b><time>12.08.2018 09:37</time></b>
+	
+	<div>
+		<h1 id="openctf-ellingson-mineral-2">OpenCTF Ellingson Mineral 2</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><strong>Points:</strong> 100</p>
+<p><strong>Description:</strong></p>
+<pre tabindex="0"><code>We heard word that The Plague escaped prison three weeks ago. We&#39;ve been notified that he was recently seen on soundcloud liking a song by ytcracker called &#34;hacker music.&#34; Let us know what you find.
+</code></pre><p>First perform a search on soundcloud.com for “ytcracker hacker music” then go to likes. <code>https://soundcloud.com/ytcracker/ytcracker-hacker-music/likes</code></p>
+<p>Go to ThePlague2018x’s profile</p>
+		
+			<a href="https://ghariib.ir/posts/2018-08-12-openctf-ellingson-mineral-2/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2018-08-12-openctf-sql-10/">OpenCTF SQL 10</a></h1>
+	<b><time>12.08.2018 09:37</time></b>
+	
+	<div>
+		<h1 id="openctf-sql-10">OpenCTF SQL 10</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><strong>Points:</strong> 10</p>
+<p><strong>Description:</strong></p>
+<pre tabindex="0"><code>https://sql-mayham.openctf.com/ziopxuoiwquyerhnszpasdyvzlkxcjlwerqwer/sql-10/
+</code></pre><p>When <code>1</code> is entered it returns the following row:</p>
+<pre tabindex="0"><code>Enter a badge number to view that officers file:1
+(1, &#39;bob&#39;, &#39;simmons&#39;, &#39;none&#39;)
+</code></pre><p>Performing a basic sql injection we got the same row back but no error. The server only returns 1 row</p>
+<pre tabindex="0"><code>Enter a badge number to view that officers file:1 or 1=1
+(1, &#39;bob&#39;, &#39;simmons&#39;, &#39;none&#39;)
+</code></pre><p>Entering an ID of 2 no results are found.</p>
+		
+			<a href="https://ghariib.ir/posts/2018-08-12-openctf-sql-10/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2018-08-10-wakanda-hacking-challenge/">Wakanda hacking challenge</a></h1>
+	<b><time>10.08.2018 16:50</time></b>
+	
+	<div>
+		<h1 id="wakanda-hacking-challenge">Wakanda hacking challenge</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>I started off by using netdiscover to find the IP address of the VM, which turned out to be 192.168.56.102. A quick port scan returned two ports of interest; 80 and 3333:</p>
+<pre tabindex="0"><code>root@kali:~/pwn# onetwopunch.sh -t target.txt -p tcp -n &#39;-sV -A&#39; -i eth0
+                             _                                          _       _
+  ___  _ __   ___           | |___      _____    _ __  _   _ _ __   ___| |__   / \
+ / _ \| &#39;_ \ / _ \          | __\ \ /\ / / _ \  | &#39;_ \| | | | &#39;_ \ / __| &#39;_ \ /  /
+| (_) | | | |  __/ ᕦ(ò_óˇ)ᕤ | |_ \ V  V / (_) | | |_) | |_| | | | | (__| | | /\_/
+ \___/|_| |_|\___|           \__| \_/\_/ \___/  | .__/ \__,_|_| |_|\___|_| |_\/
+                                                |_|
+                                                                   by superkojiman
+
+[+] Protocol : tcp
+[+] Interface: eth0
+[+] Nmap opts: -sV -A
+[+] Targets  : target.txt
+[+] Scanning 192.168.56.102 for tcp ports...
+[+] Obtaining all open TCP ports using unicornscan...
+[+] unicornscan -i eth0 -mT 192.168.56.102:a -l /root/.onetwopunch/udir/192.168.56.102-tcp.txt
+[*] TCP ports for nmap to scan: 80,111,3333,57976,
+[+] nmap -e eth0 -sV -A -oX /root/.onetwopunch/ndir/192.168.56.102-tcp.xml -oG /root/.onetwopunch/ndir/192.168.56.102-tcp.grep -p 80,111,3333,57976, 192.168.56.102
+Starting Nmap 7.70 ( https://nmap.org ) at 2018-08-10 23:21 EDT
+Nmap scan report for 192.168.56.102
+Host is up (0.00050s latency).
+
+PORT      STATE SERVICE VERSION
+80/tcp    open  http    Apache httpd 2.4.10 ((Debian))
+|_http-server-header: Apache/2.4.10 (Debian)
+|_http-title: Vibranium Market
+111/tcp   open  rpcbind 2-4 (RPC #100000)
+| rpcinfo:
+|   program version   port/proto  service
+|   100000  2,3,4        111/tcp  rpcbind
+|   100000  2,3,4        111/udp  rpcbind
+|   100024  1          57976/tcp  status
+|_  100024  1          59389/udp  status
+3333/tcp  open  ssh     OpenSSH 6.7p1 Debian 5+deb8u4 (protocol 2.0)
+| ssh-hostkey:
+|   1024 1c:98:47:56:fc:b8:14:08:8f:93:ca:36:44:7f:ea:7a (DSA)
+|   2048 f1:d5:04:78:d3:3a:9b:dc:13:df:0f:5f:7f:fb:f4:26 (RSA)
+|   256 d8:34:41:5d:9b:fe:51:bc:c6:4e:02:14:5e:e1:08:c5 (ECDSA)
+|_  256 0e:f5:8d:29:3c:73:57:c7:38:08:6d:50:84:b6:6c:27 (ED25519)
+57976/tcp open  status  1 (RPC #100024)
+MAC Address: 08:00:27:3C:1E:DB (Oracle VirtualBox virtual NIC)
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose
+Running: Linux 3.X|4.X
+OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4
+OS details: Linux 3.2 - 4.9
+Network Distance: 1 hop
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   0.50 ms 192.168.56.102
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 26.49 seconds
+[+] Scans completed
+[+] Results saved to /root/.onetwopunch
+</code></pre><p>Looks like SSH was running on port 3333 instead of the default 22. I didn’t have any user credentials at this point, and I hate bruteforcing SSH, so I turned my attention to port 80. This was a web server:</p>
+		
+			<a href="https://ghariib.ir/posts/2018-08-10-wakanda-hacking-challenge/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2018-08-09-2018-028-runkeys-dns-logging-derbycon-t/">2018-028-runkeys DNS Logging derbycon Talks</a></h1>
+	<b><time>09.08.2018 05:53</time></b>
+	
+	<div>
+		<h1 id="2018-028-runkeys-dns-logging-derbycon-talks">2018-028-runkeys DNS Logging derbycon Talks</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Amanda giving a talk at Diana Initiative</p>
+<p>Derbycon Talk - mental health</p>
+<p>Volunteer/Topic request form - <a href="https://goo.gl/forms/wAiLW5Dh5h0MR5bO2">https://goo.gl/forms/wAiLW5Dh5h0MR5bO2</a></p>
+<p><a href="http://www.hexacorn.com/blog/2018/07/29/beyond-good-ol-run-key-part-82/">http://www.hexacorn.com/blog/2018/07/29/beyond-good-ol-run-key-part-82/</a></p>
+<p><a href="https://blogs.technet.microsoft.com/teamdhcp/2015/11/23/network-forensics-with-windows-dns-analytical-logging/">https://blogs.technet.microsoft.com/teamdhcp/2015/11/23/network-forensics-with-windows-dns-analytical-logging/</a></p>
+<p><a href="https://blogs.technet.microsoft.com/secadv/2018/01/22/parsing-dns-server-log-to-track-active-clients/">https://blogs.technet.microsoft.com/secadv/2018/01/22/parsing-dns-server-log-to-track-active-clients/</a></p>
+<p><a href="https://docs.microsoft.com/en-us/windows-hardware/drivers/devtest/tracelo">https://docs.microsoft.com/en-us/windows-hardware/drivers/devtest/tracelo</a></p>
+<p><strong>#Spotify</strong>: <a href="https://brakesec.com/spotifyBDS">https://brakesec.com/spotifyBDS</a></p>
+<p><strong>#RSS</strong>: <a href="https://brakesec.com/BrakesecRSS">https://brakesec.com/BrakesecRSS</a></p>
+<p><strong>#Youtube Channel</strong>:  <a href="http://www.youtube.com/c/BDSPodcast">http://www.youtube.com/c/BDSPodcast</a></p>
+<p><strong>#iTunes</strong> Store Link: <a href="https://brakesec.com/BDSiTunes">https://brakesec.com/BDSiTunes</a></p>
+<p><strong>#Google Play</strong> Store: <a href="https://brakesec.com/BDS-GooglePlay">https://brakesec.com/BDS-GooglePlay</a></p>
+<p>Our main site:  <a href="https://brakesec.com/bdswebsite">https://brakesec.com/bdswebsite</a></p>
+<p><strong>#iHeartRadio</strong> App:  <a href="https://brakesec.com/iHeartBrakesec">https://brakesec.com/iHeartBrakesec</a></p>
+<p><strong>#SoundCloud</strong>: <a href="https://brakesec.com/SoundcloudBrakesec">https://brakesec.com/SoundcloudBrakesec</a></p>
+<p>Comments, Questions, Feedback: <strong><a href="mailto:bds.podcast@gmail.com">bds.podcast@gmail.com</a></strong></p>
+<p>Support Brakeing Down Security Podcast by using our <strong>#Paypal</strong>: <a href="https://brakesec.com/PaypalBDS">https://brakesec.com/PaypalBDS</a> OR our <strong>#Patreon</strong></p>
+<p><a href="https://brakesec.com/BDSPatreon">https://brakesec.com/BDSPatreon</a></p>
+<p><strong>#Twitter</strong>: <a href="https://twitter.com/brakesec">@brakesec</a> <a href="https://twitter.com/boettcherpwned">@boettcherpwned</a> <a href="https://twitter.com/bryanbrake">@bryanbrake</a> <a href="https://twitter.com/infosystir">@infosystir</a></p>
+<p><strong>#Player.FM</strong> : <a href="https://brakesec.com/BDS-PlayerFM">https://brakesec.com/BDS-PlayerFM</a></p>
+		
+			<a href="https://ghariib.ir/posts/2018-08-09-2018-028-runkeys-dns-logging-derbycon-t/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2018-08-01-2018-027-godfrey-daniels-talks-about-hi/">2018-027-Godfrey Daniels talks about his book about the Mojave Phonebooth</a></h1>
+	<b><time>01.08.2018 06:02</time></b>
+	
+	<div>
+		<h1 id="2018-027-godfrey-daniels-talks-about-his-book-about-the-mojave-phonebooth">2018-027-Godfrey Daniels talks about his book about the Mojave Phonebooth</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><a href="https://en.wikipedia.org/wiki/Mojave_phone_booth">https://en.wikipedia.org/wiki/Mojave_phone_booth</a></p>
+<p><a href="https://www.tripsavvy.com/the-mojave-phone-booth-1474047">https://www.tripsavvy.com/the-mojave-phone-booth-1474047</a></p>
+<p><a href="https://www.dailydot.com/debug/mojave-phone-booth-back-number/">https://www.dailydot.com/debug/mojave-phone-booth-back-number/</a></p>
+<p><a href="https://www.npr.org/2014/08/22/342430204/the-mojave-phone-booth">https://www.npr.org/2014/08/22/342430204/the-mojave-phone-booth</a></p>
+<p><a href="https://www.reddit.com/r/UnresolvedMysteries/comments/7wjq4a/cipher_broadcast_the_mojave_phone_booth_is_back/">https://www.reddit.com/r/UnresolvedMysteries/comments/7wjq4a/cipher_broadcast_the_mojave_phone_booth_is_back/</a></p>
+<p><a href="https://twitter.com/mojavefonebooth">https://twitter.com/mojavefonebooth</a></p>
+<p><a href="https://www.google.com/maps/place/Mojave+Phone+Booth/@35.2873088,-115.6911087,3155m/data=!3m1!1e3!4m5!3m4!1s0x80c587e7172e7259:0xbc30709b3558dd90!8m2!3d35.2856782!4d-115.6844312">https://www.google.com/maps/place/Mojave+Phone+Booth/@35.2873088,-115.6911087,3155m/data=!3m1!1e3!4m5!3m4!1s0x80c587e7172e7259:0xbc30709b3558dd90!8m2!3d35.2856782!4d-115.6844312</a></p>
+<p><a href="https://www.theatlantic.com/technology/archive/2017/02/object-lesson-phone-booth/515385/">https://www.theatlantic.com/technology/archive/2017/02/object-lesson-phone-booth/515385/</a></p>
+<p><a href="http://deathvalleyjim.com/cima-cinder-mine-mojave-national-preserve/">http://deathvalleyjim.com/cima-cinder-mine-mojave-national-preserve/</a></p>
+<p><a href="https://twitter.com/_noid_?lang=en">https://twitter.com/_noid_?lang=en</a></p>
+<p><a href="https://www.monoprice.com/product?p_id=8136&amp;gclid=CjwKCAjwy_XaBRAWEiwApfjKHuwvafwlgj6K3bNw6Qoy06i0KlXrTcPu8RLUSnhdEur5Y8PlVNaB1hoClJoQAvD_BwE">https://www.monoprice.com/product?p_id=8136&amp;gclid=CjwKCAjwy_XaBRAWEiwApfjKHuwvafwlgj6K3bNw6Qoy06i0KlXrTcPu8RLUSnhdEur5Y8PlVNaB1hoClJoQAvD_BwE</a></p>
+<p><a href="http://www.mojavephonebooth.com/">http://www.mojavephonebooth.com/</a> - movie based on the phone booth itself, not the book</p>
+<p><strong>#Spotify</strong>: <a href="https://brakesec.com/spotifyBDS">https://brakesec.com/spotifyBDS</a></p>
+<p><strong>#RSS</strong>: <a href="https://brakesec.com/BrakesecRSS">https://brakesec.com/BrakesecRSS</a></p>
+<p><strong>#Youtube Channel</strong>:  <a href="http://www.youtube.com/c/BDSPodcast">http://www.youtube.com/c/BDSPodcast</a></p>
+<p><strong>#iTunes</strong> Store Link: <a href="https://brakesec.com/BDSiTunes">https://brakesec.com/BDSiTunes</a></p>
+<p><strong>#Google Play</strong> Store: <a href="https://brakesec.com/BDS-GooglePlay">https://brakesec.com/BDS-GooglePlay</a></p>
+<p>Our main site:  <a href="https://brakesec.com/bdswebsite">https://brakesec.com/bdswebsite</a></p>
+<p><strong>#iHeartRadio</strong> App:  <a href="https://brakesec.com/iHeartBrakesec">https://brakesec.com/iHeartBrakesec</a></p>
+<p><strong>#SoundCloud</strong>: <a href="https://brakesec.com/SoundcloudBrakesec">https://brakesec.com/SoundcloudBrakesec</a></p>
+<p>Comments, Questions, Feedback: <strong><a href="mailto:bds.podcast@gmail.com">bds.podcast@gmail.com</a></strong></p>
+<p>Support Brakeing Down Security Podcast by using our <strong>#Paypal</strong>: <a href="https://brakesec.com/PaypalBDS">https://brakesec.com/PaypalBDS</a> OR our <strong>#Patreon</strong></p>
+		
+			<a href="https://ghariib.ir/posts/2018-08-01-2018-027-godfrey-daniels-talks-about-hi/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2018-07-27-2018-026-insurers-gathering-data-netfli/">2018-026-insurers gathering data netflix released a new DFIR tool and google no longer gets phished</a></h1>
+	<b><time>27.07.2018 02:50</time></b>
+	
+	<div>
+		<h1 id="2018-026-insurers-gathering-data-netflix-released-a-new-dfir-tool-and-google-no-longer-gets-phished">2018-026-insurers gathering data netflix released a new DFIR tool and google no longer gets phished</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><a href="https://krebsonsecurity.com/2018/07/google-security-keys-neutralized-employee-phishing/">https://krebsonsecurity.com/2018/07/google-security-keys-neutralized-employee-phishing/</a></p>
+<p><a href="https://osquery.io/">https://osquery.io/</a></p>
+<p><a href="%20https:/www.propublica.org/article/health-insurers-are-vacuuming-up-details-about-you-and-it-could-raise-your-rates" title=" https://www.propublica.org/article/health-insurers-are-vacuuming-up-details-about-you-and-it-could-raise-your-rates">https://www.propublica.org/article/health-insurers-are-vacuuming-up-details-about-you-and-it-could-raise-your-rates</a></p>
+<p><a href="%20https:/medium.com/netflix-techblog/netflix-sirt-releases-diffy-a-differencing-engine-for-digital-forensics-in-the-cloud-37b71abd2698">https://medium.com/netflix-techblog/netflix-sirt-releases-diffy-a-differencing-engine-for-digital-forensics-in-the-cloud-37b71abd2698</a></p>
+<p>Join our <strong>#Slack</strong> Channel! Email us at <strong><a href="mailto:bds.podcast@gmail.com">bds.podcast@gmail.com</a></strong></p>
+<p>or DM us on Twitter <strong>@brakesec</strong></p>
+<p><strong>#Spotify</strong>: <a href="https://brakesec.com/spotifyBDS">https://brakesec.com/spotifyBDS</a></p>
+<p><strong>#RSS</strong>: <a href="https://brakesec.com/BrakesecRSS">https://brakesec.com/BrakesecRSS</a></p>
+<p><strong>#Youtube Channel</strong>:  <a href="http://www.youtube.com/c/BDSPodcast">http://www.youtube.com/c/BDSPodcast</a></p>
+<p><strong>#iTunes</strong> Store Link: <a href="https://brakesec.com/BDSiTunes">https://brakesec.com/BDSiTunes</a></p>
+<p><strong>#Google Play</strong> Store: <a href="https://brakesec.com/BDS-GooglePlay">https://brakesec.com/BDS-GooglePlay</a></p>
+<p>Our main site:  <a href="https://brakesec.com/bdswebsite">https://brakesec.com/bdswebsite</a></p>
+<p><strong>#iHeartRadio</strong> App:  <a href="https://brakesec.com/iHeartBrakesec">https://brakesec.com/iHeartBrakesec</a></p>
+<p><strong>#SoundCloud</strong>: <a href="https://brakesec.com/SoundcloudBrakesec">https://brakesec.com/SoundcloudBrakesec</a></p>
+<p>Comments, Questions, Feedback: <strong><a href="mailto:bds.podcast@gmail.com">bds.podcast@gmail.com</a></strong></p>
+<p>Support Brakeing Down Security Podcast by using our <strong>#Paypal</strong>: <a href="https://brakesec.com/PaypalBDS">https://brakesec.com/PaypalBDS</a> OR our <strong>#Patreon</strong></p>
+		
+			<a href="https://ghariib.ir/posts/2018-07-27-2018-026-insurers-gathering-data-netfli/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2018-07-24-the-atredis-blackhat-2018-ctf-challenge/">The Atredis BlackHat 2018 CTF Challenge</a></h1>
+	<b><time>24.07.2018 21:27</time></b>
+	
+	<div>
+		<h1 id="the-atredis-blackhat-2018-ctf-challenge">The Atredis BlackHat 2018 CTF Challenge</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h1 id="initial-recon">Initial Recon</h1>
+<p>As you can see from the screenshot in the tweet linked above, and reproduced below, once you connect to the network service on arkos.atredis.com:4444, the system prints information about the firmware and hardware version, as well as the memory map. Following that is the message-of-the-day, which contains a reference to 8-bit computing. </p>
+		
+			<a href="https://ghariib.ir/posts/2018-07-24-the-atredis-blackhat-2018-ctf-challenge/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2018-07-19-2018-025-bsidesspfd-threathunting-asses/">2018-025-BsidesSPFD threathunting assessing risk</a></h1>
+	<b><time>19.07.2018 06:12</time></b>
+	
+	<div>
+		<h1 id="2018-025-bsidesspfd-threathunting-assessing-risk">2018-025-BsidesSPFD threathunting assessing risk</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Bryan B. got back from <a href="https://twitter.com/bsidesspfd" title="BsidesSPFD">BsidesSPFD</a>, MO this week, after what was a well-received talk on building community. Lots of other excellent talks from speakers like Ms. <a href="https://twitter.com/sunnywear">Sunny Wear</a> , and impromptu panel with <a href="https://twitter.com/securithid">Ben Miller</a> and a whole host of others, including:</p>
+<p>@icssec<br>
+@bethayoung<br>
+@ViciousData<br>
+@killianditch<br>
+@fang0654<br>
+@SunnyWear<br>
+@awsmhacks<br>
+@sysopfb<br>
+@killamjr</p>
+<p>We started talking about malware, and we ended up discussing a new channel in the BrakeSec Slack on #threatHunting. Appears there&rsquo;s a lot of information out there on the topic, so much so, that SANS is having a whole conference around it.</p>
+		
+			<a href="https://ghariib.ir/posts/2018-07-19-2018-025-bsidesspfd-threathunting-asses/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2018-07-11-2018-024--pacu-a-tool-for-pentesting-aw/">2018-024- Pacu a tool for pentesting AWS environments</a></h1>
+	<b><time>11.07.2018 14:03</time></b>
+	
+	<div>
+		<h1 id="2018-024--pacu-a-tool-for-pentesting-aws-environments">2018-024- Pacu a tool for pentesting AWS environments</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Spencer Gietzen @spengietz</p>
+<p>Rhino Security - <a href="https://rhinosecuritylabs.com/blog/">https://rhinosecuritylabs.com/blog/</a></p>
+<p>AWS escalation and mitigation blog - <a href="https://rhinosecuritylabs.com/aws/aws-privilege-escalation-methods-mitigation/">https://rhinosecuritylabs.com/aws/aws-privilege-escalation-methods-mitigation/</a></p>
+<p>What is the difference between this and something like Scout or Lynis?</p>
+<p>Is it a forensic or IR tool?</p>
+<p>How might offensive people use this tool? What is possible when you’re using this as a ‘redteam’ or ‘pentesting’ tool?</p>
+<p>S3 bucket perms?</p>
+		
+			<a href="https://ghariib.ir/posts/2018-07-11-2018-024--pacu-a-tool-for-pentesting-aw/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2018-07-02-2018-023-cydefe-interview-dns-enumerati/">2018-023 Cydefe interview-DNS enumeration-CTF setup prep</a></h1>
+	<b><time>02.07.2018 05:47</time></b>
+	
+	<div>
+		<h1 id="2018-023-cydefe-interview-dns-enumeration-ctf-setup-prep">2018-023 Cydefe interview-DNS enumeration-CTF setup prep</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>    @cydefe</p>
+<ul>
+<li>CTF setup / challenges of setting up a CTF.</li>
+<li>Beginners &amp; CTFs</li>
+<li>Types</li>
+<li>tips/tricks</li>
+<li>Biggest downfalls of CTF development</li>
+</ul>
+<p><a href="https://www.heroku.com/">https://www.heroku.com/</a></p>
+<p><a href="http://www.exploit-db.com">www.exploit-db.com</a></p>
+<p>BrakeSec DerbyCon</p>
+<p>@dragosinc dragos.com</p>
+<p>DNS Enumeration:</p>
+<p><a href="https://github.com/nixawk/pentest-wiki/blob/master/1.Information-Gathering/How-to-gather-dns-information.md">https://github.com/nixawk/pentest-wiki/blob/master/1.Information-Gathering/How-to-gather-dns-information.md</a></p>
+<p>DNS Tools:</p>
+<p><a href="https://dnsdumpster.com/">https://dnsdumpster.com/</a></p>
+<p><a href="https://tools.kali.org/information-gathering/theharvester">https://tools.kali.org/information-gathering/theharvester</a></p>
+<p>DNS Tutorial</p>
+<p><a href="https://www.youtube.com/watch?v=4ZtFk2dtqv0">https://www.youtube.com/watch?v=4ZtFk2dtqv0</a> (A cat explains DNS)</p>
+<p><a href="https://pentestlab.blog/tag/dns-enumeration/">https://pentestlab.blog/tag/dns-enumeration/</a></p>
+<p>    DNS</p>
+<p>Logging detailed DNS queries and responses can be beneficial for many reasons. For the first and most obvious reason is to aid in incident response. DNS logs can be largely helpful for tracking down malicious behavior, especially on endpoints in a DHCP pool. If an alert is received with a specific IP address, that IP address may not be on the same endpoint by the time someone ends up investigating. Not only does that waste time, it also gives the malicious program or attacker more time to hide themselves or spread to other machines.</p>
+		
+			<a href="https://ghariib.ir/posts/2018-07-02-2018-023-cydefe-interview-dns-enumerati/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+		<div>
+
+	<a href="/page/744/">Previous Page</a>
+
+745 of 794
+
+	<a href="/page/746/">Next Page</a>
+
+</div>
+
+	</main>
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

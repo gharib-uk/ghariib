@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>12 Days of DigitalOcean Day 12 - Sending Confirmation Emails with Resend</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>12 Days of DigitalOcean Day 12 - Sending Confirmation Emails with Resend</h1>
+			<b><time>08.01.2025 14:00</time></b>
+		       
+
+			<div>
+				<h1 id="12-days-of-digitalocean-day-12---sending-confirmation-emails-with-resend">12 Days of DigitalOcean Day 12 - Sending Confirmation Emails with Resend</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Today, we’ll add the final touch—sending confirmation emails back to the sender with the receipt details, attachment links, and a link to the Google Spreadsheet. This final step ties everything together, ensuring that users get immediate feedback that their receipts have been successfully processed.</p>
+<h2 id="-what-youll-learn"><a href="#what-you-ll-learn"><strong>🚀 What You’ll Learn</strong></a><a href="#what-you-ll-learn"></a></h2>
+<p>By the end of this tutorial, you’ll know how to:</p>
+<ol>
+<li>Use the Resend API to send confirmation emails programmatically.</li>
+<li>Securely manage sensitive credentials using environment variables.</li>
+<li>Format and send transactional emails with receipt details, attachment links, and spreadsheet URLs.</li>
+<li>Test and troubleshoot a complete email processing workflow.</li>
+</ol>
+<h2 id="-what-youll-need"><a href="#what-you-ll-need"><strong>🛠 What You’ll Need</strong></a><a href="#what-you-ll-need"></a></h2>
+<p>If you’d like to build along, we assume that you’ve followed <a href="/community/tutorials/storing-receipt-details-in-google-sheets">Day 11: Save Receipt Data and Attachments in Google Sheets</a> and already have:</p>
+<ul>
+<li>A <a href="/community/tutorials/deploying-flask-app">deployed Flask app</a> for processing receipt emails.</li>
+<li><a href="/community/tutorials/storing-receipt-details-in-google-sheets">Google Sheets</a> and <a href="/community/tutorials/configuring-digitalocean-spaces">DigitalOcean Spaces integration</a> set up.</li>
+</ul>
+<p>If you’re just interested in learning how to integrate <strong>Resend</strong> for sending confirmation emails, you’ll need:</p>
+<ul>
+<li>A Resend account: Sign up at <a href="https://resend.com/">Resend</a>.</li>
+<li>An API key: Generate it from your Resend dashboard.</li>
+</ul>
+<h2 id="step-1-create-a-resend-account-and-get-the-api-key"><a href="#step-1-create-a-resend-account-and-get-the-api-key">Step 1: Create a Resend Account and Get the API Key</a><a href="#step-1-create-a-resend-account-and-get-the-api-key"></a></h2>
+<p>To send emails programmatically, we’ll use <strong>Resend</strong>, a developer-friendly API for sending transactional emails. It simplifies sending emails so you don’t have to wrestle with setting up an email server, managing SMTP configurations, or worrying about spam filters.</p>
+<ol>
+<li>
+<p>First, go to <a href="https://resend.com/">Resend</a> and sign up for a free account. Once logged in, navigate to the <strong>API Keys</strong> section of the dashboard and generate a new API key.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/api_keys_dashboard_screenshot.png" alt="API Keys Dashboard Screenshot" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p>Give your API key a <strong>descriptive name</strong>, like <code>Receipt Processor App</code>, and set its <strong>permission</strong> to <code>Full Access</code>.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/add_api_key_receipt_processor.png" alt="Add API Key Receipt Processor" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Copy the API Key:</strong> Your API key will be shown only once—copy it and keep it safe. You’ll need it in the next step to authenticate your app with Resend.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/view_api_key_warning.png" alt="View Resend API Key Warning" />
+</figure>
+
+
+</p>
+</li>
+</ol>
+<h2 id="step-2-update-your-environment-variables"><a href="#step-2-update-your-environment-variables">Step 2: Update Your Environment Variables</a><a href="#step-2-update-your-environment-variables"></a></h2>
+<p>Now that we have the Resend API key, let’s save it as an environment variable in DigitalOcean, just like we’ve been doing throughout this series.</p>
+<p>For the Resend integration, we need to save two environment variables:</p>
+<ul>
+<li><code>RESEND_API_KEY</code>: The API key you generated in Step 1, which authenticates your app with Resend.</li>
+<li><code>RESEND_EMAIL_FROM</code>: The sender email address you’ll use to send confirmation emails. This should be an address verified in your Resend account.</li>
+</ul>
+<p>To add these variables, follow these steps:</p>
+<ol>
+<li>
+<p>Head over to your DigitalOcean App Platform dashboard, find your Flask app, and navigate to the <strong>Settings</strong> tab. Under <strong>Environment Variables</strong>, add the two variables:</p>
+<ul>
+<li>
+<p>Key: <code>RESEND_API_KEY</code></p>
+<ul>
+<li>Value: Paste the API key you generated in Step 1.</li>
+</ul>
+</li>
+<li>
+<p>Key: <code>RESEND_EMAIL_FROM</code></p>
+<ul>
+<li>Value: Enter a verified sender email address from your Resend account.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Save your changes to make the Resend API key available to your Flask app, which we will update next.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_project_settings.png" alt="DigitalOcean Project Settings" />
+</figure>
+
+
+</p>
+</li>
+</ol>
+<h2 id="step-3-install-the-resend-python-library"><a href="#step-3-install-the-resend-python-library">Step 3: Install the Resend Python Library</a><a href="#step-3-install-the-resend-python-library"></a></h2>
+<p>Next, we’ll install the Resend Python library to handle the API for us. It keeps your code clean and avoids dealing with raw HTTP requests. Run this in your terminal:</p>
+<pre tabindex="0"><code>pip install resend
+</code></pre><h2 id="step-4-update"><a href="#step-4-update-requirements-txt">Step 4: Update <code>requirements.txt</code></a><a href="#step-4-update-requirements-txt"></a></h2>
+<p>Instead of editing <code>requirements.txt</code> by hand, use <code>pip freeze</code> to list all installed dependencies with exact versions. Run this:</p>
+<pre tabindex="0"><code>pip freeze &gt; requirements.txt
+</code></pre><p>This updates <code>requirements.txt</code> with everything your app needs, including <code>resend</code>.</p>
+<h2 id="step-5-write-the-function-to-send-emails"><a href="#step-5-write-the-function-to-send-emails">Step 5: Write the Function to Send Emails</a><a href="#step-5-write-the-function-to-send-emails"></a></h2>
+<p>Now it’s time to add the logic for sending confirmation emails. Think of it like emailing a friend to let them know their package has arrived—only here, it’s for receipts.</p>
+<p>We’ll write a <code>send_confirmation_email</code> function that takes the recipient’s email, receipt details, attachment links, and Google Spreadsheet URL. Using Resend, it will format this into an email and send it. Here’s the function:</p>
+<pre tabindex="0"><code>def send_confirmation_email(to_email, receipt_data, attachment_urls, spreadsheet_url):
+    &#34;&#34;&#34;
+    Send a confirmation email with receipt details and attachment URLs.
+    &#34;&#34;&#34;
+    email_from = os.getenv(&#39;RESEND_EMAIL_FROM&#39;)  # Set this in your environment variables
+    subject = &#34;Receipt Processed Successfully&#34;
+    email_body = f&#34;&#34;&#34;
+    &lt;h1&gt;Receipt Confirmation&lt;/h1&gt;
+    &lt;p&gt;Your receipt has been successfully processed. Here are the details:&lt;/p&gt;
+    &lt;ul&gt;
+        &lt;li&gt;&lt;strong&gt;Vendor:&lt;/strong&gt; {receipt_data.get(&#39;vendor&#39;, &#39;N/A&#39;)}&lt;/li&gt;
+        &lt;li&gt;&lt;strong&gt;Amount:&lt;/strong&gt; {receipt_data.get(&#39;amount&#39;, &#39;N/A&#39;)}&lt;/li&gt;
+        &lt;li&gt;&lt;strong&gt;Currency:&lt;/strong&gt; {receipt_data.get(&#39;currency&#39;, &#39;N/A&#39;)}&lt;/li&gt;
+        &lt;li&gt;&lt;strong&gt;Date:&lt;/strong&gt; {receipt_data.get(&#39;date&#39;, &#39;N/A&#39;)}&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;p&gt;&lt;strong&gt;Attachments:&lt;/strong&gt;&lt;/p&gt;
+    &lt;ul&gt;
+        {&#39;&#39;.join(f&#39;&lt;li&gt;&lt;a href=&#34;{url[&#34;url&#34;]}&#34;&gt;{url[&#34;file_name&#34;]}&lt;/a&gt;&lt;/li&gt;&#39; for url in attachment_urls)}
+    &lt;/ul&gt;
+    &lt;p&gt;You can view the processed data in the spreadsheet: &lt;a href=&#34;{spreadsheet_url}&#34;&gt;Google Spreadsheet&lt;/a&gt;&lt;/p&gt;
+    &#34;&#34;&#34;
+    try:
+        resend.Emails.send({
+            &#34;from&#34;: email_from,
+            &#34;to&#34;: to_email,
+            &#34;subject&#34;: subject,
+            &#34;html&#34;: email_body
+        })
+        logging.info(f&#34;Confirmation email sent to {to_email}.&#34;)
+    except Exception as e:
+        logging.error(f&#34;Failed to send confirmation email: {e}&#34;)
+</code></pre><h2 id="step-5-deploy-to-digitalocean"><a href="#step-5-deploy-to-digitalocean">Step 5: Deploy to DigitalOcean</a><a href="#step-5-deploy-to-digitalocean"></a></h2>
+<p>To deploy the updated Flask app, follow the steps from <a href="/community/tutorials/deploying-flask-app-on-digitalocean#step-4-deploy-to-digitalocean-s-app-platform">Day 7: Building and Deploying the Email-Based Receipt Processor</a>. Here’s a quick summary:</p>
+<ol>
+<li>
+<p><strong>Push Your Updated Code to GitHub</strong>: After making the necessary changes to your Flask app, commit and push the updated code to GitHub. This will trigger an automatic deployment in DigitalOcean’s App Platform.</p>
+<pre tabindex="0"><code>git add .
+git commit -m &#34;Add Resend integration for confirmation emails&#34;
+git push origin main
+</code></pre></li>
+<li>
+<p><strong>Monitor Deployment</strong>: You can track the progress in the <strong>Deployments</strong> section of your app’s dashboard.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_project_dashboard.png" alt="DigitalOcean project dashboard showing deployment status" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Verify Your Deployment</strong>: After the deployment completes, navigate to your app’s public URL and test its functionality. You can also check the <strong>runtime logs</strong> in the dashboard to confirm that the app started successfully.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_app_deployment.png" alt="DigitalOcean app deployment status and configuration" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Check Runtime Logs</strong>: If something isn’t working as expected, use the <strong>Runtime Logs</strong> tab in the App Platform dashboard to debug runtime issues. Look for any errors related to the Resend API or other app components.</p>
+</li>
+</ol>
+<h3 id="step-5-test-the-entire-workflow"><a href="#step-5-test-the-entire-workflow">Step 5: Test the Entire Workflow</a><a href="#step-5-test-the-entire-workflow"></a></h3>
+<p>Now that your app is fully configured and ready, it’s time to test the entire workflow. We’ll ensure that the <strong>email body is processed</strong>, attachments are decoded and <strong>uploaded to DigitalOcean Spaces</strong>, receipt details and attachment URLs are <strong>saved in Google Sheets</strong>, and a <strong>confirmation email is sent</strong> to the sender.</p>
+<p>Here’s how you can test step by step:</p>
+<ol>
+<li>
+<p><strong>Send a Test Email</strong>: Send an email to Postmark with a text body and an attachment. If you’re unsure how to configure Postmark, check <a href="/community/tutorials/setting-up-postmark-for-receipts">Day 8: Connecting Postmark to Your Flask App</a>, where we walked through setting up Postmark to forward emails to your app.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/email_invoice_receipt_screenshot.png" alt="Example of an email invoice receipt with highlighted payment details and attachments" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Check Postmark Activity JSON</strong>: In the Postmark dashboard, navigate to the <strong>Activity</strong> tab. Locate the email you sent and ensure that the JSON payload includes the text body and Base64-encoded attachment data. This confirms Postmark is correctly forwarding the email data to your app, as we set up in <a href="/community/tutorials/setting-up-postmark-for-receipts">Day 8</a>.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/postmark_json_encoded_attachments.png" alt="Postmark JSON response showing encoded email attachments with metadata" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Monitor the Logs</strong>: Check the runtime logs in your DigitalOcean App Platform dashboard to ensure the app processes the JSON payload. You should see logs showing that receipt details were extracted and attachments were uploaded to DigitalOcean Spaces. You can access the runtime logs in the <strong>Logs</strong> tab of the DigitalOcean App Platform dashboard. If you’re not familiar with DigitalOcean logs, we explored this during <a href="/community/tutorials/automating-receipt-parsing-with-digitalocean-genai">Day 9: Automating Receipt Parsing withDigitalOcean’s GenAI Agent</a>.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_runtime_logs_screenshot_2.png" alt="DigitalOcean runtime logs interface displaying application log entries" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Verify Spaces Upload</strong>: Visit your DigitalOcean Space to confirm that the files were uploaded successfully. You should see the attachments in your bucket as configured in <a href="/community/tutorials/configuring-digitalocean-spaces">Day 10: Storing Attachments in DigitalOcean Spaces</a>. If everything went as expected, your attachment URLs will be accessible.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/digitalocean_files_interface.png" alt="DigitalOcean Spaces interface showing uploaded files with names and metadata" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Check Google Sheets</strong>: Open your Google Sheet and confirm that a new row with receipt details and attachment URLs has been added, as we set up on <a href="/community/tutorials/storing-receipt-details-in-google-sheets">Day 11: Saving Receipt Details in Google Sheets</a>. The row should include:</p>
+<ul>
+<li>Vendor, amount, currency, and date extracted from the email body.</li>
+<li>Comma-separated URLs for the uploaded attachments in the last column.</li>
+</ul>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/google_sheets_receipts.png" alt="Google Sheets Receipts" />
+</figure>
+
+
+</p>
+</li>
+<li>
+<p><strong>Verify the Confirmation Email</strong>: Finally, check the inbox of the sender’s email address to ensure the confirmation email was received. This email should contain:</p>
+<ul>
+<li>The extracted receipt details (vendor, amount, currency, and date).</li>
+<li>Links to the uploaded attachments in DigitalOcean Spaces.</li>
+<li>A link to the Google Spreadsheet where the receipt data is logged.</li>
+</ul>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/006Community/12-Days-of-DO/email-receipt-processor/receipt_confirmation_email.png" alt="Receipt Confirmation Email" />
+</figure>
+
+
+</p>
+</li>
+</ol>
+<h3 id="troubleshooting"><a href="#troubleshooting">Troubleshooting</a><a href="#troubleshooting"></a></h3>
+<p>If the workflow doesn’t work as expected, here are a few troubleshooting steps to follow:</p>
+<ol>
+<li>
+<p><strong>Check the Resend Emails Dashboard for Errors</strong>: Visit the Resend dashboard to see if any errors occurred while sending the confirmation email.</p>
+</li>
+<li>
+<p><strong>Verify Environment Variables</strong>: Make sure the API key (<code>RESEND_API_KEY</code>) and sender email (<code>RESEND_EMAIL_FROM</code>) are correctly configured in your environment variables on the DigitalOcean App Platform dashboard.</p>
+</li>
+<li>
+<p><strong>Inspect DigitalOcean Runtime Logs</strong>: Open the <strong>Runtime Logs</strong> tab in your DigitalOcean App Platform dashboard to check for errors while processing the email or uploading attachments. These logs can provide helpful insights, especially for interactions with Postmark or Resend.</p>
+</li>
+<li>
+<p><strong>Review Postmark Activity</strong>: In Postmark’s <strong>Activity</strong> tab, confirm that the test email was properly forwarded to your Flask app. If there are any issues, Postmark will display errors related to forwarding or configuration problems.</p>
+</li>
+</ol>
+<h2 id="-wrap-up"><a href="#wrap-up"><strong>🎁 Wrap-Up</strong></a><a href="#wrap-up"></a></h2>
+<p>Congratulations! You’ve successfully completed the <strong>12 Days of DigitalOcean</strong> series and built a fully functional <strong>Email-Based Receipt Processing Service</strong>.</p>
+<p>Today, you:</p>
+<ul>
+<li>Integrated the Resend API for sending transactional emails.</li>
+<li>Configured environment variables to securely manage sensitive credentials.</li>
+<li>Sent confirmation emails with receipt details, attachment links, and a spreadsheet URL.</li>
+<li>Tested the full workflow from email submission to final confirmation.</li>
+</ul>
+<p>By adding confirmation emails, you’ve wrapped up a project that processes emails, extracts details, stores attachments, and keeps everything organized in Google Sheets. It’s user-friendly, practical, and ready to solve real-world problems.</p>
+<h2 id="-the-12-days-of-digitalocean"><a href="#the-12-days-of-digitalocean"><strong>📚 The 12 Days of DigitalOcean</strong></a><a href="#the-12-days-of-digitalocean"></a></h2>
+<p>This marks the end of the <strong><a href="/community/tutorials/12-days-of-digitalocean-recap">12 Days of DigitalOcean</a></strong> series. Over the past 12 days, we’ve built two real-world applications, one step at a time. Along the way, you’ve used tools like DigitalOcean’s <strong>Serverless Functions</strong>, <strong>App Platform</strong>, <strong>Spaces Object Storage</strong>, <strong>PostgreSQL</strong>, <strong>DigitalOcean GenAI</strong>, <strong>Twilio</strong>, <strong>Google Sheets API</strong>, <strong>Postmark</strong>, <strong>PaperTrail</strong>, and <strong>Resend</strong>. Each piece came together to form something greater than the sum of its parts.</p>
+<p>Here’s a quick recap of what you’ve built:</p>
+<h3 id="-days-16-build-a-birthday-reminder-service"><a href="#days-1-6-build-a-birthday-reminder-service">🎂 Days 1–6: Build a Birthday Reminder Service</a><a href="#days-1-6-build-a-birthday-reminder-service"></a></h3>
+<p>This app tracks birthdays and sends SMS reminders automatically. It’s lightweight, serverless, and easy to maintain.</p>
+<ul>
+<li><strong><a href="/community/tutorials/setting-up-postgresql-database-for-birthday-reminders">Day 1: Set Up a PostgreSQL Database</a></strong><br>
+Create a database to store contact details.</li>
+<li><strong><a href="/community/tutorials/connecting-to-postgresql-database-with-python">Day 2: Connect to PostgreSQL with Python</a></strong><br>
+Securely connect to your database and fetch data.</li>
+<li><strong><a href="/community/tutorials/12-days-of-digitalocean-checking-birthdays-and-sending-sms-notifications">Day 3: Check Birthdays and Send SMS Notifications</a></strong><br>
+Use Twilio to notify users about upcoming birthdays.</li>
+<li><strong><a href="/community/tutorials/deploying-birthday-notifications-with-digitalocean-functions">Day 4: Deploy to DigitalOcean Functions</a></strong><br>
+Deploy your app to the cloud with DigitalOcean Functions.</li>
+<li><strong><a href="/community/tutorials/automating-birthday-reminders-with-triggers">Day 5: Automate Daily Reminders with Triggers</a></strong><br>
+Schedule reminders to run every day automatically.</li>
+<li><strong><a href="/community/tutorials/setting-up-external-logging-for-function-based-birthday-reminder">Day 6: Set Up External Logging</a></strong><br>
+Monitor and troubleshoot your app with Papertrail.</li>
+</ul>
+<p>By Day 6, you have a fully automated service running in the cloud. It just works.</p>
+<h3 id="-days-712-build-an-email-receipt-processor"><a href="#days-7-12-build-an-email-receipt-processor">📧 Days 7–12: Build an Email Receipt Processor</a><a href="#days-7-12-build-an-email-receipt-processor"></a></h3>
+<p>This app handles emailed receipts, extracts the needed details, and organizes everything in a database.</p>
+<ul>
+<li><strong><a href="/community/tutorials/deploying-flask-app-on-digitalocean">Day 7: Build and Deploy a Flask App</a></strong><br>
+Set up a lightweight app to process receipt emails.</li>
+<li><strong><a href="/community/tutorials/setting-up-postmark-for-receipts">Day 8: Integrate Postmark for Email Processing</a></strong><br>
+Forward emails to your app for processing.</li>
+<li><strong><a href="/community/tutorials/automating-receipt-parsing-with-digitalocean-genai">Day 9: Extract and Clean Data with DigitalOcean’s GenAI</a></strong><br>
+Use GenAI to extract structured data from email content.</li>
+<li><strong><a href="/community/tutorials/configuring-digitalocean-spaces">Day 10: Configure DigitalOcean Spaces for Secure Storage</a></strong><br>
+Store email attachments securely with object storage.</li>
+<li><strong><a href="/community/tutorials/storing-receipt-details-in-google-sheets">Day 11: Save Receipt Data to Google Sheets</a></strong><br>
+Organize structured data in a spreadsheet for easy access.</li>
+<li><strong><a href="/community/tutorials/sending-confirmation-emails-with-resend">Day 12: Send Confirmation Emails</a></strong><br>
+Notify users about successfully processed receipts.</li>
+</ul>
+<p>By Day 12, you’ve built a complete tool that handles receipts end-to-end.</p>
+<h3 id="what-youve-learned"><a href="#what-you-ve-learned"><strong>What You’ve Learned</strong></a><a href="#what-you-ve-learned"></a></h3>
+<ol>
+<li><strong>Storing and Managing Data</strong>: You used <a href="/community/tutorials/setting-up-postgresql-database-for-birthday-reminders">PostgreSQL</a> for structured data storage and <a href="/community/tutorials/storing-receipt-details-in-google-sheets">Google Sheets</a> for easy, sharable data logging.</li>
+<li><strong>Automating Workflows</strong>: With DigitalOcean <a href="/community/tutorials/deploying-birthday-notifications-with-digitalocean-functions">Functions</a> and <a href="/community/tutorials/automating-birthday-reminders-with-triggers">scheduling triggers</a>, you automated processes and made your apps run like clockwork.</li>
+<li><strong>Adding Intelligence to Your Apps</strong>: By integrating <a href="/products/gen-ai">DigitalOcean’s GenAI</a>, you brought intelligent data extraction and organization into your workflows, making your apps smarter and more capable.</li>
+<li><strong>Handling Files Securely</strong>: You worked with DigitalOcean <a href="/community/tutorials/configuring-digitalocean-spaces">Spaces</a> to store and manage files in a reliable, scalable way.</li>
+<li><strong>Enhancing Apps with APIs</strong>: APIs like <a href="/community/tutorials/12-days-of-digitalocean-checking-birthdays-and-sending-sms-notifications">Twilio</a>, <a href="/community/tutorials/setting-up-postmark-for-receipts">Postmark</a>, and Resend brought functionality like SMS notifications, email forwarding, and confirmation emails to your apps.</li>
+<li><strong>Debugging and Monitoring</strong>: Using tools like Papertrail, you learned to <a href="/community/tutorials/setting-up-external-logging-for-function-based-birthday-reminder">debug and monitor</a> your apps effectively, keeping them running smoothly.</li>
+</ol>
+<h2 id="whats-next"><a href="#what-s-next">What’s next</a><a href="#what-s-next"></a></h2>
+<p>This is just the beginning—what you’ve learned here can be applied to countless other projects. Here are a few ways to keep going:</p>
+<ul>
+<li>Join the conversation on <a href="https://discord.gg/digitalocean">DigitalOcean’s Discord</a> to connect with other developers, share what you’ve built, and get inspired.</li>
+<li>Explore more in our <a href="/community/tutorials">tutorial library</a> for more ideas and projects.</li>
+</ul>
+<p>If you follow along, I’d love to see what you create—feel free to share your progress or feedback with me on <a href="https://twitter.com/amit">Twitter</a>.</p>
+<p>Keep it simple. Build something useful. Happy building! 🚀</p>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/sending-confirmation-emails-with-resend">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

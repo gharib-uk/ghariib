@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Running DeepScaleR-15B with vLLM on DigitalOcean</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Running DeepScaleR-15B with vLLM on DigitalOcean</h1>
+			<b><time>22.02.2025 00:41</time></b>
+		       
+
+			<div>
+				<h1 id="running-deepscaler-15b-with-vllm-on-digitalocean">Running DeepScaleR-15B with vLLM on DigitalOcean</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>DeepSeek-R1, an open-source-model, achieved comparable performance to OpenA1’s o1 model on reasoning tasks. If this wasn’t already impressive, newer open-source models like <a href="https://huggingface.co/agentica-org/DeepScaleR-1.5B-Preview">DeepScaleR-1.5B-Preview</a> by <a href="https://agentica-project.com/">Agentica</a>, part of the <a href="https://bair.berkeley.edu/">Berkeley AI Research</a> and Sky Computing lab, surpass o1 performance in benchmarks like <a href="https://artofproblemsolving.com/wiki/index.php/2024_AIME_I?srsltid=AfmBOopahQ34ZX1kHhIYxJIUBVUd-LcafHZlL2eQlv8bG1Mgve5juieZ">AIME2024</a>. This level of performance on AIME2024 is especially significant because mathematical reasoning has traditionally been a weakness for language models.</p>
+<p>Trained on 40,000 math problems over 3,800 A100 GPU hours, DeepScaleR uses a novel iterative context lengthening scheme. The training process involves curating a high-quality dataset, using an Outcome Reward Model (ORM) instead of a Process Reward Model (PRM), and progressively increasing the context window from 8K to 24K tokens. This approach allows the model to learn effective reasoning patterns at shorter contexts before scaling to longer ones, significantly improving efficiency. The authors have open-sourced their <a href="https://huggingface.co/datasets/agentica-org/DeepScaleR-Preview-Dataset">dataset</a>, <a href="https://github.com/agentica-project/deepscaler">code</a>, and <a href="https://wandb.ai/mluo/deepscaler-1.5b">training logs</a> to further research in scaling intelligence with RL.</p>
+<h2 id="prerequisites"><a href="#prerequisites">Prerequisites</a><a href="#prerequisites"></a></h2>
+<p>There are two sections of this article. (1) An overview of the model and (2) its implementation. The overview requires some familiarity with LLM training and evaluation. Knowledge of reinforcement learning algorithms like <a href="https://arxiv.org/pdf/1707.06347">Proximal Policy Optimization (PPO)</a> machine learning concepts like loss functions would be helpful. The implementation, where we run the model on DigitalOcean’s GPU droplets, is very straightforward and requires minimal coding experience. Feel free to skip the overview section if you’re simply interested in running this model.</p>
+<h2 id="model-performance"><a href="#model-performance">Model Performance</a><a href="#model-performance"></a></h2>
+<p>Here’s a quote outlining <a href="https://huggingface.co/agentica-org/DeepScaleR-1.5B-Preview">DeepScaleR’s</a> performance from Agentica’s blog post, “<a href="https://pretty-radio-b75.notion.site/DeepScaleR-Surpassing-O1-Preview-with-a-1-5B-Model-by-Scaling-RL-19681902c1468005bed8ca303013a4e2">DeepScaleR: Surpassing O1-Preview with a 1.5B Model by Scaling RL</a>”: <em>“Our results confirm this: RL scaling improved AIME accuracy from <strong>28.9% to 43.1%</strong>! These findings suggest that neither SFT nor RL alone is sufficient. Instead, by combining high-quality SFT distillation with RL scaling, we can truly unlock the reasoning potential of LLMs.”</em></p>
+<p><strong>What’s the significance of 43.1% Pass<a href="/community/users/1">@1</a> accuracy on AIME2024 (+14.3% improvement over the base model)?</strong><br>
+<a href="https://artofproblemsolving.com/wiki/index.php/2024_AIME_I?srsltid=AfmBOopahQ34ZX1kHhIYxJIUBVUd-LcafHZlL2eQlv8bG1Mgve5juieZ">AIME2024</a> (American Invitational Mathematics Examination) is a highly regarded benchmark derived from a prestigious high school mathematics competition. You’ll see this benchmark come up a lot when evaluating reasoning models looking at problem solving abilities. A 43.1% Pass<a href="/community/users/1">@1</a> accuracy means that in a single attempt, the model correctly solves 43.1% of the AIME problems it encounters. The 14.3% improvement over the base model (from 28.9% to 43.1%) demonstrates that <strong>combining SFT distillation with RL scaling is a promising approach</strong>.</p>
+<h2 id="training-recipe"><a href="#training-recipe">Training Recipe</a><a href="#training-recipe"></a></h2>
+<h3 id="group-relative-policy-optimization-grpo"><a href="#group-relative-policy-optimization-grpo">Group Relative Policy Optimization (GRPO)</a><a href="#group-relative-policy-optimization-grpo"></a></h3>
+<p><a href="https://arxiv.org/pdf/2402.03300">GRPO</a> builds upon PPO (Proximal Policy Optimization), an extensively used reinforcement learning algorithm, and introduces <strong>two significant changes.</strong> The first key addition involves <strong>normalizing the advantage function</strong> across all samples generated from the same prompt. The advantage function quantifies <strong>how much better a particular action is compared to the expected value.</strong> By normalizing these advantages across samples from the same prompt, GRPO creates a <strong>more consistent scale for comparing the relative benefits of different actions</strong>, which is particularly valuable when handling multiple samples from the same starting point.</p>
+<p>The second major addition <strong>incorporates KL (Kullback-Leibler) divergence regularization on top of PPO’s surrogate loss function</strong>. KL divergence measures the difference between two probability distributions. By adding this as a regularization term to PPO’s existing loss function, GRPO helps prevent the new policy from deviating from the old one (policy drift).</p>
+<h3 id="reward-function"><a href="#reward-function">Reward Function</a><a href="#reward-function"></a></h3>
+<p>The reward function involves a binary approach to evaluating responses where a reward value of 1 is assigned for answers that successfully pass both <a href="https://www.latex-project.org/about/">LaTeX</a> and <a href="https://www.sympy.org/en/index.html">Sympy</a> validation checks, indicating correct mathematical formatting and content.</p>
+<p>Conversely, it assigns a reward value of 0 for any answers that are either incorrect or fail to meet the proper formatting requirements.The system deliberately excludes partial reward mechanisms (PRMs) and does not provide intermediate feedback during the evaluation process.</p>
+<h3 id="iterative-context-lengthening"><a href="#iterative-context-lengthening">Iterative Context Lengthening</a><a href="#iterative-context-lengthening"></a></h3>
+<p>Training large reasoning models using reinforcement learning <strong>requires significant computational resources</strong>. To address this challenge, an adaptive training strategy was used where they started with shorter contexts and gradually increased the length as the model’s performance improves. <strong>This optimization reduces both the financial costs and overall training duration.</strong></p>
+<h2 id="implementation"><a href="#implementation">Implementation</a><a href="#implementation"></a></h2>
+<p>DeepScaleR can be served with high-performance inference systems such as vLLM, Hugging Face Text Generation Inference (TGI), SGLang, and TensorRT-LLM. In this tutorial, we will show you how you can run <a href="https://pretty-radio-b75.notion.site/DeepScaleR-Surpassing-O1-Preview-with-a-1-5B-Model-by-Scaling-RL-19681902c1468005bed8ca303013a4e2">DeepScaleR-1.5B</a> with the <a href="https://docs.vllm.ai/en/latest/getting_started/quickstart.html">vLLM</a> inference engine on DigitalOcean GPU Droplets.</p>
+<h3 id="step-1-set-up-a-gpu-droplet-in-a-jupyter-notebook-environment"><a href="#step-1-set-up-a-gpu-droplet-in-a-jupyter-notebook-environment">Step 1: Set up a GPU Droplet in a Jupyter Notebook environment</a><a href="#step-1-set-up-a-gpu-droplet-in-a-jupyter-notebook-environment"></a></h3>
+<p>To set up a GPU Droplet in a Jupyter Notebook environment, follow this tutorial: <a href="/community/tutorials/jupyter-notebooks-with-gpu-droplets">“Setting Up the GPU Droplet Environment for AI/ML Coding - Jupyter Labs”</a>.</p>
+<h3 id="step-2-import-the-model"><a href="#step-2-import-the-model">Step 2: Import the Model</a><a href="#step-2-import-the-model"></a></h3>
+<p>Initialize the language model by creating an LLM object, specifying the model path as “agentica-org/DeepScaleR-1.5B-Preview”.</p>
+<pre tabindex="0"><code>from vllm import LLM, SamplingParams
+llm = LLM(model= &#34;agentica-org/DeepScaleR-1.5B-Preview&#34;)
+</code></pre><h3 id="step-3-format-the-prompt-and-sampling-parameters"><a href="#step-3-format-the-prompt-and-sampling-parameters">Step 3: Format the Prompt and Sampling Parameters</a><a href="#step-3-format-the-prompt-and-sampling-parameters"></a></h3>
+<p>Define your input prompt (replace “[enter prompt here]” with your actual prompt text). Set the <a href="https://docs.vllm.ai/en/v0.6.4/dev/sampling_params.html">sampling parameters</a> in a SamplingParams object, including arguments like temperature, top_p, and max_tokens.</p>
+<pre tabindex="0"><code>prompt = [enter prompt here]
+sampling_params = SamplingParams(temperature=0.8, top_p=0.95, max_tokens = 512)
+</code></pre><h3 id="step-4-generate-your-results"><a href="#step-4-generate-your-results">Step 4: Generate Your Results</a><a href="#step-4-generate-your-results"></a></h3>
+<p>To generate text using the llm.generate() function, start by calling the function and passing in the parameters we defined in the last step (prompt and sampling_params). Then, iterate through each output produced by the generation process. From each output, extract the original prompt and the corresponding generated text. Finally, print both the prompt and the generated text for you to evaluate.</p>
+<pre tabindex="0"><code>outputs = llm.generate(prompt,sampling_params)
+for output in outputs:
+  prompt = output.prompt
+  generated_text = output.outputs[0].text
+  print(f&#34;Prompt:{prompt!r}, Generated text: {generated_text!r}&#34;)
+</code></pre><h2 id="conclusion"><a href="#conclusion">Conclusion</a><a href="#conclusion"></a></h2>
+<p>And there you have it. We hope this article gives you the background you need to understand the innovation behind DeepScaleR and some exposure to the current paradigm of reasoning models. We encourage you to experiment with this reasoning model and others for your desired use-case.</p>
+<p>Check out this tutorial for inspiration: <a href="/community/tutorials/fine-tuning-deepseek-medical-cot">A Comprehensive Guide to Fine-Tuning Reasoning Models: Fine-Tuning DeepSeek-R1 on Medical CoT with DigitalOcean’s GPU Droplets</a></p>
+<h2 id="references"><a href="#references">References</a><a href="#references"></a></h2>
+<p><a href="https://pretty-radio-b75.notion.site/DeepScaleR-Surpassing-O1-Preview-with-a-1-5B-Model-by-Scaling-RL-19681902c1468005bed8ca303013a4e2">https://pretty-radio-b75.notion.site/DeepScaleR-Surpassing-O1-Preview-with-a-1-5B-Model-by-Scaling-RL-19681902c1468005bed8ca303013a4e2</a><br>
+<a href="https://huggingface.co/agentica-org/DeepScaleR-1.5B-Preview">agentica-org/DeepScaleR-1.5B-Preview · Hugging Face</a> <a href="https://github.com/agentica-project/deepscaler">GitHub - agentica-project/deepscaler: Democratizing Reinforcement Learning for LLMs</a> <a href="https://arxiv.org/pdf/2402.03300">DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models</a> <a href="https://docs.vllm.ai/en/latest/getting_started/quickstart.html">Quickstart — vLLM</a></p>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/deepscaler">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

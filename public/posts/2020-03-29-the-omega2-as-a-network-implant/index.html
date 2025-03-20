@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>The Omega2 as a network implant</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>The Omega2 as a network implant</h1>
+			<b><time>29.03.2020 04:30</time></b>
+		       
+
+			<div>
+				<h1 id="the-omega2-as-a-network-implant">The Omega2 as a network implant</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>I’d been wanting to make something similar to Hak5’s <a href="https://shop.hak5.org/products/lan-turtle">LAN Turtle</a> and <a href="https://shop.hak5.org/products/shark-jack">Shark Jack</a>. With that in mind, I decided to turn the Omega2+ into a network implant. The end result is a device that plugs into a network drop of a target LAN and acts as a WiFi access point. By associating with the Omega2+ via WiFi, we can then SSH into it and perform scans on the target LAN.</p>
+<p>This is super easy to do, no soldering required or any of that mess. Just buy the components and put them together like LEGO pieces.</p>
+<p>Here’s what the end result looks like:</p>
+<p>
+<figure>
+  <img src="/images/2020-03-29/01.png" alt="" />
+</figure>
+
+
+</p>
+<p>This includes the following components:</p>
+<ul>
+<li><a href="https://onion.io/store/omega2p/">Omega2+</a></li>
+<li><a href="https://onion.io/store/expansion-dock/">Expansion Dock</a></li>
+<li><a href="https://onion.io/store/ethernet-expansion/">Ethernet Expansion</a></li>
+<li>32GB microSD card</li>
+</ul>
+<p>The total cost without the microSD is $43.00.</p>
+<p>The Omega2+ has 128MB of DDR2RAM and 32MB of flash storage. 32MB didn’t seem like a lot, so I purchased a 32GB microSD to increase the storage space. The Omega2+ also comes with one USB 2.0 port so you can use that for storage if you like. Here are the <a href="https://onion.io/store/omega2p/">specs</a>:</p>
+<ul>
+<li>580MHz MIPS CPU</li>
+<li>128MB Memory</li>
+<li>32MB Storage</li>
+<li>USB2.0 support</li>
+<li>2.4GHz b/g/n WiFi</li>
+<li>3.3V Operating Voltage</li>
+<li>18 GPIOs</li>
+<li>Support for UART, I2C, SPI</li>
+<li>MicroSD slot</li>
+</ul>
+<h2 id="initial-setup">Initial setup</h2>
+<p>Let’s get started. Setup the Omega2+ according to the instructions <a href="https://docs.onion.io/omega2-docs/first-time-setup.html">here</a>. To summarize:</p>
+<ol>
+<li>Insert the microSD card to the base of the Omega2+</li>
+<li>Attach the Omega2+ and the Ethernet Expansion to the Expansion Dock</li>
+<li>Plug the Omega2+ to a power source like a laptop and switch it on</li>
+<li>It will act as an access point and broadcast a SSID in the form of Omega-ABCD, where ABCD is the last four digits of the Omega2+’s MAC address. The WiFi password is 12345678</li>
+<li>Browse to http://192.168.3.1 and follow the setup wizard. The username is <code>root</code>, password is <code>onioneer</code></li>
+<li>Make sure you associate the Omega2+ with your WiFi access point and that it has Internet access</li>
+<li>Once completed, you’ll be dropped into the OnionOS dashboard</li>
+</ol>
+<p>At any time, you can SSH directly into the Omega2+ with the root credentials:</p>
+<p><code>ssh root@192.168.3.1</code></p>
+<p>Once logged in, verify that you have Internet access by pinging a server like 8.8.8.8 and google.com. If everything checks out, you probably want to change the default root and access point passwords. The root password can be changed using <code>passwd</code> as usual.</p>
+<p>To change the access point password, run the following commands:</p>
+<pre tabindex="0"><code>root@Omega-ABCD:~# uci set wireless.ap.key=&#39;my_new_password&#39;
+root@Omega-ABCD:~# uci commit wireless
+root@Omega-ABCD:~# wifi
+</code></pre><p>This will disconnect you from the access point, so you’ll want to reconnect before proceeding.</p>
+<h2 id="booting-from-the-microsd-card">Booting from the microSD card</h2>
+<p>The Omega2+ doesn’t come with a lot of storage, so you’ll want to boot from an external storage. In my case, I’m using a microSD card so I can keep the single USB port available, so my instructions will cover preparing the microSD card. If you want to use a USB drive instead, follow the instructions <a href="https://docs.onion.io/omega2-docs/boot-from-external-storage.html">here</a>.</p>
+<p>A quick check on the available space using <code>df -h</code> shows that the Omega2+ only has about 22MB of storage:</p>
+<pre tabindex="0"><code>overlayfs:/overlay       22.1M      2.6M     19.4M  12% /
+</code></pre><p>I’m using a 32GB microSD, so at the end of this, <code>/overlay</code> should have approximately that much space.</p>
+<p>Start by installing <code>e2fsprogs</code>:</p>
+<pre tabindex="0"><code>root@Omega-ABCD:~# opkg update
+root@Omega-ABCD:~# opkg install e2fsprogs
+</code></pre><p>The microSD device is <code>/dev/mmcblk0p1</code> and should be mounted in <code>/mnt/mmcblk0p1</code>. Unmount and create an Ext4 file system on it:</p>
+<pre tabindex="0"><code>root@Omega-ABCD:~# umount /mnt/mmcblk0p1
+root@Omega-ABCD:~# mkfs.ext4 /dev/mmcblk0p1
+mke2fs 1.44.1 (24-Mar-2018)
+/dev/mmcblk0p1 contains a ext4 file system
+    last mounted on /sd on Sat Mar 28 04:33:36 2020
+Proceed anyway? (y,N) y
+Creating filesystem with 7392768 4k blocks and 1851392 inodes
+Filesystem UUID: e6052419-f5bc-4d92-8e04-04438b70d76a
+Superblock backups stored on blocks:
+    32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
+    4096000
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (32768 blocks): done
+Writing superblocks and filesystem accounting information: done
+</code></pre><p>Remount it back into <code>/mnt/mmcblk0p1</code></p>
+<pre tabindex="0"><code>root@Omega-46DB:~# mkdir -p /mnt/mmcblk0p1
+root@Omega-46DB:~# mount /dev/mmcblk0p1 /mnt/mmcblk0p1
+</code></pre><p>Now move <code>/overlay</code> into the microSD:</p>
+<pre tabindex="0"><code>root@Omega-46DB:~# mount /dev/mmcblk0p1 /mnt ; tar -C /overlay -cvf - . | tar -C /mnt/ -xf - ; umount /mnt/
+./
+./upper/
+./upper/etc/
+./upper/etc/config/
+./upper/etc/config/rpcd
+./upper/etc/config/onion
+./upper/etc/config/fstab
+./upper/etc/config/ubootenv
+.
+.
+.
+</code></pre><p>Now save the current configuration to <code>/etc/config/fstab</code>:</p>
+<p><code>root@Omega-ABCD:~# block detect &gt; /etc/config/fstab</code></p>
+<p>Edit the file and change this:</p>
+<pre tabindex="0"><code>config &#39;mount&#39;
+        option  target  &#39;/dev/mmcblk0p1&#39;
+        option  uuid    &#39;e6052419-f5bc-4d92-8e04-04438b70d76a&#39;
+        option  enabled &#39;0&#39;
+</code></pre><p>to the following:</p>
+<pre tabindex="0"><code>config &#39;mount&#39;
+        option  target  &#39;/overlay&#39;
+        option  uuid    &#39;e6052419-f5bc-4d92-8e04-04438b70d76a&#39;
+        option  enabled &#39;1&#39;
+</code></pre><p>Reboot the device. Log back in, run <code>df -h</code>, and you should now see that storage has increased:</p>
+<pre tabindex="0"><code>overlayfs:/overlay       27.6G     50.4M     26.2G   0% /
+</code></pre><h2 id="installing-additional-tools">Installing additional tools</h2>
+<p>As a backdoor, you’ll want the Omega2+ to be able to connect back to your server when it gets plugged into the LAN perform scans and attacks. You’ll probably want to start by installing tools such as <code>nmap-ssl</code>, <code>autossh</code>, <code>ncat</code>, <code>python3</code>, <code>python3-pip</code>, and <code>git</code>.</p>
+<p>These aren’t found in the Omega2 repository so you’ll need to enable the respositories they’re stored in. Edit <code>/etc/opkg/distfeeds.conf</code> and uncomment the following repositories:</p>
+<pre tabindex="0"><code>src/gz openwrt_core http://downloads.openwrt.org/releases/18.06-SNAPSHOT/targets/ramips/mt76x8/
+src/gz openwrt_base http://downloads.openwrt.org/releases/18.06-SNAPSHOT/packages/mipsel_24kc/b
+src/gz openwrt_packages http://downloads.openwrt.org/releases/18.06-SNAPSHOT/packages/mipsel_24
+</code></pre><p>Save the file and update:</p>
+<p><code>root@Omega-ABCD:~# opkg update</code></p>
+<p>You can now install tools like <code>nmap-ssl</code>:</p>
+<pre tabindex="0"><code>root@Omega-ABCD:~# opkg install nmap-ssl
+Installing nmap-ssl (7.70-1) to root...
+Downloading http://downloads.openwrt.org/releases/18.06-SNAPSHOT/packages/mipsel_24kc/packages/nmap-ssl_7.70-      1_mipsel_24kc.ipk
+Multiple packages (libstdcpp and libstdcpp) providing same name marked HOLD or PREFER. Using latest.
+Configuring nmap-ssl.
+</code></pre><p>To install <code>git</code>, you’ll need to install three packages:</p>
+<p><code>root@Omega-ABCD:~# opkg install git git-http ca-bundle</code></p>
+<p>An index of all packages you can install with <code>opkg</code> can be found at <a href="https://openwrt.org/packages/index/start">https://openwrt.org/packages/index/start</a>.</p>
+<h2 id="testing-it">Testing it</h2>
+<p>To test it, I plugged the Omega2+ to a power source and a router. Once it had powered on, I connected to it via WiFi and established a reverse SSH tunnel to my server. From my server, I created a SSH SOCKS5 proxy to the Omega2+, which allowed me to use <code>proxychains</code> to scan the target LAN the Omega2+ was connected to.</p>
+<p>Here’s a scan of a Metasploitable instance running on my LAN:</p>
+<p>
+<figure>
+  <img src="/images/2020-03-29/02.png" alt="" />
+</figure>
+
+
+</p>
+<p>Not too shabby!</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>I put this thing together as a proof of concept that had the potential to perform like Hak5’s LAN Turtle and Shark Jack. While more testing is required, it appears to work the way it should. If you’d like an alternative to Hak5’s network implants, then give the Omega2+ a go. When you’re done using it as a network implant, you can always repurpose it for other <a href="https://docs.onion.io/omega2-project-book-vol1/">things</a>.</p>
+<h4 id="source"><a href="http://blog.techorganic.com/2020/03/29/the-omega2-as-a-network-implant/">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

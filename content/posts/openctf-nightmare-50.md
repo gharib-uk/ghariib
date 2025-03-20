@@ -1,6 +1,6 @@
 ---
 title: "OpenCTF : Nightmare 50"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
   - "general"
 ---
@@ -48,3 +48,5 @@ ThisIsAVeryFl@ggyFlag
 # Flag
 
 **ThisIsAVeryFl@ggyFlag**
+
+Go to Source

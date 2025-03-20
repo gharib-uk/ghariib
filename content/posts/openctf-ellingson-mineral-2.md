@@ -1,6 +1,6 @@
 ---
 title: "OpenCTF : Ellingson Mineral 2"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
   - "general"
 ---
@@ -43,3 +43,5 @@ Looking at the string it seems to be hex so encode to hex to get the flag.
 # Flag
 
 **flag{thERe\_is\_N0\_r1Ght\_aND\_WR0nG\_th3Re\_1s\_ONly\_FuN\_And\_B0riNG}**
+
+Go to Source

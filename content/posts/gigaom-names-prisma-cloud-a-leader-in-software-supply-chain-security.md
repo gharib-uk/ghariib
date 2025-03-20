@@ -1,6 +1,8 @@
 ---
 title: "GigaOm Names Prisma Cloud a Leader in Software Supply Chain Security"
-date: 2025-03-19
+date: 2025-01-03
+categories: 
+  - "security"
 ---
 
 With software supply chain threats escalating, organizations need comprehensive solutions that safeguard their entire development lifecycle.

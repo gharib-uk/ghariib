@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Hunting for malicious login attempts based on basic authentication</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Hunting for malicious login attempts based on basic authentication</h1>
+			<b><time>20.03.2025 16:25</time></b>
+		       
+
+			<div>
+				<h1 id="hunting-for-malicious-login-attempts-based-on-basic-authentication">Hunting for malicious login attempts based on basic authentication</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Nowadays, basic authentication is becoming less common and we use more secure ways to log in with our identities. Disabling basic authentication on your email server or application should be considered to ensure that all clients use stronger methods. Before making this change, it is mandatory to confirm compatibility and compliance with legacy requirements to ensure that current devices or applications support modern authentication. However, there are still cases where the use of basic authentication cannot be changed due to product/software limitations and lack of upgrades or budget to replace them with more secure ones.</p>
+<p>Hackers know this, so even when the most of the organizations are using more advanced authentication, why not try to capture some cases where basic authentication is still active?</p>
+<h3 id="the-threat-huntingprocess">The Threat Hunting Process</h3>
+<p>In my free time, I’ve been hunting for malicious activities related to the mentioned case, using the AADSignInEventsBeta table, where you can filter by singleFactorAuthentication. As usual, I also filter by countries known for high cyberattack activity to uncover related patterns. These insights have been quite useful for detecting broader threats — appreciate the intel, “hackers”!</p>
+<p>AADSignInEventsBeta<br>
+| where Country has “RU”<br>
+| where AuthenticationRequirement has “singleFactorAuthentication”<br>
+| distinct  Application, EndpointCall, ErrorCode, AuthenticationRequirement, UserAgent, ClientAppUsed, IPAddress , Country</p>
+<p>
+<figure>
+  <img src="https://cdn-images-1.medium.com/max/1024/0*snc4htqaNAoIsYBv" alt="" />
+</figure>
+
+
+</p>
+<p>As you can see in the results, I identified two type of user agents (BAV2ROPC and BAVROPC) which are associated to ROPC (Resource Owner Password Credentials)</p>
+<p>The ROPC flow is considered insecure because it requires applications to handle user credentials directly, increasing the risk of credential theft. Microsoft discourages the use of ROPC and Basic Authentication in favor of more secure, modern authentication methods such as OAuth 2.0 with MFA and token-based authentication.</p>
+<ul>
+<li>BAVROPC:This user agent is frequently associated with legacy email applications and devices that depend on basic authentication to access email accounts which transmits credentials (username and password) in plain text, making them susceptible to interception. Attackers often exploit this weakness through brute-force attempts to compromise accounts. The repeated login failures originating from various IPs and countries indicate an automated attack attempting to take advantage of basic authentication vulnerabilities.</li>
+<li>BAConsumerV2ROPC: is basically a user agent string commonly associated with applications and services that rely on Basic Authentication using the Resource Owner Password Credentials (ROPC) flow.</li>
+</ul>
+<p>Therefore, after identifying these suspicious agents, the next step was to determine whether authentication attempts using these compromised agents were occurring globally or were limited to Russia:</p>
+<p>AADSignInEventsBeta<br>
+| where UserAgent  has “BAV2ROPC” or UserAgent has “AConsumerV2ROPC”<br>
+| where AuthenticationRequirement has “singleFactorAuthentication”<br>
+| distinct  Application, EndpointCall, ErrorCode, AuthenticationRequirement, UserAgent, ClientAppUsed, IPAddress , Country</p>
+<p>
+<figure>
+  <img src="https://cdn-images-1.medium.com/max/1024/0*3GlWj8d-sd268Y_v" alt="" />
+</figure>
+
+
+</p>
+<p>Indeed, these type of malicious activities are happening from distinct countries.</p>
+<h3 id="responding-to-malicious-basic-authentication-sign-inattempts">Responding to malicious Basic Authentication sign-in attempts</h3>
+<p>As I mentioned at the beginning, if possible disable basic authentication, it is the most secure (but also the most drastic) method. However, we have some alternatives:</p>
+<p>Conditional Access Policies: If you’re using Microsoft 365, leverage conditional access policies to block BAV2ROPC and BAConsumerV2ROPC using policies that restrict access based on user agents.</p>
+<p>Firewall Rules: I have read about the option to control this threat over a firewall because you can create rules to block traffic from IP addresses or countries associated with the mentioned agents. However, I don’t see it as the best option because nowadays, with the use of proxy servers , VPNs, and others, malicious actors would easily bypass these controls (to not mention the work to maintain a blocklist updated).</p>
+<p>Detection Rules: After verifying that you have no legitimate connection (you can filter by ErrorCode=0 and the mentioned agents) that you are allowing by some of your devices/products/apps, I would recommend you to generate an alert/Ticket if there are successful connection using this agent and even require a password reset for the affected identity (
+<figure>
+  <img src="https://malware.news/images/emoji/twitter/pencil2.png?v=12" alt=":pencil2:" />
+  <figcaption>:pencil2:</figcaption>
+</figure>
+
+
+remember to add the ReportId and Timestamp fields in the KQL Quers in order to create them).</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>Even if you don’t have basic authentication enabled, it’s a good way to see how bad actors are working against your tenant using this technique. Also, it might help you detect some typical forgotten application that is compromised and being targeted by this leak method.</p>
+<p>On the other hand, if for some reason you are still using basic authentication, I hope this article will help you define some controls and identify if your tenant is being a target by hackers.</p>
+<p>
+<figure>
+  <img src="https://medium.com/_/stat?event=post.clientViewed&amp;referrerSource=full_rss&amp;postId=dd752ea07f0d" alt="" />
+</figure>
+
+
+</p>
+<p><a href="https://detect.fyi/hunting-for-malicious-login-attempts-based-on-basic-authentication-dd752ea07f0d">Hunting for malicious login attempts based on basic authentication</a> was originally published in <a href="https://detect.fyi">Detect FYI</a> on Medium, where people are continuing the conversation by highlighting and responding to this story.</p>
+<blockquote>
+<h2 id="introduction-to-malware-binary-triage-imbt-course">Introduction to Malware Binary Triage (IMBT) Course</h2>
+<p>Looking to level up your skills? Get <strong>10% off</strong> using coupon code: <strong>MWNEWS10</strong> for any flavor.</p>
+<p><a href="https://training.invokere.com/link/QHLuD5/MWNEWS10?url=https%3A%2F%2Ftraining.invokere.com">Enroll Now and Save 10%: Coupon Code MWNEWS10</a></p>
+<p><em>Note: Affiliate link – your enrollment helps support this platform at no extra cost to you.</em></p></blockquote>
+<p>Article Link: <a href="https://detect.fyi/hunting-for-malicious-login-attempts-based-on-basic-authentication-dd752ea07f0d?source=rss----d5fd8f494f6a---4">Hunting for malicious login attempts based on basic authentication | by Sergio Albea | Mar, 2025 | Detect FYI</a></p>
+<p>1 post - 1 participant</p>
+<p><a href="https://malware.news/t/hunting-for-malicious-login-attempts-based-on-basic-authentication/92322">Read full topic</a></p>
+<h4 id="source"><a href="https://malware.news/t/hunting-for-malicious-login-attempts-based-on-basic-authentication/92322">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

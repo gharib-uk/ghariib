@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Understand K-Fold Cross-ValidationA Step-by-Step Guide</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Understand K-Fold Cross-ValidationA Step-by-Step Guide</h1>
+			<b><time>05.02.2025 14:25</time></b>
+		       
+
+			<div>
+				<h1 id="understand-k-fold-cross-validationa-step-by-step-guide">Understand K-Fold Cross-ValidationA Step-by-Step Guide</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>When a machine learning model learns about the data, it often performs well with the training data but underperforms with unseen data or the test data. This is known as model overfitting. Model overfitting occurs when the model hugs the training data well, and underfitting occurs when the model does not perform well, even with the training data.</p>
+<p>Cross-validation is one of the techniques that ensures that the machine learning model generalizes well to unseen data. It works as follows:</p>
+<ol>
+<li><strong>Splitting Data into Folds:</strong> Any given dataset is divided into multiple subsets, known as “folds.”</li>
+<li><strong>Training &amp; Validation Cycles:</strong> The model is trained on a subset of the data, and one fold is used for validation. This process repeats, with a different fold used each time.</li>
+<li><strong>Averaging Results:</strong> The performance metrics from each validation step are averaged to provide a more reliable estimate of the model’s effectiveness.</li>
+</ol>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Shaoni/5-feb/bias-variance%20tradeoff.png" alt="image" />
+</figure>
+
+
+</p>
+<p><a href="https://developer.download.nvidia.com/video/gputechconf/gtc/2019/presentation/s9817-rapids-cuml-a-library-for-gpu-accelerated-machine-learning.pdf">Image Source</a></p>
+<h2 id="-prerequisites"><a href="#prerequisites">📌 Prerequisites</a><a href="#prerequisites"></a></h2>
+<p><strong>Basic Knowledge of Machine Learning</strong> – Understanding <a href="/community/tutorials/how-to-train-question-answering-machine-learning-models">model training</a>, evaluation metrics, and overfitting.<br>
+<strong>Python Programming Skills</strong> – Familiarity with Python and libraries like <a href="/community/tutorials/python-scikit-learn-tutorial"><code>scikit-learn</code></a>, <a href="/community/tutorials/numpy-matrix-multiplication"><code>numpy</code></a>, and <a href="/community/tutorials/python-pandas-module-tutorial"><code>pandas</code></a>.<br>
+<strong>Dataset Preparation</strong> – A cleaned and preprocessed dataset ready for model training.<br>
+<strong>Scikit-Learn Installed</strong> – Install it using <code>pip install scikit-learn</code> if not already available.<br>
+<strong>Understanding of Model Performance Metrics</strong> – Knowledge of accuracy, precision, recall, RMSE, etc., depending on the task.</p>
+<h2 id="-common-cross-validation-methods"><a href="#common-cross-validation-methods">🚀 Common Cross-Validation Methods</a><a href="#common-cross-validation-methods"></a></h2>
+<ul>
+<li><strong>K-Fold Cross-Validation:</strong> The dataset is split into <em>k</em> equal parts, and the model is trained <em>k</em> times, each time using a different fold is used as the validation set.</li>
+<li><strong>Stratified K-Fold:</strong> This method ensures that each fold maintains the same proportion of classes in classification problems. It is often used when the target variable data is imbalanced, i.e., when the target variable is a categorical column, and the classes are not distributed equally.</li>
+<li><strong>Leave-One-Out (LOO):</strong> This method uses only one instance for validation while training on the rest, repeating for all instances.</li>
+<li><strong>Time-Series Cross-Validation:</strong> Used for sequential data, ensuring training data precedes validation data.</li>
+</ul>
+<p>Cross-validation helps in selecting the best model and hyperparameters while preventing overfitting.</p>
+<p>In this guide, we’ll explore:</p>
+<ul>
+<li>What K-Fold Cross-Validation is</li>
+<li>How it compares to a traditional train-test split</li>
+<li>Step-by-step implementation using <code>scikit-learn</code></li>
+<li>Advanced variations like <strong>Stratified K-Fold, Group K-Fold, and Nested K-Fold</strong></li>
+<li>Handling imbalanced datasets</li>
+</ul>
+<h2 id="-what-is-k-fold-cross-validation"><a href="#what-is-k-fold-cross-validation"><strong>🤔 What is K-Fold Cross-Validation?</strong></a><a href="#what-is-k-fold-cross-validation"></a></h2>
+<p>K-Fold Cross-Validation is a resampling technique used to evaluate machine learning models by splitting the dataset into <strong>K</strong> equal-sized folds. The model is trained on <strong>K-1</strong> folds and validated on the remaining fold, repeating the process <strong>K</strong> times. The final performance score is the average of all iterations.</p>
+<p>
+<figure>
+  <img src="https://doimages.nyc3.cdn.digitaloceanspaces.com/010AI-ML/2024/Shaoni/5-feb/k-fold.png" alt="image" />
+</figure>
+
+
+</p>
+<h3 id="why-use-k-fold-cross-validation"><a href="#why-use-k-fold-cross-validation"><strong>Why Use K-Fold Cross-Validation?</strong></a><a href="#why-use-k-fold-cross-validation"></a></h3>
+<ul>
+<li>Unlike a single train-test split, K-Fold uses multiple splits, reducing the variance in performance estimates. Hence, the model becomes more capable of making predictions about unseen datasets.</li>
+<li>Each data point is used for training and validation, maximizing available data and leading to more robust performance evaluation.</li>
+<li>Since the model is validated multiple times across different data segments, it helps detect and mitigate overfitting. This ensures that the model does not memorize specific training samples but generalizes well to new data.</li>
+<li>By averaging results across multiple folds, K-Fold Cross-Validation provides a more reliable estimate of the model’s true performance, reducing bias and variance.</li>
+<li>K-Fold Cross-Validation is often used in combination with grid search and randomized search to find optimal hyperparameters without overfitting to a single train-test split.</li>
+</ul>
+<h2 id="-k-fold-vs-train-test-split"><a href="#k-fold-vs-train-test-split">🔍 K-Fold vs. Train-Test Split</a><a href="#k-fold-vs-train-test-split"></a></h2>
+<p>Aspect</p>
+<p>K-Fold Cross-Validation</p>
+<p>Train-Test Split</p>
+<p>Data Utilization</p>
+<p>Data is divided into multiple folds, ensuring that each data point has a chance to be part of both the training and validation sets across different iterations.</p>
+<p>Divide the data into fixed portions for training and testing.</p>
+<p>Bias-Variance Tradeoff</p>
+<p>It reduces variance as the model is trained multiple times on unseen data; hence, the optimal bias-variance tradeoff is achieved.</p>
+<p>There is a chance of high variance with the plain train-test split. This often occurs because the model hugs the training data well and often fails to understand the test data.</p>
+<p>Overfitting Risk</p>
+<p>Low risk of overfitting as the model gets tested across different folds.</p>
+<p>Higher risk of overfitting if the train-test split is not representative.</p>
+<p>Performance Evaluation</p>
+<p>Provides a more reliable and generalized performance estimate.</p>
+<p>Performance depends on a single train-test split, which may be biased.</p>
+<h2 id="-implementing-k-fold-cross-validation-in-python"><a href="#implementing-k-fold-cross-validation-in-python">🏁 Implementing K-Fold Cross-Validation in Python</a><a href="#implementing-k-fold-cross-validation-in-python"></a></h2>
+<p>Let’s implement K-Fold Cross-Validation using <code>scikit-learn</code>.</p>
+<h3 id="step-1-import-dependencies"><a href="#step-1-import-dependencies"><strong>Step 1: Import Dependencies</strong></a><a href="#step-1-import-dependencies"></a></h3>
+<p>First, we will start by importing the necessary libraries.</p>
+<pre tabindex="0"><code>import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.model_selection import KFold, cross_val_score, train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import LabelEncoder
+from sklearn import linear_model, tree, ensemble
+</code></pre><h3 id="step-2-load-and-explore-the-titanic-dataset"><a href="#step-2-load-and-explore-the-titanic-dataset"><strong>Step 2: Load and Explore the Titanic Dataset</strong></a><a href="#step-2-load-and-explore-the-titanic-dataset"></a></h3>
+<p>For this demo, we will use the Titanic dataset, a very famous dataset that will help us understand how to perform k-fold cross-validation.</p>
+<pre tabindex="0"><code>df = pd.read_csv(&#34;https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv&#34;)
+print(df.head(3))
+print(df.info())
+</code></pre><pre tabindex="0"><code>  PassengerId  Survived  Pclass  \
+0            1         0       3   
+1            2         1       1   
+2            3         1       3   
+
+                                                Name     Sex   Age  SibSp  \
+0                            Braund, Mr. Owen Harris    male  22.0      1   
+1  Cumings, Mrs. John Bradley (Florence Briggs Th...  female  38.0      1   
+2                             Heikkinen, Miss. Laina  female  26.0      0   
+
+   Parch            Ticket     Fare Cabin Embarked  
+0      0         A/5 21171   7.2500   NaN        S  
+1      0          PC 17599  71.2833   C85        C  
+2      0  STON/O2. 3101282   7.9250   NaN        S  
+&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
+RangeIndex: 891 entries, 0 to 890
+Data columns (total 12 columns):
+ #   Column       Non-Null Count  Dtype  
+---  ------       --------------  -----  
+ 0   PassengerId  891 non-null    int64  
+ 1   Survived     891 non-null    int64  
+ 2   Pclass       891 non-null    int64  
+ 3   Name         891 non-null    object 
+ 4   Sex          891 non-null    object 
+ 5   Age          714 non-null    float64
+ 6   SibSp        891 non-null    int64  
+ 7   Parch        891 non-null    int64  
+ 8   Ticket       891 non-null    object 
+ 9   Fare         891 non-null    float64
+ 10  Cabin        204 non-null    object 
+ 11  Embarked     889 non-null    object 
+dtypes: float64(2), int64(5), object(5)
+memory usage: 83.7+ KB
+None
+</code></pre><h3 id="step-3-data-preprocessing"><a href="#step-3-data-preprocessing"><strong>Step 3: Data Preprocessing</strong></a><a href="#step-3-data-preprocessing"></a></h3>
+<p><strong>Now, it is a great practice to start with data processing and feature engineering before building any model.</strong></p>
+<pre tabindex="0"><code>df = df[[&#39;Survived&#39;, &#39;Pclass&#39;, &#39;Sex&#39;, &#39;Age&#39;, &#39;SibSp&#39;, &#39;Parch&#39;, &#39;Fare&#39;]]  # Select relevant features
+df.dropna(inplace=True)  # Remove missing values
+
+# Encode categorical variable
+label_encoder = LabelEncoder()
+df[&#39;Sex&#39;] = label_encoder.fit_transform(df[&#39;Sex&#39;])
+
+# Split features and target
+X = df.drop(columns=[&#39;Survived&#39;])
+y = df[&#39;Survived&#39;]
+df.shape
+</code></pre><p>(714, 7)</p>
+<h3 id="step-4-define-the-k-fold-split"><a href="#step-4-define-the-k-fold-split"><strong>Step 4: Define the K-Fold Split</strong></a><a href="#step-4-define-the-k-fold-split"></a></h3>
+<pre tabindex="0"><code>kf = KFold(n_splits=5, shuffle=True, random_state=42)
+</code></pre><p>Here, we specify <code>n_splits=5</code>, meaning the data is divided into <strong>five folds</strong>. The <code>shuffle=True</code> ensures randomness.</p>
+<h3 id="step-5-train-and-evaluate-the-model"><a href="#step-5-train-and-evaluate-the-model"><strong>Step 5: Train and Evaluate the Model</strong></a><a href="#step-5-train-and-evaluate-the-model"></a></h3>
+<pre tabindex="0"><code>model = RandomForestClassifier(n_estimators=100, random_state=42)
+scores = cross_val_score(model, X, y, cv=kf, scoring=&#39;accuracy&#39;)
+print(f&#39;Cross-validation accuracy scores: {scores}&#39;)
+print(f&#39;Average Accuracy: {np.mean(scores):.4f}&#39;)
+</code></pre><p><strong>Cross-validation accuracy scores: [0.77622378 0.8041958 0.79020979 0.88111888 0.80985915]</strong> <strong>Average Accuracy: 0.8123</strong></p>
+<pre tabindex="0"><code>score = cross_val_score(tree.DecisionTreeClassifier(random_state= 42), X, y, cv= kf, scoring=&#34;accuracy&#34;)  
+print(f&#39;Scores for each fold are: {score}&#39;)  
+print(f&#39;Average score: {&#34;{:.2f}&#34;.format(score.mean())}&#39;)
+</code></pre><p><strong>Scores for each fold are: [0.72727273 0.79020979 0.76923077 0.81818182 0.8028169]</strong> <strong>Average score: 0.78</strong></p>
+<h2 id="-advanced-cross-validation-techniques"><a href="#advanced-cross-validation-techniques"><strong>⚡ Advanced Cross-Validation Techniques</strong></a><a href="#advanced-cross-validation-techniques"></a></h2>
+<h3 id="1-stratified-k-fold-for-imbalanced-datasets"><a href="#1-stratified-k-fold-for-imbalanced-datasets"><strong>1. Stratified K-Fold (For Imbalanced Datasets)</strong></a><a href="#1-stratified-k-fold-for-imbalanced-datasets"></a></h3>
+<p>For datasets with imbalanced classes, <strong>Stratified K-Fold</strong> ensures each fold has the same class distribution as the full dataset. This distribution of classes makes it the ideal choice for imbalance classification problems.</p>
+<pre tabindex="0"><code>from sklearn.model_selection import StratifiedKFold
+skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+scores = cross_val_score(model, X, y, cv=skf, scoring=&#39;accuracy&#39;)
+print(f&#39;Average Accuracy (Stratified K-Fold): {np.mean(scores):.4f}&#39;)
+</code></pre><h3 id="average-accuracy-stratified-k-fold-08124"><a href="#average-accuracy-stratified-k-fold-0-8124"><strong>Average Accuracy (Stratified K-Fold): 0.8124</strong></a><a href="#average-accuracy-stratified-k-fold-0-8124"></a></h3>
+<h3 id="2-repeated-k-fold-cross-validation"><a href="#2-repeated-k-fold-cross-validation"><strong>2. Repeated K-Fold Cross-Validation</strong></a><a href="#2-repeated-k-fold-cross-validation"></a></h3>
+<p><strong>Repeated K-Fold</strong> runs K-Fold multiple times with different splits to further reduce variance. This is usually done when the data is simple and models such as logistic regression can be fitted into the data set.</p>
+<pre tabindex="0"><code>from sklearn.model_selection import RepeatedKFold
+rkf = RepeatedKFold(n_splits=5, n_repeats=10, random_state=42)
+scores = cross_val_score(model, X, y, cv=rkf, scoring=&#39;accuracy&#39;)
+print(f&#39;Average Accuracy (Repeated K-Fold): {np.mean(scores):.4f}&#39;)
+</code></pre><h3 id="average-accuracy-repeated-k-fold-08011"><a href="#average-accuracy-repeated-k-fold-0-8011"><strong>Average Accuracy (Repeated K-Fold): 0.8011</strong></a><a href="#average-accuracy-repeated-k-fold-0-8011"></a></h3>
+<h3 id="3-nested-k-fold-cross-validation-for-hyperparameter-tuning"><a href="#3-nested-k-fold-cross-validation-for-hyperparameter-tuning"><strong>3. Nested K-Fold Cross-Validation (For Hyperparameter Tuning)</strong></a><a href="#3-nested-k-fold-cross-validation-for-hyperparameter-tuning"></a></h3>
+<p>Nested K-Fold performs hyperparameter tuning within the inner loop while evaluating performance in the outer loop, reducing overfitting.</p>
+<pre tabindex="0"><code>from sklearn.model_selection import GridSearchCV, cross_val_score
+param_grid = {&#39;n_estimators&#39;: [50, 100, 150], &#39;max_depth&#39;: [None, 10, 20]}
+gs = GridSearchCV(model, param_grid, cv=5)
+scores = cross_val_score(gs, X, y, cv=5)
+print(f&#39;Average Accuracy (Nested K-Fold): {np.mean(scores):.4f}&#39;)
+</code></pre><h3 id="4-group-k-fold-for-non-independent-samples"><a href="#4-group-k-fold-for-non-independent-samples"><strong>4. Group K-Fold (For Non-Independent Samples)</strong></a><a href="#4-group-k-fold-for-non-independent-samples"></a></h3>
+<p>If your dataset has groups (e.g., multiple images from the same patient), <strong>Group K-Fold</strong> ensures samples from the same group are not split across training and validation, which is useful for hierarchical data.</p>
+<pre tabindex="0"><code>from sklearn.model_selection import GroupKFold
+gkf = GroupKFold(n_splits=5)
+groups = np.random.randint(0, 5, size=len(y))
+scores = cross_val_score(model, X, y, cv=gkf, groups=groups, scoring=&#39;accuracy&#39;)
+print(f&#39;Average Accuracy (Group K-Fold): {np.mean(scores):.4f}&#39;)
+</code></pre><h2 id="-faqs"><a href="#faqs"><strong>💡 FAQs</strong></a><a href="#faqs"></a></h2>
+<h3 id="how-to-run-k-fold-cross-validation-in-python"><a href="#how-to-run-k-fold-cross-validation-in-python"><strong>How to run K-Fold Cross-Validation in Python?</strong></a><a href="#how-to-run-k-fold-cross-validation-in-python"></a></h3>
+<p>Use <code>cross_val_score()</code> from <code>scikit-learn</code> with <code>KFold</code> as the <code>cv</code> parameter.</p>
+<h3 id="whats-the-difference-between-k-fold-and-stratified-k-fold"><a href="#what-s-the-difference-between-k-fold-and-stratified-k-fold"><strong>What’s the difference between K-Fold and Stratified K-Fold?</strong></a><a href="#what-s-the-difference-between-k-fold-and-stratified-k-fold"></a></h3>
+<p>K-Fold randomly splits data, whereas Stratified K-Fold maintains class balance in each fold.</p>
+<h3 id="how-do-i-choose-the-right-number-of-folds"><a href="#how-do-i-choose-the-right-number-of-folds"><strong>How do I choose the right number of folds?</strong></a><a href="#how-do-i-choose-the-right-number-of-folds"></a></h3>
+<ul>
+<li><strong>5- or 10-fold</strong> is standard for most cases.</li>
+<li><strong>Higher folds (e.g., 20)</strong> reduce bias but increase computation time.</li>
+</ul>
+<h3 id="what-does-the"><a href="#what-does-the-kfold-class-do-in-python"><strong>What does the <code>KFold</code> class do in Python?</strong></a><a href="#what-does-the-kfold-class-do-in-python"></a></h3>
+<p>It divides the dataset into <code>n_splits</code> folds for training and validation.</p>
+<h2 id="-conclusion"><a href="#conclusion">🔚 Conclusion</a><a href="#conclusion"></a></h2>
+<p>To ensure that any <a href="/community/tutorials/an-introduction-to-machine-learning">machine learning model</a> that you are building performs best when provided with unseen data. Cross-validation becomes a crucial step to make the model reliable. –Fold cross-validation is one of the best ways to make sure that the model does not overfit the training data, hence maintaining the <a href="/community/tutorials/pytorch-101-advanced">bias-variance</a> tradeoff. Dividing the data into different folds and training and validating the model iteratively through each phase provides a better estimate of how the model will perform when provided withan unknown dataset.</p>
+<p>In Python, implementing K-Fold Cross-Validation is straightforward using libraries like <code>scikit-learn</code>, which offers <code>KFold</code> and <code>StratifiedKFold</code> for handling imbalanced datasets. Integrating K-Fold Cross-Validation into your workflow allows you to fine-tune hyperparameters effectively, compare models with confidence, and enhance generalization for real-world applications.</p>
+<p>Whether building a regression, classification, or deep learning models, this validation approach is a key component for machine learning pipelines.</p>
+<h2 id="references"><a href="#references">References</a><a href="#references"></a></h2>
+<ul>
+<li><a href="https://machinelearningmastery.com/k-fold-cross-validation/">A Gentle Introduction to k-fold Cross-Validation</a></li>
+<li><a href="https://www.datacamp.com/tutorial/k-fold-cross-validation">A Comprehensive Guide to K-Fold Cross Validation</a></li>
+<li><a href="https://www.analyticsvidhya.com/blog/2022/02/k-fold-cross-validation-technique-and-its-essentials/">K-Fold Cross Validation Technique and its Essentials</a></li>
+<li><a href="/community/tutorials/how-to-build-a-deep-learning-model-to-predict-employee-retention-using-keras-and-tensorflow">How To Build a Deep Learning Model to Predict Employee Retention Using Keras and TensorFlow</a></li>
+</ul>
+<h4 id="source"><a href="https://www.digitalocean.com/community/tutorials/k-fold-cross-validation-python">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

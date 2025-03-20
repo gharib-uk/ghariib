@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>A Primer on Disassembling Function Calls and Understanding Stack Frames in x86</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>A Primer on Disassembling Function Calls and Understanding Stack Frames in x86</h1>
+			<b><time>14.09.2015 20:57</time></b>
+		       
+
+			<div>
+				<h1 id="a-primer-on-disassembling-function-calls-and-understanding-stack-frames-in-x86">A Primer on Disassembling Function Calls and Understanding Stack Frames in x86</h1>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>It seems that the generalist will likely go the way of the dinosaur as more specializations  and greater levels of complexity emerge (consequently requiring more ingenuity by a practitioner in any given area). This trend is observable in security firms that now segregate employees in increasing numbers of disparate groups with narrowing focus. Thomas Dixon began writing about this concept back in 1992 and I feel Andrew McAfee and Erik Brynjolfsson have helped to rejuvenate the discussion in recent years. </p>
+<p>So why invest several months studying material in this area? I don&rsquo;t hunt bugs or sell exploit code for a living. Surely, this is an inefficient use of time.</p>
+<p>There are a few reasons. Although I do not hunt bugs or write my own exploit code on a daily basis, I am highly dependent on those who do. The Vulnerability Scan that I run uses signatures identified by researchers that relate to specific software flaws. The Exploitation Framework that I employ requires exploit and shell code. Dependency can often feel like subordination. Your success, failure and innovation may be stifled or limited by that which you are dependent on. This is true in many aspects of life, but demonstrably more-so in engineering-centric careers. To achieve true independence, and thus freedom, we have to attack knowledge dependencies. </p>
+<p>The material I am presenting here is nothing revelatory and is likely explained better and more thoroughly somewhere else. Nonetheless, I am documenting it as part of my ongoing learning efforts and hope that it may help clarify the subject for others. This is not a comprehensive introduction to assembly language and assumes some basic knowledge.</p>
+<p>Deciphering assembly is tedious at the best of times. The expressions feel archaic and are not designed with legibility in mind. Someone who is new to exploit development and reverse engineering will often feel lost while stepping through a sequence of instructions. Demystifying assembly is largely a matter of interpreting instruction set definitions and recognizing patterns that you can translate to familiar high level language concepts. There are a number of patterns or routines that become apparent the more time you spend in a debugger. Perhaps the most frequent occurrence is the function call. </p>
+<p>A function call is executed when a program wishes to pass execution from the named application entry point (commonly known as main) or another function to a specific sub-routine.  A function may contain parameters and local variables. A number of things must occur for an application to successfully execute a function call and pass execution to the set of instructions contained therein. This set of tasks is referred to as the function prologue. </p>
+<p>The prologue stores values on and prepares the stack so that the function can execute it&rsquo;s instructions. It will also save reference points that give the application the ability to return from the function to the previous location in memory that executed the function call. </p>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgeEbgC3T-mYFXT6icgSl1ku-R03AqCC48RdGhdCJJ4VtRjrT_syT8mS8e8dpsLrX1cgg0suPwUsn1wioFJKbJwjpcACWVDXpP17tQSEDhreJQCUi2hQ12S3I602NpSkskX2JcN1uACStI/s1600/functions1.PNG">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgeEbgC3T-mYFXT6icgSl1ku-R03AqCC48RdGhdCJJ4VtRjrT_syT8mS8e8dpsLrX1cgg0suPwUsn1wioFJKbJwjpcACWVDXpP17tQSEDhreJQCUi2hQ12S3I602NpSkskX2JcN1uACStI/s320/functions1.PNG" alt="" />
+</figure>
+
+
+</a></p>
+<p>In this image we can see that our application has reached an instruction that will transfer control to some function. This is evident by the existence of the CALL instruction. The CALL itself does two things:</p>
+<ol>
+<li>Push the contents of EIP + the byte length of the current command. This is done to preserve the contents of the return address location on the stack.</li>
+<li>Execute a JMP to the location of the function we are calling so as to transfer execution flow. </li>
+</ol>
+<p>In the main thread we can see that the CALL instruction is located at memory offset 00401143 and is 5 bytes in length. The value of EIP  + 5 is pushed onto the stack as this is the location of the next instruction in main. EIP is then loaded with the address of our function and a JMP is executed and we step into this function.</p>
+<p><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjBVpY4nFFcvGQaJMgtPs6-sH18jK0MSeMiIi-i2tQWrK7B6PcY0LGhV2C-G0qDtd41UoSas32vsB0SsmrcEi-7UMsaCKIvsJ_kI-zc7CNwue-1Qsgyy09sWSG6pNcNpnCdYlSV2razjOI/s1600/functions2.PNG">
+<figure>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjBVpY4nFFcvGQaJMgtPs6-sH18jK0MSeMiIi-i2tQWrK7B6PcY0LGhV2C-G0qDtd41UoSas32vsB0SsmrcEi-7UMsaCKIvsJ_kI-zc7CNwue-1Qsgyy09sWSG6pNcNpnCdYlSV2razjOI/s320/functions2.PNG" alt="" />
+</figure>
+
+
+</a></p>
+<p>Execution flow is transferred to memory offset 00401020 (the prior address that was loaded into EIP which contains the start of the functions prologue). The prologue will almost always execute the following two instructions:</p>
+<ol>
+<li>PUSH EBP</li>
+<li>MOV EBP, ESP</li>
+</ol>
+<p>EBP is the base pointer for the stack. It contains the static relative base location on the stack for our current frame and can be used to reference parameters that were pushed onto the stack or local variables contained within the current frame. ESP is the stack pointer and points to the top of the stack. It allows us to push and pop data off of the stack. EBP is pushed onto the stack to ensure that we have a base value that can be referenced when manipulating variables and values for the instructions contained within our function. The value of ESP is then moved into EBP to ensure that EBP points to the top of the stack.  </p>
+<p>A PUSH command can be thought of as two consecutive events:</p>
+<ol>
+<li>SUB ESP, 4 - ESP is decremented by 4 bytes (as stack addressing grows downwards) to ensure that it points to a new location at the &rsquo;top&rsquo; of the stack.</li>
+<li>MOV [ESP], X - our value is moved into this new location.</li>
+</ol>
+<p>A POP instruction will decrement ESP by 4 bytes.</p>
+<p>It is also common to encounter a SUB ESP, X instruction in the function prologue. </p>
+<p>Consider the following function call:</p>
+<blockquote>
+<p><em>void ExampleFunction()<br>
+{<br>
+     int a, b;<br>
+}</em></p></blockquote>
+<p>In this case our function has two local variables. To create space on the stack we would subtract 8 from ESP to grow our address space downward 8 bytes (enough space to store the memory offset for our two local variables). </p>
+<p>If parameters are passed to the function then they are pushed onto the stack in reverse order prior to the function call itself being executed. This infers that EBP + some offset can be used to reference function parameters and EBP - some offset can reference local values (alternatively one may simply utilize ESP).</p>
+<p>The function epilogue is simply the inverse of the prologue:</p>
+<ol>
+<li>MOV ESP, EBP - Revert ESP to its prior value to free space on the stack.</li>
+<li>POP EBP - Restore EBP to its prior value.</li>
+<li>RET X - Execute a RET command to return to the prior calling function or main thread</li>
+</ol>
+<p>RET can simply be thought of as a JMP to the value of EIP + calling function byte length that was pushed onto the stack prior to jumping to our function. After our function prologue is unwound we refer to this value to hop back to the next instruction address from our calling thread.  </p>
+<p>Although there are compiler specific calling conventions that may introduce additional instructions, this summary should provide you with the information to recognize and interpret function calls in assembly. </p>
+<p>I may do a series that focuses on identifying and interpreting common high-level language expressions in assembly as I continue to dive into this material. Let me know if you have comments or feedback.</p>
+<p>Related Links:</p>
+<p><a href="http://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-manual-325462.pdf">http://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-manual-325462.pdf</a></p>
+<h4 id="source"><a href="https://www.redblue.team/feeds/6689113948803995866/comments/default">Source</a></h4>
+<!-- raw HTML omitted -->
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				
+				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				
+				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				
+				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				
+				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

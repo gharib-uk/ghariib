@@ -1,11 +1,11 @@
 ---
 title: "How to create a virtual machine for Windows 11 using VMware Workstation Player 17"
-date: 2025-03-19
+date: 2025-01-12
 categories: 
   - "microsoft"
-  - "tech-work"
-  - "virtual-machine"
   - "virtualization"
+tags: 
+  - "virtual-machine"
   - "vmware-workstation-player"
   - "windows-11"
 ---

@@ -1,6 +1,6 @@
 ---
 title: "OpenCTF : Do The Needful"
-date: 2025-03-19
+date: 2025-01-15
 categories: 
   - "general"
 ---
@@ -78,3 +78,5 @@ Hmm, looks like hex encoding. I just run a simple one-liner in the Python interp
 # Flag
 
 **Flag{ew7328hf8esgh9f23g}**
+
+Go to Source
