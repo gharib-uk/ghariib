@@ -1,0 +1,32 @@
+permissions:
+  contents: write
+name: RSS Feed to Markdown
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  convert_feeds:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run RSS Feed to Markdown Action
+        uses: keiranlovett/rss-feed-to-markdown@v1.2.0
+        with:
+          feed_urls_file: 'feeds_url.txt'
+          template_file: 'tmpl/template.md'
+          output_dir: 'content/posts/'
+      - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add posts/
+          git commit -m "Update RSS feed posts" || echo "No changes to commit"
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/Gharib110/rss-to-md.git main
