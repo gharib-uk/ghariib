@@ -19,7 +19,7 @@ Today we introduce a new tool, XRefer (pronounced eks\-reffer), which aims to sh
 
 aside\_block
 
-<ListValue: \[StructValue(\[('title', 'Get XRefer now!'), ('body', <wagtail.rich\_text.RichText object at 0x3ead4774bd00>), ('btn\_text', 'Download'), ('href', 'https://github.com/mandiant/xrefer'), ('image', None)\])\]>
+<ListValue: \[StructValue(\[('title', 'Get XRefer now!'), ('body', <wagtail.rich\_text.RichText object at 0x3ead3d97c220>), ('btn\_text', 'Download'), ('href', 'https://github.com/mandiant/xrefer'), ('image', None)\])\]>
 
 Introduction
 ------------
