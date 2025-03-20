@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ &lt;p&gt;Are you interested in incorporating Large Language Models (LLMs) into app tests yet lack the tooling to get you there? This blog walks through how to start using effective LLM attacks today.&lt;/p&gt; 
+<br/>
 <p>Are you interested in incorporating Large Language Models (LLMs) into app tests yet lack the tooling to get you there? This blog walks through how to start using effective LLM attacks today.</p>
 
 #### [Source](https://trustedsec.com/blog/getting-started-using-llms-in-application-testing-with-an-mvp)

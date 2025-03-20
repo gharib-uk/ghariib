@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ China-Linked Silk Typhoon Expands Cyber Attacks to IT Supply Chains for Initial Access 
+<br/>
 ### China-Linked Silk Typhoon Expands Cyber Attacks to IT Supply Chains for Initial Access
 
 ![](https://upload.cvefeed.io/news/33603/thumbnail.jpg)

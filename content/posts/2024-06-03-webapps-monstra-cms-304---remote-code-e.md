@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 Monstra CMS 3.0.4 - Remote Code Execution (RCE)
+<br/>
+Monstra CMS 3.0.4 - Remote Code Execution (RCE)
 
 #### [Source](https://www.exploit-db.com/exploits/52038)
 

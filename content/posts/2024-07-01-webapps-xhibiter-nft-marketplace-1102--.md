@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 Xhibiter NFT Marketplace 1.10.2 - SQL Injection
+<br/>
+Xhibiter NFT Marketplace 1.10.2 - SQL Injection
 
 #### [Source](https://www.exploit-db.com/exploits/52060)
 

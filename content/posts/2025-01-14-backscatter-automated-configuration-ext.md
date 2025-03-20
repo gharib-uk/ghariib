@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Written by: Josh Triplett Executive Summary Backscatter is a tool developed by the Mandiant FLARE team that aims to automatically extract malware configurations. It relies on static signatures and emulation to extract this information without dynamic execution, bypassing anti-analysis logic present in many modern families. This complements dynamic analysis, providing faster threat
+<br/>
 Written by: Josh Triplett
 
 * * *

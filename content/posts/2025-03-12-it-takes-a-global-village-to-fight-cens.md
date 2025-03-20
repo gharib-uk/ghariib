@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ It's World Day Against Cyber Censorship, a great occasion to remind ourselves of the early optimism surrounding the internet. Once envisioned as a force
+<br/>
   ![](https://blog.torproject.org/fighting-censorship-with-webtunnel/lead.png)
 
 It's [World Day Against Cyber Censorship](https://en.wikipedia.org/wiki/World_Day_Against_Cyber_Censorship), a great occasion to remind ourselves of the early optimism surrounding the internet. Once envisioned as a force for global connection and free-flowing information, the internet has instead (d)evolved into a place where access to knowledge and privacy are increasingly under threat. Big Tech has monopolized its infrastructure, and governments all over the world are too eager to capitalize.

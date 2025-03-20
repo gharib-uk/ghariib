@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Written by: Steven Karschnia, Truman Brown, Jacob Paullus, Daniel McNamara Executive Summary Due to their client-side nature, single-page applications (SPAs) will typically have multiple access control vulnerabilities By implementing a robust access control policy on supporting APIs, the risks associated with client-side rendering can be largely mitigated Using server-side rendering within the SPA can prevent
+<br/>
 Written by: Steven Karschnia, Truman Brown, Jacob Paullus, Daniel McNamara
 
 * * *

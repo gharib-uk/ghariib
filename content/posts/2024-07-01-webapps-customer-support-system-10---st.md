@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 Customer Support System 1.0 - Stored XSS
+<br/>
+Customer Support System 1.0 - Stored XSS
 
 #### [Source](https://www.exploit-db.com/exploits/52057)
 

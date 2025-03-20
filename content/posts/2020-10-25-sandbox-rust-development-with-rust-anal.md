@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+A little over a year ago, I created a simple python script for sandboxing Rust development using Docker. It’s called saferrust. You basically copy it into your PATH, name it “cargo” and pretend like you have the real cargo application installed. It pulls down the latest offical Rust docker image
+<br/>
 A little over a year ago, I created a simple python script for sandboxing Rust development using Docker. It’s called [saferrust](https://gitlab.com/mikecardwell/saferrust). You basically copy it into your PATH, name it “cargo” and pretend like you have the real cargo application installed. It pulls down the [latest offical Rust docker image from dockerhub](https://hub.docker.com/_/rust), mounts your CWD into it and then runs your cargo commands inside the docker container. I did this basically because I wanted to secure my homedir against potentially malicious packages on [crates.io](https://crates.io/) during development. If you want to know more about it, [check out the project on gitlab](https://gitlab.com/mikecardwell/saferrust).
 
 To be honest, I haven’t done much Rust development since then, so there are probably a bunch of pain points that I’ve not handled. I’m starting a new project though, and thought I’d try out the language server [rust-analyzer](https://github.com/rust-analyzer/rust-analyzer) as I’ve heard good things about it.

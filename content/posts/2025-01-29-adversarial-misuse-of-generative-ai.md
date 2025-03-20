@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Rapid advancements in artificial intelligence (AI) are unlocking new possibilities for the way we work and accelerating innovation in science, technology, and beyond. In cybersecurity, AI is poised to transform digital defense, empowering defenders and enhancing our collective security. Large language models (LLMs) open new possibilities for defenders, from sifting
+<br/>
 Rapid advancements in artificial intelligence (AI) are unlocking new possibilities for the way we work and accelerating innovation in [science](https://deepmind.google/technologies/alphafold/), [technology](https://deepmind.google/discover/blog/how-alphachip-transformed-computer-chip-design/), and beyond. In cybersecurity, AI is poised to transform digital defense, [empowering defenders and enhancing our collective security](https://blog.google/technology/safety-security/google-ai-cyber-defense-initiative/). Large language models (LLMs) open new possibilities for defenders, from sifting through complex telemetry to [secure coding](https://cloud.google.com/products/gemini/code-assist), [vulnerability](https://googleprojectzero.blogspot.com/2024/10/from-naptime-to-big-sleep.html) [discovery](https://security.googleblog.com/2024/11/leveling-up-fuzzing-finding-more.html), and streamlining operations. However, some of these same AI capabilities are also available to attackers, leading to understandable anxieties about the potential for AI to be misused for malicious purposes. 
 
 Much of the current discourse around cyber threat actors' misuse of AI is confined to theoretical research. While these studies demonstrate the potential for malicious exploitation of AI, they don't necessarily reflect the reality of how AI is currently being used by threat actors in the wild. To bridge this gap, we are sharing a comprehensive analysis of how threat actors interacted with Google's AI-powered assistant, Gemini. Our analysis was grounded by the expertise of Google's Threat Intelligence Group (GTIG), which combines decades of experience tracking threat actors on the front lines and protecting Google, our users, and our customers from government-backed attackers, targeted 0-day exploits, coordinated information operations (IO), and serious cyber crime networks.
@@ -17,7 +19,7 @@ We believe the private sector, governments, educational institutions, and other 
 
 aside\_block
 
-<ListValue: \[StructValue(\[('title', 'Adversarial Misuse of Generative AI'), ('body', <wagtail.rich\_text.RichText object at 0x3ead438ad100>), ('btn\_text', 'Download now'), ('href', 'https://services.google.com/fh/files/misc/adversarial-misuse-generative-ai.pdf'), ('image', <GAEImage: adversarial gen AI cover>)\])\]>
+<ListValue: \[StructValue(\[('title', 'Adversarial Misuse of Generative AI'), ('body', <wagtail.rich\_text.RichText object at 0x3eda932ba1c0>), ('btn\_text', 'Download now'), ('href', 'https://services.google.com/fh/files/misc/adversarial-misuse-generative-ai.pdf'), ('image', <GAEImage: adversarial gen AI cover>)\])\]>
 
 Executive Summary
 -----------------

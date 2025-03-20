@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Learn three initial efforts for defending against ransomware in this informative SEI Blog post.
+<br/>
 
 
 #### [Source](https://insights.sei.cmu.edu/blog/three-places-to-start-in-defending-against-ransomware/)

@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Written by: Joshua Goddard Executive Summary Rosetta 2 is Apple's translation technology for running x86-64 binaries on Apple Silicon (ARM64) macOS systems. Rosetta 2 translation creates a cache of Ahead-Of-Time (AOT) files that can serve as valuable forensic artifacts. Mandiant has observed sophisticated threat actors leveraging x86-64 compiled macOS malware, likely due to broader
+<br/>
 Written by: Joshua Goddard
 
 * * *

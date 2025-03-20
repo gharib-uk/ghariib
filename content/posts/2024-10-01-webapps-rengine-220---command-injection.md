@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 reNgine 2.2.0 - Command Injection (Authenticated)
+<br/>
+reNgine 2.2.0 - Command Injection (Authenticated)
 
 #### [Source](https://www.exploit-db.com/exploits/52081)
 

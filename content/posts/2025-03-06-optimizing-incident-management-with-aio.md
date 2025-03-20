@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+In this blog, we’ll dive into how large language models, generative AI, and the Triangle System help us leverage automation and feedback loops for more efficient incident management. The post Optimizing incident management with AIOps using the Triangle System appeared first on Microsoft Azure Blog. 
+<br/>
 In this blog, we’ll dive into how large language models, generative AI, and the Triangle System help us leverage automation and feedback loops for more efficient incident management.
 
 The post [Optimizing incident management with AIOps using the Triangle System](https://azure.microsoft.com/en-us/blog/optimizing-incident-management-with-aiops-using-the-triangle-system/) appeared first on [Microsoft Azure Blog](https://azure.microsoft.com/en-us/blog).

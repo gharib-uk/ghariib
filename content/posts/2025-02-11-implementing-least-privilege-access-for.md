@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Generative AI applications often involve a combination of various services and features—such as Amazon Bedrock and large language models (LLMs)—to generate content and to access potentially confidential data. This combination requires strong identity and access management controls and is special in the sense that those controls need to be applied
+<br/>
 Generative AI applications often involve a combination of various services and features—such as Amazon Bedrock and large language models (LLMs)—to generate content and to access potentially confidential data. This combination requires strong identity and access management controls and is special in the sense that those controls need to be applied on various levels. In this \[…\]
 
 #### [Source](https://aws.amazon.com/blogs/security/implementing-least-privilege-access-for-amazon-bedrock/)

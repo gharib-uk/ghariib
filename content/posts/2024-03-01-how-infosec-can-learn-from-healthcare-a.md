@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 Exploring how infosec can evolve by adopting healthcare's efficiency and aviation's structured approaches to enhance security practices
+<br/>
+Exploring how infosec can evolve by adopting healthcare's efficiency and aviation's structured approaches to enhance security practices
 
 #### [Source](https://blog.anantshri.info/how-infosec-can-learn-from-healthcare-and-aviation/)
 

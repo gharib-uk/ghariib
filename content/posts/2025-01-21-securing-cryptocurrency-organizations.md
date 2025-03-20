@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Written by: Joshua Goddard The Rise of Crypto Heists and the Challenges in Preventing Them Cryptocurrency crime encompasses a wide range of illegal activities, from theft and hacking to fraud, money laundering, and even terrorist financing, all exploiting the unique characteristics of digital currencies. Cryptocurrency heists, specifically, refer to the large-scale theft
+<br/>
 Written by: Joshua Goddard
 
 * * *

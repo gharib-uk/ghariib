@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ China's Silk Typhoon, tied to US Treasury break-in, now hammers IT and govt targets 
+<br/>
 ### China's Silk Typhoon, tied to US Treasury break-in, now hammers IT and govt targets
 
 ![](https://upload.cvefeed.io/news/33654/thumbnail.jpg)

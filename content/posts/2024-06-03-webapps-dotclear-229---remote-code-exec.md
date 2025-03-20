@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 Dotclear 2.29 - Remote Code Execution (RCE)
+<br/>
+Dotclear 2.29 - Remote Code Execution (RCE)
 
 #### [Source](https://www.exploit-db.com/exploits/52037)
 

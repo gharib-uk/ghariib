@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 PHP < 8.3.8 - Remote Code Execution (Unauthenticated) (Windows)
+<br/>
+PHP < 8.3.8 - Remote Code Execution (Unauthenticated) (Windows)
 
 #### [Source](https://www.exploit-db.com/exploits/52047)
 

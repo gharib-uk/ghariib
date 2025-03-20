@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 A new book co-authored by Siena Anstis, senior legal advisor at The Citizen Lab, is now available for purchase. Transnational Repression and International Law explores the rise of state-sponsored extraterritorial killings and the implications for international law. Order your copy here.
+<br/>
+A new book co-authored by Siena Anstis, senior legal advisor at The Citizen Lab, is now available for purchase. Transnational Repression and International Law explores the rise of state-sponsored extraterritorial killings and the implications for international law. Order your copy here.
 
 #### [Source](https://citizenlab.ca/2025/03/book-release-transnational-repression-and-international-law/)
 

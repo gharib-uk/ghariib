@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ Hunters International claims Tata Technologies attack 
+<br/>
 ### Hunters International claims Tata Technologies attack
 
 ![](https://upload.cvefeed.io/news/33693/thumbnail.jpg)

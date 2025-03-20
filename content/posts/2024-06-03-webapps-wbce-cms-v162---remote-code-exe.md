@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 WBCE CMS v1.6.2 - Remote Code Execution (RCE)
+<br/>
+WBCE CMS v1.6.2 - Remote Code Execution (RCE)
 
 #### [Source](https://www.exploit-db.com/exploits/52039)
 

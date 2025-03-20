@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Devika v1 - Path Traversal via 'snapshot_path'
+<br/>
 Devika v1 - Path Traversal via 'snapshot\_path'
 
 #### [Source](https://www.exploit-db.com/exploits/52066)

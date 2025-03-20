@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Raven is another boot2root challenge currently available for download at VulnHub. One of the cool things about Raven is it’s actually kind of realistic and a fairly easy challenge, which makes it a great boot2root for learning how to hack. I had been wanting to do a sort of tutorial
+<br/>
 [Raven](https://www.vulnhub.com/entry/raven-1,256/) is another boot2root challenge currently available for download at [VulnHub](https://vulnhub.com/). One of the cool things about Raven is it’s actually kind of realistic and a fairly easy challenge, which makes it a great boot2root for learning how to hack. I had been wanting to do a sort of tutorial for beginners for a while now, and I think Raven is a good challenge to do this writeup on. So unlike my previous writeups where I just mention the tools or techniques I use to escalate to root privileges, I’ll spend more time in this one talking about my thought processes, and my failures. Just in case anyone thinks it takes me 5 minutes to solve these challenges, it doesn’t. There’s a lot of swearing, and red herrings along the way.
 
 According to Raven’s description, there are four flags to pick up. I’ve only found two, no idea where the other two are, but the focus of this tutorial will be to escalate to root privileges rather than hunting down flags. Also there’s more than one way to root this challenge. It turns out that the solution I came up with skipped a part of the challenge so I took the less scenic route.

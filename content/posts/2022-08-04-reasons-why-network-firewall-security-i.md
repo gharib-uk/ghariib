@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 Table of Contents What Is a Firewall? A Firewall Protects Your Company From Hackers A Firewall Enables Blocking of Unapproved Websites A Firewall Safeguards Your Company From Malicious Code A...
+<br/>
+Table of Contents What Is a Firewall? A Firewall Protects Your Company From Hackers A Firewall Enables Blocking of Unapproved Websites A Firewall Safeguards Your Company From Malicious Code A...
 
 #### [Source](https://cyberhunter.solutions/reasons-why-network-firewall-security-is-important-for-your-business/)
 

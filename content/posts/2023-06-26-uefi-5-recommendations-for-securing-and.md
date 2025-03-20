@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+This blog post expands on concerns brought to light from recent UEFI attacks, such as BlackLotus, and highlights 5 recommendations to secure and restore trust in the UEFI ecosystem.
+<br/>
 
 
 #### [Source](https://insights.sei.cmu.edu/blog/uefi-5-recommendations-for-securing-restoring-trust/)

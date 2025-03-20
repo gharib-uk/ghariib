@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ Forrester Research has recognized Cloudflare as a Leader in its The Forrester Wave™: Web Application Firewall Solutions, Q1 2025 report. 
+<br/>
 Forrester Research has recognized Cloudflare as a Leader in its The Forrester Wave™: Web Application Firewall Solutions, Q1 2025 report.
 
 #### [Source](https://blog.cloudflare.com/cloudflare-named-leader-waf-forrester-2025/)

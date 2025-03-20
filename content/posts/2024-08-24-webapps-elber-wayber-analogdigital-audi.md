@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 Elber Wayber Analog/Digital Audio STL 4.00 - Authentication Bypass
+<br/>
+Elber Wayber Analog/Digital Audio STL 4.00 - Authentication Bypass
 
 #### [Source](https://www.exploit-db.com/exploits/52071)
 

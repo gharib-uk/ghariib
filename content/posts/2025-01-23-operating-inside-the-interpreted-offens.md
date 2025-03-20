@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ &lt;p&gt;Discover how to use Python for malicious purposes on Windows, leveraging its ease of installation and existing tradecraft to evade detection and deploy malware payloads effectively.&lt;/p&gt; 
+<br/>
 <p>Discover how to use Python for malicious purposes on Windows, leveraging its ease of installation and existing tradecraft to evade detection and deploy malware payloads effectively.</p>
 
 #### [Source](https://trustedsec.com/blog/operating-inside-the-interpreted-offensive-python)

@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+You might run some websites behind Nginx on Debian 12 and you might find yourself wanting to block requests from Russian IPs. It’s trivial. Here’s how to do it: # apt install libnginx-mod-http-geoip # echo "geoip_country /usr/share/GeoIP/GeoIP.dat;" &gt; /etc/nginx/conf.d/geoip.conf # cat &lt;&lt; EOF &gt; /etc/nginx/cc-block.conf if ($geoip_country_code3 = "RUS") { rewrite
+<br/>
 You might run some websites behind Nginx on Debian 12 and you might find yourself wanting to block requests from Russian IPs. It’s trivial. Here’s how to do it:
 
 ```

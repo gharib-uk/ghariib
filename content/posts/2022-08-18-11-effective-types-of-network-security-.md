@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 Table of Contents Firewalls Network Segmentation Access Control Remote Access VPN Zero-Trust Network Access (ZTNA) Email Security Data Loss Prevention (DLP) Intrusion Prevention Systems (IPS) Sandboxing Hyperscale Network Security Cloud...
+<br/>
+Table of Contents Firewalls Network Segmentation Access Control Remote Access VPN Zero-Trust Network Access (ZTNA) Email Security Data Loss Prevention (DLP) Intrusion Prevention Systems (IPS) Sandboxing Hyperscale Network Security Cloud...
 
 #### [Source](https://cyberhunter.solutions/11-effective-types-of-network-security-protection/)
 

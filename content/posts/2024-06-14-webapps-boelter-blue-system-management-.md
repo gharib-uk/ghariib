@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 Boelter Blue System Management 1.3 - SQL Injection
+<br/>
+Boelter Blue System Management 1.3 - SQL Injection
 
 #### [Source](https://www.exploit-db.com/exploits/52052)
 

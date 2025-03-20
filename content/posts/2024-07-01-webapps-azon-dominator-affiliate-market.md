@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 Azon Dominator Affiliate Marketing Script - SQL Injection
+<br/>
+Azon Dominator Affiliate Marketing Script - SQL Injection
 
 #### [Source](https://www.exploit-db.com/exploits/52059)
 

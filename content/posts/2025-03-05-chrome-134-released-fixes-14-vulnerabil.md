@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ Chrome 134 Released, Fixes 14 Vulnerabilities That Could Crash the Browser 
+<br/>
 ### Chrome 134 Released, Fixes 14 Vulnerabilities That Could Crash the Browser
 
 ![](https://upload.cvefeed.io/news/33487/thumbnail.jpg)

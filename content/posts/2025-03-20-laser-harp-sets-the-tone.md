@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+In many ways, living here in the future is quite exiting. We have access to the world&#8217;s information instantaneously and can get plenty of exciting tools and hardware delivered to &#8230;read more
+<br/>
 ![](https://hackaday.com/wp-content/uploads/2025/03/laser-harp-main.png?w=800)
 
 In many ways, living here in the future is quite exiting. We have access to the world’s information instantaneously and can get plenty of exciting tools and hardware delivered to […read more](https://hackaday.com/2025/03/20/laser-harp-sets-the-tone/)

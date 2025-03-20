@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ Financially motivated hackers are behind an ongoing malicious campaign targeting Poland and Germany. These phishing attacks aim to deploy multiple payloads, including Agent Tesla, Snake Keylogger, and a novel backdoor dubbed TorNet, which is delivered via PureCrypter malware.&#160; Detect TorNet Backdoor A significant rise in phishing campaigns, with a 202%
+<br/>
 ![TorNet Backdoor Detection](https://socprime.com/wp-content/uploads/TorNet-Backdoor-400x234.jpg)
 
 Financially motivated hackers are behind an ongoing malicious campaign targeting Poland and Germany. These phishing attacks aim to deploy multiple payloads, including Agent Tesla, Snake Keylogger, and a novel backdoor dubbed TorNet, which is delivered via PureCrypter malware.  Detect TorNet Backdoor A significant rise in phishing campaigns, with a 202% increase in phishing messages over \[…\]

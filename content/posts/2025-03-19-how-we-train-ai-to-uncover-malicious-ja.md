@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ Learn more about how Cloudflare developed an AI model to uncover malicious JavaScript intent using a Graph Neural Network, from pre-processing data to inferencing at scale. 
+<br/>
 Learn more about how Cloudflare developed an AI model to uncover malicious JavaScript intent using a Graph Neural Network, from pre-processing data to inferencing at scale.
 
 #### [Source](https://blog.cloudflare.com/how-we-train-ai-to-uncover-malicious-javascript-intent-and-make-web-surfing-safer/)

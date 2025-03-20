@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 A short article exploring the NFC card ecosystem and how to reuse old discarded NFC Cards.
+<br/>
+A short article exploring the NFC card ecosystem and how to reuse old discarded NFC Cards.
 
 #### [Source](https://blog.anantshri.info/playing-with-nfc-cards/)
 

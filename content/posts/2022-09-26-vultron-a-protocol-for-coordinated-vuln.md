@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+This post introduces Vultron, a protocol for multi-party coordinated vulnerability disclosure (MPCVD).
+<br/>
 
 
 #### [Source](https://insights.sei.cmu.edu/blog/vultron-a-protocol-for-coordinated-vulnerability-disclosure/)

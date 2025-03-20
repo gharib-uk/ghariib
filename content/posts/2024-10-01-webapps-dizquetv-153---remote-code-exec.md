@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 dizqueTV 1.5.3 - Remote Code Execution (RCE)
+<br/>
+dizqueTV 1.5.3 - Remote Code Execution (RCE)
 
 #### [Source](https://www.exploit-db.com/exploits/52079)
 

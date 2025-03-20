@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Written by: Nino Isakovic Introduction Since 2022, Google Threat Intelligence Group (GTIG) has been tracking multiple cyber espionage operations conducted by China-nexus actors utilizing POISONPLUG.SHADOW. These operations employ a custom obfuscating compiler that we refer to as "ScatterBrain," facilitating attacks against various entities across Europe and the Asia Pacific (APAC) region. ScatterBrain
+<br/>
 Written by: Nino Isakovic
 
 * * *

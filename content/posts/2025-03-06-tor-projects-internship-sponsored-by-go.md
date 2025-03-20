@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ The Tor Project is excited to once again participate in Google Summer of Code, an annual program that connects new contributors with open-source projects
+<br/>
   ![](https://blog.torproject.org/tor-in-google-summer-of-code-mentorship/lead.png)
 
 The Tor Project is excited to once again participate in [Google Summer of Code](https://summerofcode.withgoogle.com/programs/2025/organizations/the-tor-project), an annual program that connects new contributors with open-source projects through funded internships. [Sponsored by Google](https://summerofcode.withgoogle.com/how-it-works), GSoC provides an opportunity for students and newcomers to gain hands-on experience while helping maintain and improve critical open-source software like Tor.

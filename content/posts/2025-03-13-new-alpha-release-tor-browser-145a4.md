@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ Tor Browser 14.5a4 is now available from the Tor Browser download page and also from our distribution directory. This version includes important security updates to
+<br/>
   ![](https://blog.torproject.org/new-alpha-release-tor-browser-145a4/lead.png)
 
 Tor Browser 14.5a4 is now available from the [Tor Browser download page](https://www.torproject.org/download/alpha/) and also from our [distribution directory](https://www.torproject.org/dist/torbrowser/14.5a4/).

@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ &lt;p&gt;Implementing requirements 6.4.3 and 11.6.1, or using a WAF to protect against script-based attacks, to meet PCI SSC&#039;s new eligibility criterion for SAQ A eCommerce merchants.&lt;/p&gt; 
+<br/>
 <p>Implementing requirements 6.4.3 and 11.6.1, or using a WAF to protect against script-based attacks, to meet PCI SSC's new eligibility criterion for SAQ A eCommerce merchants.</p>
 
 #### [Source](https://trustedsec.com/blog/the-hidden-trap-in-the-pci-dss-saq-a-changes)

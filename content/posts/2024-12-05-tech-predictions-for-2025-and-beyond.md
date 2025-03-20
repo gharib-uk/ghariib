@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 We've entered an era of unprecedented societal challenges and rapid technological advancements. Harnessing technology for good has become both an ethical imperative and a profitable endeavor. These are the areas where I see technology shaping society in 2025 and beyond—and it all starts with mission-driven work.
+<br/>
+We've entered an era of unprecedented societal challenges and rapid technological advancements. Harnessing technology for good has become both an ethical imperative and a profitable endeavor. These are the areas where I see technology shaping society in 2025 and beyond—and it all starts with mission-driven work.
 
 #### [Source](https://www.allthingsdistributed.com/2024/12/tech-predictions-for-2025-and-beyond.html?utm_campaign=inbound&utm_source=rss)
 

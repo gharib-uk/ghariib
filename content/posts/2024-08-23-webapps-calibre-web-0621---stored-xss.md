@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 Calibre-web 0.6.21 - Stored XSS
+<br/>
+Calibre-web 0.6.21 - Stored XSS
 
 #### [Source](https://www.exploit-db.com/exploits/52067)
 

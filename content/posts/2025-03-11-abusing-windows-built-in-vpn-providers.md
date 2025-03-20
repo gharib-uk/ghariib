@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ &lt;p&gt;Some interesting things happen when you connect to a virtual private network (VPN). One that recently caught my interest is updates to the routing table. Normally, a non-administrative Windows user can’t modify the…&lt;/p&gt; 
+<br/>
 <p>Some interesting things happen when you connect to a virtual private network (VPN). One that recently caught my interest is updates to the routing table. Normally, a non-administrative Windows user can’t modify the…</p>
 
 #### [Source](https://trustedsec.com/blog/abusing-windows-built-in-vpn-providers)

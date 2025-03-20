@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 openSIS 9.1 - SQLi (Authenticated)
+<br/>
+openSIS 9.1 - SQLi (Authenticated)
 
 #### [Source](https://www.exploit-db.com/exploits/52080)
 

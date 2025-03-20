@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Back in 2023, we first brought you word of the PiEEG: a low-cost Raspberry Pi based device designed for detecting and analyzing electroencephalogram (EEG) and other biosignals for the purposes &#8230;read more
+<br/>
 ![](https://hackaday.com/wp-content/uploads/2025/03/pieegkit_feat.jpg?w=800)
 
 Back in 2023, we first brought you word of the PiEEG: a low-cost Raspberry Pi based device designed for detecting and analyzing electroencephalogram (EEG) and other biosignals for the purposes […read more](https://hackaday.com/2025/03/20/pieeg-kit-is-a-self-contained-biosignal-laboratory/)

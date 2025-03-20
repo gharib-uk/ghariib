@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ &lt;p&gt;1.1 IntroductionIn this blog, I will explore Retrieval-Augmented Generation (RAG) and how it can be applied to research capabilities. RAG is a framework that integrates retrieval-based models with generative AI to…&lt;/p&gt; 
+<br/>
 <p>1.1      IntroductionIn this blog, I will explore Retrieval-Augmented Generation (RAG) and how it can be applied to research capabilities. RAG is a framework that integrates retrieval-based models with generative AI to…</p>
 
 #### [Source](https://trustedsec.com/blog/from-rags-to-riches-using-llms-and-rags-to-enhance-your-ops)

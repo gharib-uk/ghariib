@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ With Cloudflare for AI, developers, security teams and content creators can leverage Cloudflare’s network and portfolio of tools to secure, observe and make AI applications resilient and safe to use. 
+<br/>
 With Cloudflare for AI, developers, security teams and content creators can leverage Cloudflare’s network and portfolio of tools to secure, observe and make AI applications resilient and safe to use.
 
 #### [Source](https://blog.cloudflare.com/cloudflare-for-ai-supporting-ai-adoption-at-scale-with-a-security-first-approach/)

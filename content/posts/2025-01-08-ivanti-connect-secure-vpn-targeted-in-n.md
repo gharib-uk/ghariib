@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Written by: John Wolfram, Josh Murchie, Matt Lin, Daniel Ainsworth, Robert Wallace, Dimiter Andonov, Dhanesh Kizhakkinan, Jacob Thompson Note: This is a developing campaign under active analysis by Mandiant and Ivanti. We will continue to add more indicators, detections, and information to this blog post as needed. See the Changelog at
+<br/>
 Written by: John Wolfram, Josh Murchie, Matt Lin, Daniel Ainsworth, Robert Wallace, Dimiter Andonov, Dhanesh Kizhakkinan, Jacob Thompson
 
 * * *

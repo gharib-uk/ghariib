@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Written by: Ilyass El Hadi, Louis Dion-Marcil, Charles Prevost Executive Summary Whether through a comprehensive Red Team engagement or a targeted external assessment, incorporating application security (AppSec) expertise enables organizations to better simulate the tactics and techniques of modern adversaries. This includes: Leveraging minimal access for maximum impact: There is no need for high
+<br/>
 Written by: Ilyass El Hadi, Louis Dion-Marcil, Charles Prevost
 
 * * *

@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Executive Summary Cybercrime makes up a majority of the malicious activity online and occupies the majority of defenders' resources. In 2024, Mandiant Consulting responded to almost four times more intrusions conducted by financially motivated actors than state-backed intrusions. Despite this overwhelming volume, cybercrime receives much less attention from national security practitioners
+<br/>
 Executive Summary
 -----------------
 
@@ -22,7 +24,7 @@ Despite the overlaps in effects and collaboration with states, tackling the root
 
 aside\_block
 
-<ListValue: \[StructValue(\[('title', 'Cybercrime: A Multifaceted National Security Threat'), ('body', <wagtail.rich\_text.RichText object at 0x3ead439198e0>), ('btn\_text', 'Download now'), ('href', 'https://services.google.com/fh/files/misc/cybercrime-multifaceted-national-security-threat.pdf'), ('image', <GAEImage: cybercrime-cover>)\])\]>
+<ListValue: \[StructValue(\[('title', 'Cybercrime: A Multifaceted National Security Threat'), ('body', <wagtail.rich\_text.RichText object at 0x3eda937865b0>), ('btn\_text', 'Download now'), ('href', 'https://services.google.com/fh/files/misc/cybercrime-multifaceted-national-security-threat.pdf'), ('image', <GAEImage: cybercrime-cover>)\])\]>
 
 Stand-Alone Cybercrime is a Threat to Countries' National Security
 ------------------------------------------------------------------
@@ -242,7 +244,7 @@ If a single ransomware-as-a-service provider is taken down, many others are alre
 
 aside\_block
 
-<ListValue: \[StructValue(\[('title', 'The Evolution of Cybercrime'), ('body', <wagtail.rich\_text.RichText object at 0x3ead43919940>), ('btn\_text', 'Watch now'), ('href', 'https://www.youtube.com/watch?v=NtANWZPHUak'), ('image', <GAEImage: evolution of cybercrime>)\])\]>
+<ListValue: \[StructValue(\[('title', 'The Evolution of Cybercrime'), ('body', <wagtail.rich\_text.RichText object at 0x3eda93786640>), ('btn\_text', 'Watch now'), ('href', 'https://www.youtube.com/watch?v=NtANWZPHUak'), ('image', <GAEImage: evolution of cybercrime>)\])\]>
 
 About the Authors
 -----------------

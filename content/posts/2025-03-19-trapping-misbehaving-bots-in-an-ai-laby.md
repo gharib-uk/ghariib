@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ How Cloudflare uses generative AI to slow down, confuse, and waste the resources of AI Crawlers and other bots that don’t respect “no crawl” directives. 
+<br/>
 How Cloudflare uses generative AI to slow down, confuse, and waste the resources of AI Crawlers and other bots that don’t respect “no crawl” directives.
 
 #### [Source](https://blog.cloudflare.com/ai-labyrinth/)

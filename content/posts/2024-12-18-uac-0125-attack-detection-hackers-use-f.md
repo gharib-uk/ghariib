@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ Hard on the heels of the cyber-espionage campaign by UAC-0099 via the phishing attack vector, another hacking collective has evolved in the cyber threat arena to target Ukrainian organizations. CERT-UA notifies defenders about the discovery of fake websites that mimic the official page of the &#8220;Army+&#8221; application and are hosted
+<br/>
 ![](https://socprime.com/wp-content/uploads/UAC-0125-2-400x234.jpg)
 
 Hard on the heels of the cyber-espionage campaign by UAC-0099 via the phishing attack vector, another hacking collective has evolved in the cyber threat arena to target Ukrainian organizations. CERT-UA notifies defenders about the discovery of fake websites that mimic the official page of the “Army+” application and are hosted using the Cloudflare Workers service. \[…\]

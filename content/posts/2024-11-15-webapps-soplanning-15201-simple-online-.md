@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 SOPlanning 1.52.01 (Simple Online Planning Tool) - Remote Code Execution (RCE) (Authenticated)
+<br/>
+SOPlanning 1.52.01 (Simple Online Planning Tool) - Remote Code Execution (RCE) (Authenticated)
 
 #### [Source](https://www.exploit-db.com/exploits/52082)
 

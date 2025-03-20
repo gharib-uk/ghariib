@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+I recently discovered that after upgrading my various Debian based devices, I’m now using a version of OpenSSH (&gt;=6.7) which supports GPG Agent Forwarding - https://wiki.gnupg.org/AgentForwarding. In Debian Stretch, systemd is involved with running gpg-agent and sockets are automatically created in /run/user/$UID/gnupg/ where $UID is the uid of the user you’re
+<br/>
 I recently discovered that after upgrading my various Debian based devices, I’m now using a version of OpenSSH (>=6.7) which supports GPG Agent Forwarding - [https://wiki.gnupg.org/AgentForwarding](https://wiki.gnupg.org/AgentForwarding).
 
 In Debian Stretch, systemd is involved with running gpg-agent and sockets are automatically created in /run/user/$UID/gnupg/ where $UID is the uid of the user you’re using. So when I want to forward my gpg-agent to “server.example.com”, I just add the following to my ~/.ssh/config file:

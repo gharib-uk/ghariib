@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ Today we are excited to announce support for Zero Trust datasets, and custom dashboards where customers can monitor critical metrics for suspicious or unusual activity. 
+<br/>
 Today we are excited to announce support for Zero Trust datasets, and custom dashboards where customers can monitor critical metrics for suspicious or unusual activity.
 
 #### [Source](https://blog.cloudflare.com/monitoring-and-forensics/)

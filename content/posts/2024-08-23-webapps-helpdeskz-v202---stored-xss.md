@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 Helpdeskz v2.0.2 - Stored XSS
+<br/>
+Helpdeskz v2.0.2 - Stored XSS
 
 #### [Source](https://www.exploit-db.com/exploits/52068)
 

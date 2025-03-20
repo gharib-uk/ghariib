@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 Microweber 2.0.15 - Stored XSS
+<br/>
+Microweber 2.0.15 - Stored XSS
 
 #### [Source](https://www.exploit-db.com/exploits/52058)
 

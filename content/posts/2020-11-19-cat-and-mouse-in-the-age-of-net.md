@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+This SEI Blog post explores evolving .NET threat landscape with challenges faced by red and blue teams and suggests ways to stay ahead of attackers.
+<br/>
 
 
 #### [Source](https://insights.sei.cmu.edu/blog/cat-and-mouse-age-net/)

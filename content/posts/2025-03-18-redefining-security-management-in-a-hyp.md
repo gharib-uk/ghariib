@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 Cisco is bringing Secure Workload, Secure Access, and AI Defense into Security Cloud control, enhancing its capabilities and providing comprehensive management.
+<br/>
+Cisco is bringing Secure Workload, Secure Access, and AI Defense into Security Cloud control, enhancing its capabilities and providing comprehensive management.
 
 #### [Source](https://blogs.cisco.com/security/redefining-security-management-in-a-hyperconnected-world)
 

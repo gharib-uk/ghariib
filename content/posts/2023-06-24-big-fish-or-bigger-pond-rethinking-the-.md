@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 Challenging the status quo in tech: Could a future with numerous smaller, cooperative organisations be more beneficial than a handful of giants dominating the scene? Unity in diversity - perhaps it's time for a change
+<br/>
+Challenging the status quo in tech: Could a future with numerous smaller, cooperative organisations be more beneficial than a handful of giants dominating the scene? Unity in diversity - perhaps it's time for a change
 
 #### [Source](https://blog.anantshri.info/big-fish-or-bigger-pond-rethinking-the-future-of-tech-companies/)
 

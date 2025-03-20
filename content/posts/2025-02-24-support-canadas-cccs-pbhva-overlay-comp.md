@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Organizations seeking to adhere to the Canadian Centre for Cyber Security (CCCS) Protected B High Value Assets (PBHVA) overlay requirements can use the Landing Zone Accelerator (LZA) on AWS solution with the CCCS Medium configuration to accelerate their compliance journey. To further support customers, AWS recently collaborated with Coalfire to
+<br/>
 Organizations seeking to adhere to the Canadian Centre for Cyber Security (CCCS) Protected B High Value Assets (PBHVA) overlay requirements can use the Landing Zone Accelerator (LZA) on AWS solution with the CCCS Medium configuration to accelerate their compliance journey. To further support customers, AWS recently collaborated with Coalfire to assess and verify the LZA \[…\]
 
 #### [Source](https://aws.amazon.com/blogs/security/support-canadas-cccs-pbhva-overlay-compliance-with-the-landing-zone-accelerator-on-aws/)

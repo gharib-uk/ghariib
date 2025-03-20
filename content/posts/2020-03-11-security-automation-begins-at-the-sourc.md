@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Hi, this is Vijay Sarvepalli, Information Security Architect in the CERT Division. On what seemed like a normal day at our vulnerability coordination center, one of my colleagues asked me....
+<br/>
 
 
 #### [Source](https://insights.sei.cmu.edu/blog/security-automation-begins-at-the-source-code/)

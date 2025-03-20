@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+A decade ago, smartwatches were an unexplored avenue full of exotic promise. There were bleeding-edge and eye-wateringly expensive platforms from the likes of Samsung or Apple, but for the more &#8230;read more
+<br/>
 ![](https://hackaday.com/wp-content/uploads/2025/03/new-pebble-featured.jpg?w=800)
 
 A decade ago, smartwatches were an unexplored avenue full of exotic promise. There were bleeding-edge and eye-wateringly expensive platforms from the likes of Samsung or Apple, but for the more […read more](https://hackaday.com/2025/03/19/pick-up-a-pebble-again/)

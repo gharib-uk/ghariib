@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ We are closing the cleartext HTTP ports entirely for Cloudflare API traffic. This prevents the risk of clients unintentionally leaking their secret API keys in cleartext during the initial request. 
+<br/>
 We are closing the cleartext HTTP ports entirely for Cloudflare API traffic. This prevents the risk of clients unintentionally leaking their secret API keys in cleartext during the initial request.
 
 #### [Source](https://blog.cloudflare.com/https-only-for-cloudflare-apis-shutting-the-door-on-cleartext-traffic/)

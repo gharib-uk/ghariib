@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 VeeVPN 1.6.1 - Unquoted Service Path
+<br/>
+VeeVPN 1.6.1 - Unquoted Service Path
 
 #### [Source](https://www.exploit-db.com/exploits/52088)
 

@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 Cisco and Red Hat enhance AI and application modernization with new automation solutions, leveraging Ansible for seamless operations on Cisco UCS. Discover advanced capabilities for efficient infrastructure and data center management.
+<br/>
+Cisco and Red Hat enhance AI and application modernization with new automation solutions, leveraging Ansible for seamless operations on Cisco UCS. Discover advanced capabilities for efficient infrastructure and data center management.
 
 #### [Source](https://blogs.cisco.com/partner/enhancing-day-2-operations-with-cisco-compute-and-red-hat-ansible-automation)
 

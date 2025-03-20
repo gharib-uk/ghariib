@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+HackTheBox ran the Cyber Apocalypse CTF over a five day period. There were a lot of different challenges, but I joined for the sole purpose of just solving the Pwn category during my free time. Of the five challenges in the Pwn category, I solved four challenges during the CTF,
+<br/>
 HackTheBox ran the Cyber Apocalypse CTF over a five day period. There were a lot of different challenges, but I joined for the sole purpose of just solving the Pwn category during my free time. Of the five challenges in the Pwn category, I solved four challenges during the CTF, and solved the last one the day after the CTF ended. I’ve listed my solution to all five challenges in this post.
 
 For anyone wondering what tools I used:

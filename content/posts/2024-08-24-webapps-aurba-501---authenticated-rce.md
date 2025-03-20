@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 Aurba 501 - Authenticated RCE
+<br/>
+Aurba 501 - Authenticated RCE
 
 #### [Source](https://www.exploit-db.com/exploits/52074)
 

@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+In this post, Leigh Metcalf describes how she pulled data from the malvuln project to explore recent vulnerabilities in both malware and non-malware to study the differences.
+<br/>
 
 
 #### [Source](https://insights.sei.cmu.edu/blog/vulnerabilities-everybodys-got-one/)

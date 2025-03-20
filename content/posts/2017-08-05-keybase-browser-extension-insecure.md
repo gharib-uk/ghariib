@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Yesterday, I discovered that Keybase has a browser extension for both Firefox and Chrome. It activates whenever you land on a profile page on keybase.io, or a website which Keybase uses for proofs (currently Reddit, Twitter, Facebook, Github, Hacker News). It places a “Keybase Chat” button on the page. When
+<br/>
 Yesterday, I discovered that [Keybase](https://keybase.io) has a browser extension for both [Firefox](https://firefox.com) and Chrome. It activates whenever you land on a profile page on keybase.io, or a website which Keybase uses for proofs (currently Reddit, Twitter, Facebook, Github, Hacker News). It places a “Keybase Chat” button on the page. When you press this button, a compose window opens, you enter a message, and then the addon contacts your keybase desktop app in order to send a message to that user.
 
 If you are lucky enough to discover the extension by visiting [https://keybase.io/docs/extension](https://keybase.io/docs/extension) and by actually reading the content of the page, you will come across this little bit of information:

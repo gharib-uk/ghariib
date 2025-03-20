@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ By building and integrating a new heuristics framework into the Cloudflare Ruleset Engine, we now have a more flexible system to write rules and deploy new releases rapidly. 
+<br/>
 By building and integrating a new heuristics framework into the Cloudflare Ruleset Engine, we now have a more flexible system to write rules and deploy new releases rapidly.
 
 #### [Source](https://blog.cloudflare.com/bots-heuristics/)

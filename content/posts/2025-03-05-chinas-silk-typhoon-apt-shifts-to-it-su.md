@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ China's Silk Typhoon APT Shifts to IT Supply Chain Attacks 
+<br/>
 ### China's Silk Typhoon APT Shifts to IT Supply Chain Attacks
 
 ![](https://upload.cvefeed.io/news/33688/thumbnail.jpg)

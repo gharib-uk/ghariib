@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+If you spend a lot of time at the command line, you probably have either a very basic prompt or a complex, information-dense prompt. If you are in the former &#8230;read more
+<br/>
 ![](https://hackaday.com/wp-content/uploads/2018/06/linuxfu.jpg?w=800)
 
 If you spend a lot of time at the command line, you probably have either a very basic prompt or a complex, information-dense prompt. If you are in the former […read more](https://hackaday.com/2025/03/20/linux-fu-a-warp-speed-prompt/)

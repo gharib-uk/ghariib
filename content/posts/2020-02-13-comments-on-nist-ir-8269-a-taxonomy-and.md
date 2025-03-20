@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+The U.S. National Institute of Standards and Technology (NIST) recently held a public comment period on their draft report on proposed taxonomy and terminology of Adversarial Machine Learning (AML)....
+<br/>
 
 
 #### [Source](https://insights.sei.cmu.edu/blog/comments-on-nist-ir-8269-a-taxonomy-and-terminology-of-adversarial-machine-learning/)

@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ We’re introducing a new Application Security experience in the Cloudflare dashboard, with a reworked UI organized by use cases, making it easier for customers to navigate and secure their accounts. 
+<br/>
 We’re introducing a new Application Security experience in the Cloudflare dashboard, with a reworked UI organized by use cases, making it easier for customers to navigate and secure their accounts.
 
 #### [Source](https://blog.cloudflare.com/new-application-security-experience/)

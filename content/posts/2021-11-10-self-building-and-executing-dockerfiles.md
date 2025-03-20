@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Sometimes there are programs that I want to use, and they’re either missing from my OS package repository, or I want to run a later version. I’ve started using a little trick to make these available on my systems. Here is a copy of my ~/bin/youtube-dl #!/usr/bin/env -S bash -c "podman
+<br/>
 Sometimes there are programs that I want to use, and they’re either missing from my OS package repository, or I want to run a later version. I’ve started using a little trick to make these available on my systems. Here is a copy of my ~/bin/youtube-dl
 
 ```

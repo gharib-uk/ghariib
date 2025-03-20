@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+Last week I was invited by the Defcon Toronto team to play at Codefest 2017 CTF. There were some pretty good challenges, but unfortunately the CTF was plagued with frustrating issues like an unresponsive website, and no easy way to communicate with admins. This was the only pwnable in the CTF
+<br/>
 Last week I was invited by the [Defcon Toronto](https://twitter.com/defcon_toronto) team to play at Codefest 2017 CTF. There were some pretty good challenges, but unfortunately the CTF was plagued with frustrating issues like an unresponsive website, and no easy way to communicate with admins.
 
 This was the only pwnable in the CTF and it was worth 300 points. The instructions on how to submit the flag were confusing and changed at some point during the competition. Initially it said:

@@ -9,6 +9,8 @@ type: posts
 <br/>
 
 <br/>
+ Tor Browser 14.0.7 is now available from the Tor Browser download page and also from our distribution directory. This version includes important security updates to
+<br/>
   ![](https://blog.torproject.org/new-release-tor-browser-1407/lead.png)
 
 Tor Browser 14.0.7 is now available from the [Tor Browser download page](https://www.torproject.org/download/) and also from our [distribution directory](https://www.torproject.org/dist/torbrowser/14.0.7/).

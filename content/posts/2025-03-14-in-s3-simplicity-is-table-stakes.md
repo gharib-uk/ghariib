@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 From simple object storage to sophisticated table management, builders have always shaped S3's evolution. Andy Warfield discusses why making complex systems simple remains our north star at AWS.
+<br/>
+From simple object storage to sophisticated table management, builders have always shaped S3's evolution. Andy Warfield discusses why making complex systems simple remains our north star at AWS.
 
 #### [Source](https://www.allthingsdistributed.com/2025/03/in-s3-simplicity-is-table-stakes.html?utm_campaign=inbound&utm_source=rss)
 

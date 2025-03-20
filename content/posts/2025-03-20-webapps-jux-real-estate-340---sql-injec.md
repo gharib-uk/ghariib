@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 JUX Real Estate 3.4.0 - SQL Injection
+<br/>
+JUX Real Estate 3.4.0 - SQL Injection
 
 #### [Source](https://www.exploit-db.com/exploits/52089)
 

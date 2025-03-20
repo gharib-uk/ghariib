@@ -10,6 +10,8 @@ type: posts
 
 <br/>
 SolarWinds Kiwi Syslog Server 9.6.7.1 - Unquoted Service Path
+<br/>
+SolarWinds Kiwi Syslog Server 9.6.7.1 - Unquoted Service Path
 
 #### [Source](https://www.exploit-db.com/exploits/52064)
 
