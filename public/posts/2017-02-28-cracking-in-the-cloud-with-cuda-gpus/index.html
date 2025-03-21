@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Cracking in the Cloud with CUDA GPUs</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Cracking in the Cloud with CUDA GPUs</h1>
+			<b><time>28.02.2017 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="cracking-in-the-cloud-with-cuda-gpus">Cracking in the Cloud with CUDA GPUs</h1>
+<p><a href="https://www.kali.org/blog/cloud-cracking-with-cuda-gpu/images/kali-cuda-cracking-cloud.jpg">https://www.kali.org/blog/cloud-cracking-with-cuda-gpu/images/kali-cuda-cracking-cloud.jpg</a></p>
+<p>Due to increasing popularity of cloud-based instances for password cracking, we decided to focus our efforts into streamlining Kali’s approach. We’ve noticed that Amazon’s AWS P2-Series and Microsoft’s Azure NC-Series are focused on Windows and Ubuntu. The corresponding blog posts and guides followed suit. Although these instances are limited by</p>
+<p>Due to increasing popularity of cloud-based instances for password cracking, we decided to focus our efforts into streamlining Kali’s approach. We’ve noticed that Amazon’s AWS <a href="https://aws.amazon.com/ec2/instance-types/p2/">P2-Series</a> and Microsoft’s Azure <a href="https://azure.microsoft.com/en-us/blog/azure-n-series-general-availability-on-december-1/">NC-Series</a> are focused on Windows and Ubuntu. The corresponding blog posts and guides followed suit. Although these instances are limited by the NVIDIA Tesla K80’s hardware capabilities, the ability to quickly deploy a Kali instance with CUDA support is appealing.</p>
+<p>Installing proprietary graphics drivers has always been a source of frustration; fortunately, improvements in packaging have made this process much more seamless. Although we’ve done the work for you in the cloud offerings, we’d like to help simplify installation for your own use.</p>
+<h3 id="prerequisites">Prerequisites</h3>
+<p>First, you’ll need to ensure that your system is fully upgraded and that your card supports <a href="https://developer.nvidia.com/cuda-gpus">CUDA</a>. <strong>Note:</strong> GPUs with a <a href="https://developer.nvidia.com/cuda-gpus">CUDA compute capability</a> &gt; 5.0 are recommended, but GPUs with less will still work:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt-get update <span style="color:#f92672">&amp;&amp;</span> apt-get dist-upgrade -y
+</span></span></code></pre></div><p>Once we’ve updated the system, we need to check for the <strong>nouveau kernel modules</strong>, and if enabled, blacklist them:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# lsmod |grep -i nouveau
+</span></span><span style="display:flex;"><span>nouveau 1499136 1
+</span></span><span style="display:flex;"><span>mxm_wmi 16384 1 nouveau
+</span></span><span style="display:flex;"><span>wmi 16384 2 mxm_wmi,nouveau
+</span></span><span style="display:flex;"><span>video 40960 1 nouveau
+</span></span><span style="display:flex;"><span>root@kali:~#
+</span></span><span style="display:flex;"><span>root@kali:~# echo -e &#34;blacklist nouveau\noptions nouveau modeset=0\nalias nouveau off&#34; &gt; /etc/modprobe.d/blacklist-nouveau.conf
+</span></span></code></pre></div><p>After modifying kernel parameters, we’ll need to update our <strong>initramfs</strong>, then reboot:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>update-initramfs -u <span style="color:#f92672">&amp;&amp;</span> reboot
+</span></span></code></pre></div><h3 id="installation-on-a-local-computer">Installation on a Local Computer</h3>
+<p>Once we have rebooted and have determined that the nouveau modules have not loaded, we will proceed to install the <strong>OpenCL ICD Loader</strong>, <strong>Drivers</strong>, and the <strong>CUDA toolkit</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt-get install -y ocl-icd-libopencl1 nvidia-driver nvidia-cuda-toolkit
+</span></span></code></pre></div><p>During installation of the drivers the system created new kernel modules, so another reboot is required.</p>
+<h3 id="verify-driver-installation">Verify Driver Installation</h3>
+<p>Now that our system should be ready to go, we need to verify the drivers have been loaded correctly. We can quickly verify this by running the <a href="https://developer.nvidia.com/nvidia-system-management-interface">nvidia-smi</a> tool:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# nvidia-smi
+</span></span><span style="display:flex;"><span>+-----------------------------------------------------------------------------+
+</span></span><span style="display:flex;"><span>| NVIDIA-SMI 375.26 Driver Version: 375.26 |
+</span></span><span style="display:flex;"><span>|-------------------------------+----------------------+----------------------+
+</span></span><span style="display:flex;"><span>| GPU Name Persistence-M| Bus-Id Disp.A | Volatile Uncorr. ECC |
+</span></span><span style="display:flex;"><span>| Fan Temp Perf Pwr:Usage/Cap| Memory-Usage | GPU-Util Compute M. |
+</span></span><span style="display:flex;"><span>|===============================+======================+======================|
+</span></span><span style="display:flex;"><span>| 0 Tesla K80 Off | 0000:00:1E.0 Off | 0 |
+</span></span><span style="display:flex;"><span>| N/A 28C P0 53W / 149W | 0MiB / 11439MiB | 65% Default |
+</span></span><span style="display:flex;"><span>+-------------------------------+----------------------+----------------------+
+</span></span></code></pre></div><p>With the output displaying our driver and GPU correctly, we can now dive into password cracking. Before we get too far ahead, let’s double check to make sure hashcat and CUDA are working together:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# hashcat -I
+</span></span><span style="display:flex;"><span>OpenCL Info:
+</span></span><span style="display:flex;"><span>Platform ID #1
+</span></span><span style="display:flex;"><span>Vendor : NVIDIA Corporation
+</span></span><span style="display:flex;"><span>Name : NVIDIA CUDA
+</span></span><span style="display:flex;"><span>Version : OpenCL 1.2 CUDA 8.0.0
+</span></span><span style="display:flex;"><span>Device ID #1
+</span></span><span style="display:flex;"><span>Type : GPU
+</span></span><span style="display:flex;"><span>Vendor ID : 32
+</span></span><span style="display:flex;"><span>Vendor : NVIDIA Corporation
+</span></span><span style="display:flex;"><span>Name : Tesla K80
+</span></span><span style="display:flex;"><span>Version : OpenCL 1.2 CUDA
+</span></span><span style="display:flex;"><span>Processor(s) : 13
+</span></span><span style="display:flex;"><span>Clock : 823
+</span></span><span style="display:flex;"><span>Memory : 2047/11439 MB allocatable
+</span></span><span style="display:flex;"><span>OpenCL Version : OpenCL C 1.2
+</span></span><span style="display:flex;"><span>Driver Version : 375.26
+</span></span></code></pre></div><p><strong>Note:</strong> If you receive the error c_lGetDeviceIDs(): CL_DEVICE_NOT_FOUND_ with Platform ID labeled <em>Vendor: Mesa</em> run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt-get remove mesa-opencl-icd
+</span></span></code></pre></div><p>It appears everything is working, let’s go ahead and run a benchmark test.</p>
+<h3 id="benchmarking">Benchmarking</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# hashcat -b
+</span></span><span style="display:flex;"><span>OpenCL Platform #1: NVIDIA Corporation
+</span></span><span style="display:flex;"><span>======================================
+</span></span><span style="display:flex;"><span>* Device #1: Tesla K80, 2047/11439 MB allocatable, 13MCU
+</span></span><span style="display:flex;"><span>Hashtype: MD5
+</span></span><span style="display:flex;"><span>Speed.Dev.#1.....: 4247.2 MH/s (102.66ms)
+</span></span><span style="display:flex;"><span>Hashtype: SHA1
+</span></span><span style="display:flex;"><span>Speed.Dev.#1.....: 1850.5 MH/s (58.64ms)
+</span></span><span style="display:flex;"><span>Hashtype: SHA256
+</span></span><span style="display:flex;"><span>Speed.Dev.#1.....: 785.1 MH/s (69.41ms)
+</span></span></code></pre></div><h3 id="cracking">Cracking</h3>
+<p>Now let’s crack some hashes. We are going to use the example NetNTLMv2 hash found on the <a href="https://hashcat.net/wiki/doku.php?id=example_hashes">hashcat wiki.</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# hashcat -a 0 -m 5600 ntlmv2.hash dict.txt
+</span></span><span style="display:flex;"><span>OpenCL Platform #1: NVIDIA Corporation
+</span></span><span style="display:flex;"><span>======================================
+</span></span><span style="display:flex;"><span>* Device #1: Tesla K80, 2047/11439 MB allocatable, 13MCU
+</span></span><span style="display:flex;"><span>ADMIN::N46iSNekpT:08ca45b7d7ea58ee:88dcbe4446168966a153a0064958dac6:5c7830315c7830310000000000000b45c67103d07d7b95acd12ffa11230e0000000052920b85f78d013c31cdb3b92f5d765c783030:hashcat
+</span></span><span style="display:flex;"><span>Session..........: hashcat
+</span></span><span style="display:flex;"><span>Status...........: Cracked
+</span></span><span style="display:flex;"><span>Hash.Type........: NetNTLMv2
+</span></span><span style="display:flex;"><span>Hash.Target......: ADMIN::N46iSNekpT:08ca45b7d7ea58ee:88dcbe4446168966a153a0064958dac6:5c7830315c7830310000000000000b45c67103d07d7b95acd12ffa11230e0000000052920b85f78d013c31cdb3b92f5d765c783030
+</span></span><span style="display:flex;"><span>Input.Base.......: File (dict.txt)
+</span></span><span style="display:flex;"><span>Input.Queue......: 1/1 (100.00%)
+</span></span><span style="display:flex;"><span>Speed.Dev.#1.....: 0 H/s (0.10ms)
+</span></span><span style="display:flex;"><span>Recovered........: 1/1 (100.00%) Digests, 1/1 (100.00%) Salts
+</span></span><span style="display:flex;"><span>Progress.........: 101/101 (100.00%)
+</span></span></code></pre></div><p><strong>Success!</strong> We’ve cracked the example hash and proven our installation is functional. There are a multitude of configurations to improve cracking speed, not mentioned in this guide. However, we encourage you to take a look at the <a href="https://hashcat.net/wiki/">hashcat documentation</a> for your specific cases.</p>
+<h3 id="running-a-gpu-instance-in-aws">Running a GPU Instance in AWS</h3>
+<p>We’ve registered new CUDA enabled <a href="https://aws.amazon.com/marketplace/pp/B08LL91KKB">Kali Rolling images with Amazon</a> which work out of the box with P2 AWS images. With virtually no additional setup required, you can get up and running with a Kali GPU instance in less than 30 seconds. All you need to do is choose a P2 instance, and you’re ready to start cracking!</p>
+<h4 id="source"><a href="https://www.kali.org/blog/cloud-cracking-with-cuda-gpu/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

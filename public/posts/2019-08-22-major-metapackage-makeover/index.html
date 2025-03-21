@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Major Metapackage Makeover</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Major Metapackage Makeover</h1>
+			<b><time>22.08.2019 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="major-metapackage-makeover">Major Metapackage Makeover</h1>
+<p><a href="https://www.kali.org/blog/major-metapackage-makeover/images/refreshing-kali-metapackages-1.jpg">https://www.kali.org/blog/major-metapackage-makeover/images/refreshing-kali-metapackages-1.jpg</a></p>
+<p>With our 2019.3 Kali release imminent, we wanted to take a quick moment to discuss one of our more significant upcoming changes: our selection of metapackages. These alterations are designed to optimize Kali, reduce ISO size, and better organize metapackages as we continue to grow. Before we get into what’s new,</p>
+<p>With our 2019.3 Kali release imminent, we wanted to take a quick moment to discuss one of our more significant upcoming changes: our selection of metapackages. These alterations are designed to optimize Kali, reduce ISO size, and better organize metapackages as we continue to grow.</p>
+<p>Before we get into what’s new, let’s briefly recap what a metapackage is. A metapackage is a package that does not contain any tools itself, but rather is a dependency list of normal packages (or other metapackages). This allows us to group related tools together. For instance, if you want to be able to access every wireless tool, simply install the <code>kali-tools-wireless</code> metapackage. This will obtain all wireless tools in one download. As always, you can access the full list of metapackages available in Kali on <a href="https://www.kali.org/docs/general-use/metapackages/">kali.org/docs/general-use/metapackages/</a>. If you prefer to use the command line, the following command will list out the packages that will be installed via a specific metapackage:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# apt update
+</span></span><span style="display:flex;"><span>Hit:1 http://http.kali.org/kali kali-rolling InRelease
+</span></span><span style="display:flex;"><span>Reading package lists... Done
+</span></span><span style="display:flex;"><span>Building dependency tree
+</span></span><span style="display:flex;"><span>Reading state information... Done
+</span></span><span style="display:flex;"><span>All packages are up to date.
+</span></span><span style="display:flex;"><span>root@kali:~#
+</span></span><span style="display:flex;"><span>root@kali:~# apt depends kali-tools-wireless
+</span></span><span style="display:flex;"><span>kali-tools-wireless
+</span></span><span style="display:flex;"><span>Depends: kali-tools-802-11
+</span></span><span style="display:flex;"><span>Depends: kali-tools-bluetooth
+</span></span><span style="display:flex;"><span>Depends: kali-tools-rfid
+</span></span><span style="display:flex;"><span>Depends: kali-tools-sdr
+</span></span><span style="display:flex;"><span>Depends: killerbee
+</span></span><span style="display:flex;"><span>Depends: rfcat
+</span></span><span style="display:flex;"><span>Depends: rfkill
+</span></span><span style="display:flex;"><span>rfkill:i386
+</span></span><span style="display:flex;"><span>Depends: sakis3g
+</span></span><span style="display:flex;"><span>Depends: spectools
+</span></span><span style="display:flex;"><span>Depends: wireshark
+</span></span><span style="display:flex;"><span>root@kali:~#
+</span></span></code></pre></div><p>We took the time to create new metapackages and rename existing ones, and we did the same with the tools listed inside of them. As a result of these changes, we’ve implemented a new naming convention for simplicity and improved granular control. At the end of the post there is a table displaying the relationships between previous and new names moving forward, along with a description of the metapackage purpose.</p>
+<p>If you have made it this far, you are likely wondering “how does this affect me”?</p>
+<ul>
+<li>If you are using a version of Kali older than 2019.3, if and when you upgrade, you will still have the same set of tools (just newer)!</li>
+<li>However, if you do a fresh install of Kali with a version higher than either <a href="https://cdimage.kali.org/kali-images/kali-weekly/">weekly W34</a> or 2019.3 ISO, you will notice some of the <strong>tools that get installed by DEFAULT have changed</strong> <em>(we have put Kali on a diet!)</em></li>
+</ul>
+<p>Previously, <code>kali-linux-full</code> was the default metapackage, which has been renamed to <code>kali-linux-large</code> with a redirect put in place. We have introduced a new default metapackage called <code>kali-linux-default</code>, which serves as a slimmed-down version of the tools from <code>kali-linux-large</code>.</p>
+<p>Depending on how you use Kali will determine which metapackage would suit you best. This is the power of metapackages. For example:</p>
+<ul>
+<li>If you want a core set of tools, stick with <code>kali-linux-default</code> <em>(designed for assessments that are straightforward )</em>.</li>
+<li>If you want a more general and wider range of tools, select <code>kali-linux-large</code> <em>(useful if Internet access is permitted but slow)</em>.</li>
+<li>If you want to be prepared for anything, go with <code>kali-linux-everything</code> <em>(great if you are going to be doing air-gap/offline work)</em></li>
+</ul>
+<p><em>Note: You can install multiple metapackages at once and are not limited to just one, so mix and match!</em></p>
+<p>Each of these metapackages depends on the one above. That means, when we add a new essential tool to <code>kali-linux-default</code>, it is automatically part of <code>kali-linux-large</code> and thus <code>kali-linux-everything</code>. Otherwise, when we add a new tool that may not be useful to everyone, it will be placed into either <code>kali-linux-large</code> or <code>kali-linux-everything</code> - depending on our tool policy. More information about the new tool policy will be made public towards the end of the year. Stay tuned for some very exciting news!</p>
+<p>How Kali is being used today has changed since when Kali (and even <a href="https://www.backtrack-linux.org/">BackTrack</a>) was first born. Not everyone needs all the tools at once - but they are still available when required. We have opted for a new default set of tools to match the majority of today’s current network environments, by removing edge cases and legacy tools which are rarely used.</p>
+<p>Upon doing a system upgrade (<code>apt -y full-upgrade</code>) on a version of Kali older than 2019.3, you will see the old metapackage name being removed. This is safe. If you have tried to remove a tool before, you may have run into this (when the tool is part of a metapackage). This is also safe to remove, as it doesn’t remove any other tools. It simply means that when a new tool is added into that metapackage, you won’t receive it.</p>
+<p>If you are running 2019.3 and want the old default set of tools, you can do either <code>apt -y install &lt;tool&gt;</code> for a one-off package installation or <code>apt -y install kali-linux-large</code> to get the old tool set back. For the 2019.3 release, we will be doing a one-off extra image, which is based on <code>kali-linux-large</code> to help with the transition.</p>
+<p>Below are the tables with a complete breakdown of previous metapackages names, along with their new respective names:</p>
+<h4 id="systems">Systems</h4>
+<p>These metapackages are used when generating our images</p>
+<p><strong>Old</strong></p>
+<p><strong>New</strong></p>
+<p>Notes</p>
+<p>kali-linux</p>
+<p>kali-linux-core</p>
+<p>Base Kali Linux System - core items that are always included</p>
+<p><em>new</em></p>
+<p>kali-linux-default</p>
+<p>“Default” desktop (amd64/i386) images include these tools</p>
+<p><em>new</em></p>
+<p>kali-linux-light</p>
+<p>Kali-Light images use this to be generated</p>
+<p><em>new</em></p>
+<p>kali-linux-arm</p>
+<p>All tools suitable for ARM devices</p>
+<p>kali-linux-nethunter</p>
+<p>kali-linux-nethunter <em>(same)</em></p>
+<p>Tools used as part of Kali NetHunter</p>
+<h4 id="kali-menu">Kali Menu</h4>
+<p>These entries are based around the Kali menu</p>
+<p><strong>Old</strong></p>
+<p><strong>New</strong></p>
+<p>Notes</p>
+<p><em>new</em></p>
+<p>kali-tools-information-gathering</p>
+<p>Used for Open-source Intelligence (OSINT) &amp; information gathering</p>
+<p><em>new</em></p>
+<p>kali-tools-vulnerability</p>
+<p>Vulnerability assessments tools</p>
+<p>kali-linux-web</p>
+<p>kali-tools-web</p>
+<p>Designed doing web applications attacks</p>
+<p><em>new</em></p>
+<p>kali-tools-database</p>
+<p>Based around any database attacks</p>
+<p>kali-linux-pwtools</p>
+<p>kali-tools-passwords</p>
+<p>Helpful for password cracking attacks - Online &amp; offline</p>
+<p>kali-linux-wireless</p>
+<p>kali-tools-wireless</p>
+<p>All tools based around Wireless protocols - 802.11, Bluetooth, RFID &amp; SDR</p>
+<p><em>new</em></p>
+<p>kali-tools-reverse-engineering</p>
+<p>For reverse engineering binaries</p>
+<p><em>new</em></p>
+<p>kali-tools-exploitation</p>
+<p>Commonly used for doing exploitation</p>
+<p><em>new</em></p>
+<p>kali-tools-social-engineering</p>
+<p>Aimed for doing social engineering techniques</p>
+<p><em>new</em></p>
+<p>kali-tools-sniffing-spoofing</p>
+<p>Any tools meant for sniffing &amp; spoofing</p>
+<p><em>new</em></p>
+<p>kali-tools-post-exploitation</p>
+<p>Techniques for post exploitation stage</p>
+<p>kali-linux-forensics</p>
+<p>kali-tools-forensics</p>
+<p>Forensic tools - Live &amp; Offline</p>
+<p><em>new</em></p>
+<p>kali-tools-reporting</p>
+<p>Reporting tools</p>
+<h4 id="tools">Tools</h4>
+<p>These are tool listing based on the category and type</p>
+<p><strong>Old</strong></p>
+<p><strong>New</strong></p>
+<p>Notes</p>
+<p>kali-linux-gpu</p>
+<p>kali-tools-gpu</p>
+<p>Tools which benefit from having access to GPU hardware</p>
+<p><em>new</em></p>
+<p>kali-tools-hardware</p>
+<p>Hardware hacking tools</p>
+<p><em>new</em></p>
+<p>kali-tools-crypto-stego</p>
+<p>Tools based around Cryptography &amp; Steganography</p>
+<p><em>new</em></p>
+<p>kali-tools-fuzzing</p>
+<p>For fuzzing protocols</p>
+<p><em>new</em></p>
+<p>kali-tools-802-11</p>
+<p>802.11 (Commonly known as “Wi-Fi”)</p>
+<p><em>new</em></p>
+<p>kali-tools-bluetooth</p>
+<p>For targeting Bluetooth devices</p>
+<p>kali-linux-rfid</p>
+<p>kali-tools-rfid</p>
+<p>Radio-Frequency IDentification tools</p>
+<p>kali-linux-sdr</p>
+<p>kali-tools-sdr</p>
+<p>Software-Defined Radio tools</p>
+<p>kali-linux-voip</p>
+<p>kali-tools-voip</p>
+<p>Voice over IP tools</p>
+<p><em>new</em></p>
+<p>kali-tools-windows-resources</p>
+<p>Any resources which can be executed on a Windows hosts</p>
+<h4 id="misc">Misc</h4>
+<p>Useful metapackages which are “one off” groupings</p>
+<p><strong>Old</strong></p>
+<p><strong>New</strong></p>
+<p>Notes</p>
+<p>kali-linux-full</p>
+<p>kali-linux-large</p>
+<p>Our previous default tools for amd64/i386 images</p>
+<p>kali-linux-all</p>
+<p>kali-linux-everything</p>
+<p>Every metapackage and tool listed here</p>
+<p>kali-linux-top10</p>
+<p>kali-tools-top10</p>
+<p>The most commonly used tools</p>
+<p>kali-desktop-live</p>
+<p>kali-desktop-live <em>(same)</em></p>
+<p>Used during a live session when booted from the image</p>
+<p><em>new</em></p>
+<p>kali-tools-headless</p>
+<p>Tools which do not require a GUI in order to access them</p>
+<h4 id="courses">Courses</h4>
+<p>Tools used for OffSec’s courses</p>
+<p><strong>Old</strong></p>
+<p><strong>New</strong></p>
+<p>Notes</p>
+<p><em>new</em></p>
+<p>offsec-awae</p>
+<p>Advanced Web Attacks and Exploitation</p>
+<p><em>new</em></p>
+<p>offsec-pwk</p>
+<p>Penetration Testing with Kali</p>
+<h4 id="desktop-managers">Desktop Managers</h4>
+<p>Desktop Environment (DE) &amp; Window Manager (WM)</p>
+<p><strong>Old</strong></p>
+<p><strong>New</strong></p>
+<p>Notes</p>
+<p>kali-desktop-common</p>
+<p>kali-desktop-core</p>
+<p>Any key tools required for a GUI image</p>
+<p><em>new</em></p>
+<p>kali-desktop-e17</p>
+<p>Enlightenment (WM)</p>
+<p>kali-desktop-gnome</p>
+<p>kali-desktop-gnome <em>(same)</em></p>
+<p>GNOME (DE)</p>
+<p><em>new</em></p>
+<p>kali-desktop-i3</p>
+<p>i3 (WM)</p>
+<p>kali-desktop-kde</p>
+<p>kali-desktop-kde <em>(same)</em></p>
+<p>KDE (DE)</p>
+<p>kali-desktop-lxde</p>
+<p>kali-desktop-lxde <em>(same)</em></p>
+<p>LXDE (WM)</p>
+<p><em>new</em></p>
+<p>kali-desktop-mate</p>
+<p>MATE (DE)</p>
+<p><em>new</em></p>
+<p>kali-desktop-pantheon</p>
+<p>Pantheon (DE)</p>
+<p>kali-desktop-xfce</p>
+<p>kali-desktop-xfce <em>(same)</em></p>
+<p>XFCE (WM)</p>
+<p>If you wish to create your own metapackage, see how we do it <a href="https://gitlab.com/kalilinux/packages/kali-meta/tree/kali/master">here</a>, before you create your own <a href="https://web.archive.org/web/20210914172345/https://kali.training/topic/extending-and-customizing-kali/">package</a>.</p>
+<h4 id="source"><a href="https://www.kali.org/blog/major-metapackage-makeover/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

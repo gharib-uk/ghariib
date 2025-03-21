@@ -40,148 +40,205 @@
 		
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-31-kubeadm-v1beta4/">Kubernetes v1.31: kubeadm v1beta4</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
+	<h1><a href="https://ghariib.ir/posts/-mastering-jdbc-bridging-java-and-databases-seamlessly-/">🚀 Mastering JDBC: Bridging Java and Databases Seamlessly 📊</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
 	
 	<div>
-		<p>As part of the Kubernetes v1.31 release, <code>kubeadm</code> is adopting a new (v1beta4) version of its configuration file format. Configuration in the previous v1beta3 format is now formally deprecated, which means it&rsquo;s supported but you should migrate to v1beta4 and stop using the deprecated format. Support for v1beta3 configuration will be removed after a minimum of 3 Kubernetes minor releases.</p>
-<p>In this article, I&rsquo;ll walk you through key changes; I&rsquo;ll explain about the kubeadm v1beta4 configuration format, and how to migrate from v1beta3 to v1beta4.</p>
+		<h2 id="jdbc-in-java">JDBC IN JAVA</h2>
+<blockquote>
+<p>JDBC (Java Database Connectivity) is a key API in Advanced Java that allows Java applications to interact with databases. It provides a standard way to connect to a database, execute SQL queries, and retrieve results. Below is a comprehensive overview:</p></blockquote>
+<h2 id="key-components-of-jdbc">Key Components of JDBC</h2>
+<ol>
+<li>
+<p>DriverManager:</p>
+<blockquote>
+<p>Manages a list of database drivers and establishes a connection between the application and the database.</p></blockquote>
+</li>
+<li>
+<p>Connection:</p>
+<blockquote>
+<p>Represents the session between the Java application and the database.</p>
 		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-31-kubeadm-v1beta4/">Read more...</a>
+			<a href="https://ghariib.ir/posts/-mastering-jdbc-bridging-java-and-databases-seamlessly-/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-31-new-kubernetes-cpumanager-static-policy-distribute-cpus-across-cores/">Kubernetes v1.31: New Kubernetes CPUManager Static Policy: Distribute CPUs Across Cores</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>In Kubernetes v1.31, we are excited to introduce a significant enhancement to CPU management capabilities: the <code>distribute-cpus-across-cores</code> option for the CPUManager static policy. This feature is currently in alpha and hidden by default, marking a strategic shift aimed at optimizing CPU utilization and improving system performance across multi-core processors.</p>
-<h2 id="understanding-the-feature">Understanding the feature</h2>
-<p>Traditionally, Kubernetes&rsquo; CPUManager tends to allocate CPUs as compactly as possible, typically packing them onto the fewest number of physical cores. However, allocation strategy matters, CPUs on the same physical host still share some resources of the physical core, such as the cache and execution units, etc.</p>
-		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-31-new-kubernetes-cpumanager-static-policy-distribute-cpus-across-cores/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-adds-a-new-cpu-manager-static-policy-option-for-strict-cpu-reservation/">Kubernetes v1.32 Adds A New CPU Manager Static Policy Option For Strict CPU Reservation</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>In Kubernetes v1.32, after years of community discussion, we are excited to introduce a <code>strict-cpu-reservation</code> option for the CPU Manager static policy. This feature is currently in alpha, with the associated policy hidden by default. You can only use the policy if you explicitly enable the alpha behavior in your cluster.</p>
-<h2 id="understanding-the-feature">Understanding the feature</h2>
-<p>The CPU Manager static policy is used to reduce latency or improve performance. The <code>reservedSystemCPUs</code> defines an explicit CPU set for OS system daemons and kubernetes system daemons. This option is designed for Telco/NFV type use cases where uncontrolled interrupts/timers may impact the workload performance. you can use this option to define the explicit cpuset for the system/kubernetes daemons as well as the interrupts/timers, so the rest CPUs on the system can be used exclusively for workloads, with less impact from uncontrolled interrupts/timers. More details of this parameter can be found on the Explicitly Reserved CPU List page.</p>
-		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-32-adds-a-new-cpu-manager-static-policy-option-for-strict-cpu-reservation/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-sneak-peek/">Kubernetes v1.32 sneak peek</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>As we get closer to the release date for Kubernetes v1.32, the project develops and matures. Features may be deprecated, removed, or replaced with better ones for the project&rsquo;s overall health.</p>
-<p>This blog outlines some of the planned changes for the Kubernetes v1.32 release, that the release team feels you should be aware of, for the continued maintenance of your Kubernetes environment and keeping up to date with the latest changes. Information listed below is based on the current status of the v1.32 release and may change before the actual release date.</p>
-		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-32-sneak-peek/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-memory-manager-goes-ga/">Kubernetes v1.32: Memory Manager Goes GA</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>With Kubernetes 1.32, the memory manager has officially graduated to General Availability (GA), marking a significant milestone in the journey toward efficient and predictable memory allocation for containerized applications. Since Kubernetes v1.22, where it graduated to beta, the memory manager has proved itself reliable, stable and a good complementary feature for the CPU Manager.</p>
-<p>As part of kubelet&rsquo;s workload admission process, the memory manager provides topology hints to optimize memory allocation and alignment. This enables users to allocate exclusive memory for Pods in the Guaranteed QoS class. More details about the process can be found in the memory manager goes to beta blog.</p>
-		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-32-memory-manager-goes-ga/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-penelope/">Kubernetes v1.32: Penelope</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p><strong>Editors:</strong> Matteo Bianchi, Edith Puclla, William Rizzo, Ryota Sawada, Rashan Smith</p>
-<p>Announcing the release of Kubernetes v1.32: Penelope!</p>
-<p>In line with previous releases, the release of Kubernetes v1.32 introduces new stable, beta, and alpha features. The consistent delivery of high-quality releases underscores the strength of our development cycle and the vibrant support from our community. This release consists of 44 enhancements in total. Of those enhancements, 13 have graduated to Stable, 12 are entering Beta, and 19 have entered in Alpha.</p>
-		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-32-penelope/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-queueinghint-brings-a-new-possibility-to-optimize-pod-scheduling/">Kubernetes v1.32: QueueingHint Brings a New Possibility to Optimize Pod Scheduling</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>The Kubernetes scheduler is the core component that selects the nodes on which new Pods run. The scheduler processes these new Pods <strong>one by one</strong>. Therefore, the larger your clusters, the more important the throughput of the scheduler becomes.</p>
-<p>Over the years, Kubernetes SIG Scheduling has improved the throughput of the scheduler in multiple enhancements. This blog post describes a major improvement to the scheduler in Kubernetes v1.32: a scheduling context element named <em>QueueingHint</em>. This page provides background knowledge of the scheduler and explains how QueueingHint improves scheduling throughput.</p>
-		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-32-queueinghint-brings-a-new-possibility-to-optimize-pod-scheduling/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/lateral-movement-visual-studio-dte/">Lateral Movement – Visual Studio DTE</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>A lot of organizations have some sort of application development program and it is highly likely that developers will utilize Visual Studio for their development…</p>
-<p>Continue reading → Lateral Movement – Visual Studio DTE</p>
-<p>Go to Source</p>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/life-at-canonical-victoria-antipovas-perspective-as-a-new-joiner-in-product-marketing/">Life at Canonical: Victoria Antipova’s perspective as a new joiner in Product Marketing</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>Canonical is continuously hiring new talent. Being a remote- first company, Canonical’s new joiners receive a unique onboarding experience. In their first weeks, they are introduced to the different departments and the various tools they use to work asynchronously across the globe. New hires develop a good understanding of the open-source technologies that the company deploys and supports such as Openstack, Kubernetes, Kubeflow and OpenSearch – in addition of course to Ubuntu, the world’s most famous OS, which they install on their laptops. </p>
-		
-			<a href="https://ghariib.ir/posts/life-at-canonical-victoria-antipovas-perspective-as-a-new-joiner-in-product-marketing/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/light-brite-turned-sci-fi-console-on-the-cheap/">Light Brite Turned Sci-Fi Console on the Cheap</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
+	<h1><a href="https://ghariib.ir/posts/2024-data-breaches-wrapped/">2024 Data Breaches Wrapped</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
 	
 	<div>
 		<p>
 <figure>
-  <img src="https://hackaday.com/wp-content/uploads/2025/01/briteprop_feat.jpg?w=800" alt="" />
+  <img src="https://www.mcafee.com/blogs/wp-content/uploads/2024/12/300x200_Blog_2024-Data-Breaches-Wrapped.png" alt="" />
 </figure>
 
 
 </p>
-<p>Generally, the projects featured on Hackaday actually <em>do</em> something. We won’t go as far as to say they are practical creations, but they usually have some kind of function other than to sit there and blink. But what if just sitting still and blinking away randomly is precisely what you want a piece of hardware to do?</p>
-<p>That was exactly the goal when [createscifi] set out to dress a Lite Brite up as a futuristic prop. On a technical level, this project is pretty much as simple as it gets. But we appreciated seeing some of the techniques brought to bear on this project, and perhaps more importantly, really like the channel’s overall goal of creating affordable sci-fi props using common components. We don’t plan on filming our own space epic anytime soon…but we like to know the option is there.</p>
+<p>It’s been a big year for big data breaches. Billions of records on millions of people have been exposed at an estimated cost of nearly $10 trillion dollars to people and businesses alike worldwide.[i]</p>
+<p>While we still have a few weeks in the year left to go, here’s a roundup of five of the most noteworthy breaches this year. And while you can’t prevent big data breaches from happening, you can still take several preventive steps to protect yourself from the fallout. We’ll cover them here too.</p>
 		
-			<a href="https://ghariib.ir/posts/light-brite-turned-sci-fi-console-on-the-cheap/">Read more...</a>
+			<a href="https://ghariib.ir/posts/2024-data-breaches-wrapped/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/2024-roundup-top-data-breach-stories-and-industry-trends/">2024 roundup: Top data breach stories and industry trends</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
+	
+	<div>
+		<p>With 2025 on the horizon, it’s important to reflect on the developments and various setbacks that happened in cybersecurity this past year. While there have been many improvements in security technologies and growing awareness of emerging cybersecurity threats, 2024 was also a hard reminder that the ongoing fight against cyber criminals is far from over.</p>
+<p>We’ve summarized this past year’s top five data breach stories and industry trends, with key takeaways from each that organizations should note going into the following year.</p>
+		
+			<a href="https://ghariib.ir/posts/2024-roundup-top-data-breach-stories-and-industry-trends/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/300000-prometheus-servers-and-exporters-exposed-to-dos-attacks/">300,000&#43; Prometheus Servers and Exporters Exposed to DoS Attacks</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
+	
+	<a href="/tags/jenkins">jenkins</a>
+	
+	<div>
+		<p>
+<figure>
+  <img src="https://blog.aquasec.com/hubfs/Prometheus-blog-main-image-text.jpg" alt="300,000&#43; Prometheus Servers and Exporters Exposed to DoS Attacks" />
+</figure>
+
+
+</p>
+<p>In this research, we uncovered several vulnerabilities and security flaws within the Prometheus ecosystem. These findings span across three major areas: information disclosure, denial-of-service (DoS), and code execution.  We found that exposed Prometheus servers or exporters, often lacking proper authentication, allowed attackers to easily gather sensitive information, such as credentials and API keys.   </p>
+<p>
+<figure>
+  <img src="https://blog.aquasec.com/hubfs/Prometheus-blog-main-image-text.jpg" alt="300,000&#43; Prometheus Servers and Exporters Exposed to DoS Attacks" />
+</figure>
+
+
+</p>
+		
+			<a href="https://ghariib.ir/posts/300000-prometheus-servers-and-exporters-exposed-to-dos-attacks/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/3d-printed-case-turns-pixel-6-pro-into-palmtop/">3D Printed Case Turns Pixel 6 Pro into Palmtop</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
+	
+	<div>
+		<p>
+<figure>
+  <img src="https://hackaday.com/wp-content/uploads/2025/01/pixelpalm_feat.jpg?w=800" alt="" />
+</figure>
+
+
+</p>
+<p>Despite initial interest in the 1990s and early 2000s, palmtop computers never really took off. Realistically most consumers were probably satisfied enough with smartphones as they became more widely available, but those of us who would prefer a real keyboard on our mobile devices are still feeling the pain. Today there are still a few commercial palmtop-like machines out there, but they aren’t exactly mainstream.</p>
+<p>Which is why this 3D printed case for the Pixel 6 Pro from [TypingCat] is so interesting. It takes a relatively popular and capable contemporary phone, pairs it with a physical keyboard, and manages to create something that looks quite practical. Thanks to Termux, you can even get a fairly usable Linux environment going on the thing.</p>
+		
+			<a href="https://ghariib.ir/posts/3d-printed-case-turns-pixel-6-pro-into-palmtop/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/4-security-controls-keeping-up-with-the-evolution-of-it-environments/">4 Security Controls Keeping Up with the Evolution of IT Environments</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
+	
+	<div>
+		<p>The rapid adoption of cloud technology in the past few years has transformed IT environments, enabling unprecedented opportunities for flexibility, scalability, and collaboration. However, this transformation has introduced a potentially dangerous level of complexity into these environments – recent research from PwC revealed that 75% of executives report too much complexity in their organizations, leading to ‘concerning’ cyber and privacy risks. To navigate this complexity, modern organizations need security controls that keep pace with rapidly evolving IT environments. In this article, we’ll&hellip;</p>
+		
+			<a href="https://ghariib.ir/posts/4-security-controls-keeping-up-with-the-evolution-of-it-environments/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/4-8-million-healthcare-records-left-freely-accessible/">4.8 million healthcare records left freely accessible</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
+	
+	<div>
+		<p>Your main business is healthcare, so your excuse when you get hacked is that you didn’t have the budget to secure your network. Am I right?</p>
+<p>So, in order to prevent a ransomware gang from infiltrating your network, you could just give them what they want—all your data.</p>
+<p>The seemingly preferred method to accomplish this is to leave the information unprotected and unencrypted in an exposed Amazon S3 bucket.</p>
+<p>An S3 bucket is like a virtual file folder in the cloud where you can store various types of data, such as text files, images, videos, and more. There is no limit to the amount of data you can store in an S3 bucket, and individual instances can be up to 5 TB in size.</p>
+		
+			<a href="https://ghariib.ir/posts/4-8-million-healthcare-records-left-freely-accessible/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/5-million-payment-card-details-stolen-in-painful-reminder-to-monitor-christmas-spending/">5 million payment card details stolen in painful reminder to monitor Christmas spending</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
+	
+	<div>
+		<p>Another day, another exposed S3 bucket.</p>
+<p>This time, 5 million US credit cards and personal details were leaked online. The Leakd.com security team discovered that 5 terabytes of sensitive screenshots were exposed in a freely accessible Amazon S3 bucket.</p>
+<p>An S3 bucket is like a virtual file folder in the cloud where you can store various types of data, such as text files, images, videos, and more. There is no limit to the amount of data you can store in an S3 bucket, and individual instances can be up to 5 TB in size.</p>
+		
+			<a href="https://ghariib.ir/posts/5-million-payment-card-details-stolen-in-painful-reminder-to-monitor-christmas-spending/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/5-must-see-sessions-at-kubecon-north-america/">5 Must-See Sessions at KubeCon North America</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
+	
+	<a href="/tags/jenkins">jenkins</a>
+	
+	<div>
+		<p>
+<figure>
+  <img src="https://blog.aquasec.com/hubfs/blog-main-KubeCon-1200x628-2024%20final.jpg" alt="5 Must-See Sessions at KubeCon North America" />
+</figure>
+
+
+</p>
+<p>Who’s getting excited? Next week, the Cloud Native Computing Foundation’s flagship conference, KubeCon + CloudNativeCon, will kick off in Salt Lake City, Utah. In its ninth year, the conference has grown into more than just a technical conference—it’s a vibrant community event that offers attendees the tools, relationships, and inspiration to drive innovation in the cloud native ecosystem.</p>
+<p>
+<figure>
+  <img src="https://blog.aquasec.com/hubfs/blog-main-KubeCon-1200x628-2024%20final.jpg" alt="5 Must-See Sessions at KubeCon North America" />
+</figure>
+
+
+</p>
+		
+			<a href="https://ghariib.ir/posts/5-must-see-sessions-at-kubecon-north-america/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/555-timers-bring-christmas-charm-to-miniature-village/">555 Timers Bring Christmas Charm to Miniature Village</a></h1>
+	<b><time>03.01.2025 00:00</time></b>
+	
+	<div>
+		<p>
+<figure>
+  <img src="https://hackaday.com/wp-content/uploads/2025/01/555xmas_feat.jpg?w=800" alt="" />
+</figure>
+
+
+</p>
+<p>The miniature Christmas village is a tradition in many families — a tiny idyllic world filled happy people, shops, and of course, snow. It’s common to see various miniature buildings for sale around the holidays just for this purpose, and since LEDs are small and cheap, they’ll almost always have some switch on the bottom to light up the windows.</p>
+<p>This year, [Braden Sunwold] and his wife started their own village with an eye towards making it a family tradition. But to his surprise, the scale lamp posts they bought to dot along their snowy main street were hollow and didn’t actually light up. Seeing it was up to him to save Christmas, [Braden] got to work adding LEDs to the otherwise inert lamps.</p>
+		
+			<a href="https://ghariib.ir/posts/555-timers-bring-christmas-charm-to-miniature-village/">Read more...</a>
 		
 	</div>
 </article>
@@ -191,7 +248,7 @@
 
 	<a href="/page/410/">Previous Page</a>
 
-411 of 436
+411 of 553
 
 	<a href="/page/412/">Next Page</a>
 

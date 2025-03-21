@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Kali Linux 20214 Release</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Kali Linux 20214 Release</h1>
+			<b><time>09.12.2021 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="kali-linux-20214-release">Kali Linux 20214 Release</h1>
+<p><a href="https://www.kali.org/blog/kali-linux-2021-4-release/images/banner-2021.4-release.jpg">https://www.kali.org/blog/kali-linux-2021-4-release/images/banner-2021.4-release.jpg</a></p>
+<p>With the end of 2021 just around the corner, we are pushing out the last release of the year with Kali Linux 2021.4, which is ready for immediate download or updating. The summary of the changelog since the 2021.3 release from September 2021 is: Improved Apple M1 support Wide compatibility for Samba Switching package</p>
+<p>With the end of 2021 just around the corner, we are pushing out the last <a href="https://www.kali.org/releases/">release</a> of the year with <strong>Kali Linux 2021.4</strong>, which is ready for immediate <a href="https://www.kali.org/get-kali/">download</a> or <a href="https://www.kali.org/docs/general-use/updating-kali/">updating</a>.</p>
+<p>The summary of the <a href="https://bugs.kali.org/changelog_page.php">changelog</a> since the <a href="https://www.kali.org/blog/kali-linux-2021-3-release/">2021.3 release from September 2021</a> is:</p>
+<ul>
+<li><a href="https://www.kali.org/blog/kali-linux-2021-4-release/#kali-on-the-apple-m1">Improved Apple M1 support</a></li>
+<li><a href="https://www.kali.org/blog/kali-linux-2021-4-release/#extended-compatibility-for-the-samba-client">Wide compatibility for Samba</a></li>
+<li><a href="https://www.kali.org/blog/kali-linux-2021-4-release/#easy-package-manager-mirror-configuration">Switching package manager mirrors</a></li>
+<li><a href="https://www.kali.org/blog/kali-linux-2021-4-release/#kaboxer-theme-support">Kaboxer theming</a></li>
+<li><a href="https://www.kali.org/blog/kali-linux-2021-4-release/#desktop--theme-enhancement">Updates to Xfce, GNOME and KDE</a></li>
+<li><a href="https://www.kali.org/blog/kali-linux-2021-4-release/#kali-arm-updates">Raspberry Pi Zero 2 W + USBArmory MkII ARM images</a></li>
+<li><a href="https://www.kali.org/blog/kali-linux-2021-4-release/#new-tools-in-kali">More tools</a></li>
+</ul>
+<hr>
+<h2 id="kali-on-the-apple-m1">Kali on the Apple M1</h2>
+<p>As we announced in <a href="https://www.kali.org/blog/kali-linux-2021-1-release/">Kali 2021.1</a> we supported installing Kali Linux on Parallels on Apple Silicon Macs, well with 2021.4, we now also support it on the <a href="https://blogs.vmware.com/teamfusion/2021/09/fusion-for-m1-public-tech-preview-now-available.html">VMware Fusion Public Tech Preview</a> thanks to the <a href="https://pkg.kali.org/pkg/linux">5.14 kernel</a> having the modules needed for the virtual GPU used. We also have updated the <code>open-vm-tools</code> <a href="https://pkg.kali.org/pkg/open-vm-tools">package</a>, and <a href="https://pkg.kali.org/pkg/debian-installer">Kali’s installer</a> will automatically detect if you are installing under VMware and install the <code>open-vm-tools-desktop</code> package, which should allow you to change the resolution out of the box. As a reminder, this is still a <em>preview</em> from VMware, so there may be some rough edges. There is no extra <a href="https://www.kali.org/docs/virtualization/install-vmware-guest-vm/">documentation</a> for this because the <a href="https://www.kali.org/docs/installation/hard-disk-install/">installation process</a> is the same as VMWare on 64-bit and 32-bit Intel systems, just using the <a href="https://www.kali.org/get-kali/">arm64 ISO</a>.</p>
+<p>As a reminder, virtual machines on <strong>Apple Silicon are still limited to arm64 architecture only</strong>.</p>
+<h2 id="extended-compatibility-for-the-samba-client">Extended Compatibility for the Samba Client</h2>
+<p>Starting Kali Linux 2021.4, the <a href="https://pkg.kali.org/pkg/samba">Samba</a> client is now configured for <strong>Wide Compatibility</strong> so that it can connect to pretty much every Samba server out there, regardless of the version of the protocol in use. This change should make it easier to discover vulnerable Samba servers “out of the box”, without having to configure Kali.</p>
+<p>This setting can be changed easily via the command-line tool <code>kali-tweaks</code>. In the <em>Hardening</em> section, one can choose the value <strong>Default</strong> instead, which reverts back to Samba’s usual default, and only allow using modern versions of the Samba protocol.</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2021-4-release/images/kali-tweaks-hardening.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2021-4-release/images/kali-tweaks-hardening.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>As one can see on this screenshot, there’s also a similar setting for <a href="https://pkg.kali.org/pkg/openssl">OpenSSL</a>. You might want to refer to the <a href="https://www.kali.org/blog/kali-linux-2021-3-release/">2021.3 release announcement</a> for more details on this setting.</p>
+<h2 id="easy-package-manager-mirror-configuration">Easy Package Manager Mirror Configuration</h2>
+<p>By default, when a Kali system is updated, the package manager (<a href="https://pkg.kali.org/pkg/apt">APT</a>) downloads packages from a <a href="https://www.kali.org/docs/general-use/kali-linux-sources-list-repositories/">community mirror</a> nearby. But did you know that it’s also possible to configure Kali to get its package from the <a href="https://blog.cloudflare.com/cloudflare-repositories-ftw/">Cloudflare CDN</a>? To be honest, <a href="https://www.kali.org/blog/kali-linux-2019-3-release/">this is old news</a>. But what’s new is that you can now use <code>kali-tweaks</code> to quickly configure whether APT should use community mirrors or the Cloudflare CDN.</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2021-4-release/images/kali-tweaks-mirrors.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2021-4-release/images/kali-tweaks-mirrors.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>So which one is best, community mirrors or Cloudflare CDN? There’s no good answer. The time that it actually takes to update Kali can vary greatly and depends on many factors, including the speed of your Internet connection, your location, and even the time of day, if ever you live in a place where Internet traffic jam occurs at rush hour. The point is: if ever Kali updates are slow, the best you can do is to try to switch from community mirrors to Cloudflare CDN, or the other way round, and find what works best for you. And with <code>kali-tweaks</code>, it’s never been easier!</p>
+<h2 id="kaboxer-theme-support">Kaboxer Theme Support</h2>
+<p>With the latest update of <strong><a href="https://pkg.kali.org/pkg/kaboxer">Kaboxer</a></strong> tools no longer look out of place, as it brings <strong>support for window themes and icon themes</strong> (placed respectively inside <code>/usr/share/themes</code> and <code>/usr/share/icons</code>). This allows the program to properly integrate with the rest of the desktop and avoids the usage of ugly fallback themes.</p>
+<p>Here is a comparison of how zenmap (<strong>zenmap-kbx</strong> <a href="https://pkg.kali.org/pkg/zenmap-kbx">package</a>) looks with the default Kali Dark theme, compared to the old appearance:</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2021-4-release/images/kaboxer-theme-support.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2021-4-release/images/kaboxer-theme-support.png" alt="" />
+</figure>
+
+
+</a></p>
+<h2 id="new-tools-in-kali">New Tools in Kali</h2>
+<p>It would not be a Kali release if there were not any new tools added! A quick run down of what’s been added <em>(to the <a href="https://www.kali.org/docs/general-use/kali-linux-sources-list-repositories/">network repositories</a>)</em>:</p>
+<ul>
+<li><a href="https://pkg.kali.org/pkg/dufflebag">Dufflebag</a> - Search exposed EBS volumes for secrets</li>
+<li><a href="https://pkg.kali.org/pkg/maryam">Maryam</a> - Open-source Intelligence (OSINT) Framework</li>
+<li><a href="https://pkg.kali.org/pkg/name-that-hash">Name-That-Hash</a> - Do not know what type of hash it is? Name That Hash will name that hash type!</li>
+<li><a href="https://pkg.kali.org/pkg/proxmark3">Proxmark3</a> - if you are into Proxmark3 and RFID hacking</li>
+<li><a href="https://pkg.kali.org/pkg/rev-proxy-grapher">Reverse Proxy Grapher</a> - graphviz graph illustrating your reverse proxy flow</li>
+<li><a href="https://pkg.kali.org/pkg/s3scanner">S3Scanner</a> - Scan for open S3 buckets and dump the contents</li>
+<li><a href="https://pkg.kali.org/pkg/spraykatz">Spraykatz</a> - Credentials gathering tool automating remote procdump and parse of lsass process.</li>
+<li><a href="https://pkg.kali.org/pkg/trufflehog">truffleHog</a> - Searches through git repositories for high entropy strings and secrets, digging deep into commit history</li>
+<li><a href="https://pkg.kali.org/pkg/wotmate">Web of trust grapher (wotmate)</a> - reimplement the defunct PGP pathfinder without needing anything other than your own keyring</li>
+</ul>
+<h2 id="desktop--theme-enhancement">Desktop &amp; Theme Enhancement</h2>
+<p>This release brings updates for all the 3 main desktops (<a href="https://pkg.kali.org/pkg/xfce4">Xfce</a>, <a href="https://pkg.kali.org/pkg/gnome-shell">GNOME</a>, and <a href="https://pkg.kali.org/pkg/kde-plasma-desktop">KDE</a>), but one that is common to all of them is the <strong>new window buttons design</strong>. Previous buttons were designed to fit the window theme of Xfce but did not work well with the other desktops and lacked personality. The new design looks elegant on any of the desktops and makes it easier to spot the currently focused window.</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2021-4-release/images/new-window-buttons.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2021-4-release/images/new-window-buttons.png" alt="" />
+</figure>
+
+
+</a></p>
+<h3 id="xfce">Xfce</h3>
+<p>The panel layout has been tweaked to optimize horizontal space and make room for 2 new widgets: the <strong>CPU usage widget</strong> and the <strong>VPN IP widget</strong>, which remains hidden unless a VPN connection is established.</p>
+<p>Following the steps of other desktops, the <strong>task manager</strong> has been configured to <strong>“icons only”</strong>, which, with the slight increase in the panel’s height, makes the overall look cleaner and improves multitasking in smaller displays.</p>
+<p>The <strong>workspaces overview</strong> has been configured to the “Buttons” appearance, as the previous configuration “Miniature view” was too wide and a bit confusing for some users. Now that each workspace button takes less space in the panel, we have <strong>increased the default number of workspaces to 4</strong>, as it’s a usual arrangement in Linux desktops.</p>
+<p>To finish with the modifications, a shortcut to <strong>PowerShell</strong> has been added to the terminals dropdown menu. With this addition, you can now choose between the regular terminal, root terminal, and PowerShell.</p>
+<p>If you prefer the previous configuration for any of the widgets, you can modify or remove them by pressing <code>Ctrl + Right-Click</code> over it.</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2021-4-release/images/xfce-layout-updates.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2021-4-release/images/xfce-layout-updates.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>In addition to the Xfce design tweaks, In the image above, we can also observe the new <strong>customized prompt for PowerShell</strong> (in the two-line mode). Same as for <a href="https://pkg.kali.org/pkg/zsh">zsh</a> and <a href="https://pkg.kali.org/pkg/bash">bash</a>, it includes an alternative one-line prompt that can be configured with <code>kali-tweaks</code>.</p>
+<p><strong>Bonus Tips For Virtual Desktops!</strong></p>
+<ul>
+<li>You can add or remove workspaces with the shortcuts: <code>Alt + Insert</code> / <code>Alt + Delete</code></li>
+<li>You can move through workspaces with the shortcuts:
+<ul>
+<li><code>Ctrl + Alt + &lt;ARROW_KEY&gt;</code> to move in the direction of the arrow key.
+<ul>
+<li>(if you add <code>Shift</code> you move the current focused window)</li>
+</ul>
+</li>
+<li><code>Ctrl + Alt + &lt;WORKSPACE_NUM&gt;</code> to move to a specific workspace, based on its number.</li>
+<li><code>Ctrl + Super + &lt;WORKSPACE_NUM&gt;</code> to move a window to a specific workspace, based on its number.</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://www.kali.org/blog/kali-linux-2021-4-release/images/workspaces-shortcuts-demo.gif">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2021-4-release/images/workspaces-shortcuts-demo.gif" alt="" />
+</figure>
+
+
+</a></p>
+<h3 id="gnome-41">GNOME 41</h3>
+<p>In this update, GNOME desktop has received not one, but two version bumps. It’s been one year since the last major update of the GNOME desktop in Kali (with GNOME 3.38) and since then there have been two releases of the desktop environment:</p>
+<ul>
+<li><a href="https://help.gnome.org/misc/release-notes/40.0/">Introducing GNOME 40</a></li>
+<li><a href="https://help.gnome.org/misc/release-notes/41.0/">Introducing GNOME 41</a></li>
+</ul>
+<p>All themes and extensions have been updated to support the new shell:</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2021-4-release/images/gnome41.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2021-4-release/images/gnome41.png" alt="" />
+</figure>
+
+
+</a></p>
+<p><a href="https://www.kali.org/blog/kali-linux-2021-4-release/images/gnome41-overview.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2021-4-release/images/gnome41-overview.png" alt="" />
+</figure>
+
+
+</a></p>
+<h3 id="kde-523">KDE 5.23</h3>
+<p>The KDE team celebrated its 25th anniversary releasing the update <a href="https://kde.org/announcements/plasma/5/5.23.0/">5.23</a> of the <strong>Plasma</strong> desktop. This update, now available in Kali, brings a <strong>new design for the Breeze theme</strong>, which improves the look of Plasma with details that add glossiness and style to the desktop. Along with the theme improvements, the <em>System Settings</em> (Under <em>Global Theme &gt; Colors</em>) brings a <em>new option to pick the desktop <strong>accent color</strong></em>.</p>
+<p>From Kali’s side, the new window theme for KDE is now based on the source code of the breeze theme instead of using the <em>Aurorae</em> theme engine. This fixes previous issues with window scaling for <a href="https://www.kali.org/docs/general-use/hidpi/">HiDPI displays</a>.</p>
+<h3 id="how-to-upgrade-your-kali-theme">How to Upgrade Your Kali Theme</h3>
+<p>With these theme changes, you <strong>may not get them if you <a href="https://www.kali.org/docs/general-use/updating-kali/">upgrade</a></strong> Kali. This is because the <strong>theme settings</strong> are <strong>copied</strong> to your <strong>home folder</strong> when your <strong>user is first created</strong>. When you upgrade Kali, it is <strong>upgrading the operating system</strong>, so upgrading <strong>does not alter personal files</strong> <em>(just system files)</em>. As a result, in order to get these theme tweaks, you need to either:</p>
+<ul>
+<li>Do a fresh Kali install</li>
+<li>Create a new user and switch to that</li>
+<li>Delete your Desktop environment profile for the current user and force reboot. Example of Xfce can be found below:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kali:~$ mv ~/.config/xfce4{,-$(date +%Y.%m.%d-%H.%M.%S)}
+</span></span><span style="display:flex;"><span>kali@kali:~$
+</span></span><span style="display:flex;"><span>kali@kali:~$ cp -rbi /etc/skel/. ~/
+</span></span><span style="display:flex;"><span>kali@kali:~$
+</span></span><span style="display:flex;"><span>kali@kali:~$ xfce4-session-logout --reboot --fast
+</span></span></code></pre></div><h2 id="kali-nethunter-updates">Kali NetHunter Updates</h2>
+<p><a href="https://www.kali.org/blog/kali-linux-2021-4-release/images/NH-SET.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2021-4-release/images/NH-SET.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Thanks to the amazing work of <a href="https://gitlab.com/yesimxev">yesimxev</a>, we have a new addition to the NetHunter app: <strong>The Social-Engineer Toolkit!</strong></p>
+<p>This release features the first module from SET: the Spear Phishing Email Attack, with many more to come - watch this space…</p>
+<p>Now you can use the Kali NetHunter app to customise your own Facebook, Messenger, or Twitter direct message email notifications for your social engineering attacks:</p>
+<p>Your browser does not support the video tag.</p>
+<p>Thanks to everyone that contributed to this feature by participating in the <a href="https://twitter.com/yesimxev/status/1451314339554660359">Twitter poll</a>. We could not have done it without your input!</p>
+<h2 id="kali-arm-updates">Kali ARM Updates</h2>
+<p>Notable changes this release</p>
+<ul>
+<li><strong>All images now use ext4 for their root filesystem</strong>, and <strong>resize the root filesystem on first boot</strong>. This results in a speed-up over previous releases which were using ext3, and a reduced boot time on the first reboot when resize happens.</li>
+<li><strong>Raspberry Pi Zero 2 W support has been added</strong>, but like the Raspberry Pi 400, there is no Nexmon support.</li>
+<li>Speaking of the <strong>Raspberry Pi Zero 2 W</strong>, since it is so similar to the Zero W, we have also added a <strong>PiTail image</strong> to support the new processor with better performance.</li>
+<li><strong>Raspberry Pi images now support USB booting</strong> out of the box since we no longer hardcode the root device.</li>
+<li><strong>Raspberry Pi images now include versioned Nexmon firmware</strong>. A future release of <code>kalipi-config</code> will allow you to switch between them, if you would like to test different versions.</li>
+<li>Images that use a vendor kernel will now be able to set the regulatory domain properly, so <strong>setting your country will give access to channels properly for wireless</strong>.</li>
+<li><strong>Pinebook Pro can now be overclocked</strong>. The big cores get 2GHz and the little cores get 1.5GHz added.
+<ul>
+<li><code>echo 1 | sudo tee /sys/devices/system/cpu/cpufreq/boost</code> to enable</li>
+<li><code>echo 0 | sudo tee /sys/devices/system/cpu/cpufreq/boost</code> to disable</li>
+</ul>
+</li>
+<li><strong>USBArmory MkII image has been added</strong>.</li>
+</ul>
+<p><strong><a href="https://gitlab.com/kalilinux/build-scripts/kali-arm">Kali ARM build-scripts</a></strong> have seen a massive amount of changes:</p>
+<ul>
+<li>They are vastly <strong>more simplified</strong> - thanks to <a href="https://twitter.com/FrangaLinux">Francisco Jose Rodriguez Martos</a>, and <a href="https://gitlab.com/cyrus104">cyrus104</a> for all of their contributions to make this happen.</li>
+<li>You can now <strong>choose which desktop</strong> you would like to install (or none at all using <code>--minimal</code>)</li>
+<li>There is even an option of <strong>no desktop and no tools</strong> (<code>--slim</code>) if you would like to build a custom image up from scratch</li>
+</ul>
+<h2 id="kali-docs-updates">Kali-Docs Updates</h2>
+<ul>
+<li><a href="https://www.kali.org/docs/tools/flatpak/">Installing Flatpak on Kali Linux</a> is now well documented</li>
+<li>A new page for the <a href="https://www.kali.org/docs/arm/raspberry-pi-zero-2-w/">Raspberry Pi Zero 2 W</a> has been added</li>
+<li>The <a href="https://www.kali.org/docs/general-use/kali-branches/">Kali branches</a> page has been refreshed with best practices and references to <code>kali-tweaks</code> that help you follow those best practices to enable (or disable) some of the supplementary repositories.</li>
+<li>We added a <a href="https://www.kali.org/docs/tools/removed-tools/">list of removed tools</a> so that you can learn why a package got dropped from Kali.</li>
+<li>Thanks also to <a href="https://gitlab.com/mayomacam">Aman Kumar Maurya</a> for the <a href="https://www.kali.org/docs/general-use/install-nvidia-drivers-on-kali-linux/">nVidia</a> guide</li>
+</ul>
+<p><em>Anyone can help out, anyone can get <a href="https://www.kali.org/docs/community/contribute/">involved</a>!</em></p>
+<hr>
+<h2 id="miscellaneous">Miscellaneous</h2>
+<p><strong>Kali-Cloud &amp; Cron</strong></p>
+<p>Some <a href="https://twitter.com/DHAhole">users</a> noticed that the venerable <code>cron</code> <a href="https://pkg.kali.org/pkg/cron">package</a> was missing from the <a href="https://www.kali.org/get-kali/#kali-cloud">Kali AWS Cloud image</a>. This was not intentional, and it’s now fixed.</p>
+<p><strong>Remote Desktop Protocol Audio</strong></p>
+<p>“<em>The quieter you become, the more you are able to hear</em>”, goes the saying. And for those running Kali in a VM and using RDP to connect, it’s been very quiet indeed, as the sound never worked with this configuration. However this long period of silence is coming to an end! Sound should be enabled and work out of the box from now on. If ever it does not, make yourself heard on the <a href="https://bugs.kali.org/">bug tracker</a> ;)</p>
+<p><strong>Python Command</strong></p>
+<p>The command <code>python</code> is no more! Instead, you need to use <code>python3</code> (or <a href="https://www.kali.org/docs/general-use/using-eol-python-versions/">if you have to</a>, <code>python2</code> due it being at <a href="https://www.kali.org/blog/python-2-end-of-life/">End Of Life</a>). Alternatively you can install <code>python-is-python3</code> to restore <code>python</code> as an alias for <code>python3</code>.</p>
+<h2 id="download-kali-linux-20214">Download Kali Linux 2021.4</h2>
+<p><strong>Fresh Images</strong>: So what are you waiting for? Start <a href="https://www.kali.org/get-kali/">downloading</a> already!</p>
+<p>Seasoned Kali Linux users are already aware of this, but for the ones who are not, we do also produce <strong><a href="https://cdimage.kali.org/kali-images/kali-weekly/">weekly builds</a></strong> that you can use as well. If you cannot wait for our next release and you want the latest packages <em>(or bug fixes)</em> when you download the image, you can just use the weekly image instead. This way you’ll have fewer updates to do. <em>Just know that these are automated builds that we do not QA like we do our standard <a href="https://www.kali.org/releases/">release images</a></em>. But we gladly take <a href="https://bugs.kali.org/">bug reports</a> about those images because we want any issues to be fixed before our next release!</p>
+<p><strong>Existing Installs</strong>: If you already have an existing Kali Linux installation, remember you can always do a quick <a href="https://www.kali.org/docs/general-use/updating-kali/">update</a>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ echo &#34;deb http://http.kali.org/kali kali-rolling main contrib non-free&#34; | sudo tee /etc/apt/sources.list
+</span></span><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ sudo apt update &amp;&amp; sudo apt -y full-upgrade
+</span></span><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ cp -rbi /etc/skel/. ~
+</span></span><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ [ -f /var/run/reboot-required ] &amp;&amp; sudo reboot -f
+</span></span></code></pre></div><p>You should now be on Kali Linux 2021.4. We can do a quick check by doing:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ grep VERSION /etc/os-release
+</span></span><span style="display:flex;"><span>VERSION=&#34;2021.4&#34;
+</span></span><span style="display:flex;"><span>VERSION_ID=&#34;2021.4&#34;
+</span></span><span style="display:flex;"><span>VERSION_CODENAME=&#34;kali-rolling&#34;
+</span></span><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ uname -v
+</span></span><span style="display:flex;"><span>#<span style="color:#ae81ff">1</span> SMP Debian 5.14.16-1kali1 <span style="color:#f92672">(</span>2021-11-05<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ uname -r
+</span></span><span style="display:flex;"><span>5.14.0-kali4-amd64
+</span></span></code></pre></div><p><em>NOTE: The output of <code>uname -r</code> may be different depending on the system <a href="https://pkg.kali.org/pkg/linux">architecture</a>.</em></p>
+<p>As always, should you come across any bugs in Kali, please submit a report on our <a href="https://bugs.kali.org/">bug tracker</a>. <em>We’ll never be able to fix what we do not know is broken!</em> <strong>And <a href="https://twitter.com/kalilinux">Twitter</a> is not a Bug Tracker!</strong></p>
+<h4 id="source"><a href="https://www.kali.org/blog/kali-linux-2021-4-release/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

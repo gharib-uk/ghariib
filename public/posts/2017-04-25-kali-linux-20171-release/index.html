@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Kali Linux 20171 Release</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Kali Linux 20171 Release</h1>
+			<b><time>25.04.2017 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="kali-linux-20171-release">Kali Linux 20171 Release</h1>
+<p><a href="https://www.kali.org/blog/kali-linux-2017-1-release/images/kali-release-2017-1.jpg">https://www.kali.org/blog/kali-linux-2017-1-release/images/kali-release-2017-1.jpg</a></p>
+<p>Finally, it’s here! We’re happy to announce the availability of the Kali Linux 2017.1 rolling release, which brings with it a bunch of exciting updates and features. As with all new releases, you have the common denominator of updated packages, an updated kernel that provides more and better hardware support,</p>
+<p>Finally, it’s here! We’re happy to announce the availability of the <strong>Kali Linux 2017.1 rolling release</strong>, which brings with it a bunch of exciting updates and features. As with all new releases, you have the common denominator of <a href="https://bugs.kali.org/changelog_page.php">updated packages</a>, an updated kernel that provides more and better hardware support, as well as a slew of updated tools - but this release has a few more surprises up its sleeve.</p>
+<h3 id="support-for-rtl8812au-wireless-card-injection">Support for RTL8812AU Wireless Card Injection</h3>
+<p>A while back, we received a feature request asking for the <a href="https://bugs.kali.org/view.php?id=3260">inclusion of drivers for RTL8812AU wireless chipsets</a>. These drivers are not part of the standard Linux kernel, and have been modified to allow for injection. Why is this a big deal? This chipset supports <strong>802.11 AC</strong>, making this one of the first drivers to bring injection-related wireless attacks to this standard, and with companies such as ALFA making the <strong>AWUS036ACH</strong> wireless cards, we expect this card to be an arsenal favourite.</p>
+<p>The driver can be installed using the following commands:</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2017-1-release/images/AWUS036ACH.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2017-1-release/images/AWUS036ACH.png" alt="" />
+</figure>
+
+
+</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt-get update
+</span></span><span style="display:flex;"><span>apt install realtek-rtl88xxau-dkms
+</span></span></code></pre></div><h3 id="streamlined-support-for-cuda-gpu-cracking">Streamlined Support for CUDA GPU Cracking</h3>
+<p>Installing proprietary graphics drivers has always been a source of frustration in Kali. Fortunately, improvements in packaging have made this process seamless - allowing our users a streamlined experience with GPU cracking. Together with supported hardware, tools such as Hashcat and Pyrit can take full advantage of NVIDIA GPUs within Kali. For more information about this new feature, check out the <a href="https://www.kali.org/blog/cloud-cracking-with-cuda-gpu/">related blog post</a> and updated <a href="https://www.kali.org/docs/general-use/install-nvidia-drivers-on-kali-linux/">official documentation</a>.</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2017-1-release/images/small_nvidia-geforce-gtx-1070-5.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2017-1-release/images/small_nvidia-geforce-gtx-1070-5.png" alt="" />
+</figure>
+
+
+</a></p>
+<h3 id="amazon-aws-and-microsoft-azure-availability-gpu-support">Amazon AWS and Microsoft Azure Availability (GPU Support)</h3>
+<p>Due to the increasing popularity of using cloud-based instances for password cracking, we decided to focus our efforts into streamlining Kali’s approach. We noticed that Amazon’s AWS <a href="https://aws.amazon.com/ec2/instance-types/p2/">P2-Series</a> and Microsoft’s Azure <a href="https://azure.microsoft.com/en-us/blog/azure-n-series-general-availability-on-december-1/">NC-Series</a> allow pass-through GPU support so we made corresponding AWS and Azure images of Kali that support CUDA GPU cracking out of the box. You can check out our <a href="https://www.kali.org/blog/cloud-cracking-with-cuda-gpu/">Cracking in the Cloud with CUDA GPUs</a> post we released a few weeks back for more information.</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2017-1-release/images/Azure-AWS.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2017-1-release/images/Azure-AWS.png" alt="" />
+</figure>
+
+
+</a></p>
+<h3 id="openvas-9-packaged-in-kali-repositories">OpenVAS 9 Packaged in Kali Repositories</h3>
+<p>One of the most lacking tool categories in Kali (as well as the Open-source arena at large) is a fully-fledged vulnerability scanner. We’ve recently packaged OpenVAS 9 (together with a multitude of dependencies) and can happily say that, in our opinion, the OpenVAS project has matured significantly. We still do not include OpenVAS in the default Kali release due to its large footprint, but OpenVAS can easily be downloaded and installed using the following commands:</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2017-1-release/images/openvas9-screenshot.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2017-1-release/images/openvas9-screenshot.png" alt="" />
+</figure>
+
+
+</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt-get update
+</span></span><span style="display:flex;"><span>apt install openvas
+</span></span></code></pre></div><h3 id="kali-linux-revealed-book-and-online-course">Kali Linux Revealed Book and Online Course</h3>
+<p>To those of you following our recent announcement regarding the <a href="https://www.kali.org/blog/introducing-kali-linux-certified-professional/">Kali Linux Certified Professional</a> program, we’re happy to say that we’re spot on schedule. The <em>Kali Linux Revealed</em> book will be available in early July, and the free online version will be available shortly after that. We’re really excited about both the book and the online course and are anxiously waiting for this release - it marks a real cornerstone for us, as our project continues to grow and mature. To keep updated regarding the release of both the book and the online course, make sure to follow us on <a href="https://twitter.com/kalilinux">Twitter</a>.</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2017-1-release/images/kali-revealed-book-mock.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2017-1-release/images/kali-revealed-book-mock.png" alt="" />
+</figure>
+
+
+</a></p>
+<h3 id="kali-linux-at-black-hat-vegas-2017">Kali Linux at Black Hat Vegas 2017</h3>
+<p>This year, we are fortunate enough to debut our <a href="https://www.kali.org/blog/introducing-kali-linux-certified-professional/">first official Kali Linux training</a> at the <strong>Black Hat</strong> conference in Las Vegas, 2017. This in-depth, four day course will focus on the Kali Linux platform itself (as opposed to the tools, or penetration testing techniques), and help you understand and maximize the usage of Kali from the ground up. Delivered by <a href="https://www.kali.org/about-us/">Mati Aharoni</a> and Johnny Long, in this four day class you will learn to become a Kali Linux ninja. We will also be delivering another Dojo event this year - more details about that to come at a later date.</p>
+<p><a href="https://www.blackhat.com/us-17/training/kali-linux-revealed-mastering-the-penetration-testing-distribution.html">Register for Black Hat Training</a></p>
+<h3 id="kali-iso-downloads-virtual-machines-and-arm-images">Kali ISO Downloads, Virtual Machines and ARM Images</h3>
+<p>The Kali Rolling 2017.1 release can be downloaded via our official Kali Download page. If you missed it, our repositories have recently been <a href="https://www.kali.org/blog/kali-linux-repository-https-support/">updated to support HTTPS</a>, as well as an HTTPS <strong>apt</strong> transport. This release, we have also updated our <a href="https://www.kali.org/get-kali/#kali-vm">Kali Virtual Images</a> and <a href="https://www.kali.org/get-kali/#kali-arm">Kali ARM Images</a> downloads. As usual, if you’ve got Kali already installed, all you need to do to be fully updated is:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt update
+</span></span><span style="display:flex;"><span>apt dist-upgrade
+</span></span><span style="display:flex;"><span>reboot
+</span></span></code></pre></div><p>We hope you enjoy this fine release!</p>
+<h4 id="source"><a href="https://www.kali.org/blog/kali-linux-2017-1-release/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

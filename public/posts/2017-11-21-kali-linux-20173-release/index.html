@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Kali Linux 20173 Release</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Kali Linux 20173 Release</h1>
+			<b><time>21.11.2017 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="kali-linux-20173-release">Kali Linux 20173 Release</h1>
+<p><a href="https://www.kali.org/blog/kali-linux-2017-3-release/images/kali-release.jpg">https://www.kali.org/blog/kali-linux-2017-3-release/images/kali-release.jpg</a></p>
+<p>We are pleased to announce the immediate availability of Kali Linux 2017.3, which includes all patches, fixes, updates, and improvements since our last release. In this release, the kernel has been updated to 4.13.10 and it includes some notable improvements: CIFS now uses SMB 3.0 by default EXT4 directories can now contain</p>
+<p>We are pleased to announce the immediate availability of <a href="https://www.kali.org/get-kali/">Kali Linux 2017.3</a>, which includes all patches, fixes, updates, and improvements since our <a href="https://www.kali.org/blog/kali-linux-2017-2-release/">last release</a>. In this release, the kernel has been updated to 4.13.10 and it includes some notable improvements:</p>
+<ul>
+<li><a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eef914a9eb5eb83e60eb498315a491cd1edc13a1">CIFS now uses SMB 3.0 by default</a></li>
+<li><a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e08ac99fa2a25626f573cfa377ef3ddedf2cfe8f">EXT4 directories can now contain 2 billion entries instead of the old 10 million limit</a></li>
+<li><a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3c4d7559159bfe1e3b94df3a657b2cda3a34e218">TLS support is now built into the kernel itself</a></li>
+</ul>
+<p>In addition to the new kernel and all of the updates and fixes we pull from Debian, we have also updated our packages for <a href="https://www.kali.org/tools/reaver/">Reaver</a>, <a href="https://www.kali.org/tools/pixiewps/">PixieWPS</a>, <a href="https://www.kali.org/tools/burpsuite/">Burp Suite</a>, <a href="https://www.kali.org/docs/tools/removed-tools/">Cuckoo</a>, <a href="https://www.kali.org/tools/set/">The Social Engineering Toolkit</a>, and more. Take a look at the <a href="https://bugs.kali.org/changelog_page.php">Kali Changelog</a> to see what else has been updated in this release, or read on to see what else is new.</p>
+<h2 id="new-tool-additions">New Tool Additions</h2>
+<p>Since our last release in September, we’ve added four new tools to the distribution, most of which focus on the always-lucrative Open-source information gathering. These new tools are not included in the default installation but after an ‘apt update’, you can check out and install the ones that interest you. We, of course, think they’re all interesting and hope you do as well.</p>
+<h3 id="inspy">InSpy</h3>
+<p><a href="https://www.kali.org/tools/inspy/">InSpy</a> is a small but useful utility that performs enumeration on LinkedIn and can find people based on job title, company, or email address:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# apt update &amp;&amp; apt -y install inspy
+</span></span><span style="display:flex;"><span>root@kali:~# inspy --empspy /usr/share/inspy/wordlists/title-list-large.txt google
+</span></span><span style="display:flex;"><span>InSpy 2.0.3
+</span></span><span style="display:flex;"><span>2017-11-14 14:04:47 53 Employees identified
+</span></span><span style="display:flex;"><span>2017-11-14 14:04:47 Birkan Cara Product Manager at Google
+</span></span><span style="display:flex;"><span>2017-11-14 14:04:47 Fuller Galipeau Google
+</span></span><span style="display:flex;"><span>2017-11-14 14:04:47 Catalina Alicia Esrat Account Executive at Google
+</span></span><span style="display:flex;"><span>2017-11-14 14:04:47 Coplan Pustell Recruiter at Google
+</span></span><span style="display:flex;"><span>2017-11-14 14:04:47 Kristin Suzanne Lead Recruiter at Google
+</span></span><span style="display:flex;"><span>2017-11-14 14:04:47 Baquero Jahan Executive Director at Google
+</span></span><span style="display:flex;"><span>2017-11-14 14:04:47 Jacquelline Bryan VP, Google and President of Google.org
+</span></span><span style="display:flex;"><span>2017-11-14 14:04:47 Icacan M. de Lange Executive Assistant at Google
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><h3 id="cherrytree">CherryTree</h3>
+<p>The oft-requested <a href="https://www.kali.org/tools/cherrytree/">CherryTree</a> has now been added to Kali for all of your note-taking needs. CherryTree is very easy to use and will be familiar to you if you’ve used any of the “big-name” note organization applications:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# apt update &amp;&amp; apt -y install cherrytree
+</span></span></code></pre></div><p><a href="https://www.kali.org/blog/kali-linux-2017-3-release/images/cherrytree0.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2017-3-release/images/cherrytree0.png" alt="" />
+</figure>
+
+
+</a></p>
+<h3 id="sublist3r">Sublist3r</h3>
+<p><a href="https://www.kali.org/tools/sublist3r/">Sublist3r</a> is a great application that enables you to enumerate subdomains across multiple sources at once. It has integrated the venerable SubBrute, allowing you to also brute force subdomains using a wordlist:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# apt update &amp;&amp; apt -y install sublist3r
+</span></span><span style="display:flex;"><span>root@kali:~# sublist3r -d google.com -p 80 -e Bing
+</span></span><span style="display:flex;"><span>____ _ _ _ _ _____
+</span></span><span style="display:flex;"><span>/ ___| _ _| |__ | (_)___| |_|___ / _ __
+</span></span><span style="display:flex;"><span>\___ \| | | | &#39;_ \| | / __| __| |_ \| &#39;__|
+</span></span><span style="display:flex;"><span>___) | |_| | |_) | | \__ \ |_ ___) | |
+</span></span><span style="display:flex;"><span>|____/ \__,_|_.__/|_|_|___/\__|____/|_|
+</span></span><span style="display:flex;"><span># Coded By Ahmed Aboul-Ela - @aboul3la
+</span></span><span style="display:flex;"><span>[-] Enumerating subdomains now for google.com
+</span></span><span style="display:flex;"><span>[-] Searching now in Bing..
+</span></span><span style="display:flex;"><span>[-] Total Unique Subdomains Found: 46
+</span></span><span style="display:flex;"><span>[-] Start port scan now for the following ports: 80
+</span></span><span style="display:flex;"><span>ads.google.com - Found open ports: 80
+</span></span><span style="display:flex;"><span>adwords.google.com - Found open ports: 80
+</span></span><span style="display:flex;"><span>analytics.google.com - Found open ports: 80
+</span></span><span style="display:flex;"><span>accounts.google.com - Found open ports: 80
+</span></span><span style="display:flex;"><span>aboutme.google.com - Found open ports: 80
+</span></span><span style="display:flex;"><span>adssettings.google.com - Found open ports: 80
+</span></span><span style="display:flex;"><span>console.cloud.google.com - Found open ports: 80
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><h3 id="osrframework">OSRFramework</h3>
+<p>Another excellent OSINT tool that has been added to the repos is <a href="https://www.kali.org/tools/osrframework/">OSRFramework</a>, a collection of scripts that can enumerate users, domains, and more across over 200 separate services:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# apt update &amp;&amp; apt -y install osrframework
+</span></span><span style="display:flex;"><span>root@kali:~# searchfy.py -q &#34;dookie2000ca&#34;
+</span></span><span style="display:flex;"><span>___ ____ ____ _____ _
+</span></span><span style="display:flex;"><span>/ _ \/ ___|| _ \| ___| __ __ _ _ __ ___ _____ _____ _ __| | __
+</span></span><span style="display:flex;"><span>| | | \___ \| |_) | |_ | &#39;__/ _` | &#39;_ ` _ \ / _ \ \ /\ / / _ \| &#39;__| |/ /
+</span></span><span style="display:flex;"><span>| |_| |___) | _ &lt;| _|| | | (_| | | | | | | __/\ V V / (_) | | | &lt;
+</span></span><span style="display:flex;"><span>\___/|____/|_| \_\_| |_| \__,_|_| |_| |_|\___| \_/\_/ \___/|_| |_|\_
+</span></span><span style="display:flex;"><span>Version: OSRFramework 0.17.2
+</span></span><span style="display:flex;"><span>Created by: Felix Brezo and Yaiza Rubio, (i3visio)
+</span></span><span style="display:flex;"><span>searchfy.py Copyright (C) F. Brezo and Y. Rubio (i3visio) 2014-2017
+</span></span><span style="display:flex;"><span>This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you
+</span></span><span style="display:flex;"><span>are welcome to redistribute it under certain conditions. For additional info,
+</span></span><span style="display:flex;"><span>visit https://www.gnu.org/licenses/agpl-3.0.txt
+</span></span><span style="display:flex;"><span>2017-11-14 14:54:52.535108 Starting search in different platform(s)... Relax!
+</span></span><span style="display:flex;"><span>Press &lt;Ctrl + C&gt; to stop...
+</span></span><span style="display:flex;"><span>2017-11-14 14:55:04.310148 A summary of the results obtained are listed in the following table:
+</span></span><span style="display:flex;"><span>Sheet Name: Profiles recovered (2017-11-14_14h55m).
+</span></span><span style="display:flex;"><span>+---------------------------------+---------------+------------------+
+</span></span><span style="display:flex;"><span>| i3visio_uri | i3visio_alias | i3visio_platform |
+</span></span><span style="display:flex;"><span>+=================================+===============+==================+
+</span></span><span style="display:flex;"><span>| http://github.com/dookie2000ca | dookie2000ca | GitHub |
+</span></span><span style="display:flex;"><span>+---------------------------------+---------------+------------------+
+</span></span><span style="display:flex;"><span>| http://twitter.com/dookie2000ca | dookie2000ca | Twitter |
+</span></span><span style="display:flex;"><span>+---------------------------------+---------------+------------------+
+</span></span><span style="display:flex;"><span>2017-11-14 14:55:04.327954 You can find all the information collected in the following files:
+</span></span><span style="display:flex;"><span>./profiles.csv
+</span></span><span style="display:flex;"><span>2017-11-14 14:55:04.328012 Finishing execution...
+</span></span><span style="display:flex;"><span>Total time used: 0:00:11.792904
+</span></span><span style="display:flex;"><span>Average seconds/query: 11.792904 seconds
+</span></span><span style="display:flex;"><span>Did something go wrong? Is a platform reporting false positives? Do you need to
+</span></span><span style="display:flex;"><span>integrate a new one and you don&#39;t know how to start? Then, you can always place
+</span></span><span style="display:flex;"><span>an issue in the GitHub project:
+</span></span><span style="display:flex;"><span>https://github.com/i3visio/osrframework/issues
+</span></span><span style="display:flex;"><span>Note that otherwise, we won&#39;t know about it!
+</span></span></code></pre></div><h2 id="massive-maltego-metamorphosis">Massive Maltego Metamorphosis</h2>
+<p>One of our favourite applications in Kali has always been Maltego, the incredible Open-source information gathering tool from Paterva, and the equally incredible Casefile. These two applications had always been separate entities (get it?) but as of late September, they are now combined into one amalgamated application that still allows you to run Maltego Community Edition and Casefile, but now it also works for those of you with Maltego Classic or Maltego XL licenses. As always, the tools perform wonderfully and look great doing it.</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2017-3-release/images/maltego0.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2017-3-release/images/maltego0.png" alt="" />
+</figure>
+
+
+</a></p>
+<p><a href="https://www.kali.org/blog/kali-linux-2017-3-release/images/maltego1.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2017-3-release/images/maltego1.png" alt="" />
+</figure>
+
+
+</a></p>
+<h2 id="get-the-goods">Get the Goods</h2>
+<p>As usual, we have updated our standard ISO images, VMware and VirtualBox virtual machines, ARM images, and cloud instances, all of which can be found via the <a href="https://www.kali.org/get-kali/">Kali Downloads</a> page.</p>
+<p>If you find any bugs, please open a ticket on our <a href="https://bugs.kali.org/">bug tracker</a>. We keep an eye on social media but there is no substitute for a <a href="https://web.archive.org/web/20210914172345/https://kali.training/topic/filing-a-good-bug-report/">well-written bug report</a> and many bugs that get reported to us end up getting fixed in Debian, which then benefits all of its <a href="https://wiki.debian.org/Derivatives/Census">derivatives</a>.</p>
+<h4 id="source"><a href="https://www.kali.org/blog/kali-linux-2017-3-release/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

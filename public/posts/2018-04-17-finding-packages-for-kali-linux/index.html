@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Finding Packages for Kali Linux</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Finding Packages for Kali Linux</h1>
+			<b><time>17.04.2018 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="finding-packages-for-kali-linux">Finding Packages for Kali Linux</h1>
+<p><a href="https://www.kali.org/blog/finding-packages-for-kali-linux/images/kali-advanced-package-management-2.jpg">https://www.kali.org/blog/finding-packages-for-kali-linux/images/kali-advanced-package-management-2.jpg</a></p>
+<p>In an earlier post, we covered Package Management in Kali Linux. With the ease of installation that APT provides, we have the choice amongst tens of thousands of packages but the downside is, we have tens of thousands of packages. Finding out what packages are available and finding the one(s)</p>
+<p>In an earlier post, we covered <a href="https://www.kali.org/blog/advanced-package-management-in-kali-linux/">Package Management in Kali Linux</a>. With the ease of installation that APT provides, we have the choice amongst tens of thousands of packages but the downside is, we have tens of thousands of packages. Finding out what packages are available and finding the one(s) we want can be a daunting task, particularly for newcomers to Linux. In this post, we will cover three utilities that can be used to search through the haystack and help you take advantage of the vast Open-source ecosystem.</p>
+<h3 id="apt-cache">apt-cache</h3>
+<p>Of the various interfaces available to search for packages, apt-cache is the most basic and rudimentary of them all. However, it is also the interface we tend to use most often because it is fast, easy, and efficient. By default, apt-cache searches for a given term in package names as well as their descriptions. For example, knowing that all <a href="https://www.kali.org/docs/general-use/metapackages/">Kali Linux metapackages</a> include ‘kali-linux’ in their names, we can easily search for all of them:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# apt-cache search kali-linux
+</span></span><span style="display:flex;"><span>kali-linux - Kali Linux base system
+</span></span><span style="display:flex;"><span>kali-linux-all - Kali Linux - all packages
+</span></span><span style="display:flex;"><span>kali-linux-forensic - Kali Linux forensic tools
+</span></span><span style="display:flex;"><span>kali-linux-full - Kali Linux complete system
+</span></span><span style="display:flex;"><span>kali-linux-gpu - Kali Linux GPU tools
+</span></span><span style="display:flex;"><span>kali-linux-nethunter - Kali NetHunter tools
+</span></span><span style="display:flex;"><span>kali-linux-pwtools - Kali Linux password cracking tools
+</span></span><span style="display:flex;"><span>kali-linux-rfid - Kali Linux RFID tools
+</span></span><span style="display:flex;"><span>kali-linux-sdr - Kali Linux SDR tools
+</span></span><span style="display:flex;"><span>kali-linux-top10 - Kali Linux Top 10 tools
+</span></span><span style="display:flex;"><span>kali-linux-voip - Kali Linux VoIP tools
+</span></span><span style="display:flex;"><span>kali-linux-web - Kali Linux webapp assessment tools
+</span></span><span style="display:flex;"><span>kali-linux-wireless - Kali Linux wireless tools
+</span></span></code></pre></div><p>In many cases, apt-cache returns far too many results because it searches in package descriptions. The searches can be limited to the package names themselves by using the <strong><em>--names-only</em></strong> option:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# apt-cache search nmap | wc -l
+</span></span><span style="display:flex;"><span>37
+</span></span><span style="display:flex;"><span>root@kali:~# apt-cache search nmap --names-only
+</span></span><span style="display:flex;"><span>dnmap - Distributed nmap framework
+</span></span><span style="display:flex;"><span>fruitywifi-module-nmap - nmap module for fruitywifi
+</span></span><span style="display:flex;"><span>nmap-dbgsym - debug symbols for nmap
+</span></span><span style="display:flex;"><span>python-libnmap - Python 2 NMAP library
+</span></span><span style="display:flex;"><span>python-libnmap-doc - Python NMAP Library (common documentation)
+</span></span><span style="display:flex;"><span>python3-libnmap - Python 3 NMAP library
+</span></span><span style="display:flex;"><span>libnmap-parser-perl - parse nmap scan results with perl
+</span></span><span style="display:flex;"><span>nmap - The Network Mapper
+</span></span><span style="display:flex;"><span>nmap-common - Architecture independent files for nmap
+</span></span><span style="display:flex;"><span>zenmap - The Network Mapper Front End
+</span></span><span style="display:flex;"><span>nmapsi4 - graphical interface to nmap, the network scanner
+</span></span><span style="display:flex;"><span>python-nmap - Python interface to the Nmap port scanner
+</span></span><span style="display:flex;"><span>python3-nmap - Python3 interface to the Nmap port scanner
+</span></span></code></pre></div><p>Since apt-cache has such wonderfully greppable output, we can keep filtering results until they’re at a manageable number:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# apt-cache search nmap --names-only | egrep -v &#39;(python|perl)&#39;
+</span></span><span style="display:flex;"><span>dnmap - Distributed nmap framework
+</span></span><span style="display:flex;"><span>fruitywifi-module-nmap - nmap module for fruitywifi
+</span></span><span style="display:flex;"><span>nmap - The Network Mapper
+</span></span><span style="display:flex;"><span>nmap-common - Architecture independent files for nmap
+</span></span><span style="display:flex;"><span>nmap-dbgsym - debug symbols for nmap
+</span></span><span style="display:flex;"><span>nmapsi4 - graphical interface to nmap, the network scanner
+</span></span><span style="display:flex;"><span>zenmap - The Network Mapper Front End
+</span></span></code></pre></div><p>You can further filter down the search results but once you start chaining together a few commands, that’s generally a good indication that it’s time to reach for a different tool.</p>
+<h3 id="aptitude">aptitude</h3>
+<p>The <strong><em>aptitude</em></strong> application is a very close cousin of <strong><em>apt</em></strong> and <strong><em>apt-get</em></strong> except it also includes a very useful ncurses interface. It is not included in Kali by default but it can quickly be installed as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# apt update &amp;&amp; apt -y install aptitude
+</span></span></code></pre></div><p>After installation, running aptitude without any options will launch the ncurses interface. One of the first things you will notice is that you can quickly and easily browse through packages by category, which greatly helps with sorting through the thousands of available packages.</p>
+<p><a href="https://www.kali.org/blog/finding-packages-for-kali-linux/images/aptitude0.png">
+<figure>
+  <img src="https://www.kali.org/blog/finding-packages-for-kali-linux/images/aptitude0.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>To search for a package, either press the <strong>/</strong> character or select ‘Find’ under the ‘Search’ menu. As you enter your query, the package results will be updated dynamically.</p>
+<p><a href="https://www.kali.org/blog/finding-packages-for-kali-linux/images/aptitude1.png">
+<figure>
+  <img src="https://www.kali.org/blog/finding-packages-for-kali-linux/images/aptitude1.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Once you’ve located a package of interest, you can mark it for installation with the <strong>+</strong> character or to remove/deselect it, the <strong>-</strong> character.</p>
+<p><a href="https://www.kali.org/blog/finding-packages-for-kali-linux/images/aptitude2.png">
+<figure>
+  <img src="https://www.kali.org/blog/finding-packages-for-kali-linux/images/aptitude2.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>At this point, you can keep searching for other packages to mark for installation or removal. When you’re ready to install, press the <strong>g</strong> key to view the summary of the actions to be taken.</p>
+<p><a href="https://www.kali.org/blog/finding-packages-for-kali-linux/images/aptitude3.png">
+<figure>
+  <img src="https://www.kali.org/blog/finding-packages-for-kali-linux/images/aptitude3.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>If you’re satisfied with the proposed changes, press <strong>g</strong> again and aptitude will complete the package installations as usual.</p>
+<h3 id="the-internet">The Internet</h3>
+<p>If you want to restrict your searches to tools that are packaged by the Kali team, the easiest way to do so is probably by using the Google <em>site</em> search operator.</p>
+<p><a href="https://www.kali.org/blog/finding-packages-for-kali-linux/images/google-package-search.png">
+<figure>
+  <img src="https://www.kali.org/blog/finding-packages-for-kali-linux/images/google-package-search.png" alt="" />
+</figure>
+
+
+</a></p>
+<h3 id="learn-more">Learn More</h3>
+<p>Hopefully, this post will help you answer whether or not a certain tool is available in Kali (or Debian). For a much more detailed treatment of package management, we encourage you to check out the <a href="https://web.archive.org/web/20210922173942/https://kali.training/lessons/8-debian-package-management/">Kali Training site</a>.</p>
+<h4 id="source"><a href="https://www.kali.org/blog/finding-packages-for-kali-linux/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

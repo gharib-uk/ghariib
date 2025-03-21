@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Kali Linux 106 Release</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Kali Linux 106 Release</h1>
+			<b><time>09.01.2014 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="kali-linux-106-release">Kali Linux 106 Release</h1>
+<p><a href="https://www.kali.org/blog/kali-linux-1-0-6-release/images/kali-1.0.6-release.jpg">https://www.kali.org/blog/kali-linux-1-0-6-release/images/kali-1.0.6-release.jpg</a></p>
+<p>Kernel 3.12, LUKS nuke, Amazon AMI / Google Compute images and more! It’s been a while since our last minor release which makes 1.0.6 a more significant update than usual. With a new 3.12 kernel, a LUKS nuke feature, new Kali ARM build scripts, and Kali AMAZON AMI and Google Compute</p>
+<h4 id="kernel-312-luks-nuke-amazon-ami--google-compute-images-and-more">Kernel 3.12, LUKS nuke, Amazon AMI / Google Compute images and more!</h4>
+<p>It’s been a while since our last minor release which makes 1.0.6 a more significant update than usual. With a new 3.12 kernel, <a href="https://www.kali.org/blog/emergency-self-destruction-luks-kali/">a LUKS nuke feature</a>, new <a href="https://gitlab.com/kalilinux/build-scripts/kali-arm">Kali ARM build scripts</a>, and <a href="https://gitlab.com/kalilinux/build-scripts/kali-cloud">Kali AMAZON AMI and Google Compute image generation scripts</a>, not to mention numerous tool additions and updates - this release is really heavily laden with goodness. For more information about what’s new in this release, check the <a href="https://bugs.kali.org/changelog_page.php">Kali changelog</a>.</p>
+<h4 id="kali-arm-build-scripts-now-available">Kali ARM Build Scripts Now Available</h4>
+<p>This new release brings with it the introduction of the <a href="https://gitlab.com/kalilinux/build-scripts/kali-arm">OffSec Trusted ARM image scripts</a> - a set of slowly growing scripts that are able to build Kali Linux images for various ARM devices. These scripts will replace the growing number of actual ARM image releases we have in order to reduce the exponentially growing amount of traffic we serve on each release. We will release a short blog post about how to use these scripts in the next few days.</p>
+<h4 id="luks-nuke-patch-added-to-cryptsetup">LUKS Nuke Patch Added to cryptsetup</h4>
+<p>A couple of days ago, we demonstrated a cool patch for cryptsetup, which introduces a self destruction feature. The response to this post was overwhelmingly positive, as many people voted to see this feature included in Kali Linux. Therefore, we included this patch into our cryptsetup package yesterday, making the <strong>luksAddNuke</strong> options available to all Kali users by default. The patch is non-invasive and will not change anything for anyone that does not want to make use of it. No action is necessary if you currently use LUKS and don’t want to utilize the key nuke feature. The updated cryptsetup package is present in Kali 1.0.6 by default. We’d like to take a moment to thank everyone who participated in the poll for voicing their opinion. This kind of feedback is very useful for us, giving us a better feel for the type of features to add in the future. In an upcoming blog post, we will take the opportunity to better explain this new feature and show you how to test it out.</p>
+<h4 id="updated-instructions-for-building-vmware-tools-with-kernel-312">Updated Instructions for Building VMware Tools with Kernel 3.12</h4>
+<p>VMware Tools always lags behind new kernels, which always causes us headaches and this time is no exception. At the time of this release, VMware Tools does not cleanly compile against kernel 3.12 and requires a set of patches. We have posted these <a href="https://web.archive.org/web/20140326155849/https://github.com/offensive-security/kali-vmware-tools-patches">Kali Linux VMware Tools patches on GitHub</a> along with instructions on how to use them. We suspect that these build issues will go away in future releases of VMware Tools.</p>
+<h4 id="kali-linux-amazon-amigoogle-compute-build-scripts-now-available">Kali Linux Amazon AMI/Google Compute Build Scripts Now Available</h4>
+<p>Yay! This was on our todo list for quite awhile and we’re happy to bring this feature out at last. A <a href="https://gitlab.com/kalilinux/build-scripts/kali-cloud-build">set of scripts</a> that enables you to build your own custom Amazon AMI and Google Compute cloud images. If you intend to use the images for any real work, you should first consult with the <a href="https://aws.amazon.com/security/penetration-testing/">terms of service</a> of the cloud provider.</p>
+<h4 id="separation-of-kali-official-images-and-offsec-contributed-images">Separation of Kali Official Images and OffSec Contributed Images</h4>
+<p>Due to the ever growing number of ARM images <a href="https://www.offsec.com/">OffSec</a> is contributing as well as the high demand of more flavours of VMware images, we’ve separated the Official Kali images from OffSec contributed images. This allows us to generate more VMware image flavours (amd64, i486, i686-pae), as well as increased flexibility in future releases. To find updated VMware and custom ARM images, visit the <a href="https://www.kali.org/get-kali/#kali-vm">OffSec Custom Image Download Page</a>. Please bear with us as we update images on this server in the next few days.</p>
+<h4 id="improving-kali-linux-package-features">Improving Kali Linux Package Features</h4>
+<p>In the past couple of weeks, <strong>@jerichodotm</strong> has been helping us add <a href="https://wiki.debian.org/debian/watch/">watch</a> files to our Kali packages. These watch files allow us to monitor upstream tarball releases for updates in a much more reliable manner. Once this process is complete, we’ll be able to monitor new upstream software updates with much more ease. For example, if you want to check if there’s a new upstream release of nmap, you could do the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# apt-get install devscripts
+</span></span><span style="display:flex;"><span>root@kali:~# apt-get source nmap
+</span></span><span style="display:flex;"><span>root@kali:~# cd nmap-6.40/
+</span></span><span style="display:flex;"><span>root@kali:~/nmap-6.40# uscan --no-download --verbose
+</span></span><span style="display:flex;"><span>-- Scanning for watchfiles in .
+</span></span><span style="display:flex;"><span>-- Found watchfile in ./debian
+</span></span><span style="display:flex;"><span>-- In debian/watch, processing watchfile line:
+</span></span><span style="display:flex;"><span>http://nmap.org/dist/nmap-((?:\d+\.)+\d+)\.tgz
+</span></span><span style="display:flex;"><span>-- Found the following matching hrefs:
+</span></span><span style="display:flex;"><span>nmap-5.00.tgz
+</span></span><span style="display:flex;"><span>nmap-5.20.tgz
+</span></span><span style="display:flex;"><span>nmap-5.21.tgz
+</span></span><span style="display:flex;"><span>nmap-5.50.tgz
+</span></span><span style="display:flex;"><span>nmap-5.51.1.tgz
+</span></span><span style="display:flex;"><span>nmap-5.51.2.tgz
+</span></span><span style="display:flex;"><span>nmap-5.51.3.tgz
+</span></span><span style="display:flex;"><span>nmap-5.51.4.tgz
+</span></span><span style="display:flex;"><span>nmap-5.51.5.tgz
+</span></span><span style="display:flex;"><span>nmap-5.51.6.tgz
+</span></span><span style="display:flex;"><span>nmap-5.51.tgz
+</span></span><span style="display:flex;"><span>nmap-6.00.tgz
+</span></span><span style="display:flex;"><span>nmap-6.01.tgz
+</span></span><span style="display:flex;"><span>nmap-6.25.tgz
+</span></span><span style="display:flex;"><span>nmap-6.40.tgz
+</span></span><span style="display:flex;"><span>Newest version on remote site is 6.40, local version is 6.40
+</span></span><span style="display:flex;"><span>=&gt; Package is up to date
+</span></span><span style="display:flex;"><span>-- Scan finished
+</span></span><span style="display:flex;"><span>root@kali:~/nmap-6.40#
+</span></span></code></pre></div><h4 id="no-re-downloading-required">No Re-Downloading Required</h4>
+<p>Lastly, if you already have a Kali Linux installation up and running, you don’t need to download a new ISO. You can easily upgrade your installation to the latest and greatest Kali Linux has to offer as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# apt-get update
+</span></span><span style="display:flex;"><span>root@kali:~# apt-get dist-upgrade
+</span></span></code></pre></div><h4 id="engage">….Engage.</h4>
+<p>We’re really happy with this release and are looking forward to completing our next goals with 1.0.7. As usual, you are welcome to visit our <a href="https://forums.kali.org/">Kali Linux forums</a> (which now default to HTTPS), read up on our <a href="https://www.kali.org/docs/">official documentation</a>, submit <a href="https://bugs.kali.org/">bugs and patches</a>, or chat with us in <a href="https://www.kali.org/docs/community/kali-linux-irc-channel/">IRC</a>, irc.oftc.net, #kali-linux.</p>
+<h4 id="shameless-plug">Shameless Plug</h4>
+<p>OffSec has recently updated its “Penetration Testing With BackTrack” online course to “<a href="https://www.offsec.com/pwk-oscp/">Penetration Testing with Kali Linux</a>”. If you’re looking for official, quality training on Kali Linux, this is a great place to start. We’re biased of course, but <a href="https://www.offsec.com/why-offsec/#testimonials">many other people seem to think so too!</a></p>
+<h4 id="source"><a href="https://www.kali.org/blog/kali-linux-1-0-6-release/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Kali Linux in the DigitalOcean Cloud</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Kali Linux in the DigitalOcean Cloud</h1>
+			<b><time>02.07.2019 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="kali-linux-in-the-digitalocean-cloud">Kali Linux in the DigitalOcean Cloud</h1>
+<p><a href="https://www.kali.org/blog/kali-linux-in-the-digitalocean-cloud/images/kali-digital-ocean.jpg">https://www.kali.org/blog/kali-linux-in-the-digitalocean-cloud/images/kali-digital-ocean.jpg</a></p>
+<p>DigitalOcean is a cloud provider similar to AWS, Microsoft Azure, Google Cloud Platform, and many others. They offer instances, called “droplets”, with different Linux distributions such as Debian, Ubuntu, FreeBSD, etc. Similar to AWS, DigitalOcean has datacenters around the world and sometimes multiple datacenters in each country. However, one feature in</p>
+<p><a href="https://www.digitalocean.com/">DigitalOcean</a> is a cloud provider similar to AWS, Microsoft Azure, Google Cloud Platform, and many others. They offer instances, called “droplets”, with different Linux distributions such as Debian, Ubuntu, FreeBSD, etc. Similar to AWS, DigitalOcean has datacenters around the world and sometimes multiple datacenters in each country.</p>
+<p>However, one feature in particular sets them apart them from their competitors. A little while ago, they added support for <a href="https://blog.digitalocean.com/custom-images/">custom images</a>, which allows users to import virtual machine disks and use them as droplets. This is perfect for us as we can use our own version of Kali Linux in their cloud.</p>
+<p>While it might be possible to load the <a href="https://www.kali.org/get-kali/#kali-vm">official Kali Linux virtual images</a>, it wouldn’t be very efficient. Instead, we’ll build a lightweight Kali installation with the bare minimum to get it working.</p>
+<h2 id="generate-an-iso">Generate an ISO</h2>
+<p>By default, the Kali Linux ISOs have a GUI installed, and while we could use it, we want to minimize the amount of data we have to upload to DigitalOcean for reasons we will talk about later. Having a GUI running on a headless system is also a waste of resources so while we could uninstall it or disable it, we’ll <a href="https://www.kali.org/docs/development/live-build-a-custom-kali-iso/">just generate a custom Kali ISO</a> without a GUI or any other tools installed. Building the ISO will require around 5 GB of hard drive space so make sure you have enough if you’re following along.</p>
+<p>First, we’ll make sure the system is up to date:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt update
+</span></span><span style="display:flex;"><span>apt -y full-upgrade
+</span></span></code></pre></div><p>In case a new kernel was installed, let’s reboot the system before continuing and then proceed to start the build:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt -y install git live-build cdebootstrap devscripts
+</span></span><span style="display:flex;"><span>git clone https://gitlab.com/kalilinux/build-scripts/live-build-config.git
+</span></span><span style="display:flex;"><span>cd live-build-config
+</span></span><span style="display:flex;"><span>./build.sh --variant minimal --verbose
+</span></span></code></pre></div><p>It will take a while to build the ISO as it needs to download a lot of packages and assemble them. In the meantime, enjoy a nice cup of joe. Or tea.</p>
+<p>The ‘–verbose’ option will display the build log on the screen. It can however be removed, and instead progress can be followed in the <strong><em>build.log</em></strong> file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>tail -f build.log
+</span></span></code></pre></div><p>Once our prompt returns on the terminal where ‘build.sh’ was launched, the ISO is ready and can be found in the <strong><em>images/</em></strong> directory.</p>
+<h2 id="create-the-virtual-machine">Create the Virtual Machine</h2>
+<p>With our ISO built, we can now begin to build our virtual machine. Create a new virtual machine setting the OS to the latest Debian 64 bit and allocating a 20 GB hard disk. If needed, detailed set-up is explained on the <a href="https://web.archive.org/web/20210914172345/https://kali.training/topic/booting-kali-in-live-mode/">Kali Training website</a>. It is important to store the virtual disk as a single file that is dynamically allocated. The rest like the amount of CPU and RAM won’t matter because only the disk file will be uploaded to DigitalOcean.</p>
+<p>Disk size matters as billing is based on disk size for custom images. It will also impact the choice of instance we can create. Let’s say a 40 GB hard disk is created, it will fail creating an instance at the $5/month level because its maximum hard disk size is 25 GB. In that case we would be forced to use the $10/month option for instances with 50 GB disks. Don’t worry, even though the disk is 20 GB, it will get expanded depending on the droplet plan chosen.</p>
+<p>During the installation, select manual partitioning and set it up as shown below, with all files in one partition and no swap file.</p>
+<p><a href="https://www.kali.org/blog/kali-linux-in-the-digitalocean-cloud/images/Picture1-1.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-in-the-digitalocean-cloud/images/Picture1-1.png" alt="" />
+</figure>
+
+
+</a></p>
+<h2 id="update-the-system">Update the System</h2>
+<p>When installation is complete and after rebooting, we login at the console and update the system:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt update
+</span></span><span style="display:flex;"><span>apt -y full-upgrade
+</span></span></code></pre></div><p>If you don’t see it going over a mirror during ‘apt update’, you may have accidentally forgotten to add a network mirror during the installation. Follow the <a href="https://www.kali.org/docs/general-use/kali-linux-sources-list-repositories/">instructions on the Kali-Docs site</a> to fix it and run both of the commands again.</p>
+<h3 id="install-required-packages">Install Required Packages</h3>
+<p>In order for DigitalOcean to configure the system for us, we need to install the <strong><em>cloud-init</em></strong> package:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt -y install cloud-init
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;datasource_list: [ ConfigDrive, DigitalOcean, NoCloud, None ]&#39;</span> &gt; /etc/cloud/cloud.cfg.d/99_digitalocean.cfg
+</span></span><span style="display:flex;"><span>systemctl enable cloud-init
+</span></span></code></pre></div><h3 id="update-grub">Update GRUB</h3>
+<p>When booting, the disk is attached and mapped as sda1. However, with the droplets, it is seen as vda1. To remedy this, we need to change all instances of sda1 to vda1 in <strong><em>/boot/grub/grub.cfg</em></strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sed -i <span style="color:#e6db74">&#39;s/sda1/vda1/g&#39;</span> /boot/grub/grub.cfg
+</span></span></code></pre></div><p>With the configuration file updated, we can run ‘update-grub’ to update the system:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>update-grub
+</span></span></code></pre></div><h3 id="prepare-for-ssh">Prepare for SSH</h3>
+<p>Since we will need to use SSH to connect to the system on DigitalOcean, the <strong><em>openssh-server</em></strong> package needs to be installed (and enabled) as well:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt -y install openssh-server
+</span></span><span style="display:flex;"><span>systemctl enable ssh.service
+</span></span></code></pre></div><p>When creating a standard droplet, you can choose to use SSH keys or not. However, when using custom images, this isn’t an option and using SSH keys is mandatory. For this reason, DigitalOcean requires us to remove the root password:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>passwd -d root
+</span></span></code></pre></div><p>We also need to create a <strong><em>/root/.ssh</em></strong> folder:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>mkdir /root/.ssh
+</span></span></code></pre></div><h3 id="cleanup">Cleanup</h3>
+<p>Before we finish with our virtual machine, we run a few commands to clean things up:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt autoremove
+</span></span><span style="display:flex;"><span>apt autoclean
+</span></span><span style="display:flex;"><span>rm -rf /var/log/*
+</span></span><span style="display:flex;"><span>history -c
+</span></span></code></pre></div><p>At this point, our virtual machine is ready so we run ‘poweroff’ to shutdown the system:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>poweroff
+</span></span></code></pre></div><h2 id="uploading">Uploading</h2>
+<p>In the virtual machine folder, locate the <strong><em>.vmdk</em></strong> file, then compress it using bzip2, gzip, or zip in preparation for uploading to DigitalOcean:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>bzip2 kali.vmdk
+</span></span></code></pre></div><p>Login to your DigitalOcean account. In the “Manage” section on the left, click on “Images”, then select the “Custom Images” tab.</p>
+<p><a href="https://www.kali.org/blog/kali-linux-in-the-digitalocean-cloud/images/Picture2.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-in-the-digitalocean-cloud/images/Picture2.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>From there, we upload the compressed disk image. We’ll name it Kali, mark it as Debian, and select the region and datacenter to upload it to. Note that once uploaded to a location, droplets can only be started at that location, which is a current limitation for custom images. Another thing to remember at this stage is that uploaded images consume disk space and DigitalOcean will bill based on disk usage.</p>
+<p><a href="https://www.kali.org/blog/kali-linux-in-the-digitalocean-cloud/images/Picture3-1.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-in-the-digitalocean-cloud/images/Picture3-1.png" alt="" />
+</figure>
+
+
+</a></p>
+<h2 id="starting-a-droplet">Starting a Droplet</h2>
+<p>Once done, the “Uploaded” column will indicate how long ago it was uploaded. Now we will click on the “More” option of the image and select “Start a droplet”.</p>
+<p><a href="https://www.kali.org/blog/kali-linux-in-the-digitalocean-cloud/images/Picture4.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-in-the-digitalocean-cloud/images/Picture4.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>You will be taken to the droplet settings where you can select the droplet plan, the SSH key, and the project to start it in. Since this is a custom image, it is required you use a SSH key. You can either select an existing one or upload a new one by clicking on “New SSH key”, which will open the following screen where you can paste the public key and name it:</p>
+<p><a href="https://www.kali.org/blog/kali-linux-in-the-digitalocean-cloud/images/Picture5-1.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-in-the-digitalocean-cloud/images/Picture5-1.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Once done, click “Create” as shown below. It will then take you back to the dashboard (Manage &gt; Droplets) where all your droplets are listed. Because we are using a SSH key, DigitalOcean will not send an email with credentials for the droplet.</p>
+<p><a href="https://www.kali.org/blog/kali-linux-in-the-digitalocean-cloud/images/Picture5b.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-in-the-digitalocean-cloud/images/Picture5b.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Within a few seconds, and after the IP is displayed, our droplet will be ready. In order to connect, we will need to use the private SSH key we created (called MY_KEY in this example):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>user@computer:~$ ssh -i MY_KEY root@192.168.1.1
+</span></span><span style="display:flex;"><span>The authenticity of host &#39;192.168.1.1 (192.168.1.1)&#39; can&#39;t be established.
+</span></span><span style="display:flex;"><span>ECDSA key fingerprint is SHA256:d83fcd43d25e2a7edd291666160b47360cc85870ded.
+</span></span><span style="display:flex;"><span>Are you sure you want to continue connecting (yes/no)? yes
+</span></span><span style="display:flex;"><span>Warning: Permanently added &#39;IP&#39; (ECDSA) to the list of known hosts.
+</span></span><span style="display:flex;"><span>Linux kali-s-1vcpu-1gb-nyc3-01 4.19.0-kali5-amd64 #1 SMP Debian 4.19.37-2kali1 (2019-05-15) x86_64
+</span></span><span style="display:flex;"><span>The programs included with the Kali GNU/Linux system are free software;
+</span></span><span style="display:flex;"><span>the exact distribution terms for each program are described in the
+</span></span><span style="display:flex;"><span>individual files in /usr/share/doc/*/copyright.
+</span></span><span style="display:flex;"><span>Kali GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+</span></span><span style="display:flex;"><span>permitted by applicable law.
+</span></span></code></pre></div><p>Now we have a nice, minimal Kali Linux installation that we can deploy and customize as needed:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali-s-1vcpu-1gb-nyc3-01:~# lsb_release -a
+</span></span><span style="display:flex;"><span>No LSB modules are available.
+</span></span><span style="display:flex;"><span>Distributor ID: Kali
+</span></span><span style="display:flex;"><span>Description: Kali GNU/Linux Rolling
+</span></span><span style="display:flex;"><span>Release: 2019.2
+</span></span><span style="display:flex;"><span>Codename: n/a
+</span></span><span style="display:flex;"><span>root@kali-s-1vcpu-1gb-nyc3-01:~# uname -a
+</span></span><span style="display:flex;"><span>Linux kali-s-1vcpu-1gb-nyc3-01 4.19.0-kali5-amd64 #1 SMP Debian 4.19.37-2kali1 (2019-05-15) x86_64 GNU/Linux
+</span></span><span style="display:flex;"><span>root@kali-s-1vcpu-1gb-lon1-01:~# free -h
+</span></span><span style="display:flex;"><span>total used free shared buff/cache available
+</span></span><span style="display:flex;"><span>Mem: 987Mi 51Mi 527Mi 1.0Mi 407Mi 790Mi
+</span></span><span style="display:flex;"><span>Swap: 0B 0B 0B
+</span></span></code></pre></div><h4 id="source"><a href="https://www.kali.org/blog/kali-linux-in-the-digitalocean-cloud/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

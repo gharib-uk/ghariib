@@ -43,15 +43,15 @@
 
 			<div>
 				<h1 id="gostringungarbler-deobfuscating-strings-in-garbled-binaries">GoStringUngarbler Deobfuscating Strings in Garbled Binaries</h1>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+<p>Written by: Chuong Dong Overview In our day-to-day work, the FLARE team often encounters malware written in Go that is protected using garble. While recent advancements in Go analysis from tools like IDA Pro have simplified the analysis process, garble presents a set of unique challenges, including stripped binaries, function name mangling,</p>
+<p>Written by: Chuong Dong</p>
 <hr>
 <h2 id="overview">Overview</h2>
 <p>In our day-to-day work, the FLARE team often encounters malware written in <a href="https://go.dev/">Go</a> that is protected using <a href="https://github.com/burrowers/garble">garble</a>. While recent advancements in Go analysis from tools like IDA Pro have simplified the analysis process, garble presents a set of unique challenges, including stripped binaries, function name mangling, and encrypted strings.</p>
 <p>Garble&rsquo;s string encryption, while relatively straightforward, significantly hinders static analysis. In this blog post, we&rsquo;ll detail garble’s string transformations and the process of automatically deobfuscating them.</p>
 <p>We&rsquo;re also introducing GoStringUngarbler, a command-line tool written in Python that automatically decrypts strings found in garble-obfuscated Go binaries. This tool can streamline the reverse engineering process by producing a deobfuscated binary with all strings recovered and shown in plain text, thereby simplifying static analysis, malware detection, and classification.</p>
 <p>aside_block</p>
-<p>&lt;ListValue: [StructValue([(&rsquo;title&rsquo;, &lsquo;Get GoStringUngarbler!&rsquo;), (&lsquo;body&rsquo;, &lt;wagtail.rich_text.RichText object at 0x3ead400fefd0&gt;), (&lsquo;btn_text&rsquo;, &lsquo;Download now&rsquo;), (&lsquo;href&rsquo;, &lsquo;<a href="https://github.com/mandiant/gostringungarbler')">https://github.com/mandiant/gostringungarbler')</a>, (&lsquo;image&rsquo;, None)])]&gt;</p>
+<p>&lt;ListValue: [StructValue([(&rsquo;title&rsquo;, &lsquo;Get GoStringUngarbler!&rsquo;), (&lsquo;body&rsquo;, &lt;wagtail.rich_text.RichText object at 0x3ece75d377c0&gt;), (&lsquo;btn_text&rsquo;, &lsquo;Download now&rsquo;), (&lsquo;href&rsquo;, &lsquo;<a href="https://github.com/mandiant/gostringungarbler')">https://github.com/mandiant/gostringungarbler')</a>, (&lsquo;image&rsquo;, None)])]&gt;</p>
 <h2 id="garble-obfuscating-compiler">Garble Obfuscating Compiler</h2>
 <p>Before detailing the GoStringUngarbler tool, we want to briefly explain how the garble compiler modifies the build process of Go binaries. By wrapping around the official Go compiler, garble performs transformations on the source code during compilation through Abstract Syntax Tree (AST) manipulation using Go’s <a href="https://pkg.go.dev/go/ast">go/ast</a> library. Here, the obfuscating compiler modifies program elements to obfuscate the produced binary while preserving the semantic integrity of the program. Once transformed by garble, the program’s AST is fed back into the Go compilation pipeline, producing an executable that is harder to reverse engineer and analyze statically. </p>
 <p>While garble can apply a variety of transformations to the source code, this blog post will focus on its &ldquo;literal&rdquo; transformations. When garble is executed with the <code>-literals</code> flag, it transforms all literal strings in the source code and imported Go libraries into an obfuscated form. Each string is encoded and wrapped behind a decrypting function, thwarting static string analysis. </p>
@@ -570,7 +570,6 @@ ret                                        ; return the decrypted string
 <p>Additional thanks to <a href="https://www.openanalysis.net/">OALabs</a> for their valuable insights from <a href="https://research.openanalysis.net/garble/go/obfuscation/strings/2023/08/03/garble.html">their initial research on garble’s string encryption</a>.</p>
 <p>Finally, we want to acknowledge the developers of garble for their outstanding work on this obfuscating compiler. Their contributions to the software protection field have greatly advanced both offensive and defensive security research on Go binary analysis.</p>
 <h4 id="source"><a href="https://cloud.google.com/blog/topics/threat-intelligence/gostringungarbler-deobfuscating-strings-in-garbled-binaries/">Source</a></h4>
-<!-- raw HTML omitted -->
 
 			</div>
 		</article>
@@ -583,15 +582,15 @@ ret                                        ; return the decrypted string
 		<div>
 			<ul>
 				
-				<li><a href="/posts/2025-03-20-cve-2025-2557---audi-utr-dashcam-20-com/">CVE-2025-2557 - Audi UTR Dashcam 20 Command API Local Network Access Control Vulnerability</a></li>
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
 				
-				<li><a href="/posts/2025-03-20-cve-2025-29980---etrakitnet-sql-injecti/">CVE-2025-29980 - eTRAKiTnet SQL Injection Vulnerability</a></li>
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
 				
-				<li><a href="/posts/2025-03-20-cve-2025-30160---redlib-deflate-decompr/">CVE-2025-30160 - Redlib DEFLATE Decompression Bomb Denial-of-Service Vulnerability</a></li>
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
 				
-				<li><a href="/posts/2025-03-20-cve-2025-29217---tenda-w18e-stack-overf/">CVE-2025-29217 - Tenda W18E Stack Overflow Denial of Service Vulnerability</a></li>
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
 				
-				<li><a href="/posts/2025-03-20-cve-2025-29218---tenda-w18e-stack-overf/">CVE-2025-29218 - Tenda W18E Stack Overflow Vulnerability</a></li>
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
 				
 			</ul>
 		</div>

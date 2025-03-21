@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>WireGuard on Kali</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>WireGuard on Kali</h1>
+			<b><time>11.09.2018 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="wireguard-on-kali">WireGuard on Kali</h1>
+<p><a href="https://www.kali.org/blog/wireguard-on-kali/images/wireguard-on-kali.jpg">https://www.kali.org/blog/wireguard-on-kali/images/wireguard-on-kali.jpg</a></p>
+<p>We have been hearing a lot about WireGuard lately and with it being recently added to the Kali repos, we thought we would give it a quick try to see what all the fuss is about. All in all, we found this is a really nice and quick to configure</p>
+<p>We have been hearing a lot about <a href="https://www.wireguard.com/quickstart/">WireGuard</a> lately and with it being recently added to the Kali repos, we thought we would give it a quick try to see what all the fuss is about. All in all, we found this is a really nice and quick to configure VPN solution, and might be worth checking out.</p>
+<h2 id="getting-started">Getting Started</h2>
+<p>With WireGuard added to the repos, installation is nice and easy:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt install wireguard resolvconf
+</span></span></code></pre></div><p>And we are off. Next comes time for configuration. This is where WireGuard really shone for us, as it took next to nothing to get up and running.</p>
+<p>On the server, we have to generate a public/private key pair and set up an initial config file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>wg genkey | tee privatekey | wg pubkey &gt; publickey
+</span></span><span style="display:flex;"><span>umask u<span style="color:#f92672">=</span>rwx,go<span style="color:#f92672">=</span> <span style="color:#f92672">&amp;&amp;</span> cat &gt; /etc/wireguard/wg0.conf <span style="color:#e6db74">&lt;&lt; EOF
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">[Interface]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Address = 10.222.222.1/24
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SaveConfig = true
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">ListenPort = 51820
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">PrivateKey = -SERVER PRIVATE KEY-
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">[Peer]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">PublicKey = -CLIENT PUBLIC KEY-
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">AllowedIPs = 10.222.222.2/32
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span></code></pre></div><p>And we do the same process on the client to establish its key pair and config:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>wg genkey | tee privatekey | wg pubkey &gt; publickey
+</span></span><span style="display:flex;"><span>umask u<span style="color:#f92672">=</span>rwx,go<span style="color:#f92672">=</span> <span style="color:#f92672">&amp;&amp;</span> cat /etc/wireguard/wg0.conf <span style="color:#e6db74">&lt;&lt; EOF
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">[Interface]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Address = 10.222.222.2/32
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">PrivateKey = -CLIENT PRIVATE KEY-
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">DNS = 8.8.8.8
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">[Peer]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">PublicKey = -SERVER PUBLIC KEY-
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Endpoint = public.ip.of.server:51820
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">AllowedIPs = 0.0.0.0/0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">PersistentKeepalive = 21
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span></code></pre></div><p>These are pretty simple configs but it’s worth pointing a few things out. First off, you obviously have to put the output from the key pairs into the configs as appropriate. Additionally, the DNS line on the client is to help prevent DNS leaks from using your local default DNS server. You may or may not want to change that depending on your needs.</p>
+<p>Most important however is the “AllowedIPs” line. This will control what IPs do or don’t go across the VPN. In this case, we setup the client to route everything through the VPN server. We will play with this more in a bit, but let’s look at getting this basic config running.</p>
+<p>To start and stop the tunnel, it’s pretty easy:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># The VPN can be enabled using</span>
+</span></span><span style="display:flex;"><span>wg-quick up wg0
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># To disable the VPN:</span>
+</span></span><span style="display:flex;"><span>wg-quick down wg0
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Information about the connection can be retrieved with following command:</span>
+</span></span><span style="display:flex;"><span>wg show
+</span></span></code></pre></div><p>And of course, we need to enable IP masquerade and IP forwarding on the server:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>/sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+</span></span><span style="display:flex;"><span>echo <span style="color:#ae81ff">1</span> &gt; /proc/sys/net/ipv4/ip_forward
+</span></span></code></pre></div><p>So, with this we have a traditional VPN configuration. If you are looking to just get a standard VPN setup, at this point you are done. There are some advantages to this compared to using OpenVPN, for instance this solution seems to be much faster, the config is a lot simpler, and it’s a touch more stealthy in that the server won’t respond to packets that don’t have a proper key pair linked to them. We thought however it might be interesting to change the configuration to reflect our <a href="https://www.offsec.com/kali-linux/kali-rolling-iso-of-doom/">ISO of Doom</a> config, having a client that will auto connect to the server on boot allowing the server to route through and access the client network.</p>
+<h2 id="wireguard-of-doom">WireGuard of DOOM!</h2>
+<p>First things first, on our client, let’s quickly set up IP forwarding and masquerading:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>/sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+</span></span><span style="display:flex;"><span>echo <span style="color:#ae81ff">1</span> &gt; /proc/sys/net/ipv4/ip_forward
+</span></span></code></pre></div><p>Great, with that done, we make a couple minor changes to our configs. First up, on the server we change the “AllowedIPs” line to have the private network on the report site. This would look like so:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ini" data-lang="ini"><span style="display:flex;"><span><span style="color:#66d9ef">[Interface]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Address</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">10.222.222.1/24</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">SaveConfig</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">true</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ListenPort</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">51820</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">PrivateKey</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">-SERVER PRIVATE KEY-</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">[Peer]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">PublicKey</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">-CLIENT PUBLIC KEY-</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">AllowedIPs</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">10.200.200.2/32, 192.168.2.0/24</span>
+</span></span></code></pre></div><p>With that one line changed on the server, we then tweak the clients “AllowedIPs” line to remove the option to route everything to the VPN server:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ini" data-lang="ini"><span style="display:flex;"><span><span style="color:#66d9ef">[Interface]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Address</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">10.200.200.2/32</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">PrivateKey</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">-CLIENT PRIVATE KEY-</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">DNS</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">8.8.8.8</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">[Peer]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">PublicKey</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">-SERVER PUBLIC KEY-</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Endpoint</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">public.ip.of.server:51820</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">AllowedIPs</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">10.200.200.0/24</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">PersistentKeepalive</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">21</span>
+</span></span></code></pre></div><p>And thats it!</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# ping 192.168.2.22
+</span></span><span style="display:flex;"><span>PING 192.168.2.22 (192.168.2.22) 56(84) bytes of data.
+</span></span><span style="display:flex;"><span>64 bytes from 192.168.2.22: icmp_seq=19 ttl=63 time=50.2 ms
+</span></span><span style="display:flex;"><span>64 bytes from 192.168.2.22: icmp_seq=20 ttl=63 time=53.4 ms
+</span></span><span style="display:flex;"><span>64 bytes from 192.168.2.22: icmp_seq=21 ttl=63 time=48.1 ms
+</span></span></code></pre></div><p>Now the VPN server can access the subnets on the other side of the WireGuard VPN.</p>
+<h2 id="wrapping-up">Wrapping up</h2>
+<p>Time will tell if WireGuard replaces OpenVPN as the VPN of choice, or if the latest buzz is just excitement of using the newest toys. In any case, it’s nice to have the ability to test it out, and use if it’s a good fit. As we have seen here, it’s definitely easy to setup, and relatively versatile in the user cases.</p>
+<h4 id="source"><a href="https://www.kali.org/blog/wireguard-on-kali/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -40,140 +40,176 @@
 		
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/new-star-blizzard-spear-phishing-campaign-targets-whatsapp-accounts/">New Star Blizzard spear-phishing campaign targets WhatsApp accounts</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
+	<h1><a href="https://ghariib.ir/posts/how-open-source-is-shaping-the-future-of-innovation/">How open-source is shaping the future of innovation</a></h1>
+	<b><time>29.01.2025 00:00</time></b>
 	
 	<div>
-		<p>In mid-November 2024, Microsoft Threat Intelligence observed the Russian threat actor we track as Star Blizzard sending their typical targets spear-phishing messages, this time offering the supposed opportunity to join a WhatsApp group. This is the first time we have identified a shift in Star Blizzard’s longstanding tactics, techniques, and procedures (TTPs) to leverage a new access vector. Star Blizzard’s targets are most commonly related to government or diplomacy (both incumbent and former position holders), defense policy or international relations researchers whose work touches on Russia, and sources of assistance to Ukraine related to the war with Russia.</p>
+		<p><strong>Open-source technology</strong> has significantly shaped how industries approach complex technical challenges and foster innovation. It has expanded beyond software to impact hardware and systems design, opening up new pathways for researchers, engineers, and tech enthusiasts to develop advanced solutions. This collective approach fuels innovation and contributes to sustainable development by creating accessible, adaptable tools that solve real-world problems at scale.</p>
+<h2 id="ai-awards--summit-2025-enter-the-ai-awards-and-be-a-part-of-the-future">
+<figure>
+  <img src="https://www.softwaretestingnews.co.uk/wp-content/uploads/2024/11/AI-webpost-1.jpg" alt="AI Awards &amp; Summit 2025: Enter the AI Awards and be a part of the future." />
+</figure>
+
+
+</h2>
+<h2 id="democratising-open-source-technology-and-science"><strong>Democratising open-source technology and science</strong></h2>
+<p>Open-source technology fundamentally changes how we access and utilise high-tech tools. Traditionally, advanced instruments like oscilloscopes, signal generators, and spectrum analysers were accessible primarily to well-funded research labs. With open-source tools such as Red Pitaya’s “pocket lab,” engineers and students can now access powerful measurement and testing capabilities in a compact, cost-effective format. This allows universities, startups, and even independent researchers and enthusiasts to innovate without being restricted by cost or proprietary limitations.</p>
 		
-			<a href="https://ghariib.ir/posts/new-star-blizzard-spear-phishing-campaign-targets-whatsapp-accounts/">Read more...</a>
+			<a href="https://ghariib.ir/posts/how-open-source-is-shaping-the-future-of-innovation/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/newly-emergent-nnice-ransomware-examined/">Newly emergent Nnice ransomware examined</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
+	<h1><a href="https://ghariib.ir/posts/how-soc-dfir-teams-prevent-ransomware-threats-in-healthcare-a-case-study-on-interlock-ransomware/">How SOC/DFIR Teams Prevent Ransomware Threats in Healthcare – A Case Study on Interlock Ransomware</a></h1>
+	<b><time>29.01.2025 00:00</time></b>
 	
 	<div>
-		<p>Initial compromise with Nnice ransomware enables not only the exfiltration of credentials, web session cookies, and emails and the identification of security software but also the escalation of privileges, attainment of boot-level persistence, and encryption of files with the &ldquo;.xdddd&rdquo; extension, according to an investigation by the CYFIRMA Research and Advisory team.</p>
-<p>Go to Source</p>
+		<p>Ransomware attacks targeting the healthcare sector have become increasingly challenging to manage due to financial losses and the risks posed to patient safety and operational continuity.</p>
+<p>Researchers at <strong>ANR.RUN analyze</strong> the impact of ransomware threats in healthcare, using the notorious Interlock ransomware group as a case study focus is on how ANY.RUN’s advanced tools, including its Interactive Sandbox and Threat Intelligence (TI) Lookup, enable organizations to detect, analyze, and mitigate such attacks.</p>
+		
+			<a href="https://ghariib.ir/posts/how-soc-dfir-teams-prevent-ransomware-threats-in-healthcare-a-case-study-on-interlock-ransomware/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/no-siris-learn-from-this-app-setting-is-not-sending-data-from-your-apps-to-third-parties/">No, Siri’s “Learn from this app” Setting Is Not Sending Data From Your Apps to Third Parties</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<a href="/tags/iphone">iphone</a>
+	<h1><a href="https://ghariib.ir/posts/how-to-check-which-tables-contain-data-in-a-database/">How to Check Which Tables Contain Data in a Database</a></h1>
+	<b><time>29.01.2025 00:00</time></b>
 	
 	<div>
-		<p>People on social media who don&rsquo;t understand how iPhones work have been spreading misinformation about some Siri settings.</p>
-<p>The post No, Siri’s “Learn from this app” Setting Is Not Sending Data From Your Apps to Third Parties appeared first on The Mac Security Blog.</p>
-<p>Go to Source</p>
+		<p>When managing a database, it&rsquo;s often useful to identify which tables contain data. This can help with troubleshooting, maintenance, or simply understanding the database&rsquo;s structure and usage. Here’s how to check for tables with data across different relational database management systems (RDBMS).</p>
+<h2 id="for-postgresql"><strong>For PostgreSQL</strong></h2>
+<p>In PostgreSQL, you can dynamically generate a query to check row counts for all tables within a schema using <code>pg_catalog.pg_tables</code>:</p>
+<h3 id="using-a-plpgsql-block">Using a PL/pgSQL Block:</h3>
+<pre tabindex="0"><code>DO $$
+DECLARE
+    tbl RECORD;
+BEGIN
+    FOR tbl IN
+        SELECT schemaname, tablename
+        FROM pg_catalog.pg_tables
+        WHERE schemaname = &#39;public&#39;  -- Change schema if needed
+    LOOP
+        EXECUTE format(
+            &#39;SELECT COUNT(*) AS row_count, &#39;&#39;%I&#39;&#39; AS table_name FROM %I.%I&#39;,
+            tbl.tablename, tbl.schemaname, tbl.tablename
+        );
+    END LOOP;
+END $$;
+</code></pre><p>This script loops through all tables in the <code>public</code> schema and outputs the row count for each table.</p>
+		
+			<a href="https://ghariib.ir/posts/how-to-check-which-tables-contain-data-in-a-database/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/non-interactive-distributed-point-functions/">Non-Interactive Distributed Point Functions</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<a href="/tags/cryptography">cryptography</a>
-	
-	<a href="/tags/security">security</a>
+	<h1><a href="https://ghariib.ir/posts/how-to-clear-apt-cache-and-free-up-disk-space/">How to Clear APT Cache and Free Up Disk Space</a></h1>
+	<b><time>29.01.2025 00:00</time></b>
 	
 	<div>
-		<p>ePrint Report: <strong>Non-Interactive Distributed Point Functions</strong><br>
-<em>Elette Boyle, Lalita Devadas, Sacha Servan-Schreiber</em></p>
-<p>Distributed Point Functions (DPFs) are a useful cryptographic primitive enabling a dealer to distribute short keys to two parties, such that the keys encode additive secret shares of a secret point function. However, in many applications of DPFs, no single dealer entity has full knowledge of the secret point function, necessitating the parties to run an interactive protocol to emulate the setup. Prior works have aimed to minimize complexity metrics of such distributed setup protocols, e.g., round complexity, while remaining black-box in the underlying cryptography.</p>
+		<p>The APT cache stores downloaded package files on your system. Over time, this cache can take up significant disk space. How do you clear the apt cache? You simply use this apt clean command option:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>apt clean
+</span></span></code></pre></div><p>Clearing the APT cache is a simple way to free up space while keeping your system running smoothly.</p>
+<h2 id="clear-apache-cache-step-by-step-guide">Clear Apache Cache: Step by Step Guide</h2>
+<h3 id="step-1-check-disk-space-usage">Step 1: Check Disk Space Usage</h3>
+<p>Before clearing the APT cache, check how much disk space is currently used by the cache.</p>
 		
-			<a href="https://ghariib.ir/posts/non-interactive-distributed-point-functions/">Read more...</a>
+			<a href="https://ghariib.ir/posts/how-to-clear-apt-cache-and-free-up-disk-space/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/on-gaussian-sampling-for-q-ary-lattices-and-linear-codes-with-lee-weight/">On Gaussian Sampling for $q$-ary Lattices and Linear Codes with Lee Weight</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<a href="/tags/cryptography">cryptography</a>
-	
-	<a href="/tags/security">security</a>
-	
-	<div>
-		<p>ePrint Report: <strong>On Gaussian Sampling for $q$-ary Lattices and Linear Codes with Lee Weight</strong><br>
-<em>Maiara F. Bollauf, Maja Lie, Cong Ling</em></p>
-<p>We show that discrete Gaussian sampling for a $q$-ary lattice is equivalent to codeword sampling for a linear code over $mathbb{Z}_q$ with the Lee weight. This insight allows us to derive the theta series of a $q$-ary lattice from the Lee weight distribution of the associated code. We design a novel Gaussian sampler for $q$-ary lattices assuming an oracle that computes the symmetrized weight enumerator of the associated code. We apply this sampler to well-known lattices, such as the $E_8$, Barnes-Wall, and Leech lattice, highlighting both its advantages and limitations, which depend on the underlying code properties. For certain root lattices, we show that the sampler is indeed efficient, forgoing the need to assume an oracle. We also discuss applications of our results in digital signature schemes and the Lattice Isomorphism Problem. In many cases, our sampler achieves a significant speed-up compared to state-of-the-art sampling algorithms in cryptographic applications.</p>
-		
-			<a href="https://ghariib.ir/posts/on-gaussian-sampling-for-q-ary-lattices-and-linear-codes-with-lee-weight/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/open-industrial-digital-ecosystem-summit/">Open Industrial Digital Ecosystem Summit</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<div>
-		<p>The Open Industrial Digital Ecosystem Summit is an annual event bringing together thought leaders, experts, practitioners, developers, and users of standards for data semantics. The event is co-hosted by the Systems Integration Division of the</p>
-<p>Go to Source</p>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/oracle-quarterly-critical-patches-issued-january-21-2025/">Oracle Quarterly Critical Patches Issued January 21, 2025</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<div>
-		<p>Multiple vulnerabilities have been discovered in Oracle products, the most severe of which could allow for remote code execution.</p>
-<p>Go to Source</p>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/owasp-global-appsec-dublin-2023-worldwide-and-threat-modeling/">OWASP Global AppSec Dublin 2023: WorldWide and Threat Modeling</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<a href="/tags/testable">testable</a>
-	
-	<a href="/tags/threat-modeling">threat-modeling</a>
+	<h1><a href="https://ghariib.ir/posts/how-to-implement-devops-using-kubernetes/">How to implement devops using kubernetes?</a></h1>
+	<b><time>29.01.2025 00:00</time></b>
 	
 	<div>
 		<p>
 <figure>
-  <img src="https://blogger.googleusercontent.com/img/a/AVvXsEjFLx0cRigZarMDU3cDATxMC-R7AGDiaFphYyupun9tdWOLr2-tIElV-EaI1pNQ05JDy_t87ASsYPXzZmwMCqyIZK37eHnN_QTm8OsknM6ZgEIHuY9ze8QZj9aj_jKtaR0zt2QerKquPHjcEkfwXw7rRt0RhWJBzK_LEv7efkUS10O9WRUmwOBUzv0E1Q" alt="" />
+  <img src="https://www.bestdevops.com/wp-content/uploads/2025/01/image-47.png" alt="" />
 </figure>
 
 
 </p>
-<p>The OWASP Global AppSec Dublin 2023 conference was a truly inspiring event for anyone involved in application security. As an attendee, I was able to catch up with OWASP colleagues and hear from experts on a range of topics. </p>
-<p>In particular, there were two themes that really stood out to me: <em>worldwide</em> and <em>threat modeling</em>.</p>
-<h4 id="owasp-the-open-worldwide-application-security-project">OWASP: The Open Worldwide Application Security Project</h4>
-<p>During the conference, the OWASP Board made an exciting announcement regarding the meaning of the letter &ldquo;W&rdquo; in OWASP. Traditionally, the &ldquo;W&rdquo; in OWASP has stood for &ldquo;Web,&rdquo; reflecting the organization&rsquo;s initial focus on web application security. The Board announced they are changing the meaning of the &ldquo;W&rdquo; to &ldquo;Worldwide,&rdquo; reflecting the global nature of the OWASP project and its mission.</p>
+<p>Kubernetes is an open-source container orchestration platform that automates the deployment, scaling, and management of containerized applications. In the context of DevOps, Kubernetes plays a crucial role in enabling continuous integration, continuous delivery, and infrastructure management. By managing containers across multiple environments, Kubernetes ensures that applications are scalable, resilient, and easily maintainable—key aspects of any DevOps workflow.</p>
+<p>This post explores how to implement DevOps practices using Kubernetes, highlighting the major features that make Kubernetes an ideal platform for automating DevOps processes and streamlining the development lifecycle.</p>
 		
-			<a href="https://ghariib.ir/posts/owasp-global-appsec-dublin-2023-worldwide-and-threat-modeling/">Read more...</a>
+			<a href="https://ghariib.ir/posts/how-to-implement-devops-using-kubernetes/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/p2p-file-sharing-policy/">P2P File Sharing Policy</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
+	<h1><a href="https://ghariib.ir/posts/how-to-manage-python-dependencies-in-ansible-execution-environments/">How to manage Python dependencies in Ansible execution environments</a></h1>
+	<b><time>29.01.2025 00:00</time></b>
 	
 	<div>
-		<p>The use of email systems to send large files has become obsolete. P2P file-sharing networks make it easy for users to exchange data and information. However, they can also facilitate the spread of malware and security threats and expose the company to risk via the sharing of copyrighted material or confidential information. The purpose of &hellip;</p>
+		<p>Ansible execution environments provide a runtime for Red Hat Ansible Automation Platform that includes all of the necessary tooling in a single atomic package. Ansible, as an automation tool, relies on Python as its underlying programming language. Not only is Python integral to the core of Ansible, but its use is widespread and can be found throughout the Ansible ecosystem, including Ansible execution environments. As a result, how Python content is managed directly impacts how an execution environment is constructed and operates at runtime. This article will explore the various ways that Python can be managed in Ansible execution environments, including considerations that apply to a variety of operating environments.</p>
+		
+			<a href="https://ghariib.ir/posts/how-to-manage-python-dependencies-in-ansible-execution-environments/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/how-to-migrate-to-sase-and-zero-trust-kaspersky-official-blog/">How to migrate to SASE and zero trust | Kaspersky official blog</a></h1>
+	<b><time>29.01.2025 00:00</time></b>
+	
+	<a href="/tags/cybersecurity">cybersecurity</a>
+	
+	<a href="/tags/data_breaches">data_breaches</a>
+	
+	<a href="/tags/infostealers">infostealers</a>
+	
+	<a href="/tags/linux">linux</a>
+	
+	<a href="/tags/malware">malware</a>
+	
+	<a href="/tags/privacy">privacy</a>
+	
+	<a href="/tags/security">security</a>
+	
+	<a href="/tags/siem">siem</a>
+	
+	<div>
+		<p>SASE components: ZTNA, CASB CSWG, NGFW, SD-WAN, and how they improve network security</p>
+<p>The traditional network security model — with a secure perimeter and encrypted channels for external access to that perimeter — is coming apart at the seams. Cloud services and remote working have challenged the very notion of “perimeter”, while the primary method of accessing the perimeter — VPN — has in recent years become a prime attack vector for intruders. Many high-profile hacks began by exploiting vulnerabilities in VPN solutions: CVE-2023-46805, CVE-2024-21887 and CVE-2024-21893 in Ivanti Connect Secure, and CVE-2023-4966 in Citrix solutions. By compromising a VPN server, which needs to be accessible online, intruders gain privileged access to an enterprise’s internal network and plenty of scope for covert attack development.</p>
+		
+			<a href="https://ghariib.ir/posts/how-to-migrate-to-sase-and-zero-trust-kaspersky-official-blog/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/how-to-name-version-and-reference-container-images/">How to name, version, and reference container images</a></h1>
+	<b><time>29.01.2025 00:00</time></b>
+	
+	<div>
+		<p>In my time working in the software industry, I have encountered recurring issues involving versioning. Which version scheme should we use for project X? When should we bump the major version? Is this pull request a breaking change? We want to cut a new release, but what should the next version be?</p>
+<p>Versioning schemes communicate new features, bug fixes, and even breaking changes to our users. Some schemes are like a contract with users, giving them guarantees for types of version changes. For instance, a major version bump from version 2.4 to 3.0 usually implies a breaking change and a substantial new functionality. Consumers of software (e.g., Linux distributions) can decide when and how to use the new versions. </p>
+		
+			<a href="https://ghariib.ir/posts/how-to-name-version-and-reference-container-images/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/how-to-protect-and-secure-your-data-in-10-ways/">How to Protect and Secure Your Data in 10 Ways</a></h1>
+	<b><time>29.01.2025 00:00</time></b>
+	
+	<div>
+		<p>Use this comprehensive list of strategies to help you safeguard your company&rsquo;s data from threats and data breaches.</p>
 <p>Go to Source</p>
 		
 	</div>
@@ -181,26 +217,21 @@
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/phishing-campaign-attempts-to-bypass-ios-protections/">Phishing Campaign Attempts to Bypass iOS Protections</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
+	<h1><a href="https://ghariib.ir/posts/how-to-setup-monitoring-devops/">How to setup monitoring devops?</a></h1>
+	<b><time>29.01.2025 00:00</time></b>
 	
 	<div>
 		<p>
 <figure>
-  <img src="https://blog.knowbe4.com/hubfs/SMS%20Messaging%20Smishing%20Scam.jpg" alt="Phishing Campaign Attempts to Bypass iOS Protections" />
+  <img src="https://www.bestdevops.com/wp-content/uploads/2025/01/image-50-1024x543.png" alt="" />
 </figure>
 
 
 </p>
-<p>An SMS phishing (smishing) campaign is attempting to trick Apple device users into disabling measures designed to protect them against malicious links, BleepingComputer reports.</p>
-<p>
-<figure>
-  <img src="https://track.hubspot.com/__ptq.gif?a=241394&amp;k=14&amp;r=https%3A%2F%2Fblog.knowbe4.com%2Fphishing-campaign-attempts-to-bypass-ios-protections&amp;bu=https%253A%252F%252Fblog.knowbe4.com&amp;bvt=rss" alt="" />
-</figure>
-
-
-</p>
-<p>Go to Source</p>
+<p>Monitoring is a critical aspect of DevOps that allows teams to ensure the health, performance, and availability of applications and infrastructure. Effective monitoring helps DevOps teams quickly identify issues, optimize performance, and ensure that software is deployed and delivered efficiently. With the fast-paced and automated nature of DevOps, continuous monitoring ensures that any problems are detected early, allowing for quick remediation.</p>
+<p>This post will explore how to set up monitoring in a DevOps environment, detailing the tools and features required for a comprehensive monitoring setup and how these features contribute to the efficiency of DevOps workflows.</p>
+		
+			<a href="https://ghariib.ir/posts/how-to-setup-monitoring-devops/">Read more...</a>
 		
 	</div>
 </article>
@@ -210,7 +241,7 @@
 
 	<a href="/page/131/">Previous Page</a>
 
-132 of 436
+132 of 553
 
 	<a href="/page/133/">Next Page</a>
 

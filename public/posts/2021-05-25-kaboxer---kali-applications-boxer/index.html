@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Kaboxer - Kali Applications Boxer</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Kaboxer - Kali Applications Boxer</h1>
+			<b><time>25.05.2021 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="kaboxer---kali-applications-boxer">Kaboxer - Kali Applications Boxer</h1>
+<p><a href="https://www.kali.org/blog/introducing-kaboxer/images/kaboxer-banner-v1.jpg">https://www.kali.org/blog/introducing-kaboxer/images/kaboxer-banner-v1.jpg</a></p>
+<p>On and off for the last 18 months we have been working on Kaboxer, and just before Kali 2021.1, it is ready to say “Hello World” (then it will start shipping you applications). TL;DR - What is this? What is the name about, Kaboxer? Kali Applications Boxer What does that mean? Apps in</p>
+<p>On and off for the last 18 months we have been working on <strong>Kaboxer</strong>, and just before Kali 2021.1, it is ready to say “Hello World” <em>(then it will start shipping you applications)</em>.</p>
+<h2 id="tldr---what-is-this">TL;DR - What is this?</h2>
+<p><strong>What is the name about, Kaboxer?</strong> Kali Applications Boxer</p>
+<p><strong>What does that mean?</strong> Apps in containers, for packages (a way forward for applications that are hard to package properly). But instead of being stand alone containers, they are integrated into the standard Kali package management systems and can be installed/removed through standard apt commands.</p>
+<p><strong>Okay. But what does Kaboxer do?</strong> Not every tool is easy to package. There are various criteria to meet, at times some crazy dependency trees or peculiar system modifications. You may need to use a legacy library, or you may need to change a configuration of something that would break another application. What do you do? We work with tool authors to try and make it easier, or we spend many late nights trying to get it to fit or we are just unable to package it.</p>
+<p>Enter Kaboxer. Using containers we can put in complex non-standard package into a container and integrate it with the rest of the operating system, and bundle it up into the packaging eco-system. This means you can apt-install a Kaboxer program and use it without needing to take any special steps.</p>
+<p><strong>How does Kaboxer benefit me?</strong> Kaboxer has a few use-cases, depending on who is using it:</p>
+<ul>
+<li>For people using Kali Linux, it is transparent so you will not notice when you are using it <em>(which is why you may not see it as “a big deal”)</em>. You just get more tools!</li>
+<li>For us Kali developers, this is a game changer.</li>
+<li>For other Debian packagers, <a href="https://www.kali.org/docs/development/packaging-apps-with-kaboxer/">this may pique your attention</a>.</li>
+<li>For tool authors <em>(who want their software in Kali)</em>, there is hope for you yet ;-)</li>
+</ul>
+<p><strong>What’s the down side to Kaboxer?</strong> The size of the application will be larger because it will carry the normal overhead of having to use containers. While the installed package will be small, its installation will download the required container which will consume up to several hundreds of megabytes even for a simple application.</p>
+<p><strong>What is going to happen because of Kaboxer?</strong> We hope to start to include more tools into Kali Linux that were previously not packable, and have you not realize that you are using them via Kaboxer. Unfortunately, such tools will not make it into our default installation as the size increase for the ISO images would be too significant.</p>
+<hr>
+<h2 id="overview">Overview</h2>
+<p>There are various tools which would be a benefit to Kali users, but suffer from problems that make them hard to ship properly as <code>*.deb</code> packages. This could be because, the tools:</p>
+<ul>
+<li>Are not developed with packaging and system integration in mind. They assume they can install specific versions of libraries, or patch libraries, or download pieces of software at runtime rather than at install time. This is against packaging standards and also is bad software engineering practice.</li>
+<li>May feel they are entitled to do whatever they please with the operating system or other applications. These actions should not be allowed and the software needs to be isolated. We have seen actions such as:
+<ul>
+<li>Creating users with specific UIDs/GIDs.</li>
+<li>Using paths that go against the Filesystem Hierarchy Standard (FHS).</li>
+<li>Using TCP or UDP ports that are usually affected to other services.</li>
+<li>Reconfiguring existing services.</li>
+</ul>
+</li>
+<li>Interact with external servers (maybe by a insecure method), thus the software itself cannot be fully trusted. As a result, it may be a good idea to isolate such software from valuable or sensitive data that may be present on the system.</li>
+</ul>
+<p>A way to provide the isolation required from above would be to use containerization. Containers allow running an application in an isolated environment, with drastically reduced risks of unplanned interaction with the rest of the system (users, services, other applications, existing files, specific versions of libraries, etc.).</p>
+<hr>
+<h2 id="design-choices">Design choices</h2>
+<p>While we are not excluding to support other containerization solutions, we have opted to start with Docker. It is well-known, widely used, and benefits from a large eco-system of images, thus ensuring its long term viability. Docker containers can be configured in many ways to achieve the various integrations that we need with the host system or even between multiple containers.</p>
+<p>The value of Kaboxer is in how it makes it easy to tie together docker containers with the host system, through the usual docker features such as mount points and port redirections, but also through integration with desktop menu entries. All those integrations, as well as the instructions to build or retrieve the docker image, are specified in a single YAML file.</p>
+<p>It is that single YAML file that is shipped in the <code>.deb</code> files that we provide in Kali and the post installation script of those packages will transparently download the image so that the application is ready to run afterwards.</p>
+<h3 id="build-of-docker-images">Build of Docker images</h3>
+<p>The build of the docker images is also mediated by Kaboxer but there’s nothing magic, it boils down to calling <code>docker build</code> on a specific <code>Dockerfile</code> with a few variables.</p>
+<p>It is up to the packager to write that Dockerfile but that step can be trivial when the upstream project already has a Dockerfile or when it provides a ready-to-use docker image.</p>
+<h3 id="publication-of-docker-images">Publication of Docker images</h3>
+<p>This step is so boring that we have automated it with GitLab CI. Every time that we make a change to a repository dedicated to a “kaboxed” application, such as covenant, <a href="https://gitlab.com/kalilinux/packages/covenant-kbx/-/pipelines">GitLab CI</a> will rebuild the associated docker image and store it in its <a href="https://gitlab.com/kalilinux/packages/covenant-kbx/container_registry">image registry</a>.</p>
+<h3 id="integration-of-the-images-into-the-system">Integration of the images into the system</h3>
+<p>Once the app is containerized, we still need to make it available to the user in a seamless way, in a manner that ideally wouldn’t even be noticeable. The user shouldn’t even have to know that the app runs in a container.</p>
+<p>We already explained that users continue to interact with Kali packages to install and remove the containerized applications, even though those packages are mostly empty shells running Kaboxer commands in the various maintainer scripts. They do also provide <code>.desktop</code> files so that the applications can be started from the usual desktop menu, and command-line helpers so that they can be started from a terminal without having to know about Kaboxer.</p>
+<p>To be able to run docker containers, the users need some elevated permissions: we modified the Kali installer to grant those permissions by default to users created during the initial installation process. For other users, they will have to be added to the Kaboxer group (<code>adduser $USER kaboxer</code>).</p>
+<p>Users obviously want their application data to be retained so Kaboxer has facilities to configure volumes shared between the host and the container thus providing persistence even if containers are short-lived. And then depending on the kind of application, you likely need more specific integrations:</p>
+<ul>
+<li>For GUI applications, we need the host X11 socket to be accessible.</li>
+<li>For web applications, we want to expose the HTTP port and start the web browser on the appropriate URL.</li>
+</ul>
+<p>Those basic needs are covered with the current Kaboxer features but it seems likely that other kind of integrations will be required in the future.</p>
+<hr>
+<p>If you still want to learn more about Kaboxer, please see its <a href="https://gitlab.com/kalilinux/tools/kaboxer/">homepage (plus source code)</a>, and <a href="https://www.kali.org/docs/development/packaging-apps-with-kaboxer/">our documentation (with “Hello World” example)</a>.</p>
+<p>For examples of “real world” application, you can look at our first “Kaboxed apps”:</p>
+<ul>
+<li><a href="https://pkg.kali.org/pkg/covenant-kbx/">Covenant</a>, a framework to highlight the attack surface of .NET. Covenant comes as a server that is started in the background, plus a Web app that runs in the browser.</li>
+<li><a href="https://pkg.kali.org/pkg/firefox-developer-edition-kbx">Firefox Developer Edition</a>, is a web browser and we picked it as it is a complex large GUI application.</li>
+<li><a href="https://pkg.kali.org/pkg/zenmap-kbx">Zenmap</a>, the official NMAP GUI. Zenmap relies on deprecated <a href="https://www.kali.org/blog/python-2-end-of-life/">Python 2</a> libraries that are not available in Kali Linux.</li>
+</ul>
+<p>Want to get your hands dirty and give it a try?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kali:~$ sudo apt update &amp;&amp; sudo apt -y install covenant-kbx
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>kali@kali:~$
+</span></span><span style="display:flex;"><span>kali@kali:~$ covenant-kbx
+</span></span><span style="display:flex;"><span>Usage: covenant-kbx start|stop
+</span></span><span style="display:flex;"><span>kali@kali:~$
+</span></span><span style="display:flex;"><span>kali@kali:~$ covenant-kbx start
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; Initializing user data in ~/.local/covenant/data
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; Starting covenant
+</span></span><span style="display:flex;"><span>Please wait during the start, it can take a long time...
+</span></span><span style="display:flex;"><span>&gt;&gt;&gt; Opening https://127.0.0.1:7443 with a web browser
+</span></span><span style="display:flex;"><span>covenant/default started
+</span></span><span style="display:flex;"><span>Press ENTER to exit
+</span></span><span style="display:flex;"><span>kali@kali:~$
+</span></span><span style="display:flex;"><span>kali@kali:~$ ss -at | grep 7443
+</span></span><span style="display:flex;"><span>LISTEN 0 4096 0.0.0.0:7443 0.0.0.0:*
+</span></span><span style="display:flex;"><span>kali@kali:~$
+</span></span></code></pre></div><p><em>Do not forget to open up <code>https://localhost:7443</code> in a web browser!</em></p>
+<p>If you would like to start exploring Kaboxer itself and see what is happening under the hood:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kali:~$ kaboxer
+</span></span><span style="display:flex;"><span>usage: kaboxer [-h] [-v] {run,start,stop,get-meta-file,get-upstream-version,prepare,upgrade,list,ls,build,install,clean,push,save,load,purge} ...
+</span></span><span style="display:flex;"><span>kaboxer: error: the following arguments are required: action
+</span></span><span style="display:flex;"><span>kali@kali:~$
+</span></span><span style="display:flex;"><span>kali@kali:~$ kaboxer ls
+</span></span><span style="display:flex;"><span>App Installed version Available version Packaging revision from YAML Packaging revision from image
+</span></span><span style="display:flex;"><span>-------- ------------------- ------------------- ------------------------------ -------------------------------
+</span></span><span style="display:flex;"><span>covenant 0.6 - 1 1
+</span></span><span style="display:flex;"><span>kali@kali:~$
+</span></span></code></pre></div><p>Lastly, you can track what programs are using Kaboxer in Kali by searching packages ending with <code>-kbx</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kali:~$ apt-cache search --names-only &#39;\-kbx
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>#<span style="color:#75715e">### [Source](https://www.kali.org/blog/introducing-kaboxer/)</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>covenant-kbx - .NET command and control framework
+</span></span><span style="display:flex;"><span>firefox-developer-edition-en-us-kbx - Mozilla Firefox web browser - Developer Edition - en-US
+</span></span><span style="display:flex;"><span>zenmap-kbx - The Network Mapper Front End
+</span></span><span style="display:flex;"><span>kali@kali:~$
+</span></span></code></pre></div><h4 id="source"><a href="https://www.kali.org/blog/introducing-kaboxer/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

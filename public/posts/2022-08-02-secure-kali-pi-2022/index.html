@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Secure Kali Pi 2022</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Secure Kali Pi 2022</h1>
+			<b><time>02.08.2022 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="secure-kali-pi-2022">Secure Kali Pi 2022</h1>
+<p><a href="https://www.kali.org/blog/secure-kali-raspberry-pi/images/secure-kali-pi-2022-banner.jpg">https://www.kali.org/blog/secure-kali-raspberry-pi/images/secure-kali-pi-2022-banner.jpg</a></p>
+<p>This is the first part of a 3 part series of blog posts surrounding Kali usage on Raspberry Pi devices. This first post will cover enabling Full Disk Encryption (FDE) on a Raspberry Pi, part two will cover remotely connecting to it, and finally, part three will cover debugging issues</p>
+<p>This is the first part of a 3 part series of blog posts surrounding Kali usage on Raspberry Pi devices. This first post will cover enabling Full Disk Encryption (FDE) on a Raspberry Pi, part two will cover remotely connecting to it, and finally, part three will cover debugging issues we ran into while making these posts, so others can learn how to do so as well.</p>
+<hr>
+<p>With everything that has been going on in the world in the last few years, more people are working remotely. We are no exception to this, and today, we are going to be revisiting our “drop box” machine, which has been encrypted thus making it harder to identify <em>if discovered</em>.</p>
+<p>The goal is to create a stand-alone “leave behind” <strong>headless</strong> device that, that if/when discovered, does not make it easy to figure out what we were doing as <strong>our data is secure</strong> at all times. To accomplish this, we will use Full Disk Encryption (FDE), and allow for it to be <strong>remotely unlocked</strong> (should the device get restarted for any reason). There will be the option as well to use <a href="https://www.kali.org/blog/nuke-kali-linux-luks/"><strong>LUKS Nuke</strong></a> capability should we wish to make the disk inaccessible at any point after we are done with it. We will be doing this on a <a href="https://www.kali.org/docs/arm/raspberry-pi-4/">Raspberry Pi 4 Model B+</a>, but it also has been tested on a <a href="https://www.kali.org/docs/arm/raspberry-pi-3/">Raspberry Pi 3 Model B</a> as well. <em>You should be able to use most makes/models of similar devices, it may just require a bit of creative adaptations/adjustments in order to secure your own system.</em></p>
+<p>This is an updated process as we have <a href="https://www.kali.org/blog/secure-kali-pi-2018/">previously covered</a> part of this before. This time we include additional developments, with some community contributions thrown in. We would like to give a shout-out to Richard Nelson (<a href="https://github.com/unixabg">unixabg</a>) for his <a href="https://www.kali.org/blog/secure-kali-raspberry-pi/#automate">automated script</a>. We will touch on this after going through the manual method, as we always recommend you understand what is going on under the hood.</p>
+<hr>
+<h2 id="higher-level-overview">Higher-level overview</h2>
+<p>Before we dive into the lower-levels of technical details of what we are going to accomplish, let’s take a quick look at our goals that we want to achieve, and break it down:</p>
+<ul>
+<li><a href="https://www.kali.org/blog/secure-kali-raspberry-pi/#installing-kali-linux-on-a-rpi">Install Kali Linux</a> on a <a href="https://www.kali.org/docs/arm/raspberry-pi-4/">Raspberry Pi 4</a> (henceforth called “RPi”)</li>
+<li><a href="https://www.kali.org/blog/secure-kali-raspberry-pi/#preparing-the-system">Prepare the system</a> for encrypted boot ready for remote disk unlock</li>
+<li><a href="https://www.kali.org/blog/secure-kali-raspberry-pi/#configuring-remote-ssh-unlock">Setup SSH keys</a> to allow the remote unlock to occur (using initramfs and Dropbear)</li>
+<li><a href="https://www.kali.org/blog/secure-kali-raspberry-pi/#backup-any-existing-data">Backup</a> any existing data</li>
+<li><a href="https://www.kali.org/blog/secure-kali-raspberry-pi/#configuring-for-encryption">Configure</a> the encrypted partitions</li>
+<li><a href="https://www.kali.org/blog/secure-kali-raspberry-pi/#restore-our-data">Restore</a> our data</li>
+<li><strong>Hack away</strong>!</li>
+</ul>
+<p>This might sound like a lot, but it’s rather straightforward even if there are a fair few steps. Once completed, we will have a RPi that will:</p>
+<ul>
+<li>Boot</li>
+<li>Get an IP from DHCP</li>
+<li>Wait for us to connect via SSH using keys</li>
+<li>Allow us to provide either the LUKS unlock, or LUKS Nuke passphrases</li>
+</ul>
+<p>Then down the road when we are done with whatever it is we are wanting to do, the only thing left is to retrieve it …at our leisure!</p>
+<hr>
+<h2 id="installing-kali-linux-on-a-rpi">Installing Kali Linux on a RPi</h2>
+<p>If you’re following along, be sure to know where you are imaging the file to, and replace <code>/dev/sdX</code>. Don’t blindly copy/paste!</p>
+<p>We will be creating our drop box machine on an existing Kali installation. It should be very easy to use other Debian-based distributions, and pretty straight forward for other OSes (except Windows users!)</p>
+<p>We first will <a href="https://www.kali.org/get-kali/#kali-arm">download</a> the <a href="https://www.kali.org/releases/">latest stable</a> Kali RPi image. At the time of writing, that’s <a href="https://www.kali.org/blog/kali-linux-2022-2-release/">Kali 2022.2</a>. We have also chosen the 64-bit image, as we have more than 4GB of RAM, and are not using any <a href="https://www.raspberrypi.com/news/introducing-raspberry-pi-hats/">HATs</a> (Hardware Attached on Top). The steps for 32-bit would be the same, after adjusting filenames:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ wget https://kali.download/arm-images/kali-2022.2/kali-linux-2022.2-raspberry-pi-arm64.img.xz
+</span></span><span style="display:flex;"><span>$ xzcat kali-linux-2022.2-raspberry-pi-arm64.img.xz | sudo dd of<span style="color:#f92672">=</span>/dev/sdX bs<span style="color:#f92672">=</span>512k status<span style="color:#f92672">=</span>progress
+</span></span></code></pre></div><hr>
+<h2 id="preparing-the-system">Preparing the system</h2>
+<h3 id="preparing-the-chroot">Preparing the chroot</h3>
+<p>We next are going to get things ready for a chroot. Let’s create where we want to mount the microSD card, then mount it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ sudo mkdir -vp /mnt/chroot/
+</span></span><span style="display:flex;"><span>$ sudo mount /dev/sdX2 /mnt/chroot/
+</span></span><span style="display:flex;"><span>$ sudo mount /dev/sdX1 /mnt/chroot/boot/
+</span></span><span style="display:flex;"><span>$ sudo mount -t proc none /mnt/chroot/proc
+</span></span><span style="display:flex;"><span>$ sudo mount -t sysfs none /mnt/chroot/sys
+</span></span><span style="display:flex;"><span>$ sudo mount -o bind /dev /mnt/chroot/dev
+</span></span><span style="display:flex;"><span>$ sudo mount -o bind /dev/pts /mnt/chroot/dev/pts
+</span></span><span style="display:flex;"><span>$ sudo apt install -y qemu-user-static
+</span></span><span style="display:flex;"><span>$ sudo cp /usr/bin/qemu-aarch64-static /mnt/chroot/usr/bin/
+</span></span></code></pre></div><p>The last two commands will come in handy ready for initramfs later.</p>
+<hr>
+<h3 id="installing-required-packages">Installing required packages</h3>
+<p>Now that our system is set up we can use the chroot to set up the RPi image for encryption. Let’s first enter the chroot and install some necessary packages:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ sudo env LANG<span style="color:#f92672">=</span>C chroot /mnt/chroot/
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# apt update
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# apt install -y busybox cryptsetup dropbear-initramfs lvm2
+</span></span></code></pre></div><hr>
+<p>We want to ensure we are on the latest kernel before we get started, so lets also make sure we have them installed:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# apt install -y kalipi-kernel kalipi-bootloader kalipi-re4son-firmware
+</span></span></code></pre></div><hr>
+<h3 id="boot-options">Boot options</h3>
+<p>Next we are going to edit <code>/boot/cmdline.txt</code> and change the root path. The <code>/boot/cmdline.txt</code> file on a RPi device is used to pass the kernel command line options. We will want to change the root path to be <code>/dev/mapper/crypt</code>, and then we will add in <code>cryptdevice=PARTUUID=$partuuid:crypt</code> right after that.</p>
+<p>The reason for this is that the kernel needs to know where the root filesystem is, in order to mount it and use it, and since we are encrypting the rootfs later in the post, during boot time it can’t see the unencrypted device either, because of the encryption! While we are changing the name here to “crypt”, you can call it anything you want.</p>
+<p>The end result should look like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# vim /boot/cmdline.txt
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# cat /boot/cmdline.txt
+</span></span><span style="display:flex;"><span>dwc_otg.fiq_fix_enable=2 console=serial0,115200 kgdboc=serial0,115200 console=tty1 root=/dev/mapper/crypt cryptdevice=PARTUUID=ed889dad-02:crypt rootfstype=ext4 fsck.repair=yes rootwait net.ifnames=0
+</span></span></code></pre></div><hr>
+<h3 id="partition-layout">Partition layout</h3>
+<p>We now need to update the <code>/etc/fstab</code> file, this is a configuration file on the system that contains all available disks, disk partitions, and what options to use when handling them.</p>
+<p>Currently it is populated with the UUID of the root filesystem, and we need it to point at the encrypted filesystem that we will be making. In this example, we’ve commented out what the previous root device’s UUID, and point at <code>/dev/mapper/crypt</code> which is what our encrypted filesystem will mount as, once we create it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# vim /etc/fstab
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# cat /etc/fstab
+</span></span><span style="display:flex;"><span># &lt;file system&gt; &lt;mount point&gt; &lt;type&gt; &lt;options&gt; &lt;dump&gt; &lt;pass&gt;
+</span></span><span style="display:flex;"><span>proc /proc proc defaults 0 0
+</span></span><span style="display:flex;"><span>/dev/mapper/crypt / ext4 errors=remount-ro 0 0
+</span></span><span style="display:flex;"><span>#UUID<span style="color:#f92672">=</span>747bfa7c-edd2-471f-8fff-0ecafc2d3791 / ext4 errors<span style="color:#f92672">=</span>remount-ro <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>LABEL=BOOT /boot vfat defaults 0 2
+</span></span></code></pre></div><hr>
+<h3 id="configure-the-encrypted-partitions">Configure the encrypted partitions</h3>
+<p>When using encrypted partitions, we need to edit, or create, if it doesn’t exist, the <code>/etc/crypttab</code> file, which is used by cryptsetup to know what options are needed in order to unlock the encrypted device.</p>
+<p>Because this file doesn’t exist, we will create the <code>/etc/crypttab</code> file, and fill it with the options we need:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# echo -e &#39;crypt\tPARTUUID=ed889dad-02\tnone\tluks&#39; &gt; /etc/crypttab
+</span></span></code></pre></div><hr>
+<p>Now we do a little file-system trickery. We create a fake LUKS file-system which will allow cryptsetup to be included in the initramfs because it sees an encrypted partition. When you format any LUKS partitions, you will be prompted for a password, and while normally you will use a strong password, because we are only using this as a hack to include cryptsetup into our initramfs, the password you create at this prompt will not be needed or used past these steps, so you can set it to something short/quick to type. This will happen at the <code>cryptsetup luksFormat</code> step, and you will be prompted for the password you set during <code>cryptsetup luksFormat</code> when you run the <code>cryptsetup luksOpen</code> step.</p>
+<p>You will not see any input being typed when entering the password</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# dd if=/dev/zero of=/tmp/fakeroot.img bs=1M count=20
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# exit
+</span></span><span style="display:flex;"><span>$ sudo cryptsetup luksFormat /mnt/chroot/tmp/fakeroot.img
+</span></span><span style="display:flex;"><span>$ sudo cryptsetup luksOpen /mnt/chroot/tmp/fakeroot.img crypt
+</span></span><span style="display:flex;"><span>$ sudo mkfs.ext4 /dev/mapper/crypt
+</span></span></code></pre></div><hr>
+<h3 id="configuring-ssh-keys">Configuring SSH keys</h3>
+<p>After that we need to copy over OR generate a new ssh key to be added to Dropbear’s <code>authorized_keys</code> file.</p>
+<p>If we already have an existing key to copy over:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ sudo cp ~/.ssh/id_rsa.pub /mnt/chroot/
+</span></span></code></pre></div><p>Alternatively to generate a new key:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ ssh-keygen -t rsa -b <span style="color:#ae81ff">4096</span>
+</span></span><span style="display:flex;"><span>[...]
+</span></span><span style="display:flex;"><span>Enter file in which to save the key (/home/kali/.ssh/id_rsa): /home/kali/.ssh/id_rsa_dropbear
+</span></span><span style="display:flex;"><span>Enter passphrase (empty for no passphrase):
+</span></span><span style="display:flex;"><span>Enter same passphrase again:
+</span></span><span style="display:flex;"><span>Your identification has been saved in /home/kali/.ssh/id_rsa_dropbear
+</span></span><span style="display:flex;"><span>Your public key has been saved in /home/kali/.ssh/id_rsa_dropbear.pub
+</span></span><span style="display:flex;"><span>[...]
+</span></span><span style="display:flex;"><span>$ sudo cp ~/.ssh/id_rsa_dropbear.pub /mnt/chroot/
+</span></span></code></pre></div><p>You will not see any input being typed when entering a passphrase</p>
+<hr>
+<h3 id="configuring-for-encryption">Configuring for encryption</h3>
+<p>Going back into the chroot, we need to create a few new files.</p>
+<p>First is the <code>zz-cryptsetup</code> hook which adds the files we need for <code>cryptsetup</code> into the <code>initramfs</code>. For it to work, it needs to be marked as executable so that <code>mkinitramfs</code> will run the hook:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ sudo env LANG<span style="color:#f92672">=</span>C chroot /mnt/chroot/
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# vim /etc/initramfs-tools/hooks/zz-cryptsetup
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# cat /etc/initramfs-tools/hooks/zz-cryptsetup
+</span></span><span style="display:flex;"><span>#!/bin/sh
+</span></span><span style="display:flex;"><span>set -e
+</span></span><span style="display:flex;"><span>PREREQ=&#34;&#34;
+</span></span><span style="display:flex;"><span>prereqs()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>echo &#34;${PREREQ}&#34;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>case &#34;${1}&#34; in
+</span></span><span style="display:flex;"><span>prereqs)
+</span></span><span style="display:flex;"><span>prereqs
+</span></span><span style="display:flex;"><span>exit 0
+</span></span><span style="display:flex;"><span>;;
+</span></span><span style="display:flex;"><span>esac
+</span></span><span style="display:flex;"><span>. /usr/share/initramfs-tools/hook-functions
+</span></span><span style="display:flex;"><span>mkdir -p ${DESTDIR}/cryptroot || true
+</span></span><span style="display:flex;"><span>cat /etc/crypttab &gt;&gt; ${DESTDIR}/cryptroot/crypttab
+</span></span><span style="display:flex;"><span>cat /etc/fstab &gt;&gt; ${DESTDIR}/cryptroot/fstab
+</span></span><span style="display:flex;"><span>cat /etc/crypttab &gt;&gt; ${DESTDIR}/etc/crypttab
+</span></span><span style="display:flex;"><span>cat /etc/fstab &gt;&gt; ${DESTDIR}/etc/fstab
+</span></span><span style="display:flex;"><span>copy_file config /etc/initramfs-tools/unlock.sh /etc/unlock.sh
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# chmod +x /etc/initramfs-tools/hooks/zz-cryptsetup
+</span></span></code></pre></div><p><em>Should you wish to disable it at any point in the future for any reason, simply remove the executable bit.</em></p>
+<hr>
+<p>We edit the modules file for <code>initramfs-tools</code> so that we include the <code>dm-crypt</code> module, and cat the file to verify it is correct:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# grep -q dm_crypt /etc/initramfs-tools/modules || echo dm_crypt &gt;&gt; /etc/initramfs-tools/modules
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# cat /etc/initramfs-tools/modules
+</span></span><span style="display:flex;"><span># List of modules that you want to include in your initramfs.
+</span></span><span style="display:flex;"><span># They will be loaded at boot time in the order below.
+</span></span><span style="display:flex;"><span>#
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Syntax: module_name [args ...]</span>
+</span></span><span style="display:flex;"><span>#
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># You must run update-initramfs(8) to effect this change.</span>
+</span></span><span style="display:flex;"><span>#
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Examples:</span>
+</span></span><span style="display:flex;"><span>#
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># raid1</span>
+</span></span><span style="display:flex;"><span># sd_mod
+</span></span><span style="display:flex;"><span>dm_crypt
+</span></span></code></pre></div><hr>
+<h3 id="configuring-remote-ssh-unlock">Configuring remote SSH unlock</h3>
+<p>Create an <code>unlock.sh</code> script with the following contents, and then mark it as executable so that the script runs in the <code>initramfs</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# vim /etc/initramfs-tools/unlock.sh
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# cat /etc/initramfs-tools/unlock.sh
+</span></span><span style="display:flex;"><span>#!/bin/sh
+</span></span><span style="display:flex;"><span>export PATH=&#39;/sbin:/bin:/usr/sbin:/usr/bin&#39;
+</span></span><span style="display:flex;"><span>while true; do
+</span></span><span style="display:flex;"><span>test -e /dev/mapper/crypt &amp;&amp; break || cryptsetup luksOpen /dev/disk/by-uuid/$REPLACE_LATER crypt
+</span></span><span style="display:flex;"><span>done
+</span></span><span style="display:flex;"><span>/scripts/local-top/cryptroot
+</span></span><span style="display:flex;"><span>for i in $(ps aux | grep &#39;cryptroot&#39; | grep -v &#39;grep&#39; | awk &#39;{print $1}&#39;); do kill -9 $i; done
+</span></span><span style="display:flex;"><span>for i in $(ps aux | grep &#39;askpass&#39; | grep -v &#39;grep&#39; | awk &#39;{print $1}&#39;); do kill -9 $i; done
+</span></span><span style="display:flex;"><span>for i in $(ps aux | grep &#39;ask-for-password&#39; | grep -v &#39;grep&#39; | awk &#39;{print $1}&#39;); do kill -9 $i; done
+</span></span><span style="display:flex;"><span>for i in $(ps aux | grep &#39;\\-sh&#39; | grep -v &#39;grep&#39; | awk &#39;{print $1}&#39;); do kill -9 $i; done
+</span></span><span style="display:flex;"><span>exit 0
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# chmod +x /etc/initramfs-tools/unlock.sh
+</span></span></code></pre></div><hr>
+<p>Next we must add the following to the beginning of <code>/etc/dropbear/initramfs/authorized_keys</code>, which tells it to run this command when we SSH in if the key matches:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# vim /etc/dropbear/initramfs/authorized_keys
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# cat /etc/dropbear/initramfs/authorized_keys
+</span></span><span style="display:flex;"><span>command=&#34;/etc/unlock.sh; exit&#34;
+</span></span></code></pre></div><hr>
+<p>After doing so, we can append the SSH key that we copied over and then remove it from the card:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# cat id_rsa.pub &gt;&gt; /etc/dropbear/initramfs/authorized_keys &amp;&amp; rm -v id_rsa.pub
+</span></span></code></pre></div><p>Once you’re done, <code>/etc/dropbear/initramfs/authorized_keys</code> should look like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# cat /etc/dropbear/initramfs/authorized_keys
+</span></span><span style="display:flex;"><span>command=&#34;/etc/unlock.sh; exit&#34; ssh-rsa &lt;key&gt; kali@kali
+</span></span></code></pre></div><p>Everything in the <code>authorized_keys</code> file should be one line, as well as a space between the command’s ending <code>&quot;</code> and the ssh key (e.g. <code>[...]exit&quot; ssh-rsa[...]</code>)</p>
+<hr>
+<p>We now need to edit <code>/usr/share/initramfs-tools/scripts/init-premount/dropbear</code> to add a sleep timer, this allows for networking to start <em>before</em> Dropbear does. It is important to note that when there are updates to the <code>dropbear-initramfs</code> package, this edit will need to be re-added:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# vim /usr/share/initramfs-tools/scripts/init-premount/dropbear
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# cat /usr/share/initramfs-tools/scripts/init-premount/dropbear
+</span></span><span style="display:flex;"><span>[ &#34;$BOOT&#34; != nfs ] || configure_networking
+</span></span><span style="display:flex;"><span>sleep 5
+</span></span><span style="display:flex;"><span>run_dropbear &amp;
+</span></span><span style="display:flex;"><span>echo $! &gt;/run/dropbear.pid
+</span></span></code></pre></div><hr>
+<p>Now we enable cryptsetup:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# echo CRYPTSETUP=y &gt;&gt; /etc/cryptsetup-initramfs/conf-hook
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# tail /etc/cryptsetup-initramfs/conf-hook
+</span></span><span style="display:flex;"><span>#
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Whether to include the askpass binary to the initramfs image. askpass</span>
+</span></span><span style="display:flex;"><span># is required <span style="color:#66d9ef">for</span> interactive passphrase prompts, and ASKPASS<span style="color:#f92672">=</span>y <span style="color:#f92672">(</span>the
+</span></span><span style="display:flex;"><span># default<span style="color:#f92672">)</span> is implied when the hook detects that same device needs to be
+</span></span><span style="display:flex;"><span># unlocked interactively <span style="color:#f92672">(</span>i.e., not via keyfile nor keyscript<span style="color:#f92672">)</span> at
+</span></span><span style="display:flex;"><span># initramfs stage. Setting ASKPASS<span style="color:#f92672">=</span>n also skips <span style="color:#e6db74">`</span>cryptroot-unlock<span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span># inclusion as it requires the askpass executable.
+</span></span><span style="display:flex;"><span>#ASKPASS<span style="color:#f92672">=</span>y
+</span></span><span style="display:flex;"><span>CRYPTSETUP=y
+</span></span></code></pre></div><hr>
+<h3 id="kernel">Kernel</h3>
+<p>The next step is important for the people who are following along. What to select, depends on the RPi device you are using, will . Below are five kernel names/editions/flavours which you need to select one of for your needs <em>(please pay attention!)</em>:</p>
+<ul>
+<li><code>Re4son+</code> is for 32-bit ARMEL armv6 devices - i.e. RPi1, RPi0, or RPi0w</li>
+<li><code>Re4son-v7+</code> is for 32-bit ARMHF armv7 devices - i.e. RPi2 v1.2, RPi3 or RPi02w</li>
+<li><code>Re4son-v8+</code> is for 64-bit ARM64 armv8 devices - i.e. RPi2 v1.2, RPi3 or RPi02w</li>
+<li><code>Re4son-v7l+</code> is for 32-bit ARMHF armv7 devices - i.e. RPi4 or RPi400 devices</li>
+<li><code>Re4son-v8l+</code> is for 64-bit ARM64 armv8 devices - i.e. RPi4 or RPi400 devices</li>
+</ul>
+<p>The <code>l</code> in the name stands for lpae - <a href="https://wikipedia.org/wiki/ARM_architecture_family#LPAE">Large Physical Address Extension</a></p>
+<p>As a reminder, we are using the RPi4, 64-bit image. So we would need <code>Re4son-v8l+</code>. Please make sure you adjust to your device. So now we know what kernel name to use, we now need to find what kernel version. This will alter from device to device, and it will also change as and when Kali gets updates At the time of writing, it is <code>5.15.44</code> for our RPi:</p>
+<p>Keep in mind the kernel versions may change, however the name will not:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# ls -l /lib/modules/ | awk -F&#34; &#34; &#39;{print $9}&#39;
+</span></span><span style="display:flex;"><span>5.15.44-Re4son+
+</span></span><span style="display:flex;"><span>5.15.44-Re4son-v7+
+</span></span><span style="display:flex;"><span>5.15.44-Re4son-v7l+
+</span></span><span style="display:flex;"><span>5.15.44-Re4son-v8+
+</span></span><span style="display:flex;"><span>5.15.44-Re4son-v8l+
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# echo &#34;initramfs initramfs.gz followkernel&#34; &gt;&gt; /boot/config.txt
+</span></span></code></pre></div><p>Keep in mind the kernel versions (<code>5.15.44</code>) may change, however the kernel name (<code>Re4son-v8l+</code>) will not.</p>
+<hr>
+<p>Now we need to create the <code>initramfs</code>. This is where the kernel version comes into play:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# mkinitramfs -o /boot/initramfs.gz 5.15.44-Re4son-v8l+
+</span></span></code></pre></div><hr>
+<p>Now we want to ensure that we created the <code>initramfs</code> correctly. If there is no result, then something went wrong:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# lsinitramfs /boot/initramfs.gz | grep cryptsetup
+</span></span><span style="display:flex;"><span>usr/lib/aarch64-linux-gnu/libcryptsetup.so.12
+</span></span><span style="display:flex;"><span>usr/lib/aarch64-linux-gnu/libcryptsetup.so.12.7.0
+</span></span><span style="display:flex;"><span>usr/lib/cryptsetup
+</span></span><span style="display:flex;"><span>usr/lib/cryptsetup-nuke-password
+</span></span><span style="display:flex;"><span>usr/lib/cryptsetup-nuke-password/crypt
+</span></span><span style="display:flex;"><span>usr/lib/cryptsetup/askpass
+</span></span><span style="display:flex;"><span>usr/lib/cryptsetup/askpass.cryptsetup
+</span></span><span style="display:flex;"><span>usr/lib/cryptsetup/functions
+</span></span><span style="display:flex;"><span>usr/sbin/cryptsetup
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# lsinitramfs /boot/initramfs.gz | grep authorized
+</span></span><span style="display:flex;"><span>root-Q2iWOODUwk/.ssh/authorized_keys
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# lsinitramfs /boot/initramfs.gz | grep unlock.sh
+</span></span><span style="display:flex;"><span>etc/unlock.sh
+</span></span></code></pre></div><hr>
+<h3 id="disable-services">Disable services</h3>
+<p>Before we can backup, we have to ensure that <code>rpi-resizerootfs</code> is disabled. This is a service we typically run on all of our ARM devices that resizes the root filesystem partition to increase the size of the partition to the full size of the storage device it is on. Since we are doing this step manually, we want to disable it, so it doesn’t potentially delete our root filesystem and re-make it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# systemctl disable rpi-resizerootfs
+</span></span></code></pre></div><h2 id="backup-any-existing-data">Backup any existing data</h2>
+<p>Now we can ensure that all the changes are written, then we can encrypt the disk:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# sync
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# exit
+</span></span><span style="display:flex;"><span>$ sudo umount /mnt/chroot/<span style="color:#f92672">{</span>boot,sys,proc,dev/pts,dev<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>$ sudo mkdir -vp /mnt/<span style="color:#f92672">{</span>backup,encrypted<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>$ sudo rsync -avh /mnt/chroot/* /mnt/backup/
+</span></span><span style="display:flex;"><span>$ sudo cryptsetup luksClose crypt
+</span></span><span style="display:flex;"><span>$ sudo umount /mnt/chroot
+</span></span><span style="display:flex;"><span>$ echo -e <span style="color:#e6db74">&#34;d\n2\nw&#34;</span> | sudo fdisk /dev/sdX
+</span></span><span style="display:flex;"><span>$ echo -e <span style="color:#e6db74">&#34;n\np\n2\n\n\nw&#34;</span> | sudo fdisk /dev/sdX
+</span></span></code></pre></div><h2 id="configure-the-encrypted-partitions-1">Configure the encrypted partitions</h2>
+<p>Depending on what device you are using you will have to use one of two commands. If you are using a RPi4 with 4GB or more, use this command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ sudo cryptsetup -v -y --cipher aes-cbc-essiv:sha256 --key-size <span style="color:#ae81ff">256</span> luksFormat /dev/sdX2
+</span></span></code></pre></div><p>Otherwise you will want to use the following which uses an older version of LUKS:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ sudo cryptsetup -v -y --pbkdf pbkdf2 --cipher aes-cbc-essiv:sha256 --key-size <span style="color:#ae81ff">256</span> luksFormat /dev/sdX2
+</span></span></code></pre></div><h2 id="restore-our-data">Restore our data</h2>
+<p>Afterwards you can finish restoring data back to the now encrypted partition:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ sudo cryptsetup -v luksOpen /dev/sdX2 crypt
+</span></span><span style="display:flex;"><span>$ sudo mkfs.ext4 /dev/mapper/crypt
+</span></span><span style="display:flex;"><span>$ sudo mount /dev/mapper/crypt /mnt/encrypted/
+</span></span><span style="display:flex;"><span>$ sudo rsync -avh /mnt/backup/* /mnt/encrypted/
+</span></span><span style="display:flex;"><span>$ sync
+</span></span></code></pre></div><hr>
+<p>The final steps that we have to make are to fix up the <code>/etc/fstab</code> file for the new LUKS UUID, or you can leave it as <code>/dev/mapper/crypt</code> and replace the UUID in our unlock script and remake the initramfs file, this step is important as it will not properly boot if not done, because it won’t have the information to use the encrypted filesystem! Remember to put the information in from <strong>YOUR</strong> system, as the UUID will be different for every system:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ sudo mount /dev/sdX1 /mnt/encrypted/boot/
+</span></span><span style="display:flex;"><span>$ sudo mount -t proc none /mnt/encrypted/proc
+</span></span><span style="display:flex;"><span>$ sudo mount -t sysfs none /mnt/encrypted/sys
+</span></span><span style="display:flex;"><span>$ sudo mount -o bind /dev /mnt/encrypted/dev
+</span></span><span style="display:flex;"><span>$ sudo mount -o bind /dev/pts /mnt/encrypted/dev/pts
+</span></span><span style="display:flex;"><span>$ sudo env LANG<span style="color:#f92672">=</span>C chroot /mnt/encrypted
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# blkid /dev/sdX2
+</span></span><span style="display:flex;"><span>/dev/sdX2: UUID=&#34;173e2de4-0501-4d8e-9039-a4923bfa5ee7&#34; TYPE=&#34;crypto_LUKS&#34; PARTUUID=&#34;e1750e08-02&#34;
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# cat /etc/fstab
+</span></span><span style="display:flex;"><span># &lt;file system&gt; &lt;mount point&gt; &lt;type&gt; &lt;options&gt; &lt;dump&gt; &lt;pass&gt;
+</span></span><span style="display:flex;"><span>proc /proc proc defaults 0 0
+</span></span><span style="display:flex;"><span>UUID=173e2de4-0501-4d8e-9039-a4923bfa5ee7 / ext4 errors=remount-ro 0 1
+</span></span><span style="display:flex;"><span>LABEL=BOOT /boot vfat defaults 0 2
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# vim /etc/initramfs-tools/unlock.sh
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# cat /etc/initramfs-tools/unlock.sh
+</span></span><span style="display:flex;"><span>#!/bin/sh
+</span></span><span style="display:flex;"><span>export PATH=&#39;/sbin:/bin:/usr/sbin:/usr/bin&#39;
+</span></span><span style="display:flex;"><span>while true; do
+</span></span><span style="display:flex;"><span>test -e /dev/mapper/crypt &amp;&amp; break || cryptsetup luksOpen /dev/disk/by-uuid/173e2de4-0501-4d8e-9039-a4923bfa5ee7 crypt
+</span></span><span style="display:flex;"><span>done
+</span></span><span style="display:flex;"><span>/scripts/local-top/cryptroot
+</span></span><span style="display:flex;"><span>for i in $(ps aux | grep &#39;cryptroot&#39; | grep -v &#39;grep&#39; | awk &#39;{print $1}&#39;); do kill -9 $i; done
+</span></span><span style="display:flex;"><span>for i in $(ps aux | grep &#39;askpass&#39; | grep -v &#39;grep&#39; | awk &#39;{print $1}&#39;); do kill -9 $i; done
+</span></span><span style="display:flex;"><span>for i in $(ps aux | grep &#39;ask-for-password&#39; | grep -v &#39;grep&#39; | awk &#39;{print $1}&#39;); do kill -9 $i; done
+</span></span><span style="display:flex;"><span>for i in $(ps aux | grep &#39;\\-sh&#39; | grep -v &#39;grep&#39; | awk &#39;{print $1}&#39;); do kill -9 $i; done
+</span></span><span style="display:flex;"><span>exit 0
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# vim /etc/crypttab
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# cat /etc/crypttab
+</span></span><span style="display:flex;"><span>crypt PARTUUID=e1750e08-02 none luks
+</span></span><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# mkinitramfs -o /boot/initramfs.gz 5.15.44-Re4son-v8l+
+</span></span></code></pre></div><p>If you get a cryptsetup error here, similar to <code>cryptsetup: ERROR: Couldn't resolve device PARTUUID=ed889dad-02</code> that means that you did not edit the <code>/etc/crypttab</code> file and put the correct PARTUUID in. The warning about no fsck.luks existing can be ignored, as there is no such thing.</p>
+<hr>
+<p>Now we can unmount and close up everything:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[/]
+</span></span><span style="display:flex;"><span>└─# exit
+</span></span><span style="display:flex;"><span>$ sudo umount /mnt/encrypted/<span style="color:#f92672">{</span>boot,sys,proc,dev/pts,dev<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>$ sudo umount /mnt/encrypted
+</span></span><span style="display:flex;"><span>$ sudo cryptsetup luksClose crypt
+</span></span></code></pre></div><hr>
+<p>Earlier, we mentioned the LUKS Nuke capability. If you plan to use it, while booted on your freshly encrypted RPi rootfs, simply run the following command to add the Nuke password and follow the prompt:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kali:~$ sudo dpkg-reconfigure cryptsetup-nuke-password
+</span></span></code></pre></div><hr>
+<p>Stay tuned for part two where we cover remotely connecting to the Raspberry Pi as a dropbox device!</p>
+<h1 id="automate">Automate!</h1>
+<p>Now how about we get this automated? Thanks to <a href="https://github.com/unixabg">Richard Nelson (@unixabg)</a>, anyone who wants to get this all set up in much less time than the manual method and much easier, can!</p>
+<p>First things first, let’s download <a href="https://github.com/unixabg/cryptmypi">unixabg’s cryptmypi</a> script:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ git clone https://github.com/unixabg/cryptmypi.git
+</span></span><span style="display:flex;"><span>$ cd cryptmypi/
+</span></span></code></pre></div><p>There are a number of things we want to do before we can run the build scripts however. Let’s go through those together now:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ cp cryptmypi.conf config/.
+</span></span><span style="display:flex;"><span>$ cat ~/.ssh/id_rsa.pub &gt;&gt; config/authorized_keys
+</span></span></code></pre></div><p>Now we need to edit <code>cryptmypi.conf</code> to change some settings in stage-2. These settings will be personal, but let’s just give you all an example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ vim config/cryptmypi.conf
+</span></span><span style="display:flex;"><span>$ cat config/cryptmypi.conf
+</span></span><span style="display:flex;"><span>#<span style="color:#75715e">#################</span>
+</span></span><span style="display:flex;"><span>#<span style="color:#75715e"># cryptmypi settings</span>
+</span></span><span style="display:flex;"><span>#<span style="color:#75715e">#################</span>
+</span></span><span style="display:flex;"><span># export prefix <span style="color:#66d9ef">for</span> hooks
+</span></span><span style="display:flex;"><span>export _VER=&#34;2.2-beta&#34;
+</span></span><span style="display:flex;"><span># base and build
+</span></span><span style="display:flex;"><span>export _BASEDIR=$(pwd)
+</span></span><span style="display:flex;"><span>export _BUILDDIR=${_BASEDIR}/cryptmypi-build
+</span></span><span style="display:flex;"><span>#<span style="color:#75715e">#################</span>
+</span></span><span style="display:flex;"><span>#<span style="color:#75715e"># Stage-1</span>
+</span></span><span style="display:flex;"><span>#<span style="color:#75715e">#################</span>
+</span></span><span style="display:flex;"><span>_IMAGEURL=https://kali.download/arm-images/kali-2022.2/kali-linux-2022.2-raspberry-pi-arm64.img.xz
+</span></span><span style="display:flex;"><span># compose package actions
+</span></span><span style="display:flex;"><span>export _PKGSPURGE=&#34;&#34;
+</span></span><span style="display:flex;"><span>export _PKGSINSTALL=&#34;&#34;
+</span></span><span style="display:flex;"><span># iodine settings
+</span></span><span style="display:flex;"><span>_IODINE_PASSWORD=&#34;your iodine password goes here&#34;
+</span></span><span style="display:flex;"><span>_IODINE_DOMAIN=&#34;your iodine domain goes here&#34;
+</span></span><span style="display:flex;"><span># final package actions
+</span></span><span style="display:flex;"><span>export _FINALPKGPURGE=&#34;&#34;
+</span></span><span style="display:flex;"><span>export _FINALPKGINSTALL=&#34;telnet dsniff bettercap&#34;
+</span></span><span style="display:flex;"><span>#<span style="color:#75715e">#################</span>
+</span></span><span style="display:flex;"><span>#<span style="color:#75715e"># Stage-2</span>
+</span></span><span style="display:flex;"><span>#<span style="color:#75715e">#################</span>
+</span></span><span style="display:flex;"><span># block device
+</span></span><span style="display:flex;"><span>_BLKDEV=&#34;/dev/sdb&#34;
+</span></span><span style="display:flex;"><span># luks encryption cipher
+</span></span><span style="display:flex;"><span>_LUKSCIPHER=&#34;aes-cbc-essiv:sha256&#34;
+</span></span><span style="display:flex;"><span># luks encryption password
+</span></span><span style="display:flex;"><span>_LUKSPASSWD=&#34;toor&#34;
+</span></span><span style="display:flex;"><span># root password
+</span></span><span style="display:flex;"><span>export _ROOTPASSWD=&#34;toor&#34;
+</span></span></code></pre></div><p>What we changed here is the block device, LUKS encryption password, and the root password. The image URL can be changed if you would like to use a different image file, so be sure to do that now if need be.</p>
+<p>Now the only thing left to do is run both stages’ scripts and follow the instructions. By the end of it, you’ll have a fully encrypted file-system with Dropbear SSH access!</p>
+<h4 id="source"><a href="https://www.kali.org/blog/secure-kali-raspberry-pi/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

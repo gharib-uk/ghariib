@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How Kali deals with the upcoming Python 2 End-of-Life</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How Kali deals with the upcoming Python 2 End-of-Life</h1>
+			<b><time>16.12.2019 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="how-kali-deals-with-the-upcoming-python-2-end-of-life">How Kali deals with the upcoming Python 2 End-of-Life</h1>
+<p><a href="https://www.kali.org/blog/python-2-end-of-life/images/python-2-end-of-life-b.jpg">https://www.kali.org/blog/python-2-end-of-life/images/python-2-end-of-life-b.jpg</a></p>
+<p>Five years ago, the Python developers announced that they will stop supporting Python 2 in 2020. For a long time, nobody cared and Python 3 adoption was slow. But things have changed a lot lately as the deadline is right around the corner (1st January). Debian is removing Python 2 support Debian</p>
+<p>Five years ago, the Python developers announced that they will <a href="https://pythonclock.org/">stop supporting Python 2 in 2020</a>. For a long time, nobody cared and Python 3 adoption was slow. But things have changed a lot lately as the deadline is right around the corner (1st January).</p>
+<h2 id="debian-is-removing-python-2-support">Debian is removing Python 2 support</h2>
+<p>Debian is planning to get rid of <a href="https://wiki.debian.org/Python/2Removal">Python 2 entirely for their next stable release</a> so they are progressively getting rid of Python 2 code. They filed release critical bugs on leaf packages (i.e. packages without reverse dependencies) asking them to be ported to Python 3. If the Python 3 port is not happening soon enough, these packages will be removed from <a href="https://wiki.debian.org/DebianTesting">Debian Testing</a> <em>(which is what Kali is based on)</em>.</p>
+<h2 id="consequences-for-kali">Consequences for Kali</h2>
+<h3 id="applications-disappearing">Applications disappearing</h3>
+<p>As Kali is a rolling distribution, it continuously receives updates from Debian Testing. This includes when packages “go away” because they have been dropped from Debian. However, they can always come back later, provided that someone ports them to Python 3.</p>
+<p>We have already experienced this in the case of <code>zenmap</code> which is no longer maintained by the <a href="https://nmap.org/zenmap/">nmap developers</a>. Thus, it’s no longer built by <a href="https://packages.debian.org/search?keywords=zenmap">Debian’s nmap source</a> package, and as a result no longer appears in Kali.</p>
+<h3 id="broken-applications">Broken applications</h3>
+<p>We have many Python 2 applications in Kali that use modules which are packaged in Debian. When Debian drops the Python 2 version of such a module, the application is broken in <a href="https://www.kali.org/docs/general-use/kali-linux-sources-list-repositories/">kali-dev</a>. kali-rolling is not affected due to the way it’s managed but the growing divergence between kali-dev and kali-rolling is making our job more difficult: we don’t get updates for such packages and there are other (recent/) applications that will likely require new versions of those packages!</p>
+<h2 id="kali-must-remove-python-2-code-too">Kali must remove Python 2 code too</h2>
+<p>Due to this change in the ecosystem, Kali has no other choice than to follow Debian’s lead and remove Python 2 code as well. This giant effort is tracked with <a href="https://gitlab.com/groups/kalilinux/-/issues?label_name%5B%5D=Project%3A%3APy2Removal">many GitLab issues</a> against all packages depending on Python 2 in some way. We have already filed upstream bug reports for all the packages where there’s no Python 3 support yet.</p>
+<p>How we handle each case depends on many factors:</p>
+<ul>
+<li>If upstream is working on Python 3 support, then we just wait until it’s ready.</li>
+<li>If upstream is inactive or is not interested into porting its code to Python 3, then we have few choices:
+<ul>
+<li>either we remove the package;</li>
+<li>or we find some fork/patch that adds Python 3 support;</li>
+<li>or we do the porting work ourselves (rather unlikely except for trivial scripts).</li>
+</ul>
+</li>
+</ul>
+<p>It also depends on the kind of packages:</p>
+<ul>
+<li>For a Python library, it’s a two step process: first we add Python 3 support; Python 2 support is removed later, once all reverse dependencies have been updated to use Python 3.</li>
+<li>For a Python application, a single update might be enough but that update might depend on having dependencies be ported to Python 3 first.</li>
+</ul>
+<p>We don’t like to remove software, but sometimes when they are no longer maintained, we have no other choices. For important packages, we are waiting longer thus letting more time for the community to add the required Python 3 support. We might even patch them so that they display a warning inviting users to contribute, or at least understand the application may be removed in the near future.</p>
+<p>For packages that no longer add much value, or that have viable alternatives in Kali, we might remove them at any point in time.</p>
+<h2 id="how-you-can-contribute">How you can contribute</h2>
+<p>If one of your favorite applications appears among the <a href="https://gitlab.com/groups/kalilinux/-/issues?label_name%5B%5D=Project%3A%3APy2Removal">affected Kali packages</a> or among the <a href="https://bugs.debian.org/cgi-bin/pkgreport.cgi?tag=py2removal;users=debian-python@lists.debian.org;maint=team%2Bpkg-security@tracker.debian.org">affected packages from Debian’s pkg-security team</a>, then you should review its situation and possibly help the upstream developer(s) by submitting a pull request adding Python 3 support. Even if upstream is not very active, we will be able to merge your changes in Kali and keep the package for longer until upstream becomes active again.</p>
+<p>If you don’t have the coding skills required for this, you can still try to find a Python 3 fork/patch written by someone else and point it out to us in the corresponding GitLab issue or Debian bug report. Or, tell the developers how much you like their application and that you would like to continue to make use of it, so they should port over to Python 3.</p>
+<h4 id="source"><a href="https://www.kali.org/blog/python-2-end-of-life/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

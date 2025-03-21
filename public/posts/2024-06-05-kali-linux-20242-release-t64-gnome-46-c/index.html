@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Kali Linux 20242 Release t64 GNOME 46 Community Packages</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Kali Linux 20242 Release t64 GNOME 46 Community Packages</h1>
+			<b><time>05.06.2024 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="kali-linux-20242-release-t64-gnome-46-community-packages">Kali Linux 20242 Release t64 GNOME 46 Community Packages</h1>
+<p><a href="https://www.kali.org/blog/kali-linux-2024-2-release/images/banner-2024.2-release.jpg">https://www.kali.org/blog/kali-linux-2024-2-release/images/banner-2024.2-release.jpg</a></p>
+<p>A little later than usual, but Kali 2024.2 is here! The delay has been due to changes under the hood to make this happen, which is where a lot of focus has been. The community has helped out a huge amount, and this time they’ve not only been adding new</p>
+<p>A little later than usual, but Kali 2024.2 is here! The delay has been due to changes under the hood to make this happen, which is where a lot of focus has been. The community has helped out a huge amount, and this time they’ve not only been adding new packages, but updating and fixing bugs too! If you are reading this, Kali 2024.2 is finally ready to be <a href="https://www.kali.org/get-kali/">downloaded</a> or <a href="https://www.kali.org/docs/general-use/updating-kali/">upgraded <em>if you have an existing Kali Linux installation</em></a>.</p>
+<p>The summary of the <a href="https://bugs.kali.org/changelog_page.php">changelog</a> since the <a href="https://www.kali.org/blog/kali-linux-2024-1-release/">2024.1 release from February</a> is:</p>
+<ul>
+<li><strong><a href="https://www.kali.org/blog/kali-linux-2024-2-release/#the-t64-transition-is-done-in-kali">t64</a></strong> - Future package compatibility for 32-bit platforms</li>
+<li><strong><a href="https://www.kali.org/blog/kali-linux-2024-2-release/#desktop-changes">Desktop Changes</a></strong> - GNOME 46 &amp; Xfce improvements</li>
+<li><strong><a href="https://www.kali.org/blog/kali-linux-2024-2-release/#new-tools-in-kali">New Tools</a></strong> - 17x new tools, and countless updates</li>
+</ul>
+<hr>
+<h2 id="the-t64-transition-is-done-in-kali">The t64 transition is done in Kali</h2>
+<p>Kali Linux is a rolling distribution based on Debian testing, and as such, all the work done in Debian is incorporated in Kali pretty quickly after it lands in Debian testing. We have some solid QA and automation for that to happen, and usually most packages just “roll in” with minimal intervention from the Kali team. Our QA tells us when new packages from Debian break packages in Kali: in those cases packages are stuck in <a href="https://www.kali.org/docs/general-use/kali-branches/#the-kali-dev-repository">kali-dev</a> <em>(a development suite that is NOT meant to be used by end users)</em>, we fix it, and then they are allowed to roll in <a href="https://www.kali.org/docs/general-use/kali-branches/#the-kali-rolling-repository">kali-rolling</a> <em>(which is what most end users use)</em>. <em>This is part of what the Kali team does every day.</em></p>
+<p>During the last cycle, this routine was interrupted by a major change in Debian: <a href="https://wiki.debian.org/ReleaseGoals/64bit-time">the t64 transition</a>. What is that? In short: <strong><code>t64</code> refers to <code>64-bit time_t type</code></strong>. For those not familiar with C, <code>time_t</code> is the type to store a Unix timestamp <em>(quantity of seconds relative to the Unix Epoch)</em>, and the size for this type depends on the architecture. For those architectures that have a 32-bit time_t type, there will be an issue in the year 2038, as the maximum value possible will be reached, and the value will roll over beyond +2147483647 into negative values. The <a href="https://sourceware.org/glibc/wiki/Y2038ProofnessDesign">glibc page</a> has all the technical details, for those who want to read more.</p>
+<p>To prevent the Year 2038 issue, the size for the time_t type had to be changed to be 64-bit, on those architectures where it was 32-bit. For Kali Linux, that means the two 32-bit ARM architectures that we support: <code>armhf</code> and <code>armel</code>. These architectures are used mainly for <a href="https://www.kali.org/get-kali/#kali-arm">ARM images</a> (eg. Raspberry Pi) and a few <a href="https://www.kali.org/get-kali/#kali-mobile">NetHunter images</a>. Note that the <code>i386</code> architecture (ie. legacy PC) didn’t change: this architecture still will have a 32-bit time_t type, and that will not change. <em>Kali has always treated ARM platform as a first-class citizen</em>.</p>
+<p>Changing the size of a widely used type provided by the C library is a big deal. It means that a huge number of packages need to be rebuilt, it is in fact <a href="https://www.phoronix.com/news/Debian-Experimental-64bit-Time">the largest ABI transition ever done in Debian</a>. And in a sense, it affects all architectures, as all libraries that expose a time_t type were rebuilt and renamed with a <code>t64</code> suffix, even for those architectures where the type was already 64-bit (in this case, the only change is a package rename).</p>
+<p>Enough background, now what does it mean for Kali users?</p>
+<ul>
+<li>The transition was completed in <code>kali-rolling</code> on Monday 20th May, and is now released with Kali 2024.2. For users of Kali rolling who updated their system, the transition is behind them already.</li>
+<li>The vast majority of Kali users are running on <code>amd64</code> or <code>arm64</code>: the only visible change will be a lot of packages upgraded, and a lot of new packages with a <code>t64</code> suffix in their name. Since there was no ABI change for those architectures, there should be no issue. Additionally, old packages (without <code>t64</code> suffix) are co-installable with the new t64 packages, so upgrading should be no problem for APT.</li>
+<li>The users that might be impacted are those running Kali on a <code>armel</code> or <code>armhf</code> ARM board. If you upgrade your system, make sure to use the command <code>apt full-upgrade</code> (do <strong>NOT</strong> use <code>apt upgrade</code>) , <a href="https://www.kali.org/docs/general-use/updating-kali/">as documented already</a>. After your system is upgraded, hopefully all goes well and works as usual, but if ever you notice issues, please report it on the <a href="https://bugs.kali.org/">Kali Linux bugtracker</a>.</li>
+</ul>
+<p>So just to repeat it again, for those who jumped straight to the last line: please upgrade your system <a href="https://www.kali.org/docs/general-use/updating-kali/">as documented</a>, using the pair of commands <code>apt update &amp;&amp; apt full-upgrade</code>, and everything should be fine. Please report bugs in case of issues. Thank you!</p>
+<h2 id="desktop-changes">Desktop changes</h2>
+<h3 id="gnome-46">GNOME 46</h3>
+<p>Roughly every half-year, there is a new version bump for the GNOME desktop environment. Of which, Kali 2024.2 brings the latest version, <strong><a href="https://release.gnome.org/46/">GNOME 46</a></strong>. As you would expect, this is a more polished experience following the work introduced in previous versions.</p>
+<p><strong>All themes and extensions have been updated to support the new shell</strong>:</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2024-2-release/images/gnome-46.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2024-2-release/images/gnome-46.png" alt="GNOME 46" />
+</figure>
+
+
+</a></p>
+<h3 id="xfce-desktop-changes">Xfce desktop changes</h3>
+<p>We are excited to announce updates to the Xfce desktop, specifically for <strong><a href="https://www.kali.org/docs/introduction/kali-undercover/">Kali-Undercover</a> and <a href="https://www.kali.org/docs/general-use/hidpi/">HiDPI</a> modes</strong>. These updates enhance stability and include several minor bug fixes, ensuring better support for the latest desktop improvements.</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2024-2-release/images/kali-undercover.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2024-2-release/images/kali-undercover.png" alt="Kali Undercover" />
+</figure>
+
+
+</a></p>
+<h2 id="new-tools-in-kali">New Tools in Kali</h2>
+<p>There has not been a single Kali release without any new shiny tools added, and this release is no exception. We are overjoyed that there have been multiple tools packaged up from the community, which are now in Kali too! It goes without saying that countless packages have been updated to the latest version, however the summary of new tools which have been added <em>(to the network repositories)</em>:</p>
+<ul>
+<li><a href="https://www.kali.org/tools/autorecon/">autorecon</a> - Multi-threaded network reconnaissance tool <em>(Submitted by <a href="https://gitlab.com/arszilla">Arszilla</a>)</em></li>
+<li><a href="https://www.kali.org/tools/coercer/">coercer</a> - Automatically coerce a Windows server to authenticate on an arbitrary machine <em>(Submitted by <a href="https://gitlab.com/casterbyte">Caster</a>)</em></li>
+<li><a href="https://www.kali.org/tools/dploot/">dploot</a> - Python rewrite of SharpDPAPI <em>(Submitted by <a href="https://gitlab.com/arszilla">Arszilla</a>)</em></li>
+<li><a href="https://www.kali.org/tools/getsploit/">getsploit</a> - Command line utility for searching and downloading exploits <em>(Submitted by <a href="https://gitlab.com/arszilla">Arszilla</a>)</em></li>
+<li><a href="https://www.kali.org/tools/gowitness/">gowitness</a> - Web screenshot utility using Chrome Headless</li>
+<li><a href="https://www.kali.org/tools/horst/">horst</a> - Highly Optimized Radio Scanning Tool</li>
+<li><a href="https://www.kali.org/tools/ligolo-ng/">ligolo-ng</a> - Advanced, yet simple, tunneling/pivoting tool that uses a TUN interface</li>
+<li><a href="https://www.kali.org/tools/mitm6/">mitm6</a> - pwning IPv4 via IPv6 <em>(Submitted by <a href="https://gitlab.com/casterbyte">Caster</a>)</em></li>
+<li><a href="https://www.kali.org/tools/pspy/">pspy</a> - Monitor Linux processes without root permissions</li>
+<li><a href="https://www.kali.org/tools/pyinstaller/">pyinstaller</a> - Converts (packages) Python programs into stand-alone executables.</li>
+<li><a href="https://www.kali.org/tools/pyinstxtractor/">pyinstxtractor</a> - PyInstalller Extractor <em>(Submitted by <a href="https://gitlab.com/arszilla">Arszilla</a>)</em></li>
+<li><a href="https://www.kali.org/tools/sharpshooter/">sharpshooter</a> - Payload Generation Framework</li>
+<li><a href="https://www.kali.org/tools/sickle-tool/">sickle</a> - Payload development tool <em>(Submitted by <a href="https://gitlab.com/arszilla">Arszilla</a>)</em></li>
+<li><a href="https://www.kali.org/tools/snort/">snort</a> - Flexible Network Intrusion Detection System</li>
+<li><a href="https://www.kali.org/tools/sploitscan/">sploitscan</a> - Search for CVE information</li>
+<li><a href="https://www.kali.org/tools/vopono/">vopono</a> - Run applications through VPN tunnels with temporary network namespaces <em>(Submitted by <a href="https://gitlab.com/arszilla">Arszilla</a>)</em></li>
+<li><a href="https://www.kali.org/tools/waybackpy/">waybackpy</a> - Access Wayback Machine’s API using Python <em>(Submitted by <a href="https://gitlab.com/arszilla">Arszilla</a>)</em></li>
+</ul>
+<p><em>There have also been numerous new libraries as well!</em></p>
+<p>We just missed out on having <strong>kernel 6.8</strong> included. It will be available shortly after this release and may already be out by the time of reading.</p>
+<h2 id="miscellaneous">Miscellaneous</h2>
+<p>There have been a few mirror tweaks and changes to Kali which we are calling out below as they don’t need much detail:</p>
+<ul>
+<li>During testing, a bug was found in 6.6 kernel which could causes slow downs and system crashes when using certain virtualization software. This has been addressed in the upcoming <a href="https://pkg.kali.org/pkg/linux">6.8 kernel</a>.</li>
+<li><a href="https://www.kali.org/tools/nmap/">nmap</a> has been tweaked, allowing for users to run privileged TCP SYN (Stealth) scans (<code>-sS</code>) without using sudo or being root.</li>
+</ul>
+<h2 id="kali-nethunter-updates">Kali NetHunter Updates</h2>
+<p>There have been also a few improvements to Kali NetHunter over the last few months, such as:</p>
+<ul>
+<li>Support for Android 14</li>
+<li>The long awaited modules loader has been added by <a href="https://gitlab.com/yesimxev">yesimxev</a></li>
+<li>Class selection for Bad Bluetooth also by <a href="https://gitlab.com/yesimxev">yesimxev</a></li>
+<li>We also improved the permission and root validations</li>
+<li>Thanks to <a href="https://gitlab.com/shubhamvis98">shubhamvis98</a>, who added Bluetooth rubberducky support</li>
+<li>There have been various fixes though-out</li>
+<li><em>Kali NetHunter Pro images will be out shortly after the release, due to <code>t64</code></em></li>
+</ul>
+<p>With all of this, <strong>5x new <a href="https://nethunter.kali.org/kernels.html">Kali NetHunter kernels</a></strong> covering:</p>
+<ul>
+<li><strong>Huawei P9</strong> for LineageOS 16</li>
+<li><strong>Nothing Phone 1</strong> for Android 12, 13 &amp; 14</li>
+<li><strong>Poco F3</strong> for Android 14</li>
+</ul>
+<p><a href="https://www.kali.org/blog/kali-linux-2024-2-release/images/nethunter_poco_f3.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2024-2-release/images/nethunter_poco_f3.png" alt="Poco F3" />
+</figure>
+
+
+</a></p>
+<h2 id="kali-arm-sbc-updates">Kali ARM SBC Updates</h2>
+<p>Kali on ARM Single Board Computer (SBC) devices has also received a few changes:</p>
+<ul>
+<li><a href="https://www.kali.org/docs/arm/gateworks-newport/">Gateworks Newport</a> kernel updated to 5.15</li>
+<li><a href="https://www.kali.org/docs/arm/raspberry-pi-5/">Raspberry Pi 5</a> kernel updated to 6.1.77</li>
+<li>Unfortunately we cannot provide support for <a href="https://www.kali.org/docs/arm/gateworks-ventana/">Gateworks Ventana</a>, and as a result no longer are able to offer a pre-built image</li>
+</ul>
+<h3 id="kali-documentation">Kali Documentation</h3>
+<p>Our <a href="https://www.kali.org/docs/">Kali documentation</a> has had several updates to existing pages as well as new pages:</p>
+<ul>
+<li><a href="https://www.kali.org/docs/cloud/aws/">AWS</a> <em>(updated)</em></li>
+<li><a href="https://www.kali.org/docs/troubleshooting/dual-boot/">Fixing Dual Boot</a> <em>(new)</em></li>
+<li><a href="https://www.kali.org/docs/general-use/install-nvidia-drivers-on-kali-linux/">Install NVIDIA GPU Drivers</a> <em>(updated)</em></li>
+<li><a href="https://www.kali.org/docs/virtualization/install-virtualbox-host/">Installing VirtualBox on Kali (Host)</a> <em>(updated)</em></li>
+<li><a href="https://www.kali.org/docs/virtualization/install-vmware-host/">Installing VMware on Kali (Host)</a> <em>(updated)</em></li>
+<li><a href="https://www.kali.org/docs/virtualization/install-proxmox-guest-vm/">Kali inside Proxmox (Guest VM)</a> <em>(updated)</em></li>
+<li><a href="https://www.kali.org/docs/nethunter/porting-nethunter-kernel-builder/">Porting NetHunter to New Devices with kernel builder</a> <em>(updated)</em></li>
+<li><a href="https://www.kali.org/docs/general-use/updating-a-package/">Updating a Package</a> <em>(new)</em></li>
+</ul>
+<h3 id="kali-blog-recap">Kali Blog Recap</h3>
+<p>Since 2024.1, there was a lot of activity around <code>xz-utils</code>, which is why we published the following <a href="https://www.kali.org/blog/">blog posts</a>:</p>
+<ul>
+<li><a href="https://www.kali.org/blog/about-the-xz-backdoor/">All about the xz-utils backdoor</a></li>
+<li><a href="https://www.kali.org/blog/xz-backdoor-getting-started/">xz-utils backdoor: how to get started</a></li>
+</ul>
+<h2 id="community-shout-outs">Community Shout-Outs</h2>
+<p>These are <strong>people from the public who have helped Kali</strong> and the team for the last release, and we wanted to praise them for their work <em>(we like to give credit where due!)</em>:</p>
+<p><strong>Packaging</strong>:</p>
+<ul>
+<li><a href="https://gitlab.com/arszilla">Arszilla</a></li>
+<li><a href="https://gitlab.com/casterbyte">Caster</a></li>
+</ul>
+<p><strong>Kali Documentation</strong>:</p>
+<ul>
+<li><a href="https://gitlab.com/Arszilla">Arszilla</a></li>
+<li><a href="https://gitlab.com/matir">David Tomaschik</a></li>
+<li><a href="https://gitlab.com/EDLLT">EDLLT</a></li>
+<li><a href="https://gitlab.com/FalseProfit">FalseProfit</a></li>
+<li><a href="https://gitlab.com/gad3r">gader</a></li>
+<li><a href="https://gitlab.com/bootorder">Henrik Lund</a></li>
+<li><a href="https://gitlab.com/janerysavy17">Jane Rysavy</a></li>
+<li><a href="https://gitlab.com/Fetti.Wop">Jordan</a></li>
+<li><a href="https://gitlab.com/netlag">Net LAG</a></li>
+<li><a href="https://gitlab.com/prplhaz4">prplhaz4</a></li>
+<li><a href="https://gitlab.com/melotheo">Theo Melo</a></li>
+<li><a href="https://gitlab.com/X0RW3LL">X0RW3LL</a></li>
+<li><a href="https://gitlab.com/bigdipper553">Zachary Miller</a></li>
+</ul>
+<p><strong>Tool Documentation</strong>:</p>
+<ul>
+<li><a href="https://gitlab.com/psiinon">Simon Bennetts</a></li>
+</ul>
+<p><strong>Support</strong>:</p>
+<ul>
+<li><a href="https://gitlab.com/Salty_">Salty_</a></li>
+</ul>
+<p>Kali is open-source, allowing YOU to help out. Anyone is able to get <a href="https://www.kali.org/docs/community/contribute/">involved</a>!</p>
+<h3 id="new-kali-mirrors">New Kali Mirrors</h3>
+<p>During this release cycle, we welcomed <strong>7 new mirrors</strong>! Thanks to all of you who reached out and helped with distributing Kali around the world.</p>
+<p>So we have <em>3 new mirrors</em> in North America:</p>
+<ul>
+<li><strong>Canada</strong>: <a href="https://kali.mirror.rafal.ca/kali/">kali.mirror.rafal.ca</a></li>
+<li><strong>US</strong>: <a href="https://mirror.math.princeton.edu/pub/kali/">mirror.math.princeton.edu</a> sponsored by the <a href="https://www.math.princeton.edu/">Princeton University, Department of Mathematics</a> and thanks to Benjamin Rose</li>
+<li><strong>US</strong>: <a href="https://ftp2.osuosl.org/pub/kali-images/">ftp2.osuosl.org</a> sponsored by the <a href="https://osuosl.org/">Oregon State University Open Source Lab (OSUOSL)</a> and thanks to Lance Albertson</li>
+</ul>
+<p>Then <em>3 new mirrors</em> in Asia:</p>
+<ul>
+<li><strong>Singapore</strong>: <a href="https://mirror.freedif.org/kali/">mirror.freedif.org</a></li>
+<li><strong>Taiwan</strong>: <a href="https://free.nchc.org.tw/kali/">free.nchc.org.tw</a> sponsored by the <a href="https://www.nchc.org.tw/en/">National Center for High-Performance Computing</a> and thanks to Ceasar Sun</li>
+<li><strong>Taiwan</strong>: <a href="https://mirror.twds.com.tw/kali/">mirror.twds.com.tw</a> sponsored by <a href="https://www.twds.com.tw/">Taiwan Digital Streaming Co.</a> and thanks to Jasper Yu</li>
+</ul>
+<p>And finally, the <a href="https://www.kali.org/blog/kali-linux-2024-1-release/#introducing-the-micro-mirror-free-software-cdn">Micro Mirror CDN</a> provided us with a new mirror in Europe:</p>
+<ul>
+<li><strong>Switzerland</strong>: <a href="https://ipng.mm.fcix.net/kali-images/">ipng.mm.fcix.net</a> sponsored by <a href="https://ipng.ch/">IPng Networks</a>.</li>
+</ul>
+<p>If you have the disk space and bandwidth, <a href="https://www.kali.org/docs/community/setting-up-a-kali-linux-mirror/">we always welcome new mirrors</a>.</p>
+<hr>
+<h2 id="kali-team-discord-chat">Kali Team Discord Chat</h2>
+<p>We are keeping the tradition going and doing another hour long voice chat with the Kali team and community. If you want your questions answered or your ideas heard, this is the place for it! <em>We just hope they are related to Kali or the information security industry</em>.</p>
+<p>The next session will happen a week after the release, <strong>Friday, 21st June 2024 17:00 -&gt; 18:00 <a href="https://time.is/compare/0500PM_21_June_2024_in_UTC">UTC/+0 GMT</a></strong> on <a href="https://discord.com/servers/offsec-780824470113615893">OffSec’s Discord</a>.</p>
+<ul>
+<li><a href="https://discord.gg/invite/offsec">Discord invite</a></li>
+<li><a href="./Kali-Discord-2024.2.ics">iCalendar invite</a></li>
+</ul>
+<p><em>Please note, we will not be recording this event - it is live only.</em></p>
+<hr>
+<h2 id="get-kali-linux-20242">Get Kali Linux 2024.2</h2>
+<p><strong>Fresh Images</strong>: So what are you waiting for? <a href="https://www.kali.org/get-kali/">Get Kali</a>!</p>
+<p>For those who are new to Kali Linux, you may not be aware that we also produce <strong><a href="https://cdimage.kali.org/kali-images/kali-weekly/">weekly builds</a></strong>, which are also available for download. If you are eager to get the latest packages and bug fixes without waiting for our next release, the weekly image is a great option. This will save you from having to do more updates later on. <em>However, please note that these weekly builds are automated and have not undergone the same level of testing as our <a href="https://www.kali.org/releases/">standard release images</a>. We still appreciate any <a href="https://bugs.kali.org/">bug reports</a> you may have, as we want to address any issues before our next release.</em></p>
+<p><strong>Existing Installs</strong>: If you already have an existing Kali Linux installation, remember you can <a href="https://www.kali.org/docs/general-use/updating-kali/">update</a> it by doing:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ echo &#34;deb http://http.kali.org/kali kali-rolling main contrib non-free non-free-firmware&#34; | sudo tee /etc/apt/sources.list
+</span></span><span style="display:flex;"><span>[...]
+</span></span><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ sudo apt update &amp;&amp; sudo apt -y full-upgrade
+</span></span><span style="display:flex;"><span>[...]
+</span></span><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ cp -vrbi /etc/skel/. ~/
+</span></span><span style="display:flex;"><span>[...]
+</span></span><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ [ -f /var/run/reboot-required ] &amp;&amp; sudo reboot -f
+</span></span></code></pre></div><p>You should now be on Kali Linux 2024.2. We can do a quick check by doing:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ grep VERSION /etc/os-release
+</span></span><span style="display:flex;"><span>VERSION=&#34;2024.2&#34;
+</span></span><span style="display:flex;"><span>VERSION_ID=&#34;2024.2&#34;
+</span></span><span style="display:flex;"><span>VERSION_CODENAME=&#34;kali-rolling&#34;
+</span></span><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ uname -v
+</span></span><span style="display:flex;"><span>#<span style="color:#ae81ff">1</span> SMP PREEMPT_DYNAMIC Kali 6.6.15-2kali1 <span style="color:#f92672">(</span>2024-05-17<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ uname -r
+</span></span><span style="display:flex;"><span>6.6.15-amd64
+</span></span></code></pre></div><p><em>NOTE: The output of <code>uname -r</code> may be different depending on the system <a href="https://pkg.kali.org/pkg/linux">architecture</a>.</em></p>
+<p>If you encounter any issues or bugs in Kali, please report them to our dedicated <a href="https://bugs.kali.org/">bug tracker</a>. Your feedback is crucial in helping us identify and fix problems. Remember, we can not fix what we do not know is broken! <strong>Do not rely on social media to report bugs; instead, use our official bug tracker to ensure your issues are properly documented and addressed.</strong></p>
+<p>Want to keep up-to-date easier? We’ve got you!</p>
+<ul>
+<li><a href="https://www.kali.org/blog/">Blog</a>? Use our <a href="https://www.kali.org/rss.xml">RSS feeds</a> and <a href="https://www.kali.org/newsletter/">newsletter</a></li>
+<li>Download? We have a <a href="https://www.kali.org/torrents.xml">Torrent RSS feed</a></li>
+<li>Socials? <a href="https://www.facebook.com/KaliLinux/">Facebook</a>, <a href="https://www.instagram.com/kalilinux/">Instagram</a>, <a href="https://infosec.exchange/@kalilinux">Mastodon</a> &amp; <a href="https://x.com/kalilinux">Twitter/X</a></li>
+</ul>
+<h4 id="source"><a href="https://www.kali.org/blog/kali-linux-2024-2-release/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>How to Nuke your Encrypted Kali Installation</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>How to Nuke your Encrypted Kali Installation</h1>
+			<b><time>13.01.2014 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="how-to-nuke-your-encrypted-kali-installation">How to Nuke your Encrypted Kali Installation</h1>
+<p><a href="https://www.kali.org/blog/nuke-kali-linux-luks/images/kali-nuke-restore.jpg">https://www.kali.org/blog/nuke-kali-linux-luks/images/kali-nuke-restore.jpg</a></p>
+<p>There’s been a fair amount of discussion around the recently introduced LUKS nuke patch we added to the cryptsetup package in Kali Linux. We wanted to take this opportunity to better explain this feature, as well as demonstrate some useful approaches which are worthwhile getting to know. LUKS Nuke in a</p>
+<p>There’s been a <a href="https://www.reddit.com/r/netsec/comments/1ujsv4/emergency_self_destruction_of_luks_in_kali_linux/">fair amount of discussion</a> around the recently introduced <a href="https://www.kali.org/blog/emergency-self-destruction-luks-kali/">LUKS nuke patch</a> we added to the cryptsetup package in Kali Linux. We wanted to take this opportunity to better explain this feature, as well as demonstrate some useful approaches which are worthwhile getting to know.</p>
+<h3 id="luks-nuke-in-a-nutshell">LUKS Nuke in a Nutshell</h3>
+<p>As explained well By Michael Lee in his <a href="https://www.zdnet.com/article/developers-mull-adding-data-nuke-to-kali-linux/">ZDNet article</a>, when creating an encrypted LUKS container, a master key is generated at random. A passphrase is then used to encrypt the master key in turn. This process means that the passphrase is not directly coupled to the data. That is, if two sets of identical data are encrypted and the same passphrase used, the master keys remain unique to each set and cannot be swapped out. What this also means however, is that regardless of the passphrase used, if the master key is lost, recovering data is impossible. This process conveniently lends itself to being used as a nuke by deliberately wiping the keys.</p>
+<h3 id="example-use-case-of-luks-nuke">Example Use Case of LUKS Nuke</h3>
+<p>Our main purpose for introducing this feature in Kali Linux is to simplify the process of securely traveling with confidential client information. While “LUKS Nuking” your drive will result in an inaccessible disk, it <strong>is</strong> possible to backup your keyslots beforehand and restore them after the fact. What this allows us to do is to “brick” our sensitive laptops before any travel, separate ourselves from the restoration keys (which we encrypt), and then “restore” them to the machines once back in a safe location. This way, if our hardware is lost or otherwise accessed midway through our travels, no one is able to restore the data on it, including ourselves.</p>
+<p>There are other ways to delete your keyslots, however the advantage of the Nuke option is it is quick, easy, and does not require you to fully login to your Kali installation. If you maintain a backup of your header, you can Nuke the keyslots whenever you feel uncomfortable. Then conduct a restoration when you feel secure.</p>
+<h3 id="try-this-for-yourself">Try this for yourself</h3>
+<p>Let’s go through the motions of encrypting, backing up, destroying, and then restoring your data using Kali Linux. Start by downloading and installing Kali Linux 1.0.6 with Full Disk Encryption. Once that is done, you can verify your information as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali-crypto:~# cryptsetup luksDump /dev/sda5
+</span></span><span style="display:flex;"><span>LUKS header information for /dev/sda5
+</span></span><span style="display:flex;"><span>Version: 1
+</span></span><span style="display:flex;"><span>Cipher name: aes
+</span></span><span style="display:flex;"><span>Cipher mode: xts-plain64
+</span></span><span style="display:flex;"><span>Hash spec: sha1
+</span></span><span style="display:flex;"><span>Payload offset: 4096
+</span></span><span style="display:flex;"><span>MK bits: 512
+</span></span><span style="display:flex;"><span>MK digest: 04 cd d0 51 bf 57 10 f5 87 08 07 d5 c8 2a 34 24 7a 89 3b db
+</span></span><span style="display:flex;"><span>MK salt: 27 42 e5 a6 b2 53 7f de 00 26 d3 f8 66 fb 9e 48
+</span></span><span style="display:flex;"><span>16 a2 b0 a9 2c bb cc f6 ea 66 e6 b1 79 08 69 17
+</span></span><span style="display:flex;"><span>MK iterations: 65750
+</span></span><span style="display:flex;"><span>UUID: 126d0121-05e4-4f1d-94d8-bed88e8c246d
+</span></span><span style="display:flex;"><span>Key Slot 0: ENABLED
+</span></span><span style="display:flex;"><span>Iterations: 223775
+</span></span><span style="display:flex;"><span>Salt: 7b ee 18 9e 46 77 60 2a f6 e2 a6 13 9f 59 0a 88
+</span></span><span style="display:flex;"><span>7b b2 db 84 25 98 f3 ae 61 36 3a 7d 96 08 a4 49
+</span></span><span style="display:flex;"><span>Key material offset: 8
+</span></span><span style="display:flex;"><span>AF stripes: 4000
+</span></span><span style="display:flex;"><span>Key Slot 1: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 2: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 3: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 4: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 5: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 6: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 7: DISABLED
+</span></span></code></pre></div><p>As you can see, we have slot 0 enabled with slots 1 to 7 unused. At this point, we will add our nuke key:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali-crypto:~# apt install cryptsetup-nuke-password
+</span></span><span style="display:flex;"><span>root@kali-crypto:~# dpkg-reconfigure cryptsetup-nuke-password
+</span></span></code></pre></div><p>This didn’t change anything to the LUKS container, instead it installed the nuke password and a small hook in the initrd. This hook will detect when you enter your nuke password at boot time and it will call “<strong>cryptsetup luksErase</strong>” on your LUKS container at that time.</p>
+<p>Wonderful. Now we need to back up the encryption keys. This can easily be done with the “luksHeaderBackup” option:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali-crypto:~# cryptsetup luksHeaderBackup --header-backup-file luksheader.back /dev/sda5
+</span></span><span style="display:flex;"><span>root@kali-crypto:~# file luksheader.back
+</span></span><span style="display:flex;"><span>luksheader.back: LUKS encrypted file, ver 1 [aes, xts-plain64, sha1] UUID: 126d0121-05e4-4f1d-94d8-bed88e8c246d
+</span></span><span style="display:flex;"><span>root@kali-crypto:~#
+</span></span></code></pre></div><p>So, in our case we would like to encrypt this data for storage. There are a number of ways this could be done, however we will use openssl to make the process quick and easy using default tools in Kali:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali-crypto:~# openssl enc -aes-256-cbc -salt -in luksheader.back -out luksheader.back.enc
+</span></span><span style="display:flex;"><span>enter aes-256-cbc encryption password:
+</span></span><span style="display:flex;"><span>Verifying - enter aes-256-cbc encryption password:
+</span></span><span style="display:flex;"><span>root@kali-crypto:~# ls -lh luksheader.back*
+</span></span><span style="display:flex;"><span>-r-------- 1 root root 2.0M Jan 9 13:42 luksheader.back
+</span></span><span style="display:flex;"><span>-rw-r--r-- 1 root root 2.0M Jan 9 15:50 luksheader.back.enc
+</span></span><span style="display:flex;"><span>root@kali-crypto:~# file luksheader.back*
+</span></span><span style="display:flex;"><span>luksheader.back: LUKS encrypted file, ver 1 [aes, xts-plain64, sha1] UUID: 126d0121-05e4-4f1d-94d8-bed88e8c246d
+</span></span><span style="display:flex;"><span>luksheader.back.enc: data
+</span></span></code></pre></div><p>Great, now we have the encrypted header ready to be backed up. In this case, we would like to place the header somewhere that it is easily accessible. This could be as simple as on a USB thumb drive that is kept in a safe location. At this point, lets reboot and make use of the Nuke key and see how Kali responds.</p>
+<p>So we used the Nuke key, and as expected we can no longer boot into Kali. Let’s see what happened on the actual disk by booting up into a Kali live CD and dumping the LUKS header again:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# cryptsetup luksDump /dev/sda5
+</span></span><span style="display:flex;"><span>LUKS header information for /dev/sda5
+</span></span><span style="display:flex;"><span>Version: 1
+</span></span><span style="display:flex;"><span>Cipher name: aes
+</span></span><span style="display:flex;"><span>Cipher mode: xts-plain64
+</span></span><span style="display:flex;"><span>Hash spec: sha1
+</span></span><span style="display:flex;"><span>Payload offset: 4096
+</span></span><span style="display:flex;"><span>MK bits: 512
+</span></span><span style="display:flex;"><span>MK digest: 04 cd d0 51 bf 57 10 f5 87 08 07 d5 c8 2a 34 24 7a 89 3b db
+</span></span><span style="display:flex;"><span>MK salt: 27 42 e5 a6 b2 53 7f de 00 26 d3 f8 66 fb 9e 48
+</span></span><span style="display:flex;"><span>16 a2 b0 a9 2c bb cc f6 ea 66 e6 b1 79 08 69 17
+</span></span><span style="display:flex;"><span>MK iterations: 65750
+</span></span><span style="display:flex;"><span>UUID: 126d0121-05e4-4f1d-94d8-bed88e8c246d
+</span></span><span style="display:flex;"><span>Key Slot 0: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 1: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 2: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 3: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 4: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 5: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 6: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 7: DISABLED
+</span></span></code></pre></div><p>As we can see, no keyslots are in use. The Nuke worked as expected. To restore the header back in place, it’s a simple matter of retrieving the encrypted header from your USB drive. Once we have that, we can decrypt it and conduct our restore:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# openssl enc -d -aes-256-cbc -in luksheader.back.enc -out luksheader.back
+</span></span><span style="display:flex;"><span>enter aes-256-cbc decryption password:
+</span></span><span style="display:flex;"><span>root@kali:~# cryptsetup luksHeaderRestore --header-backup-file luksheader.back /dev/sda5
+</span></span><span style="display:flex;"><span>WARNING!
+</span></span><span style="display:flex;"><span>========
+</span></span><span style="display:flex;"><span>Device /dev/sda5 already contains LUKS header. Replacing header will destroy existing keyslots.
+</span></span><span style="display:flex;"><span>Are you sure? (Type uppercase yes): YES
+</span></span><span style="display:flex;"><span>root@kali:~# cryptsetup luksDump /dev/sda5
+</span></span><span style="display:flex;"><span>LUKS header information for /dev/sda5
+</span></span><span style="display:flex;"><span>Version: 1
+</span></span><span style="display:flex;"><span>Cipher name: aes
+</span></span><span style="display:flex;"><span>Cipher mode: xts-plain64
+</span></span><span style="display:flex;"><span>Hash spec: sha1
+</span></span><span style="display:flex;"><span>Payload offset: 4096
+</span></span><span style="display:flex;"><span>MK bits: 512
+</span></span><span style="display:flex;"><span>MK digest: 04 cd d0 51 bf 57 10 f5 87 08 07 d5 c8 2a 34 24 7a 89 3b db
+</span></span><span style="display:flex;"><span>MK salt: 27 42 e5 a6 b2 53 7f de 00 26 d3 f8 66 fb 9e 48
+</span></span><span style="display:flex;"><span>16 a2 b0 a9 2c bb cc f6 ea 66 e6 b1 79 08 69 17
+</span></span><span style="display:flex;"><span>MK iterations: 65750
+</span></span><span style="display:flex;"><span>UUID: 126d0121-05e4-4f1d-94d8-bed88e8c246d
+</span></span><span style="display:flex;"><span>Key Slot 0: ENABLED
+</span></span><span style="display:flex;"><span>Iterations: 223775
+</span></span><span style="display:flex;"><span>Salt: 7b ee 18 9e 46 77 60 2a f6 e2 a6 13 9f 59 0a 88
+</span></span><span style="display:flex;"><span>7b b2 db 84 25 98 f3 ae 61 36 3a 7d 96 08 a4 49
+</span></span><span style="display:flex;"><span>Key material offset: 8
+</span></span><span style="display:flex;"><span>AF stripes: 4000
+</span></span><span style="display:flex;"><span>Key Slot 1: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 2: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 3: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 4: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 5: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 6: DISABLED
+</span></span><span style="display:flex;"><span>Key Slot 7: DISABLED
+</span></span></code></pre></div><p>Our slots are now restored. All we have to do is simply reboot and provide our normal LUKS password and the system is back to its original state.</p>
+<h4 id="source"><a href="https://www.kali.org/blog/nuke-kali-linux-luks/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

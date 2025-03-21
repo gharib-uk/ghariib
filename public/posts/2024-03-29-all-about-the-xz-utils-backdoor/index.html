@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>All about the xz-utils backdoor</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>All about the xz-utils backdoor</h1>
+			<b><time>29.03.2024 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="all-about-the-xz-utils-backdoor">All about the xz-utils backdoor</h1>
+<p><a href="https://www.kali.org/blog/about-the-xz-backdoor/images/xz-utils.jpg">https://www.kali.org/blog/about-the-xz-backdoor/images/xz-utils.jpg</a></p>
+<p>As of 5:00 pm ET on March 29, 2024 the following information is accurate. Should there be updates to this situation, they will be edited onto this blog post. The xz-utils package, starting from versions 5.6.0 to 5.6.1, was found to contain a backdoor (CVE-2024-3094). This backdoor could potentially allow a</p>
+<p>As of 5:00 pm ET on March 29, 2024 the following information is accurate. Should there be updates to this situation, they will be edited onto this blog post.</p>
+<p>The <a href="https://pkg.kali.org/pkg/xz-utils">xz-utils package</a>, starting from versions 5.6.0 to 5.6.1, was found to <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-3094">contain a backdoor (CVE-2024-3094)</a>. This backdoor could potentially allow a malicious actor to compromise sshd authentication, granting unauthorized access to the entire system remotely.</p>
+<p>With a library this widely used, the severity of this vulnerability poses a threat to the entire Linux ecosystem. Luckily, this issue was caught quickly so the impact was significantly less than it could have been. It has already been patched in Debian, and therefore, Kali Linux.</p>
+<p>The impact of this vulnerability affected Kali between March 26th to March 29th, during which time <a href="https://pkg.kali.org/news/578094/xz-utils-560-02-imported-into-kali-rolling/">xz-utils 5.6.0-0.2</a> was available. If you updated your Kali installation on or after March 26th, but before March 29th, it is crucial to apply the latest updates today to address this issue. However, if you did not update your Kali installation before the 26th, you are not affected by this backdoor vulnerability.</p>
+<p><a href="https://www.kali.org/blog/about-the-xz-backdoor/images/pkg-kali-xz-utils.png">
+<figure>
+  <img src="https://www.kali.org/blog/about-the-xz-backdoor/images/pkg-kali-xz-utils.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Should you wish to check if you have the vulnerable version installed, we can perform the following command:</p>
+<pre tabindex="0"><code>kali@kali:~$ apt-cache policy liblzma5
+liblzma5:
+ Installed: 5.4.5-0.3
+ Candidate: 5.6.1+really5.4.5-1
+ Version table:
+    5.6.1+really5.4.5-1 500
+       500 http://kali.download/kali kali-rolling/main amd64 Packages
+*** 5.4.5-0.3 100
+       100 /var/lib/dpkg/status
+</code></pre><p>If we see the version <code>5.6.0-0.2</code> next to <strong>Installed:</strong> then we <em>must</em> upgrade to the latest version, <code>5.6.1+really5.4.5-1</code>. We can do this with the following commands:</p>
+<pre tabindex="0"><code>kali@kali:~$ sudo apt update &amp;&amp; sudo apt install -y --only-upgrade liblzma5
+...
+kali@kali:~$
+</code></pre><p>More information can be found at <a href="https://www.helpnetsecurity.com/2024/03/29/cve-2024-3094-linux-backdoor/">Help Net Security</a> for a summarized post on the details of the vulnerability, <a href="https://www.openwall.com/lists/oss-security/2024/03/29/4">Openwall</a> for the initial disclosure, and <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-3094">NIST’s NVD</a> entry for this vulnerability.</p>
+<h4 id="source"><a href="https://www.kali.org/blog/about-the-xz-backdoor/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

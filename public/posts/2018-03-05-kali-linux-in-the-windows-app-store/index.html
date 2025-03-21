@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Kali Linux in the Windows App Store</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Kali Linux in the Windows App Store</h1>
+			<b><time>05.03.2018 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="kali-linux-in-the-windows-app-store">Kali Linux in the Windows App Store</h1>
+<p><a href="https://www.kali.org/blog/kali-linux-in-the-windows-app-store/images/kali-windows-app-2018.jpg">https://www.kali.org/blog/kali-linux-in-the-windows-app-store/images/kali-windows-app-2018.jpg</a></p>
+<p>No, really…this isn’t clickbait. For the past few weeks, we’ve been working with the Microsoft WSL team to get Kali Linux introduced into the Microsoft App Store as an official WSL distribution and today we’re happy to announce the availability of the “Kali Linux” Windows application. For Windows 10 users,</p>
+<p>No, really…this isn’t clickbait. For the past few weeks, we’ve been working with the Microsoft WSL team to get Kali Linux introduced into the Microsoft App Store as an official WSL distribution and today we’re happy to <a href="https://blogs.msdn.microsoft.com/commandline/2018/03/05/kali-linux-for-wsl/">announce</a> the availability of the “Kali Linux” Windows application. For Windows 10 users, this means you can simply enable WSL, <a href="https://www.microsoft.com/en-us/p/kali-linux/9pkr34tncv07">search for Kali</a> in the Windows store, and install it with a single click. This is especially exciting news for penetration testers and security professionals who have limited toolsets due to enterprise compliance standards.</p>
+<p>While running Kali on Windows has a few drawbacks to running it natively (such as the lack of raw socket support), it does bring in some very interesting possibilities, such as extending your security toolkit to include a whole bunch of command line tools that are present in Kali. We will update our blog with more news and updates regarding the development of this app as it’s released.</p>
+<p>We’d like to take this opportunity to thank the WSL team at Microsoft, and specifically <a href="https://twitter.com/tara_msft">tara_msft</a> and <a href="https://twitter.com/benhillis">benhillis</a> for all the assistance and guidance with which this feat would not be possible. We hope you enjoy WSL’d Kali on Windows 10!</p>
+<p>And now, a quick guide on getting Kali installed from the Microsoft App Store:</p>
+<h2 id="getting-kali-linux-installed-on-wsl">Getting Kali Linux Installed on WSL</h2>
+<p>Here’s a quick description of the setup and installation process. For an easier copy / paste operation, these are the basic steps taken:</p>
+<p>1. Update your Windows 10 machine. Open an administrative PowerShell window and install the Windows Subsystem with this one-liner. A reboot will be required once finished:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+</span></span></code></pre></div><p>2. Once rebooted, open the Windows App store and search for the “Kali Linux” application, or alternatively click <a href="https://www.microsoft.com/en-us/p/kali-linux/9pkr34tncv07">here</a> to go there directly. Install the app and enjoy Kali!</p>
+<h2 id="updating-kali-linux-on-wsl">Updating Kali Linux on WSL</h2>
+<p>Updating Kali Linux on WSL is no different from any other instance of Kali:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt-get update
+</span></span><span style="display:flex;"><span>apt-get dist-upgrade
+</span></span></code></pre></div><p>Here’s a quick video of the process:</p>
+<h2 id="installing-penetration-testing-tools-on-kali">Installing Penetration Testing tools on Kali</h2>
+<p>Installing tools from the Kali Linux repository is usually done via <em><strong>apt</strong></em> commands. For example, to install the Metasploit Framework, you can simply:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt-get update
+</span></span><span style="display:flex;"><span>apt-get install metasploit-framework
+</span></span></code></pre></div><p><strong>Note:</strong> Some Kali tools are identified by anti-virus software as malware. One way to deal with this situation is to allow anti-virus exceptions on the directory in which the Kali chroot resides in. The following video walks you through this process:</p>
+<h2 id="recovering-from-a-failed-kali-wsl-instance">Recovering from a failed Kali WSL instance</h2>
+<p>Sometimes, you can inadvertently kill your Kali WSL instance, due to an overzealous command, an unintentional action, or even due to Kali or WSL bugs. If this happens, here is a quick recovery guide to get back on top of things. <strong>Note</strong>: this process will wipe your Kali WSL chroot, and re-extract a new copy. Any changes made to the filesystem will be gone, and reset to default.</p>
+<h2 id="food-for-thought">Food for thought</h2>
+<p>The availability of the Kali Linux platform and toolset on Windows 10 brings with it many exciting possibilities which we haven’t even begun to grasp - here’s one example that got us scratching our heads. While not officially supported by WSL yet, we’ve tested running a desktop manager such as XFCE on WSL’d Kali…and it seems to work quite well:</p>
+<p><a href="https://www.kali.org/docs/general-use/xfce-with-rdp/">Setting up RDP with Xfce</a></p>
+<h4 id="source"><a href="https://www.kali.org/blog/kali-linux-in-the-windows-app-store/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Pip install and Pythons externally managed</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Pip install and Pythons externally managed</h1>
+			<b><time>06.07.2023 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="pip-install-and-pythons-externally-managed">Pip install and Pythons externally managed</h1>
+<p><a href="https://www.kali.org/blog/python-externally-managed/images/banner-python-externally-managed.jpg">https://www.kali.org/blog/python-externally-managed/images/banner-python-externally-managed.jpg</a></p>
+<p>TL;DR: pip install is on the way out. Installing Python packages must be done via APT, aka. Kali Linux’s package manager. Python packages coming from other sources should be installed in virtual environments. Long story below. Some background Back in February this year, for a few days, some of you might have tried</p>
+<p>TL;DR: <code>pip install</code> is on the way out. Installing Python packages must be done via APT, aka. Kali Linux’s package manager. Python packages coming from other sources should be installed in virtual environments.</p>
+<p>Long story below.</p>
+<h2 id="some-background">Some background</h2>
+<p>Back in February this year, for a few days, some of you might have tried (and failed) to install Python packages with <a href="https://pip.pypa.io/en/stable/">Pip</a>, aka. Python’s package manager. Suddenly it didn’t work anymore, and it gave this error message instead:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(root㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ pip install xyz
+</span></span><span style="display:flex;"><span>error: externally-managed-environment
+</span></span><span style="display:flex;"><span>? This environment is externally managed
+</span></span><span style="display:flex;"><span>╰─&gt; To install Python packages system-wide, try apt install
+</span></span><span style="display:flex;"><span>python3-xyz, where xyz is the package you are trying to
+</span></span><span style="display:flex;"><span>install.
+</span></span><span style="display:flex;"><span>If you wish to install a non-Debian-packaged Python package,
+</span></span><span style="display:flex;"><span>create a virtual environment using python3 -m venv path/to/venv.
+</span></span><span style="display:flex;"><span>Then use path/to/venv/bin/python and path/to/venv/bin/pip. Make
+</span></span><span style="display:flex;"><span>sure you have python3-full installed.
+</span></span><span style="display:flex;"><span>If you wish to install a non-Debian packaged Python application,
+</span></span><span style="display:flex;"><span>it may be easiest to use pipx install xyz, which will manage a
+</span></span><span style="display:flex;"><span>virtual environment for you. Make sure you have pipx installed.
+</span></span><span style="display:flex;"><span>See /usr/share/doc/python3.11/README.venv for more information.
+</span></span><span style="display:flex;"><span>note: If you believe this is a mistake, please contact your Python installation
+</span></span><span style="display:flex;"><span>or OS distribution provider. You can override this, at the risk of breaking
+</span></span><span style="display:flex;"><span>your Python installation or OS, by passing --break-system-packages.
+</span></span><span style="display:flex;"><span>hint: See PEP 668 for the detailed specification.
+</span></span></code></pre></div><p>This change came about without a notice, and judging by the early reports that we received, it was clear that it would impact many users. So we reverted it, and therefore <code>pip install</code> <a href="https://www.kali.org/blog/kali-linux-2023-1-release/#python-updates--changes">still works in Kali Linux these days</a>. But not for long: when Python 3.12 hits Kali (around end of 2023 or beginning of 2024), it will stop working, this time for good. There’s not much we can do about it, it’s an upstream change, we have to go with the flow.</p>
+<p>So why this change? Running <code>pip install</code> as root, in order to install Python packages system-wide, has never been a great idea. In a Linux distribution such as Kali, Python packages are already installed and managed via <em>APT</em>. If you bring in another package manager (<em>pip</em> in this case), it is likely to break packages and programs that were installed by APT, sooner or later. Then APT might break again what was installed by pip. Both package managers will endlessly step on each other’s toes.</p>
+<p>One could also run <code>pip install --user</code> to install packages in the user’s home directory, but the problem is the same. Those packages will be picked up by Python applications as they run, and might not be compatible with other packages installed by <em>APT</em>, causing programs to misbehave or break.</p>
+<p>The issue is not new, but it doesn’t impact all users equally. Seasoned users of Linux distributions already know what to do, and NOT to do, and they can fix their system when it breaks. However, unexperienced users don’t know, so they are likely to shoot themselves in the foot. And nobody can blame them, there are so many web pages out there recommending to run <code>sudo pip install</code> without providing enough context.</p>
+<p>We (Kali developers, and more generally distro developers), are well aware of the issue: bug reports for Python applications that don’t work are a common occurence, and we often can’t reproduce the issue, and we often find out that it doesn’t work because some packages or applications were installed with <em>pip</em>, and interfere with other packages installed with <em>APT</em>. These recurring bug reports are not actionable, there’s nothing we can fix on our side. Users get burnt and they learn from it, but it’s no fun.</p>
+<h2 id="whats-changing">What’s changing</h2>
+<p>Now, back to the upcoming change: <strong>in Kali Linux, starting with Python 3.12, pip will refuse to perform system-wide installs (<code>sudo pip install</code>) as well as user home directory installs (<code>pip install --user</code>)</strong>. This is good news, because it will make it harder for unexperienced users to break their system. This is a welcome change, and we are thankful to those who drove this change and made it happen. Long-term, it will be less pain for everyone. But short-term, some users won’t like it, of course, we know.</p>
+<p>So if you’re one of those who run <code>sudo pip install</code>, who have it hardwired in your fingers… well, you’ll have to adjust. You might want to have a look at <a href="https://pypa.github.io/pipx/">pipx</a>, get more familiar with Python’s virtual environments, and spend some time reading <a href="https://peps.python.org/pep-0668/">PEP 668: Marking Python environments as externally managed</a> to better understand the issue at hand.</p>
+<p>To finish, and to give a bit of a broader context: the PEP 668 proposal came about as a coordinated effort from various software distributions to fix this long-standing issue of <em>pip</em> breaking other package managers too easily. The change is already effective in other Linux distros (like the latest release of Debian). In Kali Linux, we just delayed it a bit, so that we can warn you in advance, so that you can adjust your workflow and scripts. But the change is coming with Python 3.12, there’s no point delaying it further.</p>
+<p>Thanks for reading!</p>
+<h4 id="source"><a href="https://www.kali.org/blog/python-externally-managed/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

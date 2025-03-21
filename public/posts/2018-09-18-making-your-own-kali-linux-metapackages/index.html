@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Making your own Kali Linux Metapackages</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Making your own Kali Linux Metapackages</h1>
+			<b><time>18.09.2018 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="making-your-own-kali-linux-metapackages">Making your own Kali Linux Metapackages</h1>
+<p><a href="https://www.kali.org/blog/making-your-own-kali-linux-metapackages/images/kali-advanced-package-management-2.jpg">https://www.kali.org/blog/making-your-own-kali-linux-metapackages/images/kali-advanced-package-management-2.jpg</a></p>
+<p>One of the many useful things we can do with APT is create metapackages, which are effectively empty packages that declare a list of other packages as dependencies. Kali Linux includes metapackages for password cracking, software-defined radio, wireless, web applications, and more but if you have specific needs (like most</p>
+<p>One of the many useful things we can do with APT is create metapackages, which are effectively empty packages that declare a list of other packages as dependencies. Kali Linux includes metapackages for password cracking, software-defined radio, wireless, web applications, and more but if you have specific needs (like most people), it’s quick and easy to define your own metapackages, which we will show in this post.</p>
+<p>Before we begin, we need to install the <strong><em>devscripts</em></strong> package, which includes a number of tools and utilities for package management:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# apt install devscripts
+</span></span></code></pre></div><p>In Kali, all metapackages are defined in the appropriately named <strong><em>kali-meta</em></strong> package so we can clone and modify it to suit our needs:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# git clone git://gitlab.com/kalilinux/packages/kali-meta
+</span></span><span style="display:flex;"><span>Cloning into &#39;kali-meta&#39;...
+</span></span><span style="display:flex;"><span>remote: Counting objects: 998, done.
+</span></span><span style="display:flex;"><span>remote: Compressing objects: 100% (809/809), done.
+</span></span><span style="display:flex;"><span>remote: Total 998 (delta 365), reused 0 (delta 0)
+</span></span><span style="display:flex;"><span>Receiving objects: 100% (998/998), 179.90 KiB | 570.00 KiB/s, done.
+</span></span><span style="display:flex;"><span>Resolving deltas: 100% (365/365), done.
+</span></span><span style="display:flex;"><span>warning: remote HEAD refers to nonexistent ref, unable to checkout.
+</span></span></code></pre></div><p>The “unable to checkout” message above looks worrisome but it only means that the default branch (kali/master) needs to be checked out first, which can be done as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# cd kali-meta/
+</span></span><span style="display:flex;"><span>root@kali:~/kali-meta# git checkout kali/master
+</span></span><span style="display:flex;"><span>Branch &#39;kali/master&#39; set up to track remote branch &#39;kali/master&#39; from &#39;origin&#39;.
+</span></span><span style="display:flex;"><span>Switched to a new branch &#39;kali/master&#39;
+</span></span><span style="display:flex;"><span>root@kali:~/kali-meta#
+</span></span></code></pre></div><p>To create a new metapackage (or update an existing one), we need to edit the <strong><em>debian/control</em></strong> file with the package information. Each metapackage is merely a comma-separated list of package dependencies, like the one for the <strong><em>kali-linux-gpu</em></strong> shown below:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plain" data-lang="plain"><span style="display:flex;"><span>Package: kali-linux-gpu
+</span></span><span style="display:flex;"><span>Architecture: any
+</span></span><span style="display:flex;"><span>Depends: ${misc:Depends},
+</span></span><span style="display:flex;"><span>kali-linux,
+</span></span><span style="display:flex;"><span>oclhashcat [amd64 i386],
+</span></span><span style="display:flex;"><span>pyrit,
+</span></span><span style="display:flex;"><span>oclgausscrack [amd64 i386],
+</span></span><span style="display:flex;"><span>truecrack,
+</span></span></code></pre></div><p>Our new metapackage will be called “kali-linux-mytools” and will install Vagrant, VirtualBox, LibreOffice, and Chromium. Our entry for this metapackage in <strong><em>debian/control</em></strong> looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span> root@kali:~/kali-meta# tail -n 14 debian/control
+</span></span><span style="display:flex;"><span>Package: kali-linux-mytools
+</span></span><span style="display:flex;"><span>Architecture: any
+</span></span><span style="display:flex;"><span>Depends: ${misc:Depends},
+</span></span><span style="display:flex;"><span>kali-linux,
+</span></span><span style="display:flex;"><span>virtualbox,
+</span></span><span style="display:flex;"><span>vagrant,
+</span></span><span style="display:flex;"><span>libreoffice,
+</span></span><span style="display:flex;"><span>chromium,
+</span></span><span style="display:flex;"><span>Description: My required Kali tools
+</span></span><span style="display:flex;"><span>This is Kali Linux, the most advanced penetration testing and security
+</span></span><span style="display:flex;"><span>auditing distribution.
+</span></span><span style="display:flex;"><span>.
+</span></span><span style="display:flex;"><span>This metapackage depends on the tools I install most often.
+</span></span></code></pre></div><p>With the new metapackage defined, we need to bump the version number with ‘dch’ prior to building the package. This will launch an editor for you to enter the details of your changes in <strong><em>debian/changelog</em></strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~/kali-meta# dch --local dookie
+</span></span><span style="display:flex;"><span>root@kali:~/kali-meta# head -n 5 debian/changelog
+</span></span><span style="display:flex;"><span>kali-meta (2018.3.2dookie1) UNRELEASED; urgency=medium
+</span></span><span style="display:flex;"><span>* Added kali-linux-mytools
+</span></span><span style="display:flex;"><span>-- dookie &lt;dookie@kali.local&gt; Tue, 11 Sep 2018 09:40:10 -0600
+</span></span></code></pre></div><p>Finally, we can proceed to build the new package with the ‘dpkg-buildpackage’ command. Since metapackages are just lists of dependencies, the build process is very quick:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~/kali-meta# dpkg-buildpackage -us -uc -b
+</span></span><span style="display:flex;"><span>dpkg-buildpackage: info: source package kali-meta
+</span></span><span style="display:flex;"><span>dpkg-buildpackage: info: source version 2018.3.2dookie1
+</span></span><span style="display:flex;"><span>dpkg-buildpackage: info: source distribution UNRELEASED
+</span></span><span style="display:flex;"><span>dpkg-buildpackage: info: source changed by dookie &lt;dookie@kali.local&gt;
+</span></span><span style="display:flex;"><span>dpkg-buildpackage: info: host architecture amd64
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>dpkg-deb: building package &#39;kali-linux-pwtools&#39; in &#39;../kali-linux-pwtools_2018.3.2dookie1_amd64.deb&#39;.
+</span></span><span style="display:flex;"><span>dpkg-deb: building package &#39;kali-linux-top10&#39; in &#39;../kali-linux-top10_2018.3.2dookie1_amd64.deb&#39;.
+</span></span><span style="display:flex;"><span>dpkg-deb: building package &#39;kali-linux-mytools&#39; in &#39;../kali-linux-mytools_2018.3.2dookie1_amd64.deb&#39;.
+</span></span><span style="display:flex;"><span>dpkg-genbuildinfo --build=binary
+</span></span><span style="display:flex;"><span>dpkg-genchanges --build=binary &gt;../kali-meta_2018.3.2dookie1_amd64.changes
+</span></span><span style="display:flex;"><span>dpkg-genchanges: info: binary-only upload (no source code included)
+</span></span><span style="display:flex;"><span>dpkg-source --after-build kali-meta
+</span></span><span style="display:flex;"><span>dpkg-buildpackage: info: binary-only upload (no source included)
+</span></span></code></pre></div><p>When the build is complete, our new metapackage can be installed with ‘apt’ like any other package:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~/kali-meta# apt install ../kali-linux-mytools_2018.3.2dookie1_amd64.deb
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>root@kali:~/kali-meta# apt-cache policy vagrant virtualbox libreoffice chromium
+</span></span><span style="display:flex;"><span>vagrant:
+</span></span><span style="display:flex;"><span>Installed: 2.1.2+dfsg-1
+</span></span><span style="display:flex;"><span>Candidate: 2.1.2+dfsg-1
+</span></span><span style="display:flex;"><span>Version table:
+</span></span><span style="display:flex;"><span>*** 2.1.2+dfsg-1 500
+</span></span><span style="display:flex;"><span>500 http://192.168.86.4/kali kali-rolling/main amd64 Packages
+</span></span><span style="display:flex;"><span>100 /var/lib/dpkg/status
+</span></span><span style="display:flex;"><span>virtualbox:
+</span></span><span style="display:flex;"><span>Installed: 5.2.18-dfsg-2
+</span></span><span style="display:flex;"><span>Candidate: 5.2.18-dfsg-2
+</span></span><span style="display:flex;"><span>Version table:
+</span></span><span style="display:flex;"><span>*** 5.2.18-dfsg-2 500
+</span></span><span style="display:flex;"><span>500 http://192.168.86.4/kali kali-rolling/contrib amd64 Packages
+</span></span><span style="display:flex;"><span>100 /var/lib/dpkg/status
+</span></span><span style="display:flex;"><span>libreoffice:
+</span></span><span style="display:flex;"><span>Installed: 1:6.1.1~rc1-2
+</span></span><span style="display:flex;"><span>Candidate: 1:6.1.1~rc1-2
+</span></span><span style="display:flex;"><span>Version table:
+</span></span><span style="display:flex;"><span>*** 1:6.1.1~rc1-2 500
+</span></span><span style="display:flex;"><span>500 http://192.168.86.4/kali kali-rolling/main amd64 Packages
+</span></span><span style="display:flex;"><span>100 /var/lib/dpkg/status
+</span></span><span style="display:flex;"><span>chromium:
+</span></span><span style="display:flex;"><span>Installed: 68.0.3440.75-2
+</span></span><span style="display:flex;"><span>Candidate: 68.0.3440.75-2
+</span></span><span style="display:flex;"><span>Version table:
+</span></span><span style="display:flex;"><span>*** 68.0.3440.75-2 500
+</span></span><span style="display:flex;"><span>500 http://192.168.86.4/kali kali-rolling/main amd64 Packages
+</span></span><span style="display:flex;"><span>100 /var/lib/dpkg/status
+</span></span></code></pre></div><p>Just like that, we have our own metapackage that we can store on network share or some other location to quickly get our fresh Kali Linux installations set up and configured quickly.</p>
+<h4 id="source"><a href="https://www.kali.org/blog/making-your-own-kali-linux-metapackages/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

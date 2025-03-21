@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Kali Linux 20241 Release Micro Mirror</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Kali Linux 20241 Release Micro Mirror</h1>
+			<b><time>28.02.2024 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="kali-linux-20241-release-micro-mirror">Kali Linux 20241 Release Micro Mirror</h1>
+<p><a href="https://www.kali.org/blog/kali-linux-2024-1-release/images/banner-2024.1-release.jpg">https://www.kali.org/blog/kali-linux-2024-1-release/images/banner-2024.1-release.jpg</a></p>
+<p>Hello 2024! Today we are unveiling Kali Linux 2024.1. As this is our the first release of the year, it does include new visual elements! Along with this we also have some exciting new mirrors to talk about, and of course some package changes - both new tools and upgrades</p>
+<p>Hello 2024! Today we are unveiling <strong>Kali Linux 2024.1</strong>. As this is our the first <a href="https://www.kali.org/releases/">release</a> of the year, it does include new visual elements! Along with this we also have some exciting new mirrors to talk about, and of course some package changes - both new tools and upgrades to existing ones. If you want to see the new theme for yourself and maybe try out one of those new mirrors, <a href="https://www.kali.org/get-kali/">download a new image</a> or <a href="https://www.kali.org/docs/general-use/updating-kali/">upgrade <em>if you have an existing Kali Linux installation</em></a>.</p>
+<p>The summary of the <a href="https://bugs.kali.org/changelog_page.php">changelog</a> since the <a href="https://www.kali.org/blog/kali-linux-2023-4-release/">2023.4 release from December</a> is:</p>
+<ul>
+<li><strong><a href="https://www.kali.org/blog/kali-linux-2024-1-release/#introducing-the-micro-mirror-free-software-cdn">Micro Mirror Free Software CDN</a></strong> - FCIX Software Mirror reached out offering to host our images, and we said yes</li>
+<li><strong><a href="https://www.kali.org/blog/kali-linux-2024-1-release/#2024-theme-refresh">2024 Theme Refresh</a></strong> - Our yearly theme refresh with all new wallpapers and GRUB theme</li>
+<li><strong><a href="https://www.kali.org/blog/kali-linux-2024-1-release/#other-desktop-changes">Other Desktop Environment Changes</a></strong> - A few new tweaks to our default environments</li>
+<li><strong><a href="https://www.kali.org/blog/kali-linux-2024-1-release/#kali-nethunter-updates">NetHunter Updates</a></strong> - NetHunter Rootless for Android 14, Bad Bluetooth HID attacks, and other updates</li>
+<li><strong><a href="https://www.kali.org/blog/kali-linux-2024-1-release/#new-tools-in-kali">New Tools</a></strong> - As always, various new shiny tools!</li>
+</ul>
+<hr>
+<h2 id="introducing-the-micro-mirror-free-software-cdn">Introducing the Micro Mirror Free Software CDN</h2>
+<p>With this latest release of Kali Linux, our network of <a href="https://http.kali.org/README?mirrorlist">community mirrors</a> grew much stronger, thanks to the help of the Micro Mirror CDN! Here’s the story.</p>
+<p>Last month we replied to a long-forgotten email from Kenneth Finnegan from the <a href="https://mirror.fcix.net/">FCIX Software Mirror</a>. The FCIX is a rather big mirror located in California, and they reached out to offer to host the Kali images on their mirror. To which we answered yes please, and that was it; shortly after, the <a href="https://mirror.fcix.net/kali-images/">Kali images were added to the FCIX mirror</a>. So far so good, and it could have been the end of the story, but then Kenneth followed up:</p>
+<blockquote>
+<p>We’re now also operating another 32 other mirrors which are optimized for minimal storage and hosting only the highest traffic projects […] Would the Kali project be willing to accept ten additional mirrors from the FCIX organization?</p></blockquote>
+<p>Wow, <strong>10 additional mirrors</strong>, that sounds very nice indeed! But, wait, <em><strong>32 mirrors</strong></em>??? How come? Where do all those mirrors come from? That was intriguing. As it turns out, Kenneth operates a network of mirrors, which was officially announced back in May 2023 on his blog: <a href="https://blog.thelifeofkenneth.com/2023/05/building-micro-mirror-free-software-cdn.html">Building the Micro Mirror Free Software CDN</a>. For anyone interested in Internet infrastructure, we encourage you to read it, that’s a well-written blog post right there, waiting for you.</p>
+<p>So what is the Micro Mirror CDN exactly? One-liner: a network of mirrors dedicated to serving Linux and Free Software. <strong>Contrary to traditional mirrors that host around 50TB of project files, Micro Mirrors are machines with “only” a few TB of storage</strong>, that focus on hosting only the most high-demand projects. In other words: <strong>they provide additional bandwidth where it’s needed the most</strong>. Another important difference with traditional mirrors is that those machines are not managed by the sponsor (the organization that funds the mirror). Usually, a sponsor provides the bandwidth, the mirror, and also administrates it. While here, the sponsor only provides the bandwidth, and it’s the FCIX Micro Mirror team that does everything else: buy the hardware, ship it to the data-center, and then manage it remotely via their <a href="https://github.com/PhirePhly/micromirrors">public Ansible playbook</a>.</p>
+<p>For anyone familiar with mirroring, it’s quite exciting to see such a project taking shape. Free software and Linux distributions have been distributed thanks to community-supported mirrors <a href="http://www.ibiblio.org/pub/historic-linux/distributions/debian-0.91/debian-0.91/RELEASE-0.91">for almost three decades now</a>, it’s a long tradition. It’s true that we’ve seen some changes over the last years, and these days some of the biggest FOSS projects <a href="https://news.apache.org/foundation/entry/apache-software-foundation-moves-to">are entirely distributed via a CDN</a>, leaving behind the mirroring system. For Kali Linux we use a mixed approach: it is distributed in part thanks to 50+ mirrors across the world, and in part thanks to the Cloudflare CDN that acts as a ubiquitous mirror. We are lucky to benefit from a <a href="https://blog.cloudflare.com/cloudflare-repositories-ftw">very generous sponsorship from Cloudflare</a> since 2019. But smaller or newer projects don’t get this chance, thus community mirrors are still essential to free software distribution. That’s why it’s nice to see a project like the Micro Mirror CDN, it’s a novel approach in the field of mirroring, and with Kali Linux we are very grateful to be part of the journey.</p>
+<p>For any organization out there that has spare bandwidth and wants to support free software, the Micro Mirror project might be something you are interested in. You might want to look at their <a href="https://github.com/PhirePhly/micromirrors/blob/main/doc/product-brief.md">product brief</a> for a more thorough description of the service, and email <code>mirror at fcix dot net</code> for more information. we’ll just quote one line that summarize it really well:</p>
+<blockquote>
+<p>From the hosting sponsor’s perspective, the Micro Mirror is a turnkey appliance, where they only need to provide network connectivity and remote hands to install the hardware, where all sysadmin and monitor work is handled by the FCIX team with the economy of scale on our side.</p></blockquote>
+<p>A big thanks to the FCIX team, and Kenneth Finnegan in particular, for their generous offer. Thanks to their help, the Kali images are now served from ten additional mirrors: <strong>seven in the US, one in Colombia, one in the UK and one in Australia</strong>.</p>
+<p>And while we are talking about mirrors: we also got plenty of new mirrors from various sponsors during this release cycle, check the <a href="https://www.kali.org/blog/kali-linux-2024-1-release/#new-kali-mirrors">dedicated section below</a> for details.</p>
+<h2 id="2024-theme-refresh">2024 Theme Refresh</h2>
+<p>As for previous 20**.1 releases, <strong>this update brings with it our annual theme refresh</strong>, a tradition that keeps our interface as cutting-edge as our tools. This year marks the unveiling of our newest theme, meticulously crafted to enhance user experience from the moment you boot up. With significant <strong>updates to the boot menu, login display, and an array of captivating desktop wallpapers, for both our regular Kali and Kali Purple editions</strong>. We are dedicated to not only advancing our cybersecurity capabilities but also ensuring that the aesthetic appeal of our platform matches the power within.</p>
+<p><strong>Boot menu</strong>:</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2024-1-release/images/boot-menu.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2024-1-release/images/boot-menu.png" alt="" />
+</figure>
+
+
+</a></p>
+<p><strong>Login display</strong>:</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2024-1-release/images/login.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2024-1-release/images/login.png" alt="" />
+</figure>
+
+
+</a></p>
+<p><strong>Desktop</strong>:</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2024-1-release/images/desktop.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2024-1-release/images/desktop.png" alt="" />
+</figure>
+
+
+</a></p>
+<p><strong>Kali-Purple desktop</strong>:</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2024-1-release/images/desktop-purple.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2024-1-release/images/desktop-purple.png" alt="" />
+</figure>
+
+
+</a></p>
+<p><strong>New wallpapers</strong>:</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2024-1-release/images/wallpapers.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2024-1-release/images/wallpapers.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Special thanks to <strong><a href="https://gitlab.com/arszilla">arszilla</a></strong> for not only suggesting two wallpaper variants but also contributing to the creation of one of the default wallpapers featured in this release. These additional images were crafted to complement the background colors of the Nord and Dracula color schemes. To access these wallpapers, simply install the <code>kali-community-wallpapers</code> package, which also offer many other stunning backgrounds created by our community contributors.</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2024-1-release/images/dracula-nord-wallpapers.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2024-1-release/images/dracula-nord-wallpapers.png" alt="" />
+</figure>
+
+
+</a></p>
+<h2 id="other-desktop-changes">Other desktop changes</h2>
+<h3 id="xfce">Xfce</h3>
+<p>We are excited to introduce a convenient enhancement to our Xfce desktop. Now, users can <strong>effortlessly copy their VPN IP address to the clipboard with just a click</strong>, simplifying the workflow and enhancing productivity for our users. To take advantage of this functionality, ensure that <code>xclip</code> is installed on your system (<code>sudo apt update &amp;&amp; sudo apt -y install xclip</code>). With this improvement, managing your VPN connections on Kali Linux becomes even more seamless and intuitive.</p>
+<p>Thank you <strong><a href="https://gitlab.com/lucas.parsy">lucas.parsy</a></strong> for your contribution that made this feature possible!</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2024-1-release/images/vpn-plugin.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2024-1-release/images/vpn-plugin.png" alt="" />
+</figure>
+
+
+</a></p>
+<p><strong>Other Xfce changes</strong>:</p>
+<ul>
+<li>Kali-undercover updated to fix compatibility with latest Xfce</li>
+<li>Fixed a bug with <code>xfce-panel</code> and Kali’s customized <code>cpugraph</code> plug-in</li>
+</ul>
+<h3 id="gnome-shell">Gnome-Shell</h3>
+<p>For Gnome desktop one notable change is the <strong>replacement of the <code>eye-of-gnome (eog)</code> image viewer with <code>Loupe</code></strong>, continuing the transition to GTK4 based applications. Additionally, the <strong>latest update of Nautilus file manager</strong> arrived to Kali’s repositories, delivering a significant boost in file search speed and introducing a refreshed sidebar design.</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2024-1-release/images/gnome.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2024-1-release/images/gnome.png" alt="" />
+</figure>
+
+
+</a></p>
+<h3 id="icon-theme">Icon Theme</h3>
+<p>Following with the desktop enhancements, we’ve added a <strong>few new app icons</strong>, ensuring a fully themed experience for default installations of Kali Linux. Additionally, we’ve refreshed our icon theme with <strong>new symbolic icons</strong>, enhancing consistency system-wide.</p>
+<p><a href="https://www.kali.org/blog/kali-linux-2024-1-release/images/icons.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2024-1-release/images/icons.png" alt="" />
+</figure>
+
+
+</a></p>
+<h2 id="kali-nethunter-updates">Kali NetHunter Updates</h2>
+<p><a href="https://www.kali.org/blog/kali-linux-2024-1-release/images/NetHunter-S24Ultra.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-linux-2024-1-release/images/NetHunter-S24Ultra.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>We finally got our hands on a brand new Samsung Galaxy S24 Ultra and yes!, <a href="https://www.kali.org/docs/nethunter/nethunter-rootless/">NetHunter rootless</a> runs like a dream. Fortunately, Android 14 lets us disable child process restrictions in developer settings so we no longer have to use the adb command line to enable <a href="https://www.kali.org/docs/nethunter/nethunter-kex-manager/">KeX support</a>. We have updated our <a href="https://www.kali.org/docs/nethunter/nethunter-rootless/">documentation</a> to reflect these changes.</p>
+<hr>
+<p><a href="https://gitlab.com/yesimxev">yesimxev</a> managed to add the popular Bad Bluetooth HID attack the the NetHunter app for both phones and even smartwatches!</p>
+<p>Your browser does not support the video tag.</p>
+<hr>
+<p>The icons for our NetHunter and NHTerm apps have received a makeover and <a href="https://gitlab.com/kimocoder">kimocoder</a> &amp; <a href="https://twitter.com/martindatoss">martinvlba</a> spent countless days updating the codebase to ensure compatibility with the latest Android version.</p>
+<hr>
+<p>The community engagement is at an all time high, which is reflected by the following <a href="https://nethunter.kali.org/kernels.html">new kernels</a>:</p>
+<ul>
+<li>Realme C15</li>
+<li>TicWatch Pro 3</li>
+<li>(Updated) Samsung Galaxy S9+</li>
+<li>Xiaomi Poco X3 NFC</li>
+</ul>
+<p>Thanks heaps to everyone that <a href="https://www.kali.org/docs/community/contribute/">contributed</a>, we wouldn’t be here without you!</p>
+<p><em>Stay tuned as there are many more kernels already on the way!</em></p>
+<h2 id="new-tools-in-kali">New Tools in Kali</h2>
+<p>The following new tools made it into this Kali release <em>(via the network repositories)</em>:</p>
+<ul>
+<li><a href="https://www.kali.org/tools/blue-hydra/">blue-hydra</a> - Bluetooth device discovery service</li>
+<li><a href="https://www.kali.org/tools/opentaxii/">opentaxii</a> - TAXII server implementation from EclecticIQ</li>
+<li><a href="https://www.kali.org/tools/readpe/">readpe</a> - Command-line tools to manipulate Windows PE files</li>
+<li><a href="https://www.kali.org/tools/snort/">snort</a> - Flexible Network Intrusion Detection System</li>
+</ul>
+<p><em>The focus was adding new libraries this release, and there is always numerous packages updates. Plus we also bump the Kali kernel to 6.6!</em></p>
+<h3 id="community-packages">Community Packages</h3>
+<p>There has also been a tool submitted from the community which has been merged into Kali:</p>
+<ul>
+<li><a href="https://www.kali.org/tools/above/">above</a> - Invisible protocol sniffer for finding vulnerabilities in the network</li>
+</ul>
+<p><em>If you are wanting a tool in Kali quicker than what we can add, please see <a href="https://www.kali.org/blog/kali-linux-2023-3-release/#rekono---community-package-submission">our blog post from a previous release</a>.</em></p>
+<h2 id="miscellaneous">Miscellaneous</h2>
+<p>Below are a few other things which have been updated in Kali, which we are calling out which do not have as much detail:</p>
+<ul>
+<li>Due to the ongoing <code>/usr-merge</code> transition in Debian, using 2023.4 or older versions of <a href="https://www.kali.org/docs/installation/network-pxe/#download-kali-pxe-netboot-images">our netboot images</a> will no longer work. Make sure to either grab weekly image or Kali 2024.1!</li>
+<li>Friendly reminder, if you are getting “weird special characters” when trying to use keyboard shortcuts to copy/paste clipboard, the default is to use “<strong>ctrl</strong>+<strong>shift</strong>+<strong>c</strong>” and “<strong>ctrl</strong>+<strong>shift</strong>+<strong>v</strong>”.
+<ul>
+<li><em><strong>ctrl</strong>+<strong>c</strong> (without shift) in Unix is used to kill programs!</em></li>
+<li>Should you wish, you can alter the default behaviour in your favourite terminal program</li>
+</ul>
+</li>
+</ul>
+<h2 id="kali-website-updates">Kali Website Updates</h2>
+<h3 id="kali-documentation">Kali Documentation</h3>
+<p>Our <a href="https://www.kali.org/docs/">Kali documentation</a> has had various updates:</p>
+<ul>
+<li><a href="https://www.kali.org/docs/virtualization/install-vmware-silicon-host/">Installing VMware on Apple Silicon (M1/M2/M3) Macs (Host)</a> (updated)</li>
+<li><a href="https://www.kali.org/docs/installation/installation-sizes/">Kali Installation Sizes</a> (updated)</li>
+</ul>
+<p><em>A way to make a project even stronger is to help its <a href="https://www.kali.org/docs/">documentation</a>. Kali is no exception. If you are able to please do <a href="https://www.kali.org/docs/community/contribute/">contributed</a>.</em></p>
+<h3 id="tool-documentation">Tool Documentation</h3>
+<p>Our <a href="https://www.kali.org/tools/">tool documentation</a> is always getting various updates from us, but we received a great contribution from <a href="https://gitlab.com/etd">Daniel</a>:</p>
+<ul>
+<li><a href="https://www.kali.org/tools/dradis/">Dradis</a></li>
+</ul>
+<p><em>If you are wanting to help Kali, and give back, submitting to <a href="https://www.kali.org/tools/">kali.org/tools</a> is a great way to <a href="https://www.kali.org/docs/community/contribute/">contributed</a>.</em></p>
+<h3 id="kali-blog-recap">Kali Blog Recap</h3>
+<p>Since our last release, we did the following <a href="https://www.kali.org/blog/">blog posts</a>:</p>
+<ul>
+<li><a href="https://www.kali.org/blog/non-free-firmware-transition/">The great non-free-firmware transition</a></li>
+<li><a href="https://www.kali.org/blog/dei-promise/">Kali Linux DEI Promise</a></li>
+</ul>
+<h2 id="community-shout-outs">Community Shout-Outs</h2>
+<p>These are <strong>people from the public who have helped Kali</strong> and the team for the last release. And we want to praise them for their work <em>(we like to give credit where due!)</em>:</p>
+<ul>
+<li><a href="https://gitlab.com/Arszilla">Arszilla</a></li>
+<li><a href="https://gitlab.com/casterbyte">Caster</a></li>
+<li><a href="https://gitlab.com/etd">Daniel</a></li>
+<li><a href="https://gitlab.com/janerysavy17">Jane Rysavy</a></li>
+<li><a href="https://gitlab.com/Fetti.Wop">Jordan</a></li>
+<li><a href="https://gitlab.com/lucas.parsy">Lucas Parsy</a></li>
+<li><a href="https://gitlab.com/ronbo">ronbo</a></li>
+</ul>
+<p><em>Anyone can help out, anyone can get <a href="https://www.kali.org/docs/community/contribute/">involved</a>!</em></p>
+<h3 id="new-kali-mirrors">New Kali Mirrors</h3>
+<p>We have some new mirrors! Plenty of new mirrors, in fact. The last quarter was quite incredible on this front, and now is the time to give credits.</p>
+<p>Let’s start with North America:</p>
+<ul>
+<li><strong>US</strong>: <a href="http://mirror.fcix.net/kali-images/">mirror.fcix.net</a> sponsored by FCIX aka. the <a href="https://fcix.net/">Fremont Cabal Internet Exchange</a>. Thanks to <em>Kenneth</em> Finnegan for reaching out… one and a half year ago! Thankfully we rediscovered the email and that was worth it.</li>
+<li><strong>Canada</strong>: <a href="http://mirror.xenyth.net/kali-images/">mirror.xenyth.net</a> sponsored by <a href="https://xenyth.net/">Xenyth Cloud</a>, and thanks to Sepehr Ahmadi.</li>
+<li><strong>Canada</strong>: <a href="http://mirror.quantum5.ca/kali-images/">mirror.quantum5.ca</a> sponsored by <a href="https://dynamicquantum.net">Dynamic Quantum Networks</a>, and thanks to Guanzhong Chen.</li>
+<li><strong>Canada</strong>: <a href="http://mirror.accuris.ca/kali/">mirror.accuris.ca</a> sponsored by <a href="https://accuristechnologies.ca/">Accuris Technologies Ltd.</a>, thanks to Peter Potvin.</li>
+<li><strong>Canada</strong>: <a href="http://mirror.0xem.ma/kali/">mirror.0xem.ma</a> sponsored by <a href="https://0xem.ma/">Emma Ruby</a>.</li>
+</ul>
+<p>Now for the rest of the world:</p>
+<ul>
+<li><strong>Chile</strong>: <a href="http://elmirror.cl/kali/">elmirror.cl</a>, sponsored by <a href="https://elmirror.cl/">ElMirror</a>, and thanks to Jonathan Gutierrez, who also maintains the other Kali Linux mirror in Chile: <a href="https://mirror.ufro.cl/">mirror.ufro.cl</a>. As a reminder: we really lack mirrors in South America, any help would be welcome to help Kali reach this part of the world.</li>
+<li><strong>China</strong>: <a href="http://mirrors.ustc.edu.cn/kali/">mirrors.ustc.edu.cn</a>, sponsored by the USTC aka. the <a href="https://en.ustc.edu.cn/">University of Science and Technology of China</a>, and thanks to Keyu Tao.</li>
+<li><strong>France</strong>: <a href="http://mirror.johnnybegood.fr/kali/">mirror.johnnybegood.fr</a>, sponsored by the <a href="https://johnnybegood.fr/">Johnnybegood Society</a>.</li>
+<li><strong>Portugal</strong>: <a href="http://mirror.leitecastro.com/kali/">mirror.leitecastro.com</a>, sponsored by <a href="https://leitecastro.com/">Tomás Leite de Castro</a>.</li>
+<li><strong>South Korea</strong>: <a href="http://mirror.amuksa.com/kali/">mirror.amuksa.com</a>.</li>
+</ul>
+<p>On top of that, as said above, there is now the Micro Mirror CDN that serves Kali images via 10 points of presence: 7 in the US, 1 in Colombia, 1 in the UK and 1 in Australia!</p>
+<p>To wrap that up: THANK YOU to all of you, individuals and companies, who provide bandwidth and help us distribute Kali to everyone out there!</p>
+<p><em>If you have the disk space and bandwidth, <a href="https://www.kali.org/docs/community/setting-up-a-kali-linux-mirror/">we always welcome new mirrors</a>.</em></p>
+<hr>
+<h2 id="kali-team-discord-chat">Kali Team Discord Chat</h2>
+<p>Since the launch of <a href="https://discord.kali.org/">our Discord server</a> with <a href="https://www.kali.org/blog/kali-linux-2022-3-release/">Kali 2022.3</a>, we have been doing an hour long voice chat with a number of Kali team members. This is when anyone can ask questions (hopefully relating to Kali or the information security industry) to us.</p>
+<p>The next session will happen a little later than normal, <strong>Friday, 22nd March 2024 18:00 -&gt; 19:00 <a href="https://time.is/UTC">UTC/+0 GMT</a></strong>. It will once again be on <a href="https://discord.com/servers/offsec-780824470113615893">OffSec’s Discord</a>.</p>
+<ul>
+<li><a href="https://discord.gg/invite/offsec">Discord invite</a></li>
+<li><a href="./Kali-Discord-2024.1.ics">iCalendar invite</a></li>
+</ul>
+<p><em>Please note, we will not be making a recording of this event - its live only.</em></p>
+<hr>
+<h2 id="get-kali-linux-20241">Get Kali Linux 2024.1</h2>
+<p><strong>Fresh Images</strong>: So what are you waiting for? Go <a href="https://www.kali.org/get-kali/">get Kali</a> already!</p>
+<p>Seasoned Kali Linux users are already aware of this, but for the ones who are not, we do also produce <strong><a href="https://cdimage.kali.org/kali-images/kali-weekly/">weekly builds</a></strong> that you can use as well. If you cannot wait for our next release and you want the latest packages <em>(or bug fixes)</em> when you download the image, you can just use the weekly image instead. This way you will have fewer updates to do. <em>Just know that these are automated builds that we do not QA like we do our standard <a href="https://www.kali.org/releases/">release images</a></em>. But we gladly take <a href="https://bugs.kali.org/">bug reports</a> about those images because we want any issues to be fixed before our next release!</p>
+<p><strong>Existing Installs</strong>: If you already have an existing Kali Linux installation, remember you can always do a quick <a href="https://www.kali.org/docs/general-use/updating-kali/">update</a>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ echo &#34;deb http://http.kali.org/kali kali-rolling main contrib non-free non-free-firmware&#34; | sudo tee /etc/apt/sources.list
+</span></span><span style="display:flex;"><span>[...]
+</span></span><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ sudo apt update &amp;&amp; sudo apt -y full-upgrade
+</span></span><span style="display:flex;"><span>[...]
+</span></span><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ cp -vrbi /etc/skel/. ~/
+</span></span><span style="display:flex;"><span>[...]
+</span></span><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ [ -f /var/run/reboot-required ] &amp;&amp; sudo reboot -f
+</span></span></code></pre></div><p>You should now be on Kali Linux 2024.1 We can do a quick check by doing:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ grep VERSION /etc/os-release
+</span></span><span style="display:flex;"><span>VERSION=&#34;2024.1&#34;
+</span></span><span style="display:flex;"><span>VERSION_ID=&#34;2024.1&#34;
+</span></span><span style="display:flex;"><span>VERSION_CODENAME=&#34;kali-rolling&#34;
+</span></span><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ uname -v
+</span></span><span style="display:flex;"><span>#<span style="color:#ae81ff">1</span> SMP PREEMPT_DYNAMIC Kali 6.6.9-1kali1 <span style="color:#f92672">(</span>2024-01-08<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>┌──(kali㉿kali)-[~]
+</span></span><span style="display:flex;"><span>└─$ uname -r
+</span></span><span style="display:flex;"><span>6.6.9-amd64
+</span></span></code></pre></div><p><em>NOTE: The output of <code>uname -r</code> may be different depending on the system <a href="https://pkg.kali.org/pkg/linux">architecture</a>.</em></p>
+<p>As always, should you come across any bugs in Kali, please submit a report on our <a href="https://bugs.kali.org/">bug tracker</a>. <em>We will never be able to fix what we do not know is broken!</em> <strong>And Social networks are not bug trackers!</strong></p>
+<p>Want to keep in up-to-date easier? Automate it! We have a <a href="https://www.kali.org/rss.xml">RSS feeds</a> and <a href="https://www.kali.org/newsletter/">newsletter</a> of our <a href="https://www.kali.org/blog/">blog</a> to help you.</p>
+<h4 id="source"><a href="https://www.kali.org/blog/kali-linux-2024-1-release/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

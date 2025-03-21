@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Pixiewps Reaver Aircrack-ng Wireless Penetration Testing Tool Updates</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Pixiewps Reaver Aircrack-ng Wireless Penetration Testing Tool Updates</h1>
+			<b><time>04.05.2015 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="pixiewps-reaver-aircrack-ng-wireless-penetration-testing-tool-updates">Pixiewps Reaver Aircrack-ng Wireless Penetration Testing Tool Updates</h1>
+<p><a href="https://www.kali.org/blog/pixiewps-reaver-aircrack-ng-updates/images/kali-wireless-tools-update-v2.jpg">https://www.kali.org/blog/pixiewps-reaver-aircrack-ng-updates/images/kali-wireless-tools-update-v2.jpg</a></p>
+<p>A short while ago, we packaged and pushed out a few important wireless penetration testing tool updates for aircrack-ng, pixiewps and reaver into Kali’s repository. These new additions and updates are fairly significant, and may even change your wireless attack workflows. Here’s a short run-down of the updates and the</p>
+<p>A short while ago, we packaged and pushed out a few important <a href="https://www.kali.org/blog/kali-linux-metapackages/">wireless penetration testing tool</a> updates for aircrack-ng, pixiewps and reaver into Kali’s repository. These new additions and updates are fairly significant, and may even change your wireless attack workflows. Here’s a short run-down of the updates and the changes they bring.</p>
+<h2 id="pixiewps---bruteforce-wps-pins-in-seconds">Pixiewps - Bruteforce WPS pins in seconds</h2>
+<p><a href="https://github.com/wiire-a/pixiewps">Pixiewps</a> is a tool used for offline brute forcing of WPS pins, while exploiting the low or non-existing entropy of some <a href="https://docs.google.com/spreadsheets/d/1tSlbqVQ59kGn8hgmwcPTHUECQ3o9YhXR91A_p7Nnj5Y/edit?usp=sharing">wireless access points</a> also known as the <strong>pixie dust attack</strong>, discovered by <a href="https://twitter.com/Reversity/status/490978005859454978">Dominique Bongard</a> (<a href="http://archive.hack.lu/2014/Hacklu2014_offline_bruteforce_attack_on_wps.pdf">slides</a> and <a href="http://video.adm.ntnu.no/pres/549931214e18d">video</a>). The pixiewps tool (developed by <a href="https://forums.kali.org/member.php?30454-wiire">wiire</a>), was born out of the Kali forums, and the development of the tool can be tracked throughout an interesting <a href="https://forums.kali.org/showthread.php?24286-WPS-Pixie-Dust-Attack-(Offline-WPS-Attack)">forum post</a>.</p>
+<p>In the correct environment, pixiewps dramatically speeds up the WPS brute force attack time from what was taking up to 12 hours to a <a href="https://www.youtube.com/watch?v=8f6oClT7Wp4">a few seconds</a>. This new attack is mind numbing, and we are somewhat surprised that it hasn’t been discussed on a wider basis. Watch our following video closely, and see how we <strong>extract the WPA shared key of this EdiMAX wireless access point in a few seconds</strong> using updated versions of pixiewps and reaver, already packaged in Kali:</p>
+<h2 id="aircrack-ng-v12-rc2-update">Aircrack-ng v1.2 RC2 Update</h2>
+<p><a href="https://www.kali.org/tools/aircrack-ng/">Aircrack-ng</a> is the de facto penetration tool suite - essential for any wireless penetration tests or assessments. In this latest Aircrack-ng release, amongst the normal bug fixes and code improvements there has been a significant change to <strong>airmon-ng</strong>, the tool used to put wireless cards into <em>monitor mode</em>. Other new and notable features are that <strong>airtun-ng</strong> is now able to decrypt WPA as well as several new <strong>airodump-ng</strong> flags, such as <em>- -wps</em> and <em>- -uptime.</em></p>
+<p><a href="https://www.kali.org/blog/pixiewps-reaver-aircrack-ng-updates/images/airmon-ng-1.2rc2-kali-linux1.png">
+<figure>
+  <img src="https://www.kali.org/blog/pixiewps-reaver-aircrack-ng-updates/images/airmon-ng-1.2rc2-kali-linux1.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Also notice the new naming convention of the wireless virtual interfaces - <strong>wlanXmon</strong>, as opposed to <strong>monX</strong>.</p>
+<h3 id="goodbye-mon0-hello-wlan0mon">Goodbye mon0, hello wlan0mon!</h3>
+<p>For the latest few releases, the <em>aircrack-ng</em> suite had bundled with it <strong>airmon-zc,</strong> which uses an improved method of placing wireless cards into monitor mode, as well as more verbose output options. With the release of Aircrack-ng 1.2 RC2, <strong>airmon-zc</strong> has officially replaced the original <strong>aircrack-ng</strong>, as the new standard.</p>
+<h3 id="more-verbose-airmon-ng-output">More verbose airmon-ng output</h3>
+<p>When things are going right, everything is great! However when this isn’t the case, and you need to <a href="https://www.kali.org/docs/troubleshooting/troubleshooting-wireless-driver-issues/">troubleshoot wireless issues</a>, you can now use a single command <strong>airmon-ng –verbose start wlan0</strong> to gather all the relent information needed:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# airmon-ng --verbose start wlan0
+</span></span><span style="display:flex;"><span>No interfering processes found
+</span></span><span style="display:flex;"><span>No LSB modules are available.
+</span></span><span style="display:flex;"><span>Distributor ID: Kali
+</span></span><span style="display:flex;"><span>Description: Kali GNU/Linux 1.1.0
+</span></span><span style="display:flex;"><span>Release: 1.1.0
+</span></span><span style="display:flex;"><span>Codename: moto
+</span></span><span style="display:flex;"><span>Linux kali 3.18.0-kali3-amd64 #1 SMP Debian 3.18.6-1~kali2 (2015-03-02) x86_64 GNU/Linux
+</span></span><span style="display:flex;"><span>Detected VM using dmi_info
+</span></span><span style="display:flex;"><span>This appears to be a VMware Virtual Machine
+</span></span><span style="display:flex;"><span>If your system supports VT-d, it may be possible to use PCI devices
+</span></span><span style="display:flex;"><span>If your system does not support VT-d, you can only use USB wifi cards
+</span></span><span style="display:flex;"><span>K indicates driver is from 3.18.0-kali3-amd64
+</span></span><span style="display:flex;"><span>V indicates driver comes directly from the vendor, almost certainly a bad thing
+</span></span><span style="display:flex;"><span>S indicates driver comes from the staging tree, these drivers are meant for reference not actual use, BEWARE
+</span></span><span style="display:flex;"><span>? indicates we do not know where the driver comes from... report this
+</span></span><span style="display:flex;"><span>X[PHY]Interface Driver[Stack]-FirmwareRev Chipset Extended Info
+</span></span><span style="display:flex;"><span>K[phy0]wlan0 rtl8187[mac80211]-N/A Realtek Semiconductor Corp. RTL8187
+</span></span><span style="display:flex;"><span>(mac80211 monitor mode vif enabled for [phy0]wlan0 on [phy0]wlan0mon)
+</span></span><span style="display:flex;"><span>(mac80211 station mode vif disabled for [phy0]wlan0)
+</span></span><span style="display:flex;"><span>root@kali:~#
+</span></span></code></pre></div><p>You can find aircrack-ng’s full change log at the following address: <a href="https://www.aircrack-ng.org/doku.php?id=Main#changelog">aircrack-ng.org/doku.php?id=Main#changelog</a>.</p>
+<h2 id="updated-reaver-wps-attack-tool">Updated Reaver WPS attack tool</h2>
+<p>The <a href="https://www.kali.org/tools/reaver/">reaver</a> project was originally developed by Craig Heffner, and the last release was 1.4. As the project seems to have been abandoned, several forks have cropped up - one belonging to a member of the Kali forums, <a href="https://forums.kali.org/member.php?31103-t6_x">t6_x</a>, who has also integrated the pixiewps attack into a newly minted 1.5.2 release. <a href="https://github.com/t6x/reaver-wps-fork-t6x">This new</a> version implements an array of improvements on the original version, and will hopefully be activity maintained by the community.</p>
+<h2 id="the-kali-community-rocks">The Kali Community Rocks</h2>
+<p>One of the advantages of being a Kali forum moderator is that you get to witness the community grow and interact. Since the original <a href="https://forums.kali.org/showthread.php?24286-WPS-Pixie-Dust-Attack-(Offline-WPS-Attack)">pixiewps thread</a> started by <a href="https://forums.kali.org/member.php?17496-soxrok2212">soxrok2212</a>, it has received over 300 responses, bringing about the implementation of new ideas and updates to the tool. Watching this project emerge from a single forum post all the way to the release of the tool, and seeing the co-operation between the various tool developers while working to get interoperability between their tools was a real privilege.</p>
+<h2 id="stay-fresh-with-kali-linux">Stay fresh with Kali-Linux</h2>
+<p>You don’t need to do anything special to get this awesome tool chain, just keep your Kali-Linux up-to-date:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>apt-get update
+</span></span><span style="display:flex;"><span>apt-get dist-upgrade
+</span></span></code></pre></div><p>Happy penetration testing!</p>
+<h4 id="source"><a href="https://www.kali.org/blog/pixiewps-reaver-aircrack-ng-updates/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

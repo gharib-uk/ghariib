@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Tracking and Fixing an Installer Bug</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Tracking and Fixing an Installer Bug</h1>
+			<b><time>29.08.2013 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="tracking-and-fixing-an-installer-bug">Tracking and Fixing an Installer Bug</h1>
+<p><a href="https://www.kali.org/blog/tracking-fixing-installer-bugs/images/kali-installer-bug.jpg">https://www.kali.org/blog/tracking-fixing-installer-bugs/images/kali-installer-bug.jpg</a></p>
+<p>A little while back, a bug with the LVM encrypted install in Kali Linux 1.0.4 was reported in our bug tracker. This bug was high priority in our TODO as encrypted installs are an important feature in our industry so we wanted to squash this bug ASAP. This article will</p>
+<p>A little while back, a bug with the LVM encrypted install in Kali Linux 1.0.4 was <a href="https://bugs.kali.org/view.php?id=443">reported</a> in our <a href="https://www.kali.org/docs/community/submitting-issues-kali-bug-tracker/">bug tracker</a>. This bug was high priority in our TODO as encrypted installs are an important feature in our industry so we wanted to squash this bug ASAP. This article will describe the process of debugging, identifying, and fixing this bug in Kali, and ultimately in Debian as well.</p>
+<p>The bug itself was weird; installing Kali with the “LVM Encrypted” option would result in a failed boot once the installation was done:</p>
+<p><a href="https://www.kali.org/blog/tracking-fixing-installer-bugs/images/kali-lvm-boot-bug.png">
+<figure>
+  <img src="https://www.kali.org/blog/tracking-fixing-installer-bugs/images/kali-lvm-boot-bug.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>The work-around suggested in the bug report indicated that the <strong>/etc/crypttab</strong> file was empty. By manually remounting the encrypted partition, repopulating it with the required parameters, and then updating the initramfs, the machine would boot successfully into the encrypted partition again. Most definately annoying and far from practical.</p>
+<p>Now with the problem well defined, the solution seemed simple. Something was probably wrong with the way <strong>/etc/crypttab</strong> gets updated during the installation process. Our next step was to investigate the scripts that are responsible for this update and see if there are any bugs in the file update process. But how would you locate the exact script responsible for this update and how could we figure out what package it lives in?</p>
+<p>To our rescue comes <a href="https://wiki.debian.org/DebianInstaller/CheckOut">DebianInstaller</a>. Using this set of scripts, we checked out the whole DebianInstaller source tree. This would allow us to search for the scripts that affect <strong>/etc/crypttab</strong> with much greater ease:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kalima:~# svn co svn://anonscm.debian.org/svn/d-i/trunk debian-installer
+</span></span><span style="display:flex;"><span>root@kalima:~# cd debian-installer
+</span></span><span style="display:flex;"><span>root@kalima:~/debian-installer# scripts/git-setup
+</span></span><span style="display:flex;"><span>root@kalima:~/debian-installer# mr -p checkout
+</span></span></code></pre></div><p>Once all the repositories had been checked out, we could simply grep for any files that reference the <strong>/etc/crypttab</strong> file as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kalima:~/debian-installer# grep -r &#39;/etc/crypttab&#39; * |grep -v ^manual
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>packages/partman-crypto/finish.d/crypto_config:# dm-crypt: creates /etc/crypttab entries
+</span></span><span style="display:flex;"><span>packages/partman-crypto/finish.d/crypto_config: echo &#34;$target $source $keyfile $opts&#34; &gt;&gt; /target/etc/crypttab
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>root@kalima:~/debian-installer#
+</span></span></code></pre></div><p>We see above that it’s the “<strong>crypto_config</strong>” script that writes to <strong>/etc/crypttab</strong>, which is located in the <strong>partman-crypto</strong> package.</p>
+<p>Ideally, we would like to debug this script and see where the problem is, but how would you do this in a live installation media? The answer is relatively simple - we just had to pop open a command prompt during the installation process. The trick is to invoke our debugging shell (by pressing CTRL+ALT+F2) during the right stage of the installation - in our case we needed to interrupt the installer before the <strong>crypto_config</strong> script was run but after the <strong>partman-crypto</strong> udeb was installed, so the beginning of the partitioning process would be a good spot. We proceeded to edit the <strong>/lib/partman/finish.d/55_crypto_config</strong> and added “<strong>set -x</strong>” at the start of the script:</p>
+<p><a href="https://www.kali.org/blog/tracking-fixing-installer-bugs/images/partman-script-debug.png">
+<figure>
+  <img src="https://www.kali.org/blog/tracking-fixing-installer-bugs/images/partman-script-debug.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>We then let the installer do its thing and just before the installation completed, we took a peek at <strong>/var/log/syslog</strong> in another shell. To our surprise, we saw that the <strong>/etc/crypttab</strong> file *was* being updated, contrary to our initial beliefs, as can be seen in the syslog of the installation. <strong>WTH</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plain" data-lang="plain"><span style="display:flex;"><span>Aug 28 21:57:42 main-menu[954]: (process:9810): crypttab_add_entry
+</span></span><span style="display:flex;"><span>Aug 28 21:57:42 main-menu[954]: (process:9810): /dev/sda5
+</span></span><span style="display:flex;"><span>Aug 28 21:57:42 main-menu[954]: (process:9810): /var/lib/partman/devices/=dev=sda/256901120-160041009151
+</span></span><span style="display:flex;"><span>Aug 28 21:57:42 main-menu[954]: (process:9810): /dev/mapper/sda5_crypt
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>Aug 28 21:57:42 main-menu[954]: (process:9810): echo
+</span></span><span style="display:flex;"><span>Aug 28 21:57:42 main-menu[954]: (process:9810): sda5_crypt UUID=6250dbca-648b-4848-9132-cfa900ab5874 none luks
+</span></span></code></pre></div><p>This is where we started scratching our heads. If the problem was not in the writing of this file (as we expected), then why was there an empty <strong>/etc/crypttab</strong> file after the installation? Perhaps the problem was not in <strong>partman-crypto</strong> after all, but in how <strong>live-build</strong> generates our ISOs? We tested this theory of ours by using a Kali mini installation ISO (not built via live-build) and noticed that the LVM encrypted installs were working fine when using that installation media.</p>
+<p>We know that the live-installer uses <em>tar</em> to copy the whole live filesystem into a mounted <strong>/target</strong> directory and it assumes that the filesystems are empty, which is mostly true since they were just created by partman. This means that any pre-existing file can be overwritten if they are also in the live image, which was happening to <strong>/etc/crypttab</strong> in this case.</p>
+<p>Further examination revealed that the problem was in <strong>live-installer</strong>, whereby it overwrites the generated <strong>/etc/crypttab</strong>. The live-installer already has some provisions to not overwrite <strong>/etc/fstab</strong>, so it’s just a matter of generalizing that rule and including the <strong>/etc/crypttab</strong> file as well:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>$ diff --git a/debian/live-installer.postinst b/debian/live-installer.postinst
+</span></span><span style="display:flex;"><span>index 9a39d8d..bc40b84 100644 (file)
+</span></span><span style="display:flex;"><span>--- a/debian/live-installer.postinst
+</span></span><span style="display:flex;"><span>+++ b/debian/live-installer.postinst
+</span></span><span style="display:flex;"><span>@@ -8,6 +8,8 @@ db_capb backup
+</span></span><span style="display:flex;"><span># Architecture and OS detection
+</span></span><span style="display:flex;"><span>ARCH=`udpkg --print-architecture`
+</span></span><span style="display:flex;"><span>OS=`udpkg --print-os`
+</span></span><span style="display:flex;"><span>+# Files that must not be overwritten by copy of live system
+</span></span><span style="display:flex;"><span>+FILES_TO_PRESERVE=&#34;/etc/fstab /etc/crypttab&#34;
+</span></span><span style="display:flex;"><span>NEWLINE=&#34;
+</span></span><span style="display:flex;"><span>&#34;
+</span></span><span style="display:flex;"><span>@@ -34,11 +36,12 @@ install_live_system () {
+</span></span><span style="display:flex;"><span># symlinks there.
+</span></span><span style="display:flex;"><span>rmdir /target/var/lock /target/var/run 2&gt;/dev/null || true
+</span></span><span style="display:flex;"><span>- # Backup pre-existing /etc/fstab as it will be overwritten by the
+</span></span><span style="display:flex;"><span>- # copy of the live system
+</span></span><span style="display:flex;"><span>- if [ -e /target/etc/fstab ] &amp;&amp; [ ! -e /target/etc/fstab.live-installer ]; then
+</span></span><span style="display:flex;"><span>- mv /target/etc/fstab /target/etc/fstab.live-installer
+</span></span><span style="display:flex;"><span>- fi
+</span></span><span style="display:flex;"><span>+ # Backup files that should not be overwritten by the copy
+</span></span><span style="display:flex;"><span>+ for f in $FILES_TO_PRESERVE; do
+</span></span><span style="display:flex;"><span>+ if [ -e /target$f ] &amp;&amp; [ ! -e /target/${f}.live-installer ]; then
+</span></span><span style="display:flex;"><span>+ mv /target$f /target${f}.live-installer
+</span></span><span style="display:flex;"><span>+ fi
+</span></span><span style="display:flex;"><span>+ done
+</span></span><span style="display:flex;"><span>for place in $PLACES; do
+</span></span><span style="display:flex;"><span>[ ! -e $place ] &amp;&amp; continue
+</span></span><span style="display:flex;"><span>@@ -83,10 +86,12 @@ install_live_system () {
+</span></span><span style="display:flex;"><span>eval ${SUPPORT}_teardown
+</span></span><span style="display:flex;"><span>done
+</span></span><span style="display:flex;"><span>- # Restore the fstab file created by d-i
+</span></span><span style="display:flex;"><span>- if [ -e /target/etc/fstab.live-installer ]; then
+</span></span><span style="display:flex;"><span>- mv /target/etc/fstab.live-installer /target/etc/fstab
+</span></span><span style="display:flex;"><span>- fi
+</span></span><span style="display:flex;"><span>+ # Restore important configuration files
+</span></span><span style="display:flex;"><span>+ for f in $FILES_TO_PRESERVE; do
+</span></span><span style="display:flex;"><span>+ if [ -e /target${f}.live-installer ]; then
+</span></span><span style="display:flex;"><span>+ mv /target${f}.live-installer /target$f
+</span></span><span style="display:flex;"><span>+ fi
+</span></span><span style="display:flex;"><span>+ done
+</span></span><span style="display:flex;"><span>if [ ${PLACE_FOUND} -eq 0 ]; then
+</span></span><span style="display:flex;"><span>error &#34;Could not find any live images&#34;
+</span></span></code></pre></div><p>The above patch fixed the issue for us, allowing encrypted LVM installs to complete and boot successfully. As with any Debian bugs we encounter, we <a href="https://salsa.debian.org/installer-team/live-installer/-/commit/17678631e40f9fe31791bf90394fa81d87cce615">send patches back to Debian</a> to improve the distribution we build upon. A fix for this installer bug will come out in our next point release (<a href="https://bugs.kali.org/changelog_page.php">1.0.5</a>) next week. People generating their own ISO images though <strong>live-build</strong> will automatically receive the fixed package.</p>
+<p><a href="https://www.kali.org/blog/tracking-fixing-installer-bugs/images/installer-bug-fixed.png">
+<figure>
+  <img src="https://www.kali.org/blog/tracking-fixing-installer-bugs/images/installer-bug-fixed.png" alt="" />
+</figure>
+
+
+</a></p>
+<h4 id="source"><a href="https://www.kali.org/blog/tracking-fixing-installer-bugs/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

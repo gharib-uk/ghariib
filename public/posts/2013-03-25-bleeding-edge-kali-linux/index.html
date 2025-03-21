@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Bleeding Edge Kali Linux</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Bleeding Edge Kali Linux</h1>
+			<b><time>25.03.2013 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="bleeding-edge-kali-linux">Bleeding Edge Kali Linux</h1>
+<p><a href="https://www.kali.org/blog/bleeding-edge-kali-repositories/images/kali-bleeding-edge-repo.jpg">https://www.kali.org/blog/bleeding-edge-kali-repositories/images/kali-bleeding-edge-repo.jpg</a></p>
+<p>We’ve been busy this week, still behind on our emails, but going strong with Kali development. We packaged some new tools which were pointed out by the community as missing, such as inguma, arachni, bully, lbd, uniscan, automater, as well as started to build a framework of libraries and patches</p>
+<p>We’ve been busy this week, still behind on our emails, but going strong with Kali development. We packaged some <a href="https://bugs.kali.org/">new tools</a> which were pointed out by the community as missing, such as <strong>inguma</strong>, <strong>arachni</strong>, <strong>bully</strong>, <strong>lbd</strong>, <strong>uniscan</strong>, <strong>automater</strong>, as well as started to build a framework of libraries and patches for bluetooth sniffing and ubertooth tools. We also fixed the Kali Menu to be editable again.</p>
+<p>With over 300 tools in our repository, it’s close to impossible for us to keep *every* tool updated to the latest git version, all the time. A good example of this happed a few days ago, when we updated the <strong>SET</strong> package. Two days after we updated the package, we got a “tool upgrade” request for SET in our bug tracker, as our package was already outdated. Seems a bit extreme? Maybe not, <strong>consider the following conundrum</strong>:</p>
+<p>You have an audit tommorrow, and you’re getting your tools ready. You boot Kali Linux up, run an “<strong>apt-get update &amp;&amp; apt-get upgrade</strong>” to make sure you’re running the latest stable versions of <em>$your_favorate_tool</em>. After the update, you notice that <em>$your_favorate_tool</em> has a package that was updated last week in our repositories. However, in the past week, some pretty awesome updates were added to <em>$your_favorate_tool</em> upstream, and you really need those new features for the upcoming assessment. <strong>What do you do ?</strong></p>
+<h3 id="worst-thing-to-do">Worst Thing To Do.</h3>
+<p>Assuming you’re not using Kali as a “Throw Away Instance”, the worst thing to do in this case is to overwrite packaged files. For example, <strong>the following commands to update a tool that gets updated frequently is a big no-no</strong> and will ultimately break your install in the future:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># dont update tools like this!</span>
+</span></span><span style="display:flex;"><span>cd /usr/share/
+</span></span><span style="display:flex;"><span>rm -rf $your_favorate_tool
+</span></span><span style="display:flex;"><span>git clone $your_favorate_tool
+</span></span></code></pre></div><h3 id="ok-to-dobut-meh">OK To Do…but, Meh.</h3>
+<p>Since you <strong>shouldn’t be messing with packaged files</strong>, the most common option is to svn or git checkout <em>$your_favorate_tool</em> in a temporary directory and use it from there as shown below. In most cases, all the dependencies needed for the updated tool will usually already exist in Kali. Alternatively, you could opt to <a href="https://www.kali.org/docs/development/rebuilding-a-package-from-source/">rebuild the source package</a>, which includes your updates and changes:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>cd ~
+</span></span><span style="display:flex;"><span>mkdir work
+</span></span><span style="display:flex;"><span>cd work
+</span></span><span style="display:flex;"><span>git clone $your_favorate_tool
+</span></span><span style="display:flex;"><span>cd $your_favorate_tool
+</span></span><span style="display:flex;"><span>./your_favorate_tool
+</span></span></code></pre></div><h3 id="our-solution">Our Solution.</h3>
+<p>We said <strong>*close*</strong> to impossible, right? Seeing this clash between the update frequency of some tools and the need (of some people, not everyone) to “always have the latest revision of <em>$your_favorate_tool</em>”, we came up with an interesting solution. We’ve set up an opt-in “<strong>Kali bleeding edge</strong>” repository which contains daily builds for several useful and frequently updated tools. These repositories are still highly experimental (meaning we expect things to break from time to time until we get more feedback from the community). If you want to try this feature out, you are welcome to add the bleeding edge repository as shown below however, please remember that term “<strong>bleeding edge</strong>”. There’s a reason for the blood:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>echo deb http://http.kali.org/kali kali-bleeding-edge main contrib non-free &gt;&gt; /etc/apt/sources.list
+</span></span><span style="display:flex;"><span>apt-get update
+</span></span><span style="display:flex;"><span>apt-get upgrade
+</span></span></code></pre></div><p>We currently have a handful of tools in this repository, which include <strong>se-toolkit</strong> (set), <strong>aircrack-ng</strong>, <strong>dnsrecon</strong>, <strong>sqlmap</strong>, <strong>rfidiot</strong>, <strong>beef-xss</strong>, <strong>libnfc</strong>, <strong>libfreefare</strong>, <strong>mfoc</strong> and <strong>mfcuk</strong>. We expect this list to grow with time.</p>
+<h4 id="source"><a href="https://www.kali.org/blog/bleeding-edge-kali-repositories/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

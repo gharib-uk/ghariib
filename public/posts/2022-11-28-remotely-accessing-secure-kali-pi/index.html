@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Remotely Accessing Secure Kali Pi</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Remotely Accessing Secure Kali Pi</h1>
+			<b><time>28.11.2022 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="remotely-accessing-secure-kali-pi">Remotely Accessing Secure Kali Pi</h1>
+<p><a href="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/images/remotely-accessing-secure-kali-pi.jpg">https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/images/remotely-accessing-secure-kali-pi.jpg</a></p>
+<p>In Secure Kali Pi (2022), the first blog post in the Raspberry Pi series, we set up a Raspberry Pi 4 with full disk encryption. We mentioned that we can leave it somewhere as a drop box. This brought up the question, “If it is not on my local network</p>
+<p>In <a href="https://www.kali.org/blog/secure-kali-raspberry-pi/">Secure Kali Pi (2022)</a>, the first blog post in the Raspberry Pi series, we set up a <a href="https://www.kali.org/docs/arm/raspberry-pi-4/">Raspberry Pi 4</a> with full disk encryption. We mentioned that we can leave it somewhere as a drop box. This brought up the question, “<strong>If it is not on my local network how do I connect to it to unlock it?</strong>” So we will now answer this by showing a few different ways to connect to our secure Kali Pi drop box. This includes:</p>
+<ul>
+<li><a href="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/#wireless-80211">Wireless 802.11</a>:
+<ul>
+<li>As a <a href="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/#wi-fi---client-mode">client on an existing network(s)</a> <em>(only if we know any details ahead of time to pre-configure)</em></li>
+<li>Create an <a href="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/#wi-fi---access-point">access point</a>, to become a new network <em>(that we can access if we are in physical distance to the device)</em></li>
+</ul>
+</li>
+<li><a href="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/#wired-connection">Wired ethernet</a>:
+<ul>
+<li>Using static network settings <em>(if we know the details ahead of time to pre-configure it)</em></li>
+<li>DHCP to automatically discover network values <em>(which creates noise)</em></li>
+</ul>
+</li>
+</ul>
+<p>After getting internet access, we will use a <strong><a href="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/#vpn-connection">Virtual Private Network</a></strong> to remotely connect back to a server of our choosing, which we can also join from anywhere online, thus getting around the requirements of having to port forward on any firewalls.</p>
+<hr>
+<h2 id="ingredients">Ingredients</h2>
+<ul>
+<li>Drop box - Raspberry Pi 4
+-   <em>Pre-configured as of our <a href="https://www.kali.org/blog/secure-kali-raspberry-pi/">Secure Kali Pi</a> blog post</em></li>
+<li>Wi-Fi - We will be using the on-board wireless adapter (to make the device as compact as possible for our drop box)
+-   However if the performance is not sufficient for your needs, an external compatible wireless adapter may give greater range</li>
+<li>External server - A pre-created &amp; harden OpenVPN service
+-   <em>Creating this is out-of-scope for this blog post</em></li>
+</ul>
+<hr>
+<h2 id="pre-config-wireless-80211">Pre-Config Wireless 802.11</h2>
+<h3 id="overview">Overview</h3>
+<p>While wired networking in the initramfs does not require a lot of extras, wireless has a few more moving parts. To enable wireless support, we need to find:</p>
+<ul>
+<li>The kernel <a href="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/#wi-fi-modules">Wi-Fi <strong>modules</strong></a> that need to be in the initramfs <em>(Depends on hardware)</em></li>
+<li>The <a href="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/#wi-fi-firmware">Wi-Fi <strong>firmware</strong></a> files that need to be in the initramfs <em>(Depends on hardware)</em></li>
+<li>The <a href="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/#interface-name">Wireless <strong>interface name</strong></a> <em>(Kali defaults to: <code>wlan0</code>)</em></li>
+<li><a href="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/#binaries">Additional packages</a> to increase functionally. Either:
+<ul>
+<li><a href="https://w1.fi/wpa_supplicant/">wpa_supplicant</a> to connect as a client to a wireless network</li>
+<li><a href="https://w1.fi/hostapd/">hostapd</a> to create an access point for a new wireless network</li>
+</ul>
+</li>
+</ul>
+<p>Additionally, knowing the <strong><a href="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/#change-the-hostname">hostname</a></strong> of your Raspberry Pi can help find it, as well as blend in, in your target environment.</p>
+<hr>
+<h3 id="interface-name">Interface Name</h3>
+<p>First, we need to know what our wireless interface is called.</p>
+<p>In Kali we <strong>disable</strong> predictable interface names by default, so the first wireless device will be <code>wlan0</code>.</p>
+<p>As long as there is no other hardware plugged into the Raspberry Pi at this stage, it should stand out:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ ip a
+</span></span><span style="display:flex;"><span>: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+</span></span><span style="display:flex;"><span>link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+</span></span><span style="display:flex;"><span>inet 127.0.0.1/8 scope host lo
+</span></span><span style="display:flex;"><span>valid_lft forever preferred_lft forever
+</span></span><span style="display:flex;"><span>inet6 ::1/128 scope host
+</span></span><span style="display:flex;"><span>valid_lft forever preferred_lft forever
+</span></span><span style="display:flex;"><span>2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000
+</span></span><span style="display:flex;"><span>link/ether dc:a6:32:b0:07:ca brd ff:ff:ff:ff:ff:ff
+</span></span><span style="display:flex;"><span>inet 192.168.42.19/24 brd 192.168.42.255 scope global dynamic eth0
+</span></span><span style="display:flex;"><span>valid_lft 63997sec preferred_lft 63997sec
+</span></span><span style="display:flex;"><span>inet6 fe80::dea6:32ff:feb0:7ca/64 scope link
+</span></span><span style="display:flex;"><span>valid_lft forever preferred_lft forever
+</span></span><span style="display:flex;"><span>3: wlan0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc pfifo_fast state DOWN group default qlen 1000
+</span></span><span style="display:flex;"><span>link/ether 2a:54:d3:ee:62:95 brd ff:ff:ff:ff:ff:ff permaddr dc:a6:32:b0:07:cb
+</span></span></code></pre></div><hr>
+<h3 id="wi-fi-modules">Wi-Fi Modules</h3>
+<p>We are now going to discover what modules are needed in order for our wireless device to come up.</p>
+<p>On most ARM systems, the wireless device is typically connected via SDIO, and unfortunately we do not have a command like <a href="https://manpages.debian.org/testing/pciutils/lspci.8.en.html">lspci</a> to list any devices on the SDIO bus, but we can use <a href="https://manpages.debian.org/testing/util-linux/dmesg.1.en.html">dmesg</a> and <a href="https://manpages.debian.org/testing/grep/grep.1.en.html">grep</a> to look:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ dmesg | grep wlan
+</span></span><span style="display:flex;"><span>kali@kalipi:~$
+</span></span></code></pre></div><p>Since we were returned directly to the prompt, this means that “wlan” is not found in the dmesg output. As we mention in the Kali <a href="https://www.kali.org/docs/arm/raspberry-pi-4/">Raspberry Pi 4 documentation</a> we use the <a href="https://github.com/seemoo-lab/nexmon">nexmon</a> firmware for the Raspberry Pi devices, so lets try searching for that instead:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ dmesg | grep nexmon
+</span></span><span style="display:flex;"><span>[ 5.070542] brcmfmac: brcmf_c_preinit_dcmds: Firmware: BCM4345/6 wl0: Oct 3 2021 18:14:30 version 7.45.206 (nexmon.org: 2.2.2-343-ge3c8-dirty-5) FWID 01-88ee44ea
+</span></span></code></pre></div><p>As we can see in the output above, <code>brcmfmac</code> is the driver that is giving us the message. There is a handy command that comes from the <a href="https://pkg.kali.org/pkg/kmod">kmod</a> package, called <a href="https://manpages.debian.org/testing/kmod/modinfo.8.en.html">modinfo</a> which will give us information about any module that the kernel has.</p>
+<hr>
+<p>Now we know that the wireless card on the Raspberry Pi uses the <code>brcmfmac</code> driver. So lets run <code>modinfo brcmfmac</code> and see what information it gives us:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ modinfo brcmfmac
+</span></span><span style="display:flex;"><span>filename: /lib/modules/5.15.44-Re4son-v8l+/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko
+</span></span><span style="display:flex;"><span>license: Dual BSD/GPL
+</span></span><span style="display:flex;"><span>description: Broadcom 802.11 wireless LAN fullmac driver.
+</span></span><span style="display:flex;"><span>author: Broadcom Corporation
+</span></span><span style="display:flex;"><span>firmware: brcm/brcmfmac*-sdio.*.bin
+</span></span><span style="display:flex;"><span>firmware: brcm/brcmfmac*-sdio.*.txt
+</span></span><span style="display:flex;"><span>[...]
+</span></span><span style="display:flex;"><span>srcversion: 913634DB95F858E921F71C1
+</span></span><span style="display:flex;"><span>[...]
+</span></span><span style="display:flex;"><span>alias: sdio:c*v02D0dA887*
+</span></span><span style="display:flex;"><span>depends: brcmutil,cfg80211
+</span></span><span style="display:flex;"><span>intree: Y
+</span></span><span style="display:flex;"><span>name: brcmfmac
+</span></span><span style="display:flex;"><span>vermagic: 5.15.44-Re4son-v8l+ SMP preempt mod_unload modversions aarch64
+</span></span><span style="display:flex;"><span>parm: txglomsz:Maximum tx packet chain size [SDIO] (int)
+</span></span><span style="display:flex;"><span>parm: debug:Level of debug output (int)
+</span></span><span style="display:flex;"><span>parm: p2pon:Enable legacy p2p management functionality (int)
+</span></span><span style="display:flex;"><span>parm: feature_disable:Disable features (int)
+</span></span><span style="display:flex;"><span>parm: alternative_fw_path:Alternative firmware path (string)
+</span></span><span style="display:flex;"><span>parm: fcmode:Mode of firmware signalled flow control (int)
+</span></span><span style="display:flex;"><span>parm: roamoff:Do not use internal roaming engine (int)
+</span></span><span style="display:flex;"><span>parm: iapp:Enable partial support for the obsoleted Inter-Access Point Protocol (int)
+</span></span><span style="display:flex;"><span>parm: ignore_probe_fail:always succeed probe for debugging (int)
+</span></span></code></pre></div><p>As you can see, there is quite a lot of information given there. A quick overview of it:</p>
+<ul>
+<li>Where the module file is (<code>filename</code>)</li>
+<li>The license</li>
+<li>The description</li>
+<li>The author</li>
+<li>The firmware files it can use</li>
+<li>Aliases used to figure out if this is the module to use when a device is found</li>
+<li>Any module <strong>dependencies</strong> (<code>depends</code>)</li>
+<li>Whether the module comes from in the kernel tree</li>
+<li>The name of the module</li>
+<li>The version magic</li>
+<li>Any parameters (<code>params</code>)</li>
+</ul>
+<p>For what we need, the <strong>dependencies section is the key</strong>.</p>
+<hr>
+<p>When we read the man page for <a href="https://manpages.debian.org/testing/kmod/modinfo.8.en.html">modinfo</a>, we see that it offers the <code>-F</code> flag to limit the output to certain fields. Since we currently care about the dependencies, let’s re-run <code>modinfo</code> passing <code>-F depends</code> since that is what we want to know.</p>
+<p>To make it easier to understand the output, we will not group multiple modules together:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ modinfo -F depends brcmfmac
+</span></span><span style="display:flex;"><span>brcmutil,cfg80211
+</span></span></code></pre></div><p>So in our case, the <code>brcmfmac</code> module depends on both <code>brcmutil</code>, and <code>cfg80211</code>. So we run <code>modinfo</code> on both of those as well to see their dependencies, if any:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ modinfo -F depends brcmutil
+</span></span><span style="display:flex;"><span>kali@kalipi:~$
+</span></span></code></pre></div><p>Notice that the line is empty. This means that brcmutil does not have any additional module dependencies.</p>
+<p>Now we check <code>cfg80211</code>, the other dependency that was listed:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ modinfo -F depends cfg80211
+</span></span><span style="display:flex;"><span>rfkill
+</span></span></code></pre></div><p>Here we see that cfg80211’s <strong>depends</strong> has an additional dependency on the <code>rfkill</code> module. So we run <code>modinfo</code> against it as well:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ modinfo -F depends rfkill
+</span></span><span style="display:flex;"><span>kali@kalipi:~$
+</span></span></code></pre></div><p>Like <code>brcmutil</code>, <code>rfkill</code> does not have any output, so there are no dependencies. We now have our list of modules that we need to add to the initramfs:</p>
+<ul>
+<li><code>brcmfmac</code></li>
+<li><code>brcmutil</code></li>
+<li><code>cfg80211</code></li>
+<li><code>rfkill</code></li>
+</ul>
+<hr>
+<h3 id="wi-fi-firmware">Wi-Fi Firmware</h3>
+<p>We now need the firmware for the Wi-Fi card. As before, we use the <code>modinfo</code> command, but this time we will search for <code>firmware</code> to see what firmware the module can use:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ modinfo brcmfmac | grep firmware
+</span></span><span style="display:flex;"><span>firmware: brcm/brcmfmac*-sdio.*.bin
+</span></span><span style="display:flex;"><span>firmware: brcm/brcmfmac*-sdio.*.txt
+</span></span><span style="display:flex;"><span>[...]
+</span></span></code></pre></div><p>On Linux systems, the <a href="https://docs.kernel.org/driver-api/firmware/fw_search_path.html">default firmware search path</a> is <code>/lib/firmware/</code> so the full path to the above would be:</p>
+<ul>
+<li><code>/lib/firmware/brcmfmac*-sdio.*.bin</code></li>
+<li><code>/lib/firmware/brcmfmac*-sdio.*.txt</code></li>
+</ul>
+<p>Notice the wildcards (<code>*</code>) in the firmware names. This means that it will match any of those files, so we will simply include all of the firmware that is in <code>/lib/firmware/brcm</code>, and this would allow for using wireless on not just our current Raspberry Pi 4, but if we were to plug our <a href="https://www.kali.org/blog/secure-kali-raspberry-pi/">secure Kali Pi</a> SD Card into a <a href="https://www.kali.org/docs/arm/raspberry-pi-3/">Raspberry Pi 3</a>, or maybe even the <a href="https://www.kali.org/docs/arm/raspberry-pi-zero-2-w/">Raspberry Pi Zero 2 W</a>, we would be able to get wireless on them as well.</p>
+<hr>
+<h3 id="binaries">Binaries</h3>
+<p>Lastly we need the the binaries that are used for connecting to wireless networks on Linux.</p>
+<p>A typical Kali installation has <code>NetworkManager</code> installed, and that handles wireless networks for us in a graphical desktop environment. But since we are doing this long before the full Kali system is available we need the <code>wpa_supplicant</code> binary, from the <a href="https://packages.debian.org/testing/wpasupplicant">wpasupplicant</a> package.</p>
+<p>Additionally, we will want to check we are online in our script using the <code>wpa_cli</code> command, which will include that as well.</p>
+<hr>
+<h2 id="change-the-hostname">Change The Hostname</h2>
+<p>By default, Kali images for our Raspberry Pi images are set to the <a href="https://man7.org/linux/man-pages/man7/hostname.7.html">hostname</a> of <code>kali-raspberry-pi</code>. Keeping in mind that some environments have hostname policies, you might want to change the hostname to blend in with the target network better.</p>
+<p>To change your hostname, you will want to run the command <a href="https://manpages.debian.org/testing/systemd/hostnamectl.1.en.html">hostnamectl</a> from the <a href="https://packages.debian.org/testing/systemd">systemd</a> package. Additionally, we will want to edit the <code>/etc/hosts</code> file, which the system uses for local name resolution.</p>
+<p>As an example, if we were to be deploying in a Windows heavy environment, we might want to use a host name similar to what a Windows machine might use:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kali@kalipi:~$ sudo hostnamectl set-hostname DESKTOP-UL8M7HT
+</span></span><span style="display:flex;"><span>kali@kalipi:~$
+</span></span><span style="display:flex;"><span>kali@kalipi:~$ hostnamectl
+</span></span><span style="display:flex;"><span>Static hostname: DESKTOP-UL8M7HT
+</span></span><span style="display:flex;"><span>Icon name: computer
+</span></span><span style="display:flex;"><span>Machine ID: fb22604534b6499887f59dd16c7dfb7f
+</span></span><span style="display:flex;"><span>Boot ID: faa8f7e4d50e495faf34ab43a2cf86ba
+</span></span><span style="display:flex;"><span>Operating System: Kali GNU/Linux Rolling
+</span></span><span style="display:flex;"><span>Kernel: Linux 5.15.44-Re4son-v8+
+</span></span><span style="display:flex;"><span>Architecture: arm64
+</span></span></code></pre></div><p>And then edit the <code>/etc/hosts</code> file as well, changing the line that has <code>kali-raspberry-pi</code> in it to be <code>DESKTOP-UL8M7HT</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>127.0.1.1 DESKTOP-UL8M7HT
+</span></span><span style="display:flex;"><span>127.0.0.1 localhost
+</span></span><span style="display:flex;"><span>::1 localhost ip6-localhost ip6-loopback
+</span></span><span style="display:flex;"><span>fe00::0 ip6-localnet
+</span></span><span style="display:flex;"><span>ff00::0 ip6-mcastprefix
+</span></span><span style="display:flex;"><span>ff02::1 ip6-allnodes
+</span></span><span style="display:flex;"><span>ff02::2 ip6-allrouters
+</span></span></code></pre></div><p>You will need to <strong>reboot the system</strong> for the changes to take effect.</p>
+<hr>
+<h2 id="wi-fi-connection">Wi-Fi Connection</h2>
+<p>Like we did with <a href="https://www.kali.org/blog/secure-kali-raspberry-pi/">secure Kali Pi</a>, we need to make changes to our system, using the information we gathered above, to boot the system, handle the Wi-Fi network, making the device accessible.</p>
+<h3 id="client-mode">Client Mode</h3>
+<p>We already know what the wireless network(s) credentials are, and now we are going to join them.</p>
+<hr>
+<p>First up is the initramfs <strong>hook for the Wi-Fi firmware</strong>.</p>
+<p>We will create the file <code>/etc/initramfs-tools/hooks/zz-brcm</code> and add the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>set -e
+</span></span><span style="display:flex;"><span>PREREQ<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>prereqs<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>PREREQ<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>1<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> in
+</span></span><span style="display:flex;"><span>prereqs<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>prereqs
+</span></span><span style="display:flex;"><span>exit <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>;;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">esac</span>
+</span></span><span style="display:flex;"><span>. /usr/share/initramfs-tools/hook-functions
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Copying firmware files for brcm to initramfs&#34;</span>
+</span></span><span style="display:flex;"><span>cp -r /lib/firmware/brcm <span style="color:#e6db74">${</span>DESTDIR<span style="color:#e6db74">}</span>/lib/firmware/
+</span></span></code></pre></div><hr>
+<p>Next, we will do the <strong>hook for the modules</strong> and <strong><code>wpa_supplicant</code> files</strong> we need. We will use <code>/etc/initramfs-tools/hooks/enable-wireless</code> which contains:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>set -e
+</span></span><span style="display:flex;"><span>PREREQ<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>prereqs<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>PREREQ<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>1<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> in
+</span></span><span style="display:flex;"><span>prereqs<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>prereqs
+</span></span><span style="display:flex;"><span>exit <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>;;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">esac</span>
+</span></span><span style="display:flex;"><span>. /usr/share/initramfs-tools/hook-functions
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Add Wi-Fi drivers</span>
+</span></span><span style="display:flex;"><span>WIFI_DRIVERS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;brcmfmac brcmutil cfg80211 rfkill&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> x in <span style="color:#e6db74">${</span>WIFI_DRIVERS<span style="color:#e6db74">}</span>; <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>manual_add_modules <span style="color:#e6db74">${</span>x<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span>copy_exec /sbin/wpa_supplicant
+</span></span><span style="display:flex;"><span>copy_exec /sbin/wpa_cli
+</span></span><span style="display:flex;"><span>copy_file config /etc/initramfs-tools/wpa_supplicant.conf /etc/wpa_supplicant.conf
+</span></span></code></pre></div><hr>
+<p>So now that we have our hooks that copy the Wi-Fi firmware, modules, and wpa_suppliant files, we need to write <strong>a script to use them in the initramfs</strong>.</p>
+<p>One important thing to note about scripts in an initramfs, is that there is no guarantee on the order, so we create it with the name <code>a_enable_wireless</code> so that alphabetically it should be the first script that gets run.</p>
+<p>The file <code>/etc/initramfs-tools/scripts/init-premount/a_enable_wireless</code> looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>set -e
+</span></span><span style="display:flex;"><span>PREREQ<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>prereqs<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>PREREQ<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>1<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> in
+</span></span><span style="display:flex;"><span>prereqs<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>prereqs
+</span></span><span style="display:flex;"><span>exit <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>;;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">esac</span>
+</span></span><span style="display:flex;"><span>. /scripts/functions
+</span></span><span style="display:flex;"><span>WIFI_INTERFACE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;wlan0&#34;</span>
+</span></span><span style="display:flex;"><span>alias WPACLI<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/sbin/wpa_cli -p/tmp/wpa_supplicant -i</span><span style="color:#e6db74">${</span>WIFI_INTERFACE<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>log_begin_msg <span style="color:#e6db74">&#34;Sleeping for 5 seconds to allow WLAN interface to become ready&#34;</span>
+</span></span><span style="display:flex;"><span>sleep <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>log_end_msg
+</span></span><span style="display:flex;"><span>log_begin_msg <span style="color:#e6db74">&#34;Starting WLAN connection&#34;</span>
+</span></span><span style="display:flex;"><span>/sbin/wpa_supplicant -i<span style="color:#e6db74">${</span>WIFI_INTERFACE<span style="color:#e6db74">}</span> -c/etc/wpa_supplicant.conf -P/run/initram-wpa_supplicant.pid -B -f /tmp/wpa_supplicant.log
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Wait for AUTH_LIMIT seconds, then check the status</span>
+</span></span><span style="display:flex;"><span>AUTH_LIMIT<span style="color:#f92672">=</span><span style="color:#ae81ff">60</span>
+</span></span><span style="display:flex;"><span>echo -n <span style="color:#e6db74">&#34;Waiting for connection (max </span><span style="color:#e6db74">${</span>AUTH_LIMIT<span style="color:#e6db74">}</span><span style="color:#e6db74"> seconds)&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> <span style="color:#f92672">[</span> $AUTH_LIMIT -ge <span style="color:#ae81ff">0</span> -a <span style="color:#66d9ef">$(</span>WPACLI status | grep wpa_state<span style="color:#66d9ef">)</span> !<span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;wpa_state=COMPLETED&#34;</span> <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>sleep <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>echo -n <span style="color:#e6db74">&#34;.&#34;</span>
+</span></span><span style="display:flex;"><span>AUTH_LIMIT<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>expr $AUTH_LIMIT - 1<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#66d9ef">$(</span>WPACLI status | grep wpa_state<span style="color:#66d9ef">)</span> !<span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;wpa_state=COMPLETED&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>ONLINE<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>log_failure_msg <span style="color:#e6db74">&#34;WLAN offline after timeout&#34;</span>
+</span></span><span style="display:flex;"><span>echo
+</span></span><span style="display:flex;"><span>panic
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>ONLINE<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>log_success_msg <span style="color:#e6db74">&#34;WLAN online&#34;</span>
+</span></span><span style="display:flex;"><span>echo
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>configure_networking
+</span></span></code></pre></div><hr>
+<p>Additionally, we need to <strong>kill the networking once we are booted</strong>, so that the actual system can use the device and connect properly.</p>
+<p>This script <code>/etc/initramfs-tools/scripts/local-bottom/kill_wireless</code> is made up with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>set -e
+</span></span><span style="display:flex;"><span>PREREQ<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>prereqs<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>PREREQ<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> in
+</span></span><span style="display:flex;"><span>prereqs<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>prereqs
+</span></span><span style="display:flex;"><span>exit <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>;;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">esac</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Killing wpa_supplicant so the system takes over later&#34;</span>
+</span></span><span style="display:flex;"><span>kill <span style="color:#66d9ef">$(</span>cat /run/initram-wpa_supplicant.pid<span style="color:#66d9ef">)</span>
+</span></span></code></pre></div><hr>
+<p>As a reminder, scripts <strong>need to be executable</strong> if you want them to run. <em>Additionally, if a hook is not marked as executable, initramfs-tools will skip that hook when running <code>update-initramfs</code>:</em></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ sudo chmod +x /etc/initramfs-tools/hooks/zz-brcm
+</span></span><span style="display:flex;"><span>kali@kalipi:~$ sudo chmod +x /etc/initramfs-tools/hooks/enable-wireless
+</span></span><span style="display:flex;"><span>kali@kalipi:~$ sudo chmod +x /etc/initramfs-tools/scripts/init-premount/a_enable_wireless
+</span></span><span style="display:flex;"><span>kali@kalipi:~$ sudo chmod +x /etc/initramfs-tools/scripts/local-bottom/kill_wireless
+</span></span></code></pre></div><hr>
+<p>Now we use the information that we have gathered ahead of time to create our <code>wpa_supplciant.conf</code> file to include the SSID &amp; PSK, and any other possible options that the Wi-Fi network connection might need. You can read more information about the file by running <code>man wpa_supplicant.conf</code>.</p>
+<p>A shortcut to generating one is to simply run <code>wpa_passphrase SSID PASSWORD</code> where SSID is the name of the wireless network, and PASSWORD is the passphrase (aka PSK) for the network.</p>
+<p>In this example, we are going to be connecting our Raspberry Pi to the network <strong>kali wireless</strong> with a passphrase of <strong>secure kali wireless</strong>.</p>
+<p>If your wireless network name has spaces in it, do not forget to <strong>quote the SSID</strong> in the command!</p>
+<p>One thing to note here, when you use <code>wpa_passphrase</code> to generate the PSK, it includes the passphrase in plain text. Because of this, we will strip that line out of the file, <em>just in case if anyone else happens to come across the device and knows how to look inside an initramfs file, we do not want them seeing the plain text password to the network</em>! And because we are using <code>tee</code> rather than <code>&gt;</code> to write the file, we will see the file’s contents as its written:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ wpa_passphrase &#34;kali wireless&#34; &#34;secure kali wireless&#34; | grep -v \#psk | tee wpa_supplicant.conf
+</span></span></code></pre></div><hr>
+<p>If you want to <strong>add multiple wireless networks</strong> to your <code>wpa_supplicant.conf</code> file, we can append the file rather than overwriting it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ wpa_passphrase &#34;kali wireless the second&#34; &#34;even more secure kali wireless&#34; | grep -v \#psk | tee -a wpa_supplicant.conf
+</span></span></code></pre></div><hr>
+<p>Now we copy the newly generated configuration into <code>/etc/initramfs-tools/</code> as that is where our <code>enable-wireless</code> hook expects it to be:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ sudo cp -v wpa_supplicant.conf /etc/initramfs-tools/wpa_supplicant.conf
+</span></span></code></pre></div><hr>
+<p>As a reminder, we covered which kernel version to use in our <a href="https://www.kali.org/blog/secure-kali-raspberry-pi/#kernel">secure Kali Pi</a> post, and since we used the <a href="https://www.kali.org/docs/arm/raspberry-pi-4/">Raspberry Pi 4</a>, we will continue to do so here, so our kernel version is <code>5.15.44-Re4son-v8l+</code></p>
+<p>Now that we have all the parts that we need, we simply run <code>mkinitramfs -o /boot/initramfs.gz 5.15.44-Re4son-v8l+</code> to generate the initramfs file with our changes to add wireless networking.</p>
+<p>We can also verify that our changes are in the initramfs by running <code>lsinitramfs /boot/initramfs.gz</code> and use grep to show the files we are looking for:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ mkinitramfs -o /boot/initramfs.gz 5.15.44-Re4son-v8l+
+</span></span><span style="display:flex;"><span>kali@kalipi:~$
+</span></span><span style="display:flex;"><span>kali@kalipi:~$ lsinitramfs /boot/initramfs.gz | grep -e wpa -e brcm
+</span></span><span style="display:flex;"><span>etc/wpa_supplicant.conf
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/BCM-0a5c-6410.hcd
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/BCM-0bb4-0306.hcd
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/BCM43430A1.hcd
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/BCM43430B0.hcd
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/BCM4345C0.hcd
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/BCM4345C5.hcd
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/brcmfmac43430-sdio.bin
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/brcmfmac43430-sdio.rpi.bin
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/brcmfmac43430-sdio.txt
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/brcmfmac43436-sdio.bin
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/brcmfmac43436-sdio.clm_blob
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/brcmfmac43436-sdio.txt
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/brcmfmac43436s-sdio.bin
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/brcmfmac43436s-sdio.txt
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/brcmfmac43455-sdio.bin
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/brcmfmac43455-sdio.clm_blob
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/brcmfmac43455-sdio.nexmon-7_45_154.bin
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/brcmfmac43455-sdio.nexmon-7_45_189.bin
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/brcmfmac43455-sdio.nexmon-7_45_206.bin
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/brcmfmac43455-sdio.rpi.bin
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/brcmfmac43455-sdio.txt
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/brcmfmac43456-sdio.bin
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/brcmfmac43456-sdio.clm_blob
+</span></span><span style="display:flex;"><span>usr/lib/firmware/brcm/brcmfmac43456-sdio.txt
+</span></span><span style="display:flex;"><span>usr/lib/modules/5.15.44-Re4son-v8l+/kernel/drivers/i2c/busses/i2c-brcmstb.ko
+</span></span><span style="display:flex;"><span>usr/lib/modules/5.15.44-Re4son-v8l+/kernel/drivers/net/wireless/broadcom/brcm80211
+</span></span><span style="display:flex;"><span>usr/lib/modules/5.15.44-Re4son-v8l+/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac
+</span></span><span style="display:flex;"><span>usr/lib/modules/5.15.44-Re4son-v8l+/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko
+</span></span><span style="display:flex;"><span>usr/lib/modules/5.15.44-Re4son-v8l+/kernel/drivers/net/wireless/broadcom/brcm80211/brcmutil
+</span></span><span style="display:flex;"><span>usr/lib/modules/5.15.44-Re4son-v8l+/kernel/drivers/net/wireless/broadcom/brcm80211/brcmutil/brcmutil.ko
+</span></span><span style="display:flex;"><span>usr/sbin/wpa_cli
+</span></span><span style="display:flex;"><span>usr/sbin/wpa_supplicant
+</span></span></code></pre></div><p>As we can see from the output, our initramfs has our <strong>modules</strong>, <strong>firmware</strong>, and <strong>wpa_supplicant files</strong> for the Wi-Fi chip the Raspberry Pi 4 uses!</p>
+<p>If you are only interested in using the Raspberry Pi as a Wi-Fi client, you can stop here, and unmount everything like we did in our <a href="https://www.kali.org/blog/secure-kali-raspberry-pi/">secure Kali Pi</a> blog post.</p>
+<hr>
+<h4 id="static-ip">Static IP</h4>
+<p>If we want to connect to a wireless network <strong>and</strong> set a static IP, we need to do similar to above. Adding in the wpa_supplicant files, but now we set the IP manually in the <code>/boot/cmdline.txt</code> file, which is what the Raspberry Pi uses for the kernel command line arguments:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>ip=&lt;client-ip&gt;:&lt;server-ip&gt;:&lt;gw-ip&gt;:&lt;netmask&gt;:&lt;hostname&gt;:&lt;device&gt;:&lt;autoconf&gt;:&lt;dns0-ip&gt;:&lt;dns1-ip&gt;:&lt;ntp0-ip&gt;
+</span></span></code></pre></div><p><em>For more information, see the <a href="https://docs.kernel.org/admin-guide/nfs/nfsroot.html">nfsroot kernel documentation</a>.</em></p>
+<p>The important thing is to set the options we need, and leave empty the ones we do not. The default <code>cmdline.txt</code> has the following in it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kali@kalipi:~$ cat /boot/cmdline.txt
+</span></span><span style="display:flex;"><span>console<span style="color:#f92672">=</span>serial0,115200 console<span style="color:#f92672">=</span>tty1 root<span style="color:#f92672">=</span>PARTUUID<span style="color:#f92672">=</span>da77a68a-02 rootfstype<span style="color:#f92672">=</span>ext4 fsck.repair<span style="color:#f92672">=</span>yes rootwait net.ifnames<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+</span></span></code></pre></div><p>The <code>cmdline.txt</code> requires everything to be on one line, so if we want to set our IP address to <code>192.168.42.3</code>, with a gateway of <code>192.168.42.1</code>, our hostname to <code>securekalipi</code>, for the <code>wlan0</code> device, our <code>/boot/cmdline.txt</code> file will look like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>console=serial0,115200 console=tty1 root=PARTUUID=da77a68a-02 rootfstype=ext4 fsck.repair=yes rootwait net.ifnames=0 ip=192.168.42.3::192.168.42.1:255.255.255.0:securekalipi:wlan0
+</span></span></code></pre></div><p>As the <a href="https://docs.kernel.org/admin-guide/nfs/nfsroot.html">documentation</a> states, anything that is not specified uses the default settings, so we simply skip putting anything in between the <code>:</code> that we want to skip.</p>
+<hr>
+<h3 id="access-point-mode">Access Point Mode</h3>
+<p>You should not use the wireless in both access point mode and client mode at the same time. It <strong>is</strong> possible, however the networks need to be on the same channels, and we do not cover this in order to keep the blog post simple. You should only use client mode, or access point mode, but not both from this blog post. <em>We will talk about this again at the end of the blog post.</em></p>
+<p>Similarly to how we set up connecting our Raspberry Pi to a wireless network as a <a href="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/#wi-fi---client-mode">client</a>, if we want to set it up as an access point to connect to, we need to add into the initramfs. Like last time, our Wi-Fi drivers, the firmware just this time, its different software and configurations.</p>
+<p>The package you would use on Linux to set up an access point is <a href="https://w1.fi/hostapd/">hostapd</a> which does not come installed by default, so we will install it first.</p>
+<p>As always, before we install software, we update what packages are available to ensure we are installing the newest version:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ sudo apt update
+</span></span><span style="display:flex;"><span>Hit:1 http://http.re4son-kernel.com/re4son kali-pi InRelease
+</span></span><span style="display:flex;"><span>Hit:2 http://kali.download/kali kali-rolling InRelease
+</span></span><span style="display:flex;"><span>Reading package lists... Done
+</span></span><span style="display:flex;"><span>Building dependency tree... Done
+</span></span><span style="display:flex;"><span>Reading state information... Done
+</span></span><span style="display:flex;"><span>All packages are up to date.
+</span></span><span style="display:flex;"><span>kali@kalipi:~$
+</span></span><span style="display:flex;"><span>kali@kalipi:~$ sudo apt install hostapd
+</span></span><span style="display:flex;"><span>Reading package lists... Done
+</span></span><span style="display:flex;"><span>Building dependency tree... Done
+</span></span><span style="display:flex;"><span>Reading state information... Done
+</span></span><span style="display:flex;"><span>The following NEW packages will be installed:
+</span></span><span style="display:flex;"><span>hostapd
+</span></span><span style="display:flex;"><span>0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+</span></span><span style="display:flex;"><span>[...]
+</span></span></code></pre></div><hr>
+<p>Now we will set it up and test it, to make sure everything works, before we add it to our initramfs to use:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ sudo vim /etc/hostapd/hostapd.conf
+</span></span></code></pre></div><p>Our configuration will have us create a network on channel 7, with a network name of <strong>SecureKaliPi</strong>, and a password of <strong>SecureKaliPiWiFi</strong>.</p>
+<p>To use WPA2 the passphrase should be between 8 and 64 characters in length.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>country_code=US
+</span></span><span style="display:flex;"><span>interface=wlan0
+</span></span><span style="display:flex;"><span>ssid=SecureKaliPi
+</span></span><span style="display:flex;"><span>hw_mode=g
+</span></span><span style="display:flex;"><span>channel=7
+</span></span><span style="display:flex;"><span>macaddr_acl=0
+</span></span><span style="display:flex;"><span>auth_algs=1
+</span></span><span style="display:flex;"><span>ignore_broadcast_ssid=0
+</span></span><span style="display:flex;"><span>wpa=2
+</span></span><span style="display:flex;"><span>wpa_psk=16270ab793c4420e0c3dd6bf46ede4f10bd71ffbe6a79998dc70ccd8dea18680
+</span></span><span style="display:flex;"><span>wpa_key_mgmt=WPA-PSK
+</span></span><span style="display:flex;"><span>wpa_pairwise=TKIP
+</span></span><span style="display:flex;"><span>rsn_pairwise=CCMP
+</span></span></code></pre></div><p>The PSK is a value derived from the SSID of the network and the password. The easiest way to get this is very similar to the way we created the wpa_supplicant.conf file <a href="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/#wi-fi---client-mode">above</a> - we run <code>wpa_passphrase SecureKaliPi SecureKaliPiWiFi</code> and then we copy the psk line that is not the plaintext password:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kali:~$ wpa_passphrase SecureKaliPi SecureKaliPiWiFi
+</span></span><span style="display:flex;"><span>network={
+</span></span><span style="display:flex;"><span>ssid=&#34;SecureKaliPi&#34;
+</span></span><span style="display:flex;"><span>#psk<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;SecureKaliPiWiFi&#34;</span>
+</span></span><span style="display:flex;"><span>psk=16270ab793c4420e0c3dd6bf46ede4f10bd71ffbe6a79998dc70ccd8dea18680
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>You can, and should, change the configuration to match your needs. If you would like to set it up to use 5GHz, you would need to change <code>hw_mode=g</code> to <code>hw_mode=a</code>, but keep in mind that if you are using 5GHz you need to change the channel. <a href="https://en.wikipedia.org/wiki/List_of_WLAN_channels">Wikipedia</a> has a list of allowed combinations for different countries.</p>
+<hr>
+<p>One setting you may want to change as well, is the <code>ignore_broadcast_ssid</code> setting.</p>
+<p>If we read the <a href="https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf">default configuration file</a>, we can see that this option is what will allow us to hide our SSID from being broadcast:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span># Send empty SSID in beacons and ignore probe request frames that do not
+</span></span><span style="display:flex;"><span># specify full SSID, i.e., require stations to know SSID.
+</span></span><span style="display:flex;"><span># default: disabled (0)
+</span></span><span style="display:flex;"><span># 1 = send empty (length=0) SSID in beacon and ignore probe request for
+</span></span><span style="display:flex;"><span># broadcast SSID
+</span></span><span style="display:flex;"><span># 2 = clear SSID (ASCII 0), but keep the original length (this may be required
+</span></span><span style="display:flex;"><span># with some clients that do not support empty SSID) and ignore probe
+</span></span><span style="display:flex;"><span># requests for broadcast SSID
+</span></span><span style="display:flex;"><span>ignore_broadcast_ssid=0
+</span></span></code></pre></div><hr>
+<p>Now that we have written our <code>hostapd.conf</code> we can quickly test if it works by running:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ sudo /usr/sbin/hostapd /etc/hostapd/hostapd.conf
+</span></span><span style="display:flex;"><span>wlan0: interface state UNINITIALIZED-&gt;COUNTRY_UPDATE
+</span></span><span style="display:flex;"><span>wlan0: interface state COUNTRY_UPDATE-&gt;ENABLED
+</span></span><span style="display:flex;"><span>wlan0: AP-ENABLED
+</span></span></code></pre></div><p>If everything is set up correctly, you should see the above output. If you get any errors, you will need to correct those and re-run the command.</p>
+<hr>
+<p>Now that hostapd is set up, and we have tested that it works, lets add it to our initramfs.</p>
+<p>Because we need to add some binaries to the initramfs, we also need to include any dependencies that may be needed. So first we check which binary we need:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ dpkg -L hostapd | grep bin
+</span></span><span style="display:flex;"><span>/usr/sbin
+</span></span><span style="display:flex;"><span>/usr/sbin/hostapd
+</span></span><span style="display:flex;"><span>/usr/sbin/hostapd_cli
+</span></span></code></pre></div><p>We need the hostapd binary, and to check its dependencies we will run <a href="https://manpages.debian.org/testing/manpages/ldd.1.en.html">ldd</a> which tells us what libraries the binary depends on:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ ldd /usr/sbin/hostapd
+</span></span><span style="display:flex;"><span>linux-vdso.so.1 (0x0000007f89561000)
+</span></span><span style="display:flex;"><span>libnl-3.so.200 =&gt; /lib/aarch64-linux-gnu/libnl-3.so.200 (0x0000007f892e2000)
+</span></span><span style="display:flex;"><span>libnl-genl-3.so.200 =&gt; /lib/aarch64-linux-gnu/libnl-genl-3.so.200 (0x0000007f892c1000)
+</span></span><span style="display:flex;"><span>libnl-route-3.so.200 =&gt; /lib/aarch64-linux-gnu/libnl-route-3.so.200 (0x0000007f89219000)
+</span></span><span style="display:flex;"><span>libdl.so.2 =&gt; /lib/aarch64-linux-gnu/libdl.so.2 (0x0000007f891f8000)
+</span></span><span style="display:flex;"><span>libssl.so.3 =&gt; /lib/aarch64-linux-gnu/libssl.so.3 (0x0000007f89144000)
+</span></span><span style="display:flex;"><span>libcrypto.so.3 =&gt; /lib/aarch64-linux-gnu/libcrypto.so.3 (0x0000007f88cfe000)
+</span></span><span style="display:flex;"><span>libm.so.6 =&gt; /lib/aarch64-linux-gnu/libm.so.6 (0x0000007f88c5d000)
+</span></span><span style="display:flex;"><span>libc.so.6 =&gt; /lib/aarch64-linux-gnu/libc.so.6 (0x0000007f88aaf000)
+</span></span><span style="display:flex;"><span>/lib/ld-linux-aarch64.so.1 (0x0000007f89524000)
+</span></span></code></pre></div><p>Because <code>hostapd</code> also uses <code>iw</code> to control its interfaces, we need to also include it. And like above, we want to check the dependencies it uses:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ ldd /usr/sbin/iw
+</span></span><span style="display:flex;"><span>linux-vdso.so.1 (0x0000007fba486000)
+</span></span><span style="display:flex;"><span>libnl-genl-3.so.200 =&gt; /lib/aarch64-linux-gnu/libnl-genl-3.so.200 (0x0000007fba3c0000)
+</span></span><span style="display:flex;"><span>libnl-3.so.200 =&gt; /lib/aarch64-linux-gnu/libnl-3.so.200 (0x0000007fba37f000)
+</span></span><span style="display:flex;"><span>libc.so.6 =&gt; /lib/aarch64-linux-gnu/libc.so.6 (0x0000007fba1d1000)
+</span></span><span style="display:flex;"><span>/lib/ld-linux-aarch64.so.1 (0x0000007fba449000)
+</span></span></code></pre></div><p>As we can see, <code>hostapd</code> and <code>iw</code> rely on a number of libraries that will need to be in the initramfs.</p>
+<p>So we create a hook to include hostapd with these additional libraries so the hostapd and iw binaries can run, <code>/etc/initramfs-tools/hooks/hostapd</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>set -e
+</span></span><span style="display:flex;"><span>PREREQ<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>prereqs<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>PREREQ<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>1<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> in
+</span></span><span style="display:flex;"><span>prereqs<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>prereqs
+</span></span><span style="display:flex;"><span>exit <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>;;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">esac</span>
+</span></span><span style="display:flex;"><span>. /usr/share/initramfs-tools/hook-functions
+</span></span><span style="display:flex;"><span>copy_exec /usr/sbin/hostapd /sbin
+</span></span><span style="display:flex;"><span>copy_exec /usr/sbin/iw
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Find our library directory and copy files from there</span>
+</span></span><span style="display:flex;"><span>LIBC_DIR<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>ldd /usr/sbin/hostapd | sed -nr <span style="color:#e6db74">&#39;s#.* =&gt; (/lib.*)/libc\.so\.[0-9.-]+ \(0x[[:xdigit:]]+\)$#\1#p&#39;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>find -L <span style="color:#e6db74">&#34;</span>$LIBC_DIR<span style="color:#e6db74">&#34;</span> -maxdepth <span style="color:#ae81ff">1</span> -name <span style="color:#e6db74">&#39;libnss_files.*&#39;</span> -type f | <span style="color:#66d9ef">while</span> read so; <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>copy_exec <span style="color:#e6db74">&#34;</span>$so<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy in the libnl librares that hostapd and iw depend on</span>
+</span></span><span style="display:flex;"><span>copy_exec <span style="color:#e6db74">&#34;/lib/aarch64-linux-gnu/libnl-route-3.so.200&#34;</span>
+</span></span><span style="display:flex;"><span>copy_exec <span style="color:#e6db74">&#34;/lib/aarch64-linux-gnu/libnl-genl-3.so.200&#34;</span>
+</span></span><span style="display:flex;"><span>copy_exec <span style="color:#e6db74">&#34;/lib/aarch64-linux-gnu/libnl-3.so.200&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy our hostapd.conf file</span>
+</span></span><span style="display:flex;"><span>copy_file config /etc/hostapd/hostapd.conf /etc/hostapd
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Add Wi-Fi drivers</span>
+</span></span><span style="display:flex;"><span>WIFI_DRIVERS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;brcmfmac brcmutil cfg80211 rfkill&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> x in <span style="color:#e6db74">${</span>WIFI_DRIVERS<span style="color:#e6db74">}</span>; <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>manual_add_modules <span style="color:#e6db74">${</span>x<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Add Wi-Fi firmware</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Copying firmware files for brcm to initramfs&#34;</span>
+</span></span><span style="display:flex;"><span>cp -r /lib/firmware/brcm <span style="color:#e6db74">${</span>DESTDIR<span style="color:#e6db74">}</span>/lib/firmware/
+</span></span></code></pre></div><hr>
+<p>Now we add our script, which sets our IP address (<code>192.168.42.1/24</code>) for the access point as well as makes hostapd, and DHCP server run, <code>/etc/initramfs-tools/scripts/init-premount/hostapd</code>. We will address the networking side after this script:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>set -e
+</span></span><span style="display:flex;"><span>PREQ<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;udev network&#34;</span>
+</span></span><span style="display:flex;"><span>prereqs<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;</span>$PREREQ<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> in
+</span></span><span style="display:flex;"><span>prereqs<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>prereqs
+</span></span><span style="display:flex;"><span>exit <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>;;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">esac</span>
+</span></span><span style="display:flex;"><span>run_hostapd<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>ifconfig wlan0 up
+</span></span><span style="display:flex;"><span>ifconfig wlan0 192.168.42.1 netmask 255.255.255.0 broadcast 192.168.42.255
+</span></span><span style="display:flex;"><span>route add 192.168.42.0/24 dev wlan0
+</span></span><span style="display:flex;"><span>exec udhcpd /etc/udhcpd.conf
+</span></span><span style="display:flex;"><span>exec /sbin/hostapd /etc/hostapd/hostapd.conf
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>. /scripts/functions
+</span></span><span style="display:flex;"><span>sleep <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>run_hostapd &amp;
+</span></span><span style="display:flex;"><span>echo $! &gt;/run/hostapd.pid
+</span></span></code></pre></div><hr>
+<p>Additionally, we want to start a DHCP server so that when we connect to the Raspberry Pi’s access point, we get an IP address. Normally, you would use a package like <a href="https://wiki.debian.org/DHCP_Server">isc-dhcp-server</a> to run a DHCP server, but since we have already got busybox which has a DHCP server applet enabled in the initramfs, we will just use that instead. We do not need a fully featured DHCP server just to unlock our Raspberry Pi and let it finish booting.</p>
+<p>First we set up the configuration file for it <code>/etc/udhcpd.conf</code> with the following information:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>start 192.168.42.2 # IP address range to give out
+</span></span><span style="display:flex;"><span>end 192.168.42.100 # Last IP address to give out
+</span></span><span style="display:flex;"><span>interface wlan0 # Device that the DHCP server listens on
+</span></span><span style="display:flex;"><span>remaining yes #
+</span></span><span style="display:flex;"><span>opt router 192.168.42.1 # The Raspberry Pi&#39;s IP address to use on wlan0
+</span></span><span style="display:flex;"><span>opt subnet 255.255.255.0 #
+</span></span><span style="display:flex;"><span>opt dns 8.8.8.8 4.2.2.2 # DNS servers to pass (not really required for our needs)
+</span></span><span style="display:flex;"><span>opt lease 600 # 10 minute DHCP lease
+</span></span></code></pre></div><hr>
+<p>And we create our hook which copies in our DHCP config, <code>/etc/initramfs-tools/hooks/udhcpd</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>set -e
+</span></span><span style="display:flex;"><span>PREREQ<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>prereqs<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>PREREQ<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>1<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> in
+</span></span><span style="display:flex;"><span>prereqs<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>prereqs
+</span></span><span style="display:flex;"><span>exit <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>;;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">esac</span>
+</span></span><span style="display:flex;"><span>. /usr/share/initramfs-tools/hook-functions
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy our hostapd.conf file</span>
+</span></span><span style="display:flex;"><span>copy_file config /etc/udhcpd.conf /etc/udhcpd.conf
+</span></span></code></pre></div><hr>
+<p>Like our previous hooks and scripts, we need to make sure the executable flag is set:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ sudo chmod +x /etc/initramfs-tools/hooks/hostapd
+</span></span><span style="display:flex;"><span>kali@kalipi:~$ sudo chmod +x /etc/initramfs-tools/hooks/udhcpd
+</span></span><span style="display:flex;"><span>kali@kalipi:~$ sudo chmod +x /etc/initramfs-tools/scripts/init-premount/hostapd
+</span></span></code></pre></div><hr>
+<p>And now that everything is in place for hostapd support, we need to build the initramfs so that it has our changes in there:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ mkinitramfs -o /boot/initramfs.gz 5.15.44-Re4son-v8l+
+</span></span><span style="display:flex;"><span>kali@kalipi:~$
+</span></span><span style="display:flex;"><span>kali@kalipi:~$ lsinitramfs /boot/initramfs.gz | grep -e hostapd -e udhcpd
+</span></span><span style="display:flex;"><span>etc/hostapd
+</span></span><span style="display:flex;"><span>etc/udhcpd.conf
+</span></span><span style="display:flex;"><span>scripts/init-premount/hostapd
+</span></span><span style="display:flex;"><span>usr/sbin/hostapd
+</span></span><span style="display:flex;"><span>usr/sbin/udhcpd
+</span></span></code></pre></div><p>Once we see all the parts are there, we are able to reboot the Raspberry Pi and we should see our Wi-Fi network from another machine.</p>
+<p><a href="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/images/secure-kalipi-wifi.png">
+<figure>
+  <img src="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/images/secure-kalipi-wifi.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>Connect to it, and we should be able to unlock the device via SSH!</p>
+<hr>
+<h2 id="wired-connection">Wired Connection</h2>
+<p>By default, the wired connection on a Raspberry Pi will attempt to use DHCP to connect to a network when it is plugged in. You may want to set a static IP, we need to do similar to <a href="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/#wi-fi---static-ip">above</a>, and set the IP manually in the <code>/boot/cmdline.txt</code> file, which is what the Raspberry Pi uses for the kernel command line arguments.</p>
+<h3 id="static-ip-1">Static IP</h3>
+<p>The default <code>/boot/cmdline.txt</code> is set to:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kali@kalipi:~$ cat /boot/cmdline.txt
+</span></span><span style="display:flex;"><span>console<span style="color:#f92672">=</span>serial0,115200 console<span style="color:#f92672">=</span>tty1 root<span style="color:#f92672">=</span>PARTUUID<span style="color:#f92672">=</span>da77a68a-02 rootfstype<span style="color:#f92672">=</span>ext4 fsck.repair<span style="color:#f92672">=</span>yes rootwait net.ifnames<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+</span></span></code></pre></div><p>The format of <code>/boot/cmdline.txt</code> should look similar to:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>ip=&lt;client-ip&gt;:&lt;server-ip&gt;:&lt;gw-ip&gt;:&lt;netmask&gt;:&lt;hostname&gt;:&lt;device&gt;:&lt;autoconf&gt;:&lt;dns0-ip&gt;:&lt;dns1-ip&gt;:&lt;ntp0-ip&gt;
+</span></span></code></pre></div><p><code>/boot/cmdline.txt</code> requires everything to be on one line, so if we want to set our IP address to <code>192.168.42.3</code>, with a gateway of <code>192.168.42.1</code>, our hostname to <code>securekalipi</code>, for the <code>eth0</code> device, our <code>/boot/cmdline.txt</code> file will look like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>console=serial0,115200 console=tty1 root=PARTUUID=da77a68a-02 rootfstype=ext4 fsck.repair=yes rootwait net.ifnames=0 ip=192.168.42.3::192.168.42.1:255.255.255.0:securekalipi:eth0
+</span></span></code></pre></div><p>As the <a href="https://docs.kernel.org/admin-guide/nfs/nfsroot.html">documentation</a> states, anything that is not specified uses the default settings, so we simply skip putting anything in between the <code>:</code> that we want to skip. And we tell it to use the <code>eth0</code> device, as that is the default device name for ethernet on the Raspberry Pi.</p>
+<hr>
+<h2 id="vpn-tunnel">VPN Tunnel</h2>
+<p>Before we go over connecting to a VPN, it is important to note that the information will be stored in the initramfs file, <strong>unencrypted</strong>. This particular use case is <strong>NOT</strong> about securing the connection, but instead using the VPN to tunnel out of the network to bypass various firewall rules. As such, this connection should be treated as if the traffic is clear text.</p>
+<p>After we have got our device connected to the network, great! We are now wanting to remotely connect to it. Due to firewalls on the network, being able to directly SSH into the device will be next to impossible (as we cannot do port forwarding). So we are needing the device to connect back to us (bind vs reverse)! You may opt for a SSH reverse connection, where the device continuously polls back home, however, we have opted to use a VPN. You may wish to use OpenVPN, WireGuard, or something else. We have opted for OpenVPN, however we are not going to cover how to set up and secure an OpenVPN server.</p>
+<p>Regardless of the reverse service used, network traffic may be filtered by firewall rules which may limit what services can be used. For example SSH (22/TCP) or OpenVPN (1194/UDP) default ports may not be allowed out. As a result, think of what typical end-users may often use the network for. Commonly you see a lot of web traffic, so HTTPS (<code>443/TCP</code>) should hopefully give a higher chance of success, such as HTTPS (<code>443/TCP</code>)! <em>We will talk about this again at the end of the blog post.</em></p>
+<p>If you have created a new private network by starting an <a href="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/#wifi---access-point">access point</a>, there is not going to be an upstream gateway configured. As a result, the VPN tunnel will not be able to connect to the internet. You will need to find another way to get online, by either using another mode (<a href="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/#wi-fi---client-mode">Wi-Fi client</a>), or another interface (wired ethernet, mobile hotspot etc).</p>
+<hr>
+<p>As always, to use OpenVPN before the system is booted we need our hook to copy the OpenVPN software and our client configuration in to our initramfs.</p>
+<p>First up is the hook. This copies the software, its dependencies, and our configuration file into the initramfs. We gathered this information the same way we did with <code>hostapd</code> above, so we will not go over that again.</p>
+<p>The OpenVPN hook, <code>/etc/initramfs-tools/hooks/openvpn</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>set -e
+</span></span><span style="display:flex;"><span>PREREQ<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>prereqs<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;</span>$PREREQ<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> in
+</span></span><span style="display:flex;"><span>prereqs<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>prereqs
+</span></span><span style="display:flex;"><span>exit <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>;;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">esac</span>
+</span></span><span style="display:flex;"><span>. /usr/share/initramfs-tools/hook-functions
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span> -r /etc/crypttab <span style="color:#f92672">]</span> <span style="color:#f92672">||</span> exit <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>copy_exec /usr/sbin/openvpn /sbin
+</span></span><span style="display:flex;"><span>copy_exec <span style="color:#e6db74">&#34;/lib/aarch64-linux-gnu/libzstd.so.1&#34;</span>
+</span></span><span style="display:flex;"><span>copy_exec <span style="color:#e6db74">&#34;/lib/aarch64-linux-gnu/libnsl.so.1&#34;</span>
+</span></span><span style="display:flex;"><span>copy_exec <span style="color:#e6db74">&#34;/lib/aarch64-linux-gnu/liblzo2.so.2&#34;</span>
+</span></span><span style="display:flex;"><span>copy_exec <span style="color:#e6db74">&#34;/lib/aarch64-linux-gnu/libresolv.so.2&#34;</span>
+</span></span><span style="display:flex;"><span>copy_exec <span style="color:#e6db74">&#34;/lib/aarch64-linux-gnu/libpkcs11-helper.so.1&#34;</span>
+</span></span><span style="display:flex;"><span>copy_exec <span style="color:#e6db74">&#34;/lib/aarch64-linux-gnu/libm.so.6&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy in our configuration file and username/password files</span>
+</span></span><span style="display:flex;"><span>cp -p /etc/initramfs-tools/openvpn/client/* <span style="color:#e6db74">${</span>DESTDIR<span style="color:#e6db74">}</span>/etc/openvpn/client/
+</span></span></code></pre></div><hr>
+<p>And then we have to add our OpenVPN script to run in the initramfs, that uses our configuration file to connect to our OpenVPN server. Because this is running before there is any way to interact with the system, we also need to be able to pass the username and password somehow. A quick check of the <a href="https://manpages.debian.org/testing/openvpn/openvpn.8.en.html">openvpn man page</a> shows us:</p>
+<blockquote>
+<p><code>--auth-user-pass</code></p>
+<p>Authenticate with server using username/password.</p>
+<p>Valid syntaxes:</p>
+<p><code>auth-user-pass</code></p>
+<p><code>auth-user-pass up</code></p>
+<p>If up is present, it must be a file containing username/password on 2 lines. If the password line is missing, OpenVPN will prompt for &gt; one.</p>
+<p>If up is omitted, username/password will be prompted from the console.</p></blockquote>
+<p>The option we want is <code>--auth-user-pass up</code>. So we will create a file called <code>up</code> with our username (<code>dropboxuser</code>) on the first line, and password (<code>pass123</code>) on the second line:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ echo dropboxuser | sudo tee /etc/openvpn/client/up
+</span></span><span style="display:flex;"><span>[...]
+</span></span><span style="display:flex;"><span>kali@kalipi:~$ echo pass123 | sudo tee -a /etc/openvpn/client/up
+</span></span></code></pre></div><p>If your VPN connection does not require a username/password, you can remove the <code>--auth-user-pass /etc/openvpn/up</code> in the <code>vpnflags</code> variable below.</p>
+<hr>
+<p>The script, which starts OpenVPN, <code>/etc/initramfs-tools/scripts/init-premount/openvpn</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>set -e
+</span></span><span style="display:flex;"><span>PREREQ<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;udev networking&#34;</span>
+</span></span><span style="display:flex;"><span>prereqs<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;</span>$PREREQ<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> in
+</span></span><span style="display:flex;"><span>prereqs<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>prereqs
+</span></span><span style="display:flex;"><span>exit <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>;;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">esac</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span> -x /sbin/openvpn <span style="color:#f92672">]</span> <span style="color:#f92672">||</span> exit <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>run_openvpn<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>local vpnflags<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;--suppress-timestamps --nobind --config /etc/openvpn/client/openvpn.conf --auth-user-pass /etc/openvpn/client/up&#34;</span>
+</span></span><span style="display:flex;"><span>log_begin_msg <span style="color:#e6db74">&#34;Starting OpenVPN&#34;</span>
+</span></span><span style="display:flex;"><span>exec /sbin/openvpn $vpnflags
+</span></span><span style="display:flex;"><span>ifconfig -a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>. /scripts/functions
+</span></span><span style="display:flex;"><span>sleep <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>run_openvpn &amp;
+</span></span><span style="display:flex;"><span>echo $! &gt;/run/openvpn.pid
+</span></span></code></pre></div><hr>
+<p>And like with the others, we make sure our hooks and scripts are executable:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ sudo chmod +x /etc/initramfs-tools/hooks/openvpn
+</span></span><span style="display:flex;"><span>kali@kalipi:~$ sudo chmod +x /etc/initramfs-tools/scripts/init-premount/openvpn
+</span></span></code></pre></div><hr>
+<p>And now that everything is in place for connecting to OpenVPN, we need to build the initramfs so that it has our changes in there:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kalipi:~$ mkinitramfs -o /boot/initramfs.gz 5.15.44-Re4son-v8l+
+</span></span><span style="display:flex;"><span>kali@kalipi:~$
+</span></span><span style="display:flex;"><span>kali@kalipi:~$ lsinitramfs /boot/initramfs.gz | grep -e openvpn
+</span></span><span style="display:flex;"><span>etc/openvpn
+</span></span><span style="display:flex;"><span>etc/openvpn/client
+</span></span><span style="display:flex;"><span>etc/openvpn/client/up
+</span></span><span style="display:flex;"><span>scripts/init-premount/openvpn
+</span></span><span style="display:flex;"><span>usr/sbin/openvpn
+</span></span></code></pre></div><hr>
+<p>Now that the initramfs is updated, and we see that our changes are in there, we are able to reboot the Raspberry Pi. Once it starts booting, and once the network connection is available, it should connect to our OpenVPN server.</p>
+<p>You will want to test this in your home lab, before you deploy it anywhere, to make sure it’s working:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kali:~$ ssh kali@172.16.20.2
+</span></span><span style="display:flex;"><span>The authenticity of host &#39;172.16.20.2&#39; can&#39;t be established.
+</span></span><span style="display:flex;"><span>Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+</span></span><span style="display:flex;"><span>Warning: Permanently added &#39;172.16.20.2&#39; (ECDSA) to the list of known hosts.
+</span></span><span style="display:flex;"><span>kali@172.16.20.2&#39;s password:
+</span></span><span style="display:flex;"><span>Linux kali-raspberry-pi 5.15.44-Re4son-v8+ #1 SMP PREEMPT Debian kali-pi (2022-07-03) aarch64
+</span></span><span style="display:flex;"><span>The programs included with the Kali GNU/Linux system are free software;
+</span></span><span style="display:flex;"><span>the exact distribution terms for each program are described in the
+</span></span><span style="display:flex;"><span>individual files in /usr/share/doc/*/copyright.
+</span></span><span style="display:flex;"><span>Kali GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+</span></span><span style="display:flex;"><span>permitted by applicable law.
+</span></span><span style="display:flex;"><span>┌──(kali㉿kali-raspberry-pi)-[~]
+</span></span><span style="display:flex;"><span>└─$
+</span></span></code></pre></div><hr>
+<h2 id="summary">Summary</h2>
+<p>In this blog post, we have covered gathering information about our device, in this case it was a Raspberry Pi, but the information gathering holds true for any device running Kali that you might want to unlock remotely.</p>
+<p>We also covered setting a static IP for both wired and Wi-Fi networks, setting up an access point, and using an OpenVPN connection, these are not specific to the Raspberry Pi, aside from the firmware and module for the Wi-Fi device.</p>
+<p>We hope you found this blog post helpful, and if you have any questions or comments, please check out the <a href="https://discord.kali.org/">Kali Discord</a> server.</p>
+<h3 id="food-for-thought">Food for Thought</h3>
+<p>To expand on this future, some improvements which we came up with:</p>
+<ul>
+<li>Rather than tunneling over OpenVPN, use other tools (such as <a href="https://www.kali.org/tools/dnscat2/">dnscat2</a>), ICMP (such as <a href="https://www.kali.org/tools/ptunnel/">ptunnel</a>) or a mixture of all three!</li>
+<li>Encapsulate the OpenVPN traffic (such as <a href="https://www.kali.org/tools/stunnel4/">stunnel</a>), making it legit HTTPS data, rather than only using default port</li>
+<li>Using WireGuard rather than OpenVPN</li>
+<li>Mobile connectivity (using an external 3G/4G/LTE adapter)</li>
+<li>Adding fall back method(s) - If Wi-Fi client is not working, create then a Wi-Fi access point</li>
+<li>“WLAN Knocking” - The Raspberry Pi is monitoring for a certain SSID being broadcasted <em>(maybe from a certain MAC address)</em>, when detected, only then perform an action</li>
+</ul>
+<p>We are sure you can also think outside of the box, and come up with additional ideas too. Please <a href="https://twitter.com/kalilinux">tweet</a> us your ideas, and progress with your drop box!</p>
+<hr>
+<h2 id="additional-resources">Additional Resources</h2>
+<p><strong>Wi-Fi in initramfs</strong>:</p>
+<ul>
+<li><a href="https://github.com/unixabg/cryptmypi/blob/master/hooks/0000-experimental-initramfs-wifi.hook">Cryptmypi Experimental WiFi initramfs hook</a></li>
+<li><a href="https://www.marcfargas.com/posts/enable-wireless-debian-initramfs">Enable Wireless networks in Debian Initramfs</a></li>
+<li><a href="http://retinal.dehy.de/docs/doku.php?id=technotes:raspberryrootnfs">Raspberry Pi Zero W with the root FS mounted over NFS</a></li>
+<li><a href="https://wiki.archlinux.org/title/Dm-crypt/Specialties#Remote_unlock_via_WiFi">Remote Unlock via WiFi</a></li>
+</ul>
+<p><strong>Setting up hostapd</strong>:</p>
+<ul>
+<li><a href="https://raspberrypi.com/documentation/computers/configuration.html#setting-up-a-bridged-wireless-access-point">Raspberry Pi Documentation</a></li>
+<li><a href="https://0x72326432.com/posts/perstapsk_en/">Per station WPA2 PSK with hostapd</a></li>
+</ul>
+<h4 id="source"><a href="https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

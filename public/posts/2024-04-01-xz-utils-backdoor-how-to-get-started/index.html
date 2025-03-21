@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>xz-utils backdoor how to get started</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>xz-utils backdoor how to get started</h1>
+			<b><time>01.04.2024 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="xz-utils-backdoor-how-to-get-started">xz-utils backdoor how to get started</h1>
+<p><a href="https://www.kali.org/blog/xz-backdoor-getting-started/images/xz-backdoor-getting-started.jpg">https://www.kali.org/blog/xz-backdoor-getting-started/images/xz-backdoor-getting-started.jpg</a></p>
+<p>Following the recent disclosure of a backdoor in upstream xz/liblzma, we are writing this “get started” kind of blog post. We will explain how to setup an environment with the backdoored version of liblzma, and then the first commands to run to validate that the backdoor is installed. All in</p>
+<p>Following the recent disclosure of a <a href="https://www.openwall.com/lists/oss-security/2024/03/29/4">backdoor in upstream xz/liblzma</a>, we are writing this “get started” kind of blog post. We will explain how to setup an environment with the backdoored version of liblzma, and then the first commands to run to validate that the backdoor is installed. All in all, it should just take a few minutes, and there’s no learning curve, it’s all very simple.</p>
+<p>This blog post is aimed at all the enthusiasts that are following the news as the events unfold, and who are eager to have their hands on the keyboard, running a few commands in a terminal rather than just reading about it. This is really beginner level, and we’ll just reproduce the easiest findings that were reported in the initial disclosure. Nothing groundbreaking here, sorry ;)</p>
+<h2 id="setting-up-the-environment">Setting up the environment</h2>
+<p>First thing first: we’re going to need a Virtual Machine (or VM for short). The fastest is probably to just download a pre-built image from the <a href="https://www.kali.org/get-kali/#kali-virtual-machines">Kali Linux download page</a>, either the <a href="https://www.kali.org/blog/kali-linux-2024-1-release/">current 2024.1 release</a> or the latest weekly image, at your preference.</p>
+<p>When the image is downloaded, let’s start it. Don’t know how? We have documentation for each type of image: <a href="https://www.kali.org/docs/virtualization/import-premade-virtualbox/">VirtualBox</a>, <a href="https://www.kali.org/docs/virtualization/import-premade-vmware/">VMware</a> and <a href="https://www.kali.org/docs/virtualization/import-premade-hyperv/">Hyper-V</a>. For <a href="https://www.kali.org/docs/virtualization/install-qemu-guest-vm/">QEMU</a>, its simple enough to create a new VM.</p>
+<p>Now our VM is up and running, so we’re going to download and install a version of <code>liblzma</code> that contains the backdoor. Even though the package was pulled out of Linux distributions, it’s still widely available on the Internet. For this how-to, we’re going to get it from the <a href="https://snapshot.debian.org/">Debian snapshot service</a>. Since Kali is based on Debian, and liblzma only depends on the libc, it’s Ok to install the Debian package in Kali, we shouldn’t run into any incompatibility issue.</p>
+<p>A note for clarity: xz-utils is the name of the upstream repository, it provides the well-known command <code>xz</code> to compress and decompress files, but it also provides the library <code>liblzma</code> , which is the compromised library that everyone is talking about at the moment. And it is via this library that a backdoor gets added to the SSH daemon… Clear?</p>
+<p>The upstream versions <code>5.6.0</code> and <code>5.6.1</code> of xz-utils are known to contain the backdoor, so let’s grab the Debian package <code>5.6.1-1</code>.</p>
+<p>Within the VM, let’s open a terminal and get it with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kali:~$ wget https://snapshot.debian.org/archive/debian/20240328T025657Z/pool/main/x/xz-utils/liblzma5_5.6.1-1_amd64.deb
+</span></span></code></pre></div><p>And now let’s install the package:</p>
+<p>A word of caution for those who are not paying attention: below, we are purposefully installing a package that contains a backdoor! Obviously you are running those steps in a Virtual Machine, and this Virtual Machine is not exposed to the Internet.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kali:~$ sudo apt-get install --allow-downgrades --yes ./liblzma5_5.6.1-1_amd64.deb
+</span></span></code></pre></div><p>Next step is to start (or restart) the SSH daemon:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kali:~$ sudo systemctl restart ssh
+</span></span></code></pre></div><p>What’s next? Let’s find out!</p>
+<h2 id="confirm-that-liblzma-is-compromised">Confirm that liblzma is compromised</h2>
+<p>First, we can detect if the version of liblzma contains the backdoor, thanks to a script from Vegard Nossum, that was <a href="https://www.openwall.com/lists/oss-security/2024/03/29/4">provided in the disclosure</a>.</p>
+<p>Let’s create the script:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kali:~$ cat &lt;&lt; &#39;EOF&#39; &gt; detect.sh
+</span></span><span style="display:flex;"><span>#! /bin/bash
+</span></span><span style="display:flex;"><span>set -eu
+</span></span><span style="display:flex;"><span># find path to liblzma used by sshd
+</span></span><span style="display:flex;"><span>path=&#34;$(ldd $(which sshd) | grep liblzma | grep -o &#39;/[^ ]*&#39;)&#34;
+</span></span><span style="display:flex;"><span># does it even exist?
+</span></span><span style="display:flex;"><span>if [ &#34;$path&#34; == &#34;&#34; ]
+</span></span><span style="display:flex;"><span>then
+</span></span><span style="display:flex;"><span>echo probably not vulnerable
+</span></span><span style="display:flex;"><span>exit
+</span></span><span style="display:flex;"><span>fi
+</span></span><span style="display:flex;"><span># check <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">function</span> signature
+</span></span><span style="display:flex;"><span>if hexdump -ve &#39;1/1 &#34;%.2x&#34;&#39; &#34;$path&#34; | grep -q f30f1efa554889f54c89ce5389fb81e7000000804883ec28488954241848894c2410
+</span></span><span style="display:flex;"><span>then
+</span></span><span style="display:flex;"><span>echo probably vulnerable
+</span></span><span style="display:flex;"><span>else
+</span></span><span style="display:flex;"><span>echo probably not vulnerable
+</span></span><span style="display:flex;"><span>fi
+</span></span><span style="display:flex;"><span>EOF
+</span></span></code></pre></div><p>Make it executable, and then run it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kali:~$ chmod +x detect.sh
+</span></span><span style="display:flex;"><span>kali@kali:~$
+</span></span><span style="display:flex;"><span>kali@kali:~$ ./detect.sh
+</span></span><span style="display:flex;"><span>probably vulnerable
+</span></span></code></pre></div><p>The output from the command above should be <code>probably vulnerable</code>, meaning that the backdoor was detected in the library.</p>
+<p>But wait, how does that work? The command <code>hexdump -ve '1/1 &quot;%.2x&quot;' &lt;&lt;file&gt;&gt;</code> will dump a file in hexadecimal form, without any formatting, just a looooong hexa string. The script does that with liblzma, and then matches a pattern (also in hexadecimal form) that belongs to the exploit. That’s all there is to it, and it’s enough to detect it.</p>
+<h2 id="confirm-that-the-ssh-daemon-is-slower-than-usual">Confirm that the SSH daemon is slower than usual</h2>
+<p>First, for this test we need to make sure that password authentication is disabled, in the settings of the SSH daemon:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kali:~$ sudo sed -E -i &#39;s/^#?PasswordAuthentication .*/PasswordAuthentication no/&#39; /etc/ssh/sshd_config
+</span></span></code></pre></div><p>Then restart the daemon:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kali:~$ sudo systemctl restart ssh
+</span></span></code></pre></div><p>And now, let’s try to login as a non existant user, and time it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kali:~$ time ssh nonexistant@localhost
+</span></span><span style="display:flex;"><span>nonexistant@localhost: Permission denied (publickey).
+</span></span><span style="display:flex;"><span>real 0.31s
+</span></span><span style="display:flex;"><span>user 0.05s
+</span></span><span style="display:flex;"><span>sys 0.00s
+</span></span><span style="display:flex;"><span>cpu 17%
+</span></span></code></pre></div><p>There’s no “right value” here, as it’s highly dependent on your particular setup. However, what we want is to get an idea of how much time it takes, so let’s run the command a couple of times, to make sure that the results are consistent. In my tests, results are indeed very consistent, I get <code>real 0.30s</code> almost all the time.</p>
+<p>Now let’s re-install the non-backdoored version of liblzma:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kali:~$ sudo apt update &amp;&amp; sudo apt install --yes liblzma5
+</span></span><span style="display:flex;"><span>[...]
+</span></span><span style="display:flex;"><span>Get:1 http://http.kali.org/kali kali-rolling/main amd64 liblzma5 amd64 5.6.1+really5.4.5-1 [240 kB]
+</span></span><span style="display:flex;"><span>[...]
+</span></span></code></pre></div><p>At the time of this writing, the version of the <code>lzma5</code> package in Kali rolling is <code>5.6.1+really5.4.5-1</code>, as shown above.</p>
+<p>Now, let’s try the SSH login again, and time it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>kali@kali:~$ time ssh nonexistant@localhost
+</span></span><span style="display:flex;"><span>nonexistant@localhost: Permission denied (publickey).
+</span></span><span style="display:flex;"><span>real 0.13s
+</span></span><span style="display:flex;"><span>user 0.05s
+</span></span><span style="display:flex;"><span>sys 0.00s
+</span></span><span style="display:flex;"><span>cpu 41%
+</span></span></code></pre></div><p>As we can see, the difference in timings is pretty clear, it’s much faster without the backdoor!</p>
+<h2 id="acknowledgments">Acknowledgments</h2>
+<p>As said in the introduction, this blog post is nothing new, it’s merely a step-by-step to reproduce some findings from the <a href="https://www.openwall.com/lists/oss-security/2024/03/29/4">original disclosure</a>. All the credits (massive credits actually) go to Andres Freund for the fantastic work and detailed report, and Vegard Nossum for the <code>detect.sh</code> script.</p>
+<h4 id="source"><a href="https://www.kali.org/blog/xz-backdoor-getting-started/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

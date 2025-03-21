@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Kali on KRACK</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Kali on KRACK</h1>
+			<b><time>19.10.2017 00:00</time></b>
+		       
+
+			<div>
+				<h1 id="kali-on-krack">Kali on KRACK</h1>
+<p><a href="https://www.kali.org/blog/kali-on-krack/images/kali-krack-wpa2-attack.jpg">https://www.kali.org/blog/kali-on-krack/images/kali-krack-wpa2-attack.jpg</a></p>
+<p>WPA2 Key Reinstallation AttaCK or KRACK attack Recently, Mathy Vanhoef of imec-DistriNet, KU Leuven, discovered a serious weakness in WPA2 known as the Key Reinstallation AttaCK (or KRACK) attack. Their overview, Key Reinstallation Attacks: Breaking WPA2 by forcing nonce reuse, and research paper (Key Reinstallation Attacks: Forcing Nonce Reuse in WPA2,</p>
+<h2 id="wpa2-key-reinstallation-attack-or-krack-attack">WPA2 Key Reinstallation AttaCK or KRACK attack</h2>
+<p>Recently, Mathy Vanhoef of imec-DistriNet, KU Leuven, discovered a serious weakness in WPA2 known as the <a href="https://www.krackattacks.com/">Key Reinstallation AttaCK (or KRACK) attack</a>. Their overview, Key Reinstallation Attacks: Breaking WPA2 by forcing nonce reuse, and research paper (<a href="https://papers.mathyvanhoef.com/ccs2017.pdf">Key Reinstallation Attacks: Forcing Nonce Reuse in WPA2, co-authored by Frank Piessens</a>) have created quite a stir in our industry because the press touts that it “breaks Wi-Fi”.</p>
+<p>There have been numerous articles written about this vulnerability, and we won’t rehash them here. However, we want to take a moment to talk about how this relates to Kali Linux, from a defensive, testing, and detection standpoint.</p>
+<h3 id="is-kali-linux-vulnerable">Is Kali Linux Vulnerable?</h3>
+<p>From a defensive standpoint, if you’re keeping up with your Kali Linux rolling updates (via a simple “apt update &amp;&amp; apt upgrade), you’re already patched against this vulnerability thanks to patches in <a href="https://packages.debian.org/buster/wpasupplicant">wpasupplicant</a> and <a href="https://packages.debian.org/buster/hostapd">hostapd</a> (both at 2.4-1.1). To be entirely clear: an <em>updated</em> version of Kali Linux is <em>not vulnerable</em> to this attack. You are keeping your Kali Linux system up-to-date, aren’t you?</p>
+<h3 id="how-do-i-test-for-the-vulnerability">How do I test for the Vulnerability?</h3>
+<p>With your Kali system updated, there are also some steps you can take to test for this vulnerability on your access points. <a href="https://github.com/vanhoefm/krackattacks-test-ap-ft">Mathy Vanhoef recently released a script</a> that can be run from Kali Linux to test whether or not your access point (AP) is affected by <a href="https://nvd.nist.gov/vuln/detail/CVE-2017-13082">CVE-2017-13082</a> or specifically the Key Reinstall in FT Handshake vulnerability found in 802.11r devices. The script requires that you authenticate to the access point, but bear in mind that it may incorrectly flag an AP as vulnerable due to “benign retransmissions of data frames”.</p>
+<h3 id="how-can-i-detect-attacks">How can I Detect Attacks?</h3>
+<p><a href="https://twitter.com/KismetWireless">Dragorn</a>, the author of the amazing <a href="https://kismetwireless.net/">Kismet</a>, has released lots of great information on the subject on <a href="https://www.kismetwireless.net/year-archive">his blog</a>, including excellent info about detecting KRACK attacks using Kismet. He explains that the <a href="https://github.com/kismetwireless/kismet">git-master version of Kismet</a> is, “introducing alerts to attempt to detect a Krack-style attack”.</p>
+<p><a href="https://www.kali.org/blog/kali-on-krack/images/krack-alert.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-on-krack/images/krack-alert.png" alt="" />
+</figure>
+
+
+</a></p>
+<p>These alerts track spoofed access points, multichannel access points, zero-length keys, zero nonce in a handshake, and nonce retransmission, all factors that could point to a KRACK attack in progress.</p>
+<p>Dragorn warns that since Kismet hops channels, it could miss handshake packets and therefore miss the attack. In addition, he says that false positives are still possible despite Kismet’s packet de-duplication and that once real proof-of-concept code is released for KRACK, the logic of these alerts may need to be adjusted.</p>
+<p>Dragorn also explains that, “it looks like you can still trip the kismet nonce detection w/ a packet flagged in the frame control as a retransmit” but despite these drawbacks, Kismet is still a decent system for detection of this and other Wi-Fi protocol attacks.</p>
+<p><a href="https://www.kali.org/blog/kali-on-krack/images/kistmet-krack-detect.png">
+<figure>
+  <img src="https://www.kali.org/blog/kali-on-krack/images/kistmet-krack-detect.png" alt="" />
+</figure>
+
+
+</a></p>
+<h4 id="to-install-the-git-master-version-of-kismet-on-kali-linux-follow-these-steps">To install the git-master version of Kismet on Kali Linux, follow these steps</h4>
+<p>First, tell networkmanager to ignore the Wi-Fi device by adding these lines:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ini" data-lang="ini"><span style="display:flex;"><span><span style="color:#66d9ef">[keyfile]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">unmanaged-devices</span><span style="color:#f92672">=</span><span style="color:#e6db74">interface-name:wlan0</span>
+</span></span></code></pre></div><p>to <code>/etc/NetworkManager/NetworkManager.conf</code></p>
+<p>Then, restart NetworkManager:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# systemctl restart NetworkManager
+</span></span></code></pre></div><p>Next, install updates and the git-master version of Kismet:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>root@kali:~# apt update
+</span></span><span style="display:flex;"><span>root@kali:~# apt upgrade
+</span></span><span style="display:flex;"><span>root@kali:~# git clone https://www.kismetwireless.net/git/kismet.git
+</span></span><span style="display:flex;"><span>root@kali:~# apt install build-essential libmicrohttpd-dev libnl-3-dev libnl-genl-3-dev libcap-dev libpcap-dev libncurses5-dev libnm-dev libdw-dev libsqlite3-dev
+</span></span><span style="display:flex;"><span>root@kali:~# cd kismet
+</span></span><span style="display:flex;"><span>root@kali:~# ./configure
+</span></span><span style="display:flex;"><span>root@kali:~# make
+</span></span><span style="display:flex;"><span>root@kali:~# make suidinstall
+</span></span><span style="display:flex;"><span>root@kali:~# /usr/local/bin/kismet_capture_tools/kismet_cap_linux_wifi --list
+</span></span><span style="display:flex;"><span>root@kali:~# kismet -c wlan0
+</span></span></code></pre></div><p>Next you can browse to <strong><em>http://localhost:2501</em></strong> to view the Kismet interface and any alerts. Be sure to log in with the credentials found in <code>~/.kismet/kismet_httpd.conf</code> to get full functionality. You can also build and run the capture tools on separate machines, allowing you to monitor from several endpoints and view the alerts on a single centralized server.</p>
+<p>Overall, this vulnerability is not the end of the world. As <a href="https://twitter.com/grifter801/status/920132813680193538">grifter801</a> puts it, this vulnerability encourages this shocking approach: <em>“Patch your stuff. Use 2FA. Use HTTPS.”</em> We couldn’t agree more.</p>
+<p>We also encourage you to consider the defensive, testing, and detection perspectives of any new vulnerability to help you become more aware of the finer details of the vulnerability, gain insight about it, and become part of the solution.</p>
+<p>Thanks to OffSec and Kali team member @Steev for the technical resources used in this article.</p>
+<h4 id="source"><a href="https://www.kali.org/blog/kali-on-krack/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
+				
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

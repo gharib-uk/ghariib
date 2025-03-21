@@ -43,8 +43,8 @@
 
 			<div>
 				<h1></h1>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+<p>Back in 2012, Mark and I detailed a number of iOS kernel mitigations that were introduced in iOS 6 to prevent an attacker from leveraging well-known exploitation techniques such as the zone free list pointer overwrite. Most of these mitigations rely on entropy (of varying degree) provided by the kernel, and are</p>
+<p>Back in 2012, <a href="http://conference.hackinthebox.org/hitbsecconf2012kul/materials/D1T2%20-%20Mark%20Dowd%20&amp;%20Tarjei%20Mandt%20-%20iOS6%20Security.pdf">Mark and I detailed</a> a number of iOS kernel mitigations that were introduced in iOS 6 to prevent an attacker from leveraging well-known exploitation techniques such as the zone free list pointer overwrite. Most of these mitigations rely on entropy (of varying degree) provided by the kernel, and are therefore supported by a separate random number generator known as the <strong>early_random()</strong> PRNG. As this generator is fundamental to the robustness of these mitigations, and has received additional improvements in iOS 7, it is unarguably a very interesting target that deserves further study.</p>
 <p>The initial version of the early random PRNG, found in iOS 6, leveraged a fairly simple generator that derived values directly from the CPU tick count and a seed (provided by iBoot). Although the generator was able to create somewhat unpredictable values, it had a serious defect in that the outputs were well-correlated, especially in the case of successively generated values. Additionally, the seed was only combined with the higher 32 bits of the output, hence the lower bits (typically the only part used on 32-bit iOS devices) were unaffected by the seed value. Thus, in an attempt to improve the early random PRNG in iOS 7, Apple decided to leverage an entirely new generator. Specifically, iOS 7 uses a <a href="http://en.wikipedia.org/wiki/Linear_congruential_generator">linear congruential generator</a>, a PRNG well-known both for its strengths and (notable) weaknesses.</p>
 <p>An LCG&rsquo;s quality is essentially determined by its choice of parameters. Although the early random PRNG is clearly inspired by glibc **random_r()**and ANSI C <strong>rand()</strong>, it is alarmingly weak in practice. Notably,<strong>early_random()</strong> in iOS 7 can only produce 2^19 unique outputs, with a maximum period of 2^17 (length of sequence of unique outputs, before it starts over). This is well below the size of the possible output space (64-bits), and may allow an attacker to predict values with very little effort. In particular, we found that an unprivileged attacker, even when confined by the most restrictive sandbox, can recover arbitrary outputs from the generator and consequently bypass all the exploit mitigations that rely on the early random PRNG. These findings have been detailed in the following <a href="http://mista.nu/research/early_random-slides.pdf">slides</a> and <a href="http://mista.nu/research/early_random-paper.pdf">white paper</a>, and includes suggestions on how to improve <strong>early_random()</strong> in future iOS versions.</p>
 <p>iPhone5S:~ mobile$ uname -a<br>
@@ -76,7 +76,6 @@ Darwin iPhone5S 14.0.0 Darwin Kernel Version 14.0.0: Fri Sep 27 23:08:32 PDT 201
 -&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&ndash;</p>
 <p>Labels: <a href="http://blog.azimuthsecurity.com/search/label/Exploitation">Exploitation</a>, <a href="http://blog.azimuthsecurity.com/search/label/iOS">iOS</a>, <a href="http://blog.azimuthsecurity.com/search/label/Kernel">Kernel</a>, <a href="http://blog.azimuthsecurity.com/search/label/PRNG">PRNG</a></p>
 <h4 id="source"><a href="https://www.azimuthsecurity.com/blog/2015/11/18/01o28qyfs55kh9rpj11bkn1thlmuf2">Source</a></h4>
-<!-- raw HTML omitted -->
 
 			</div>
 		</article>
@@ -89,15 +88,15 @@ Darwin iPhone5S 14.0.0 Darwin Kernel Version 14.0.0: Fri Sep 27 23:08:32 PDT 201
 		<div>
 			<ul>
 				
-				<li><a href="/posts/2025-03-20-laser-harp-sets-the-tone/">Laser Harp Sets the Tone</a></li>
+				<li><a href="/posts/2025-03-21-cve-2025-30345---openslides-cross-site-/">CVE-2025-30345 - OpenSlides Cross-Site Scripting XSS</a></li>
 				
-				<li><a href="/posts/2025-03-20-arduino-device-helps-split-the-g-on-a-p/">Arduino device helps split the G on a pint of Guinness</a></li>
+				<li><a href="/posts/2025-03-21-cve-2025-30342---openslides-cross-site-/">CVE-2025-30342 - OpenSlides Cross-Site Scripting XSS</a></li>
 				
-				<li><a href="/posts/2025-03-20-the-70-best-early-amazon-spring-sale-ga/">The 70 best early Amazon Spring Sale gaming deals 2025</a></li>
+				<li><a href="/posts/2025-03-21-cve-2025-30343---openslides-directory-t/">CVE-2025-30343 - OpenSlides Directory Traversal Vulnerability</a></li>
 				
-				<li><a href="/posts/2025-03-20-tomorrow-and-tomorrow-and-tomorrow-info/">Tomorrow and tomorrow and tomorrow Information security and the Baseball Hall of Fame</a></li>
+				<li><a href="/posts/2025-03-21-cve-2025-30344---openslides-timing-base/">CVE-2025-30344 - OpenSlides Timing-Based Authentication Bypass</a></li>
 				
-				<li><a href="/posts/2025-03-20-i-found-an-android-phone-that-can-convi/">I found an Android phone that can convince iPhone users to make the switch - and its not a flagship</a></li>
+				<li><a href="/posts/2025-03-21-cve-2024-50053---zohocorp-manageengine-/">CVE-2024-50053 - Zohocorp ManageEngine ServiceDesk Plus Stored Cross-Site Scripting</a></li>
 				
 			</ul>
 		</div>
