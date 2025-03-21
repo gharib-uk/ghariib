@@ -9,11 +9,11 @@ type: posts
 <br/>
 
 <br/>
-New generative AI models with a broad range of capabilities are emerging every week. In this world of rapid innovation, when choosing the models to integrate into your AI system, it is crucial to make a thoughtful risk assessment that ensures a balance between leveraging new advancements and maintaining robust
+Discover how Microsoft secures AI models on Azure AI Foundry, ensuring robust security and trustworthy deployments for your AI systems. The post Securing generative AI models on Azure AI Foundry appeared first on Microsoft Security Blog. 
 <br/>
-New generative AI models with a broad range of capabilities are emerging every week. In this world of rapid innovation, when choosing the models to integrate into your AI system, it is crucial to make a thoughtful risk assessment that ensures a balance between leveraging new advancements and maintaining robust security. At Microsoft, we are
+Discover how Microsoft secures AI models on Azure AI Foundry, ensuring robust security and trustworthy deployments for your AI systems.
 
-The post [Securing generative AI models on Azure AI Foundry](https://www.microsoft.com/en-us/security/blog/2025/03/04/securing-generative-ai-models-on-azure-ai-foundry/) appeared first on [Microsoft Azure Blog](https://azure.microsoft.com/en-us/blog).
+The post [Securing generative AI models on Azure AI Foundry](https://www.microsoft.com/en-us/security/blog/2025/03/04/securing-generative-ai-models-on-azure-ai-foundry/) appeared first on [Microsoft Security Blog](https://www.microsoft.com/en-us/security/blog).
 
 #### [Source](https://www.microsoft.com/en-us/security/blog/2025/03/04/securing-generative-ai-models-on-azure-ai-foundry/)
 

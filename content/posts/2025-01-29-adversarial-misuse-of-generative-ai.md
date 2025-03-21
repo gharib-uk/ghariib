@@ -19,7 +19,7 @@ We believe the private sector, governments, educational institutions, and other 
 
 aside\_block
 
-<ListValue: \[StructValue(\[('title', 'Adversarial Misuse of Generative AI'), ('body', <wagtail.rich\_text.RichText object at 0x3eda932ba1c0>), ('btn\_text', 'Download now'), ('href', 'https://services.google.com/fh/files/misc/adversarial-misuse-generative-ai.pdf'), ('image', <GAEImage: adversarial gen AI cover>)\])\]>
+<ListValue: \[StructValue(\[('title', 'Adversarial Misuse of Generative AI'), ('body', <wagtail.rich\_text.RichText object at 0x3e9738578e50>), ('btn\_text', 'Download now'), ('href', 'https://services.google.com/fh/files/misc/adversarial-misuse-generative-ai.pdf'), ('image', <GAEImage: adversarial gen AI cover>)\])\]>
 
 Executive Summary
 -----------------

@@ -17,7 +17,7 @@ type: posts
 
 Google has rolled out Chrome 134 to the stable channel, delivering critical security updates that resolve 14 vulnerabilities, including high-severity flaws that could enable browser crashes, data leak ... [_Read more_](https://cybersecuritynews.com/chrome-134-released-fixes-14-vulnerabilities/)
 
-**Published Date:** Mar 05, 2025 (2 weeks, 1 day ago)
+**Published Date:** Mar 05, 2025 (2 weeks, 2 days ago)
 
 Vulnerabilities has been mentioned in this article.
 

@@ -26,7 +26,7 @@ We're also introducing GoStringUngarbler, a command-line tool written in Python 
 
 aside\_block
 
-<ListValue: \[StructValue(\[('title', 'Get GoStringUngarbler!'), ('body', <wagtail.rich\_text.RichText object at 0x3eda95ebf040>), ('btn\_text', 'Download now'), ('href', 'https://github.com/mandiant/gostringungarbler'), ('image', None)\])\]>
+<ListValue: \[StructValue(\[('title', 'Get GoStringUngarbler!'), ('body', <wagtail.rich\_text.RichText object at 0x3e9763049310>), ('btn\_text', 'Download now'), ('href', 'https://github.com/mandiant/gostringungarbler'), ('image', None)\])\]>
 
 Garble Obfuscating Compiler
 ---------------------------
