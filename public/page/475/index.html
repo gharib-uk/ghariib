@@ -40,132 +40,148 @@
 		
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/macos-security-compliance-project-developer-conference/">macOS Security Compliance Project Developer Conference</a></h1>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-1-31-fine-grained-supplementalgroups-control/">Kubernetes 1.31: Fine-grained SupplementalGroups control</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>The National Institute of Standards and Technology will host a developer conference on Tuesday, March 25, and Wednesday, March 26, 2025. The event will focus on the macOS Security Compliance Project (mSCP) and is tailored for vendors developing</p>
-<p>Go to Source</p>
+		<p>This blog discusses a new feature in Kubernetes 1.31 to improve the handling of supplementary groups in containers within Pods.</p>
+<h2 id="motivation-implicit-group-memberships-defined-in-etcgroup-in-the-container-image">Motivation: Implicit group memberships defined in <code>/etc/group</code> in the container image</h2>
+<p>Although this behavior may not be popular with many Kubernetes cluster users/admins, kubernetes, by default, <em>merges</em> group information from the Pod with information defined in <code>/etc/group</code> in the container image.</p>
+<p>Let&rsquo;s see an example, below Pod specifies <code>runAsUser=1000</code>, <code>runAsGroup=3000</code> and <code>supplementalGroups=4000</code> in the Pod&rsquo;s security context.</p>
+		
+			<a href="https://ghariib.ir/posts/kubernetes-1-31-fine-grained-supplementalgroups-control/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/maltrail-malicious-traffic-detection-system/">maltrail – Malicious Traffic Detection System</a></h1>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-1-31-pod-failure-policy-for-jobs-goes-ga/">Kubernetes 1.31: Pod Failure Policy for Jobs Goes GA</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>Maltrail is a malicious traffic detection system, utilizing publicly available (black)lists containing malicious and/or generally suspicious trails, along with static trails compiled from various AV reports and custom user-defined lists, where trail can be anything from domain name (e.g. zvpprsensinaix.com for Banjori malware), URL (e.g. http://109.162.38.120/harsh02.exe for known malicious executable), IP address (e.g. 185.130.5.231 for […]</p>
-<p>Go to Source</p>
+		<p>This post describes <em>Pod failure policy</em>, which graduates to stable in Kubernetes 1.31, and how to use it in your Jobs.</p>
+<h2 id="about-pod-failure-policy">About Pod failure policy</h2>
+<p>When you run workloads on Kubernetes, Pods might fail for a variety of reasons. Ideally, workloads like Jobs should be able to ignore transient, retriable failures and continue running to completion.</p>
+<p>To allow for these transient failures, Kubernetes Jobs include the <code>backoffLimit</code> field, which lets you specify a number of Pod failures that you&rsquo;re willing to tolerate during Job execution. However, if you set a large value for the <code>backoffLimit</code> field and rely solely on this field, you might notice unnecessary increases in operating costs as Pods restart excessively until the backoffLimit is met.</p>
+		
+			<a href="https://ghariib.ir/posts/kubernetes-1-31-pod-failure-policy-for-jobs-goes-ga/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/malware-pushers-abuse-firefox-warning-page/">Malware Pushers Abuse Firefox Warning Page</a></h1>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-1-31-streaming-transitions-from-spdy-to-websockets/">Kubernetes 1.31: Streaming Transitions from SPDY to WebSockets</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>This is a pretty neat attack from the malware pushes leveraging on the ignorance of the average user – which in all honestly is a safe bet most of the time! You could consider it a Social Engineering attack as it’s taking something that’s familiar and changing it to deliver malware. I’m sure all the […]</p>
-<p>Go to Source</p>
+		<p>In Kubernetes 1.31, by default kubectl now uses the WebSocket protocol instead of SPDY for streaming.</p>
+<p>This post describes what these changes mean for you and why these streaming APIs matter.</p>
+<h2 id="streaming-apis-in-kubernetes">Streaming APIs in Kubernetes</h2>
+<p>In Kubernetes, specific endpoints that are exposed as an HTTP or RESTful interface are upgraded to streaming connections, which require a streaming protocol. Unlike HTTP, which is a request-response protocol, a streaming protocol provides a persistent connection that&rsquo;s bi-directional, low-latency, and lets you interact in real-time. Streaming protocols support reading and writing data between your client and the server, in both directions, over the same connection. This type of connection is useful, for example, when you create a shell in a running container from your local workstation and run commands in the container.</p>
+		
+			<a href="https://ghariib.ir/posts/kubernetes-1-31-streaming-transitions-from-spdy-to-websockets/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/mario-duarte-former-snowflake-cybersecurity-leader-joins-aembit-as-ciso-to-tackle-non-human-identities/">Mario Duarte, Former Snowflake Cybersecurity Leader, Joins Aembit as CISO to Tackle Non-Human Identities</a></h1>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-1-32-moving-volume-group-snapshots-to-beta/">Kubernetes 1.32: Moving Volume Group Snapshots to Beta</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>Aembit, the non-human IAM company, today announced the appointment of Mario Duarte as chief information security officer (CISO). Duarte, formerly head of security at Snowflake, joins Aembit with a deep commitment to address pressing gaps in non-human identity security.</p>
-<p>Duarte’s journey in cybersecurity began with a passion for penetration testing, sparked by the 1980s cult classic film WarGames. He started his career in red teaming, later expanding his expertise into both technical and leadership roles on the defensive side. Throughout his career, he has focused on protecting mission-critical systems, solving complex security problems, and developing and overseeing high-performing teams.</p>
+		<p>Volume group snapshots were introduced as an Alpha feature with the Kubernetes 1.27 release. The recent release of Kubernetes v1.32 moved that support to <strong>beta</strong>. The support for volume group snapshots relies on a set of extension APIs for group snapshots. These APIs allow users to take crash consistent snapshots for a set of volumes. Behind the scenes, Kubernetes uses a label selector to group multiple PersistentVolumeClaims for snapshotting. A key aim is to allow you restore that set of snapshots to new volumes and recover your workload based on a crash consistent recovery point.</p>
 		
-			<a href="https://ghariib.ir/posts/mario-duarte-former-snowflake-cybersecurity-leader-joins-aembit-as-ciso-to-tackle-non-human-identities/">Read more...</a>
+			<a href="https://ghariib.ir/posts/kubernetes-1-32-moving-volume-group-snapshots-to-beta/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/massive-celeb-leak-brings-icloud-security-into-question/">Massive Celeb Leak Brings iCloud Security Into Question</a></h1>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-31-kubeadm-v1beta4/">Kubernetes v1.31: kubeadm v1beta4</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>So this leak has caused quite a furore, normally I don’t pay attention to this stuff – but hey it’s JLaw and it’s a LOT of celebs at the same time – which indicates some kind of underlying problem. The massive list of over 100 celebs was posted originally on 4chan (of course) by an […]</p>
-<p>Go to Source</p>
+		<p>As part of the Kubernetes v1.31 release, <code>kubeadm</code> is adopting a new (v1beta4) version of its configuration file format. Configuration in the previous v1beta3 format is now formally deprecated, which means it&rsquo;s supported but you should migrate to v1beta4 and stop using the deprecated format. Support for v1beta3 configuration will be removed after a minimum of 3 Kubernetes minor releases.</p>
+<p>In this article, I&rsquo;ll walk you through key changes; I&rsquo;ll explain about the kubeadm v1beta4 configuration format, and how to migrate from v1beta3 to v1beta4.</p>
+		
+			<a href="https://ghariib.ir/posts/kubernetes-v1-31-kubeadm-v1beta4/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/master-incident-response-with-hands-on-training-in-ir-200-foundational-incident-response/">Master Incident Response with Hands-On Training in IR-200: Foundational Incident Response</a></h1>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-31-new-kubernetes-cpumanager-static-policy-distribute-cpus-across-cores/">Kubernetes v1.31: New Kubernetes CPUManager Static Policy: Distribute CPUs Across Cores</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>OffSec is excited to announce the immediate availability of a new course: IR-200: Foundational Incident Response.</p>
-<p>The post Master Incident Response with Hands-On Training in IR-200: Foundational Incident Response appeared first on OffSec.</p>
-<p>Go to Source</p>
+		<p>In Kubernetes v1.31, we are excited to introduce a significant enhancement to CPU management capabilities: the <code>distribute-cpus-across-cores</code> option for the CPUManager static policy. This feature is currently in alpha and hidden by default, marking a strategic shift aimed at optimizing CPU utilization and improving system performance across multi-core processors.</p>
+<h2 id="understanding-the-feature">Understanding the feature</h2>
+<p>Traditionally, Kubernetes&rsquo; CPUManager tends to allocate CPUs as compactly as possible, typically packing them onto the fewest number of physical cores. However, allocation strategy matters, CPUs on the same physical host still share some resources of the physical core, such as the cache and execution units, etc.</p>
+		
+			<a href="https://ghariib.ir/posts/kubernetes-v1-31-new-kubernetes-cpumanager-static-policy-distribute-cpus-across-cores/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/matrix-breakout-2-morpheus/">Matrix-Breakout: 2 Morpheus</a></h1>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-adds-a-new-cpu-manager-static-policy-option-for-strict-cpu-reservation/">Kubernetes v1.32 Adds A New CPU Manager Static Policy Option For Strict CPU Reservation</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>This is the second in the Matrix-Breakout series, subtitled Morpheus:1. It’s themed as a throwback to the first Matrix movie. You play Trinity, trying to investigate a computer on the Nebuchadnezzar that Cypher has locked everyone else out from, which holds the key to a mystery.</p>
-<p>VulnHub</p>
-<p>Go to Source</p>
+		<p>In Kubernetes v1.32, after years of community discussion, we are excited to introduce a <code>strict-cpu-reservation</code> option for the CPU Manager static policy. This feature is currently in alpha, with the associated policy hidden by default. You can only use the policy if you explicitly enable the alpha behavior in your cluster.</p>
+<h2 id="understanding-the-feature">Understanding the feature</h2>
+<p>The CPU Manager static policy is used to reduce latency or improve performance. The <code>reservedSystemCPUs</code> defines an explicit CPU set for OS system daemons and kubernetes system daemons. This option is designed for Telco/NFV type use cases where uncontrolled interrupts/timers may impact the workload performance. you can use this option to define the explicit cpuset for the system/kubernetes daemons as well as the interrupts/timers, so the rest CPUs on the system can be used exclusively for workloads, with less impact from uncontrolled interrupts/timers. More details of this parameter can be found on the Explicitly Reserved CPU List page.</p>
+		
+			<a href="https://ghariib.ir/posts/kubernetes-v1-32-adds-a-new-cpu-manager-static-policy-option-for-strict-cpu-reservation/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/maximizing-value-with-kubernetes-as-a-product-fulfilling-the-promise-of-the-cloud-giant-swarm/">Maximizing value with Kubernetes-as-a-Product: fulfilling the promise of the cloud » Giant Swarm</a></h1>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-sneak-peek/">Kubernetes v1.32 sneak peek</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>The cloud and DevOps promised to make our infrastructure faster, cheaper and easier. However, in many organizations, this promise, unfortunately, fell short. Engineering teams find themselves trapped in a cycle of duplicating infrastructure, agonizing over the tools and components for each &lsquo;unique&rsquo; use case, grappling with security concerns, and ultimately navigating the complex realm of operations. In some cases, disillusioned organizations are even retracting workloads from the cloud – a scenario exemplified by the well-known case of 37Signals.</p>
+		<p>As we get closer to the release date for Kubernetes v1.32, the project develops and matures. Features may be deprecated, removed, or replaced with better ones for the project&rsquo;s overall health.</p>
+<p>This blog outlines some of the planned changes for the Kubernetes v1.32 release, that the release team feels you should be aware of, for the continued maintenance of your Kubernetes environment and keeping up to date with the latest changes. Information listed below is based on the current status of the v1.32 release and may change before the actual release date.</p>
 		
-			<a href="https://ghariib.ir/posts/maximizing-value-with-kubernetes-as-a-product-fulfilling-the-promise-of-the-cloud-giant-swarm/">Read more...</a>
+			<a href="https://ghariib.ir/posts/kubernetes-v1-32-sneak-peek/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/meet-orbit-mozillas-ai-assistant-extension-for-firefox/">Meet Orbit, Mozilla’s AI Assistant Extension for Firefox</a></h1>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-memory-manager-goes-ga/">Kubernetes v1.32: Memory Manager Goes GA</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>
-<figure>
-  <img src="https://i0.wp.com/www.omgubuntu.co.uk/wp-content/uploads/2024/12/orbit-extension-for-firefox.jpg?resize=406%2C232&amp;ssl=1" alt="" />
-</figure>
-
-
-Orbit by Mozilla is a new AI-powered assistant for the Firefox web browser that makes summarising web content while you browse as easy as clicking a button. After all, why read an article to understand what it says when you can read an AI summary rephrasing the article instead? ;) Mozilla’s AI assistant Orbit is currently a beta product and available to install from the Firefox add-ons site where the extension, which works on Firefox for Windows, macOS, and Linux, is pitched thus: Orbit empowers you to stay informed and efficient by delivering the information you need in a condensed […]</p>
+		<p>With Kubernetes 1.32, the memory manager has officially graduated to General Availability (GA), marking a significant milestone in the journey toward efficient and predictable memory allocation for containerized applications. Since Kubernetes v1.22, where it graduated to beta, the memory manager has proved itself reliable, stable and a good complementary feature for the CPU Manager.</p>
+<p>As part of kubelet&rsquo;s workload admission process, the memory manager provides topology hints to optimize memory allocation and alignment. This enables users to allocate exclusive memory for Pods in the Guaranteed QoS class. More details about the process can be found in the memory manager goes to beta blog.</p>
 		
-			<a href="https://ghariib.ir/posts/meet-orbit-mozillas-ai-assistant-extension-for-firefox/">Read more...</a>
+			<a href="https://ghariib.ir/posts/kubernetes-v1-32-memory-manager-goes-ga/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/melissa-midzor-named-director-of-nists-communications-technology-laboratory/">Melissa Midzor Named Director of NIST’s Communications Technology Laboratory</a></h1>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-penelope/">Kubernetes v1.32: Penelope</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>The lab focuses on advancing communications technology through research and development in core network technologies, next-generation wireless systems, public safety communications, smart infrastructure and spectrum sharing.</p>
-<p>Go to Source</p>
+		<p><strong>Editors:</strong> Matteo Bianchi, Edith Puclla, William Rizzo, Ryota Sawada, Rashan Smith</p>
+<p>Announcing the release of Kubernetes v1.32: Penelope!</p>
+<p>In line with previous releases, the release of Kubernetes v1.32 introduces new stable, beta, and alpha features. The consistent delivery of high-quality releases underscores the strength of our development cycle and the vibrant support from our community. This release consists of 44 enhancements in total. Of those enhancements, 13 have graduated to Stable, 12 are entering Beta, and 19 have entered in Alpha.</p>
+		
+			<a href="https://ghariib.ir/posts/kubernetes-v1-32-penelope/">Read more...</a>
 		
 	</div>
 </article>
@@ -175,7 +191,7 @@ Orbit by Mozilla is a new AI-powered assistant for the Firefox web browser that 
 
 	<a href="/page/474/">Previous Page</a>
 
-475 of 553
+475 of 554
 
 	<a href="/page/476/">Next Page</a>
 

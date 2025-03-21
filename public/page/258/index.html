@@ -40,110 +40,190 @@
 		
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/repairing-a-real-and-broken-apollo-era-dsky/">Repairing a Real (and Broken) Apollo-era DSKY</a></h1>
+	<h1><a href="https://ghariib.ir/posts/openctf-headon/">OpenCTF : HeadOn</a></h1>
 	<b><time>15.01.2025 00:00</time></b>
 	
-	<a href="/tags/technology">technology</a>
+	<div>
+		<p><strong>Category:</strong> Forensics</p>
+<p><strong>Points:</strong> 50</p>
+<p><strong>Description:</strong></p>
+<pre tabindex="0"><code>Apply directly to the console
+https://scoreboard.openctf.com/HeadOn-ac8890852965d787f7591bc10add61bb01efb5eb
+</code></pre><p><strong>File Download:</strong> HeadOn-ac8890852965d787f7591bc10add61bb01efb5eb</p>
+<pre tabindex="0"><code>$ file blob 
+blob: data
+</code></pre><p>I also try running <code>strings</code> on the file, but I don’t find anything interesting.</p>
+<p>Let’s try binwalk. If you have never heard of binwalk, it is a fantastic tool for solving forensics challenges. It goes through files of any type, looking for known magic cookies to help identify when one file type is embedded in another. For example, you may be given an ELF file, that has a jpeg embedded in it, binwalk will be able to find it, assuming the file is not encoded or encrypted in some way.</p>
+		
+			<a href="https://ghariib.ir/posts/openctf-headon/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/openctf-mbrtetris/">OpenCTF : mbrtetris</a></h1>
+	<b><time>15.01.2025 00:00</time></b>
+	
+	<a href="/tags/ces">ces</a>
+	
+	<div>
+		<p><strong>Category:</strong> Forensics</p>
+<p><strong>Points:</strong> 25</p>
+<p><strong>Description:</strong></p>
+<pre tabindex="0"><code>boot this on baremetal. - https://kajer.openctf.com/tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6
+</code></pre><p><strong>File Download:</strong> tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6</p>
+<p>I start by running the <code>file</code> command:</p>
+<pre tabindex="0"><code>$ file tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6 
+tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6: DOS/MBR boot sector; partition 1 : ID=0x7, start-CHS (0x0,33,3), end-CHS (0x1,124,22), startsector 2048, 20480 sectors
+</code></pre><p>Ok, let’s try mounting this:</p>
+<pre tabindex="0"><code>$ sudo mount tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6 /mnt
+mount: /mnt: wrong fs type, bad option, bad superblock on /dev/loop19, missing codepage or helper program, or other error.
+</code></pre><p>Hmm, I use some Google-fu, and I stumble upon this useful article on major.io. As the article suggests, let’s run fdisk to calculate the offset.</p>
+		
+			<a href="https://ghariib.ir/posts/openctf-mbrtetris/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/openctf-nightmare-50/">OpenCTF : Nightmare 50</a></h1>
+	<b><time>15.01.2025 00:00</time></b>
+	
+	<div>
+		<p><strong>Category:</strong> Web</p>
+<p><strong>Points:</strong> 50</p>
+<p><strong>Description:</strong></p>
+<pre tabindex="0"><code>Automated home work scoring my ass. https://shades-of-nightmare.openctf.com/nzpoixyucvkjwnerntasdfascdvasdfqwerqwe/nightmare-50/
+</code></pre><p>When connecting to this website in my browser, I receive the following prompt:</p>
+<pre tabindex="0"><code>Welcome to Doctor Professor Wilson&#39;s Python 101!
+Lesson 1: hello world
+Enter homework for grading:
+</code></pre><p>So it looks like this will execute the Python code you provide. So I test it with the following:</p>
+<pre tabindex="0"><code>Welcome to Doctor Professor Wilson&#39;s Python 101!
+Lesson 1: hello world
+Enter homework for grading:
+print(&#39;Hello world&#39;)
+Hello world
+</code></pre><p>And then it immediately closes the connection. So it looks like it only allows a single line of Python code.</p>
+		
+			<a href="https://ghariib.ir/posts/openctf-nightmare-50/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/openctf-sql-10/">OpenCTF : SQL 10</a></h1>
+	<b><time>15.01.2025 00:00</time></b>
+	
+	<div>
+		<p><strong>Category:</strong> Web</p>
+<p><strong>Points:</strong> 10</p>
+<p><strong>Description:</strong></p>
+<pre tabindex="0"><code>https://sql-mayham.openctf.com/ziopxuoiwquyerhnszpasdyvzlkxcjlwerqwer/sql-10/
+</code></pre><p>When <code>1</code> is entered it returns the following row:</p>
+<pre tabindex="0"><code>Enter a badge number to view that officers file:1
+(1, &#39;bob&#39;, &#39;simmons&#39;, &#39;none&#39;)
+</code></pre><p>Performing a basic sql injection we got the same row back but no error. The server only returns 1 row</p>
+<pre tabindex="0"><code>Enter a badge number to view that officers file:1 or 1=1
+(1, &#39;bob&#39;, &#39;simmons&#39;, &#39;none&#39;)
+</code></pre><p>Entering an ID of 2 no results are found.</p>
+<pre tabindex="0"><code>Enter a badge number to view that officers file:2 
+None
+</code></pre><p>Using the sql injection an OR was added to say “id&gt;2”</p>
+		
+			<a href="https://ghariib.ir/posts/openctf-sql-10/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/outlook-forensic-toolbox-helps-access-deleted-messages/">Outlook Forensic Toolbox Helps Access Deleted Messages</a></h1>
+	<b><time>15.01.2025 00:00</time></b>
+	
+	<a href="/tags/ces">ces</a>
+	
+	<a href="/tags/data-recovery">data-recovery</a>
+	
+	<a href="/tags/outlook-forensics">outlook-forensics</a>
 	
 	<div>
 		<p>
 <figure>
-  <img src="https://hackaday.com/wp-content/uploads/2025/01/apollo_dsky_unit_on_desk_curiousmarc_youtube.jpg?w=800" alt="" />
+  <img src="https://blog.elcomsoft.com/wp-content/uploads/2024/10/media-outlook.png" alt="" />
 </figure>
 
 
 </p>
-<!-- raw HTML omitted -->
-<p>
-<figure>
-  <img src="https://hackaday.com/wp-content/uploads/2025/01/apollo_dsky_unit_in_MIT_simulator.jpg?w=400" alt="" />
-</figure>
-
-
-</p>
-<!-- raw HTML omitted -->
-<p>Presumably the same DSKY unit installed in the simulator at MIT.</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p>The Display/Keyboard unit – DSKY for short – is the primary way that Apollo-era astronauts communicated with the onboard computers. Not all DSKYs ended up in space, however, with the MIT hosting a simulator that features one of these units. Unfortunately the unit that ended up at [CuriousMarc]’s lab had seen better days, with the assumption being that it was the same DSKY that was installed in a photo of the old simulator. In addition to the busted EL display and two (improper) replacement keys, the insides show signs of damaged modules and possibly worse.</p>
+<p>What can a forensic expert find in an Outlook data file? Can they recover deleted emails, contacts and appointments from Microsoft Outlook? Can users erase unwanted correspondence from Outlook? In this article, we’ll demonstrate how experts can recover valuable information from Outlook data files (PST/OST), including deleted emails, contacts, attachments, and appointments. Even when users attempt to erase unwanted correspondence, traces often remain within the database. With the right tools, experts can extract and analyze this hidden data to uncover critical evidence.</p>
 		
-			<a href="https://ghariib.ir/posts/repairing-a-real-and-broken-apollo-era-dsky/">Read more...</a>
+			<a href="https://ghariib.ir/posts/outlook-forensic-toolbox-helps-access-deleted-messages/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/researchers-expose-noneuclid-rat-using-uac-bypass-and-amsi-evasion-techniques/">Researchers Expose NonEuclid RAT Using UAC Bypass and AMSI Evasion Techniques</a></h1>
+	<h1><a href="https://ghariib.ir/posts/password-breaking-a-to-z/">Password Breaking A to Z</a></h1>
 	<b><time>15.01.2025 00:00</time></b>
 	
-	<a href="/tags/cybercrime-malcode">cybercrime-malcode</a>
+	<a href="/tags/comprehensive">comprehensive</a>
+	
+	<a href="/tags/edpr">edpr</a>
+	
+	<a href="/tags/passwords">passwords</a>
 	
 	<div>
 		<p>
 <figure>
-  <img src="https://lifeboat.com/blog.images/researchers-expose-noneuclid-rat-using-uac-bypass-and-amsi-evasion-techniques.jpg" alt="" />
+  <img src="https://blog.elcomsoft.com/wp-content/uploads/2024/07/passwords-az.jpg" alt="" />
 </figure>
 
 
 </p>
-<p>NonEuclid RAT: C# malware offering remote access, antivirus bypass, and ransomware, active since November 2024.</p>
-<p>Read more</p>
-<p>Go to Source</p>
+<p>Our blog features numerous articles on breaking passwords and accessing encrypted data, ranging from simple “how-to” guides to comprehensive manuals. However, many of the questions we are frequently asked are not about the technical stuff but rather the very basics of password recovery. Can you break that password? Is it legal? How much time do you think it will take to break this one? We do have the answers, but they require digging through the extensive content of our blog. To address this, we’ve created a comprehensive A to Z article that not only answers many common questions but also links to our previous posts.</p>
+		
+			<a href="https://ghariib.ir/posts/password-breaking-a-to-z/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/rsync-remote-code-execution-and-related-vulnerability-fixes-available/">Rsync remote code execution and related vulnerability fixes available</a></h1>
+	<h1><a href="https://ghariib.ir/posts/passwords-101-dont-enter-your-passwords-just-anywhere-theyre-asked-for-kaspersky-official-blog/">Passwords 101: don’t enter your passwords just anywhere they’re asked for | Kaspersky official blog</a></h1>
 	<b><time>15.01.2025 00:00</time></b>
 	
+	<a href="/tags/cybersecurity">cybersecurity</a>
+	
+	<a href="/tags/data_breaches">data_breaches</a>
+	
+	<a href="/tags/infostealers">infostealers</a>
+	
+	<a href="/tags/linux">linux</a>
+	
+	<a href="/tags/malware">malware</a>
+	
+	<a href="/tags/privacy">privacy</a>
+	
+	<a href="/tags/security">security</a>
+	
+	<a href="/tags/siem">siem</a>
+	
 	<div>
-		<p>Security researchers at Google (Pedro Gallegos, Simon Scannell, and Jasiel Spelman) discovered vulnerabilities in the rsync server and rsync client. The rsync server vulnerabilities (CVE-2024-12084 and CVE-2024-12085) ultimately allow remote code execution (RCE). The rsync client vulnerabilities allow a malicious server to read arbitrary files (CVE-2024-12086), create unsafe symlinks (CVE-2024-12087) and overwrite arbitrary files in certain circumstances (CVE-2024-12088).</p>
-<p>During the coordinated vulnerability response of the above issues, a sixth vulnerability (CVE-2024-12747) which affects how the rsync server handles symlinks was reported by Aleksei Gorban.</p>
+		<p>Learn how to distinguish a fraudulent site from a real one.</p>
+<p>Whenever you’re asked to log in to an online service, verify your identity, or download a document through a link, you’re usually required to enter your username and password. This is so common that most of us do it automatically without thinking twice. However, scammers can trick you into giving them passwords for your email, government service websites, banking services, or social networks by mimicking the service’s login form on their own (third-party) website. Don’t fall for it: only the email service itself can ask to verify your email password — no one else! The same applies to government services, banks, and social networks.</p>
 		
-			<a href="https://ghariib.ir/posts/rsync-remote-code-execution-and-related-vulnerability-fixes-available/">Read more...</a>
+			<a href="https://ghariib.ir/posts/passwords-101-dont-enter-your-passwords-just-anywhere-theyre-asked-for-kaspersky-official-blog/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/scammers-exploit-california-wildfires-how-to-stay-safe/">Scammers Exploit California Wildfires: How to Stay Safe</a></h1>
-	<b><time>15.01.2025 00:00</time></b>
-	
-	<a href="/tags/technology">technology</a>
-	
-	<div>
-		<p>
-<figure>
-  <img src="https://www.mcafee.com/blogs/wp-content/uploads/2024/08/300x200_Blog_081424-B.png" alt="" />
-</figure>
-
-
-</p>
-<p>The devastating wildfires sweeping through Southern California have left countless neighborhoods in ruins, forcing thousands to evacuate and destroying homes in their path. While many people across the nation are moved to support those affected, this goodwill often becomes a target for opportunistic cybercriminals. McAfee researchers have discovered that social media networks have been flooded with deceptive images, showing how cryptocurrencies can be used to make donations for fire relief efforts. We believe these to be scams trying to dupe consumers. McAfee CTO, Steve Grobman says, “It’s really unfortunate because it’s such a tragic event, and we’re seeing cybercriminals and scammers take advantage of the situation in a whole host of ways, from fake GoFundMe sites to fraudulent campaign donation pages.”</p>
-		
-			<a href="https://ghariib.ir/posts/scammers-exploit-california-wildfires-how-to-stay-safe/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/securing-federal-networks-evolving-to-an-enterprise-approach/">Securing Federal Networks: Evolving to an Enterprise Approach</a></h1>
-	<b><time>15.01.2025 00:00</time></b>
-	
-	<div>
-		<p>Go to Source</p>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/separating-broadcast-from-cheater-identification/">Separating Broadcast from Cheater Identification</a></h1>
+	<h1><a href="https://ghariib.ir/posts/pre-sieve-partial-guess-and-accurate-estimation-full-round-related-key-impossible-boomerang-attack-on-aradi/">Pre-sieve, Partial-guess, and Accurate estimation: Full-round Related-key Impossible Boomerang Attack on ARADI</a></h1>
 	<b><time>15.01.2025 00:00</time></b>
 	
 	<a href="/tags/cryptography">cryptography</a>
@@ -151,74 +231,54 @@
 	<a href="/tags/security">security</a>
 	
 	<div>
-		<p>ePrint Report: <strong>Separating Broadcast from Cheater Identification</strong><br>
-<em>Yashvanth Kondi, Divya Ravi</em></p>
-<p>Secure Multiparty Computation (MPC) protocols that achieve Identifiable Abort (IA) guarantee honest parties that in the event that they are denied output, they will be notified of the identity of at least one corrupt party responsible for the abort. Cheater identification provides recourse in the event of a protocol failure, and in some cases can even be desired over Guaranteed Output Delivery. However, protocols in the literature typically make use of broadcast as a necessary tool in identifying cheaters. In many deployments, the broadcast channel itself may be the most expensive component.</p>
+		<p>ePrint Report: <strong>Pre-sieve, Partial-guess, and Accurate estimation: Full-round Related-key Impossible Boomerang Attack on ARADI</strong><br>
+<em>Xichao Hu, Lin Jiao</em></p>
+<p>The impossible boomerang attack is a very powerful attack, and the existing results show that it is more effective than the impossible differential attack in the related-key scenario. However, in the current key recovery process, the details of a block cipher are ignored, only fixed keys are pre-guessed, and the time complexity of the early abort technique is roughly estimated. These limitations are obstacles to the broader application of impossible boomerang attack. In this paper, we propose the pre-sieving technique, partial pre-guess key technique and precise complexity evaluation technique. For the pre-sieving technique, we capitalize on the specific features of both the linear layer and the nonlinear layer to expeditiously filter out the impossible quartets at the earliest possible stage. Regarding the partial pre-guess key technique, we are able to selectively determine the keys that require guessing according to our requirements. Moreover, the precise complexity evaluation technique empowers us to explicitly compute the complexity associated with each step of the attack. We integrate these techniques and utilize them to launch an attack on ARADI, which is a low-latency block cipher proposed by the NSA (National Security Agency) in 2024 for the purpose of memory encryption. Eventually, we achieve the first full-round attack with a data complexity of $2^{130}$, a time complexity of $2^{254.81}$, and a memory complexity of $2^{252.14}$. None of the previous key recovery methods have been able to attain such an outcome, thereby demonstrating the high efficacy of our new technique.</p>
 		
-			<a href="https://ghariib.ir/posts/separating-broadcast-from-cheater-identification/">Read more...</a>
+			<a href="https://ghariib.ir/posts/pre-sieve-partial-guess-and-accurate-estimation-full-round-related-key-impossible-boomerang-attack-on-aradi/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/sideloading-low-level-extraction-agent-with-regular-apple-ids-from-windows-and-linux/">Sideloading Low-Level Extraction Agent with Regular Apple IDs from Windows and Linux</a></h1>
+	<h1><a href="https://ghariib.ir/posts/predictions-for-2025-what-matters-for-your-human-risk-strategy/">Predictions for 2025: What Matters for Your Human Risk Strategy</a></h1>
 	<b><time>15.01.2025 00:00</time></b>
 	
-	<a href="/tags/ces">ces</a>
+	<a href="/tags/culture">culture</a>
 	
-	<a href="/tags/chips">chips</a>
+	<a href="/tags/cyber_crime">cyber_crime</a>
 	
-	<a href="/tags/eift">eift</a>
+	<a href="/tags/cyber_maniac">cyber_maniac</a>
 	
-	<a href="/tags/extraction-agent">extraction-agent</a>
+	<a href="/tags/digital-risk">digital-risk</a>
 	
-	<a href="/tags/macos">macos</a>
+	<a href="/tags/human-resilience">human-resilience</a>
 	
-	<a href="/tags/storage">storage</a>
+	<a href="/tags/human-risk-management">human-risk-management</a>
 	
-	<a href="/tags/windows">windows</a>
+	<a href="/tags/psychology">psychology</a>
+	
+	<a href="/tags/risk-and-resilience">risk-and-resilience</a>
+	
+	<a href="/tags/risk-management">risk-management</a>
 	
 	<div>
 		<p>
 <figure>
-  <img src="https://blog.elcomsoft.com/wp-content/uploads/2024/07/EIFT-8.60_1200x630.jpg" alt="" />
+  <img src="https://cybermaniacs.com/hubfs/Blog%20Header%20Graphics/9%20Ideas%20for%20Cyber%20Security%20Awareness%20Month.jpg" alt="Predictions for 2025: What Matters for Your Human Risk Strategy" />
 </figure>
 
 
 </p>
-<p>Low-level extraction enables access to all the data stored in the iOS device. Previously, sideloading the extraction agent for imaging the file system and decrypting keychain required enrolling one’s Apple ID into Apple’s paid Developer Program if one used a Windows or Linux PC. Mac users could utilize a regular, non-developer Apple ID. Today, we are bringing this feature to Windows and Linux editions of iOS Forensic Toolkit.</p>
-<p>While there are several different methods achieving essentially the same goal, modern devices (starting with those based on the chip found in the iPhone Xr/Xs) require the use of a special app called extraction agent. On the device, the extraction agent attempts to acquire the required level of privileges by utilizing a chain of exploits, which is an absolute requirement for accessing the root of the file system.</p>
-		
-			<a href="https://ghariib.ir/posts/sideloading-low-level-extraction-agent-with-regular-apple-ids-from-windows-and-linux/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/simplehelp-urgents-to-patch-critical-security-vulnerabilities/">SimpleHelp Urgents to Patch Critical Security Vulnerabilities</a></h1>
-	<b><time>15.01.2025 00:00</time></b>
-	
-	<a href="/tags/cve">cve</a>
-	
-	<a href="/tags/cybersecurity">cybersecurity</a>
-	
-	<a href="/tags/security">security</a>
-	
-	<div>
-		<h3 id="simplehelp-urgents-to-patch-critical-security-vulnerabilities">SimpleHelp Urgents to Patch Critical Security Vulnerabilities</h3>
+<p>We love predictions. They’re equal parts art and science, a kaleidoscope of insight, pattern recognition, and a touch of bold speculation. As we dive into 2025, we’re reminded of one iron law of cybersecurity: everything gets bigger, badder, and faster year after year.</p>
 <p>
 <figure>
-  <img src="https://upload.cvefeed.io/news/24185/thumbnail.jpg" alt="" />
+  <img src="https://track.hubspot.com/__ptq.gif?a=20922849&amp;k=14&amp;r=https%3A%2F%2Fcybermaniacs.com%2Fcm-blog%2Fpredictions-for-2025-what-they-mean-for-your-human-risk-strategy&amp;bu=https%253A%252F%252Fcybermaniacs.com%252Fcm-blog&amp;bvt=rss" alt="" />
 </figure>
 
 
 </p>
-<p>Security researcher Naveen Sunkavally of Horizon3.ai has identified critical vulnerabilities in SimpleHelp, a popular remote support software tool. These flaws, if exploited, could allow attackers to &hellip; <em>Read more</em></p>
-<p><strong>Published Date:</strong> Jan 15, 2025 (5 hours, 33 minutes ago)</p>
-<p>Vulnerabilities has been mentioned in this article.</p>
-<p>CVE-2024-55591 CVE-2025-0070 CVE-2025-0066</p>
 <p>Go to Source</p>
 		
 	</div>
@@ -226,30 +286,21 @@
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/simplify-ai-development-with-the-model-context-protocol-and-docker/">Simplify AI Development with the Model Context Protocol and Docker</a></h1>
+	<h1><a href="https://ghariib.ir/posts/prfs-prps-and-other-fantastic-things/">PRFs, PRPs and other fantastic things</a></h1>
 	<b><time>15.01.2025 00:00</time></b>
 	
-	<div>
-		<p><em>This ongoing</em> <em>Docker Labs GenAI series</em> <em>explores the exciting space of AI developer tools. At Docker, we believe there is a vast scope to explore, openly and without the hype. We will share our explorations and collaborate with the developer community in real time. Although developers have adopted autocomplete tooling like GitHub Copilot and use chat, there is significant potential for AI tools to assist with more specific tasks and interfaces throughout the entire software lifecycle. Therefore, our exploration will be broad. We will be releasing software as open source so you can play, explore, and hack with us, too.</em></p>
-		
-			<a href="https://ghariib.ir/posts/simplify-ai-development-with-the-model-context-protocol-and-docker/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/smishing-beyond-trust-cryptoreligion-aviatrix-azure-josh-marpet-and-more-swn-442/">Smishing, Beyond Trust, CryptoReligion, Aviatrix, Azure, Josh Marpet, and more... - SWN #442</a></h1>
-	<b><time>15.01.2025 00:00</time></b>
+	<a href="/tags/ces">ces</a>
 	
-	<a href="/tags/aiml">aiml</a>
+	<a href="/tags/edge">edge</a>
 	
-	<a href="/tags/phishing">phishing</a>
+	<a href="/tags/eu">eu</a>
 	
-	<a href="/tags/vulnerability-management">vulnerability-management</a>
+	<a href="/tags/provable-security">provable-security</a>
 	
 	<div>
-		<p>Go to Source</p>
+		<p>A few weeks ago I ran into a conversation on Twitter about the weaknesses of applied cryptography textbooks, and how they tend to spend way too much time lecturing people about Feistel networks and the boring details of AES. Some of the folks in this conversation suggested that instead of these things, we should be digging into more fundamental topics like “what is a pseudorandom function.” (I’d link to the thread itself, but today’s Twitter is basically a forgetting machine.)</p>
+		
+			<a href="https://ghariib.ir/posts/prfs-prps-and-other-fantastic-things/">Read more...</a>
 		
 	</div>
 </article>
@@ -259,7 +310,7 @@
 
 	<a href="/page/257/">Previous Page</a>
 
-258 of 553
+258 of 554
 
 	<a href="/page/259/">Next Page</a>
 

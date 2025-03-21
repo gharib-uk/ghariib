@@ -40,17 +40,17 @@
 		
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/on-the-gap-between-terms-in-an-addition-chain/">On the gap between terms in an addition chain</a></h1>
+	<h1><a href="https://ghariib.ir/posts/microsoft-shares-insights-from-red-teaming-100-genai-products/">Microsoft shares insights from red teaming 100 GenAI products</a></h1>
 	<b><time>15.01.2025 00:00</time></b>
 	
-	<a href="/tags/cryptography">cryptography</a>
+	<a href="/tags/aiml">aiml</a>
 	
-	<a href="/tags/security">security</a>
+	<a href="/tags/generative-ai">generative-ai</a>
+	
+	<a href="/tags/penetration-testing">penetration-testing</a>
 	
 	<div>
-		<p>ePrint Report: <strong>On the gap between terms in an addition chain</strong><br>
-<em>Theophilus Agama</em></p>
-<p>In this paper, we study the distribution of the textit{gap} between terms in an addition chain. In particular, we show that if $1,2,ldots,s_{delta(n)}=n$ is an addition chain of length $delta(n)$ leading to $n$, then $$underset{1leq lleq delta(n)}{mathrm{sup}}(s_{l+k}-s_l)gg kfrac{n}{delta(n)}$$ and $$underset{1leq lleq delta(n)}{mathrm{inf}}(s_{l+k}-s_l)ll kfrac{n}{delta(n)}$$ for fixed $kgeq 1$.</p>
+		<p>In a whitepaper, the AI Red Team describes its methodology and offers guidance for security teams.</p>
 <p>Go to Source</p>
 		
 	</div>
@@ -58,218 +58,270 @@
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/openctf-do-the-needful/">OpenCTF : Do The Needful</a></h1>
+	<h1><a href="https://ghariib.ir/posts/microsoft-happy-2025-heres-161-security-updates/">Microsoft: Happy 2025. Here’s 161 Security Updates</a></h1>
 	<b><time>15.01.2025 00:00</time></b>
 	
-	<div>
-		<p><strong>Category:</strong> Forensics</p>
-<p><strong>Points:</strong> 50</p>
-<p><strong>Description:</strong></p>
-<pre tabindex="0"><code>Do the needful
-https://scoreboard.openctf.com/DoTheNeedful-98e4c6ba71f88e4201a08e7503b0df6124607e39
-</code></pre><p><strong>File Download:</strong> DoTheNeedful-98e4c6ba71f88e4201a08e7503b0df6124607e39</p>
-<p>When we extract this file, we end up with <code>Challenge.txt</code>. So I go ahead and cat it.</p>
-<pre tabindex="0"><code>$ cat Challenge.txt 
-=AAAAMjU/o7Z+0V17r06KDNmaZHQB1VSlR7wsTDuNk1ok3wfRPMl5YAAV/DwDzAIAERyH3wAAsVVGNBAIs4H
-</code></pre><p>This looks like a base64 string, however, with base64 encoding, the <code>=</code> character is used as padding and should only show up at the end of a base64 string, if at all. So let’s try and reverse the string. I wrote a quick Python script for this, and write the result to a file.</p>
-		
-			<a href="https://ghariib.ir/posts/openctf-do-the-needful/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/openctf-ellingson-mineral-2/">OpenCTF : Ellingson Mineral 2</a></h1>
-	<b><time>15.01.2025 00:00</time></b>
+	<a href="/tags/cve">cve</a>
+	
+	<a href="/tags/cybersecurity">cybersecurity</a>
+	
+	<a href="/tags/security">security</a>
+	
+	<a href="/tags/zero-day">zero-day</a>
 	
 	<div>
-		<p><strong>Category:</strong> OSINT</p>
-<p><strong>Points:</strong> 100</p>
-<p><strong>Description:</strong></p>
-<pre tabindex="0"><code>We heard word that The Plague escaped prison three weeks ago. We&#39;ve been notified that he was recently seen on soundcloud liking a song by ytcracker called &#34;hacker music.&#34; Let us know what you find.
-</code></pre><p>First perform a search on soundcloud.com for “ytcracker hacker music” then go to likes. <code>https://soundcloud.com/ytcracker/ytcracker-hacker-music/likes</code></p>
-<p>Go to ThePlague2018x’s profile</p>
-<p><code>https://soundcloud.com/user-843651506</code></p>
-<p>The next clue seemed to be to go to the website on ThePlague2018x’s website which is the following</p>
-		
-			<a href="https://ghariib.ir/posts/openctf-ellingson-mineral-2/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/openctf-fire-walker-0/">OpenCTF : fire walker 0</a></h1>
-	<b><time>15.01.2025 00:00</time></b>
-	
-	<div>
-		<p><strong>Category:</strong> Network</p>
-<p><strong>Points:</strong> 50</p>
-<p><strong>Description:</strong></p>
-<pre tabindex="0"><code>Flag: http://172.31.2.97:20621/flag-d12bb978.txt Firewall rules: https://scoreboard.openctf.com/firewalker_0-acaceaa807e20591173451a7a824a23f2728563b
-</code></pre><p><strong>File Download:</strong> firewalker_0-acaceaa807e20591173451a7a824a23f2728563b</p>
-<p>The goal of the fire walker challenges is straight-forward, download the flag file from the provided http URL. The trick is, there are firewall rules that will prevent you from simply running wget, curl, or opening the URL in your favorite web browser. So let’s take a look at the firewall rules:</p>
-<pre tabindex="0"><code>$ cat port_20621_rules.txt 
-Chain PORT_20621 (1 references)
-target     prot opt source               destination         
-REJECT     tcp  -- anywhere             anywhere             tcp spts:1024:65535 reject-with icmp-admin-prohibited
-</code></pre><p>So what these rules are describing, is that if the source port is in the range of 1024-65535, the packet will be rejected. For those new to networking, every TCP connection has a source port and a destination port. You are likely already aware of common destination port number used for servers, for example, HTTP uses port <code>80</code> by default. In this challenge, port <code>20621</code> is the destination port for our HTTP traffic. However, the source port is randomly selected by your client. And because ports under 1024 generally require elevated privellages, most, if not all, programs will never select a port below 1024. However, both <code>nc</code> and <code>curl</code> allow you to manually specify the port number. I decided to use <code>curl</code> because this allowed me to avoid manually building the HTTP GET request. Be sure to run the command with <code>sudo</code>.</p>
-		
-			<a href="https://ghariib.ir/posts/openctf-fire-walker-0/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/openctf-headon/">OpenCTF : HeadOn</a></h1>
-	<b><time>15.01.2025 00:00</time></b>
-	
-	<div>
-		<p><strong>Category:</strong> Forensics</p>
-<p><strong>Points:</strong> 50</p>
-<p><strong>Description:</strong></p>
-<pre tabindex="0"><code>Apply directly to the console
-https://scoreboard.openctf.com/HeadOn-ac8890852965d787f7591bc10add61bb01efb5eb
-</code></pre><p><strong>File Download:</strong> HeadOn-ac8890852965d787f7591bc10add61bb01efb5eb</p>
-<pre tabindex="0"><code>$ file blob 
-blob: data
-</code></pre><p>I also try running <code>strings</code> on the file, but I don’t find anything interesting.</p>
-<p>Let’s try binwalk. If you have never heard of binwalk, it is a fantastic tool for solving forensics challenges. It goes through files of any type, looking for known magic cookies to help identify when one file type is embedded in another. For example, you may be given an ELF file, that has a jpeg embedded in it, binwalk will be able to find it, assuming the file is not encoded or encrypted in some way.</p>
-		
-			<a href="https://ghariib.ir/posts/openctf-headon/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/openctf-mbrtetris/">OpenCTF : mbrtetris</a></h1>
-	<b><time>15.01.2025 00:00</time></b>
-	
-	<a href="/tags/ces">ces</a>
-	
-	<div>
-		<p><strong>Category:</strong> Forensics</p>
-<p><strong>Points:</strong> 25</p>
-<p><strong>Description:</strong></p>
-<pre tabindex="0"><code>boot this on baremetal. - https://kajer.openctf.com/tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6
-</code></pre><p><strong>File Download:</strong> tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6</p>
-<p>I start by running the <code>file</code> command:</p>
-<pre tabindex="0"><code>$ file tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6 
-tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6: DOS/MBR boot sector; partition 1 : ID=0x7, start-CHS (0x0,33,3), end-CHS (0x1,124,22), startsector 2048, 20480 sectors
-</code></pre><p>Ok, let’s try mounting this:</p>
-<pre tabindex="0"><code>$ sudo mount tinytetris-2c5414f1f85397e1787ec31cca3f252ac5fb78a6 /mnt
-mount: /mnt: wrong fs type, bad option, bad superblock on /dev/loop19, missing codepage or helper program, or other error.
-</code></pre><p>Hmm, I use some Google-fu, and I stumble upon this useful article on major.io. As the article suggests, let’s run fdisk to calculate the offset.</p>
-		
-			<a href="https://ghariib.ir/posts/openctf-mbrtetris/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/openctf-nightmare-50/">OpenCTF : Nightmare 50</a></h1>
-	<b><time>15.01.2025 00:00</time></b>
-	
-	<div>
-		<p><strong>Category:</strong> Web</p>
-<p><strong>Points:</strong> 50</p>
-<p><strong>Description:</strong></p>
-<pre tabindex="0"><code>Automated home work scoring my ass. https://shades-of-nightmare.openctf.com/nzpoixyucvkjwnerntasdfascdvasdfqwerqwe/nightmare-50/
-</code></pre><p>When connecting to this website in my browser, I receive the following prompt:</p>
-<pre tabindex="0"><code>Welcome to Doctor Professor Wilson&#39;s Python 101!
-Lesson 1: hello world
-Enter homework for grading:
-</code></pre><p>So it looks like this will execute the Python code you provide. So I test it with the following:</p>
-<pre tabindex="0"><code>Welcome to Doctor Professor Wilson&#39;s Python 101!
-Lesson 1: hello world
-Enter homework for grading:
-print(&#39;Hello world&#39;)
-Hello world
-</code></pre><p>And then it immediately closes the connection. So it looks like it only allows a single line of Python code.</p>
-		
-			<a href="https://ghariib.ir/posts/openctf-nightmare-50/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/openctf-sql-10/">OpenCTF : SQL 10</a></h1>
-	<b><time>15.01.2025 00:00</time></b>
-	
-	<div>
-		<p><strong>Category:</strong> Web</p>
-<p><strong>Points:</strong> 10</p>
-<p><strong>Description:</strong></p>
-<pre tabindex="0"><code>https://sql-mayham.openctf.com/ziopxuoiwquyerhnszpasdyvzlkxcjlwerqwer/sql-10/
-</code></pre><p>When <code>1</code> is entered it returns the following row:</p>
-<pre tabindex="0"><code>Enter a badge number to view that officers file:1
-(1, &#39;bob&#39;, &#39;simmons&#39;, &#39;none&#39;)
-</code></pre><p>Performing a basic sql injection we got the same row back but no error. The server only returns 1 row</p>
-<pre tabindex="0"><code>Enter a badge number to view that officers file:1 or 1=1
-(1, &#39;bob&#39;, &#39;simmons&#39;, &#39;none&#39;)
-</code></pre><p>Entering an ID of 2 no results are found.</p>
-<pre tabindex="0"><code>Enter a badge number to view that officers file:2 
-None
-</code></pre><p>Using the sql injection an OR was added to say “id&gt;2”</p>
-		
-			<a href="https://ghariib.ir/posts/openctf-sql-10/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/outlook-forensic-toolbox-helps-access-deleted-messages/">Outlook Forensic Toolbox Helps Access Deleted Messages</a></h1>
-	<b><time>15.01.2025 00:00</time></b>
-	
-	<a href="/tags/ces">ces</a>
-	
-	<a href="/tags/data-recovery">data-recovery</a>
-	
-	<a href="/tags/outlook-forensics">outlook-forensics</a>
-	
-	<div>
-		<p>
+		<h3 id="microsoft-happy-2025-heres-161-security-updates">Microsoft: Happy 2025. Here’s 161 Security Updates</h3>
+<p>
 <figure>
-  <img src="https://blog.elcomsoft.com/wp-content/uploads/2024/10/media-outlook.png" alt="" />
+  <img src="https://upload.cvefeed.io/news/24146/thumbnail.jpg" alt="" />
 </figure>
 
 
 </p>
-<p>What can a forensic expert find in an Outlook data file? Can they recover deleted emails, contacts and appointments from Microsoft Outlook? Can users erase unwanted correspondence from Outlook? In this article, we’ll demonstrate how experts can recover valuable information from Outlook data files (PST/OST), including deleted emails, contacts, attachments, and appointments. Even when users attempt to erase unwanted correspondence, traces often remain within the database. With the right tools, experts can extract and analyze this hidden data to uncover critical evidence.</p>
-		
-			<a href="https://ghariib.ir/posts/outlook-forensic-toolbox-helps-access-deleted-messages/">Read more...</a>
+<p>Microsoft today unleashed updates to plug a whopping 161 security vulnerabilities in Windows and related software, including three “zero-day” weaknesses that are already under active attack. Redmond’s &hellip; <em>Read more</em></p>
+<p><strong>Published Date:</strong> Jan 14, 2025 (8 hours, 18 minutes ago)</p>
+<p>Vulnerabilities has been mentioned in this article.</p>
+<p>CVE-2025-21395 CVE-2025-21366 CVE-2025-21335 CVE-2025-21334 CVE-2025-21333 CVE-2025-21311 CVE-2025-21298 CVE-2025-21210 CVE-2025-21186 CVE-2024-49142</p>
+<p>Go to Source</p>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/password-breaking-a-to-z/">Password Breaking A to Z</a></h1>
+	<h1><a href="https://ghariib.ir/posts/microsofts-january-2025-patch-tuesday-fixes-159-vulnerabilities-including-10-critical-and-8-zero-days/">Microsoft’s January 2025 Patch Tuesday Fixes 159 Vulnerabilities, Including 10 Critical and 8 Zero-Days</a></h1>
 	<b><time>15.01.2025 00:00</time></b>
 	
-	<a href="/tags/comprehensive">comprehensive</a>
+	<a href="/tags/cve">cve</a>
 	
-	<a href="/tags/edpr">edpr</a>
+	<a href="/tags/cybersecurity">cybersecurity</a>
 	
-	<a href="/tags/passwords">passwords</a>
+	<a href="/tags/security">security</a>
+	
+	<a href="/tags/zero-day">zero-day</a>
 	
 	<div>
-		<p>
+		<h3 id="microsofts-january-2025-patch-tuesday-fixes-159-vulnerabilities-including-10-critical-and-8-zero-days">Microsoft’s January 2025 Patch Tuesday Fixes 159 Vulnerabilities, Including 10 Critical and 8 Zero-Days</h3>
+<p>
 <figure>
-  <img src="https://blog.elcomsoft.com/wp-content/uploads/2024/07/passwords-az.jpg" alt="" />
+  <img src="https://upload.cvefeed.io/news/24186/thumbnail.jpg" alt="" />
 </figure>
 
 
 </p>
-<p>Our blog features numerous articles on breaking passwords and accessing encrypted data, ranging from simple “how-to” guides to comprehensive manuals. However, many of the questions we are frequently asked are not about the technical stuff but rather the very basics of password recovery. Can you break that password? Is it legal? How much time do you think it will take to break this one? We do have the answers, but they require digging through the extensive content of our blog. To address this, we’ve created a comprehensive A to Z article that not only answers many common questions but also links to our previous posts.</p>
+<p>Microsoft delivers its first Patch Tuesday of 2025 with a robust security update addressing a wide range of vulnerabilities. With 159 issues patched, including 10 critical and 149 important ones, this &hellip; <em>Read more</em></p>
+<p><strong>Published Date:</strong> Jan 15, 2025 (5 hours, 20 minutes ago)</p>
+<p>Vulnerabilities has been mentioned in this article.</p>
+<p>CVE-2025-21395 CVE-2025-21366 CVE-2025-21362 CVE-2025-21354 CVE-2025-21335 CVE-2025-21334 CVE-2025-21333 CVE-2025-21311 CVE-2025-21309 CVE-2025-21308 CVE-2025-21307 CVE-2025-21298 CVE-2025-21297 CVE-2025-21296 CVE-2025-21295 CVE-2025-21294 CVE-2025-21275 CVE-2025-21186 CVE-2024-49138</p>
 		
-			<a href="https://ghariib.ir/posts/password-breaking-a-to-z/">Read more...</a>
+			<a href="https://ghariib.ir/posts/microsofts-january-2025-patch-tuesday-fixes-159-vulnerabilities-including-10-critical-and-8-zero-days/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/mind-the-patch-gap-exploiting-an-io_uring-vulnerability-in-ubuntu/">Mind the Patch Gap: Exploiting an io_uring Vulnerability in Ubuntu</a></h1>
+	<b><time>15.01.2025 00:00</time></b>
+	
+	<a href="/tags/define">define</a>
+	
+	<a href="/tags/endif">endif</a>
+	
+	<a href="/tags/exploit-techniques">exploit-techniques</a>
+	
+	<a href="/tags/ifdef">ifdef</a>
+	
+	<a href="/tags/vulnerability-analysis">vulnerability-analysis</a>
+	
+	<a href="/tags/zero-day">zero-day</a>
+	
+	<div>
+		<p>By Oriol Castejón</p>
+<h2 id="overview">Overview</h2>
+<p>This post discusses a use-after-free vulnerability, CVE-2024-0582, in io_uring in the Linux kernel. Despite the vulnerability being patched in the stable kernel in December 2023, it wasn’t ported to Ubuntu kernels for over two months, making it an easy 0day vector in Ubuntu during that time.</p>
+<p>In early January 2024, a Project Zero issue for a recently fixed <code>io_uring</code> use-after-free (UAF) vulnerability (CVE-2024-0582) was made public. It was apparent that the vulnerability allowed an attacker to obtain read and write access to a number of previously freed <em>pages</em>. This seemed to be a very powerful primitive: usually a UAF gets you access to a freed kernel <em>object</em>, not a whole page – or even better, multiple pages. As the Project Zero issue also described, it was clear that this vulnerability should be easily exploitable: if an attacker has total access to free pages, once these pages are returned to a slab cache to be reused, they will be able to modify any contents of any object allocated within these pages. In the more common situation, the attacker can modify only a certain type of object, and possibly only at certain offsets or with certain values.</p>
+		
+			<a href="https://ghariib.ir/posts/mind-the-patch-gap-exploiting-an-io_uring-vulnerability-in-ubuntu/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/mirai-botnet-variant-exploits-four-faith-router-vulnerability-for-ddos-attacks/">Mirai Botnet Variant Exploits Four-Faith Router Vulnerability for DDoS Attacks</a></h1>
+	<b><time>15.01.2025 00:00</time></b>
+	
+	<a href="/tags/cybercrime-malcode">cybercrime-malcode</a>
+	
+	<div>
+		<p>
+<figure>
+  <img src="https://lifeboat.com/blog.images/mirai-botnet-variant-exploits-four-faith-router-vulnerability-for-ddos-attacks.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>A Mirai botnet variant has been found exploiting a newly disclosed security flaw impacting Four-Faith industrial routers since early November 2024 with the goal of conducting distributed denial-of-service (DDoS) attacks.</p>
+<p>The botnet maintains approximately 15,000 daily active IP addresses, with the infections primarily scattered across China, Iran, Russia, Turkey, and the United States.</p>
+<p>Exploiting an arsenal of over 20 known security vulnerabilities and weak Telnet credentials for initial access, the malware is known to have been active since February 2024. The botnet has been dubbed “gayfemboy” in reference to the offensive term present in the source code.</p>
+		
+			<a href="https://ghariib.ir/posts/mirai-botnet-variant-exploits-four-faith-router-vulnerability-for-ddos-attacks/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/motorola-mr2600-savestaticrouteipv4params-command-injection-vulnerability/">Motorola MR2600 ‘SaveStaticRouteIPv4Params’ Command Injection Vulnerability</a></h1>
+	<b><time>15.01.2025 00:00</time></b>
+	
+	<a href="/tags/ces">ces</a>
+	
+	<a href="/tags/intel">intel</a>
+	
+	<div>
+		<h2 id="eip-f4472693">EIP-f4472693</h2>
+<p>A command injection vulnerability exists in the ‘SaveStaticRouteIPv4Params’ parameter of the Motorola MR2600. A remote attacker can exploit this vulnerability to achieve command execution. Authentication is required, however can be bypassed.</p>
+<p>Vulnerability Identifier</p>
+<ul>
+<li>Exodus Intelligence: EIP-f4472693</li>
+<li>MITRE: CVE-2024-23627</li>
+</ul>
+<h2 id="vulnerability-metrics">Vulnerability Metrics</h2>
+<ul>
+<li>CVSSv2 Vector: AV:A/AC:L/Au:S/C:C/I:C/A:C</li>
+<li>CVSSv2 Score: 7.7</li>
+</ul>
+<h2 id="vendor-references">Vendor References</h2>
+<ul>
+<li>The affected product is end-of-life and no patches are available.</li>
+</ul>
+<h2 id="discovery-credit">Discovery Credit</h2>
+<ul>
+<li>Exodus Intelligence</li>
+</ul>
+<h2 id="disclosure-timeline">Disclosure Timeline</h2>
+<ul>
+<li>Disclosed to Vendor: April 29, 2021</li>
+<li>Disclosed to public: January 25, 2024</li>
+</ul>
+<h2 id="further-information">Further Information</h2>
+<p>Readers of this advisory who are interested in receiving further details around the vulnerability, mitigations, detection guidance, and more can contact us at sales@exodusintel.com</p>
+		
+			<a href="https://ghariib.ir/posts/motorola-mr2600-savestaticrouteipv4params-command-injection-vulnerability/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/motorola-mr2600-savestaticrouteipv6params-command-injection-vulnerability/">Motorola MR2600 ‘SaveStaticRouteIPv6Params’ Command Injection Vulnerability</a></h1>
+	<b><time>15.01.2025 00:00</time></b>
+	
+	<a href="/tags/ces">ces</a>
+	
+	<a href="/tags/intel">intel</a>
+	
+	<div>
+		<h2 id="eip-ea3ab824">EIP-ea3ab824</h2>
+<p>A command injection vulnerability exists in the ‘SaveStaticRouteIPv6Params’ parameter of the Motorola MR2600. A remote attacker can exploit this vulnerability to achieve command execution. Authentication is required, however can be bypassed.</p>
+<p>Vulnerability Identifier</p>
+<ul>
+<li>Exodus Intelligence: EIP-ea3ab824</li>
+<li>MITRE: CVE-2024-23628</li>
+</ul>
+<h2 id="vulnerability-metrics">Vulnerability Metrics</h2>
+<ul>
+<li>CVSSv2 Vector: AV:A/AC:L/Au:S/C:C/I:C/A:C</li>
+<li>CVSSv2 Score: 7.7</li>
+</ul>
+<h2 id="vendor-references">Vendor References</h2>
+<ul>
+<li>The affected product is end-of-life and no patches are available.</li>
+</ul>
+<h2 id="discovery-credit">Discovery Credit</h2>
+<ul>
+<li>Exodus Intelligence</li>
+</ul>
+<h2 id="disclosure-timeline">Disclosure Timeline</h2>
+<ul>
+<li>Disclosed to Vendor: April 29, 2021</li>
+<li>Disclosed to public: January 25, 2024</li>
+</ul>
+<h2 id="further-information">Further Information</h2>
+<p>Readers of this advisory who are interested in receiving further details around the vulnerability, mitigations, detection guidance, and more can contact us at sales@exodusintel.com</p>
+		
+			<a href="https://ghariib.ir/posts/motorola-mr2600-savestaticrouteipv6params-command-injection-vulnerability/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/motorola-mr2600-savesyslogparams-command-injection-vulnerability/">Motorola MR2600 ‘SaveSysLogParams’ Command Injection Vulnerability</a></h1>
+	<b><time>15.01.2025 00:00</time></b>
+	
+	<a href="/tags/ces">ces</a>
+	
+	<a href="/tags/intel">intel</a>
+	
+	<div>
+		<h2 id="eip-552c9116">EIP-552c9116</h2>
+<p>A command injection vulnerability exists in the ‘SaveSysLogParams’ parameter of the Motorola MR2600. A remote attacker can exploit this vulnerability to achieve command execution. Authentication is required, however can be bypassed.</p>
+<p>Vulnerability Identifier</p>
+<ul>
+<li>Exodus Intelligence: EIP-552c9116</li>
+<li>MITRE: CVE-2024-23626</li>
+</ul>
+<h2 id="vulnerability-metrics">Vulnerability Metrics</h2>
+<ul>
+<li>CVSSv2 Vector: AV:A/AC:L/Au:S/C:C/I:C/A:C</li>
+<li>CVSSv2 Score: 7.7</li>
+</ul>
+<h2 id="vendor-references">Vendor References</h2>
+<ul>
+<li>The affected product is end-of-life and no patches are available.</li>
+</ul>
+<h2 id="discovery-credit">Discovery Credit</h2>
+<ul>
+<li>Exodus Intelligence</li>
+</ul>
+<h2 id="disclosure-timeline">Disclosure Timeline</h2>
+<ul>
+<li>Disclosed to Vendor: April 29, 2021</li>
+<li>Disclosed to public: January 25, 2024</li>
+</ul>
+<h2 id="further-information">Further Information</h2>
+<p>Readers of this advisory who are interested in receiving further details around the vulnerability, mitigations, detection guidance, and more can contact us at sales@exodusintel.com</p>
+		
+			<a href="https://ghariib.ir/posts/motorola-mr2600-savesyslogparams-command-injection-vulnerability/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/multiple-vulnerabilities-in-fortinet-products-could-allow-for-remote-code-execution/">Multiple Vulnerabilities in Fortinet Products Could Allow for Remote Code Execution</a></h1>
+	<b><time>15.01.2025 00:00</time></b>
+	
+	<div>
+		<p>Multiple vulnerabilities have been discovered Fortinet Products, the most severe of which could allow for remote code execution. FortiManager is a network and security management tool that provides centralized management of Fortinet devices from a single console. FortiOS is the Fortinet’s proprietary Operation System which is utilized across multiple product lines. FortiProxy is a secure web gateway that attempts to protects users against internet-borne attacks, and provides protection and visibility to the network against unauthorized access and threats. Successful exploitation of this vulnerability could allow for remote code execution in the context of the affected service account. Depending on the privileges associated with the service account an attacker could then install programs; view, change, or delete data; or create new accounts with full user rights. Service accounts that are configured to have fewer user rights on the system could be less impacted than those who operate with administrative user rights.</p>
+		
+			<a href="https://ghariib.ir/posts/multiple-vulnerabilities-in-fortinet-products-could-allow-for-remote-code-execution/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/multiple-vulnerabilities-in-ivanti-avalanche-could-allow-for-authentication-bypass/">Multiple Vulnerabilities in Ivanti Avalanche Could Allow for Authentication Bypass</a></h1>
+	<b><time>15.01.2025 00:00</time></b>
+	
+	<div>
+		<p>Multiple Vulnerabilities have been discovered in Ivanti Avalanche, the most severe of which could allow for authentication bypass. Ivanti Avalanche is a mobile device management system. Network security features allow one to manage wireless settings (including encryption and authentication) and apply those settings on a schedule throughout the network. Successful exploitation could allow for a remote unauthenticated attacker to bypass authentication. Depending on the privileges associated with the logged-on user, an attacker could then install programs; view, change, or delete data. Users whose accounts are configured to have fewer user rights on the system could be less impacted than those who operate with administrative user rights.</p>
+		
+			<a href="https://ghariib.ir/posts/multiple-vulnerabilities-in-ivanti-avalanche-could-allow-for-authentication-bypass/">Read more...</a>
 		
 	</div>
 </article>
@@ -279,7 +331,7 @@ None
 
 	<a href="/page/255/">Previous Page</a>
 
-256 of 553
+256 of 554
 
 	<a href="/page/257/">Next Page</a>
 
