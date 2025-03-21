@@ -16,5 +16,3 @@ type: posts
 
 #### [Source]([LINK])
 
-<br/>
----
