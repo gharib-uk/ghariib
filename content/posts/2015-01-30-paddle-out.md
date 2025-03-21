@@ -6,11 +6,12 @@ type: posts
 ---
 # Paddle Out
 
-<br/>
 
-<br/>
+
+
+
  Winter Break Of Code Day Eighteen Late this afternoon I took a break from working to surf. The sun was setting and a cool breeze was picking up as grey clouds billowed behind the mountains
-<br/>
+
 _Winter Break Of Code Day Eighteen_
 
 ![Paddle Out](/blog/images/luke-paddle-out.jpg)

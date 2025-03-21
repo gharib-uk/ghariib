@@ -6,11 +6,12 @@ type: posts
 ---
 # local Genexus Protection Server 97210 - protsrvservice Unquoted Service Path
 
-<br/>
 
-<br/>
+
+
+
 Genexus Protection Server 9.7.2.10 - 'protsrvservice' Unquoted Service Path
-<br/>
+
 Genexus Protection Server 9.7.2.10 - 'protsrvservice' Unquoted Service Path
 
 #### [Source](https://www.exploit-db.com/exploits/52065)

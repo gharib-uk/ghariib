@@ -6,11 +6,12 @@ type: posts
 ---
 # Startups vs Corporates Unblurring the Lines for Job Seekers
 
-<br/>
 
-<br/>
+
+
+
 A blogpost exploring difference between startup and corporate roles. especially cautioning about the risk startups have.
-<br/>
+
 A blogpost exploring difference between startup and corporate roles. especially cautioning about the risk startups have.
 
 #### [Source](https://blog.anantshri.info/startups-vs-corporates-unblurring-the-lines-for-job-seekers/)

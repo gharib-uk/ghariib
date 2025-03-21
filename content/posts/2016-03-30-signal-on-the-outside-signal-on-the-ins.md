@@ -6,11 +6,12 @@ type: posts
 ---
 # Signal on the outside Signal on the inside
 
-<br/>
 
-<br/>
+
+
+
  A few months ago we completed the process of unifying all of our apps across Android, iOS, and the Desktop under the name ‘Signal.’ This simplified the language around our apps and eliminated a
-<br/>
+
 A few months ago [we completed](/blog/just-signal) the process of unifying all of our apps across Android, iOS, and the Desktop under the name ‘Signal.’ This simplified the language around our apps and eliminated a lot of confusion. Now we’re doing the same thing “inside” our apps by renaming Axolotl to Signal Protocol.
 
 Axolotl has been the name of the cryptographic protocol that our apps use for end-to-end encryption, but it’s not the easiest word to pronounce. Sometimes people use ‘Axolotl’ to refer to just the base [double ratchet](/blog/advanced-ratcheting) instead of the [full](/blog/asynchronous-security/) [messaging](/blog/simplifying-otr-deniability/) [protocol](/blog/private-groups/), so there has also been some confusion around what people mean when they say ‘Axolotl.’

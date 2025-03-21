@@ -6,11 +6,12 @@ type: posts
 ---
 # Seeing Through a GLASSBRIDGE Understanding the Digital Marketing Ecosystem Spreading Pro-PRC Influence Operations
 
-<br/>
 
-<br/>
+
+
+
 Written by: Vanessa Molter Special thanks to Mandiant's Ryan Serabian for his contributions to this analysis. UPDATE (December 4): This blog post was updated to include example domains associated with GLASSBRIDGE. This blog post details GLASSBRIDGE—an umbrella group of four different companies that operate networks of inauthentic news sites and newswire services tracked
-<br/>
+
 Written by: Vanessa Molter
 
 Special thanks to Mandiant's Ryan Serabian for his contributions to this analysis.

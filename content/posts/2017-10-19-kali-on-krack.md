@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali on KRACK
-https://www.kali.org/blog/kali-on-krack/images/kali-krack-wpa2-attack.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-on-krack/images/kali-krack-wpa2-attack.jpg
+
+
+
 WPA2 Key Reinstallation AttaCK or KRACK attack Recently, Mathy Vanhoef of imec-DistriNet, KU Leuven, discovered a serious weakness in WPA2 known as the Key Reinstallation AttaCK (or KRACK) attack. Their overview, Key Reinstallation Attacks: Breaking WPA2 by forcing nonce reuse, and research paper (Key Reinstallation Attacks: Forcing Nonce Reuse in WPA2,
-<br/>
+
 WPA2 Key Reinstallation AttaCK or KRACK attack
 ----------------------------------------------
 

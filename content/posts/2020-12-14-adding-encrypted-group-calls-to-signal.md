@@ -6,11 +6,12 @@ type: posts
 ---
 # Adding Encrypted Group Calls to Signal
 
-<br/>
 
-<br/>
+
+
+
  2020 has seen its fair number of challenges and changes. We’ve all adapted to new ways of staying in touch, getting work done, celebrating birthdays and weddings, and even exercising. As more and more
-<br/>
+
 ![An illustration Signal group calls.](/blog/images/group-calling-hero-compressed.jpg)
 
 2020 has seen its fair number of challenges and changes. We’ve all adapted to new ways of staying in touch, getting work done, celebrating birthdays and weddings, and even exercising. As more and more of our critical and personal moments move online, we want to continue to provide you with new ways to share and connect privately.

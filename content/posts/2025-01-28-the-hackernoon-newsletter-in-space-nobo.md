@@ -6,11 +6,12 @@ type: posts
 ---
 # The HackerNoon Newsletter In Space Nobody Knows Who Owns the Idea 1282025
 
-<br/>
 
-<br/>
 
-<br/>
+
+
+
+
 
 
 #### [Source](https://hackernoon.com/1-28-2025-newsletter?source=rss)

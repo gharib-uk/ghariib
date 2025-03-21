@@ -6,11 +6,12 @@ type: posts
 ---
 # Creating a low-latency calling network
 
-<br/>
 
-<br/>
+
+
+
  RedPhone is our mobile app for end-to-end encrypted voice calls. When we talk about RedPhone, we tend to emphasize the cryptography, and how using it can help keep your communications safe. What
-<br/>
+
 RedPhone is our mobile app for end-to-end encrypted voice calls. When we talk about RedPhone, we tend to emphasize the cryptography, and how using it can help keep your communications safe. What we don’t talk about as much is the VoIP application underneath all of that, which it turns out was actually the hard part.
 
 When we were developing RedPhone, we discovered that the cryptographic aspects of it were relatively straightforward. What we didn’t anticipate was how difficult the mechanics of delivering high-quality, low-latency, and highly available voice communication would be.

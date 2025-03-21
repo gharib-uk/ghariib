@@ -6,11 +6,12 @@ type: posts
 ---
 # Ransomware as a Service RaaS Threats
 
-<br/>
 
-<br/>
+
+
+
 This blog post explores the economics behind why ransomware remains a top tool for cybercrime and presents the current active ransomware variants that utilize ransomware as a service (RaaS), a change in the ransomware business model that could lead to a significant upswing in ransomware activity.
-<br/>
+
 
 
 #### [Source](https://insights.sei.cmu.edu/blog/ransomware-as-a-service-raas-threats/)

@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Unkaputtbar
-https://www.kali.org/blog/unkaputtbar/images/banner-unkaputtbar.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/unkaputtbar/images/banner-unkaputtbar.jpg
+
+
+
  Adjective (German) unkaputtbar (comparative unkaputtbarer, superlative am unkaputtbarsten) From un- + kaputt + -bar. (colloquial) indestructible, unbreakable Diese Flasche ist unkaputtbar. ― This bottle is indestructible. With our 2022.1 release, we promised something big for you bare-metal installers and here it is. With no further ado, we present to you: Kali Unkaputtbar Summary: Unkaputtbar brings Virtual Machines&rsquo;
-<br/>
+
 > ##### Adjective (German)
 > 
 > **[unkaputtbar](https://en.wiktionary.org/wiki/unkaputtbar)** (comparative unkaputtbarer, superlative am unkaputtbarsten)

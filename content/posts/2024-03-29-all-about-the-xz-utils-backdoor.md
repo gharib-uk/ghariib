@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # All about the xz-utils backdoor
-https://www.kali.org/blog/about-the-xz-backdoor/images/xz-utils.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/about-the-xz-backdoor/images/xz-utils.jpg
+
+
+
  As of 5:00 pm ET on March 29, 2024 the following information is accurate. Should there be updates to this situation, they will be edited onto this blog post. The xz-utils package, starting from versions 5.6.0 to 5.6.1, was found to contain a backdoor (CVE-2024-3094). This backdoor could potentially allow a
-<br/>
+
 As of 5:00 pm ET on March 29, 2024 the following information is accurate. Should there be updates to this situation, they will be edited onto this blog post.
 
 The [xz-utils package](https://pkg.kali.org/pkg/xz-utils), starting from versions 5.6.0 to 5.6.1, was found to [contain a backdoor (CVE-2024-3094)](https://nvd.nist.gov/vuln/detail/CVE-2024-3094). This backdoor could potentially allow a malicious actor to compromise sshd authentication, granting unauthorized access to the entire system remotely.

@@ -6,11 +6,12 @@ type: posts
 ---
 # Encrypt your face
 
-<br/>
 
-<br/>
+
+
+
  One immediate thing seems clear about 2020: it’s a good year to cover your face. Online, we’re working to scale and improve Signal for everyone that is relying on it, but as one small
-<br/>
+
 ![A picture of someone wearing the face covering.](/blog/images/encrypt-your-face.jpg)
 
 One immediate thing seems clear about 2020: it’s a good year to cover your face. Online, we’re working to scale and [improve Signal](/blog/blur-tools/) for everyone that is relying on it, but as one small offline way to help support everyone self-organizing for change in the streets, we’re also distributing face coverings free of charge.

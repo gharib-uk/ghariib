@@ -6,11 +6,12 @@ type: posts
 ---
 # Technology Deep Dive Building a Faster ORAM Layer for Enclaves
 
-<br/>
 
-<br/>
+
+
+
  Private doesn’t mean lonely. Signal’s mission is to help you connect with people in a secure way. This means that you need to know which of your contacts are also on Signal. This is called “contact
-<br/>
+
 ![Header Image](/blog/images/cdsi-header.png)
 
 Private doesn’t mean lonely. Signal’s mission is to help you connect with people in a secure way. This means that you need to know which of your contacts are also on Signal. This is called “contact discovery” and it’s an essential part of any messaging app.

@@ -6,11 +6,12 @@ type: posts
 ---
 # A fresh coat for Snowflake a website refresh to help more people get online
 
-<br/>
 
-<br/>
+
+
+
  At its core, Snowflake is a piece of technology that transforms ordinary internet users into censorship-fighting allies. It's as painless and hassle-free as opening
-<br/>
+
   ![](https://blog.torproject.org/snowflake-refresh-to-help-more-people-get-online/lead.png)
 
 At its core, Snowflake is a piece of technology that transforms ordinary internet users into censorship-fighting allies. It's as painless and hassle-free as opening a new browser-tab, allowing anyone [to open a lifeline for blocked internet users](https://blog.torproject.org/snowflake-daily-operations/). That's why we've given the [Snowflake website](https://snowflake.torproject.org/) a much-needed refresh to make it clearer, more accessible, and easier to navigate.

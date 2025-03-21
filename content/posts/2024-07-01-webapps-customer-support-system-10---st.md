@@ -6,11 +6,12 @@ type: posts
 ---
 # webapps Customer Support System 10 - Stored XSS
 
-<br/>
 
-<br/>
+
+
+
 Customer Support System 1.0 - Stored XSS
-<br/>
+
 Customer Support System 1.0 - Stored XSS
 
 #### [Source](https://www.exploit-db.com/exploits/52057)

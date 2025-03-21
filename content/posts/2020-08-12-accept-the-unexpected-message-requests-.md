@@ -6,11 +6,12 @@ type: posts
 ---
 # Accept the unexpected Message requests are now available in Signal
 
-<br/>
 
-<br/>
+
+
+
  The number of people who join Signal every day is still growing at a record pace. With so many new conversations getting started, we’ve heard from a lot of users that they’d like more
-<br/>
+
 ![Screenshot of an incoming message request.](/blog/images/message-requests-header.jpg)
 
 The number of people who join Signal every day is still growing at a record pace. With so many new conversations getting started, we’ve heard from a lot of users that they’d like more control over how they begin.

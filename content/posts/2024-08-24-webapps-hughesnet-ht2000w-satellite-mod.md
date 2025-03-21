@@ -6,11 +6,12 @@ type: posts
 ---
 # webapps HughesNet HT2000W Satellite Modem - Password Reset
 
-<br/>
 
-<br/>
+
+
+
 HughesNet HT2000W Satellite Modem - Password Reset
-<br/>
+
 HughesNet HT2000W Satellite Modem - Password Reset
 
 #### [Source](https://www.exploit-db.com/exploits/52073)

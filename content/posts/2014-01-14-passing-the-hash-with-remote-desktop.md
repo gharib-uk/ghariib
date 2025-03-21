@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Passing the Hash with Remote Desktop
-https://www.kali.org/blog/passing-hash-remote-desktop/images/kali-passing-the-hash.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/passing-hash-remote-desktop/images/kali-passing-the-hash.jpg
+
+
+
 Kali Linux contains a large number of very useful tools that are beneficial to information security professionals. One set of such tools belongs to the Pass-the-Hash toolkit, which includes favorites such as pth-winexe among others, already packaged in Kali Linux. An example of easy command line access using pth-winexe is
-<br/>
+
 Kali Linux contains a large number of very useful tools that are beneficial to information security professionals. One set of such tools belongs to the **[Pass-the-Hash](https://www.kali.org/blog/pass-the-hash-toolkit-winexe-updates/)** toolkit, which includes favorites such as **pth-winexe** among others, already packaged in Kali Linux. An example of easy command line access using pth-winexe is shown below.
 
 [![](https://www.kali.org/blog/passing-hash-remote-desktop/images/Screen-Shot-2014-01-14-at-9.53.44-AM.png)](https://www.kali.org/blog/passing-hash-remote-desktop/images/Screen-Shot-2014-01-14-at-9.53.44-AM.png)

@@ -6,11 +6,12 @@ type: posts
 ---
 # MS17-023 - Critical Security Update for Adobe Flash Player 4014329 - Version 10
 
-<br/>
 
-<br/>
 
-<br/>
+
+
+
+
 
 
 #### [Source](https://technet.microsoft.com/en-us/library/security/MS17-023)

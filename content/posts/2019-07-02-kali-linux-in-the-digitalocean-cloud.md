@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux in the DigitalOcean Cloud
-https://www.kali.org/blog/kali-linux-in-the-digitalocean-cloud/images/kali-digital-ocean.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-in-the-digitalocean-cloud/images/kali-digital-ocean.jpg
+
+
+
 DigitalOcean is a cloud provider similar to AWS, Microsoft Azure, Google Cloud Platform, and many others. They offer instances, called &ldquo;droplets&rdquo;, with different Linux distributions such as Debian, Ubuntu, FreeBSD, etc. Similar to AWS, DigitalOcean has datacenters around the world and sometimes multiple datacenters in each country. However, one feature in
-<br/>
+
 [DigitalOcean](https://www.digitalocean.com/) is a cloud provider similar to AWS, Microsoft Azure, Google Cloud Platform, and many others. They offer instances, called “droplets”, with different Linux distributions such as Debian, Ubuntu, FreeBSD, etc. Similar to AWS, DigitalOcean has datacenters around the world and sometimes multiple datacenters in each country.
 
 However, one feature in particular sets them apart them from their competitors. A little while ago, they added support for [custom images](https://blog.digitalocean.com/custom-images/), which allows users to import virtual machine disks and use them as droplets. This is perfect for us as we can use our own version of Kali Linux in their cloud.

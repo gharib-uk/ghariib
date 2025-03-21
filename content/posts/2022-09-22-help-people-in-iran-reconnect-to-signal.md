@@ -6,11 +6,12 @@ type: posts
 ---
 # Help people in Iran reconnect to Signal a request to our community
 
-<br/>
 
-<br/>
+
+
+
  Signal is currently blocked in Iran. To help people in the country access Signal, we are republishing and revising a post that we originally posted in February, 2021 during a very similar situation in Iran. If you
-<br/>
+
 Signal is currently blocked in Iran. To help people in the country access Signal, we are republishing and revising a [post](/blog/help-iran-reconnect/ "Help users in Iran reconnect to Signal") that we originally posted in February, 2021 during a very similar situation in Iran.
 
 If you are willing and able, please follow the instructions below to set up a proxy server that will enable people in Iran to connect to Signal. We are grateful to the community who pitches in to help each other during these moments.

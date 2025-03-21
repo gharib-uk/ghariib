@@ -6,11 +6,12 @@ type: posts
 ---
 # Expanding Signal GIF search
 
-<br/>
 
-<br/>
+
+
+
  Today’s Signal beta for iOS includes support for animated GIF search. Signal iOS has long supported sending and receiving GIFs, but today’s beta adds support for browsing and searching popular GIFs from within Signal. We previously
-<br/>
+
 ![Signal for iOS displaying GIF search results](/blog/images/giphy-ios-header.jpg)
 
 Today’s Signal beta for iOS includes support for animated GIF search. Signal iOS has long supported sending and receiving GIFs, but today’s beta adds support for browsing and searching popular GIFs from within Signal.

@@ -6,11 +6,12 @@ type: posts
 ---
 # MSSPs Playbook for Success Balancing Automation and Human Expertise
 
-<br/>
 
-<br/>
+
+
+
 This post recaps our recent webinar "How MSSPs Can Leverage Automation to Reduce Alerts & Maximize their Analysts." Check it out to see key takeaways related to their automation journey. 
-<br/>
+
 This post recaps our recent webinar "How MSSPs Can Leverage Automation to Reduce Alerts & Maximize their Analysts." Check it out to see key takeaways related to their automation journey.
 
 #### [Source](https://www.greynoise.io/blog/mssps-playbook-for-success-balancing-automation-and-human-expertise)

@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20222 Release GNOME 42 KDE 524 hollywood-activate
-https://www.kali.org/blog/kali-linux-2022-2-release/images/banner-2022.2-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2022-2-release/images/banner-2022.2-release.jpg
+
+
+
 It&rsquo;s that time of year again, time for another Kali Linux release! Quarter #2 - Kali Linux 2022.2. This release has various impressive updates, all of which are ready for immediate download or updating. The summary of the changelog since the 2022.1 release from February 2022 is: GNOME 42 - Major release
-<br/>
+
 It’s that [time of year](https://www.kali.org/releases/) again, time for another Kali Linux release! **Quarter #2 - Kali Linux 2022.2**. This release has various impressive updates, all of which are ready for immediate [download](https://www.kali.org/get-kali/) or [updating](https://www.kali.org/docs/general-use/updating-kali/).
 
 The summary of the [changelog](https://bugs.kali.org/changelog_page.php) since the [2022.1 release from February 2022](https://www.kali.org/blog/kali-linux-2022-1-release/) is:

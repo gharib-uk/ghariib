@@ -6,11 +6,12 @@ type: posts
 ---
 # There is no WhatsApp backdoor
 
-<br/>
 
-<br/>
+
+
+
  Today, The Guardian published a story falsely claiming that WhatsApp’s end-to-end encryption contains a “backdoor.” Read more... 
-<br/>
+
 Today, The Guardian published a story falsely claiming that WhatsApp’s end-to-end encryption contains a “backdoor.”
 
 [_Read more..._](https://signal.org/blog/there-is-no-whatsapp-backdoor/)

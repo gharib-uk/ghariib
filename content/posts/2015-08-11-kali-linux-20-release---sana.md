@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20 Release - Sana
-https://www.kali.org/blog/kali-linux-2-0-release/images/kali-linux-2-0-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2-0-release/images/kali-linux-2-0-release.jpg
+
+
+
 Our Next Generation Penetration Testing Platform We&rsquo;re still buzzing and recovering from the Black Hat and DEF CON conferences where we finished presenting our new [Kali Linux Dojo](](/docs/development/dojo-mastering-live-build/), which was a blast. With the help of a few good people, the Dojo rooms were set up ready for the masses -
-<br/>
+
 Our Next Generation Penetration Testing Platform
 ------------------------------------------------
 

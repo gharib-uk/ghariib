@@ -6,11 +6,12 @@ type: posts
 ---
 # Disappearing messages for Signal
 
-<br/>
 
-<br/>
+
+
+
  The latest Signal release for iPhone, Android, and Desktop now includes support for disappearing messages. The timer has come With this update, any conversation can be configured to delete sent and received messages after a specified
-<br/>
+
 ![Disappearing messages screenshot](/blog/images/disappearing-messages.jpg)
 
 The latest Signal release for iPhone, Android, and Desktop now includes support for disappearing messages.

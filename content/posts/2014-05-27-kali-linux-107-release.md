@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 107 Release
-https://www.kali.org/blog/kali-linux-1-0-7-release/images/kali-1.0.7-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-1-0-7-release/images/kali-1.0.7-release.jpg
+
+
+
 Kernel 3.14, Tool Updates, Package Improvements Kali Linux 1.0.7 has just been released, complete with a whole bunch of tool updates, a new kernel, and some cool new features. Check out our changelog for a full list of these items. As usual, you don&rsquo;t need to re-download or re-install Kali to
-<br/>
+
 #### Kernel 3.14, Tool Updates, Package Improvements
 
 Kali Linux 1.0.7 has just been released, complete with a whole bunch of tool updates, a new kernel, and some cool new features. Check out our [changelog](https://bugs.kali.org/changelog_page.php) for a full list of these items. As usual, you don’t need to re-download or re-install Kali to benefit from these updates - you can update to the latest and greatest using these simple commands:

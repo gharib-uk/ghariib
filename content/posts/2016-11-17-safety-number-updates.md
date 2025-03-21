@@ -6,11 +6,12 @@ type: posts
 ---
 # Safety number updates
 
-<br/>
 
-<br/>
+
+
+
  The latest Signal release includes some changes to the way safety numbers work. Safety numbers allow Signal users to verify the privacy of their communication with a contact, either by comparing a number or by scanning
-<br/>
+
 The latest Signal release includes some changes to the way safety numbers work.
 
 Safety numbers allow Signal users to verify the privacy of their communication with a contact, either by comparing a number or by scanning a single QR code. We recently introduced this new design as an update to Signal’s previous UX, which we felt was no longer adequate for what people had come to expect from Signal. Let’s look at the safety numbers design in more detail, then go over what’s new in this release.

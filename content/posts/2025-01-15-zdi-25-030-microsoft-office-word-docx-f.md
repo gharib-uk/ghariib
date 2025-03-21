@@ -6,11 +6,12 @@ type: posts
 ---
 # ZDI-25-030 Microsoft Office Word DOCX File Parsing Uninitialized Pointer Remote Code Execution Vulnerability
 
-<br/>
 
-<br/>
+
+
+
 This vulnerability allows remote attackers to execute arbitrary code on affected installations of Microsoft Office Word. User interaction is required to exploit this vulnerability in that the target must visit a malicious page or open a malicious file. The ZDI has assigned a CVSS rating of 7.8. The following CVEs
-<br/>
+
 This vulnerability allows remote attackers to execute arbitrary code on affected installations of Microsoft Office Word. User interaction is required to exploit this vulnerability in that the target must visit a malicious page or open a malicious file. The ZDI has assigned a CVSS rating of 7.8. The following CVEs are assigned: CVE-2025-21363.
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-030/)

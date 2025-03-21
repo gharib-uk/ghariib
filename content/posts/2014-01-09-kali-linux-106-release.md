@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 106 Release
-https://www.kali.org/blog/kali-linux-1-0-6-release/images/kali-1.0.6-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-1-0-6-release/images/kali-1.0.6-release.jpg
+
+
+
 Kernel 3.12, LUKS nuke, Amazon AMI / Google Compute images and more! It&rsquo;s been a while since our last minor release which makes 1.0.6 a more significant update than usual. With a new 3.12 kernel, a LUKS nuke feature, new Kali ARM build scripts, and Kali AMAZON AMI and Google Compute
-<br/>
+
 #### Kernel 3.12, LUKS nuke, Amazon AMI / Google Compute images and more!
 
 It’s been a while since our last minor release which makes 1.0.6 a more significant update than usual. With a new 3.12 kernel, [a LUKS nuke feature](https://www.kali.org/blog/emergency-self-destruction-luks-kali/), new [Kali ARM build scripts](https://gitlab.com/kalilinux/build-scripts/kali-arm), and [Kali AMAZON AMI and Google Compute image generation scripts](https://gitlab.com/kalilinux/build-scripts/kali-cloud), not to mention numerous tool additions and updates - this release is really heavily laden with goodness. For more information about what’s new in this release, check the [Kali changelog](https://bugs.kali.org/changelog_page.php).

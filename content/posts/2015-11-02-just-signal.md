@@ -6,11 +6,12 @@ type: posts
 ---
 # Just Signal
 
-<br/>
 
-<br/>
+
+
+
  Today we’ve started rolling out Signal for Android, which unites simple private messaging and simple private calling into a single app on Android. This is the culmination of our effort to combine TextSecure and
-<br/>
+
 ![Just Signal](/blog/images/justsignal.png)
 
 [![Get it on Google Play](https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png)](https://play.google.com/store/apps/details?id=org.thoughtcrime.securesms)

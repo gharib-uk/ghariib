@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20244 Release Python 312 Goodbye i386 Raspberry Pi Imager Kali NetHunter
-https://www.kali.org/blog/kali-linux-2024-4-release/images/banner-2024.4-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2024-4-release/images/banner-2024.4-release.jpg
+
+
+
 Just before the year starts to wrap up, we are getting the final 2024 release out! This contains a wide range of updates and changes, which are in already in effect, ready for immediate download, or updating. The summary of the changelog since the 2024.3 release from September is: Python 3.12 -
-<br/>
+
 Just before the year starts to wrap up, we are getting the final 2024 release out! This contains a wide range of updates and changes, which are in already in effect, ready for immediate [download](https://www.kali.org/get-kali/), or [updating](https://www.kali.org/docs/general-use/updating-kali/).
 
 The summary of the [changelog](https://bugs.kali.org/changelog_page.php) since the [2024.3 release from September](https://www.kali.org/blog/kali-linux-2024-3-release/) is:

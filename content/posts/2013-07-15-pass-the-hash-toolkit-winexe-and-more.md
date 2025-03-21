@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Pass the Hash toolkit Winexe and more
-https://www.kali.org/blog/pass-the-hash-toolkit-winexe-updates/images/kali-pass-hash-toolkit.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/pass-the-hash-toolkit-winexe-updates/images/kali-pass-hash-toolkit.jpg
+
+
+
 We&rsquo;ve just pushed a bunch of packages, tools, and utilities to the main Kali repositories. These tools have been on the top of our wish list for a while and some of them were quite challenging to package. Before we start telling you of our packaging woes, here&rsquo;s how to
-<br/>
+
 We’ve just pushed a bunch of packages, tools, and utilities to the main Kali repositories. These tools have been on the top of our wish list for a while and some of them were quite challenging to package. Before we start telling you of our packaging woes, here’s how to update your Kali installation and get the latest goodness from our repos:
 
 ```sh

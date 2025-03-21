@@ -6,11 +6,12 @@ type: posts
 ---
 # Call Quality Metrics
 
-<br/>
 
-<br/>
+
+
+
  Spring Break Of Code, Day Six Because secure systems aren’t valuable if they’re not used, Whisper Systems has always focused on delivering strong cryptography alongside a great user experience. That’s the reason call quality
-<br/>
+
 _Spring Break Of Code, Day Six_
 
 Because secure systems aren’t valuable if they’re not used, Whisper Systems has always focused on delivering strong cryptography alongside a great user experience. That’s the reason [call quality](http://www.whispersystems.org/blog/client-side-audio-quality) has always been a priority in RedPhone’s development.

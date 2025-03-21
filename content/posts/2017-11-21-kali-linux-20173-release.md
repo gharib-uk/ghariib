@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20173 Release
-https://www.kali.org/blog/kali-linux-2017-3-release/images/kali-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2017-3-release/images/kali-release.jpg
+
+
+
 We are pleased to announce the immediate availability of Kali Linux 2017.3, which includes all patches, fixes, updates, and improvements since our last release. In this release, the kernel has been updated to 4.13.10 and it includes some notable improvements: CIFS now uses SMB 3.0 by default EXT4 directories can now contain
-<br/>
+
 We are pleased to announce the immediate availability of [Kali Linux 2017.3](https://www.kali.org/get-kali/), which includes all patches, fixes, updates, and improvements since our [last release](https://www.kali.org/blog/kali-linux-2017-2-release/). In this release, the kernel has been updated to 4.13.10 and it includes some notable improvements:
 
 -   [CIFS now uses SMB 3.0 by default](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eef914a9eb5eb83e60eb498315a491cd1edc13a1)

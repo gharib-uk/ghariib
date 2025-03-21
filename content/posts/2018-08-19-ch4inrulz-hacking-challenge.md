@@ -6,11 +6,12 @@ type: posts
 ---
 # Ch4inrulz hacking challenge
 
-<br/>
 
-<br/>
+
+
+
 I had some extra free time this weekend so I picked a random boot2root from VulnHub. The lucky challenger was ch4inrulz, a boot2root made for Jordan’s Top Hacker 2018 CTF. The difficulty level is rated as intermediate. Perfect, let’s-a-go as Mario’s are wont to say. Enumeration time. As always I start
-<br/>
+
 I had some extra free time this weekend so I picked a random boot2root from VulnHub. The lucky challenger was [ch4inrulz](https://www.vulnhub.com/entry/ch4inrulz-101,247/), a boot2root made for Jordan’s Top Hacker 2018 CTF. The difficulty level is rated as intermediate. Perfect, let’s-a-go as Mario’s are wont to say.
 
 Enumeration time. As always I start with a full-on TCP portscan to see what shows up.

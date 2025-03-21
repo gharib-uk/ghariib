@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20183 Release
-https://www.kali.org/blog/kali-linux-2018-3-release/images/kali-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2018-3-release/images/kali-release.jpg
+
+
+
 Another edition of Hacker Summer Camp has come and gone. We had a great time meeting our users, new and old, particularly at our Black Hat and DEF CON Dojos, which were led by our great friend ihackstuff and the rest of the OffSec crew. Now that everyone is back
-<br/>
+
 Another edition of Hacker Summer Camp has come and gone. We had a great time meeting our users, new and old, particularly at our Black Hat and DEF CON Dojos, which were led by our great friend [ihackstuff](https://twitter.com/ihackstuff) and the rest of the [OffSec](https://www.offsec.com/) crew. Now that everyone is back home, it’s time for our third Kali release of 2018, which is available for immediate [download](https://www.kali.org/get-kali/).
 
 Kali 2018.3 brings the kernel up to version 4.17.0 and while 4.17.0 did not introduce many changes, 4.16.0 had a huge number of additions and improvements including more Spectre and Meltdown fixes, improved power management, and better GPU support.

@@ -6,11 +6,12 @@ type: posts
 ---
 # Three SPI Busses Are One Too Many on This Cheap Yellow Display
 
-<br/>
 
-<br/>
+
+
+
 The Cheap Yellow Display may not be the fastest of ESP32 boards with its older model chip and 4 MB of memory, but its low price and useful array of &#8230;read more
-<br/>
+
 ![](https://hackaday.com/wp-content/uploads/2025/03/cyd-spi-featured.jpg?w=800)
 
 The Cheap Yellow Display may not be the fastest of ESP32 boards with its older model chip and 4 MB of memory, but its low price and useful array of […read more](https://hackaday.com/2025/03/20/three-spi-busses-are-one-too-many-on-this-cheap-yellow-display/)

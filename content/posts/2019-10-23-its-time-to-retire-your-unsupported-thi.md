@@ -6,11 +6,12 @@ type: posts
 ---
 # Its Time to Retire Your Unsupported Things
 
-<br/>
 
-<br/>
+
+
+
 "If it ain't broke, don't fix it." Why mess with something that already works? This is fair advice with many things in life. But when it comes to software security, it's important to....
-<br/>
+
 
 
 #### [Source](https://insights.sei.cmu.edu/blog/its-time-to-retire-your-unsupported-things/)

@@ -6,11 +6,12 @@ type: posts
 ---
 # UEFI Terra Firma for Attackers
 
-<br/>
 
-<br/>
+
+
+
 This blog post focuses on how the vulnerabilities in firmware popularized by the Uniform Extensible Firmware Interface create a lucrative target for high-profile attackers.
-<br/>
+
 
 
 #### [Source](https://insights.sei.cmu.edu/blog/uefi-terra-firma-for-attackers/)

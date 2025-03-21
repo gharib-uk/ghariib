@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # WSL2 and Kali
-https://www.kali.org/blog/wsl2-and-kali/images/wsl2-and-kali.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/wsl2-and-kali/images/wsl2-and-kali.jpg
+
+
+
 Kali Linux has had support for WSL for some time, but its usefulness has been somewhat limited. This was mostly due to restrictions placed on some system calls , most importantly those revolving around networking. Furthermore, additional issues with speed, specifically I/O, were also problematic. Because of this, Kali WSL
-<br/>
+
 Kali Linux has had support for WSL for [some time](https://www.kali.org/blog/kali-on-the-windows-subsystem-for-linux/), but its usefulness has been somewhat limited. This was mostly due to restrictions placed on some system calls , most importantly those revolving [around networking](https://github.com/microsoft/WSL/issues/1349). Furthermore, additional issues with speed, specifically I/O, were also problematic. Because of this, Kali WSL has mostly been relegated to reporting functions after an assessment is completed. A cool technology, and certainly an amazing engineering feat, but as is, it just was not that useful in the field.
 
 When [WSL 2 was announced](https://devblogs.microsoft.com/commandline/announcing-wsl-2/) however, we were excited about what this could mean for actually making Kali WSL more useful in. As such, when we saw that WSL 2 was available in the [Windows Insiders program](https://devblogs.microsoft.com/commandline/wsl-2-is-now-available-in-windows-insiders/) we wanted to jump right on it and see what improvements were made.

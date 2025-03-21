@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20182 Release
-https://www.kali.org/blog/kali-linux-2018-2-release/images/kali-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2018-2-release/images/kali-release.jpg
+
+
+
 This Kali release is the first to include the Linux 4.15 kernel, which includes the x86 and x64 fixes for the much-hyped Spectre and Meltdown vulnerabilities. It also includes much better support for AMD GPUs and support for AMD Secure Encrypted Virtualization, which allows for encrypting virtual machine memory such
-<br/>
+
 This Kali release is the first to include the Linux 4.15 kernel, which includes the x86 and x64 fixes for the much-hyped [Spectre and Meltdown](https://meltdownattack.com/) vulnerabilities. It also includes much [better support for AMD GPUs](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f6705bf959efac87bca76d40050d342f1d212587) and support for [AMD Secure Encrypted Virtualization](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=33e63acc119d15c2fac3e3775f32d1ce7a01021b), which allows for encrypting virtual machine memory such that even the hypervisor can’t access it.
 
 ### Easier Metasploit Script Access

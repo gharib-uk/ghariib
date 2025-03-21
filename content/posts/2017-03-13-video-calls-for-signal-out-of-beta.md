@@ -6,11 +6,12 @@ type: posts
 ---
 # Video calls for Signal out of beta
 
-<br/>
 
-<br/>
+
+
+
  We recently released encrypted video calling as an opt-in beta. We’ve spent the past month collecting feedback and addressing the issues that the Signal community found in order to get it ready for
-<br/>
+
 ![](/blog/images/callkit.png)
 
 [![](/blog/images/appstore.png)](https://itunes.apple.com/us/app/signal-private-messenger/id874139669) [![Get it on Google Play](https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png)](https://play.google.com/store/apps/details?id=org.thoughtcrime.securesms)

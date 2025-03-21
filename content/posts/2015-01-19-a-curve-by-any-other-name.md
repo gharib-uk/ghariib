@@ -6,11 +6,12 @@ type: posts
 ---
 # A curve by any other name
 
-<br/>
 
-<br/>
+
+
+
  Winter Break Of Code Day 7 Yesterday was a day of meetings. Discussion and debate flourished. Conversations ranged over all parts of every project. Words spoken aloud may have outnumbered lines of code shipped. The entire team
-<br/>
+
 _Winter Break Of Code Day 7_
 
 Yesterday was a day of meetings. Discussion and debate flourished. Conversations ranged over all parts of every project. Words spoken aloud may have outnumbered lines of code shipped. The entire team was fully engaged and people nearly had to be dragged out of the house for an afternoon hike to the top of the ridge.

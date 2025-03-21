@@ -6,11 +6,12 @@ type: posts
 ---
 # One platform to manage your companys predictive security posture with Cloudflare
 
-<br/>
 
-<br/>
+
+
+
  Cloudflare introduces a single platform for unified security posture management, helping protect SaaS and web applications deployed across various environments. 
-<br/>
+
 Cloudflare introduces a single platform for unified security posture management, helping protect SaaS and web applications deployed across various environments.
 
 #### [Source](https://blog.cloudflare.com/cloudflare-security-posture-management/)

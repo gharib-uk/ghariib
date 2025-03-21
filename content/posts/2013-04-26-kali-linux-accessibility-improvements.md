@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux Accessibility Improvements
-https://www.kali.org/blog/kali-linux-1-0-3-release/images/kali-speech-support.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-1-0-3-release/images/kali-speech-support.jpg
+
+
+
 A couple of weeks ago, we were approached (independently) by two blind security enthusiasts who both drew our attention to the fact that Kali Linux had no built-in accessibility features. This made Kali difficult, if not impossible, to both install and use from a blind or visually impaired user&rsquo;s perspective. Our
-<br/>
+
 A couple of weeks ago, we were approached (independently) by two blind security enthusiasts who both drew our attention to the fact that Kali Linux had no built-in accessibility features. This made Kali difficult, if not impossible, to both install and use from a blind or visually impaired user’s perspective.
 
 Our first attempts at building an accessible version of Kali failed and after a bit of digging, we found that there were several upstream [GNOME Display Manager](https://packages.debian.org/wheezy/gdm3) (GDM3) bugs in [Debian](https://www.debian.org/), which prevented these accessibility features from functioning with the GDM greeter. Working together with an upstream GNOME developer, we knocked out these bugs and had the fixes implemeted in Kali, and hopefully in future builds of GDM3 in Debian. To make the [Kali installation](https://www.kali.org/docs/installation/) accessible as well, we have added a new “accessibility” boot option that triggers the speech engine during the installation process.

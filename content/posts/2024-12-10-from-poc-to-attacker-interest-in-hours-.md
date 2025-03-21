@@ -6,11 +6,12 @@ type: posts
 ---
 # From PoC to Attacker Interest in Hours Real-Time Insights into Mitel MiCollab Vulnerabilities
 
-<br/>
 
-<br/>
+
+
+
 Attackers exploit vulnerabilities within hours of PoC releases. Learn how GreyNoise provides real-time intelligence to detect and disrupt threats, helping defenders respond faster and stay ahead of evolving risks.
-<br/>
+
 Attackers exploit vulnerabilities within hours of PoC releases. Learn how GreyNoise provides real-time intelligence to detect and disrupt threats, helping defenders respond faster and stay ahead of evolving risks.
 
 #### [Source](https://www.greynoise.io/blog/from-poc-to-attacker-interest-in-hours-real-time-insights-into-mitel-micollab-vulnerabilities)

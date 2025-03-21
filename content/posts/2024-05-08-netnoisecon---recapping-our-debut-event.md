@@ -6,11 +6,12 @@ type: posts
 ---
 # NetNoiseCon - Recapping our Debut Event
 
-<br/>
 
-<br/>
+
+
+
 From incredible technical talks to insightful career advice from industry leaders, there was something for everyone. We strongly encourage you to watch each of the talks and soak in the wisdom shared by our stellar lineup of speakers.
-<br/>
+
 From incredible technical talks to insightful career advice from industry leaders, there was something for everyone. We strongly encourage you to watch each of the talks and soak in the wisdom shared by our stellar lineup of speakers.
 
 #### [Source](https://www.greynoise.io/blog/netnoisecon-recapping-our-debut-event)

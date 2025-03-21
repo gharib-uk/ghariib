@@ -6,11 +6,12 @@ type: posts
 ---
 # webapps Elber ESE DVB-SS2 Satellite Receiver 15x - Authentication Bypass
 
-<br/>
 
-<br/>
+
+
+
 Elber ESE DVB-S/S2 Satellite Receiver 1.5.x - Authentication Bypass
-<br/>
+
 Elber ESE DVB-S/S2 Satellite Receiver 1.5.x - Authentication Bypass
 
 #### [Source](https://www.exploit-db.com/exploits/52069)

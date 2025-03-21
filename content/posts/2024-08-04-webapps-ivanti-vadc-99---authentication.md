@@ -6,11 +6,12 @@ type: posts
 ---
 # webapps Ivanti vADC 99 - Authentication Bypass
 
-<br/>
 
-<br/>
+
+
+
 Ivanti vADC 9.9 - Authentication Bypass
-<br/>
+
 Ivanti vADC 9.9 - Authentication Bypass
 
 #### [Source](https://www.exploit-db.com/exploits/52062)

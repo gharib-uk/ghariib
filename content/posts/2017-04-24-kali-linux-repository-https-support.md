@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux Repository HTTPS Support
-https://www.kali.org/blog/kali-linux-repository-https-support/images/kali-repo-https.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-repository-https-support/images/kali-repo-https.jpg
+
+
+
 A couple of weeks back we added more HTTPS support to our Kali infrastructure, and wanted to give our users some guidance and point out what&rsquo;s new. While our Kali Linux download page (and shasums) has always been served via HTTPS, our mirror redirector has not. Now that we generate
-<br/>
+
 A couple of weeks back we added more HTTPS support to our Kali infrastructure, and wanted to give our users some guidance and point out what’s new. While our [Kali Linux download page](https://www.kali.org/get-kali/) (and shasums) has always been served via HTTPS, our mirror redirector has not. Now that we generate weekly images, secure access to the mirror redirector has become crucial.
 
 ### [https://cdimage.kali.org](https://cdimage.kali.org)

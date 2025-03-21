@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux in the Windows App Store
-https://www.kali.org/blog/kali-linux-in-the-windows-app-store/images/kali-windows-app-2018.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-in-the-windows-app-store/images/kali-windows-app-2018.jpg
+
+
+
 No, really&hellip;this isn&rsquo;t clickbait. For the past few weeks, we&rsquo;ve been working with the Microsoft WSL team to get Kali Linux introduced into the Microsoft App Store as an official WSL distribution and today we&rsquo;re happy to announce the availability of the &ldquo;Kali Linux&rdquo; Windows application. For Windows 10 users,
-<br/>
+
 No, really…this isn’t clickbait. For the past few weeks, we’ve been working with the Microsoft WSL team to get Kali Linux introduced into the Microsoft App Store as an official WSL distribution and today we’re happy to [announce](https://blogs.msdn.microsoft.com/commandline/2018/03/05/kali-linux-for-wsl/) the availability of the “Kali Linux” Windows application. For Windows 10 users, this means you can simply enable WSL, [search for Kali](https://www.microsoft.com/en-us/p/kali-linux/9pkr34tncv07) in the Windows store, and install it with a single click. This is especially exciting news for penetration testers and security professionals who have limited toolsets due to enterprise compliance standards.
 
 While running Kali on Windows has a few drawbacks to running it natively (such as the lack of raw socket support), it does bring in some very interesting possibilities, such as extending your security toolkit to include a whole bunch of command line tools that are present in Kali. We will update our blog with more news and updates regarding the development of this app as it’s released.

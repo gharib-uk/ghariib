@@ -6,11 +6,12 @@ type: posts
 ---
 # Data Privacy Row Apple Takes UK Government to Court
 
-<br/>
 
-<br/>
+
+
+
  Data Privacy Row: Apple Takes UK Government to Court 
-<br/>
+
 ### Data Privacy Row: Apple Takes UK Government to Court
 
 ![](https://upload.cvefeed.io/news/33485/thumbnail.jpg)

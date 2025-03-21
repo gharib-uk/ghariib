@@ -6,11 +6,12 @@ type: posts
 ---
 # Simplify allowlist management and lock down origin access with Cloudflare Aegis
 
-<br/>
 
-<br/>
+
+
+
  Cloudflare Aegis provides dedicated egress IPs for Zero Trust origin access strategies, now supporting BYOIP and customer-facing configurability, with observability of Aegis IP utilization soon. 
-<br/>
+
 Cloudflare Aegis provides dedicated egress IPs for Zero Trust origin access strategies, now supporting BYOIP and customer-facing configurability, with observability of Aegis IP utilization soon.
 
 #### [Source](https://blog.cloudflare.com/aegis-deep-dive/)

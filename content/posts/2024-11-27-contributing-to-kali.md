@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Contributing to Kali
-https://www.kali.org/blog/contributing-to-kali/images/contributing-to-kali.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/contributing-to-kali/images/contributing-to-kali.jpg
+
+
+
 With the launch of our brand-new forums, we thought we would update our documentation and explore how everyone can contribute to the growth of Kali Linux. Kali is a multi-platform project that thrives on the the contributions of its community. Whether you&rsquo;re curious about how you can pitch in or
-<br/>
+
 With the launch of our brand-new forums, we thought we would update our documentation and explore how everyone can contribute to the growth of Kali Linux. Kali is a multi-platform project that thrives on the the contributions of its community. Whether you’re curious about how you can pitch in or simply want to learn more about how contributions shape our platform, keep reading. For a deeper dive, don’t forget to check out the relevant Kali Docs pages.
 
 Where Contributions Happen

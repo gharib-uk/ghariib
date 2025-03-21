@@ -6,11 +6,12 @@ type: posts
 ---
 # Signal for iPad and other iOS improvements
 
-<br/>
 
-<br/>
+
+
+
  Signal 3.0 is now available in the App Store: iPad support has arrived. Set up your favorite tablet as a linked device. Forward messages between threads. Editing support lets you amend, extend,
-<br/>
+
 ![Signal running on an iPad](/blog/images/signal-ios-3.0-on-ipad.jpg)
 
 Signal 3.0 is [now available in the App Store](https://itunes.apple.com/us/app/signal-private-messenger/id874139669?mt=8):

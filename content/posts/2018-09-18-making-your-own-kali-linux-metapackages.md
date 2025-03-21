@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Making your own Kali Linux Metapackages
-https://www.kali.org/blog/making-your-own-kali-linux-metapackages/images/kali-advanced-package-management-2.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/making-your-own-kali-linux-metapackages/images/kali-advanced-package-management-2.jpg
+
+
+
 One of the many useful things we can do with APT is create metapackages, which are effectively empty packages that declare a list of other packages as dependencies. Kali Linux includes metapackages for password cracking, software-defined radio, wireless, web applications, and more but if you have specific needs (like most
-<br/>
+
 One of the many useful things we can do with APT is create metapackages, which are effectively empty packages that declare a list of other packages as dependencies. Kali Linux includes metapackages for password cracking, software-defined radio, wireless, web applications, and more but if you have specific needs (like most people), it’s quick and easy to define your own metapackages, which we will show in this post.
 
 Before we begin, we need to install the **_devscripts_** package, which includes a number of tools and utilities for package management:

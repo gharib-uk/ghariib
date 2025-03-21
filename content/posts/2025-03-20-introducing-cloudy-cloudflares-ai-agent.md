@@ -6,11 +6,12 @@ type: posts
 ---
 # Introducing Cloudy Cloudflares AI agent for simplifying complex configurations
 
-<br/>
 
-<br/>
+
+
+
  Cloudflare’s first AI agent, Cloudy, helps make complicated configurations easy to understand for Cloudflare administrators. 
-<br/>
+
 Cloudflare’s first AI agent, Cloudy, helps make complicated configurations easy to understand for Cloudflare administrators.
 
 #### [Source](https://blog.cloudflare.com/introducing-ai-agent/)

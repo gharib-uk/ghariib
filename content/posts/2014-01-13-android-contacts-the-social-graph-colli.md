@@ -6,11 +6,12 @@ type: posts
 ---
 # Android Contacts the Social Graph Collider
 
-<br/>
 
-<br/>
+
+
+
  Winter Break of Code, Day Seven Spring Break of Code 2013 I cut open my foot and hand while surfing; both wounds easily warranted stitches. Winter Break of Code 2014 I banged the top of my
-<br/>
+
 _Winter Break of Code, Day Seven_
 
 ![Rhodey surfing](/blog/images/wboc-rhodey-surfn.jpg)

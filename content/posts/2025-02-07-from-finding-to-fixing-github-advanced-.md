@@ -6,11 +6,12 @@ type: posts
 ---
 # From finding to fixing GitHub Advanced Security integrates Endor Labs SCA
 
-<br/>
 
-<br/>
+
+
+
 The partnership between GitHub and Endor Labs enables application security engineers and developers to drastically reduce time spent on open source vulnerabilities, and gives them the tools to go from finding to fixing. The post From finding to fixing: GitHub Advanced Security integrates Endor Labs SCA appeared first on The GitHub
-<br/>
+
 The partnership between GitHub and Endor Labs enables application security engineers and developers to drastically reduce time spent on open source vulnerabilities, and gives them the tools to go from finding to fixing.
 
 The post [From finding to fixing: GitHub Advanced Security integrates Endor Labs SCA](https://github.blog/security/from-finding-to-fixing-github-advanced-security-integrates-endor-labs-sca/) appeared first on [The GitHub Blog](https://github.blog).

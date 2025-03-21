@@ -6,11 +6,12 @@ type: posts
 ---
 # Phishing Campaigns Targeting Higher Education Institutions
 
-<br/>
 
-<br/>
+
+
+
 Written by: Ashley Pearson, Ryan Rath, Gabriel Simches, Brian Timberlake, Ryan Magaw, Jessica Wilbur Overview Beginning in August 2024, Mandiant observed a notable increase in phishing attacks targeting the education industry, specifically U.S.-based universities. A separate investigation conducted by the Google’s Workspace Trust and Safety team identified a long-term campaign spanning from at
-<br/>
+
 Written by: Ashley Pearson, Ryan Rath, Gabriel Simches, Brian Timberlake, Ryan Magaw, Jessica Wilbur
 
 * * *

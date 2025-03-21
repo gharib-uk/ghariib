@@ -6,11 +6,12 @@ type: posts
 ---
 # MS17-017 - Important Security Update for Windows Kernel 4013081 - Version 10
 
-<br/>
 
-<br/>
 
-<br/>
+
+
+
+
 
 
 #### [Source](https://technet.microsoft.com/en-us/library/security/MS17-017)

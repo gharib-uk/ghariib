@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20193 Release Cloudflare Kali-status metapackages Helper-Scripts LXD
-https://www.kali.org/blog/kali-linux-2019-3-release/images/kali-release-2019.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2019-3-release/images/kali-release-2019.jpg
+
+
+
 We are pleased to announce that our third release of 2019, Kali Linux 2019.3, is available immediately for download. This release brings our kernel up to version 5.2.9, and includes various new features across the board with NetHunter, ARM and packages (plus the normal bugs fixes and updates). As promised in
-<br/>
+
 We are pleased to announce that our third release of 2019, Kali Linux 2019.3, is available immediately for [download](https://www.kali.org/get-kali/). This release brings our [kernel up to version 5.2.9](https://pkg.kali.org/pkg/linux), and includes various new features across the board with NetHunter, ARM and packages (plus the normal bugs fixes and updates).
 
 As promised in our [roadmap blog post](https://www.kali.org/blog/kali-linux-roadmap-2019-2020/), there are both user facing and backend updates.

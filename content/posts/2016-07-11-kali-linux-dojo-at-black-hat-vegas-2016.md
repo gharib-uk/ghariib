@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux Dojo at Black Hat Vegas 2016
-https://www.kali.org/blog/kali-dojo-black-hat-vegas-2016/images/kali-dojo-2016-blackhat.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-dojo-black-hat-vegas-2016/images/kali-dojo-2016-blackhat.jpg
+
+
+
 The folks at Black Hat have been kind enough to invite us once again to deliver a Kali Dojo in Las Vegas this year. The event will be held on the 4th of August at the Mandalay Bay hotel, and will be open to all Black Hat pass types. This
-<br/>
+
 The folks at **Black Hat** have been kind enough to invite us once again to deliver a [Kali Dojo in Las Vegas](https://www.blackhat.com/us-16/kali-linux.html) this year. The event will be held on the **4th of August at the Mandalay Bay** hotel, and will be open to all Black Hat pass types. This year our Dojo will be set up differently, allowing for a larger crowd and much more interaction. We are going to hold a full day event, featuring several main activity areas :
 
 [![](https://www.kali.org/blog/kali-dojo-black-hat-vegas-2016/images/dojo-slider.png)](https://www.kali.org/blog/kali-dojo-black-hat-vegas-2016/images/dojo-slider.png)

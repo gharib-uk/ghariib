@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali NetHunter Updates
-https://www.kali.org/blog/kali-nethunter-updates/images/kali-net-hunter-releases.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-nethunter-updates/images/kali-net-hunter-releases.jpg
+
+
+
 Many outstanding discoveries have been made by our vibrant NetHunter community since 2020.1, so we have decided to publish a mid-term release to showcase these amazing developments on selected devices. Massive thanks to our dedicated developers Kimocoder, PaulWebSec, simonpunk, yesimxev, &amp; #DJY who did an incredible job in bringing you the
-<br/>
+
 ##### [](https://www.kali.org/blog/kali-nethunter-updates/#many-outstanding-discoveries-have-been-made-by-our-vibrant-nethunter-community-since-20201-so-we-have-decided-to-publish-a-mid-term-release-to-showcase-these-amazing-developments-on-selected-devices)Many outstanding discoveries have been made by our vibrant NetHunter community since 2020.1, so we have decided to publish a mid-term release to showcase these amazing developments on selected devices.
 
 Massive thanks to our dedicated developers [Kimocoder](https://gitlab.com/kimocoder), [PaulWebSec](https://twitter.com/PaulWebSec), [simonpunk](https://twitter.com/simonpunk1), [yesimxev](https://gitlab.com/yesimxev), & [#DJY](https://github.com/johanlike) who did an incredible job in bringing you the following highlights:

@@ -6,11 +6,12 @@ type: posts
 ---
 # webapps JUX Real Estate 340 - SQL Injection
 
-<br/>
 
-<br/>
+
+
+
 JUX Real Estate 3.4.0 - SQL Injection
-<br/>
+
 JUX Real Estate 3.4.0 - SQL Injection
 
 #### [Source](https://www.exploit-db.com/exploits/52089)

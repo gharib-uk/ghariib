@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # WireGuard on Kali
-https://www.kali.org/blog/wireguard-on-kali/images/wireguard-on-kali.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/wireguard-on-kali/images/wireguard-on-kali.jpg
+
+
+
 We have been hearing a lot about WireGuard lately and with it being recently added to the Kali repos, we thought we would give it a quick try to see what all the fuss is about. All in all, we found this is a really nice and quick to configure
-<br/>
+
 We have been hearing a lot about [WireGuard](https://www.wireguard.com/quickstart/) lately and with it being recently added to the Kali repos, we thought we would give it a quick try to see what all the fuss is about. All in all, we found this is a really nice and quick to configure VPN solution, and might be worth checking out.
 
 Getting Started

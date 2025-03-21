@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali NetHunter Security Release Fixes
-https://www.kali.org/blog/kali-linux-1-0-9a-release/images/kali-1.0.9a-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-1-0-9a-release/images/kali-1.0.9a-release.jpg
+
+
+
 Squash the Bugs with Kali 1.0.9a Over the past couple of weeks, we&rsquo;ve seen a bunch of nasty bugs hit the scene, from shellshock to Debian apt vulnerabilities. As we prefer not to ship vulnerable ISOs, we&rsquo;ve rolled up new images for our Kali Linux and NetHunter releases as well our
-<br/>
+
 ### Squash the Bugs with Kali 1.0.9a
 
 Over the past couple of weeks, we’ve seen a bunch of nasty bugs hit the scene, from **shellshock** to Debian **[apt](https://www.debian.org/security/2014/dsa-3025)** vulnerabilities. As we prefer not to ship vulnerable ISOs, we’ve rolled up new images for our Kali Linux and NetHunter releases as well our Amazon AWS images with the relevant security fixes in place. These images correspond to Kali 1.0.9a and [NetHunter 1.0.2](https://www.offsec.com/offsec/kali-nexus-nethunter-1-0-2/) versions, now available for [download](https://www.kali.org/get-kali/) through our mirrors. We expect the Amazon images to be updated in the AWS backend by the end of the week. If you’re already running Kali Linux, all you need to do is run an update and dist-upgrade to get the latest and greatest:

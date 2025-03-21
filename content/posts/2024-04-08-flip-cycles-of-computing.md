@@ -6,11 +6,12 @@ type: posts
 ---
 # Flip Cycles of Computing
 
-<br/>
 
-<br/>
+
+
+
 Tech cycles flip from centralized to decentralized: Examples include AI's shift from massive servers to mobile devices, and software development's oscillation between modular and monolithic structures
-<br/>
+
 Tech cycles flip from centralized to decentralized: Examples include AI's shift from massive servers to mobile devices, and software development's oscillation between modular and monolithic structures
 
 #### [Source](https://blog.anantshri.info/flip-cycles-of-computing/)

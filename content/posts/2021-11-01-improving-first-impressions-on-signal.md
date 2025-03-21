@@ -6,11 +6,12 @@ type: posts
 ---
 # Improving first impressions on Signal
 
-<br/>
 
-<br/>
+
+
+
  The phenomenon of unsolicited and unwanted messaging dates back to the earliest communication platforms: from prehistoric cave graffiti and postal chain letters to popup ads and robocalls. To prevent spam, most online services rely
-<br/>
+
 ![An unsolicited Signal message appears, offering extended car warranty deals.](/blog/images/spam-car-small.jpg)
 
 The phenomenon of unsolicited and unwanted messaging dates back to the earliest communication platforms: from [prehistoric cave graffiti](https://www.livescience.com/7028-ancient-cave-art-full-teenage-graffiti.html) and postal chain letters to popup ads and robocalls. To prevent spam, most online services rely on large-scale inspection of plaintext conversation content or detailed social-graph analysis to determine who is saying what to whom and whether or not that should be allowed. At Signal, we build on a foundation of privacy and do not have access to that type of data or metadata.

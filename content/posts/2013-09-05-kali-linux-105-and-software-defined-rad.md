@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 105 and Software Defined Radio
-https://www.kali.org/blog/kali-linux-1-0-5-release/images/kali-1.0.5-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-1-0-5-release/images/kali-1.0.5-release.jpg
+
+
+
 Today we are pleased to announce the immediate availability of Kali Linux 1.0.5 with a rollup of various tool additions, fixes, and upgrades, including our fix for the encrypted encrypted LVM installation issue that we documented last week. As usual, users with Kali already installed just need to run a
-<br/>
+
 Today we are pleased to announce the immediate availability of [Kali Linux 1.0.5](https://www.kali.org/get-kali/) with a rollup of various [tool additions, fixes, and upgrades](https://bugs.kali.org/changelog_page.php?version_id=2), including our fix for the encrypted [encrypted LVM installation issue](https://www.kali.org/blog/tracking-fixing-installer-bugs/) that we documented last week. As usual, users with Kali already installed just need to run a simple update to get the latest goodness:
 
 ```console

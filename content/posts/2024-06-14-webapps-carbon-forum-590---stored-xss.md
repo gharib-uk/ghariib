@@ -6,11 +6,12 @@ type: posts
 ---
 # webapps Carbon Forum 590 - Stored XSS
 
-<br/>
 
-<br/>
+
+
+
 Carbon Forum 5.9.0 - Stored XSS
-<br/>
+
 Carbon Forum 5.9.0 - Stored XSS
 
 #### [Source](https://www.exploit-db.com/exploits/52043)

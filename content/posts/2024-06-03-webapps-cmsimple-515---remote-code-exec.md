@@ -6,11 +6,12 @@ type: posts
 ---
 # webapps CMSimple 515 - Remote Code Execution RCE Authenticated
 
-<br/>
 
-<br/>
+
+
+
 CMSimple 5.15 - Remote Code Execution (RCE) (Authenticated)
-<br/>
+
 CMSimple 5.15 - Remote Code Execution (RCE) (Authenticated)
 
 #### [Source](https://www.exploit-db.com/exploits/52040)

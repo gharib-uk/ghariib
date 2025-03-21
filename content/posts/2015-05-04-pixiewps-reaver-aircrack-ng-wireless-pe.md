@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Pixiewps Reaver Aircrack-ng Wireless Penetration Testing Tool Updates
-https://www.kali.org/blog/pixiewps-reaver-aircrack-ng-updates/images/kali-wireless-tools-update-v2.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/pixiewps-reaver-aircrack-ng-updates/images/kali-wireless-tools-update-v2.jpg
+
+
+
 A short while ago, we packaged and pushed out a few important wireless penetration testing tool updates for aircrack-ng, pixiewps and reaver into Kali&rsquo;s repository. These new additions and updates are fairly significant, and may even change your wireless attack workflows. Here&rsquo;s a short run-down of the updates and the
-<br/>
+
 A short while ago, we packaged and pushed out a few important [wireless penetration testing tool](https://www.kali.org/blog/kali-linux-metapackages/) updates for aircrack-ng, pixiewps and reaver into Kali’s repository. These new additions and updates are fairly significant, and may even change your wireless attack workflows. Here’s a short run-down of the updates and the changes they bring.
 
 Pixiewps - Bruteforce WPS pins in seconds

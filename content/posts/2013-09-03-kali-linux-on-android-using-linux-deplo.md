@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux on Android using Linux Deploy
-https://www.kali.org/blog/kali-linux-android-linux-deploy/images/kali-android-deploy.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-android-linux-deploy/images/kali-android-deploy.jpg
+
+
+
 Kali Linux on any Android Phone or Tablet Getting Kali Linux to run on ARM hardware has been a major goal for us since day one. So far, we&rsquo;ve built native images for the Samsung Chromebook, Odroid U2, Raspberry Pi, RK3306, Galaxy Note 10.1, CuBox, Efika MX, and BeagleBone Black to
-<br/>
+
 ### Kali Linux on any Android Phone or Tablet
 
 [![](https://www.kali.org/blog/kali-linux-android-linux-deploy/images/linux-deploy-kali-list-00.png)](https://www.kali.org/blog/kali-linux-android-linux-deploy/images/linux-deploy-kali-list-00.png)

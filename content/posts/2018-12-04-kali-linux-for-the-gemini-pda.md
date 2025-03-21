@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux for the Gemini PDA
-https://www.kali.org/blog/kali-linux-for-the-gemini-pda/images/kali-gem-pda-post-alternative.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-for-the-gemini-pda/images/kali-gem-pda-post-alternative.jpg
+
+
+
 Running Kali on a Gem The Gemini PDA from Planet Computers is an ultra-thin, clamshell mobile device with a tactile keyboard. Sporting a 5.99&quot; screen, QWERTY keyboard, 4G &amp; Wi-Fi, deca-core CPU, and an Open-source bootloader that supports multi-boot, it caught our attention straight away when it popped up on Indiegogo.
-<br/>
+
 Running Kali on a Gem
 ---------------------
 

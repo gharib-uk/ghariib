@@ -6,11 +6,12 @@ type: posts
 ---
 # MS16-123 - Important Security Update for Windows Kernel-Mode Drivers 3192892 - Version 30
 
-<br/>
 
-<br/>
 
-<br/>
+
+
+
+
 
 
 #### [Source](https://technet.microsoft.com/en-us/library/security/MS16-123)

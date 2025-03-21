@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Announcing Kali Linux Newsletter Keeping in Touch
-https://www.kali.org/blog/kali-linux-newsletter-keeping-in-touch/images/kali-newsletter-1.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-newsletter-keeping-in-touch/images/kali-newsletter-1.jpg
+
+
+
 Extra! Extra! Read all about it! Today we are announcing the Kali Linux newsletter. It&rsquo;s easy to miss certain news. Not everyone is regularly checking our web page to see if something has been posted (and we don&rsquo;t have a regular schedule of when we update). It is easy to be
-<br/>
+
 Extra! Extra! Read all about it! Today we are announcing the Kali Linux newsletter.
 
 It’s easy to miss certain news. Not everyone is regularly checking our web page to see if something has been posted _(and we don’t have a regular schedule of when we update)_. It is easy to be drowned out in social networks with everything else going on. And RSS feeds have not been as common as they once were. So to try and help keep you in the loop with Kali Linux, we now have a newsletter option.

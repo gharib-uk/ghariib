@@ -6,11 +6,12 @@ type: posts
 ---
 # webapps Poultry Farm Management System v10 - Remote Code Execution RCE
 
-<br/>
 
-<br/>
+
+
+
 Poultry Farm Management System v1.0 - Remote Code Execution (RCE)
-<br/>
+
 Poultry Farm Management System v1.0 - Remote Code Execution (RCE)
 
 #### [Source](https://www.exploit-db.com/exploits/52053)

@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20204 Release ZSH Bash CME MOTD AWS Docs Win-KeX Vagrant
-https://www.kali.org/blog/kali-linux-2020-4-release/images/kali-2020.4-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2020-4-release/images/kali-2020.4-release.jpg
+
+
+
 We find ourselves in the 4th quarter of 2020, and we are ecstatic to announce the release of Kali Linux 2020.4, which is ready for immediate download or updating. What&rsquo;s different with this release since 2020.3 in August 2020 is: ZSH is the new default shell - We said it was happening
-<br/>
+
 We find ourselves in the 4th quarter of 2020, and we are ecstatic to announce the release of **Kali Linux 2020.4**, which is ready for immediate [download](https://www.kali.org/get-kali/) or [updating](https://www.kali.org/docs/general-use/updating-kali/).
 
 What’s different with this release since [2020.3 in August 2020](https://www.kali.org/blog/kali-linux-2020-3-release/) is:

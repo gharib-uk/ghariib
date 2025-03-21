@@ -6,11 +6,12 @@ type: posts
 ---
 # A Threat Hunters Guide to Decoding the Cloud
 
-<br/>
 
-<br/>
+
+
+
  &lt;p&gt;This blog will guide you through how to be a successful threat hunter in cloud environments, along with some helpful tips and advice.&lt;/p&gt; 
-<br/>
+
 <p>This blog will guide you through how to be a successful threat hunter in cloud environments, along with some helpful tips and advice.</p>
 
 #### [Source](https://trustedsec.com/blog/a-threat-hunters-guide-to-decoding-the-cloud)

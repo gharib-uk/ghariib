@@ -6,11 +6,12 @@ type: posts
 ---
 # Surrendering to the Potential of Constraints
 
-<br/>
 
-<br/>
+
+
+
  Winter Break Of Code, Day 5 The prophetic discourse of the Karai can be summed up in an observation and a promise: on the one hand, they constantly affirmed the fundamentally evil character
-<br/>
+
 _Winter Break Of Code, Day 5_
 
 > The prophetic discourse of the Karai can be summed up in an observation and a promise: on the one hand, they constantly affirmed the fundamentally evil character of the world, on the other, they insisted that conquest of a good world was possible. “The world is evil! The world is ugly!” they said. “Let us abandon it!” they concluded. \[…\] In short, it was not the discourse of the prophets that was unhealthy, but indeed, the world in which they spoke, the society in which they lived.

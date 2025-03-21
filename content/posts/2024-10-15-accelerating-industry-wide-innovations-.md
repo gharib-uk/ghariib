@@ -6,11 +6,12 @@ type: posts
 ---
 # Accelerating industry-wide innovations in datacenter infrastructure and security
 
-<br/>
 
-<br/>
+
+
+
 Microsoft drives innovation and contributes to the broader AI and datacenter community, benefitting the entire industry. The post Accelerating industry-wide innovations in datacenter infrastructure and security appeared first on Microsoft Azure Blog. 
-<br/>
+
 Microsoft drives innovation and contributes to the broader AI and datacenter community, benefitting the entire industry.
 
 The post [Accelerating industry-wide innovations in datacenter infrastructure and security](https://azure.microsoft.com/en-us/blog/accelerating-industry-wide-innovations-in-datacenter-infrastructure-and-security/) appeared first on [Microsoft Azure Blog](https://azure.microsoft.com/en-us/blog).

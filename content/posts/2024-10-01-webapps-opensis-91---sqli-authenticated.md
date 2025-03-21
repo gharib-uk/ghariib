@@ -6,11 +6,12 @@ type: posts
 ---
 # webapps openSIS 91 - SQLi Authenticated
 
-<br/>
 
-<br/>
+
+
+
 openSIS 9.1 - SQLi (Authenticated)
-<br/>
+
 openSIS 9.1 - SQLi (Authenticated)
 
 #### [Source](https://www.exploit-db.com/exploits/52080)

@@ -6,11 +6,12 @@ type: posts
 ---
 # Beyond the Grunts and Clicks An Exploration into Doing Things the Hard Way
 
-<br/>
 
-<br/>
+
+
+
  Winter Break Of Code Day Nineteen I recently had the opportunity to listen to another amazing podcast from 99% Invisible, a program about “design, architecture and the 99% invisible activity that shapes our world.” It
-<br/>
+
 _Winter Break Of Code Day Nineteen_
 
 ![Cyberpunk](/blog/images/gregg-cyberpunk.jpg)

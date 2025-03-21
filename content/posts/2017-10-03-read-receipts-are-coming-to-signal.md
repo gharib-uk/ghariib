@@ -6,11 +6,12 @@ type: posts
 ---
 # Read receipts are coming to Signal
 
-<br/>
 
-<br/>
+
+
+
  Today’s beta release of Signal for Android and iOS includes support for read receipts. This is an optional new feature that gives you the ability to see and share when messages have been read.
-<br/>
+
 Today’s beta release of Signal for Android and iOS includes support for read receipts. This is an optional new feature that gives you the ability to see and share when messages have been read. Something tells us that you might find this useful…
 
  

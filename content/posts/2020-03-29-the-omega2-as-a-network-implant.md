@@ -6,11 +6,12 @@ type: posts
 ---
 # The Omega2 as a network implant
 
-<br/>
 
-<br/>
+
+
+
 Some time ago in 2016 I backed a Kickstarter for the Omega2 board. This is a tiny Linux powered computer meant for IoT development. I had plans to make cool things with it at the time, but the reality of it was that the Omega2+ ended up in my closet
-<br/>
+
 Some time ago in 2016 I backed a Kickstarter for the [Omega2](https://onion.io/omega2/) board. This is a tiny Linux powered computer meant for IoT development. I had plans to make cool things with it at the time, but the reality of it was that the Omega2+ ended up in my closet to be forgotten. Fast forward to 2020, we’re in the middle of a pandemic, I’m on vacation looking for things to do, and now seemed like a good time to put the Omega2+ to use.
 
 I’d been wanting to make something similar to Hak5’s [LAN Turtle](https://shop.hak5.org/products/lan-turtle) and [Shark Jack](https://shop.hak5.org/products/shark-jack). With that in mind, I decided to turn the Omega2+ into a network implant. The end result is a device that plugs into a network drop of a target LAN and acts as a WiFi access point. By associating with the Omega2+ via WiFi, we can then SSH into it and perform scans on the target LAN.

@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # The end of the i386 kernel and images
-https://www.kali.org/blog/end-of-i386-kernel-and-images/images/banner-end-of-i386.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/end-of-i386-kernel-and-images/images/banner-end-of-i386.jpg
+
+
+
 The i386 architecture has long been obsolete, and from this week, support for i386 in Kali Linux is going to shrink significantly: i386 kernel and images are going away. Images and releases will no longer be created for this platform. Some terminology first Let&rsquo;s start with the terms used in Kali Linux
-<br/>
+
 The `i386` architecture has long been obsolete, and from this week, support for i386 in Kali Linux is going to shrink significantly: i386 kernel and images are going away. Images and releases will no longer be created for this platform.
 
 Some terminology first

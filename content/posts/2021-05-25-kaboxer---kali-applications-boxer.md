@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kaboxer - Kali Applications Boxer
-https://www.kali.org/blog/introducing-kaboxer/images/kaboxer-banner-v1.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/introducing-kaboxer/images/kaboxer-banner-v1.jpg
+
+
+
 On and off for the last 18 months we have been working on Kaboxer, and just before Kali 2021.1, it is ready to say &ldquo;Hello World&rdquo; (then it will start shipping you applications). TL;DR - What is this? What is the name about, Kaboxer? Kali Applications Boxer What does that mean? Apps in
-<br/>
+
 On and off for the last 18 months we have been working on **Kaboxer**, and just before Kali 2021.1, it is ready to say “Hello World” _(then it will start shipping you applications)_.
 
 TL;DR - What is this?

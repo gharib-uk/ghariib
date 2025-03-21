@@ -6,11 +6,12 @@ type: posts
 ---
 # Ghost in the Router China-Nexus Espionage Actor UNC3886 Targets Juniper Routers
 
-<br/>
 
-<br/>
+
+
+
 Written by: Lukasz Lamparski, Punsaen Boonyakarn, Shawn Chew, Frank Tse, Jakub Jozwiak, Mathew Potaczek, Logeswaran Nadarajan, Nick Harbour, Mustafa Nasser Introduction In mid 2024, Mandiant discovered threat actors deployed custom backdoors on Juniper Networks’ Junos OS routers. Mandiant attributed these backdoors to the China-nexus espionage group, UNC3886. Mandiant uncovered several TINYSHELL-based backdoors
-<br/>
+
 Written by: Lukasz Lamparski, Punsaen Boonyakarn, Shawn Chew, Frank Tse, Jakub Jozwiak, Mathew Potaczek, Logeswaran Nadarajan, Nick Harbour, Mustafa Nasser
 
 * * *

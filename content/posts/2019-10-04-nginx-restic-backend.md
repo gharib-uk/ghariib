@@ -6,11 +6,12 @@ type: posts
 ---
 # Nginx Restic Backend
 
-<br/>
 
-<br/>
+
+
+
 I’ve started using an excellent piece of software called Restic for backing up my various hosts. Restic has multiple backend types that you can send your backups to. One of the backends it supports is a REST API for which there is an implementation named Rest Server written in Go. I
-<br/>
+
 I’ve started using an excellent piece of software called [Restic](https://restic.net/) for backing up my various hosts. Restic has multiple backend types that you can send your backups to. One of the backends it supports is a [REST API](https://restic.readthedocs.io/en/latest/100_references.html#rest-backend) for which there is an implementation named [Rest Server](https://github.com/restic/rest-server) written in [Go](https://golang.org/).
 
 I thought to myself, if it’s just a simple REST API, why do I need to learn/install/manage a new piece of software? I already use [Nginx](https://nginx.org/) all over the place. Can I just use Nginx for this? The answer was yes.

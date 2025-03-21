@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Drones Portable CTF Builds Raspberry Pi Craziness and More
-https://www.kali.org/blog/kali-drones-portable-ctf-builds-raspberry-pi-craziness-and-more/images/kali-pi-drone.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-drones-portable-ctf-builds-raspberry-pi-craziness-and-more/images/kali-pi-drone.jpg
+
+
+
 The Kali community is a pretty crazy thing. There are folks all over the world doing interesting things with Kali Linux and far too often, these cool projects get overlooked. Part of the problem is that the community is spread out all over the &rsquo;net. We&rsquo;re continuing to help build
-<br/>
+
 The Kali community is a pretty crazy thing. There are folks all over the world doing interesting things with Kali Linux and far too often, these cool projects get overlooked. Part of the problem is that the community is spread out all over the ’net. We’re continuing to help build the Kali community to help with this problem, but that’s a slightly longer topic. In the meantime, we want to keep you well-informed about cool stuff that’s happening in our world-wide community. We’ll also be reaching out to standout members of our community, highlight their work, and get them involved in building our new community.
 
 In this, the first of many community updates, we want to highlight the work of one of our members, @Re4son, who has been a long-time Kali Linux advocate, a volunteer moderator on the [Kali Linux forums](https://forums.kali.org/) and a “Dedicated technology enthusiast, obsessed with setting every machine free from the oppression of its maker” who is checking in all the way from Melbourne, Australia.

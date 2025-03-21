@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Raspberry Pi 4 and Kali
-https://www.kali.org/blog/raspberry-pi-4-and-kali/images/kali-raspberry-pi-4.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/raspberry-pi-4-and-kali/images/kali-raspberry-pi-4.jpg
+
+
+
 We love the Raspberry Pi, and judging by the response we got to a late night tweet we sent out last weekend a lot of you love the Pi too! Because of that, when the Pi 4 dropped we wanted to get Kali supported on it right away. What&rsquo;s new on the
-<br/>
+
 We love the Raspberry Pi, and judging by the response we got to a [late night tweet](https://twitter.com/kalilinux/status/1144895236025585665) we sent out last weekend a lot of you love the Pi too!
 
 Because of that, when the [Pi 4 dropped](https://www.raspberrypi.org/blog/raspberry-pi-4-on-sale-now-from-35/) we wanted to get Kali supported on it right away.

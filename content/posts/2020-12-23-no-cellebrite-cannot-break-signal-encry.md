@@ -6,11 +6,12 @@ type: posts
 ---
 # No Cellebrite cannot break Signal encryption
 
-<br/>
 
-<br/>
+
+
+
  Yesterday, the BBC ran a story with the factually untrue headline, “Cellebrite claimed to have cracked chat app’s encryption.” This is false. Not only can Cellebrite not break Signal encryption, but Cellebrite never even claimed
-<br/>
+
 Yesterday, the BBC ran a story with the factually untrue headline, “Cellebrite claimed to have cracked chat app’s encryption.” This is false. Not only can Cellebrite not break Signal encryption, but Cellebrite never even claimed to be able to.
 
 Since we weren’t actually given the opportunity to comment in that story, we’re posting this to help to clarify things for anyone who may have seen the headline.

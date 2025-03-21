@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20171 Release
-https://www.kali.org/blog/kali-linux-2017-1-release/images/kali-release-2017-1.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2017-1-release/images/kali-release-2017-1.jpg
+
+
+
 Finally, it&rsquo;s here! We&rsquo;re happy to announce the availability of the Kali Linux 2017.1 rolling release, which brings with it a bunch of exciting updates and features. As with all new releases, you have the common denominator of updated packages, an updated kernel that provides more and better hardware support,
-<br/>
+
 Finally, it’s here! We’re happy to announce the availability of the **Kali Linux 2017.1 rolling release**, which brings with it a bunch of exciting updates and features. As with all new releases, you have the common denominator of [updated packages](https://bugs.kali.org/changelog_page.php), an updated kernel that provides more and better hardware support, as well as a slew of updated tools - but this release has a few more surprises up its sleeve.
 
 ### Support for RTL8812AU Wireless Card Injection

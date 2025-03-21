@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Cracking in the Cloud with CUDA GPUs
-https://www.kali.org/blog/cloud-cracking-with-cuda-gpu/images/kali-cuda-cracking-cloud.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/cloud-cracking-with-cuda-gpu/images/kali-cuda-cracking-cloud.jpg
+
+
+
 Due to increasing popularity of cloud-based instances for password cracking, we decided to focus our efforts into streamlining Kali&rsquo;s approach. We&rsquo;ve noticed that Amazon&rsquo;s AWS P2-Series and Microsoft&rsquo;s Azure NC-Series are focused on Windows and Ubuntu. The corresponding blog posts and guides followed suit. Although these instances are limited by
-<br/>
+
 Due to increasing popularity of cloud-based instances for password cracking, we decided to focus our efforts into streamlining Kali’s approach. We’ve noticed that Amazon’s AWS [P2-Series](https://aws.amazon.com/ec2/instance-types/p2/) and Microsoft’s Azure [NC-Series](https://azure.microsoft.com/en-us/blog/azure-n-series-general-availability-on-december-1/) are focused on Windows and Ubuntu. The corresponding blog posts and guides followed suit. Although these instances are limited by the NVIDIA Tesla K80’s hardware capabilities, the ability to quickly deploy a Kali instance with CUDA support is appealing.
 
 Installing proprietary graphics drivers has always been a source of frustration; fortunately, improvements in packaging have made this process much more seamless. Although we’ve done the work for you in the cloud offerings, we’d like to help simplify installation for your own use.

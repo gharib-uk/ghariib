@@ -6,11 +6,12 @@ type: posts
 ---
 # Solving 67k binaries with r2pipe
 
-<br/>
 
-<br/>
+
+
+
 This was a 400 point reverse engineering challenge from EasyCTF 2017. We’re given a zip file containing 67,139 small programs starting from 00000.exe to 10642.exe. The idea is to solve each one in order and to join their output. The end result would lead to the flag. Here’s the challenge
-<br/>
+
 This was a 400 point reverse engineering challenge from [EasyCTF 2017](https://www.easyctf.com/). We’re given a zip file containing 67,139 small programs starting from 00000.exe to 10642.exe. The idea is to solve each one in order and to join their output. The end result would lead to the flag. Here’s the challenge description:
 
 > Here are 67k binaries, well more accurately 67,139 binaries. Solve every single one, append the results together in order (shouldn’t be too difficult as the binaries are numbered) and then from there I’m sure you can figure it out.

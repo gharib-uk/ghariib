@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20251a Release 2025 Theme Raspberry Pi
-https://www.kali.org/blog/kali-linux-2025-1-release/images/banner-2025.1-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2025-1-release/images/banner-2025.1-release.jpg
+
+
+
 We are kicking off 2025 with Kali Linux 2025.1a! This update builds on existing features, bringing enhancements and improvements to streamline your experience. It is now available to download or upgrade if you&rsquo;re already running Kali Linux. Kali Linux 2025.1a? What happened to 2025.1? There was a last minute bug discovered
-<br/>
+
 We are kicking off 2025 with **Kali Linux 2025.1a**! This update builds on existing features, bringing enhancements and improvements to streamline your experience. It is now available to [download](https://www.kali.org/get-kali/) or [upgrade if you’re already running Kali Linux](https://www.kali.org/docs/general-use/updating-kali/). _Kali Linux 2025.1**a**? What happened to 2025.1? There was a last minute bug discovered in a package after already producing our images. As a result, a re-build was needed, with a fix._
 
 Here is a recap of the [changelog](https://bugs.kali.org/changelog_page.php) since our [December 2024.4 release](https://www.kali.org/blog/kali-linux-2024-4-release/):

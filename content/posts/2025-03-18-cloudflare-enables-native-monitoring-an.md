@@ -6,11 +6,12 @@ type: posts
 ---
 # Cloudflare enables native monitoring and forensics with Log Explorer and custom dashboards
 
-<br/>
 
-<br/>
+
+
+
  Today we are excited to announce support for Zero Trust datasets, and custom dashboards where customers can monitor critical metrics for suspicious or unusual activity. 
-<br/>
+
 Today we are excited to announce support for Zero Trust datasets, and custom dashboards where customers can monitor critical metrics for suspicious or unusual activity.
 
 #### [Source](https://blog.cloudflare.com/monitoring-and-forensics/)

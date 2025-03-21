@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 10 Release - Moto - The Birth of Kali Linux
-https://www.kali.org/blog/kali-linux-1-0-0-release/images/kali-the-birth.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-1-0-0-release/images/kali-the-birth.jpg
+
+
+
 Kali Linux, the rising It&rsquo;s been 7 years since we released our first version of BackTrack Linux, and the ride so far has been exhilarating. When the dev team started talking about BackTrack 6 (almost a year ago), each of us put on paper a few &ldquo;wish list goals&rdquo; that we
-<br/>
+
 Kali Linux, the rising
 ----------------------
 

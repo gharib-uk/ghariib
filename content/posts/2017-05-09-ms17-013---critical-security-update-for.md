@@ -6,11 +6,12 @@ type: posts
 ---
 # MS17-013 - Critical Security Update for Microsoft Graphics Component 4013075 - Version 30
 
-<br/>
 
-<br/>
 
-<br/>
+
+
+
+
 
 
 #### [Source](https://technet.microsoft.com/en-us/library/security/MS17-013)

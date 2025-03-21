@@ -6,11 +6,12 @@ type: posts
 ---
 # MS17-007 - Critical Cumulative Security Update for Microsoft Edge 4013071 - Version 20
 
-<br/>
 
-<br/>
 
-<br/>
+
+
+
+
 
 
 #### [Source](https://technet.microsoft.com/en-us/library/security/MS17-007)

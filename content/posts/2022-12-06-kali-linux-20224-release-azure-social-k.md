@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20224 Release Azure Social Kali NetHunter Pro
-https://www.kali.org/blog/kali-linux-2022-4-release/images/banner-2022.4-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2022-4-release/images/banner-2022.4-release.jpg
+
+
+
 Before the year is over, we thought it was best to get the final 2022 release out. Today we are publishing Kali Linux 2022.4. This is ready for immediate download or updating existing installations. A summary of the changelog since August&rsquo;s 2022.3 release: Microsoft Azure - We are back on the Microsoft
-<br/>
+
 Before the year is over, we thought it was best to get the final 2022 release out. Today we are publishing **Kali Linux 2022.4**. This is ready for immediate [download](https://www.kali.org/get-kali/) or [updating](https://www.kali.org/docs/general-use/updating-kali/) existing installations.
 
 A summary of the [changelog](https://bugs.kali.org/changelog_page.php) since [August’s 2022.3 release](https://www.kali.org/blog/kali-linux-2022-3-release/):

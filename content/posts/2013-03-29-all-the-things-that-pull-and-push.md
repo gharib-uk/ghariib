@@ -6,11 +6,12 @@ type: posts
 ---
 # All The Things That Pull And Push
 
-<br/>
 
-<br/>
+
+
+
  Spring Break Of Code, Day Five I know very well that each and every crisis of modernity is concentrating, concatenating, and seating more deeply into everyday life. I know the struggles of the world’s unseen
-<br/>
+
 _Spring Break Of Code, Day Five_
 
 ![Bare feet in the sand](/blog/images/feet.png)

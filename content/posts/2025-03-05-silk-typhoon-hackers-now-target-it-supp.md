@@ -6,11 +6,12 @@ type: posts
 ---
 # Silk Typhoon hackers now target IT supply chains to breach networks
 
-<br/>
 
-<br/>
+
+
+
  Silk Typhoon hackers now target IT supply chains to breach networks 
-<br/>
+
 ### Silk Typhoon hackers now target IT supply chains to breach networks
 
 ![](https://upload.cvefeed.io/news/33662/thumbnail.jpg)

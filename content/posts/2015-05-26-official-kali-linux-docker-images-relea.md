@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Official Kali Linux Docker Images Released
-https://www.kali.org/blog/official-kali-linux-docker-images/images/kali-linux-docker-images.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/official-kali-linux-docker-images/images/kali-linux-docker-images.jpg
+
+
+
 For the latest information, please see our documentation on Docker Last week we received an email from a fellow penetration tester, requesting official Kali Linux Docker images that he could use for his work. We bootstrapped a minimal Kali Linux 1.1.0a base and registered it under our Kali Linux Docker account.
-<br/>
+
 For the latest information, please see our [documentation on Docker](https://www.kali.org/docs/containers/official-kalilinux-docker-images/)
 
 Last week we received an email from a fellow penetration tester, requesting official [**Kali Linux Docker images**](https://registry.hub.docker.com/u/kalilinux/kali-rolling/) that he could use for his work. We bootstrapped a minimal Kali Linux 1.1.0a base and registered it under our Kali Linux Docker account. A few minutes later, said fellow pentester was up and running with Metasploit and the Top 10 Kali Linux tools on his Macbook Pro.

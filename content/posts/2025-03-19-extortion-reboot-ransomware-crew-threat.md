@@ -6,11 +6,12 @@ type: posts
 ---
 # Extortion Reboot Ransomware Crew Threatens Leak to Snowden
 
-<br/>
 
-<br/>
+
+
+
 There are those who might say that any media coverage is valuable or desirable, but when a ransomware group winds up drawing snickers, maybe not. Kristina Beek reports: A threat group known as Ox Thief recently tried to entice its victim to pay to protect its data by threatening to
-<br/>
+
 There are those who might say that any media coverage is valuable or desirable, but when a ransomware group winds up drawing snickers, maybe not. Kristina Beek reports: A threat group known as Ox Thief recently tried to entice its victim to pay to protect its data by threatening to go to Edward Snowden — a...
 
 #### [Source](https://databreaches.net/2025/03/19/extortion-reboot-ransomware-crew-threatens-leak-to-snowden/)

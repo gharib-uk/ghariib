@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Weekly Virtual Machines with Build Scripts
-https://www.kali.org/blog/kali-vm-builder-weekly/images/kali-vm-banner.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-vm-builder-weekly/images/kali-vm-banner.jpg
+
+
+
 We have always made all our build-scripts public. These are the same set of tools which we use to generate Kali Linux (for each release, or our weekly images). You may have noticed that previously there wasn&rsquo;t anything about Virtual Machines (VMs). This is because until recently it was a
-<br/>
+
 We have always made all our [build-scripts](https://gitlab.com/kalilinux/build-scripts/) public. These are the same set of tools which we use to generate Kali Linux (for each release, or our weekly images). You may have noticed that previously there wasn’t anything about Virtual Machines (VMs). This is because until recently it was a manually done process, which followed our guides ([VMware](https://www.kali.org/docs/virtualization/install-vmware-guest-vm/) & [VirtualBox](https://www.kali.org/docs/virtualization/install-virtualbox-guest-vm/)). We have now upped our DevOps game, and automated the build process! Enter [build-scripts/Kali-VM](https://gitlab.com/kalilinux/build-scripts/kali-vm).
 
 Another positive outcome of this is that it allows us to generate weekly VMs now! These images are more up-to-date, meaning less packages need updates out of the box, but the only set of tests run are the automated ones. Our release images have an additional set of Quality Assurance (QA) smoke-tests run against them, with the knowledge of `last-snapshot`, meaning the packages are in a known state. You have a choice: Stable vs updates!

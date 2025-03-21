@@ -6,11 +6,12 @@ type: posts
 ---
 # DC416 Introduction to 64-bit Linux Exploit Development vuln03 Solution
 
-<br/>
 
-<br/>
+
+
+
 I had an awesome time presenting a workshop on an introduction to Linux binary exploitation at Defcon Toronto. As part of the workshop, I sent attendees home with a challenge binary called vuln03 to be solved at their own time using the information they learned. vuln03 came with a SUID
-<br/>
+
 I had an awesome time presenting a workshop on an introduction to Linux binary exploitation at Defcon Toronto. As part of the workshop, I sent attendees home with a challenge binary called vuln03 to be solved at their own time using the information they learned. vuln03 came with a SUID root version called rootme that would pop a rootshell if correctly exploited. This is a writeup on how to reverse engineer this binary and figure out how to exploit it. If you’re stuck trying to solve it, or if you’ve solved it and just want to compare notes, keep reading!
 
 Before getting started, you may want to refer to the slides and cheatsheets that were provided in the workshop for reference. You can find those [here](https://github.com/superkojiman/dc416-exploitdev-intro).

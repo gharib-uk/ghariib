@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kalis stable Docker image is now named kali-last-release
-https://www.kali.org/blog/renaming-kali-stable-docker-image/images/banner.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/renaming-kali-stable-docker-image/images/banner.jpg
+
+
+
 Here is a very quick announcement for users of the Kali Linux Docker Images. Until recently we used to have a Docker image named simply kali, and it was built from the last versioned release of Kali (e.g. 2019.4, 2020.1, etc.) matching our &ldquo;kali-last-snapshot&rdquo; network repositories branch. In a way, this
-<br/>
+
 Here is a very quick announcement for users of the [Kali Linux Docker Images](https://www.kali.org/docs/containers/official-kalilinux-docker-images/).
 
 Until recently we used to have a Docker image named simply `kali`, and it was built from the last [versioned release](https://www.kali.org/releases/) of Kali (e.g. 2019.4, 2020.1, etc.) matching our [“kali-last-snapshot” network repositories branch](https://www.kali.org/docs/general-use/kali-branches/). In a way, this is our “stable” release, as it will only get updates quarterly as it is in synchronisation with our release cycle.

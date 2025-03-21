@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20181 Release
-https://www.kali.org/blog/kali-linux-2018-1-release/images/kali-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2018-1-release/images/kali-release.jpg
+
+
+
 Welcome to our first release of 2018, Kali Linux 2018.1. This fine release contains all updated packages and bug fixes since our 2017.3 release last November. This release wasn&rsquo;t without its challenges&ndash;from the Meltdown and Spectre excitement (patches will be in the 4.15 kernel) to a couple of other nasty
-<br/>
+
 Welcome to our first release of 2018, Kali Linux 2018.1. This fine release contains all [updated packages and bug fixes](https://bugs.kali.org/changelog_page.php) since our [2017.3 release](https://www.kali.org/blog/kali-linux-2017-3-release/) last November. This release wasn’t without its challenges–from the [Meltdown and Spectre](https://meltdownattack.com/) excitement (patches will be in the 4.15 kernel) to a couple of other [nasty](https://bugs.kali.org/view.php?id=4483) [bugs](https://bugs.kali.org/view.php?id=4488), we had our work cut out for us but we prevailed in time to deliver this latest and greatest version for your installation pleasure.
 
 #### Kernel Updated to 4.14

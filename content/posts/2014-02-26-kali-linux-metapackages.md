@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux Metapackages
-https://www.kali.org/blog/kali-linux-metapackages/images/kali-meta-packages.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-metapackages/images/kali-meta-packages.jpg
+
+
+
 One of our goals when developing Kali Linux was to provide multiple metapackages that would allow us to easily install subsets of tools based on their particular needs. Until recently, we only had a handful of these meta packages but we have since expanded the metapackage list to include far
-<br/>
+
 One of our goals when developing Kali Linux was to provide multiple [metapackages](https://gitlab.com/kalilinux/packages/kali-meta.git) that would allow us to easily install subsets of tools based on their particular needs. Until recently, we only had a handful of these meta packages but we have since expanded the [metapackage list](https://www.kali.org/docs/general-use/metapackages/) to include far more options:
 
 -   kali-linux

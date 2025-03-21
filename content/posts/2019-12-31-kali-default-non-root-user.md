@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Default Non-Root User
-https://www.kali.org/blog/kali-default-non-root-user/images/non-root-default-kali-user.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-default-non-root-user/images/non-root-default-kali-user.jpg
+
+
+
 For years now, Kali has inherited the default root user policy from BackTrack. As part of our evaluation of Kali tools and policies we have decided to change this and move Kali to a &ldquo;traditional default non-root user&rdquo; model. This change will be part of the 2020.1 release, currently scheduled
-<br/>
+
 For years now, Kali has inherited the default root user policy from BackTrack. As part of our evaluation of [Kali tools](https://www.kali.org/tools/) and [policies](https://www.kali.org/docs/policy/) we have decided to change this and move Kali to a “traditional default non-root user” model. This change will be part of the 2020.1 release, currently scheduled for late January. However, you will notice this change in the [weekly images](https://cdimage.kali.org/kali-weekly/) starting now.
 
 The History of Default Root User

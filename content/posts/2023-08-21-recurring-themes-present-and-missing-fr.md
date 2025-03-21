@@ -6,11 +6,12 @@ type: posts
 ---
 # Recurring Themes Present And Missing From Hacker Summer Camp
 
-<br/>
 
-<br/>
+
+
+
 In this post we break down some of the broader themes from Black Hat and DEF CON 2023 and pull out some recurring themes across each that would cause some consternation for CISOs, CIOs, CEOs, and board members.
-<br/>
+
 In this post we break down some of the broader themes from Black Hat and DEF CON 2023 and pull out some recurring themes across each that would cause some consternation for CISOs, CIOs, CEOs, and board members.
 
 #### [Source](https://www.greynoise.io/blog/recurring-themes-present-and-missing-from-hacker-summer-camp)

@@ -6,11 +6,12 @@ type: posts
 ---
 # Dirigibles Chinese Junk Rigs and Surfboards
 
-<br/>
 
-<br/>
+
+
+
  Spring Break Of Code, Day One. One of the first times I met up with Moxie while travelling, we met at a dive bar in San Francisco’s Mission District, packed with hipsters. I had nineteen
-<br/>
+
 _Spring Break Of Code, Day One._
 
 One of the first times I met up with [Moxie](https://twitter.com/moxie) while travelling, we met at a dive bar in San Francisco’s Mission District, packed with hipsters. I had nineteen years, a modified state ID card, and just hitchhiked into town. We sat at the bar, and both ordered well gin and tonics.

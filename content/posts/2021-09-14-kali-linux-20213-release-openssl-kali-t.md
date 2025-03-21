@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20213 Release OpenSSL Kali-Tools Kali Live VM Support Kali NetHunter Smartwatch
-https://www.kali.org/blog/kali-linux-2021-3-release/images/banner-2021.3-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2021-3-release/images/banner-2021.3-release.jpg
+
+
+
 Today we have released the newest version of Kali Linux, 2021.3 (quarter #3), which is now ready for download or updating. A summary of the changes since the 2021.2 release from June are: OpenSSL - Wide compatibility by default - Keep reading for what that means New Kali-Tools site - Following the footsteps
-<br/>
+
 Today we have released the newest version of **Kali Linux, 2021.3** _(quarter #3)_, which is now ready for [download](https://www.kali.org/get-kali/) or [updating](https://www.kali.org/docs/general-use/updating-kali/).
 
 A summary of the [changes](https://bugs.kali.org/changelog_page.php) since the [2021.2 release from June](https://www.kali.org/blog/kali-linux-2021-2-release/) are:

@@ -6,11 +6,12 @@ type: posts
 ---
 # 5 Free Things for Everybody
 
-<br/>
 
-<br/>
+
+
+
 Here are some of the free services that Shodan provides that don't require any payment, don't require a Shodan account and don't require an API key: 1. Vulnerability Information https://cvedb.shodan.io The CVEDB website lets you explore known vulnerabilities and provides a free API to quickly get vulnerability
-<br/>
+
 Here are some of the free services that Shodan provides that don't require any payment, don't require a Shodan account and don't require an API key:
 
 #### 1\. Vulnerability Information

@@ -6,11 +6,12 @@ type: posts
 ---
 # A Synchronized Start for Linked Devices
 
-<br/>
 
-<br/>
+
+
+
  With Signal on Desktop and iPad, you can link your primary Android or iOS account with another device, letting you check and respond to messages in both places or conduct video meetings and calls
-<br/>
+
 ![A view of a mobile phone displaying the "Finish Linking" step. Two options are displayed: "Transfer Message History" and "Don't Transfer."](/blog/images/synchronized-start-header.png)
 
 With Signal on Desktop and iPad, you can link your primary Android or iOS account with another device, letting you check and respond to messages in both places or conduct video meetings and calls from the comfort of a bigger screen.

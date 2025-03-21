@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # xz-utils backdoor how to get started
-https://www.kali.org/blog/xz-backdoor-getting-started/images/xz-backdoor-getting-started.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/xz-backdoor-getting-started/images/xz-backdoor-getting-started.jpg
+
+
+
 Following the recent disclosure of a backdoor in upstream xz/liblzma, we are writing this &ldquo;get started&rdquo; kind of blog post. We will explain how to setup an environment with the backdoored version of liblzma, and then the first commands to run to validate that the backdoor is installed. All in
-<br/>
+
 Following the recent disclosure of a [backdoor in upstream xz/liblzma](https://www.openwall.com/lists/oss-security/2024/03/29/4), we are writing this “get started” kind of blog post. We will explain how to setup an environment with the backdoored version of liblzma, and then the first commands to run to validate that the backdoor is installed. All in all, it should just take a few minutes, and there’s no learning curve, it’s all very simple.
 
 This blog post is aimed at all the enthusiasts that are following the news as the events unfold, and who are eager to have their hands on the keyboard, running a few commands in a terminal rather than just reading about it. This is really beginner level, and we’ll just reproduce the easiest findings that were reported in the initial disclosure. Nothing groundbreaking here, sorry ;)

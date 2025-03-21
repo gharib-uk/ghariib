@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20243 Release Multiple transitions
-https://www.kali.org/blog/kali-linux-2024-3-release/images/banner-2024.3-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2024-3-release/images/banner-2024.3-release.jpg
+
+
+
 With summer coming to an end, so are package migrations, and Kali 2024.3 can now be released. You can now start downloading or upgrading if you have an existing Kali installation. The summary of the changelog since the 2024.2 release from June is: Qualcomm NetHunter Pro Devices - Qualcomm Snapdragon SDM845 SoC
-<br/>
+
 With summer coming to an end, so are package migrations, and Kali 2024.3 can now be released. You can now start [downloading](https://www.kali.org/get-kali/) or [upgrading _if you have an existing Kali installation_](https://www.kali.org/docs/general-use/updating-kali/).
 
 The summary of the [changelog](https://bugs.kali.org/changelog_page.php) since the [2024.2 release from June](https://www.kali.org/blog/kali-linux-2024-2-release/) is:

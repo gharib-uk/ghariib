@@ -6,11 +6,12 @@ type: posts
 ---
 # webapps FluxBB 1511 - Stored Cross-Site Scripting XSS
 
-<br/>
 
-<br/>
+
+
+
 FluxBB 1.5.11 - Stored Cross-Site Scripting (XSS)
-<br/>
+
 FluxBB 1.5.11 - Stored Cross-Site Scripting (XSS)
 
 #### [Source](https://www.exploit-db.com/exploits/52090)

@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Advanced Package Management in Kali Linux
-https://www.kali.org/blog/advanced-package-management-in-kali-linux/images/kali-advanced-package-management-2.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/advanced-package-management-in-kali-linux/images/kali-advanced-package-management-2.jpg
+
+
+
 The Advanced Package Tool (APT) is how programs, libraries, documentation, and even the kernel itself are installed and managed on Kali and other Debian-based derivatives. APT often works so well that many users don&rsquo;t pay any particular attention to it other than to perhaps search for and install programs and
-<br/>
+
 The [Advanced Package Tool](https://en.wikipedia.org/wiki/APT_\(Debian\)) (APT) is how programs, libraries, documentation, and even the kernel itself are installed and managed on Kali and other Debian-based derivatives. APT often works so well that many users don’t pay any particular attention to it other than to perhaps search for and install programs and (hopefully) update their system regularly.
 
 For most standard users, making use of APT this way is perfectly normal but we like to think that people who use Kali Linux are not standard users (in a good way) and so we are devoting this post to telling how you to get better use of APT and how to take advantage of the wide ecosystem of packages that are available, while keeping your Kali system stable and happy.

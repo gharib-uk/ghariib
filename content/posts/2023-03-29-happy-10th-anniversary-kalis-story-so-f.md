@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Happy 10th anniversary Kalis story so far
-https://www.kali.org/blog/10-years/images/banner-kali-10-year.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/10-years/images/banner-kali-10-year.jpg
+
+
+
  Wednesday 13th, March 2013, 10 years ago, Kali Linux v1.0 was first released. Today we want to celebrate Kali&rsquo;s 10th anniversary! Time has flown. And gosh, a lot has changed since then! They grow up so fast! This is the story of how Kali came to be, and some of the challenges along
-<br/>
+
 Wednesday 13th, March 2013, 10 years ago, Kali Linux v1.0 was [first released](https://www.kali.org/docs/introduction/press-release/). Today we want to celebrate Kali’s 10th anniversary!
 
 Time has flown. And gosh, a lot has changed since then! _They grow up so fast!_

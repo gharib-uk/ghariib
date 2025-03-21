@@ -6,11 +6,12 @@ type: posts
 ---
 # WhatsApps Signal Protocol integration is now complete
 
-<br/>
 
-<br/>
+
+
+
  At Open Whisper Systems, our goal is to make private communication simple. A year ago, we announced a partnership with WhatsApp and committed to integrating the Signal Protocol into their product, moving towards full end-to-end
-<br/>
+
 ![WhatsApp Verification Screen](/blog/images/whatsappcomplete2.png)
 
 At Open Whisper Systems, our goal is to make private communication simple. A year ago, we [announced a partnership](https://whispersystems.org/blog/whatsapp/) with WhatsApp and committed to integrating the Signal Protocol into their product, moving towards full end-to-end encryption for all of their users by default.

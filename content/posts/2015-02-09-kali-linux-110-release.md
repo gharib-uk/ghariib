@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 110 Release
-https://www.kali.org/blog/kali-linux-1-1-0-release/images/kali-1.1.0-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-1-1-0-release/images/kali-1.1.0-release.jpg
+
+
+
 After almost two years of public development (and another year behind the scenes), we are proud to announce our first point release of Kali Linux - version 1.1.0. This release brings with it a mix of unprecedented hardware support as well as rock solid stability. For us, this is a
-<br/>
+
 After almost two years of public development (and another year behind the scenes), we are proud to announce our first point release of [**Kali Linux - version 1.1.0**](https://www.kali.org/blog/kali-linux-1-1-0-release/). This release brings with it a mix of unprecedented hardware support as well as rock solid stability. For us, this is a real milestone as this release epitomizes the benefits of our move from [BackTrack](https://www.backtrack-linux.org/) to Kali Linux over two years ago. As we look at a now mature Kali, we see a versatile, flexible Linux distribution, rich with useful security and [penetration testing related features](https://www.kali.org/features/), running on all sorts of weird and wonderful [ARM hardware](https://gitlab.com/kalilinux/build-scripts/kali-arm). But enough talk, here are the goods:
 
 -   The new release runs a 3.18 kernel, patched for wireless injection attacks.

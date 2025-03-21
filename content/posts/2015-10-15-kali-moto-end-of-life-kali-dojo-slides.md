@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Moto End of Life Kali Dojo Slides
-https://www.kali.org/blog/kali-moto-eol/images/kali-1.x.x-end-of-life-v3.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-moto-eol/images/kali-1.x.x-end-of-life-v3.jpg
+
+
+
 Kali Sana Release Aftermath Kali Linux 2.0 has been out for a couple of months and the response has been great, with well over a million unique downloads of Kali 2.0 as a testament. Release day was somewhat hectic for us, as we did not anticipate the sheer volume of traffic
-<br/>
+
 Kali Sana Release Aftermath
 ---------------------------
 

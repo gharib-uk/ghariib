@@ -6,11 +6,12 @@ type: posts
 ---
 # Older Tor Browsers Breaking Update Now
 
-<br/>
 
-<br/>
+
+
+
  The expiration, happening on March 14 2025, of a root certificate used by Mozilla for add-ons verification on Firefox 115.12 and below, can suddenly
-<br/>
+
   ![](https://blog.torproject.org/old-tor-browsers-breakage/lead.png)
 
 The expiration, happening on March 14 2025, of a [root certificate used by Mozilla](https://support.mozilla.org/en-US/kb/root-certificate-expiration) for add-ons verification on Firefox 115.12 and below, can suddenly disable extensions, including the built-in [NoScript](https://noscript.net), and cause functionality such as the Security Slider to break on Tor Browser versions older than 13.5.11 legacy.

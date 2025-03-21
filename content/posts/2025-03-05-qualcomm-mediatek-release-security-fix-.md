@@ -6,11 +6,12 @@ type: posts
 ---
 # Qualcomm MediaTek Release Security Fix Bonanza
 
-<br/>
 
-<br/>
+
+
+
  Qualcomm, MediaTek Release Security Fix Bonanza 
-<br/>
+
 ### Qualcomm, MediaTek Release Security Fix Bonanza
 
 ![](https://upload.cvefeed.io/news/33681/thumbnail.jpg)

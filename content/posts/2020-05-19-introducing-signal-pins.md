@@ -6,11 +6,12 @@ type: posts
 ---
 # Introducing Signal PINs
 
-<br/>
 
-<br/>
+
+
+
  At Signal, our goal is to build a reliable, secure, and private communication experience that is broadly accessible and simple to use. From the beginning, we’ve designed Signal so that your information is in
-<br/>
+
 ![An illustration of asterisks superimposed over the shape of a smartphone.](/blog/images/signal-pins.png)
 
 At Signal, our goal is to build a reliable, secure, and private communication experience that is broadly accessible and simple to use. From the beginning, we’ve designed Signal so that your information is in your hands rather than ours.

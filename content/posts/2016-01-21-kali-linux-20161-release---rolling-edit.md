@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20161 Release - Rolling Edition
-https://www.kali.org/blog/kali-linux-2016-1-release/images/kali-rolling.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2016-1-release/images/kali-rolling.jpg
+
+
+
 Our First Release of Kali-Rolling (2016.1) Today marks an important milestone for us with the first public release of our Kali Linux rolling distribution. Kali switched to a rolling release model back when we hit version 2.0 (codename), however the rolling release was only available via an upgrade from 2.0 to
-<br/>
+
 Our First Release of Kali-Rolling (2016.1)
 ------------------------------------------
 

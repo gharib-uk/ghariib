@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20162 Release
-https://www.kali.org/blog/kali-linux-2016-2-release/images/kali-rolling-2016-2-release3.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2016-2-release/images/kali-rolling-2016-2-release3.jpg
+
+
+
 We&rsquo;re well recovered from the Black Hat and DEF CON Vegas conferences and as promised, we&rsquo;re launching our second Kali Rolling ISO release aka Kali 2016.2. This release brings a whole bunch of interesting news and updates into the world of Kali and we&rsquo;re excited to tell you all about
-<br/>
+
 We’re well recovered from the Black Hat and DEF CON Vegas conferences and as promised, we’re launching our second Kali Rolling ISO release aka **Kali 2016.2**. This release brings a whole bunch of interesting news and updates into the world of Kali and we’re **excited** to tell you all about it.
 
 New KDE, MATE, LXDE, e17, and Xfce Builds

@@ -6,11 +6,12 @@ type: posts
 ---
 # Upgraded Turnstile Analytics enable deeper insights faster investigations and improved security
 
-<br/>
 
-<br/>
+
+
+
  Introducing new Turnstile Analytics: Gain insight into your visitor traffic, bot behavior patterns, traffic anomalies, and attack attributes. 
-<br/>
+
 Introducing new Turnstile Analytics: Gain insight into your visitor traffic, bot behavior patterns, traffic anomalies, and attack attributes.
 
 #### [Source](https://blog.cloudflare.com/upgraded-turnstile-analytics-enable-deeper-insights-faster-investigations/)

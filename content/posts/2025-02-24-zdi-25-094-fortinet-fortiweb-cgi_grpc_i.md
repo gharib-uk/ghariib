@@ -6,11 +6,12 @@ type: posts
 ---
 # ZDI-25-094 Fortinet FortiWeb cgi_grpc_idl_file_post Command Injection Remote Code Execution Vulnerability
 
-<br/>
 
-<br/>
+
+
+
 This vulnerability allows remote attackers to execute arbitrary code on affected installations of Fortinet FortiWeb. Authentication is required to exploit this vulnerability. The ZDI has assigned a CVSS rating of 7.2. The following CVEs are assigned: CVE-2024-50567.
-<br/>
+
 This vulnerability allows remote attackers to execute arbitrary code on affected installations of Fortinet FortiWeb. Authentication is required to exploit this vulnerability. The ZDI has assigned a CVSS rating of 7.2. The following CVEs are assigned: CVE-2024-50567.
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-094/)

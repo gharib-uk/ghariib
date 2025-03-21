@@ -6,11 +6,12 @@ type: posts
 ---
 # webapps XMB 191206 - Stored XSS
 
-<br/>
 
-<br/>
+
+
+
 XMB 1.9.12.06 - Stored XSS
-<br/>
+
 XMB 1.9.12.06 - Stored XSS
 
 #### [Source](https://www.exploit-db.com/exploits/52044)

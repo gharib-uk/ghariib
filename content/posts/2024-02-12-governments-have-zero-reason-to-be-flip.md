@@ -6,11 +6,12 @@ type: posts
 ---
 # Governments Have Zero Reason To Be Flipping Mad About Open Source SDR Tech
 
-<br/>
 
-<br/>
+
+
+
 Discover insights into the drawbacks of a proposed ban on open-source SDR, and explore the argument for enhanced security measures to strike a balance between innovation and safeguarding against vulnerabilities in wireless systems.
-<br/>
+
 Discover insights into the drawbacks of a proposed ban on open-source SDR, and explore the argument for enhanced security measures to strike a balance between innovation and safeguarding against vulnerabilities in wireless systems.
 
 #### [Source](https://www.greynoise.io/blog/governments-have-zero-reason-to-be-flipping-mad-about-open-source-sdr-tech)

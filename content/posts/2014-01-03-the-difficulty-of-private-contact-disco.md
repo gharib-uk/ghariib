@@ -6,11 +6,12 @@ type: posts
 ---
 # The Difficulty Of Private Contact Discovery
 
-<br/>
 
-<br/>
+
+
+
  Building a social network is not easy. Social networks have value proportional to their size, so participants aren’t motivated to join new social networks which aren’t already large. It’s a paradox where if
-<br/>
+
 Building a social network is not easy. Social networks have value proportional to their size, so participants aren’t motivated to join new social networks which aren’t already large. It’s a paradox where if people haven’t already joined, people aren’t motivated to join.
 
 The trouble is that while building a social network is hard, most interesting software today is acutely “social.” Even privacy-enhancing technology, which seems anathema to the aesthetic of social networking, is tremendously social. For people to effectively use private communication software like TextSecure, they need to be able to know how to contact their friends using TextSecure.

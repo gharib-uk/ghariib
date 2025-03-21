@@ -6,11 +6,12 @@ type: posts
 ---
 # webapps Gitea 1220 - Stored XSS
 
-<br/>
 
-<br/>
+
+
+
 Gitea 1.22.0 - Stored XSS
-<br/>
+
 Gitea 1.22.0 - Stored XSS
 
 #### [Source](https://www.exploit-db.com/exploits/52077)

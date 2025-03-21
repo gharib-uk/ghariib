@@ -6,11 +6,12 @@ type: posts
 ---
 # The Instagram ads Facebook wont show you
 
-<br/>
 
-<br/>
+
+
+
  Companies like Facebook aren’t building technology for you, they’re building technology for your data. They collect everything they can from FB, Instagram, and WhatsApp in order to sell visibility into people and their lives. This
-<br/>
+
 ![You got this ad because you're a newlywed pilates instructor and you're cartoon crazy. This ad used your location to see you're in La Jolla. You're into parenting blogs and thinking about LGBTQ adoption.](/blog/images/ig-pilates.png)
 
 Companies like Facebook aren’t building technology for you, they’re building technology for your data. They collect everything they can from FB, Instagram, and WhatsApp in order to sell visibility into people and their lives.

@@ -6,11 +6,12 @@ type: posts
 ---
 # Merchandise
 
-<br/>
 
-<br/>
+
+
+
  It’s a busy time here at the Open Whisper Systems factory, and we need all the floor space we can get. We still have some first-edition T-Shirts that are taking up some space,
-<br/>
+
 It’s a busy time here at the Open Whisper Systems factory, and we need all the floor space we can get. We still have some first-edition T-Shirts that are taking up some space, so we’re offering them to you for the cost of shipping and handling.
 
 There are two designs available in a number of sizes:

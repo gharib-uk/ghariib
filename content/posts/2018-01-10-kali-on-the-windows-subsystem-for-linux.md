@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali on the Windows Subsystem for Linux
-https://www.kali.org/blog/kali-on-the-windows-subsystem-for-linux/images/kali-on-windows-10-kali-post.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-on-the-windows-subsystem-for-linux/images/kali-on-windows-10-kali-post.jpg
+
+
+
 Update : This post is outdated. For a better way of getting Kali Linux on Windows 10, install Kali Linux from the App store. We&rsquo;re always on the prowl for novel environments to run Kali on, and with the introduction of the Windows Subsystem for Linux (WSL) in Windows 10, new
-<br/>
+
 **Update** : **This post is outdated.** **For a better way of getting Kali Linux on Windows 10, install** [Kali Linux from the App store](https://www.kali.org/blog/kali-linux-in-the-windows-app-store/).
 
 We’re always on the prowl for novel environments to run Kali on, and with the introduction of the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) (WSL) in Windows 10, new and exciting possibilities have surfaced. After all, if the WSL can support Ubuntu, it shouldn’t be too hard to incorporate another Debian-like distribution, right? This is especially true with the [**Windows Subsystem for Linux Distribution Switcher**](https://github.com/RoliSoft/WSL-Distribution-Switcher) utility.

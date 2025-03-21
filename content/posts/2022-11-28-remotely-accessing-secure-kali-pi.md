@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Remotely Accessing Secure Kali Pi
-https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/images/remotely-accessing-secure-kali-pi.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/images/remotely-accessing-secure-kali-pi.jpg
+
+
+
 In Secure Kali Pi (2022), the first blog post in the Raspberry Pi series, we set up a Raspberry Pi 4 with full disk encryption. We mentioned that we can leave it somewhere as a drop box. This brought up the question, &ldquo;If it is not on my local network
-<br/>
+
 In [Secure Kali Pi (2022)](https://www.kali.org/blog/secure-kali-raspberry-pi/), the first blog post in the Raspberry Pi series, we set up a [Raspberry Pi 4](https://www.kali.org/docs/arm/raspberry-pi-4/) with full disk encryption. We mentioned that we can leave it somewhere as a drop box. This brought up the question, “**If it is not on my local network how do I connect to it to unlock it?**” So we will now answer this by showing a few different ways to connect to our secure Kali Pi drop box. This includes:
 
 -   [Wireless 802.11](https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/#wireless-80211):

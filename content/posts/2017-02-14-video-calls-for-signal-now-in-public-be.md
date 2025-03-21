@@ -6,11 +6,12 @@ type: posts
 ---
 # Video calls for Signal now in public beta
 
-<br/>
 
-<br/>
+
+
+
  Today’s Signal release for Android and iOS includes beta support for video calls. This represents an entirely new calling infrastructure for Signal, and should increase voice call quality as well. We think
-<br/>
+
  
 
 [![](/blog/images/appstore.png)](https://itunes.apple.com/us/app/signal-private-messenger/id874139669) [![Get it on Google Play](https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png)](https://play.google.com/store/apps/details?id=org.thoughtcrime.securesms)

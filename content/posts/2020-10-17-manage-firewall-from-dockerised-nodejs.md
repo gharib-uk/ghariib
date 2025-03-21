@@ -6,11 +6,12 @@ type: posts
 ---
 # Manage Firewall from Dockerised NodeJS
 
-<br/>
 
-<br/>
+
+
+
 I recently found myself wanting to manage my firewall from a NodeJS application. There were a couple of issues I needed to overcome first. As a general rule, I try to Dockerise all NodeJS applications, to isolate them from the host; I’ve become weary of third party modules on NPM.
-<br/>
+
 I recently found myself wanting to manage my firewall from a NodeJS application. There were a couple of issues I needed to overcome first. As a general rule, I try to Dockerise all NodeJS applications, to isolate them from the host; I’ve become weary of third party modules on NPM. Secondly, I don’t want to run a NodeJS application as root in order to allow it to run iptables. Here’s how I managed it.
 
 First of all, there are official NodeJS images on [Docker Hub](https://hub.docker.com/_/node). These images don’t contain iptables, so I needed to create my own image based off one of these. Here’s the Dockerfile:

@@ -6,11 +6,12 @@ type: posts
 ---
 # Embrace ephemerality with default disappearing messages
 
-<br/>
 
-<br/>
+
+
+
  As the norms for how people connect have changed, much of the communication that once took place through the medium of coffee shops, bars, and parks now takes place through the medium of digital
-<br/>
+
 ![A message fades from conversation with disappearing messages configured.](/blog/images/disappearing-message.png)
 
 As the norms for how people connect have changed, much of the communication that once took place through the medium of coffee shops, bars, and parks now takes place through the medium of digital devices. One side effect of this shift from _analog_ to _digital_ is the conjoined shift from the _ephemeral_ to the _eternal:_ words once transiently spoken are now – more often than not – data stored forever.

@@ -6,11 +6,12 @@ type: posts
 ---
 # Welcome to GreyNoise Labs
 
-<br/>
 
-<br/>
+
+
+
 GreyNoise is excited to officially announce the emergence of GreyNoise Labs and Labs API. Check out this post to learn more. 
-<br/>
+
 GreyNoise is excited to officially announce the emergence of GreyNoise Labs and Labs API. Check out this post to learn more.
 
 #### [Source](https://www.greynoise.io/blog/welcome-to-greynoise-labs)

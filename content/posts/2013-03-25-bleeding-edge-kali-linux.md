@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Bleeding Edge Kali Linux
-https://www.kali.org/blog/bleeding-edge-kali-repositories/images/kali-bleeding-edge-repo.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/bleeding-edge-kali-repositories/images/kali-bleeding-edge-repo.jpg
+
+
+
 We&rsquo;ve been busy this week, still behind on our emails, but going strong with Kali development. We packaged some new tools which were pointed out by the community as missing, such as inguma, arachni, bully, lbd, uniscan, automater, as well as started to build a framework of libraries and patches
-<br/>
+
 We’ve been busy this week, still behind on our emails, but going strong with Kali development. We packaged some [new tools](https://bugs.kali.org/) which were pointed out by the community as missing, such as **inguma**, **arachni**, **bully**, **lbd**, **uniscan**, **automater**, as well as started to build a framework of libraries and patches for bluetooth sniffing and ubertooth tools. We also fixed the Kali Menu to be editable again.
 
 With over 300 tools in our repository, it’s close to impossible for us to keep \*every\* tool updated to the latest git version, all the time. A good example of this happed a few days ago, when we updated the **SET** package. Two days after we updated the package, we got a “tool upgrade” request for SET in our bug tracker, as our package was already outdated. Seems a bit extreme? Maybe not, **consider the following conundrum**:

@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # The great non-free-firmware transition
-https://www.kali.org/blog/non-free-firmware-transition/images/banner-non-free-firmware.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/non-free-firmware-transition/images/banner-non-free-firmware.jpg
+
+
+
 TL;DR: Dear Kali user, when you have a moment, check your /etc/apt/sources.list, and add non-free-firmware if ever it&rsquo;s missing. Programmatically speaking: kali@kali:~$ sudo sed -i 's/non-free$/non-free non-free-firmware/' /etc/apt/sources.list Long story now. As you might know already, Kali Linux is a Debian-based Linux distribution. As such, it inherits a number of things from Debian, and
-<br/>
+
 TL;DR: Dear Kali user, when you have a moment, check your `/etc/apt/sources.list`, and add `non-free-firmware` if ever it’s missing.
 
 Programmatically speaking:

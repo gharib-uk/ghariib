@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20211 Release Command-Not-Found
-https://www.kali.org/blog/kali-linux-2021-1-release/images/banner-2021.1-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2021-1-release/images/banner-2021.1-release.jpg
+
+
+
 Today we&rsquo;re pushing out the first Kali Linux release of the year with Kali Linux 2021.1. This edition brings enhancements of existing features, and is ready to be downloaded or upgraded if you have an existing Kali Linux installation. The summary of the changelog since the 2020.4 release from November 2020
-<br/>
+
 Today we’re pushing out the first Kali Linux [release](https://www.kali.org/releases/) of the year with **Kali Linux 2021.1**. This edition brings enhancements of existing features, and is ready to be [downloaded](https://www.kali.org/get-kali/) or [upgraded _if you have an existing Kali Linux installation_](https://www.kali.org/docs/general-use/updating-kali/).
 
 The summary of the [changelog](https://bugs.kali.org/changelog_page.php) since the [2020.4 release from November 2020](https://www.kali.org/blog/kali-linux-2020-4-release/) is:

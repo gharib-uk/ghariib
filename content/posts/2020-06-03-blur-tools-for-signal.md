@@ -6,11 +6,12 @@ type: posts
 ---
 # Blur tools for Signal
 
-<br/>
 
-<br/>
+
+
+
  Right now, people around the world are marching and protesting against racism and police brutality, outraged by the most recent police murders of George Floyd and Breonna Taylor. At Signal, we support the people
-<br/>
+
 ![The Signal app displaying the new blur interface in the image editor.](/blog/images/blur-header.jpg)
 
 Right now, people around the world are marching and protesting against racism and police brutality, outraged by the most recent police murders of George Floyd and Breonna Taylor. At Signal, we support the people who have gone into the streets to make their voices heard. We believe that something in America needs to change, and even if we don’t know exactly how, we support and trust in the people who are self-organizing around the country to figure it out.

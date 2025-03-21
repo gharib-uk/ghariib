@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Configuring and Tuning OpenVAS in Kali Linux
-https://www.kali.org/blog/configuring-and-tuning-openvas-in-kali-linux/images/tuning-openvas-kali.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/configuring-and-tuning-openvas-in-kali-linux/images/tuning-openvas-kali.jpg
+
+
+
 Users often request the addition of vulnerability scanners to Kali, most notably the ones that begin with &ldquo;N&rdquo;, but due to licensing constraints, we do not include them in the distribution. Fortunately, Kali includes the very capable OpenVAS, which is free and Open-source. Although we briefly covered OpenVAS in the
-<br/>
+
 Users often request the addition of vulnerability scanners to Kali, most notably the ones that begin with “N”, but due to licensing constraints, we do not include them in the distribution. Fortunately, Kali includes the very capable [OpenVAS](https://www.openvas.org/), which is free and Open-source. Although we briefly [covered OpenVAS in the past](https://www.kali.org/blog/openvas-vulnerability-scanning/), we decided to devote a more thorough post to its setup and how to use it more effectively.
 
 Vulnerability scanners often have a poor reputation, primarily because their role and purpose is misunderstood. Vulnerability scanners scan for vulnerabilities–they are not magical exploit machines and should be one of many sources of [information](https://www.kali.org/tools/kali-meta/#kali-tools-information-gathering) used in an assessment. Blindly running a vulnerability scanner against a target will almost certainly end in disappointment and woe, with dozens (or even hundreds) of low-level or uninformative results.

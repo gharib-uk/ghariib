@@ -6,11 +6,12 @@ type: posts
 ---
 # Celebrating 2024 year-end campaign
 
-<br/>
 
-<br/>
+
+
+
  We did it Tor community! The onion layers have peeled back, and we are thrilled to announce that the Tor community has reached its 2024
-<br/>
+
   ![](https://blog.torproject.org/celebrating-2024-yec/lead.png)
 
 We did it Tor community!

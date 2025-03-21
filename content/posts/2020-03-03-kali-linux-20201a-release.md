@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20201a Release
-https://www.kali.org/blog/kali-linux-2020-1a-release/images/kali-20201apng.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2020-1a-release/images/kali-20201apng.jpg
+
+
+
 Just a quick update to the 2020.1 release we put out last month. We made some major changes to the installers, and some people had a few issues with some of the images we released. So, we made some slight alternations to smooth things out and make the install process
-<br/>
+
 Just a quick update to the [2020.1 release](https://www.kali.org/blog/kali-linux-2020-1-release/) we put out last month. We made some major changes to the installers, and some people had a few issues with some of the images we released. So, we made some slight alternations to smooth things out and make the install process easier for everyone.
 
 * * *

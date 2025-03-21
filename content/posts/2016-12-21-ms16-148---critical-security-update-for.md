@@ -6,11 +6,12 @@ type: posts
 ---
 # MS16-148 - Critical Security Update for Microsoft Office 3204068 - Version 11
 
-<br/>
 
-<br/>
 
-<br/>
+
+
+
+
 
 
 #### [Source](https://technet.microsoft.com/en-us/library/security/MS16-148)

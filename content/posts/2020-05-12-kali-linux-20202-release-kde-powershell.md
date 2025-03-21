@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20202 Release KDE PowerShell
-https://www.kali.org/blog/kali-linux-2020-2-release/images/kali-2020.2-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2020-2-release/images/kali-2020.2-release.jpg
+
+
+
 Despite the turmoil in the world, we are thrilled to be bringing you an awesome update with Kali Linux 2020.2! And it is available for immediate download. A quick overview of what&rsquo;s new since January: KDE Plasma Makeover &amp; Login PowerShell by Default. Kind of. Kali on ARM Improvements Lessons From The Installer Changes New Key
-<br/>
+
 Despite the turmoil in the world, we are thrilled to be bringing you an awesome update with Kali Linux 2020.2! And it is available for immediate [download](https://www.kali.org/get-kali/).
 
 A quick overview of what’s new since [January](https://www.kali.org/blog/kali-linux-2020-1-release/):

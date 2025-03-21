@@ -6,11 +6,12 @@ type: posts
 ---
 # ZDI-25-010 Redis Stack Lua Use-After-Free Remote Code Execution Vulnerability
 
-<br/>
 
-<br/>
+
+
+
 This vulnerability allows remote attackers to execute arbitrary code on affected installations of Redis Stack. Authentication is required to exploit this vulnerability. The ZDI has assigned a CVSS rating of 7.2. The following CVEs are assigned: CVE-2024-46981.
-<br/>
+
 This vulnerability allows remote attackers to execute arbitrary code on affected installations of Redis Stack. Authentication is required to exploit this vulnerability. The ZDI has assigned a CVSS rating of 7.2. The following CVEs are assigned: CVE-2024-46981.
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-010/)

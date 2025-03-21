@@ -6,11 +6,12 @@ type: posts
 ---
 # Measuring the Success of Your Adversary Simulations
 
-<br/>
 
-<br/>
+
+
+
  &lt;p&gt;Adversary Simulations (“AdSim” or “Red Teams”) represent a serious commitment on the part of an organization. In the United States, AdSim engagements are typically not required by industry standards in the private…&lt;/p&gt; 
-<br/>
+
 <p>Adversary Simulations (“AdSim” or “Red Teams”) represent a serious commitment on the part of an organization. In the United States, AdSim engagements are typically not required by industry standards in the private…</p>
 
 #### [Source](https://trustedsec.com/blog/measuring-the-success-of-your-adversary-simulations)

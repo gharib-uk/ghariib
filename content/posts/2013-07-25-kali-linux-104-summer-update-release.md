@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 104 Summer Update Release
-https://www.kali.org/blog/kali-linux-1-0-4-release/images/kali-1.0.4-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-1-0-4-release/images/kali-1.0.4-release.jpg
+
+
+
 In keeping with our tradition of publishing new releases during the annual Black Hat and DEF CON conferences, we are pleased to announce the availability of Kali Linux 1.0.4. The last few months since the initial release of Kali have seen a large number of changes, upgrades, and improvements in
-<br/>
+
 In keeping with our tradition of publishing new releases during the annual [Black Hat](https://www.blackhat.com/) and [DEF CON](https://www.defcon.org/) conferences, we are pleased to announce the availability of [Kali Linux 1.0.4](https://www.kali.org/get-kali/). The last few months since the initial release of Kali have seen a large number of changes, upgrades, and improvements in the distribution, all of which are included in version 1.0.4.
 
 ### Penetration Testing Tool Additions

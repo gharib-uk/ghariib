@@ -6,11 +6,12 @@ type: posts
 ---
 # Wakanda hacking challenge
 
-<br/>
 
-<br/>
+
+
+
 It’s been a while since I’ve played with a VulnHub boot2root. Several new ones were recently pushed out, and having some free time on my hands, I decided to give Wakanda a go. This VM contains three flags and was listed as having an intermediate difficulty level. Challenge accepted! I started
-<br/>
+
 It’s been a while since I’ve played with a VulnHub boot2root. Several new ones were recently pushed out, and having some free time on my hands, I decided to give [Wakanda](https://www.vulnhub.com/entry/wakanda-1,251/) a go. This VM contains three flags and was listed as having an intermediate difficulty level. Challenge accepted!
 
 I started off by using netdiscover to find the IP address of the VM, which turned out to be 192.168.56.102. A quick port scan returned two ports of interest; 80 and 3333:

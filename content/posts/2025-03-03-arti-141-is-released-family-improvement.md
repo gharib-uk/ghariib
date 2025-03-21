@@ -6,11 +6,12 @@ type: posts
 ---
 # Arti 141 is released Family improvements groundwork for Conflux
 
-<br/>
 
-<br/>
+
+
+
  Arti is our ongoing project to create a next-generation Tor client in Rust. Now we're announcing the latest release, Arti 1.4.1. This release has
-<br/>
+
   ![](https://blog.torproject.org/static/images/lead.png)
 
 Arti is our ongoing project to create a next-generation Tor client in Rust. Now we're announcing the latest release, Arti 1.4.1.

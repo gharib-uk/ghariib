@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20203 Release ZSH Win-KeX HiDPI Bluetooth Arsenal
-https://www.kali.org/blog/kali-linux-2020-3-release/images/kali-2020-3-release-v2.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2020-3-release/images/kali-2020-3-release-v2.jpg
+
+
+
 Its that time of year again, time for another Kali Linux release! Quarter #3 - Kali Linux 2020.3. This release has various impressive updates, all of which are ready for immediate download or updating. A quick overview of what&rsquo;s new since the last release in May 2020: New Shell - Starting the
-<br/>
+
 Its that [time of year](https://www.kali.org/releases/) again, time for another Kali Linux release! **Quarter #3 - Kali Linux 2020.3**. This release has various impressive updates, all of which are ready for immediate [download](https://www.kali.org/get-kali/) or [updating](https://www.kali.org/docs/general-use/updating-kali/).
 
 A quick overview of what’s new since the last release in [May 2020](https://www.kali.org/blog/kali-linux-2020-2-release/):
@@ -33,12 +34,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20203 Release ZSH Win-KeX HiDPI Bluetooth Arsenal
-https://www.kali.org/blog/kali-linux-2020-3-release/images/kali-2020-3-release-v2.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2020-3-release/images/kali-2020-3-release-v2.jpg
+
+
+
 Its that time of year again, time for another Kali Linux release! Quarter #3 - Kali Linux 2020.3. This release has various impressive updates, all of which are ready for immediate download or updating. A quick overview of what&rsquo;s new since the last release in May 2020: New Shell - Starting the
-<br/>
+
  _(or `root@kali:~#` for the older users!/)_ very well!
 
 Today, we are announcing the plan to switch over to **ZSH shell**. This is currently scheduled to be the **default shell in 2020.4** _(for this **2020.3 release, bash will still be the default**)_.

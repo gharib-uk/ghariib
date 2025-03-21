@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Win-KeX Version 20
-https://www.kali.org/blog/win-kex-version-2-0/images/win-kex-2-2.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/win-kex-version-2-0/images/win-kex-2-2.jpg
+
+
+
 We have been humbled by the amazing response to our recent launch of Win-KeX. After its initial release, we asked ourselves if that is truly the limit of what we can achieve or could we pull off something incredible to mark the 25th anniversary of Hackers? What about &ldquo;a second
-<br/>
+
 We have been humbled by the amazing response to our recent launch of [Win-KeX](https://www.kali.org/blog/kali-linux-2020-3-release/). After its initial release, we asked ourselves if that is truly the limit of what we can achieve or could we pull off something incredible to mark the 25th anniversary of Hackers? What about “a second concurrent session as root”, “seamless desktop integration with Windows”, or - dare we dream - “sound”?
 
 With no further further ado, we are thrilled to present to you **Win-KeX v2.0** with the following features:

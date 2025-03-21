@@ -6,11 +6,12 @@ type: posts
 ---
 # nrich A Tool for Fast IP enrichment
 
-<br/>
 
-<br/>
+
+
+
 You have a long list of IPs and you quickly want to get a basic idea of what they're running for the purpose of: Make sure they're not exposing any unexpected services Filter out VPN IPs from a list of IOCs Prioritize IPs that have possible vulnerabilities Introducing nrich, a
-<br/>
+
 You have a long list of IPs and you quickly want to get a basic idea of what they're running for the purpose of:
 
 -   Make sure they're not exposing any unexpected services

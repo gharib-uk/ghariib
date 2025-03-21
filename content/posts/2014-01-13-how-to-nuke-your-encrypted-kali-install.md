@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # How to Nuke your Encrypted Kali Installation
-https://www.kali.org/blog/nuke-kali-linux-luks/images/kali-nuke-restore.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/nuke-kali-linux-luks/images/kali-nuke-restore.jpg
+
+
+
 There&rsquo;s been a fair amount of discussion around the recently introduced LUKS nuke patch we added to the cryptsetup package in Kali Linux. We wanted to take this opportunity to better explain this feature, as well as demonstrate some useful approaches which are worthwhile getting to know. LUKS Nuke in a
-<br/>
+
 There’s been a [fair amount of discussion](https://www.reddit.com/r/netsec/comments/1ujsv4/emergency_self_destruction_of_luks_in_kali_linux/) around the recently introduced [LUKS nuke patch](https://www.kali.org/blog/emergency-self-destruction-luks-kali/) we added to the cryptsetup package in Kali Linux. We wanted to take this opportunity to better explain this feature, as well as demonstrate some useful approaches which are worthwhile getting to know.
 
 ### LUKS Nuke in a Nutshell

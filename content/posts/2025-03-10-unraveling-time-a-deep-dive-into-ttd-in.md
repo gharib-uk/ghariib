@@ -6,11 +6,12 @@ type: posts
 ---
 # Unraveling Time A Deep Dive into TTD Instruction Emulation Bugs
 
-<br/>
 
-<br/>
+
+
+
 Written by: Dhanesh Kizhakkinan, Nino Isakovic Executive Summary This blog post presents an in-depth exploration of Microsoft's Time Travel Debugging (TTD) framework, a powerful record-and-replay debugging framework for Windows user-mode applications. TTD relies heavily on accurate CPU instruction emulation to faithfully replay program executions. However, subtle inaccuracies within this emulation process can
-<br/>
+
 Written by: Dhanesh Kizhakkinan, Nino Isakovic
 
 * * *

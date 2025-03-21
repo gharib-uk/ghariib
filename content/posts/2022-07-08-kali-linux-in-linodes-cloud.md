@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux in Linodes Cloud
-https://www.kali.org/blog/kali-and-linode/images/linode-banner.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-and-linode/images/linode-banner.jpg
+
+
+
 A few months ago, Linode reached out to us asking &ldquo;What would be needed in order to get Kali added to Linode?&rdquo;. We explained to them how all the build-scripts that we used to create Kali are public, and what their different options and configurations mean. They went away and
-<br/>
+
 A few months ago, [Linode](https://www.linode.com/) reached out to us asking “What would be needed in order to get Kali added to Linode?”. We explained to them how all the [build-scripts](https://gitlab.com/kalilinux/build-scripts) that we used to create Kali are public, and what their different options and configurations mean. They went away and came back shortly with an image for us to try out! After a bit of testing, we can now say “Kali is in Linode… (Twice)”!
 
 Twice? You can get Kali two ways. Either:

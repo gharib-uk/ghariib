@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Your Journey Starts Here
-https://www.kali.org/blog/your-kali-training-journey-starts-here/images/kali-training-journey.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/your-kali-training-journey-starts-here/images/kali-training-journey.jpg
+
+
+
  &ldquo;Whether you&rsquo;re new to the fight, or a seasoned pro, don&rsquo;t stop training&hellip;&rdquo; This statement, like the video that introduced it, has real punch. We did this on purpose to get you fired up, excited about your training, and to kickstart your journey. If it worked, and you&rsquo;re in the fight,
-<br/>
+
 > **“Whether you’re new to the fight, or a seasoned pro, don’t stop training…”**
 
 This statement, like the video that introduced it, has real punch. We did this on purpose to get you fired up, excited about your training, and to kickstart your journey. If it worked, and you’re in the fight, welcome aboard! If you haven’t jumped in for whatever reason, we want to introduce you to the plethora of resources we’ve made available to help you master Kali Linux, the penetration testing distribution.

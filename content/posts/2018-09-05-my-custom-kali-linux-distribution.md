@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # My Custom Kali Linux Distribution
-https://www.kali.org/blog/my-custom-kali-linux-distribution/images/my-custom-kali-live-build.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/my-custom-kali-linux-distribution/images/my-custom-kali-live-build.jpg
+
+
+
 We love it when community members come up with new ideas or interesting builds, and this one caught our attention. Jacek Kowalczyk hit us up on twitter with a really interesting story. His approach to tweaking Kali to be specific to his needs is exactly why this feature is so
-<br/>
+
 We love it when community members come up with new ideas or interesting builds, and this one caught our attention. Jacek Kowalczyk hit us up on twitter with a really interesting story. His approach to tweaking Kali to be specific to his needs is exactly why this feature is so important to us and we wanted to share his story more widely.
 
 Jacek’s live-build recipe was for a lightweight version of Kali using his favourite desktop environments, including some nice desktop configurations. We thought it would be best to let Jacek share his process with you step by step, in his own words:

@@ -6,11 +6,12 @@ type: posts
 ---
 # webapps NoteMark 0130 - Stored XSS
 
-<br/>
 
-<br/>
+
+
+
 NoteMark < 0.13.0 - Stored XSS
-<br/>
+
 NoteMark < 0.13.0 - Stored XSS
 
 #### [Source](https://www.exploit-db.com/exploits/52078)

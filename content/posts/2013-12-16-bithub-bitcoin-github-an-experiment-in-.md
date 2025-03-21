@@ -6,11 +6,12 @@ type: posts
 ---
 # BitHub Bitcoin GitHub An experiment in funding privacy OSS
 
-<br/>
 
-<br/>
+
+
+
  At Open Whisper Systems, we often get emails from people who’d like to donate money to the project. For an OSS project, particularly one that aspires to a collective sense of ownership, handling donations
-<br/>
+
 At Open Whisper Systems, we often get emails from people who’d like to donate money to the project. For an OSS project, particularly one that aspires to a collective sense of ownership, handling donations is not always entirely straightforward.
 
 The fundamental contradiction is that while donations are meant for a _project_, they’re traditionally sent to a _person_. Even if a project sets up a bank account, there are still only a few people who have access to the money itself, and distributing it appropriately can be hard to figure out.

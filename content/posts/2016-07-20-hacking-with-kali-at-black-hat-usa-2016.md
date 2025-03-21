@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Hacking with Kali at Black Hat USA 2016
-https://www.kali.org/blog/hacking-kali-black-hat/images/kali-playground-blackhat-2016-v2.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/hacking-kali-black-hat/images/kali-playground-blackhat-2016-v2.jpg
+
+
+
 Kali Linux Dojo, BlackHat 2016 - Las Vegas We have really enjoyed doing the Dojo at Black Hat the last few years. It&rsquo;s been a great opportunity to show off some of the lesser known (but oh so useful) features of Kali Linux as well as interact with the user base.
-<br/>
+
 Kali Linux Dojo, BlackHat 2016 - Las Vegas
 ------------------------------------------
 

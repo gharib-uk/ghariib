@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 108 Release with EFI Boot Support
-https://www.kali.org/blog/kali-linux-1-0-8-release/images/kali-1.0.8-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-1-0-8-release/images/kali-1.0.8-release.jpg
+
+
+
 The long awaited Kali Linux USB EFI boot support feature has been added to our binary ISO builds, which has prompted this early Kali Linux 1.0.8 release. This new feature simplifies getting Kali installed and running on more recent hardware which requires EFI as well as various Apple Macbooks Air
-<br/>
+
 The long awaited Kali Linux USB EFI boot support feature has been added to our binary ISO builds, which has prompted this early Kali Linux 1.0.8 release. This new feature simplifies getting Kali installed and running on more recent hardware which requires EFI as well as various Apple Macbooks Air and Retina models. Besides the addition of EFI support, there is a whole array of [tool updates and fixes](https://bugs.kali.org/changelog_page.php) that have accumulated over the past couple of months.
 
 As this new release focuses almost entirely on the EFI capable ISO image, OffSec won’t be releasing additional ARM or VMWare images with 1.0.8. As usual, you don’t need to re-download Kali if you’ve got it installed, and apt-get update && apt-get dist-upgrade should do the job.

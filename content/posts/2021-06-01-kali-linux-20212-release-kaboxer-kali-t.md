@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20212 Release Kaboxer Kali-Tweaks Bleeding-Edge Privileged Ports
-https://www.kali.org/blog/kali-linux-2021-2-release/images/banner-2021.2-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2021-2-release/images/banner-2021.2-release.jpg
+
+
+
 Say hello to Kali Linux 2021.2! This release welcomes a mixture of new items as well as enhancements of existing features, and is ready to be downloaded (from our updated page) or upgraded if you have an existing Kali Linux installation. A quick summary of the changelog since the 2021.1 release
-<br/>
+
 Say hello to **Kali Linux 2021.2**! This release welcomes a mixture of new items as well as enhancements of existing features, and is ready to be [downloaded _(from our updated page)_](https://www.kali.org/get-kali/) _or [upgraded if you have an existing Kali Linux installation](https://www.kali.org/docs/general-use/updating-kali/)_.
 
 A quick summary of the [changelog](https://bugs.kali.org/changelog_page.php) since the [2021.1 release from February 2021](https://www.kali.org/blog/kali-linux-2021-1-release/) is:

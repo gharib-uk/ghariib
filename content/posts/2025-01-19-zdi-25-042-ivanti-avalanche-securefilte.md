@@ -6,11 +6,12 @@ type: posts
 ---
 # ZDI-25-042 Ivanti Avalanche SecureFilter allowPassThrough Authentication Bypass Vulnerability
 
-<br/>
 
-<br/>
+
+
+
 This vulnerability allows remote attackers to partially bypass authentication on affected installations of Ivanti Avalanche. Authentication is not required to exploit this vulnerability. The ZDI has assigned a CVSS rating of 7.3. The following CVEs are assigned: CVE-2024-13181.
-<br/>
+
 This vulnerability allows remote attackers to partially bypass authentication on affected installations of Ivanti Avalanche. Authentication is not required to exploit this vulnerability. The ZDI has assigned a CVSS rating of 7.3. The following CVEs are assigned: CVE-2024-13181.
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-042/)

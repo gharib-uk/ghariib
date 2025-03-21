@@ -6,11 +6,12 @@ type: posts
 ---
 # Twitter to RSS with Google Cloud Function
 
-<br/>
 
-<br/>
+
+
+
 2023-Oct-07 - I noticed this stopped working for me today. Not sure how long it has been broken. I’ve stopped using Twitter myself due to the lunatic leadership and have no interest in investigating why it is broken. See you on Mastodon I don’t like having to install additional software to
-<br/>
+
 **2023-Oct-07** - I noticed this stopped working for me today. Not sure how long it has been broken. I’ve stopped using Twitter myself due to the lunatic leadership and have no interest in investigating why it is broken. See you on [Mastodon](https://mastodon.social/@grepular/)
 
 * * *

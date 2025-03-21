@@ -6,11 +6,12 @@ type: posts
 ---
 # Quantum Resistance and the Signal Protocol
 
-<br/>
 
-<br/>
+
+
+
  The Signal Protocol is a set of cryptographic specifications that provides end-to-end encryption for private communications exchanged daily by billions of people around the world. After its publication in 2013, the Signal Protocol was adopted not only
-<br/>
+
 ![An abstract illustration of a Bloch Sphere](/blog/images/pqxdh_header.png)
 
 The Signal Protocol is a set of cryptographic specifications that provides end-to-end encryption for private communications exchanged daily by billions of people around the world. After its publication in 2013, the Signal Protocol was adopted not only by Signal but well beyond. Technical information on the Signal Protocol can be found in the specifications section of our [docs](/docs/ "Signal Technical Information") site.

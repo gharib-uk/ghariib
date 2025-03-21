@@ -6,11 +6,12 @@ type: posts
 ---
 # New Features Roll Call Fall 2023
 
-<br/>
 
-<br/>
+
+
+
  You should be able to communicate without worrying that every gossip tidbit, meme, or joke you share and who you share it with will get churned up into fodder for targeted ads or used
-<br/>
+
 ![A stylized close up checklist with pink checkmarks on a gray background. The truncated text of the checklist reads "Edit me," "Text for," and "Remove."](/blog/images/rollcall-blog.png)
 
 You should be able to communicate without worrying that every gossip tidbit, meme, or joke you share and who you share it with will get churned up into fodder for targeted ads or used to train an AI model. You also shouldn’t have to strip your communications down to the barest and most utilitarian version of relaying information.

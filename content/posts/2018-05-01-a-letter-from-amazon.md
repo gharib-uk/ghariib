@@ -6,11 +6,12 @@ type: posts
 ---
 # A letter from Amazon
 
-<br/>
 
-<br/>
+
+
+
  Last week, we received the following email from Amazon: From: [redacted], [redacted] &lt;[redacted]@amazon.com&gt; Subject: Notification of potential account suspension regarding AWS Service Terms Moxie, Yesterday AWS became aware of your GitHub and Hacker News/ycombinator posts describing how Signal
-<br/>
+
 Last week, we received the following email from Amazon:
 
 From: \[redacted\], \[redacted\] <\[redacted\]@amazon.com>  

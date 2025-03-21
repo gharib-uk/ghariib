@@ -6,11 +6,12 @@ type: posts
 ---
 # SBoC Farewell
 
-<br/>
 
-<br/>
+
+
+
  The last code committed, the final waves surfed in to the shore, the closing sunset of Spring Break Of Code. 
-<br/>
+
 The last code committed, the final waves surfed in to the shore, the closing sunset of Spring Break Of Code.
 
 ![Group shot on the beach](/blog/images/sboc-goodbye.jpg)

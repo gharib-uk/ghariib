@@ -6,18 +6,19 @@ type: posts
 ---
 # NVIDIA Warns of Multiple Vulnerabilities that Let Attackers Execute Malicious Code
 
-<br/>
 
-<br/>
+
+
+
  NVIDIA Warns of Multiple Vulnerabilities that Let Attackers Execute Malicious Code 
-<br/>
+
 ### NVIDIA Warns of Multiple Vulnerabilities that Let Attackers Execute Malicious Code
 
 ![](https://upload.cvefeed.io/news/33488/thumbnail.jpg)
 
 NVIDIA has issued urgent security advisories addressing multiple vulnerabilities in its Hopper HGX 8-GPU High-Performance Computing (HMC) platforms, including a high-severity flaw (CVE-2024-0114, CVSS ... [_Read more_](https://cybersecuritynews.com/nvidia-multiple-vulnerabilities-code/)
 
-**Published Date:** Mar 05, 2025 (2 weeks, 2 days ago)
+**Published Date:** Mar 05, 2025 (2 weeks, 1 day ago)
 
 Vulnerabilities has been mentioned in this article.
 

@@ -6,11 +6,12 @@ type: posts
 ---
 # STEM Cyber Challenge 2018 Keygenme
 
-<br/>
 
-<br/>
+
+
+
 I got a chance to play a bit of the STEM Cyber Challenge 2018 CTF over the weekend. This one is called keygenme, a 400 point reverse engineering challenge. Like its name suggests, the binary prompts for input and runs some checks on it to determine if it’s a valid
-<br/>
+
 I got a chance to play a bit of the STEM Cyber Challenge 2018 CTF over the weekend. This one is called keygenme, a 400 point reverse engineering challenge. Like its name suggests, the binary prompts for input and runs some checks on it to determine if it’s a valid key.
 
 I analyzed the binary using Binary Ninja and found 20 different checks in `main()`. Here’s what `check_1()` looks like:

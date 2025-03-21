@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Announcing Kali for Vagrant
-https://www.kali.org/blog/announcing-kali-for-vagrant/images/kali-on-vagrant.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/announcing-kali-for-vagrant/images/kali-on-vagrant.jpg
+
+
+
 Inspired by a recent community blog post, we have decided to add a new official way for our community to use Kali. Starting now, you can find an officially maintained Kali Linux image in the Vagrant Cloud. What is Vagrant? From Vagrant&rsquo;s website: Vagrant is a tool for building and managing virtual machine
-<br/>
+
 Inspired by a recent [community blog post](https://blog.secureideas.com/2018/09/automating-red-team-homelabs-part-1-kali-automation.html), we have decided to add a new official way for our community to use Kali. Starting now, you can find an officially maintained Kali Linux image in the [Vagrant Cloud](https://app.vagrantup.com/).
 
 What is Vagrant?

@@ -6,11 +6,12 @@ type: posts
 ---
 # webapps Boelter Blue System Management 13 - SQL Injection
 
-<br/>
 
-<br/>
+
+
+
 Boelter Blue System Management 1.3 - SQL Injection
-<br/>
+
 Boelter Blue System Management 1.3 - SQL Injection
 
 #### [Source](https://www.exploit-db.com/exploits/52052)

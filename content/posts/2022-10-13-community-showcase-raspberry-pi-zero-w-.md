@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Community Showcase Raspberry Pi Zero W P4wnP1 ALOA
-https://www.kali.org/blog/community-showcase-using-kali-pi-p4wnp1-aloa/images/kali-p4wnp1-banner.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/community-showcase-using-kali-pi-p4wnp1-aloa/images/kali-p4wnp1-banner.jpg
+
+
+
 The Kali community has been hard at work (as always!), and we want to showcase what we think is a very cool project of Kali Linux on a Raspberry Pi Zero W, the &ldquo;P4wnP1 A.L.O.A. (A Little Offensive Application)&rdquo;. It takes the standard Kali Linux image and adds custom software and
-<br/>
+
 The Kali community has been hard at work (as always!), and we want to showcase what we think is a very cool project of Kali Linux on a [Raspberry Pi Zero W](https://www.kali.org/docs/arm/raspberry-pi-zero-w/), the “**[P4wnP1 A.L.O.A.](https://www.kali.org/docs/arm/raspberry-pi-zero-w-p4wnp1-aloa/)** (**A** **L**ittle **O**ffensive **A**pplication)”.
 
 It takes the standard Kali Linux image and adds custom software and some extra firmware designed for the Raspberry Pi Zero W to turn it into a **Swiss Army knife of attacks and exfiltration**.

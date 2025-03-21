@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux On The New Modern WSL
-https://www.kali.org/blog/kali-linux-modern-wsl/images/kali-linux-modern-wsl.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-modern-wsl/images/kali-linux-modern-wsl.jpg
+
+
+
 Late last year we had the pleasure of being reached out to by Microsoft in regards to participating in the launch of the new, modern, WSL distribution architecture. In summary, this new architecture allows for easier distribution and installation of WSL distros. For the full explanation of how this works,
-<br/>
+
 Late last year we had the pleasure of being reached out to by Microsoft in regards to participating in the launch of the new, [modern, WSL distribution architecture](https://devblogs.microsoft.com/commandline/whats-new-in-the-windows-subsystem-for-linux-in-november-2024/#new-tar-based-wsl-distro-architecture). In summary, this new architecture allows for easier distribution and installation of WSL distros. For the full explanation of how this works, please view Microsoft’s [blog post](https://devblogs.microsoft.com/commandline/whats-new-in-the-windows-subsystem-for-linux-in-november-2024/#new-tar-based-wsl-distro-architecture) and their [documentation](https://learn.microsoft.com/en-gb/windows/wsl/build-custom-distro).
 
 With the assistance of Microsoft’s WSL team, we are proud to say that we were the first Linux distro to be accepted onto this new modern distribution list. In this blog post we will cover the journey and share how you can try out this new architecture, but if you are just looking for the hands on portion then please see [here](https://www.kali.org/blog/kali-linux-modern-wsl/#how-you-can-test-this-new-wsl).

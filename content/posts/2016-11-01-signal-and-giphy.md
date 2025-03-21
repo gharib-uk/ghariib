@@ -6,11 +6,12 @@ type: posts
 ---
 # Signal and GIPHY
 
-<br/>
 
-<br/>
+
+
+
  The latest Signal release for Android includes support for GIF search and browsing. Signal has long supported sending and receiving GIFs, but this is an experiment that allows users to browse, search, and select popular
-<br/>
+
 The latest Signal release for Android includes support for GIF search and browsing. Signal has long supported sending and receiving GIFs, but this is an experiment that allows users to browse, search, and select popular GIFs from within Signal.
 
  

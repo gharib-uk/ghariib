@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20214 Release
-https://www.kali.org/blog/kali-linux-2021-4-release/images/banner-2021.4-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2021-4-release/images/banner-2021.4-release.jpg
+
+
+
 With the end of 2021 just around the corner, we are pushing out the last release of the year with Kali Linux 2021.4, which is ready for immediate download or updating. The summary of the changelog since the 2021.3 release from September 2021 is: Improved Apple M1 support Wide compatibility for Samba Switching package
-<br/>
+
 With the end of 2021 just around the corner, we are pushing out the last [release](https://www.kali.org/releases/) of the year with **Kali Linux 2021.4**, which is ready for immediate [download](https://www.kali.org/get-kali/) or [updating](https://www.kali.org/docs/general-use/updating-kali/).
 
 The summary of the [changelog](https://bugs.kali.org/changelog_page.php) since the [2021.3 release from September 2021](https://www.kali.org/blog/kali-linux-2021-3-release/) is:

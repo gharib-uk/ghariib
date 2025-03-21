@@ -6,11 +6,12 @@ type: posts
 ---
 # MS17-019 - Important Security Update for Active Directory Federation Services 4010320 - Version 10
 
-<br/>
 
-<br/>
 
-<br/>
+
+
+
+
 
 
 #### [Source](https://technet.microsoft.com/en-us/library/security/MS17-019)

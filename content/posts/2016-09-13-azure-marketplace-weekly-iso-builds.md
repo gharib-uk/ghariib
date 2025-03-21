@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Azure Marketplace Weekly ISO Builds
-https://www.kali.org/blog/azure-marketplace-weekly-iso-builds/images/kali-msft-azure-marketplace.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/azure-marketplace-weekly-iso-builds/images/kali-msft-azure-marketplace.jpg
+
+
+
 Kali Linux in the Azure Marketplace Over the past couple of weeks we&rsquo;ve been working on building and implementing Kali 2016.2 in the Azure Marketplace. We&rsquo;re happy to announce that from today on, you can spin up a Kali machine from the Azure Marketplace. In just a few seconds, you can
-<br/>
+
 Kali Linux in the Azure Marketplace
 -----------------------------------
 

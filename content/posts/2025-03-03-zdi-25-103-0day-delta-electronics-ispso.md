@@ -6,11 +6,12 @@ type: posts
 ---
 # ZDI-25-103 0Day Delta Electronics ISPSoft CBDGL File Parsing Stack-based Buffer Overflow Remote Code Execution Vulnerability
 
-<br/>
 
-<br/>
+
+
+
 This vulnerability allows remote attackers to execute arbitrary code on affected installations of Delta Electronics ISPSoft. User interaction is required to exploit this vulnerability in that the target must visit a malicious page or open a malicious file. The ZDI has assigned a CVSS rating of 7.8.
-<br/>
+
 This vulnerability allows remote attackers to execute arbitrary code on affected installations of Delta Electronics ISPSoft. User interaction is required to exploit this vulnerability in that the target must visit a malicious page or open a malicious file. The ZDI has assigned a CVSS rating of 7.8.
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-103/)

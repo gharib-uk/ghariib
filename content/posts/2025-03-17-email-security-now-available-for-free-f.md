@@ -6,11 +6,12 @@ type: posts
 ---
 # Email Security now available for free for political parties and campaigns through Cloudflare for Campaigns
 
-<br/>
 
-<br/>
+
+
+
  We’re excited to announce that Cloudflare for Campaigns now includes Email Security, adding an extra layer of protection to email systems that power political campaigns. 
-<br/>
+
 We’re excited to announce that Cloudflare for Campaigns now includes Email Security, adding an extra layer of protection to email systems that power political campaigns.
 
 #### [Source](https://blog.cloudflare.com/email-security-now-available-for-free-for-political-parties-and-campaigns/)

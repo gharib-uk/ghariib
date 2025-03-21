@@ -6,11 +6,12 @@ type: posts
 ---
 # ZDI-25-021 Apple macOS libFontValidation Font Glyph Flags Parsing Out-Of-Bounds Read Information Disclosure Vulnerability
 
-<br/>
 
-<br/>
+
+
+
 This vulnerability allows remote attackers to disclose sensitive information on affected installations of Apple macOS. Interaction with the libFontValidation library is required to exploit this vulnerability but attack vectors may vary depending on the implementation. The ZDI has assigned a CVSS rating of 3.3.
-<br/>
+
 This vulnerability allows remote attackers to disclose sensitive information on affected installations of Apple macOS. Interaction with the libFontValidation library is required to exploit this vulnerability but attack vectors may vary depending on the implementation. The ZDI has assigned a CVSS rating of 3.3.
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-021/)

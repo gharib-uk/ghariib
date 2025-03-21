@@ -6,11 +6,12 @@ type: posts
 ---
 # Accepting Crypto A Vendor Perspective
 
-<br/>
 
-<br/>
+
+
+
 We've recently decided to stop accepting cryptocurrency payments (again) and I wanted to share some of the issues we encountered. Background Shodan is a website aimed at technical users and organizations. We have nearly 5 million registered users which makes Shodan one of the larger security-related websites. Around 8 years
-<br/>
+
 We've recently decided to stop accepting cryptocurrency payments (again) and I wanted to share some of the issues we encountered.
 
 #### Background

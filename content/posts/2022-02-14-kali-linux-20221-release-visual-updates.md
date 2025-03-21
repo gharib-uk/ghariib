@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20221 Release Visual Updates Kali Everything ISOs Legacy SSH
-https://www.kali.org/blog/kali-linux-2022-1-release/images/banner-2022.1-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2022-1-release/images/banner-2022.1-release.jpg
+
+
+
 Today we are pushing out the first Kali Linux release of the new year with Kali Linux 2022.1, and just in time for Valentine&rsquo;s Day! This release brings various visual updates and tweaks to existing features, and is ready to be downloaded or upgraded if you have an existing Kali
-<br/>
+
 Today we are pushing out the first Kali Linux [release](https://www.kali.org/releases/) of the new year with **Kali Linux 2022.1**, and just in time for Valentine’s Day! This release brings various visual updates and tweaks to existing features, and is ready to be [downloaded](https://www.kali.org/get-kali/) or [upgraded _if you have an existing Kali Linux installation_](https://www.kali.org/docs/general-use/updating-kali/).
 
 The summary of the [changelog](https://bugs.kali.org/changelog_page.php) since the [2021.4 release from December 2021](https://www.kali.org/blog/kali-linux-2021-4-release/) is:

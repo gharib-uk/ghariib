@@ -6,11 +6,12 @@ type: posts
 ---
 # New Release Rdsys 10
 
-<br/>
 
-<br/>
+
+
+
  After years of development, we are officially releasing Rdsys 1.0. Although Rdsys has already been the sole mechanism for distributing bridges since it replaced
-<br/>
+
   ![](https://blog.torproject.org/new-release-rdsys-1-0/lead.png)
 
 After years of development, we are officially releasing [Rdsys 1.0](https://gitlab.torproject.org/tpo/anti-censorship/rdsys/). Although Rdsys has already been the sole mechanism for distributing bridges [since it replaced BridgeDB last October](https://blog.torproject.org/making-connections-from-bridgedb-to-rdsys/), this version 1.0 milestone officially marks its new status.

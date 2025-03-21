@@ -6,11 +6,12 @@ type: posts
 ---
 # Vim Users Warned Crafted TAR Files Could Trigger Code Execution CVE-2025-27423
 
-<br/>
 
-<br/>
+
+
+
  Vim Users Warned: Crafted TAR Files Could Trigger Code Execution (CVE-2025-27423) 
-<br/>
+
 ### Vim Users Warned: Crafted TAR Files Could Trigger Code Execution (CVE-2025-27423)
 
 ![](https://upload.cvefeed.io/news/33474/thumbnail.jpg)

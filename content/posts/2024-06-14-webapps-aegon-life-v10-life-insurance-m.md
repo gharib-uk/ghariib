@@ -6,11 +6,12 @@ type: posts
 ---
 # webapps AEGON LIFE v10 Life Insurance Management System - Stored cross-site scripting XSS
 
-<br/>
 
-<br/>
+
+
+
 AEGON LIFE v1.0 Life Insurance Management System - Stored cross-site scripting (XSS)
-<br/>
+
 AEGON LIFE v1.0 Life Insurance Management System - Stored cross-site scripting (XSS)
 
 #### [Source](https://www.exploit-db.com/exploits/52042)

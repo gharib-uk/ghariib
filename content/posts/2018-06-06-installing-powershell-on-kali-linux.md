@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Installing PowerShell on Kali Linux
-https://www.kali.org/blog/installing-powershell-on-kali-linux/images/powershell-on-kali-linux-v3.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/installing-powershell-on-kali-linux/images/powershell-on-kali-linux-v3.jpg
+
+
+
 UPDATE NOV 2019 This post is out of date as of 2019 as powershell has been added to the primary repos. Just do a: apt update &amp;&amp; apt -y install powershell And you will have powershell on your system. Old Post You may already be aware that you can safely add external repositories to your
-<br/>
+
 **UPDATE NOV 2019**
 -------------------
 

@@ -6,11 +6,12 @@ type: posts
 ---
 # Thoughts on Zero-Point Securitys Red Team Ops course
 
-<br/>
 
-<br/>
+
+
+
 This weekend I successfully completed the Red Team Ops exam offered by Zero-Point Security and Rasta Mouse. This is a red team training course with a focus on exploiting misconfigurations within an Active Directory environment. Completing the lessons earns you a certificate, so if that’s all you want, then you
-<br/>
+
 This weekend I successfully completed the [Red Team Ops](https://training.zeropointsecurity.co.uk/courses/red-team-ops) exam offered by [Zero-Point Security](https://www.zeropointsecurity.co.uk/) and [Rasta Mouse](https://twitter.com/_rastamouse). This is a red team training course with a focus on exploiting misconfigurations within an Active Directory environment. Completing the lessons earns you a certificate, so if that’s all you want, then you can stop there. However, if you really want to challenge what you’ve learnt, you’ll definitely want to take on the exam.
 
 The course includes lessons that covers various techniques to identify and exploit misconfigurations in Active Directory. While it focuses primarily on offensive techniques, it also covers indicators left by various attacks that could be used to alert a blue team to your activities. The entire curriculum is at [Zero-Point Security’s](https://training.zeropointsecurity.co.uk/courses/red-team-ops) website so I won’t repeat it here.

@@ -6,11 +6,12 @@ type: posts
 ---
 # webapps Flatboard 32 - Stored Cross-Site Scripting XSS Authenticated
 
-<br/>
 
-<br/>
+
+
+
 Flatboard 3.2 - Stored Cross-Site Scripting (XSS) (Authenticated)
-<br/>
+
 Flatboard 3.2 - Stored Cross-Site Scripting (XSS) (Authenticated)
 
 #### [Source](https://www.exploit-db.com/exploits/52054)

@@ -6,11 +6,12 @@ type: posts
 ---
 # Client-side call quality
 
-<br/>
 
-<br/>
+
+
+
  In our previous post, we discussed the global infrastructure that allows RedPhone clients to find low-latency servers when establishing a call. This post discusses the techniques we use to retain call quality when
-<br/>
+
 In our [previous post](/blog/low-latency-switching), we discussed the global infrastructure that allows RedPhone clients to find low-latency servers when establishing a call. This post discusses the techniques we use to retain call quality when network conditions are less than ideal.
 
 [_Read more..._](https://signal.org/blog/client-side-audio-quality/)

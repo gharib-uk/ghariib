@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Community Themes
-https://www.kali.org/blog/kali-community-themes/images/kali-community-themes-banner.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-community-themes/images/kali-community-themes-banner.jpg
+
+
+
  The following blog post was written by a moderator on the Kali Linux &amp; Friends Discord server, Tristram. A massive thank you to Tristram for writing this blog post and to all of the participants! This past summer we held our first community event on the Kali Linux &amp; Friends Discord.
-<br/>
+
 The following blog post was written by a moderator on the [Kali Linux & Friends](https://discord.kali.org/) Discord server, Tristram. A massive thank you to Tristram for writing this blog post and to all of the participants!
 
 This past summer we held our first community event on the [Kali Linux & Friends](https://discord.kali.org/) Discord. With this event, we asked everyone who wanted to participate to share their Kali Linux setup. With each submission, the community had to select their favorite by adding the `:kali4kids:` emoji (Shown below). The five submissions with the most `:kali4kids:` emojis were deemed the winner.

@@ -6,11 +6,12 @@ type: posts
 ---
 # New Release Tails 613
 
-<br/>
 
-<br/>
+
+
+
  New features Detection of problems with Wi-Fi hardware Problems with Wi-Fi are unfortunately quite common in Tails and Linux in general. To help troubleshoot hardware compatibility issues with
-<br/>
+
   ![](https://blog.torproject.org/new-release-tails-6-13/lead.jpg)
 
 New features

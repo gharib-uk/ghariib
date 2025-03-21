@@ -6,11 +6,12 @@ type: posts
 ---
 # NetNoiseCon Amplifying the Future of InfoSec
 
-<br/>
 
-<br/>
+
+
+
 GreyNoise is announcing the launch of NetNoiseCon, an online conference series hosted by GreyNoise aimed at advancing InfoSec education and fostering community collaboration, featuring technical talks and career advice from industry experts.
-<br/>
+
 GreyNoise is announcing the launch of NetNoiseCon, an online conference series hosted by GreyNoise aimed at advancing InfoSec education and fostering community collaboration, featuring technical talks and career advice from industry experts.
 
 #### [Source](https://www.greynoise.io/blog/netnoisecon-amplifying-the-future-of-infosec)

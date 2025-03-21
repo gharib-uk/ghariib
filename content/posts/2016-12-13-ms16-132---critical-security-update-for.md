@@ -6,11 +6,12 @@ type: posts
 ---
 # MS16-132 - Critical Security Update for Microsoft Graphics Component 3199120 - Version 20
 
-<br/>
 
-<br/>
 
-<br/>
+
+
+
+
 
 
 #### [Source](https://technet.microsoft.com/en-us/library/security/MS16-132)

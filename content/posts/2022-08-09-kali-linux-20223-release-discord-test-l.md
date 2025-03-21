@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20223 Release Discord Test Lab
-https://www.kali.org/blog/kali-linux-2022-3-release/images/banner-2022.3-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2022-3-release/images/banner-2022.3-release.jpg
+
+
+
 In light of &ldquo;Hacker Summer Camp 2022&rdquo; (BlackHat USA, BSides LV, and DEFCON) occurring right now, we wanted to push out Kali Linux 2022.3 as a nice surprise for everyone to enjoy! With the publishing of this blog post, we have the download links ready for immediate access, or you
-<br/>
+
 In light of “Hacker Summer Camp 2022” _(BlackHat USA, BSides LV, and DEFCON)_ occurring right now, we wanted to push out Kali Linux 2022.3 as a nice surprise for everyone to enjoy! With the publishing of this blog post, we have the download links ready for immediate [access](https://www.kali.org/get-kali/), or you can [update any existing installation](https://www.kali.org/docs/general-use/updating-kali/).
 
 The highlights for Kali’s 2022.3’s release:

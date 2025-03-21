@@ -6,11 +6,12 @@ type: posts
 ---
 # Navigating the 2024 holiday season Insights into Azures DDoS defense
 
-<br/>
 
-<br/>
+
+
+
 The 2024 holiday season revealed a complex and evolving threat landscape for Distributed Denial-of-Service (DDoS) attacks. This year&#8217;s trends included advanced tactics such as an increase in DDoS-for-hire operations, the assembly of massive DDoS botnets by script kiddies, politically motivated attack campaigns, and the bypass of CDN (Content Delivery Network)
-<br/>
+
 The 2024 holiday season revealed a complex and evolving threat landscape for Distributed Denial-of-Service (DDoS) attacks. This year’s trends included advanced tactics such as an increase in DDoS-for-hire operations, the assembly of massive DDoS botnets by script kiddies, politically motivated attack campaigns, and the bypass of CDN (Content Delivery Network) protections among other evolving threats.
 
 The post [Navigating the 2024 holiday season: Insights into Azure’s DDoS defense](https://azure.microsoft.com/en-us/blog/navigating-the-2024-holiday-season-insights-into-azures-ddos-defense/) appeared first on [Microsoft Azure Blog](https://azure.microsoft.com/en-us/blog).

@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20172 Release
-https://www.kali.org/blog/kali-linux-2017-2-release/images/kali-2017-2-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2017-2-release/images/kali-2017-2-release.jpg
+
+
+
 We are happy to announce the release of Kali Linux 2017.2, available now for your downloading pleasure. This release is a roll-up of all updates and fixes since our 2017.1 release in April. In tangible terms, if you were to install Kali from your 2017.1 ISO, after logging in to
-<br/>
+
 We are happy to announce the release of Kali Linux 2017.2, [available now](https://www.kali.org/get-kali/) for your downloading pleasure. This release is a roll-up of all updates and fixes since our [2017.1 release](https://www.kali.org/blog/kali-linux-2017-1-release/) in April. In tangible terms, if you were to install Kali from your 2017.1 ISO, after logging in to the desktop and running ‘apt update && apt full-upgrade’, you would be faced with something similiar to this daunting message:
 
 ```plain

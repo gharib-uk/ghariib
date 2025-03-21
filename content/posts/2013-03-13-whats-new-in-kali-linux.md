@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Whats New in Kali Linux
-https://www.kali.org/blog/kali-linux-whats-new/images/kali-whats-new.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-whats-new/images/kali-whats-new.jpg
+
+
+
 Enter Kali Linux &ldquo;So, what&rsquo;s the difference between BackTrack and Kali?&rdquo; you might be asking. Unfortunately for us, that&rsquo;s not a simple question to answer. It&rsquo;s a mix between &ldquo;everything&rdquo; and &ldquo;not much&rdquo;, depending on how you used BackTrack. From an end user perspective, the most obvious change would be the switch
-<br/>
+
 Enter Kali Linux
 ----------------
 

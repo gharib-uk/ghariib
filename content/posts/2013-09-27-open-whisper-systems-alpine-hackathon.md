@@ -6,11 +6,12 @@ type: posts
 ---
 # Open Whisper Systems Alpine Hackathon
 
-<br/>
 
-<br/>
+
+
+
  From October 11th to October 13th, we’ll be hosting an informal Open Whisper Systems Alpine Hackathon for those in or around Zurich, Switzerland who would like to contribute to Open Whisper Systems-related projects in a
-<br/>
+
 From October 11th to October 13th, we’ll be hosting an informal Open Whisper Systems _Alpine Hackathon_ for those in or around Zurich, Switzerland who would like to contribute to Open Whisper Systems-related projects in a collaborative setting with other co-conspirators.
 
 [_Read more..._](https://signal.org/blog/hackathon-zurich/)

@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # VMware Fusion Kali USB Boot
-https://www.kali.org/blog/vmware-fusion-kali-usb-boot/images/vmware-fusion-kali-usb-boot.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/vmware-fusion-kali-usb-boot/images/vmware-fusion-kali-usb-boot.jpg
+
+
+
 VMware Fusion Kali USB Boot One of the fun, and often necessary, features of Kali Linux is the ability to create really killer, completely customized live-boot installations. Normally stored on a USB drive, these installations put the power of Kali Linux in your pocket, ready to launch whenever you need it. Building
-<br/>
+
 VMware Fusion Kali USB Boot
 ---------------------------
 

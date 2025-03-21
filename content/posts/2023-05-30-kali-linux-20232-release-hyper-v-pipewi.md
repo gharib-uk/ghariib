@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20232 Release Hyper-V PipeWire
-https://www.kali.org/blog/kali-linux-2023-2-release/images/banner-2023.2-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2023-2-release/images/banner-2023.2-release.jpg
+
+
+
 Quick off the mark from previous 10 year anniversary, Kali Linux 2023.2 is now here. It is ready for immediate download or upgrading if you have an existing Kali Linux installation. The changelog highlights over the last few weeks since March&rsquo;s release of 2023.1 is: New VM image for Hyper-V - With
-<br/>
+
 Quick off the mark from previous [10 year anniversary](https://www.kali.org/blog/10-years/), **Kali Linux 2023.2** is now here. It is ready for immediate [download](https://www.kali.org/get-kali/) or [upgrading](https://www.kali.org/docs/general-use/updating-kali/) _if you have an existing Kali Linux installation_.
 
 The [changelog](https://bugs.kali.org/changelog_page.php) highlights over the last few weeks since March’s [release](https://www.kali.org/releases/) of [2023.1](https://www.kali.org/blog/kali-linux-2023-1-release/) is:

@@ -6,11 +6,12 @@ type: posts
 ---
 # MS16-152 - Important Security Update for Windows Kernel 3199709 - Version 10
 
-<br/>
 
-<br/>
 
-<br/>
+
+
+
+
 
 
 #### [Source](https://technet.microsoft.com/en-us/library/security/MS16-152)

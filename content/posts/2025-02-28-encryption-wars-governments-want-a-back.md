@@ -6,11 +6,12 @@ type: posts
 ---
 # Encryption Wars Governments Want a Backdoor but Hackers Are Watching
 
-<br/>
 
-<br/>
 
-<br/>
+
+
+
+
 
 
 #### [Source](https://hackernoon.com/encryption-wars-governments-want-a-backdoor-but-hackers-are-watching?source=rss)

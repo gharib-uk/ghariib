@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Tracking and Fixing an Installer Bug
-https://www.kali.org/blog/tracking-fixing-installer-bugs/images/kali-installer-bug.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/tracking-fixing-installer-bugs/images/kali-installer-bug.jpg
+
+
+
 A little while back, a bug with the LVM encrypted install in Kali Linux 1.0.4 was reported in our bug tracker. This bug was high priority in our TODO as encrypted installs are an important feature in our industry so we wanted to squash this bug ASAP. This article will
-<br/>
+
 A little while back, a bug with the LVM encrypted install in Kali Linux 1.0.4 was [reported](https://bugs.kali.org/view.php?id=443) in our [bug tracker](https://www.kali.org/docs/community/submitting-issues-kali-bug-tracker/). This bug was high priority in our TODO as encrypted installs are an important feature in our industry so we wanted to squash this bug ASAP. This article will describe the process of debugging, identifying, and fixing this bug in Kali, and ultimately in Debian as well.
 
 The bug itself was weird; installing Kali with the “LVM Encrypted” option would result in a failed boot once the installation was done:

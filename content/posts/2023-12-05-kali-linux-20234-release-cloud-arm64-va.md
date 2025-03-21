@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20234 Release Cloud ARM64 Vagrant Hyper-V Raspberry Pi 5
-https://www.kali.org/blog/kali-linux-2023-4-release/images/banner-2023.4-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2023-4-release/images/banner-2023.4-release.jpg
+
+
+
 With 2023 coming to an end and before the holiday season starts, we thought today would be a good time to release Kali 2023.4. Whilst this release may not have the most end-user features in it again, there are a number of new platform offerings and there has still been
-<br/>
+
 With 2023 coming to an end and before the holiday season starts, we thought today would be a good time to [release](https://www.kali.org/releases/) **Kali 2023.4**. Whilst this release may not have the most end-user features in it again, there are a number of new platform offerings and there has still been a lot of changes going on behind-the-scenes for us, which has a positive knock-on effect resulting in a benefit for everyone. News, platforms, and features aside, it would not be a Kali release if there was not a number of changes to our packages - both new tools and upgrades to existing ones. If you want to see what is new for yourself [download](https://www.kali.org/get-kali/) a new image or [upgrade _if you already have a Kali Linux installation_](https://www.kali.org/docs/general-use/updating-kali/).
 
 The summary of the [changelog](https://bugs.kali.org/changelog_page.php) since the [2023.3 release from August](https://www.kali.org/blog/kali-linux-2023-3-release/) is:

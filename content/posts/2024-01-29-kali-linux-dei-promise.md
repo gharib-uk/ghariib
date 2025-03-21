@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux DEI Promise
-https://www.kali.org/blog/dei-promise/images/banner-dei.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/dei-promise/images/banner-dei.jpg
+
+
+
 Last month we were privileged to be invited by GitLab to participate in the introduction of GitLab&rsquo;s DEI Badging integration. Diversity, Equity, and Inclusion (DEI) badging is an initiative that the Community Health Analytics in Open Source Software (CHAOSS) project created to acknowledge and encourage open source projects&rsquo; efforts. Since we
-<br/>
+
 Last month we were privileged to be invited by GitLab to participate in the introduction of [GitLab’s DEI Badging integration](https://about.gitlab.com/blog/2024/01/29/building-a-more-inclusive-and-welcoming-open-source-community-on-gitlab/). Diversity, Equity, and Inclusion [(DEI) badging](https://badging.chaoss.community/project-badging) is an initiative that the [Community Health Analytics in Open Source Software](https://chaoss.community/) (CHAOSS) project [created](https://chaoss.community/chaoss-dei-project-badging/) to acknowledge and encourage open source projects’ efforts.
 
 Since we first heard of this initiative we have been very excited for the launch. Inclusion in the open source space has always been important and the cornerstone of what makes open source work. This sort of formalization of what inclusion means and how we execute on it is an important step forward in the maturation of open source projects in general. Kali Linux is an [open-source](https://www.kali.org/docs/policy/kali-linux-open-source-policy/), [multi-platform](https://www.kali.org/docs/introduction/kali-linux-image-overview/), distribution for all users, and with this effort we have the opportunity to make that explicit. We are also proud to say that we have already [received our badge](https://badging.chaoss.community/project-badging), as the first GitLab project to do so, aside from GitLab themselves of course!

@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20192 Release
-https://www.kali.org/blog/kali-linux-2019-2-release/images/kali-release-2019.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2019-2-release/images/kali-release-2019.jpg
+
+
+
 Welcome to our second release of 2019, Kali Linux 2019.2, which is available for immediate download. This release brings our kernel up to version 4.19.28, fixes numerous bugs, includes many updated packages, and most excitingly, features a new release of Kali NetHunter! Kali NetHunter 2019.2 Release Thanks to the tireless contributions from
-<br/>
+
 Welcome to our second release of 2019, Kali Linux 2019.2, which is available for immediate [download](https://www.kali.org/get-kali/). This release brings our kernel up to version 4.19.28, fixes numerous bugs, includes many updated packages, and most excitingly, features a new release of Kali NetHunter!
 
 ### Kali NetHunter 2019.2 Release

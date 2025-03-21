@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20201 Release Non-Root Single Installer NetHunter Rootless
-https://www.kali.org/blog/kali-linux-2020-1-release/images/kali-2020.1.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2020-1-release/images/kali-2020.1.jpg
+
+
+
 We are here to kick off our first release of the decade, with Kali Linux 2020.1! Available for immediate download. The following is a brief feature summary for this release: Non-Root by default Kali single installer image Kali NetHunter Rootless Improvements to theme &amp; kali-undercover New tools Non-Root Throughout the history of Kali (and its predecessors BackTrack, WHAX,
-<br/>
+
 We are here to kick off our first release of the decade, with Kali Linux 2020.1! Available for immediate [download](https://www.kali.org/get-kali/).
 
 The following is a brief feature summary for this release:

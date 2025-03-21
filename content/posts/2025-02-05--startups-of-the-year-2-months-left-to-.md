@@ -6,11 +6,12 @@ type: posts
 ---
 # Startups of The Year 2 Months Left to Cast Your Vote
 
-<br/>
 
-<br/>
 
-<br/>
+
+
+
+
 
 
 #### [Source](https://hackernoon.com/startups-of-the-year-2-months-left-to-cast-your-vote?source=rss)

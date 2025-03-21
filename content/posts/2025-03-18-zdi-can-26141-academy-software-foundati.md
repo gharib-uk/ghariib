@@ -6,11 +6,12 @@ type: posts
 ---
 # ZDI-CAN-26141 Academy Software Foundation
 
-<br/>
 
-<br/>
+
+
+
 A CVSS score 7.8 AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H severity vulnerability discovered by 'Dongjun Kim(@Enki WhiteHat) and Jongseong Kim(@Enki Whitehat)' was reported to the affected vendor on: 2025-03-18, 3 days ago. The vendor is given until 2025-07-16 to publish a fix or workaround. Once the vendor has created and tested a patch we will
-<br/>
+
 A CVSS score 7.8 [AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H](https://nvd.nist.gov/cvss.cfm?calculator&version=3.0&vector=AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H) severity vulnerability discovered by 'Dongjun Kim(@Enki WhiteHat) and Jongseong Kim(@Enki Whitehat)' was reported to the affected vendor on: 2025-03-18, 3 days ago. The vendor is given until 2025-07-16 to publish a fix or workaround. Once the vendor has created and tested a patch we will coordinate the release of a public advisory.
 
 #### [Source](http://www.zerodayinitiative.com/advisories/upcoming/)

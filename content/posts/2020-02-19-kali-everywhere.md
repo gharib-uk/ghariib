@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Everywhere
-https://www.kali.org/blog/kali-everywhere/images/kali-everywhere-v2.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-everywhere/images/kali-everywhere-v2.jpg
+
+
+
 There was some recent noise around children and their use of Kali, so @Re4son stepped up with a new way to run Kali in locations where it may have been hard to in the past. This allows you to run Kali instances inside other Unix systems, making Kali even more
-<br/>
+
 There was some recent noise around [children and their use of Kali](https://www.zdnet.com/article/uk-police-distance-themselves-from-poster-warning-parents-to-report-kids-for-using-kali-linux/), so @Re4son stepped up with a new way to run Kali in locations where it may have been hard to in the past. This allows you to run Kali instances inside other Unix systems, making Kali even more accessible to kids than before. Welcome [LXD](https://www.kali.org/docs/containers/kalilinux-lxc-images/).
 
 [![](https://www.kali.org/blog/kali-everywhere/images/release-2020.1-poster.png)](https://www.kali.org/blog/kali-everywhere/images/release-2020.1-poster.png)

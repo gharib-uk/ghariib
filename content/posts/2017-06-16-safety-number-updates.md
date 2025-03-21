@@ -6,11 +6,12 @@ type: posts
 ---
 # Safety number updates
 
-<br/>
 
-<br/>
+
+
+
  The latest Signal beta includes some changes to the way safety numbers work. Back in November, we introduced experimental support for “advisory” safety number changes, with the objective of collecting feedback in order to eventually make
-<br/>
+
 The latest Signal beta includes some changes to the way safety numbers work. Back in November, we [introduced experimental support](/blog/safety-number-updates) for “advisory” safety number changes, with the objective of collecting feedback in order to eventually make this the default experience.
 
 We’ve taken the feedback we’ve received over the past six months and incorporated it into a set of changes that we’re releasing into beta today.

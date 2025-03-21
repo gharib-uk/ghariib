@@ -6,11 +6,12 @@ type: posts
 ---
 # VPN - A Gateway for Vulnerabilities
 
-<br/>
 
-<br/>
+
+
+
 Virtual Private Networks (VPNs) are the backbone of today's businesses providing a wide range of entities from remote employees to business partners and...
-<br/>
+
 
 
 #### [Source](https://insights.sei.cmu.edu/blog/vpn-a-gateway-for-vulnerabilities/)

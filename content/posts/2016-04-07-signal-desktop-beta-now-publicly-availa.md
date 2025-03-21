@@ -6,11 +6,12 @@ type: posts
 ---
 # Signal Desktop beta now publicly available
 
-<br/>
 
-<br/>
+
+
+
  --> For the past few months, the Signal Desktop beta has been available through an invitation program. We’ve gotten a lot of feedback, made a lot of improvements, and are now ready to open
-<br/>
+
 ![Signal Desktop](/blog/images/desktop-beta-placed.png)
 
 For the past few months, the Signal Desktop beta has been available through an [invitation program](/blog/signal-desktop). We’ve gotten a lot of feedback, made a lot of improvements, and are now ready to open the beta up for public access.

@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux Amazon EC2 AMI
-https://www.kali.org/blog/kali-linux-amazon-ec2-ami/images/kali-in-the-cloud.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-amazon-ec2-ami/images/kali-in-the-cloud.jpg
+
+
+
 Kali Linux in the Amazon EC2 Marketplace EDIT: For updated Kali Rolling images in the Amazon AWS, check this post. After several weeks of &ldquo;back and forth&rdquo; with the Amazon EC2 team, Kali Linux has finally been approved into the Amazon EC2 marketplace. This means that our users can now activate and
-<br/>
+
 ### Kali Linux in the Amazon EC2 Marketplace
 
 **EDIT**: For updated Kali Rolling images in the Amazon AWS, check [this post](https://www.kali.org/blog/kali-linux-aws-cloud/).

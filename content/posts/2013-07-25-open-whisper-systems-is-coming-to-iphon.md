@@ -6,11 +6,12 @@ type: posts
 ---
 # Open Whisper Systems is coming to iPhone
 
-<br/>
 
-<br/>
+
+
+
  Read more... 
-<br/>
+
 ![A mockup of the WhisperSystems logo on an iPhone.](/blog/images/redphone-ios-soon.png)
 
 [_Read more..._](https://signal.org/blog/iphone-rsn/)

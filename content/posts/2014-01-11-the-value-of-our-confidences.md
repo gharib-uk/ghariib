@@ -6,11 +6,12 @@ type: posts
 ---
 # The value of our confidences
 
-<br/>
 
-<br/>
+
+
+
  Winter Break of Code, Day Five Understanding digital privacy under capitalism If commodities could speak, they would say this: our use-value may interest men [sic], but it does not belong to us as objects.
-<br/>
+
 _Winter Break of Code, Day Five_
 
 ![Jumping off the pier at Hanalei Bay](/blog/images/wboc-tyler-jump.png)

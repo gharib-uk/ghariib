@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20231 Release Kali Purple Python Changes
-https://www.kali.org/blog/kali-linux-2023-1-release/images/banner-2023.1-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2023-1-release/images/banner-2023.1-release.jpg
+
+
+
 Today we are releasing Kali 2023.1 (and on our 10th anniversary)! It will be ready for immediate download or updating by the time you have finished reading this post. Given its our 10th anniversary, we are delighted to announce there are a few special things lined up to help celebrate. Stay
-<br/>
+
 Today we are releasing Kali 2023.1 (and on our **10th anniversary**)! It will be ready for immediate [download](https://www.kali.org/get-kali/) or [updating](https://www.kali.org/docs/general-use/updating-kali/) by the time you have finished reading this post.
 
 Given its our 10th anniversary, we are delighted to announce there are a few special things lined up to help celebrate. Stay tuned for a blog post coming out for more information! Edit: [Its out](https://www.kali.org/blog/10-years/)!

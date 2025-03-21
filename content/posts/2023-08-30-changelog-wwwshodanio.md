@@ -6,11 +6,12 @@ type: posts
 ---
 # Changelog wwwshodanio
 
-<br/>
 
-<br/>
+
+
+
 A few notable usability improvements to the IP information page: Web Technologies Web technologies are now grouped by categories and we show version information (if available). The information was always grouped in the underlying JSON and we now also show it that way on the website. Learn more about the
-<br/>
+
 A few notable usability improvements to the IP information page:
 
 ### Web Technologies

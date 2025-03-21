@@ -6,11 +6,12 @@ type: posts
 ---
 # ZDI-CAN-26334 Ubiquiti Networks
 
-<br/>
 
-<br/>
+
+
+
 A CVSS score 8.0 AV:A/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H severity vulnerability discovered by 'Sina Kheirkhah (@SinSinology) of Summoning Team (@SummoningTeam)' was reported to the affected vendor on: 2025-03-04, 17 days ago. The vendor is given until 2025-07-02 to publish a fix or workaround. Once the vendor has created and tested a patch we will
-<br/>
+
 A CVSS score 8.0 [AV:A/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H](https://nvd.nist.gov/cvss.cfm?calculator&version=3.0&vector=AV:A/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H) severity vulnerability discovered by 'Sina Kheirkhah (@SinSinology) of Summoning Team (@SummoningTeam)' was reported to the affected vendor on: 2025-03-04, 17 days ago. The vendor is given until 2025-07-02 to publish a fix or workaround. Once the vendor has created and tested a patch we will coordinate the release of a public advisory.
 
 #### [Source](http://www.zerodayinitiative.com/advisories/upcoming/)

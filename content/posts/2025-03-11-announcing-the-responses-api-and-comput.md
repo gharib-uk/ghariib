@@ -6,11 +6,12 @@ type: posts
 ---
 # Announcing the Responses API and Computer-Using Agent in Azure AI Foundry
 
-<br/>
 
-<br/>
+
+
+
 AI agents are transforming industries by automating workflows, enhancing productivity, and enabling intelligent decision-making. Businesses are leveraging AI agents to process insurance claims, manage IT service desks, optimize supply chain logistics, and even assist healthcare professionals in analyzing medical records. The potential is vast, and we’re excited to introduce two
-<br/>
+
 AI agents are transforming industries by automating workflows, enhancing productivity, and enabling intelligent decision-making. Businesses are leveraging AI agents to process insurance claims, manage IT service desks, optimize supply chain logistics, and even assist healthcare professionals in analyzing medical records. The potential is vast, and we’re excited to introduce two powerful innovations in Azure AI Foundry.
 
 The post [Announcing the Responses API and Computer-Using Agent in Azure AI Foundry](https://azure.microsoft.com/en-us/blog/announcing-the-responses-api-and-computer-using-agent-in-azure-ai-foundry/) appeared first on [Microsoft Azure Blog](https://azure.microsoft.com/en-us/blog).

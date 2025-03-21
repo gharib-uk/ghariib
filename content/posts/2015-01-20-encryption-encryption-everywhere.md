@@ -6,11 +6,12 @@ type: posts
 ---
 # Encryption encryption everywhere
 
-<br/>
 
-<br/>
+
+
+
  Winter Break Of Code Day 8 A few weeks ago, an email full of information to help prep for Winter Break of Code popped up in my inbox. Throughout my personal countdown to the day
-<br/>
+
 _Winter Break Of Code Day 8_
 
 ![](/blog/images/wboc-water.jpg)

@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Ampere Hardware Kali Linux
-https://www.kali.org/blog/ampere/images/ampere.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/ampere/images/ampere.jpg
+
+
+
 When Ampere partnered with Debian, this caught our eye. We were aware that our current ARM cloud provider was soon ending support for arm64 servers (which we use for our build daemons). At Kali Linux, one of the things which is important to us, is that we prefer not having to
-<br/>
+
 When [Ampere](https://amperecomputing.com/) partnered with [Debian](https://www.debian.org/News/2020/20200616), this caught our eye. We were aware that our current ARM cloud provider was soon ending support for arm64 servers _(which we use for our build daemons)_.
 
 At [Kali Linux](https://www.kali.org/), one of the things which is important to us, is that we prefer not having to cross-compile our ARM binaries that we ship in our Kali packages. There are various reasons as to why, some of them are:

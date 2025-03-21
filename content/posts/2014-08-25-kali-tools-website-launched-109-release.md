@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Tools Website Launched 109 Release
-https://www.kali.org/blog/kali-linux-1-0-9-release/images/kali-1.0.9-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-1-0-9-release/images/kali-1.0.9-release.jpg
+
+
+
 Now that we have caught our breath after the Black Hat and DEF CON conferences, we have put aside some time to fix an annoying bug in our 1.0.8 ISO releases related to outdated firmware as well as regenerate fresh new ARM and VMware images (courtesy of OffSec ) for
-<br/>
+
 Now that we have caught our breath after the Black Hat and DEF CON conferences, we have put aside some time to fix an annoying bug in our 1.0.8 ISO releases related to outdated firmware as well as regenerate fresh new ARM and VMware images (courtesy of [OffSec](https://www.offsec.com/) ) for our new [1.0.9 release](https://www.kali.org/get-kali/#kali-vm). With this release come a few more updates worth mentioning:
 
 ##### Rasberry Pi B+ ARM Image Support

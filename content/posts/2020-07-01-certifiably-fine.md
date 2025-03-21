@@ -6,11 +6,12 @@ type: posts
 ---
 # Certifiably Fine
 
-<br/>
 
-<br/>
+
+
+
  Sometimes people dive into Signal’s code looking for domain names, and then they send us screenshots asking if they should be concerned: We reply with a short explanation that lays out why there’s nothing wrong,
-<br/>
+
 Sometimes people dive into Signal’s code looking for domain names, and then they send us screenshots asking if they should be concerned:
 
 ![Screenshot of 'T' rating on ssl labs](/blog/images/ssllabs-screenshot.png)

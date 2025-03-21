@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # BC Securitys EmpireStarkiller Kali Linux
-https://www.kali.org/blog/empire-starkiller/images/kali-bc-security-partnership.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/empire-starkiller/images/kali-bc-security-partnership.jpg
+
+
+
 We have always worked to support the information security community as a whole, and over the years experimented with different ideas (some with a greater success than others). One of the key components to Kali is the tools included (either pre-installed or installed via apt). Joining together infosec professional/hobbyist and
-<br/>
+
 We have always worked to support the information security community as a whole, and over the years experimented with different ideas _(some with a greater success than others)_. One of the key components to Kali is the tools included _(either pre-installed or installed via apt)_. Joining together infosec professional/hobbyist and tool authors, today we are announcing another partnership: **[Kali has partnered with BC Security](https://www.bc-security.org/post/kali-and-bc-security-partnership)**.
 
 BC Security is the team who is currently maintaining the most active fork of [Empire](https://pkg.kali.org/pkg/powershell-empire). In August 2019, the [original maintainers](https://twitter.com/xorrior/status/1156626181107736576) archived the project, but with Open-source projects _(as long as they don’t break software licenses_) other groups can take someone else’s code and improve upon it. This is exactly what BC Security did, forking the project, to keep the flame of [PowerShell Empire](https://github.com/BC-SECURITY/Empire) alive.

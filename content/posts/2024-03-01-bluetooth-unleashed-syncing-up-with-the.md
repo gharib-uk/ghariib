@@ -6,11 +6,12 @@ type: posts
 ---
 # Bluetooth Unleashed Syncing Up with the RattaGATTa Series Part 1
 
-<br/>
 
-<br/>
+
+
+
 This post introduces GreyNoise Labs' series on BTLE, highlighting its privacy and security implications, as well as the journey from basic usage to sophisticated system development, offering insights for cybersecurity professionals and tech enthusiasts alike.
-<br/>
+
 This post introduces GreyNoise Labs' series on BTLE, highlighting its privacy and security implications, as well as the journey from basic usage to sophisticated system development, offering insights for cybersecurity professionals and tech enthusiasts alike.
 
 #### [Source](https://www.greynoise.io/blog/bluetooth-unleashed-syncing-up-with-the-rattagatta-series-part-1)

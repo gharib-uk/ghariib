@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20241 Release Micro Mirror
-https://www.kali.org/blog/kali-linux-2024-1-release/images/banner-2024.1-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2024-1-release/images/banner-2024.1-release.jpg
+
+
+
 Hello 2024! Today we are unveiling Kali Linux 2024.1. As this is our the first release of the year, it does include new visual elements! Along with this we also have some exciting new mirrors to talk about, and of course some package changes - both new tools and upgrades
-<br/>
+
 Hello 2024! Today we are unveiling **Kali Linux 2024.1**. As this is our the first [release](https://www.kali.org/releases/) of the year, it does include new visual elements! Along with this we also have some exciting new mirrors to talk about, and of course some package changes - both new tools and upgrades to existing ones. If you want to see the new theme for yourself and maybe try out one of those new mirrors, [download a new image](https://www.kali.org/get-kali/) or [upgrade _if you have an existing Kali Linux installation_](https://www.kali.org/docs/general-use/updating-kali/).
 
 The summary of the [changelog](https://bugs.kali.org/changelog_page.php) since the [2023.4 release from December](https://www.kali.org/blog/kali-linux-2023-4-release/) is:

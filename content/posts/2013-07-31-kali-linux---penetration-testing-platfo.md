@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux - Penetration Testing Platform
-https://www.kali.org/blog/kali-linux-penetration-testing-platform/images/kali-pentesting-platform.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-penetration-testing-platform/images/kali-pentesting-platform.jpg
+
+
+
 Whenever we are given the opportunity to describe Kali Linux, we use the word &ldquo;powerful&rdquo;. Have you ever wondered or asked yourself why exactly we consider Kali to be so &ldquo;Powerful&rdquo;? Why is Kali any different or better from say, an Ubuntu machine with a bunch of security tools preinstalled
-<br/>
+
 Whenever we are given the opportunity to describe Kali Linux, we use the word “**powerful**”. Have you ever wondered or asked yourself why exactly we consider Kali to be so “Powerful”? Why is Kali any different or better from say, an Ubuntu machine with a bunch of security tools preinstalled on it? After all, **our nmap package isn’t any better than anyone else’s, is it**?
 
 ### Flexible Penetration Testing Platform

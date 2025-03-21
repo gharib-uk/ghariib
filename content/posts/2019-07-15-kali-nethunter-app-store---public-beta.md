@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali NetHunter App Store - Public Beta
-https://www.kali.org/blog/kali-nethunter-app-store/images/kali-nethunter-store-1.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-nethunter-app-store/images/kali-nethunter-store-1.jpg
+
+
+
 Kali NetHunter has been undergoing a ton of changes of late. Now supporting over 50 devices and running on Android devices from KitKat (v4.4) to Pie (v9.0), its amazing the extra capabilities that have been introduced. But, we don&rsquo;t want to stop there. After a ton of work, we are really
-<br/>
+
 Kali NetHunter has been undergoing a ton of changes of late. Now supporting over 50 devices and running on Android devices from KitKat (v4.4) to Pie (v9.0), its amazing the extra capabilities that have been introduced.
 
 But, we don’t want to stop there. After a ton of work, we are really excited to introduce the [Kali NetHunter App Store](https://store.nethunter.com/)!

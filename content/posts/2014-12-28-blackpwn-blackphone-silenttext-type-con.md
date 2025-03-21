@@ -6,11 +6,12 @@ type: posts
 ---
 # BlackPwn BlackPhone SilentText Type Confusion Vulnerability
 
-<br/>
 
-<br/>
+
+
+
 Privacy is a hot topic at the moment - it continues to dominate the headlines as news of new NSA incursions, celebrity phone hacks, and corporate breaches are being reported on an increasingly regular basis. In response to this, a number of products have been brought to market that attempt
-<br/>
+
 Privacy is a hot topic at the moment - it continues to dominate the headlines as news of new NSA incursions, celebrity phone hacks, and corporate breaches are being reported on an increasingly regular basis. In response to this, a number of products have been brought to market that attempt to provide consumers with a greater level of privacy than typical devices allow for. In the phone market, one of the premier products to be released in recent years is undoubtedly the BlackPhone ([http://www.blackphone.ch](http://www.blackphone.ch/)), which has been cited numerous times in tech publications as being one of the best available defenses against mass surveillance, as it provides full end-to-end encryption facilities for voice calls and text/MMS messaging.  
   
 While exploring my recently purchased BlackPhone, I discovered that the messaging application contains a serious memory corruption vulnerability that can be triggered remotely by an attacker.  If exploited successfully, this flaw could be used to gain remote arbitrary code execution on the target's handset. The code run by the attacker will have the privileges of the messaging application, which is a standard Android application with some additional privileges. Specifically, it is possible to:  

@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # How Kali deals with the upcoming Python 2 End-of-Life
-https://www.kali.org/blog/python-2-end-of-life/images/python-2-end-of-life-b.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/python-2-end-of-life/images/python-2-end-of-life-b.jpg
+
+
+
 Five years ago, the Python developers announced that they will stop supporting Python 2 in 2020. For a long time, nobody cared and Python 3 adoption was slow. But things have changed a lot lately as the deadline is right around the corner (1st January). Debian is removing Python 2 support Debian
-<br/>
+
 Five years ago, the Python developers announced that they will [stop supporting Python 2 in 2020](https://pythonclock.org/). For a long time, nobody cared and Python 3 adoption was slow. But things have changed a lot lately as the deadline is right around the corner (1st January).
 
 Debian is removing Python 2 support

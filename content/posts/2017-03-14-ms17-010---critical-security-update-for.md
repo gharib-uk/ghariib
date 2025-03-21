@@ -6,11 +6,12 @@ type: posts
 ---
 # MS17-010 - Critical Security Update for Microsoft Windows SMB Server 4013389 - Version 10
 
-<br/>
 
-<br/>
 
-<br/>
+
+
+
+
 
 
 #### [Source](https://technet.microsoft.com/en-us/library/security/MS17-010)

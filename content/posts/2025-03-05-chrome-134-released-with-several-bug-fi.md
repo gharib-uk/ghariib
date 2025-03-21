@@ -6,11 +6,12 @@ type: posts
 ---
 # Chrome 134 Released with Several Bug fixes
 
-<br/>
 
-<br/>
+
+
+
  Chrome 134 Released with Several Bug fixes 
-<br/>
+
 ### Chrome 134 Released with Several Bug fixes
 
 ![](https://upload.cvefeed.io/news/33571/thumbnail.jpg)

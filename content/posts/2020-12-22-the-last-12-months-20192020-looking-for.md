@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # The last 12 Months 20192020 Looking Forwards 2021
-https://www.kali.org/blog/2019-2020-review-onwards-with-2021/images/kali-last-12-months-2020.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/2019-2020-review-onwards-with-2021/images/kali-last-12-months-2020.jpg
+
+
+
 As the end of the year is coming up (some may say not quickly enough), we want to take a few minutes and recap on our roadmap 2019/2020 post. At a higher level, the last 12 months of Kali Linux (outside of the normal release items - e.g. packages updates), Kali
-<br/>
+
 As the end of the year is coming up _(some may say not quickly enough)_, we want to take a few minutes and recap on our [roadmap 2019/2020 post](https://www.kali.org/blog/kali-linux-roadmap-2019-2020/).
 
 At a higher level, the last 12 months of Kali Linux _(outside of the normal release items - e.g. packages updates)_, Kali has had various refreshes, switches and additional new features added.

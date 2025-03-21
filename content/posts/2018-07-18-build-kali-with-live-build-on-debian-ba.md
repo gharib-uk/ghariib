@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Build Kali with Live-Build on Debian Based Systems
-https://www.kali.org/blog/build-kali-with-live-build-on-debian-based-systems/images/kali-livebuild-debian-1.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/build-kali-with-live-build-on-debian-based-systems/images/kali-livebuild-debian-1.jpg
+
+
+
 We use live-build to create our official Kali releases and we encourage users to jump in and build their own customized versions of Kali whenever we can. Our documentation of the process is one of the most popular items on our documentation site, and the Kali Dojo also revolves around
-<br/>
+
 We use live-build to create our official Kali releases and we encourage users to jump in and build their own customized versions of Kali whenever we can. Our [documentation of the process](https://www.kali.org/docs/development/live-build-a-custom-kali-iso/) is one of the most popular items on our [documentation site](https://www.kali.org/docs/), and the Kali Dojo also revolves around this topic. We love it and our users love it.
 
 One roadblock of live-build has always been the fact that you need a Kali system to build a Kali system. The reason for this is that small changes in both the original debootstrap and live-build packages are needed for building a Kali ISO. In Kali, these changes are already included, however in most [Debian derivatives](https://wiki.debian.org/Derivatives/), some gentle massaging is needed to get our ISOs to build.

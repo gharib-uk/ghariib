@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Emergency Self Destruction of LUKS in Kali
-https://www.kali.org/blog/emergency-self-destruction-luks-kali/images/kali-luks-self-destruct.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/emergency-self-destruction-luks-kali/images/kali-luks-self-destruct.jpg
+
+
+
 Kali Linux Full Disk Encryption As penetration testers, we often need to travel with sensitive data stored on our laptops. Of course, we use full disk encryption wherever possible, including our Kali Linux machines, which tend to contain the most sensitive materials. Setting up full disk encryption with Kali is a simple
-<br/>
+
 ### Kali Linux Full Disk Encryption
 
 As [penetration testers](https://www.offsec.com/cyberversity/penetration-testing/), we often need to travel with sensitive data stored on our laptops. Of course, we use full disk encryption wherever possible, including our Kali Linux machines, which tend to contain the most sensitive materials.

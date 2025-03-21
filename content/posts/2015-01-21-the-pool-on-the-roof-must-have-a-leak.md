@@ -6,11 +6,12 @@ type: posts
 ---
 # The pool on the roof must have a leak
 
-<br/>
 
-<br/>
+
+
+
  Winter Break Of Code Day 9 Today we hiked the Kalalau Trail and swam beneath the cold spray of a waterfall. Today we discussed the finer points of the axolotl protocol used by TextSecure. Today we delighted
-<br/>
+
 _Winter Break Of Code Day 9_
 
 Today we hiked the Kalalau Trail and swam beneath the cold spray of a waterfall.

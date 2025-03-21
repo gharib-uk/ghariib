@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux Mr Robot ARG Society
-https://www.kali.org/blog/mr-robot-arg-society/images/kali-mr-robot-augmented-reality-game-1.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/mr-robot-arg-society/images/kali-mr-robot-augmented-reality-game-1.jpg
+
+
+
 Many of you may have known about the show Mr Robot and its unique connection to Kali Linux. But there is a little bit more that we have not talked about due to NDAs. But it appears the mystery is over, the red tape has been removed, and we now
-<br/>
+
 Many of you may have known about the show [Mr Robot](https://www.usanetwork.com/mr-robot) and its unique connection to Kali Linux. But there is a little bit more that we have not talked about due to NDAs. But it appears the mystery is over, the red tape has been removed, and we now wanted to take a moment to share it with everyone.
 
 We had a relationship with Mr Robot, which started during the filming of the 2nd season. While the 1st season was running, we were approached at BlackHat 2015 to give our permission to use Kali in the show. We worked out the legal parts of things (it’s legal to use Kali in media, we don’t care, but studios want that in writing), and starting in the 2nd season from time to time the production staff would reach out to us to ask us questions, have us provide them graphics, provide them with specific versions of Kali that were public on specific dates, and similar to keep the show accurate. We were very impressed with the efforts to keep the show grounded while still carrying on a strong hacking focused narrative.

@@ -6,11 +6,12 @@ type: posts
 ---
 # Machine Learning in Cybersecurity
 
-<br/>
 
-<br/>
+
+
+
 Our technical report provides an overview of the relevant parts of an ML lifecycle--selecting the right problem, the right data, and the right math and summarizing the model output for consumption--as well as questions that relate to those areas of focus.
-<br/>
+
 
 
 #### [Source](https://insights.sei.cmu.edu/blog/machine-learning-cybersecurity-2019/)

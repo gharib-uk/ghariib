@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20194 Release Xfce Gnome GTK3 Kali-Undercover Kali-Docs KeX PowerShell Public Packaging
-https://www.kali.org/blog/kali-linux-2019-4-release/images/kali-2019.4-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2019-4-release/images/kali-2019.4-release.jpg
+
+
+
 Time to grab yourself a drink, this will take a while! We are incredibly excited to announce our fourth and final release of 2019, Kali Linux 2019.4, which is available immediately for download. 2019.4 includes some exciting new updates: A new default desktop environment, Xfce New GTK3 theme (for Gnome and Xfce) Introduction of &ldquo;Kali
-<br/>
+
 Time to grab yourself a drink, this will take a while!
 
 [![](https://www.kali.org/blog/kali-linux-2019-4-release/images/kali-preview-boot.gif)](https://www.kali.org/blog/kali-linux-2019-4-release/images/kali-preview-boot.gif)

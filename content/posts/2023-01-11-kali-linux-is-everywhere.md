@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux is Everywhere
-https://www.kali.org/blog/kali-linux-is-everywhere/images/kali-everywhere-banner.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-is-everywhere/images/kali-everywhere-banner.jpg
+
+
+
 One of the primary goals of Kali Linux is to put the tools you need as close to you as possible. Over the years this has resulted in a number of different ways to get Kali, but not everyone knows about all the options! In this post we are going
-<br/>
+
 One of the primary goals of Kali Linux is to put the tools you need as close to you as possible. Over the years this has resulted in a number of different ways to get Kali, but not everyone knows about all the options! In this post we are going to do an overview of different options you have for running Kali, and where you can go for more information for each option.
 
 You should keep in mind as we review options what will be best for you, in your specific use case. What do you intend to use Kali for? Where will you be when you need access to Kali? One of the items that is unique to Kali is most instances are actually pretty short lived, and replaced often. For instance, in the penetration testing space it is considered best practice by many to wipe your install and start over with each new customer or assessment. On the other hand, there are instances of Kali that are around for a very long time; for instance, running scanning engines for enterprises.

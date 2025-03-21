@@ -6,11 +6,12 @@ type: posts
 ---
 # Flock Private Contact and Calendar Cloud Sync
 
-<br/>
 
-<br/>
+
+
+
  At Open Whisper Systems, we believe users should have both privacy and powerful services. Today we’re releasing Flock, a private cloud sync service for your personal data. Your contacts and calendars belong to you. So does
-<br/>
+
 At Open Whisper Systems, we believe users should have both privacy and powerful services. Today we’re releasing [Flock](https://play.google.com/store/apps/details?id=org.anhonesteffort.flock), a private cloud sync service for your personal data.
 
 Your contacts and calendars belong to you. So does your privacy. Flock makes it possible to have both.

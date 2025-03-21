@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Finding Packages for Kali Linux
-https://www.kali.org/blog/finding-packages-for-kali-linux/images/kali-advanced-package-management-2.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/finding-packages-for-kali-linux/images/kali-advanced-package-management-2.jpg
+
+
+
 In an earlier post, we covered Package Management in Kali Linux. With the ease of installation that APT provides, we have the choice amongst tens of thousands of packages but the downside is, we have tens of thousands of packages. Finding out what packages are available and finding the one(s)
-<br/>
+
 In an earlier post, we covered [Package Management in Kali Linux](https://www.kali.org/blog/advanced-package-management-in-kali-linux/). With the ease of installation that APT provides, we have the choice amongst tens of thousands of packages but the downside is, we have tens of thousands of packages. Finding out what packages are available and finding the one(s) we want can be a daunting task, particularly for newcomers to Linux. In this post, we will cover three utilities that can be used to search through the haystack and help you take advantage of the vast Open-source ecosystem.
 
 ### apt-cache

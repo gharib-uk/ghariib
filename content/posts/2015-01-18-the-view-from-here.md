@@ -6,11 +6,12 @@ type: posts
 ---
 # The View From here
 
-<br/>
 
-<br/>
+
+
+
  Winter Break Of Code, Day 6 I’ve been working with Open Whisper Systems on TextSecure for about a year and a half. I feel like I’ve earned better treatment than being forced to blog at knifepoint,
-<br/>
+
 _Winter Break Of Code, Day 6_
 
 I’ve been working with Open Whisper Systems on TextSecure for about a year and a half. I feel like I’ve earned better treatment than being forced to blog at knifepoint, but here we are, so I’ll tell my story.

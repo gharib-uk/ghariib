@@ -6,11 +6,12 @@ type: posts
 ---
 # Splunk and GreyNoise Integration Discovering Hidden Insights through Feeds and Dashboards
 
-<br/>
 
-<br/>
+
+
+
 In this blog you'll discover powerful and practical ways to leverage GreyNoise data inside your Splunk environment right now.
-<br/>
+
 In this blog you'll discover powerful and practical ways to leverage GreyNoise data inside your Splunk environment right now.
 
 #### [Source](https://www.greynoise.io/blog/splunk-and-greynoise-integration-discovering-hidden-insights-through-feeds-and-dashboards)

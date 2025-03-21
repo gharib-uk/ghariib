@@ -6,11 +6,12 @@ type: posts
 ---
 # A new platform is calling Help us test one-to-one voice and video conversations on Signal Desktop
 
-<br/>
 
-<br/>
+
+
+
  Update: This feature is now available in production. The latest beta release of Signal Desktop includes preliminary support for one-to-one voice and video calls. Call your friends and family on macOS, Windows, and Linux; see
-<br/>
+
 ![Screenshot of a video call on Signal Desktop.](/blog/images/desktop-calling-preview-header.jpg)
 
 **Update:** This feature is now available in production.

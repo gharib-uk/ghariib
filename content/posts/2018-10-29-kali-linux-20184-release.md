@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20184 Release
-https://www.kali.org/blog/kali-linux-2018-4-release/images/kali-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2018-4-release/images/kali-release.jpg
+
+
+
 Welcome to our fourth and final release of 2018, Kali Linux 2018.4, which is available for immediate download. This release brings our kernel up to version 4.18.10, fixes numerous bugs, includes many updated packages, and a very experimental 64-bit Raspberry Pi 3 image. New Tools and Tool Upgrades We have only added
-<br/>
+
 Welcome to our fourth and final release of 2018, Kali Linux 2018.4, which is available for immediate [download](https://www.kali.org/get-kali/). This release brings our kernel up to version 4.18.10, fixes numerous bugs, includes many updated packages, and a **very experimental** 64-bit Raspberry Pi 3 image.
 
 ### New Tools and Tool Upgrades

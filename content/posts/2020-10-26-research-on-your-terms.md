@@ -6,11 +6,12 @@ type: posts
 ---
 # Research on your terms
 
-<br/>
 
-<br/>
+
+
+
  Signal has always benefitted from our engaged and supportive community, and wouldn’t be what it is without your input and feedback. As the number of people using Signal has grown, so have our efforts
-<br/>
+
 ![An illustration of circles and chat bubbles.](/blog/images/research-header.png)
 
 Signal has always benefitted from our engaged and supportive community, and wouldn’t be what it is without your input and feedback. As the number of people using Signal has grown, so have our efforts to keep pace with what people expect from a messaging app, and where we might find new opportunities for Signal.

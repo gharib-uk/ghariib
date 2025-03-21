@@ -6,11 +6,12 @@ type: posts
 ---
 # Encrypted profiles for Signal now in public beta
 
-<br/>
 
-<br/>
+
+
+
  The latest Signal beta for Android and iOS introduces support for Signal Profiles. Profiles allow you to add a picture and display name that will be shown alongside your existing phone number when communicating with
-<br/>
+
 ![Signal Profile being cropped](/blog/images/signal-profile-beta-1.jpg)
 
 The latest Signal beta for Android and iOS introduces support for Signal Profiles.

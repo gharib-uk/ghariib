@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # The Kali Linux Certified Professional
-https://www.kali.org/blog/introducing-kali-linux-certified-professional/images/kali-certified-professional-4-1.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/introducing-kali-linux-certified-professional/images/kali-certified-professional-4-1.jpg
+
+
+
 Introducing the KLCP Certification After almost two years in the making, it is with great pride that we announce today our new Kali Linux Professional certification - the first and only official certification program that validates one&rsquo;s proficiency with the Kali Linux distribution. If you&rsquo;re new to the information security field, or
-<br/>
+
 Introducing the KLCP Certification
 ----------------------------------
 

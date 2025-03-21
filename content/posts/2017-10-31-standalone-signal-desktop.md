@@ -6,11 +6,12 @@ type: posts
 ---
 # Standalone Signal Desktop
 
-<br/>
 
-<br/>
+
+
+
  Signal Desktop is now available in a new, standalone form, and the Chrome App has been deprecated. Read more... 
-<br/>
+
 ![Standalone version of Signal running on a laptop.](/blog/images/standalone-signal-desktop.png)
 
 Signal Desktop is [now available](/download/) in a new, standalone form, and the [Chrome App](https://developer.chrome.com/apps/about_apps) has been deprecated.

@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20191 Release
-https://www.kali.org/blog/kali-linux-2019-1-release/images/kali-release-2019.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2019-1-release/images/kali-release-2019.jpg
+
+
+
 Welcome to our first release of 2019, Kali Linux 2019.1, which is available for immediate download. This release brings our kernel up to version 4.19.13, fixes numerous bugs, and includes many updated packages. Tool Upgrades The big marquee update of this release is the update of Metasploit to version 5.0, which is
-<br/>
+
 Welcome to our first release of 2019, Kali Linux 2019.1, which is available for immediate [download](https://www.kali.org/get-kali/). This release brings our kernel up to version 4.19.13, fixes numerous bugs, and includes many updated packages.
 
 ### Tool Upgrades

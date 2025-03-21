@@ -6,11 +6,12 @@ type: posts
 ---
 # Desktop support comes to Signal for iPhone
 
-<br/>
 
-<br/>
+
+
+
  The latest Signal for iPhone release now includes multi-device support, allowing you to seamlessly move your private messaging experience from your iPhone to your desktop computer and back. Once you’ve linked a desktop client from
-<br/>
+
 ![Signal Desktop, OSX Theme](/blog/images/signal-desktop-ios.jpg)
 
 The latest Signal for iPhone release now includes multi-device support, allowing you to seamlessly move your private messaging experience from your iPhone to your desktop computer and back. Once you’ve linked a desktop client from within the Signal iPhone app, you can switch to the desktop at any time, whether your phone is online or not.

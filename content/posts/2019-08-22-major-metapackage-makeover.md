@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Major Metapackage Makeover
-https://www.kali.org/blog/major-metapackage-makeover/images/refreshing-kali-metapackages-1.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/major-metapackage-makeover/images/refreshing-kali-metapackages-1.jpg
+
+
+
 With our 2019.3 Kali release imminent, we wanted to take a quick moment to discuss one of our more significant upcoming changes: our selection of metapackages. These alterations are designed to optimize Kali, reduce ISO size, and better organize metapackages as we continue to grow. Before we get into what&rsquo;s new,
-<br/>
+
 With our 2019.3 Kali release imminent, we wanted to take a quick moment to discuss one of our more significant upcoming changes: our selection of metapackages. These alterations are designed to optimize Kali, reduce ISO size, and better organize metapackages as we continue to grow.
 
 Before we get into what’s new, let’s briefly recap what a metapackage is. A metapackage is a package that does not contain any tools itself, but rather is a dependency list of normal packages (or other metapackages). This allows us to group related tools together. For instance, if you want to be able to access every wireless tool, simply install the `kali-tools-wireless` metapackage. This will obtain all wireless tools in one download. As always, you can access the full list of metapackages available in Kali on [kali.org/docs/general-use/metapackages/](https://www.kali.org/docs/general-use/metapackages/). If you prefer to use the command line, the following command will list out the packages that will be installed via a specific metapackage:

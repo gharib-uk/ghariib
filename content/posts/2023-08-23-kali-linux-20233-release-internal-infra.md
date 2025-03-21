@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20233 Release Internal Infrastructure Kali Autopilot
-https://www.kali.org/blog/kali-linux-2023-3-release/images/banner-2023.3-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2023-3-release/images/banner-2023.3-release.jpg
+
+
+
 Today we are delighted to introduce our latest release of Kali, 2023.3. This release blog post does not have the most features in it, as a lot of the changes have been behind-the-scenes, which brings a huge benefit to us and an indirect positive effect to you as end-users. It
-<br/>
+
 Today we are delighted to introduce our latest [release of Kali](https://www.kali.org/releases/), 2023.3. This release blog post does not have the most features in it, as a lot of the changes have been behind-the-scenes, which brings a huge benefit to us and an indirect positive effect to you as end-users. It always goes without saying, but there are a number of new packages and tools as well as the standard updates. If you want to see what’s new for yourself [download](https://www.kali.org/get-kali/) or [upgrade _if you have an existing Kali Linux installation_](https://www.kali.org/docs/general-use/updating-kali/).
 
 The highlights of the [changelog](https://bugs.kali.org/changelog_page.php) since the [2023.2 release from May](https://www.kali.org/blog/kali-linux-2023-2-release/):

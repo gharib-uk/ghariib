@@ -6,11 +6,12 @@ type: posts
 ---
 # Skiffcom Emails Various Privacy Failures
 
-<br/>
 
-<br/>
+
+
+
 I came across Skiff.com on a Hacker News submission. They claim to provide a “Privacy-first end-to-end encrypted email” service. As the author of the Email Privacy Tester I like to test email providers and clients when I first come across them. A Bad Default One of the first things I noticed after
-<br/>
+
 I came across [Skiff.com](https://skiff.com/) on a [Hacker News submission](https://news.ycombinator.com/item?id=37229270). They claim to provide a “Privacy-first end-to-end encrypted email” service. As the author of the [Email Privacy Tester](https://www.emailprivacytester.com) I like to test email providers and clients when I first come across them.
 
 ### A Bad Default

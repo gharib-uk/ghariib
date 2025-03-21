@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Forums Refresh
-https://www.kali.org/blog/forums-refresh/images/new-forums-discourse.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/forums-refresh/images/new-forums-discourse.jpg
+
+
+
 Over the past year we have been hard at work on refreshing the Kali Forums, and today we are proud to announce the official launch. We have taken what we have learnt over the years decades, and created a new home from scratch. At the same time, we are welcoming a
-<br/>
+
 Over the past year we have been hard at work on refreshing the [Kali Forums](http://forums.kali.org/), and today we are proud to announce the official launch. We have taken what we have learnt over the years decades, and created a new home from scratch.
 
 At the same time, we are welcoming a new team of community moderators who have been helping us over on [Discord](https://discord.kali.org/). Before you go check it out, lets first take a look at why we are doing this.

@@ -6,11 +6,12 @@ type: posts
 ---
 # Bubba AI Inc Is launching Comp AI To Help 100000 Startups Get SOC 2 Compliant By 2032
 
-<br/>
 
-<br/>
 
-<br/>
+
+
+
+
 
 
 #### [Source](https://hackernoon.com/bubba-ai-inc-is-launching-comp-ai-to-help-100000-startups-get-soc-2-compliant-by-2032?source=rss)

@@ -6,11 +6,12 @@ type: posts
 ---
 # Roosters and a mountain of design
 
-<br/>
 
-<br/>
+
+
+
  Winter Break of Code, Day One The Winter Break of Code, being closely linked by name to the season of Winter, began with a calm trickle of ex{hausted,cited} people carrying laptops and cell phone collections
-<br/>
+
 _Winter Break of Code, Day One_
 
 ![The pier at Hanalei Bay, island of Kauai](/blog/images/jake-wboc-pier.jpg)

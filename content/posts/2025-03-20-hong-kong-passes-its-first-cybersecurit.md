@@ -6,11 +6,12 @@ type: posts
 ---
 # Hong Kong passes its first cybersecurity bill covering critical infrastructure
 
-<br/>
 
-<br/>
+
+
+
 Lo Hoi-ying reports: Hong Kong’s legislature has approved the city’s first bill targeted at cybersecurity for computer systems needed for critical infrastructure, with operators facing fines of up to HK$5 million (US$643,000) for failing to keep them up to date. The Legislative Council on Wednesday passed the Protection of Critical
-<br/>
+
 Lo Hoi-ying reports: Hong Kong’s legislature has approved the city’s first bill targeted at cybersecurity for computer systems needed for critical infrastructure, with operators facing fines of up to HK$5 million (US$643,000) for failing to keep them up to date. The Legislative Council on Wednesday passed the Protection of Critical Infrastructure (Computer System) Bill amid...
 
 #### [Source](https://databreaches.net/2025/03/20/hong-kong-passes-its-first-cybersecurity-bill-covering-critical-infrastructure/)

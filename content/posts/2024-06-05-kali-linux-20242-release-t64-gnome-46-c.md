@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Kali Linux 20242 Release t64 GNOME 46 Community Packages
-https://www.kali.org/blog/kali-linux-2024-2-release/images/banner-2024.2-release.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/kali-linux-2024-2-release/images/banner-2024.2-release.jpg
+
+
+
  A little later than usual, but Kali 2024.2 is here! The delay has been due to changes under the hood to make this happen, which is where a lot of focus has been. The community has helped out a huge amount, and this time they&rsquo;ve not only been adding new
-<br/>
+
 A little later than usual, but Kali 2024.2 is here! The delay has been due to changes under the hood to make this happen, which is where a lot of focus has been. The community has helped out a huge amount, and this time they’ve not only been adding new packages, but updating and fixing bugs too! If you are reading this, Kali 2024.2 is finally ready to be [downloaded](https://www.kali.org/get-kali/) or [upgraded _if you have an existing Kali Linux installation_](https://www.kali.org/docs/general-use/updating-kali/).
 
 The summary of the [changelog](https://bugs.kali.org/changelog_page.php) since the [2024.1 release from February](https://www.kali.org/blog/kali-linux-2024-1-release/) is:

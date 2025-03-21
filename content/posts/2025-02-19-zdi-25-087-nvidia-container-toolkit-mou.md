@@ -6,11 +6,12 @@ type: posts
 ---
 # ZDI-25-087 NVIDIA Container Toolkit mount_files Time-Of-Check Time-Of-Use Race Condition Privilege Escalation Vulnerability
 
-<br/>
 
-<br/>
+
+
+
 This vulnerability allows remote attackers to escalate privileges on affected installations of NVIDIA Container Toolkit. An attacker must first obtain the ability to execute code within a container in order to exploit this vulnerability. The ZDI has assigned a CVSS rating of 9.0. The following CVEs are assigned: CVE-2025-23359.
-<br/>
+
 This vulnerability allows remote attackers to escalate privileges on affected installations of NVIDIA Container Toolkit. An attacker must first obtain the ability to execute code within a container in order to exploit this vulnerability. The ZDI has assigned a CVSS rating of 9.0. The following CVEs are assigned: CVE-2025-23359.
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-087/)

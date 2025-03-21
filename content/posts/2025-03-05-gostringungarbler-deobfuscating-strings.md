@@ -6,11 +6,12 @@ type: posts
 ---
 # GoStringUngarbler Deobfuscating Strings in Garbled Binaries
 
-<br/>
 
-<br/>
+
+
+
 Written by: Chuong Dong Overview In our day-to-day work, the FLARE team often encounters malware written in Go that is protected using garble. While recent advancements in Go analysis from tools like IDA Pro have simplified the analysis process, garble presents a set of unique challenges, including stripped binaries, function name mangling,
-<br/>
+
 Written by: Chuong Dong
 
 * * *
@@ -26,7 +27,7 @@ We're also introducing GoStringUngarbler, a command-line tool written in Python 
 
 aside\_block
 
-<ListValue: \[StructValue(\[('title', 'Get GoStringUngarbler!'), ('body', <wagtail.rich\_text.RichText object at 0x3e9763049310>), ('btn\_text', 'Download now'), ('href', 'https://github.com/mandiant/gostringungarbler'), ('image', None)\])\]>
+<ListValue: \[StructValue(\[('title', 'Get GoStringUngarbler!'), ('body', <wagtail.rich\_text.RichText object at 0x3e97385ccca0>), ('btn\_text', 'Download now'), ('href', 'https://github.com/mandiant/gostringungarbler'), ('image', None)\])\]>
 
 Garble Obfuscating Compiler
 ---------------------------

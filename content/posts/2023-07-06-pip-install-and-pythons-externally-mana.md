@@ -5,12 +5,13 @@ draft: false
 type: posts
 ---
 # Pip install and Pythons externally managed
-https://www.kali.org/blog/python-externally-managed/images/banner-python-externally-managed.jpg
-<br/>
 
-<br/>
+https://www.kali.org/blog/python-externally-managed/images/banner-python-externally-managed.jpg
+
+
+
 TL;DR: pip install is on the way out. Installing Python packages must be done via APT, aka. Kali Linux&rsquo;s package manager. Python packages coming from other sources should be installed in virtual environments. Long story below. Some background Back in February this year, for a few days, some of you might have tried
-<br/>
+
 TL;DR: `pip install` is on the way out. Installing Python packages must be done via APT, aka. Kali Linux’s package manager. Python packages coming from other sources should be installed in virtual environments.
 
 Long story below.
