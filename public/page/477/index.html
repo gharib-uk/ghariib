@@ -40,11 +40,113 @@
 		
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/massive-celeb-leak-brings-icloud-security-into-question/">Massive Celeb Leak Brings iCloud Security Into Question</a></h1>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-31-kubeadm-v1beta4/">Kubernetes v1.31: kubeadm v1beta4</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>So this leak has caused quite a furore, normally I don’t pay attention to this stuff – but hey it’s JLaw and it’s a LOT of celebs at the same time – which indicates some kind of underlying problem. The massive list of over 100 celebs was posted originally on 4chan (of course) by an […]</p>
+		<p>As part of the Kubernetes v1.31 release, <code>kubeadm</code> is adopting a new (v1beta4) version of its configuration file format. Configuration in the previous v1beta3 format is now formally deprecated, which means it&rsquo;s supported but you should migrate to v1beta4 and stop using the deprecated format. Support for v1beta3 configuration will be removed after a minimum of 3 Kubernetes minor releases.</p>
+<p>In this article, I&rsquo;ll walk you through key changes; I&rsquo;ll explain about the kubeadm v1beta4 configuration format, and how to migrate from v1beta3 to v1beta4.</p>
+		
+			<a href="https://ghariib.ir/posts/kubernetes-v1-31-kubeadm-v1beta4/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-31-new-kubernetes-cpumanager-static-policy-distribute-cpus-across-cores/">Kubernetes v1.31: New Kubernetes CPUManager Static Policy: Distribute CPUs Across Cores</a></h1>
+	<b><time>02.01.2025 00:00</time></b>
+	
+	<div>
+		<p>In Kubernetes v1.31, we are excited to introduce a significant enhancement to CPU management capabilities: the <code>distribute-cpus-across-cores</code> option for the CPUManager static policy. This feature is currently in alpha and hidden by default, marking a strategic shift aimed at optimizing CPU utilization and improving system performance across multi-core processors.</p>
+<h2 id="understanding-the-feature">Understanding the feature</h2>
+<p>Traditionally, Kubernetes&rsquo; CPUManager tends to allocate CPUs as compactly as possible, typically packing them onto the fewest number of physical cores. However, allocation strategy matters, CPUs on the same physical host still share some resources of the physical core, such as the cache and execution units, etc.</p>
+		
+			<a href="https://ghariib.ir/posts/kubernetes-v1-31-new-kubernetes-cpumanager-static-policy-distribute-cpus-across-cores/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-adds-a-new-cpu-manager-static-policy-option-for-strict-cpu-reservation/">Kubernetes v1.32 Adds A New CPU Manager Static Policy Option For Strict CPU Reservation</a></h1>
+	<b><time>02.01.2025 00:00</time></b>
+	
+	<div>
+		<p>In Kubernetes v1.32, after years of community discussion, we are excited to introduce a <code>strict-cpu-reservation</code> option for the CPU Manager static policy. This feature is currently in alpha, with the associated policy hidden by default. You can only use the policy if you explicitly enable the alpha behavior in your cluster.</p>
+<h2 id="understanding-the-feature">Understanding the feature</h2>
+<p>The CPU Manager static policy is used to reduce latency or improve performance. The <code>reservedSystemCPUs</code> defines an explicit CPU set for OS system daemons and kubernetes system daemons. This option is designed for Telco/NFV type use cases where uncontrolled interrupts/timers may impact the workload performance. you can use this option to define the explicit cpuset for the system/kubernetes daemons as well as the interrupts/timers, so the rest CPUs on the system can be used exclusively for workloads, with less impact from uncontrolled interrupts/timers. More details of this parameter can be found on the Explicitly Reserved CPU List page.</p>
+		
+			<a href="https://ghariib.ir/posts/kubernetes-v1-32-adds-a-new-cpu-manager-static-policy-option-for-strict-cpu-reservation/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-sneak-peek/">Kubernetes v1.32 sneak peek</a></h1>
+	<b><time>02.01.2025 00:00</time></b>
+	
+	<div>
+		<p>As we get closer to the release date for Kubernetes v1.32, the project develops and matures. Features may be deprecated, removed, or replaced with better ones for the project&rsquo;s overall health.</p>
+<p>This blog outlines some of the planned changes for the Kubernetes v1.32 release, that the release team feels you should be aware of, for the continued maintenance of your Kubernetes environment and keeping up to date with the latest changes. Information listed below is based on the current status of the v1.32 release and may change before the actual release date.</p>
+		
+			<a href="https://ghariib.ir/posts/kubernetes-v1-32-sneak-peek/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-memory-manager-goes-ga/">Kubernetes v1.32: Memory Manager Goes GA</a></h1>
+	<b><time>02.01.2025 00:00</time></b>
+	
+	<div>
+		<p>With Kubernetes 1.32, the memory manager has officially graduated to General Availability (GA), marking a significant milestone in the journey toward efficient and predictable memory allocation for containerized applications. Since Kubernetes v1.22, where it graduated to beta, the memory manager has proved itself reliable, stable and a good complementary feature for the CPU Manager.</p>
+<p>As part of kubelet&rsquo;s workload admission process, the memory manager provides topology hints to optimize memory allocation and alignment. This enables users to allocate exclusive memory for Pods in the Guaranteed QoS class. More details about the process can be found in the memory manager goes to beta blog.</p>
+		
+			<a href="https://ghariib.ir/posts/kubernetes-v1-32-memory-manager-goes-ga/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-penelope/">Kubernetes v1.32: Penelope</a></h1>
+	<b><time>02.01.2025 00:00</time></b>
+	
+	<div>
+		<p><strong>Editors:</strong> Matteo Bianchi, Edith Puclla, William Rizzo, Ryota Sawada, Rashan Smith</p>
+<p>Announcing the release of Kubernetes v1.32: Penelope!</p>
+<p>In line with previous releases, the release of Kubernetes v1.32 introduces new stable, beta, and alpha features. The consistent delivery of high-quality releases underscores the strength of our development cycle and the vibrant support from our community. This release consists of 44 enhancements in total. Of those enhancements, 13 have graduated to Stable, 12 are entering Beta, and 19 have entered in Alpha.</p>
+		
+			<a href="https://ghariib.ir/posts/kubernetes-v1-32-penelope/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-queueinghint-brings-a-new-possibility-to-optimize-pod-scheduling/">Kubernetes v1.32: QueueingHint Brings a New Possibility to Optimize Pod Scheduling</a></h1>
+	<b><time>02.01.2025 00:00</time></b>
+	
+	<div>
+		<p>The Kubernetes scheduler is the core component that selects the nodes on which new Pods run. The scheduler processes these new Pods <strong>one by one</strong>. Therefore, the larger your clusters, the more important the throughput of the scheduler becomes.</p>
+<p>Over the years, Kubernetes SIG Scheduling has improved the throughput of the scheduler in multiple enhancements. This blog post describes a major improvement to the scheduler in Kubernetes v1.32: a scheduling context element named <em>QueueingHint</em>. This page provides background knowledge of the scheduler and explains how QueueingHint improves scheduling throughput.</p>
+		
+			<a href="https://ghariib.ir/posts/kubernetes-v1-32-queueinghint-brings-a-new-possibility-to-optimize-pod-scheduling/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/lateral-movement-visual-studio-dte/">Lateral Movement – Visual Studio DTE</a></h1>
+	<b><time>02.01.2025 00:00</time></b>
+	
+	<div>
+		<p>A lot of organizations have some sort of application development program and it is highly likely that developers will utilize Visual Studio for their development…</p>
+<p>Continue reading → Lateral Movement – Visual Studio DTE</p>
 <p>Go to Source</p>
 		
 	</div>
@@ -52,121 +154,34 @@
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/master-incident-response-with-hands-on-training-in-ir-200-foundational-incident-response/">Master Incident Response with Hands-On Training in IR-200: Foundational Incident Response</a></h1>
+	<h1><a href="https://ghariib.ir/posts/life-at-canonical-victoria-antipovas-perspective-as-a-new-joiner-in-product-marketing/">Life at Canonical: Victoria Antipova’s perspective as a new joiner in Product Marketing</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>OffSec is excited to announce the immediate availability of a new course: IR-200: Foundational Incident Response.</p>
-<p>The post Master Incident Response with Hands-On Training in IR-200: Foundational Incident Response appeared first on OffSec.</p>
-<p>Go to Source</p>
+		<p>Canonical is continuously hiring new talent. Being a remote- first company, Canonical’s new joiners receive a unique onboarding experience. In their first weeks, they are introduced to the different departments and the various tools they use to work asynchronously across the globe. New hires develop a good understanding of the open-source technologies that the company deploys and supports such as Openstack, Kubernetes, Kubeflow and OpenSearch – in addition of course to Ubuntu, the world’s most famous OS, which they install on their laptops. </p>
+		
+			<a href="https://ghariib.ir/posts/life-at-canonical-victoria-antipovas-perspective-as-a-new-joiner-in-product-marketing/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/matrix-breakout-2-morpheus/">Matrix-Breakout: 2 Morpheus</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>This is the second in the Matrix-Breakout series, subtitled Morpheus:1. It’s themed as a throwback to the first Matrix movie. You play Trinity, trying to investigate a computer on the Nebuchadnezzar that Cypher has locked everyone else out from, which holds the key to a mystery.</p>
-<p>VulnHub</p>
-<p>Go to Source</p>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/maximizing-value-with-kubernetes-as-a-product-fulfilling-the-promise-of-the-cloud-giant-swarm/">Maximizing value with Kubernetes-as-a-Product: fulfilling the promise of the cloud » Giant Swarm</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>The cloud and DevOps promised to make our infrastructure faster, cheaper and easier. However, in many organizations, this promise, unfortunately, fell short. Engineering teams find themselves trapped in a cycle of duplicating infrastructure, agonizing over the tools and components for each &lsquo;unique&rsquo; use case, grappling with security concerns, and ultimately navigating the complex realm of operations. In some cases, disillusioned organizations are even retracting workloads from the cloud – a scenario exemplified by the well-known case of 37Signals.</p>
-		
-			<a href="https://ghariib.ir/posts/maximizing-value-with-kubernetes-as-a-product-fulfilling-the-promise-of-the-cloud-giant-swarm/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/meet-orbit-mozillas-ai-assistant-extension-for-firefox/">Meet Orbit, Mozilla’s AI Assistant Extension for Firefox</a></h1>
+	<h1><a href="https://ghariib.ir/posts/light-brite-turned-sci-fi-console-on-the-cheap/">Light Brite Turned Sci-Fi Console on the Cheap</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
 		<p>
 <figure>
-  <img src="https://i0.wp.com/www.omgubuntu.co.uk/wp-content/uploads/2024/12/orbit-extension-for-firefox.jpg?resize=406%2C232&amp;ssl=1" alt="" />
+  <img src="https://hackaday.com/wp-content/uploads/2025/01/briteprop_feat.jpg?w=800" alt="" />
 </figure>
 
 
-Orbit by Mozilla is a new AI-powered assistant for the Firefox web browser that makes summarising web content while you browse as easy as clicking a button. After all, why read an article to understand what it says when you can read an AI summary rephrasing the article instead? ;) Mozilla’s AI assistant Orbit is currently a beta product and available to install from the Firefox add-ons site where the extension, which works on Firefox for Windows, macOS, and Linux, is pitched thus: Orbit empowers you to stay informed and efficient by delivering the information you need in a condensed […]</p>
+</p>
+<p>Generally, the projects featured on Hackaday actually <em>do</em> something. We won’t go as far as to say they are practical creations, but they usually have some kind of function other than to sit there and blink. But what if just sitting still and blinking away randomly is precisely what you want a piece of hardware to do?</p>
+<p>That was exactly the goal when [createscifi] set out to dress a Lite Brite up as a futuristic prop. On a technical level, this project is pretty much as simple as it gets. But we appreciated seeing some of the techniques brought to bear on this project, and perhaps more importantly, really like the channel’s overall goal of creating affordable sci-fi props using common components. We don’t plan on filming our own space epic anytime soon…but we like to know the option is there.</p>
 		
-			<a href="https://ghariib.ir/posts/meet-orbit-mozillas-ai-assistant-extension-for-firefox/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/melissa-midzor-named-director-of-nists-communications-technology-laboratory/">Melissa Midzor Named Director of NIST’s Communications Technology Laboratory</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>The lab focuses on advancing communications technology through research and development in core network technologies, next-generation wireless systems, public safety communications, smart infrastructure and spectrum sharing.</p>
-<p>Go to Source</p>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/mental-toughness-in-cybersecurity-preparing-teams-for-high-pressure-situations/">Mental Toughness in Cybersecurity: Preparing Teams for High-Pressure Situations</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>Mental toughness helps cybersecurity teams improve decision-making, collaboration, and resilience, enabling them to perform under constant pressure.</p>
-<p>The post Mental Toughness in Cybersecurity: Preparing Teams for High-Pressure Situations appeared first on OffSec.</p>
-<p>Go to Source</p>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/microsoft-azure-web-application-firewall-waf-launched/">Microsoft Azure Web Application Firewall (WAF) Launched</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>Not too long after Amazon launched their cloud protection WAF the Microsoft Azure Web Application Firewall (WAF) has been made generally available in all public Azure DCs. It’s a good move with the majority of websites and services moving into one of the big 3 cloud providers (AWS, Google or Azure) and the vast majority […]</p>
-<p>Go to Source</p>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/microsoft-defender-for-cloud-named-a-leader-in-frost-radar-for-cnapp-for-the-second-year-in-a-row/">Microsoft Defender for Cloud named a Leader in Frost Radar™ for CNAPP for the second year in a row!</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>In the ever-evolving landscape of cloud security, Microsoft continues to assert its dominance with its comprehensive and innovative solutions. The <strong>Frost Radar™: Cloud-Native Application Protection Platforms, 2024</strong> report underscores Microsoft’s leadership in both – the innovation and growth index, highlighting several key strengths that set it apart from the competition. </p>
-<p>Frost and Sullivan states in its report, “<em>With significant investments in cloud security, a strong partner network, and strategic positioning as a multicloud security provider, Microsoft has a solid foundation for sustained growth in the next few years to maintain its lead in the cloud security industry as competition increases.”</em> </p>
-		
-			<a href="https://ghariib.ir/posts/microsoft-defender-for-cloud-named-a-leader-in-frost-radar-for-cnapp-for-the-second-year-in-a-row/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/minion-mozilla-security-testing-framework/">Minion – Mozilla Security Testing Framework</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>Minion is a security testing framework built by Mozilla to bridge the gap between developers and security testers. To do so, it enables developers to scan with a wide variety of security tools, using a simple HTML-based interface. It consists of three umbrella projects: Minion Frontend, a Python, angular.js, and Bootstrap-based website that provides a […]</p>
-<p>Go to Source</p>
+			<a href="https://ghariib.ir/posts/light-brite-turned-sci-fi-console-on-the-cheap/">Read more...</a>
 		
 	</div>
 </article>
@@ -176,7 +191,7 @@ Orbit by Mozilla is a new AI-powered assistant for the Firefox web browser that 
 
 	<a href="/page/476/">Previous Page</a>
 
-477 of 554
+477 of 556
 
 	<a href="/page/478/">Next Page</a>
 

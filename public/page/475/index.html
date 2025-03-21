@@ -40,148 +40,155 @@
 		
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-1-31-fine-grained-supplementalgroups-control/">Kubernetes 1.31: Fine-grained SupplementalGroups control</a></h1>
+	<h1><a href="https://ghariib.ir/posts/issue-with-data-all-multiple-cves/">Issue with data.all (Multiple CVEs)</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>This blog discusses a new feature in Kubernetes 1.31 to improve the handling of supplementary groups in containers within Pods.</p>
-<h2 id="motivation-implicit-group-memberships-defined-in-etcgroup-in-the-container-image">Motivation: Implicit group memberships defined in <code>/etc/group</code> in the container image</h2>
-<p>Although this behavior may not be popular with many Kubernetes cluster users/admins, kubernetes, by default, <em>merges</em> group information from the Pod with information defined in <code>/etc/group</code> in the container image.</p>
-<p>Let&rsquo;s see an example, below Pod specifies <code>runAsUser=1000</code>, <code>runAsGroup=3000</code> and <code>supplementalGroups=4000</code> in the Pod&rsquo;s security context.</p>
+		<p>**Publication Date: 2024/11/8 4:00 PM PDT<br>
+**</p>
+<p>Data.all is an open source development framework to help customers build a data marketplace on AWS.</p>
+<p>We have identified the following issues within data.all version 1.0.0 through 2.6.0. On November 8, 2024, we released a fix and recommend customers upgrade to version 2.6.1 or later and ensure any forked or derivative code are patched to incorporate the new fixes.</p>
+<ul>
+<li>CVE-2024-52311 relates to an issue where data.all does not invalidate authentication token upon user logout.</li>
+<li>CVE-2024-52312 relates to an issue where data.all authenticated users can perform restricted operations against DataSets and Environments.</li>
+<li>CVE-2024-52313 relates to an issue where data.all authenticated users can obtain incorrect object level authorizations.</li>
+<li>CVE-2024-52314 relates to an issue where data.all admin user may access potentially sensitive data stored by producers via logs.</li>
+<li>CVE-2024-10953 relates to an issue where data.all authenticated users can perform mutating update operations on persisted notification records.</li>
+</ul>
+<p>References:</p>
 		
-			<a href="https://ghariib.ir/posts/kubernetes-1-31-fine-grained-supplementalgroups-control/">Read more...</a>
+			<a href="https://ghariib.ir/posts/issue-with-data-all-multiple-cves/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-1-31-pod-failure-policy-for-jobs-goes-ga/">Kubernetes 1.31: Pod Failure Policy for Jobs Goes GA</a></h1>
+	<h1><a href="https://ghariib.ir/posts/issue-with-dynamodb-local-cve-2022-1471/">Issue with DynamoDB local - CVE-2022-1471</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>This post describes <em>Pod failure policy</em>, which graduates to stable in Kubernetes 1.31, and how to use it in your Jobs.</p>
-<h2 id="about-pod-failure-policy">About Pod failure policy</h2>
-<p>When you run workloads on Kubernetes, Pods might fail for a variety of reasons. Ideally, workloads like Jobs should be able to ignore transient, retriable failures and continue running to completion.</p>
-<p>To allow for these transient failures, Kubernetes Jobs include the <code>backoffLimit</code> field, which lets you specify a number of Pod failures that you&rsquo;re willing to tolerate during Job execution. However, if you set a large value for the <code>backoffLimit</code> field and rely solely on this field, you might notice unnecessary increases in operating costs as Pods restart excessively until the backoffLimit is met.</p>
+		<p><strong>Publication Date: 2024/12/11 2:00PM PST</strong></p>
+<p>AWS is aware of CVE-2022-1471 in SnakeYaml software, included in DynamoDB local jar and Docker distributions from version 1.21 and version 2.0. If leveraged, this issue could allow an actor to perform remote code execution using the SnakeYaml&rsquo;s Constructor(), as the software does not restrict the types that can be instantiated during deserialization. AWS has found no evidence that this issue has been leveraged, however, customers should still take action. On November 6, 2024, we released a fix for this issue. Customers should upgrade DynamoDB local to the latest version: v1.25.1 and above, or 2.5.3 and above.</p>
 		
-			<a href="https://ghariib.ir/posts/kubernetes-1-31-pod-failure-policy-for-jobs-goes-ga/">Read more...</a>
+			<a href="https://ghariib.ir/posts/issue-with-dynamodb-local-cve-2022-1471/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-1-31-streaming-transitions-from-spdy-to-websockets/">Kubernetes 1.31: Streaming Transitions from SPDY to WebSockets</a></h1>
+	<h1><a href="https://ghariib.ir/posts/issue-with-iam-supporting-multiple-mfa-devices/">Issue With IAM Supporting Multiple MFA Devices</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>In Kubernetes 1.31, by default kubectl now uses the WebSocket protocol instead of SPDY for streaming.</p>
-<p>This post describes what these changes mean for you and why these streaming APIs matter.</p>
-<h2 id="streaming-apis-in-kubernetes">Streaming APIs in Kubernetes</h2>
-<p>In Kubernetes, specific endpoints that are exposed as an HTTP or RESTful interface are upgraded to streaming connections, which require a streaming protocol. Unlike HTTP, which is a request-response protocol, a streaming protocol provides a persistent connection that&rsquo;s bi-directional, low-latency, and lets you interact in real-time. Streaming protocols support reading and writing data between your client and the server, in both directions, over the same connection. This type of connection is useful, for example, when you create a shell in a running container from your local workstation and run commands in the container.</p>
+		<p><strong>Initial Publication Date: 04/25/2023 10:00AM EST</strong></p>
+<p>A security researcher recently reported an issue with AWS’s recently-released (November 16th, 2022) support for multiple multi-factor authentication (MFA) devices for IAM user principals. The reported issue could have potentially arisen only when the following three conditions were met: (1) An IAM user had possession of long-term access key (AK)/secret key (SK) credentials, (2) that IAM user had the privilege to add an MFA to their own identity without using an MFA, and (3) that IAM user’s overall access privileges beyond console sign-in had been configured by an administrator to be greater after adding the MFA. Under those narrow conditions, possession of AK/SK alone was equivalent to possession of AK/SK and a previously configured MFA.</p>
 		
-			<a href="https://ghariib.ir/posts/kubernetes-1-31-streaming-transitions-from-spdy-to-websockets/">Read more...</a>
+			<a href="https://ghariib.ir/posts/issue-with-iam-supporting-multiple-mfa-devices/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-1-32-moving-volume-group-snapshots-to-beta/">Kubernetes 1.32: Moving Volume Group Snapshots to Beta</a></h1>
+	<h1><a href="https://ghariib.ir/posts/issue-with-nvidia-container-toolkit-cve-2024-0132-cve-2024-0133/">Issue with NVIDIA Container Toolkit (CVE-2024-0132, CVE-2024-0133)</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>Volume group snapshots were introduced as an Alpha feature with the Kubernetes 1.27 release. The recent release of Kubernetes v1.32 moved that support to <strong>beta</strong>. The support for volume group snapshots relies on a set of extension APIs for group snapshots. These APIs allow users to take crash consistent snapshots for a set of volumes. Behind the scenes, Kubernetes uses a label selector to group multiple PersistentVolumeClaims for snapshotting. A key aim is to allow you restore that set of snapshots to new volumes and recover your workload based on a crash consistent recovery point.</p>
+		<p>**Publication Date: 2024/10/01 6:35 PM PDT<br>
+**</p>
+<p>AWS is aware of CVE-2024-0132 and CVE-2024-0133, issues affecting the NVIDIA container toolkit 1.16. At this time, the following services require customer action. If we become aware of additional impact, we will update this bulletin.</p>
+<p>Amazon Elastic Container Service (Amazon ECS)</p>
+<p>Amazon ECS has released updated ECS GPU-optimized Amazon Machine Images (AMIs) with the patched NVIDIA container toolkit v1.16.2. We recommend that ECS customers update to these AMIs (or the latest available). Additional information on the ECS-optimized AMI is available at in our &ldquo;Amazon ECS-optimized Linux AMIs&rdquo; developer guide.</p>
 		
-			<a href="https://ghariib.ir/posts/kubernetes-1-32-moving-volume-group-snapshots-to-beta/">Read more...</a>
+			<a href="https://ghariib.ir/posts/issue-with-nvidia-container-toolkit-cve-2024-0132-cve-2024-0133/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-31-kubeadm-v1beta4/">Kubernetes v1.31: kubeadm v1beta4</a></h1>
+	<h1><a href="https://ghariib.ir/posts/issue-with-pytorch-torchserve-cve-2024-35198-cve-2024-35199/">Issue with PyTorch TorchServe - CVE-2024-35198, CVE-2024-35199</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>As part of the Kubernetes v1.31 release, <code>kubeadm</code> is adopting a new (v1beta4) version of its configuration file format. Configuration in the previous v1beta3 format is now formally deprecated, which means it&rsquo;s supported but you should migrate to v1beta4 and stop using the deprecated format. Support for v1beta3 configuration will be removed after a minimum of 3 Kubernetes minor releases.</p>
-<p>In this article, I&rsquo;ll walk you through key changes; I&rsquo;ll explain about the kubeadm v1beta4 configuration format, and how to migrate from v1beta3 to v1beta4.</p>
+		<p>**Publication Date: 2024/07/18 2:50 PM PDT<br>
+**</p>
+<p>AWS is aware of the issues described in CVE-2024-35198 and CVE-2024-35199 in PyTorch TorchServe versions 0.3.0 to 0.10.0. Customers using PyTorch inference Deep Learning Containers (DLC) through Amazon SageMaker are not affected.</p>
+<p>CVE-2024-35198 does not prevent a model from being downloaded into the model store if the URL contains characters such as &ldquo;..&rdquo; when TorchServe model registration API is called. Customers using PyTorch inference Deep Learning Containers (DLC) through Amazon SageMaker and Amazon Elastic Kubernetes Service (Amazon EKS) are not affected by this issue.</p>
 		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-31-kubeadm-v1beta4/">Read more...</a>
+			<a href="https://ghariib.ir/posts/issue-with-pytorch-torchserve-cve-2024-35198-cve-2024-35199/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-31-new-kubernetes-cpumanager-static-policy-distribute-cpus-across-cores/">Kubernetes v1.31: New Kubernetes CPUManager Static Policy: Distribute CPUs Across Cores</a></h1>
+	<h1><a href="https://ghariib.ir/posts/issue-with-redshift-jdbc-driver-python-connector-and-odbc-driver-cve-2024-12744-cve-2024-12745-cve-2024-12746/">Issue with RedShift JDBC Driver, Python Connector and ODBC Driver - (CVE-2024-12744, CVE-2024-12745, CVE-2024-12746)</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>In Kubernetes v1.31, we are excited to introduce a significant enhancement to CPU management capabilities: the <code>distribute-cpus-across-cores</code> option for the CPUManager static policy. This feature is currently in alpha and hidden by default, marking a strategic shift aimed at optimizing CPU utilization and improving system performance across multi-core processors.</p>
-<h2 id="understanding-the-feature">Understanding the feature</h2>
-<p>Traditionally, Kubernetes&rsquo; CPUManager tends to allocate CPUs as compactly as possible, typically packing them onto the fewest number of physical cores. However, allocation strategy matters, CPUs on the same physical host still share some resources of the physical core, such as the cache and execution units, etc.</p>
+		<p><strong>Publication Date: 2024/12/24 10:00AM PST</strong></p>
+<p>AWS has identified the following issues within the Amazon Redshift JDBC Driver, Amazon Redshift Python Connector, and Amazon Redshift ODBC Driver. On December 23, 2024, we released a fix and recommend customers upgrade to the latest version to address these issues.</p>
+<ul>
+<li>The Amazon Redshift JDBC Driver, version 2.1.0.31, is affected by CVE-2024-12744, a SQL injection issue when utilizing the getSchemas, getTables, or getColumns Metadata APIs. This issue has been addressed in driver version 2.1.0.32. We recommend customers upgrade to the driver version 2.1.0.32 or revert to driver version 2.1.0.30.</li>
+<li>The Amazon Redshift Python Connector, version 2.1.4, is affected by CVE-2024-12745, a SQL injection issue when utilizing the get_schemas, get_tables, or get_columns Metadata APIs. This issue has been addressed in driver version 2.1.5. We recommend customers upgrade to the driver version 2.1.5 or revert to driver version 2.1.3.</li>
+<li>The Amazon Redshift ODBC Driver, version v2.1.5.0 (Windows or Linux), is affected by CVE-2024-12746, a SQL injection issue when utilizing the SQLTables or SQLColumns Metadata APIs. This issue has been addressed in driver version 2.1.6.0. We recommend customers upgrade to the driver version 2.1.6.0 or revert to driver version 2.1.4.0.</li>
+</ul>
+<p><strong>Affected versions:</strong> Amazon Redshift JDBC Driver, version 2.1.0.31; Amazon Redshift Python Connector, version 2.1.4; Amazon Redshift ODBC Driver, version v2.1.5.0.</p>
 		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-31-new-kubernetes-cpumanager-static-policy-distribute-cpus-across-cores/">Read more...</a>
+			<a href="https://ghariib.ir/posts/issue-with-redshift-jdbc-driver-python-connector-and-odbc-driver-cve-2024-12744-cve-2024-12745-cve-2024-12746/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-adds-a-new-cpu-manager-static-policy-option-for-strict-cpu-reservation/">Kubernetes v1.32 Adds A New CPU Manager Static Policy Option For Strict CPU Reservation</a></h1>
+	<h1><a href="https://ghariib.ir/posts/jangow-1-0-1/">Jangow: 1.0.1</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>In Kubernetes v1.32, after years of community discussion, we are excited to introduce a <code>strict-cpu-reservation</code> option for the CPU Manager static policy. This feature is currently in alpha, with the associated policy hidden by default. You can only use the policy if you explicitly enable the alpha behavior in your cluster.</p>
-<h2 id="understanding-the-feature">Understanding the feature</h2>
-<p>The CPU Manager static policy is used to reduce latency or improve performance. The <code>reservedSystemCPUs</code> defines an explicit CPU set for OS system daemons and kubernetes system daemons. This option is designed for Telco/NFV type use cases where uncontrolled interrupts/timers may impact the workload performance. you can use this option to define the explicit cpuset for the system/kubernetes daemons as well as the interrupts/timers, so the rest CPUs on the system can be used exclusively for workloads, with less impact from uncontrolled interrupts/timers. More details of this parameter can be found on the Explicitly Reserved CPU List page.</p>
-		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-32-adds-a-new-cpu-manager-static-policy-option-for-strict-cpu-reservation/">Read more...</a>
+		<p>Difficulty: easy</p>
+<p>The secret to this box is enumeration! Inquiries <a href="mailto:jangow2021@gmail.com">jangow2021@gmail.com</a></p>
+<p>VulnHub</p>
+<p>Go to Source</p>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-sneak-peek/">Kubernetes v1.32 sneak peek</a></h1>
+	<h1><a href="https://ghariib.ir/posts/javascript-arithmetic-is-awful/">JavaScript arithmetic is awful</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>As we get closer to the release date for Kubernetes v1.32, the project develops and matures. Features may be deprecated, removed, or replaced with better ones for the project&rsquo;s overall health.</p>
-<p>This blog outlines some of the planned changes for the Kubernetes v1.32 release, that the release team feels you should be aware of, for the continued maintenance of your Kubernetes environment and keeping up to date with the latest changes. Information listed below is based on the current status of the v1.32 release and may change before the actual release date.</p>
-		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-32-sneak-peek/">Read more...</a>
+		<p>JavaScript arithmetic is awful</p>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-memory-manager-goes-ga/">Kubernetes v1.32: Memory Manager Goes GA</a></h1>
+	<h1><a href="https://ghariib.ir/posts/jsql-automatic-sql-injection-tool-in-java/">jSQL – Automatic SQL Injection Tool In Java</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>With Kubernetes 1.32, the memory manager has officially graduated to General Availability (GA), marking a significant milestone in the journey toward efficient and predictable memory allocation for containerized applications. Since Kubernetes v1.22, where it graduated to beta, the memory manager has proved itself reliable, stable and a good complementary feature for the CPU Manager.</p>
-<p>As part of kubelet&rsquo;s workload admission process, the memory manager provides topology hints to optimize memory allocation and alignment. This enables users to allocate exclusive memory for Pods in the Guaranteed QoS class. More details about the process can be found in the memory manager goes to beta blog.</p>
-		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-32-memory-manager-goes-ga/">Read more...</a>
+		<p>jSQL is an automatic SQL Injection tool written in Java, it’s lightweight and supports 23 kinds of database. It is free, open source and cross-platform (Windows, Linux, Mac OS X) and is easily available in Kali, Pentest Box, Parrot Security OS, ArchStrike or BlackArch Linux. Features of jSQL Java SQL Injection Tool Automatic injection of […]</p>
+<p>Go to Source</p>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-penelope/">Kubernetes v1.32: Penelope</a></h1>
+	<h1><a href="https://ghariib.ir/posts/jumpstart-gitops-with-image-mode/">Jumpstart GitOps with image mode</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p><strong>Editors:</strong> Matteo Bianchi, Edith Puclla, William Rizzo, Ryota Sawada, Rashan Smith</p>
-<p>Announcing the release of Kubernetes v1.32: Penelope!</p>
-<p>In line with previous releases, the release of Kubernetes v1.32 introduces new stable, beta, and alpha features. The consistent delivery of high-quality releases underscores the strength of our development cycle and the vibrant support from our community. This release consists of 44 enhancements in total. Of those enhancements, 13 have graduated to Stable, 12 are entering Beta, and 19 have entered in Alpha.</p>
+		<p>A year ago, I was introduced to image mode for Red Hat Enterprise Linux (RHEL). That introduction brought me back together with some folks I’d worked with in Project Atomic, and it proved that you could orchestrate the complete build and automation of an operating system using application pipelines. Finally, sysadmins can take advantage of the same build tools developers have.Image mode for RHEL enables you to use container tools to assemble operating system artifacts. GitHub happens to have all the required tooling: source control, a built-in container registry and pipeline tools in the for</p>
 		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-32-penelope/">Read more...</a>
+			<a href="https://ghariib.ir/posts/jumpstart-gitops-with-image-mode/">Read more...</a>
 		
 	</div>
 </article>
@@ -191,7 +198,7 @@
 
 	<a href="/page/474/">Previous Page</a>
 
-475 of 554
+475 of 556
 
 	<a href="/page/476/">Next Page</a>
 
