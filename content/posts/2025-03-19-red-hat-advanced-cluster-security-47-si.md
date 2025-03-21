@@ -16,5 +16,3 @@ Today, ensuring the security and integrity of your software supply chain is more
 
 #### [Source](https://www.redhat.com/en/blog/red-hat-advanced-cluster-security-47-simplifies-management-enhances-workflows-and-generates-sboms)
 
-<br/>
----

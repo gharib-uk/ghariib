@@ -18,5 +18,3 @@ The post [Rethinking remote assistance security in a Zero Trust world](https://w
 
 #### [Source](https://www.microsoft.com/en-us/security/blog/2025/02/26/rethinking-remote-assistance-security-in-a-zero-trust-world/)
 
-<br/>
----

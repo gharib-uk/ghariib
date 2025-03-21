@@ -16,5 +16,3 @@ In a landscape where cyber threats evolve daily, the Defense Information Systems
 
 #### [Source](https://www.redhat.com/en/blog/epms-cornerstone-cybersecurity-defense-operations)
 
-<br/>
----

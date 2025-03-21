@@ -16,5 +16,3 @@ IT security is no longer the responsibility of a single, specialized team. To he
 
 #### [Source](https://www.redhat.com/en/blog/democratize-security-processes-your-software-development-lifecycle)
 
-<br/>
----

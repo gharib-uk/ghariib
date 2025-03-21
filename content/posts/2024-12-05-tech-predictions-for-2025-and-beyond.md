@@ -16,5 +16,3 @@ We've entered an era of unprecedented societal challenges and rapid technologica
 
 #### [Source](https://www.allthingsdistributed.com/2024/12/tech-predictions-for-2025-and-beyond.html?utm_campaign=inbound&utm_source=rss)
 
-<br/>
----

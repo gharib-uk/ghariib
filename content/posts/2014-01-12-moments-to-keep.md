@@ -22,5 +22,3 @@ A lot of great memories will stay with me after this intense week. The house sur
 
 #### [Source](https://signal.org/blog/moments-to-keep/)
 
-<br/>
----

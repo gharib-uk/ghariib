@@ -22,5 +22,3 @@ We [previously announced](/blog/giphy-experiment) experimental support for anima
 
 #### [Source](https://signal.org/blog/signal-and-giphy-update/)
 
-<br/>
----

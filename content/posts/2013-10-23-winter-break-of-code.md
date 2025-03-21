@@ -20,5 +20,3 @@ This winter, we’d like to invite you to join us for “Winter Break Of Code,�
 
 #### [Source](https://signal.org/blog/winter-break-of-code/)
 
-<br/>
----

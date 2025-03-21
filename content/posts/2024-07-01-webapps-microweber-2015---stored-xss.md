@@ -16,5 +16,3 @@ Microweber 2.0.15 - Stored XSS
 
 #### [Source](https://www.exploit-db.com/exploits/52058)
 
-<br/>
----

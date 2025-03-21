@@ -16,5 +16,3 @@ A short article exploring the NFC card ecosystem and how to reuse old discarded 
 
 #### [Source](https://blog.anantshri.info/playing-with-nfc-cards/)
 
-<br/>
----

@@ -22,5 +22,3 @@ Introducing **nrich**, a
 
 #### [Source](https://blog.shodan.io/nrich-a-tool-for-fast-ip-enrichment/)
 
-<br/>
----

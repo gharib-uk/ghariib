@@ -16,5 +16,3 @@ This blog post focuses on how the vulnerabilities in firmware popularized by the
 
 #### [Source](https://insights.sei.cmu.edu/blog/uefi-terra-firma-for-attackers/)
 
-<br/>
----

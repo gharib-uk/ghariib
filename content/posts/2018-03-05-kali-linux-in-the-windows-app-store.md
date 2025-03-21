@@ -71,5 +71,3 @@ The availability of the Kali Linux platform and toolset on Windows 10 brings wit
 
 #### [Source](https://www.kali.org/blog/kali-linux-in-the-windows-app-store/)
 
-<br/>
----

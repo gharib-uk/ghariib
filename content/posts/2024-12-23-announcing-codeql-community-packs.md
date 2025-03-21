@@ -18,5 +18,3 @@ The post [Announcing CodeQL Community Packs](https://github.blog/security/vulner
 
 #### [Source](https://github.blog/security/vulnerability-research/announcing-codeql-community-packs/)
 
-<br/>
----

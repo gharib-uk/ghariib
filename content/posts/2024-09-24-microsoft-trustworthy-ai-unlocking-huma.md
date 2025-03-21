@@ -18,5 +18,3 @@ The post [Microsoft Trustworthy AI: Unlocking human potential starts with trust]
 
 #### [Source](https://blogs.microsoft.com/blog/2024/09/24/microsoft-trustworthy-ai-unlocking-human-potential-starts-with-trust/)
 
-<br/>
----

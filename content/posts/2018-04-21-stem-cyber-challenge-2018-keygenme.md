@@ -47,5 +47,3 @@ Running it gives us the flag MCA{A0826B45FE84A765}:
 
 #### [Source](http://blog.techorganic.com/2018/04/21/stem-cyber-challenge-2018-keygenme/)
 
-<br/>
----

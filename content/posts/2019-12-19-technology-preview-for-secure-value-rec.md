@@ -20,5 +20,3 @@ We’ve been working on new techniques based on secure enclaves and key splittin
 
 #### [Source](https://signal.org/blog/secure-value-recovery/)
 
-<br/>
----

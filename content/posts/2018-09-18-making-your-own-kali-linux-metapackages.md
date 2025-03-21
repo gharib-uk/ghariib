@@ -145,5 +145,3 @@ Just like that, we have our own metapackage that we can store on network share o
 
 #### [Source](https://www.kali.org/blog/making-your-own-kali-linux-metapackages/)
 
-<br/>
----

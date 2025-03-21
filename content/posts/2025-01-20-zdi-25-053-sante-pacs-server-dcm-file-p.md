@@ -16,5 +16,3 @@ This vulnerability allows remote attackers to create arbitrary files on affected
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-053/)
 
-<br/>
----

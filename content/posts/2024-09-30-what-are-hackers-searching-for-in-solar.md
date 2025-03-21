@@ -16,5 +16,3 @@ Discover how GreyNoise’s honeypots are monitoring exploit attempts on the Sola
 
 #### [Source](https://www.greynoise.io/blog/what-are-hackers-searching-for-in-solarwinds-serv-u-cve-2024-28995)
 
-<br/>
----

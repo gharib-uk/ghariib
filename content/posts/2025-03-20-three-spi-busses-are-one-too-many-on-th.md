@@ -18,5 +18,3 @@ The Cheap Yellow Display may not be the fastest of ESP32 boards with its older m
 
 #### [Source](https://hackaday.com/2025/03/20/three-spi-busses-are-one-too-many-on-this-cheap-yellow-display/)
 
-<br/>
----

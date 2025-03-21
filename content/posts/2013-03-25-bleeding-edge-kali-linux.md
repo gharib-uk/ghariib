@@ -56,5 +56,3 @@ We currently have a handful of tools in this repository, which include **se-tool
 
 #### [Source](https://www.kali.org/blog/bleeding-edge-kali-repositories/)
 
-<br/>
----

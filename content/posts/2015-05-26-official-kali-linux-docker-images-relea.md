@@ -62,5 +62,3 @@ Have fun with your Kali Docker images!
 
 #### [Source](https://www.kali.org/blog/official-kali-linux-docker-images/)
 
-<br/>
----

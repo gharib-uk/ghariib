@@ -41,5 +41,3 @@ Happy Hacking!
 
 #### [Source](https://www.kali.org/blog/kali-and-linode/)
 
-<br/>
----

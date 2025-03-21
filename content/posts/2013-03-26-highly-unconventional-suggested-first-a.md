@@ -20,5 +20,3 @@ _Spring Break Of Code, Day Two_
 
 #### [Source](https://signal.org/blog/highly-unconventional-suggested-first-aid/)
 
-<br/>
----

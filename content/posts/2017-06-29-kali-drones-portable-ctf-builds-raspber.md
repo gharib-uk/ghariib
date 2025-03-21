@@ -48,5 +48,3 @@ Thanks, @Re4son, for your hard work, for being a shining member of the Kali comm
 
 #### [Source](https://www.kali.org/blog/kali-drones-portable-ctf-builds-raspberry-pi-craziness-and-more/)
 
-<br/>
----

@@ -18,5 +18,3 @@ The post [Announcing mandatory multi-factor authentication for Azure sign-in](ht
 
 #### [Source](https://azure.microsoft.com/en-us/blog/announcing-mandatory-multi-factor-authentication-for-azure-sign-in/)
 
-<br/>
----

@@ -51,5 +51,3 @@ It occurred to us that after the BlackHat and DEF CON conferences, we never made
 
 #### [Source](https://www.kali.org/blog/kali-moto-eol/)
 
-<br/>
----

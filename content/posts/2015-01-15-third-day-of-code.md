@@ -20,5 +20,3 @@ As it does every morning, the day started with Moxie singing the stand-up song, 
 
 #### [Source](https://signal.org/blog/third-day-of-code/)
 
-<br/>
----

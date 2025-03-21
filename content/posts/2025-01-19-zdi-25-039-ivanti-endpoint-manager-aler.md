@@ -16,5 +16,3 @@ This vulnerability allows local attackers to disclose sensitive information on a
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-039/)
 
-<br/>
----

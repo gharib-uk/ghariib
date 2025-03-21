@@ -20,5 +20,3 @@ For the past few months, the Signal Desktop beta has been available through an [
 
 #### [Source](https://signal.org/blog/signal-desktop-public/)
 
-<br/>
----

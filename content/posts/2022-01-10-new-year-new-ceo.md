@@ -20,5 +20,3 @@ I have now been working on Signal for almost a decade. It has always been my goa
 
 #### [Source](https://signal.org/blog/new-year-new-ceo/)
 
-<br/>
----

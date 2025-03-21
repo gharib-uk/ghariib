@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/previously-undisclosed-flaw-let-hackers-hijack-millions-of-systems-through-innocent-looking-files?source=rss)
 
-<br/>
----

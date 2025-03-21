@@ -16,5 +16,3 @@ NoteMark < 0.13.0 - Stored XSS
 
 #### [Source](https://www.exploit-db.com/exploits/52078)
 
-<br/>
----

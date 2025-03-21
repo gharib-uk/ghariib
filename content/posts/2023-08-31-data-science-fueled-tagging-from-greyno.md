@@ -16,5 +16,3 @@ GreyNoise tags come from extremely talented humans who painstakingly craft detec
 
 #### [Source](https://www.greynoise.io/blog/data-science-fueled-tagging-from-greynoise-last-week)
 
-<br/>
----

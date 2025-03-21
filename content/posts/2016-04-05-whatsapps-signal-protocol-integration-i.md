@@ -24,5 +24,3 @@ As of today, the integration is [fully complete](https://www.whatsapp.com/securi
 
 #### [Source](https://signal.org/blog/whatsapp-complete/)
 
-<br/>
----

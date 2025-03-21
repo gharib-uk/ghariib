@@ -35,5 +35,3 @@ Imagine, as Marx expects of us in the passage above, that an “internet” comm
 
 #### [Source](https://signal.org/blog/the-value-of-our-confidences/)
 
-<br/>
----

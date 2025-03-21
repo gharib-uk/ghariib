@@ -16,5 +16,3 @@ JUX Real Estate 3.4.0 - SQL Injection
 
 #### [Source](https://www.exploit-db.com/exploits/52089)
 
-<br/>
----

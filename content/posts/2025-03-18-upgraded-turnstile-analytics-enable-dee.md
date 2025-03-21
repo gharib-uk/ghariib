@@ -16,5 +16,3 @@ Introducing new Turnstile Analytics: Gain insight into your visitor traffic, bot
 
 #### [Source](https://blog.cloudflare.com/upgraded-turnstile-analytics-enable-deeper-insights-faster-investigations/)
 
-<br/>
----

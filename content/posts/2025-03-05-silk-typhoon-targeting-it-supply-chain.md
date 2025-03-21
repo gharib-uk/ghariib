@@ -18,5 +18,3 @@ The post [Silk Typhoon targeting IT supply chain](https://www.microsoft.com/en-u
 
 #### [Source](https://www.microsoft.com/en-us/security/blog/2025/03/05/silk-typhoon-targeting-it-supply-chain/)
 
-<br/>
----

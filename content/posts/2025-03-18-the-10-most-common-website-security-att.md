@@ -16,5 +16,3 @@ The Verizon 2023 Data Breach Investigations Report made a startling revelation: 
 
 #### [Source](https://www.tripwire.com/state-of-security/most-common-website-security-attacks-and-how-to-protect-yourself)
 
-<br/>
----

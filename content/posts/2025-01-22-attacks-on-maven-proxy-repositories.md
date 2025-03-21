@@ -18,5 +18,3 @@ The post [Attacks on Maven proxy repositories](https://github.blog/security/vuln
 
 #### [Source](https://github.blog/security/vulnerability-research/attacks-on-maven-proxy-repositories/)
 
-<br/>
----

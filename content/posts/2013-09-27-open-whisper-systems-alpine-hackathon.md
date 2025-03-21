@@ -18,5 +18,3 @@ From October 11th to October 13th, we’ll be hosting an informal Open Whisper S
 
 #### [Source](https://signal.org/blog/hackathon-zurich/)
 
-<br/>
----

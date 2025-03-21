@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/ai-agent-could-be-running-your-security-operations-center-to-prevent-attacks?source=rss)
 
-<br/>
----

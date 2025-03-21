@@ -22,5 +22,3 @@ We are at the halfway point of Winter Break of Code. We have two homes near the 
 
 #### [Source](https://signal.org/blog/design-of-crypto/)
 
-<br/>
----

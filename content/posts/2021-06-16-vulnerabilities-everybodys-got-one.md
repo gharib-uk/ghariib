@@ -16,5 +16,3 @@ In this post, Leigh Metcalf describes how she pulled data from the malvuln proje
 
 #### [Source](https://insights.sei.cmu.edu/blog/vulnerabilities-everybodys-got-one/)
 
-<br/>
----

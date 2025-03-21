@@ -18,5 +18,3 @@ The post [6 insights to make your data AI-ready, with Accenture’s Teresa Tung]
 
 #### [Source](https://azure.microsoft.com/en-us/blog/6-insights-to-make-your-data-ai-ready-with-accentures-teresa-tung/)
 
-<br/>
----

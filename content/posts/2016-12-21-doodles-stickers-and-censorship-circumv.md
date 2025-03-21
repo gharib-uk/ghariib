@@ -22,5 +22,3 @@ This release also includes support for censorship circumvention in Egypt and the
 
 #### [Source](https://signal.org/blog/doodles-stickers-censorship/)
 
-<br/>
----

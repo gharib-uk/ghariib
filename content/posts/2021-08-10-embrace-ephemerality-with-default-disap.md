@@ -22,5 +22,3 @@ We’ve designed Signal so that your data always stays in your hands. We think t
 
 #### [Source](https://signal.org/blog/disappearing-by-default/)
 
-<br/>
----

@@ -22,5 +22,3 @@ Here’s how:
 
 #### [Source](https://signal.org/blog/phone-number-privacy-usernames/)
 
-<br/>
----

@@ -16,5 +16,3 @@ This vulnerability allows network-adjacent attackers to execute arbitrary code o
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-107/)
 
-<br/>
----

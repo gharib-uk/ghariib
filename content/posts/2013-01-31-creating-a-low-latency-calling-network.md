@@ -22,5 +22,3 @@ This describes the basic strategy we developed for the network side of low-laten
 
 #### [Source](https://signal.org/blog/low-latency-switching/)
 
-<br/>
----

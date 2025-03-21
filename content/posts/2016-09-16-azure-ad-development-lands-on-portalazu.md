@@ -16,5 +16,3 @@ For the longest time, I watched with envy as my Azure colleagues drove their con
 
 #### [Source](https://www.cloudidentity.com/blog/2016/09/16/azure-ad-development-lands-on-portal-azure-com/)
 
-<br/>
----

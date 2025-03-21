@@ -16,5 +16,3 @@ This vulnerability allows remote attackers to initiate arbitrary server-side req
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-013/)
 
-<br/>
----

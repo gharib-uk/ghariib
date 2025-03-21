@@ -16,5 +16,3 @@ Generative AI applications often involve a combination of various services and f
 
 #### [Source](https://aws.amazon.com/blogs/security/implementing-least-privilege-access-for-amazon-bedrock/)
 
-<br/>
----

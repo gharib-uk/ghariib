@@ -16,5 +16,3 @@ Builders are at the heart of AWS. Most recently, I visited Malaysia, the locatio
 
 #### [Source](https://www.allthingsdistributed.com/2024/08/empowering-builders-with-new-aws-asia-pacific-malaysia-region.html?utm_campaign=inbound&utm_source=rss)
 
-<br/>
----

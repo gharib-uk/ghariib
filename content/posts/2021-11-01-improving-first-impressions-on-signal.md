@@ -22,5 +22,3 @@ We build Signal in the open, with [publicly available](https://github.com/signal
 
 #### [Source](https://signal.org/blog/keeping-spam-off-signal/)
 
-<br/>
----

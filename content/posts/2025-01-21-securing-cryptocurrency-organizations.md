@@ -299,5 +299,3 @@ Special thanks to the reviewers: Adrian Hernandez, Robert Wallace, Joseph Dobson
 
 #### [Source](https://cloud.google.com/blog/topics/threat-intelligence/securing-cryptocurrency-organizations/)
 
-<br/>
----

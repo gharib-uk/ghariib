@@ -18,5 +18,3 @@ As of our latest Android release, Signal builds are reproducible. Reproducible b
 
 #### [Source](https://signal.org/blog/reproducible-android/)
 
-<br/>
----

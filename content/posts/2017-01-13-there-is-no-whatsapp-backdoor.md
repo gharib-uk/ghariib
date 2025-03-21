@@ -18,5 +18,3 @@ Today, The Guardian published a story falsely claiming that WhatsApp’s end-to-
 
 #### [Source](https://signal.org/blog/there-is-no-whatsapp-backdoor/)
 
-<br/>
----

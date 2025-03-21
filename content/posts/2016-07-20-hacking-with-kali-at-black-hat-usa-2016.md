@@ -55,5 +55,3 @@ Thats right. You can get a **pre-release version of Kali Linux** before its avai
 
 #### [Source](https://www.kali.org/blog/hacking-kali-black-hat/)
 
-<br/>
----

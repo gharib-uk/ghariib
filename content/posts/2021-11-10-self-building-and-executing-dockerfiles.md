@@ -40,5 +40,3 @@ Some might even argue that it’s more readable. But then I have to worry about 
 
 #### [Source](https://www.grepular.com/Self_Building_and_Executing_Dockerfiles)
 
-<br/>
----

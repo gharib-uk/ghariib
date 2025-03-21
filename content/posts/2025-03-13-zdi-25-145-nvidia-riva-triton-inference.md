@@ -16,5 +16,3 @@ This vulnerability allows remote attackers to access protected functionality on 
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-145/)
 
-<br/>
----

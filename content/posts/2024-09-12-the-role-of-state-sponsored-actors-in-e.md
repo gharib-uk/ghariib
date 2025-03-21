@@ -16,5 +16,3 @@ Explore the critical role of state-sponsored actors in election interference in 
 
 #### [Source](https://www.greynoise.io/blog/the-role-of-state-sponsored-actors-in-election-interference)
 
-<br/>
----

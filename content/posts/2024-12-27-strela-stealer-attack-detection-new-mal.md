@@ -20,5 +20,3 @@ The post [Strela Stealer Attack Detection: New Malware Variant Now Targets Ukrai
 
 #### [Source](https://socprime.com/blog/strela-stealer-attack-detection/)
 
-<br/>
----

@@ -88,5 +88,3 @@ The full changelog since [Tor Browser 14.5a3](https://gitlab.torproject.org/tpo/
 
 #### [Source](https://blog.torproject.org/new-alpha-release-tor-browser-145a4/)
 
-<br/>
----

@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/phishing-campaigns-became-a-lot-more-sinister-in-2024?source=rss)
 
-<br/>
----

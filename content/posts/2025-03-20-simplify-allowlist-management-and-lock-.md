@@ -16,5 +16,3 @@ Cloudflare Aegis provides dedicated egress IPs for Zero Trust origin access stra
 
 #### [Source](https://blog.cloudflare.com/aegis-deep-dive/)
 
-<br/>
----

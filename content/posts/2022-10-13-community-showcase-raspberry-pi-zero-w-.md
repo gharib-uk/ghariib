@@ -432,5 +432,3 @@ Other Resources
 
 #### [Source](https://www.kali.org/blog/community-showcase-using-kali-pi-p4wnp1-aloa/)
 
-<br/>
----

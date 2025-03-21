@@ -20,5 +20,3 @@ To help in this situation, Signal provides a built-in censorship circumvention f
 
 #### [Source](https://signal.org/blog/proxy-please/)
 
-<br/>
----

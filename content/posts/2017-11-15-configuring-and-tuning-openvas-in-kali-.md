@@ -231,5 +231,3 @@ With the wide range of options available in OpenVAS, we were only really able to
 
 #### [Source](https://www.kali.org/blog/configuring-and-tuning-openvas-in-kali-linux/)
 
-<br/>
----

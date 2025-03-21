@@ -24,5 +24,3 @@ One immediate thing seems clear: 2020 is a pretty good year to cover your face.
 
 #### [Source](https://signal.org/blog/blur-tools/)
 
-<br/>
----

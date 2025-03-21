@@ -16,5 +16,3 @@ Last week I saw a StackOverflow question where a user was wrestling with an app 
 
 #### [Source](https://www.cloudidentity.com/blog/2017/08/13/whos-your-admin/)
 
-<br/>
----

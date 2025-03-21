@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/hunters-announces-new-ai-capabilities-with-pathfinder-ai-for-smarter-soc-automation?source=rss)
 
-<br/>
----

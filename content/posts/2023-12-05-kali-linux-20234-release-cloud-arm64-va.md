@@ -296,5 +296,3 @@ Want to keep up-to-date? Easy! We have a [RSS feeds](https://www.kali.org/rss.xm
 
 #### [Source](https://www.kali.org/blog/kali-linux-2023-4-release/)
 
-<br/>
----

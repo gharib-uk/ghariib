@@ -16,5 +16,3 @@ Don’t build another security silo, says IDC in a new Infobrief
 
 #### [Source](https://blogs.cisco.com/industrial-iot/unleash-ot-security-with-the-best-of-it)
 
-<br/>
----

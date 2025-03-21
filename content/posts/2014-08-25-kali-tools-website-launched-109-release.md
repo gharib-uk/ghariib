@@ -36,5 +36,3 @@ We have a massive set of of surprises in the works, some of which will be reveal
 
 #### [Source](https://www.kali.org/blog/kali-linux-1-0-9-release/)
 
-<br/>
----

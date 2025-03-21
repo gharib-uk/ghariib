@@ -191,5 +191,3 @@ It was also at this point that I noticed the challenge description had changed. 
 
 #### [Source](http://blog.techorganic.com/2017/09/24/codefest-ctf-2017-ricks-secure-scheme-writeup/)
 
-<br/>
----

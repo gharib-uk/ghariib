@@ -16,5 +16,3 @@ We’re excited to announce that Amazon Web Services (AWS) has completed the ann
 
 #### [Source](https://aws.amazon.com/blogs/security/aws-completes-the-annual-dubai-electronic-security-centre-certification-audit-to-operate-as-a-tier-1-cloud-service-provider-in-the-emirate-of-dubai-2/)
 
-<br/>
----

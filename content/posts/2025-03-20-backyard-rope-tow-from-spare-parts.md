@@ -18,5 +18,3 @@ A few years ago, \[Jeremy Makes Things\] built a rope tow in his back yard so hi
 
 #### [Source](https://hackaday.com/2025/03/20/backyard-rope-tow-from-spare-parts/)
 
-<br/>
----

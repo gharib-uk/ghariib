@@ -16,5 +16,3 @@ If you want to know way too much about attacks against F5 BIG-IP devices, then t
 
 #### [Source](https://www.greynoise.io/blog/the-confusing-history-of-f5-big-ip-rce-vulnerabilities)
 
-<br/>
----

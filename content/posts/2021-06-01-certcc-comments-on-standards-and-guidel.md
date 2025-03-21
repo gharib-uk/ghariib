@@ -16,5 +16,3 @@ This SEI Blog post shares insights from the CERT Coordination Center (CERT/CC) o
 
 #### [Source](https://insights.sei.cmu.edu/blog/certcc-comments-on-standards-and-guidelines-to-enhance-software-supply-chain-security/)
 
-<br/>
----

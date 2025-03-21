@@ -20,5 +20,3 @@ Signal iOS now includes a new feature that makes it possible to switch to a bran
 
 #### [Source](https://signal.org/blog/ios-device-transfer/)
 
-<br/>
----

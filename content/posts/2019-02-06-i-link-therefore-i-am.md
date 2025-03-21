@@ -22,5 +22,3 @@ We’re launching link previews with initial support for [Imgur](https://imgur.c
 
 #### [Source](https://signal.org/blog/i-link-therefore-i-am/)
 
-<br/>
----

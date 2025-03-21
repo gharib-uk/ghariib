@@ -20,5 +20,3 @@ For our part in this initiative, we have published [our DEI.md statement file](h
 
 #### [Source](https://www.kali.org/blog/dei-promise/)
 
-<br/>
----

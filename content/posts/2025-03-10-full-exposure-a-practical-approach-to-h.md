@@ -18,5 +18,3 @@ The post [Full exposure: A practical approach to handling sensitive data leaks](
 
 #### [Source](https://github.blog/security/full-exposure-a-practical-approach-to-handling-sensitive-data-leaks/)
 
-<br/>
----

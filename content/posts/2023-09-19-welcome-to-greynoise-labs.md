@@ -16,5 +16,3 @@ GreyNoise is excited to officially announce the emergence of GreyNoise Labs and 
 
 #### [Source](https://www.greynoise.io/blog/welcome-to-greynoise-labs)
 
-<br/>
----

@@ -26,5 +26,3 @@ Vulnerabilities has been mentioned in this article.
 
 #### [Source](https://www.darkreading.com/remote-workforce/qualcomm-mediatek-security-fix-bonanza)
 
-<br/>
----

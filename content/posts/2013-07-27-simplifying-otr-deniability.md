@@ -22,5 +22,3 @@ The transition to a new transport is also a good opportunity for us to evaluate 
 
 #### [Source](https://signal.org/blog/simplifying-otr-deniability/)
 
-<br/>
----

@@ -16,5 +16,3 @@ GreyNoise researcher Jacob Fisher discusses the importance of reactive honeypots
 
 #### [Source](https://www.greynoise.io/blog/using-greynoise-eap-sensors-for-novel-exploitation-discovery-for-cve-2023-47246)
 
-<br/>
----

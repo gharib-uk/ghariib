@@ -141,5 +141,3 @@ If you find any bugs, please open a ticket on our [bug tracker](https://bugs.kal
 
 #### [Source](https://www.kali.org/blog/kali-linux-2017-3-release/)
 
-<br/>
----

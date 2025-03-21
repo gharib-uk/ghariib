@@ -16,5 +16,3 @@ Discover why over 220 cybersecurity professionals ranked effective communication
 
 #### [Source](https://www.greynoise.io/blog/from-help-desk-to-ciso-how-communication-shapes-security-success)
 
-<br/>
----

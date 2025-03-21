@@ -16,5 +16,3 @@ February 26, 2025: We’ve updated this post to fix a typo in the code in Step 5
 
 #### [Source](https://aws.amazon.com/blogs/security/connect-your-on-premises-kubernetes-cluster-to-aws-apis-using-iam-roles-anywhere/)
 
-<br/>
----

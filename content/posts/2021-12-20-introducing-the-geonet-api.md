@@ -16,5 +16,3 @@ The Internet looks different depending on where you live. The Chinese firewall i
 
 #### [Source](https://blog.shodan.io/introducing-the-geonet-api-2/)
 
-<br/>
----

@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://www.tripwire.com/state-of-security/potential-security-concerns-eventual-rollout-6g)
 
-<br/>
----

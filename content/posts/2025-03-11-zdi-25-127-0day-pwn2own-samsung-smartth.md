@@ -16,5 +16,3 @@ This vulnerability allows network-adjacent attackers to bypass authentication on
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-127/)
 
-<br/>
----

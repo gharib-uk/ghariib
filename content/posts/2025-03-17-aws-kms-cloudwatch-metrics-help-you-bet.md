@@ -16,5 +16,3 @@ AWS Key Management Service (AWS KMS) is pleased to launch key-level filtering f
 
 #### [Source](https://aws.amazon.com/blogs/security/aws-kms-cloudwatch-metrics-help-you-better-track-and-understand-how-your-kms-keys-are-being-used/)
 
-<br/>
----

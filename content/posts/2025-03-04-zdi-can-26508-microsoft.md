@@ -16,5 +16,3 @@ A CVSS score 7.5 [AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H](https://nvd.nist.gov/cvss
 
 #### [Source](http://www.zerodayinitiative.com/advisories/upcoming/)
 
-<br/>
----

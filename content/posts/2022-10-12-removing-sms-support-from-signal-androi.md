@@ -20,5 +20,3 @@ To give some context, when we started supporting SMS, Signal didn’t exist yet.
 
 #### [Source](https://signal.org/blog/sms-removal-android/)
 
-<br/>
----

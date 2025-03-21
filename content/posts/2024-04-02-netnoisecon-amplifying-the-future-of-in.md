@@ -16,5 +16,3 @@ GreyNoise is announcing the launch of NetNoiseCon, an online conference series h
 
 #### [Source](https://www.greynoise.io/blog/netnoisecon-amplifying-the-future-of-infosec)
 
-<br/>
----

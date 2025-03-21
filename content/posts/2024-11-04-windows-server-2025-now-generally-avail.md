@@ -18,5 +18,3 @@ The post [Windows Server 2025 now generally available, with advanced security, i
 
 #### [Source](https://www.microsoft.com/en-us/windows-server/blog/2024/11/04/windows-server-2025-now-generally-available-with-advanced-security-improved-performance-and-cloud-agility/)
 
-<br/>
----

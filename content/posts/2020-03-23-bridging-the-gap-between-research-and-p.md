@@ -16,5 +16,3 @@ A fundamental goal for a federally funded research and development center (FFRDC
 
 #### [Source](https://insights.sei.cmu.edu/blog/bridging-the-gap-between-research-and-practice/)
 
-<br/>
----

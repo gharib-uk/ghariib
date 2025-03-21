@@ -16,5 +16,3 @@ Artificial Intelligence and Machine Learning can provide extreme value to your p
 
 #### [Source](https://www.greynoise.io/blog/how-to-create-actionable-intelligence-with-artificial-intelligence-and-machine-learning)
 
-<br/>
----

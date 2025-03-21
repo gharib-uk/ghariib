@@ -16,5 +16,3 @@ Discover the fascinating story of a GreyNoise researcher who found that attacker
 
 #### [Source](https://www.greynoise.io/blog/mining-the-undiscovered-country-with-greynoise-eap-sensors-f5-big-ip-edition)
 
-<br/>
----

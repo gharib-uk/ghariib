@@ -20,5 +20,3 @@ Signal is the world’s most widely used truly private messaging app, and our cr
 
 #### [Source](https://signal.org/blog/signal-is-expensive/)
 
-<br/>
----

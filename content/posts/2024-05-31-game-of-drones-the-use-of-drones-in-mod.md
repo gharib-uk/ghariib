@@ -16,5 +16,3 @@ My brother was watching a documentary about WW1 and we talked about how tech tha
 
 #### [Source](https://cyberarms.wordpress.com/2024/05/31/game-of-drones-the-use-of-drones-in-modern-warfare/)
 
-<br/>
----

@@ -16,5 +16,3 @@ We are working with NVIDIA to deliver a strategic leap forward in AI infrastruct
 
 #### [Source](https://blogs.cisco.com/news/embracing-the-ai-era-cisco-secure-ai-factory-with-nvidia)
 
-<br/>
----

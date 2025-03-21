@@ -16,5 +16,3 @@ Bonjour Service 'mDNSResponder.exe' - Unquoted Service Path Privilege Escalation
 
 #### [Source](https://www.exploit-db.com/exploits/52061)
 
-<br/>
----

@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://trustedsec.com/blog/from-rags-to-riches-using-llms-and-rags-to-enhance-your-ops)
 
-<br/>
----

@@ -31,5 +31,3 @@ Also, our deep thanks to all of our [sponsors](https://www.torproject.org/about/
 
 #### [Source](https://blog.torproject.org/arti_1_4_1_released/)
 
-<br/>
----

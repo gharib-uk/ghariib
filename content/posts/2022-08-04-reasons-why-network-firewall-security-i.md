@@ -16,5 +16,3 @@ Table of Contents What Is a Firewall? A Firewall Protects Your Company From Hack
 
 #### [Source](https://cyberhunter.solutions/reasons-why-network-firewall-security-is-important-for-your-business/)
 
-<br/>
----

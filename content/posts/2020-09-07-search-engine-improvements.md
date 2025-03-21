@@ -16,5 +16,3 @@ Shodan has seen [tremendous growth](https://monitor.shodan.io) the past year bot
 
 #### [Source](https://blog.shodan.io/search-engine-improvements/)
 
-<br/>
----

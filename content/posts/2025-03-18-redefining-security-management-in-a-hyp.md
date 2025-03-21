@@ -16,5 +16,3 @@ Cisco is bringing Secure Workload, Secure Access, and AI Defense into Security C
 
 #### [Source](https://blogs.cisco.com/security/redefining-security-management-in-a-hyperconnected-world)
 
-<br/>
----

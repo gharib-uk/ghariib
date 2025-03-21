@@ -16,5 +16,3 @@ Cisco and Red Hat enhance AI and application modernization with new automation s
 
 #### [Source](https://blogs.cisco.com/partner/enhancing-day-2-operations-with-cisco-compute-and-red-hat-ansible-automation)
 
-<br/>
----

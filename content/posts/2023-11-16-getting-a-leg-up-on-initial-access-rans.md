@@ -16,5 +16,3 @@ The Cybersecurity and Infrastructure Security Agency (CISA) has added a field to
 
 #### [Source](https://www.greynoise.io/blog/getting-a-leg-up-on-initial-access-ransomware-with-cisa-kev-and-greynoise-tags)
 
-<br/>
----

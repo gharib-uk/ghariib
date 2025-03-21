@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/gitguardian-report-70percent-of-leaked-secrets-remain-active-for-two-years-urging-immediate-remediation?source=rss)
 
-<br/>
----

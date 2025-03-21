@@ -16,5 +16,3 @@ Brian Krebs reports: A message posted on Monday to the homepage of the U.S. Cyb
 
 #### [Source](https://databreaches.net/2025/03/20/doge-to-fired-cisa-staff-email-us-your-personal-data/)
 
-<br/>
----

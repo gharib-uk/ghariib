@@ -16,5 +16,3 @@ Today, connectivity is no longer a form of aid; instead, it’s often necessary 
 
 #### [Source](https://blogs.cisco.com/our-corporate-purpose/a-look-behind-cisco-crisis-response)
 
-<br/>
----

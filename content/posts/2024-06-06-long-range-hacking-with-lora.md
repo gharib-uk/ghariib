@@ -16,5 +16,3 @@ LoRa or Long-Range wireless is an extremely long range, low bandwidth communicat
 
 #### [Source](https://cyberarms.wordpress.com/2024/06/05/long-range-hacking-with-lora/)
 
-<br/>
----

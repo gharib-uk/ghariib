@@ -16,5 +16,3 @@ Despite each’s similar purpose of early threat detection, honeypots and honeyt
 
 #### [Source](https://www.greynoise.io/blog/unveiling-the-deceptive-world-honeypots-vs-honeytokens)
 
-<br/>
----

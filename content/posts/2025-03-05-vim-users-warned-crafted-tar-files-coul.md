@@ -26,5 +26,3 @@ Vulnerabilities has been mentioned in this article.
 
 #### [Source](https://securityonline.info/vim-users-warned-crafted-tar-files-could-trigger-code-execution-cve-2025-27423/)
 
-<br/>
----

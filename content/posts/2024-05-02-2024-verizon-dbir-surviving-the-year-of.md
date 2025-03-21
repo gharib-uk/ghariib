@@ -16,5 +16,3 @@ Go inside the 2024 Verizon Data Breach Investigations Report (DBIR) to discover 
 
 #### [Source](https://www.greynoise.io/blog/2024-verizon-dbir-surviving-the-year-of-the-vuln)
 
-<br/>
----

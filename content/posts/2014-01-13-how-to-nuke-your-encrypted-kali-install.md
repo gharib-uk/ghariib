@@ -159,5 +159,3 @@ Our slots are now restored. All we have to do is simply reboot and provide our n
 
 #### [Source](https://www.kali.org/blog/nuke-kali-linux-luks/)
 
-<br/>
----

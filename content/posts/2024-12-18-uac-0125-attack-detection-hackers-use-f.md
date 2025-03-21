@@ -20,5 +20,3 @@ The post [UAC-0125 Attack Detection: Hackers Use Fake Websites on Cloudflare Wor
 
 #### [Source](https://socprime.com/blog/uac-0125-attacks-against-ukraine-detection/)
 
-<br/>
----

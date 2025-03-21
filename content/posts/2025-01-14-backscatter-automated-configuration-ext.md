@@ -80,5 +80,3 @@ Backscatter stands as a testament to Google SecOps' commitment to providing cutt
 
 #### [Source](https://cloud.google.com/blog/topics/threat-intelligence/backscatter-automated-configuration-extraction/)
 
-<br/>
----

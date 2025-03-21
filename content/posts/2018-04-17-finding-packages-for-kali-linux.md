@@ -109,5 +109,3 @@ Hopefully, this post will help you answer whether or not a certain tool is avail
 
 #### [Source](https://www.kali.org/blog/finding-packages-for-kali-linux/)
 
-<br/>
----

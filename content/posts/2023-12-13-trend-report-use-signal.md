@@ -22,5 +22,3 @@ We build Signal for people [all over the world](/blog/signal-is-for-everyone/). 
 
 #### [Source](https://signal.org/blog/trend-report-use-signal/)
 
-<br/>
----

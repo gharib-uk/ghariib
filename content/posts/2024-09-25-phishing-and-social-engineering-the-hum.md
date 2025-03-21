@@ -16,5 +16,3 @@ Discover how phishing and social engineering threaten the 2024 U.S. elections in
 
 #### [Source](https://www.greynoise.io/blog/phishing-and-social-engineering-the-human-factor-in-election-security)
 
-<br/>
----

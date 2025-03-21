@@ -16,5 +16,3 @@ Explore the high-severity vulnerability CVE-2023-29552 in the Service Location P
 
 #### [Source](https://www.greynoise.io/blog/slp-sliding-away-with-reflectionamplification-thanks-to-cve-2023-29552)
 
-<br/>
----

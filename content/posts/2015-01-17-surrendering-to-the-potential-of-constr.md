@@ -34,5 +34,3 @@ As a publisher and designer, I count myself among this degenerate few and tread 
 
 #### [Source](https://signal.org/blog/surrendering-to-the-potential-of-constraints/)
 
-<br/>
----

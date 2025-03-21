@@ -24,5 +24,3 @@ All of this means that the set of expectations users have for social and communi
 
 #### [Source](https://signal.org/blog/the-ecosystem-is-moving/)
 
-<br/>
----

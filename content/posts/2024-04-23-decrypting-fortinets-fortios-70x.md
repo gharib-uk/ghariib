@@ -16,5 +16,3 @@ Curious about decrypting Fortinet's FortiOS 7.0.x firmware? In the latest Grimoi
 
 #### [Source](https://www.greynoise.io/blog/decrypting-fortinets-fortios-7-0-x)
 
-<br/>
----

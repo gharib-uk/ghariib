@@ -582,5 +582,3 @@ Now there are supposed to be a couple of ways to solve this challenge. If you’
 
 #### [Source](http://blog.techorganic.com/2018/11/08/raven-hacking-challenge/)
 
-<br/>
----

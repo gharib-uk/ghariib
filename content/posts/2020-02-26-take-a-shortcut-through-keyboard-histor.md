@@ -20,5 +20,3 @@ ul.kbtimeline { list-style-type: none; position: relative; } ul.kbtimeline:befor
 
 #### [Source](https://signal.org/blog/keyboard-shortcuts/)
 
-<br/>
----

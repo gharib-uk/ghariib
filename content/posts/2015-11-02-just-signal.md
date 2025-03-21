@@ -22,5 +22,3 @@ Today we’ve started rolling out [Signal for Android](https://play.google.com/s
 
 #### [Source](https://signal.org/blog/just-signal/)
 
-<br/>
----

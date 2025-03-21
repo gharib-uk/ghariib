@@ -16,5 +16,3 @@ Devika v1 - Path Traversal via 'snapshot\_path'
 
 #### [Source](https://www.exploit-db.com/exploits/52066)
 
-<br/>
----

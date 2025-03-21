@@ -48,5 +48,3 @@ More information can be found at [Help Net Security](https://www.helpnetsecurity
 
 #### [Source](https://www.kali.org/blog/about-the-xz-backdoor/)
 
-<br/>
----

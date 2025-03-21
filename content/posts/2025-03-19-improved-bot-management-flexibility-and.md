@@ -16,5 +16,3 @@ By building and integrating a new heuristics framework into the Cloudflare Rules
 
 #### [Source](https://blog.cloudflare.com/bots-heuristics/)
 
-<br/>
----

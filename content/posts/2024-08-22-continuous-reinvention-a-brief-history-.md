@@ -16,5 +16,3 @@ Marc Olson, a long-time Amazonian, discusses the evolution of EBS, highlighting 
 
 #### [Source](https://www.allthingsdistributed.com/2024/08/continuous-reinvention-a-brief-history-of-block-storage-at-aws.html?utm_campaign=inbound&utm_source=rss)
 
-<br/>
----

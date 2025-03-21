@@ -49,5 +49,3 @@ Thanks for your attention!
 
 #### [Source](https://www.kali.org/blog/non-free-firmware-transition/)
 
-<br/>
----

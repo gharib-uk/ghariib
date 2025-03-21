@@ -20,5 +20,3 @@ Signal has no data to sell, no advertisers to sell it to, and no shareholders to
 
 #### [Source](https://signal.org/blog/become-a-signal-sustainer/)
 
-<br/>
----

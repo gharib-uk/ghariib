@@ -22,5 +22,3 @@ I had a proposal, the sort of get-rich-quick scheme it seems that only 18th cent
 
 #### [Source](https://signal.org/blog/dirigibles-chinese-junk-rigs-and-surfboards/)
 
-<br/>
----

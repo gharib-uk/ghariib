@@ -16,5 +16,3 @@ Discover how GreyNoise’s fresh, real-time vulnerability prioritization tool of
 
 #### [Source](https://www.greynoise.io/blog/the-tortilla-test-ensuring-your-vulnerability-intelligence-is-always-fresh)
 
-<br/>
----

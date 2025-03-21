@@ -16,5 +16,3 @@ In our first investigation into Israel-based spyware company, Paragon Solutions,
 
 #### [Source](https://citizenlab.ca/2025/03/a-first-look-at-paragons-proliferating-spyware-operations/)
 
-<br/>
----

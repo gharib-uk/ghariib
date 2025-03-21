@@ -16,5 +16,3 @@ Attackers exploit vulnerabilities within hours of PoC releases. Learn how GreyNo
 
 #### [Source](https://www.greynoise.io/blog/from-poc-to-attacker-interest-in-hours-real-time-insights-into-mitel-micollab-vulnerabilities)
 
-<br/>
----

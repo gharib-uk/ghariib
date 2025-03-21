@@ -16,5 +16,3 @@ With Cloudflare for AI, developers, security teams and content creators can leve
 
 #### [Source](https://blog.cloudflare.com/cloudflare-for-ai-supporting-ai-adoption-at-scale-with-a-security-first-approach/)
 
-<br/>
----

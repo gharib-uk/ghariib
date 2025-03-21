@@ -66,5 +66,3 @@ Thanks for reading!
 
 #### [Source](https://www.kali.org/blog/python-externally-managed/)
 
-<br/>
----

@@ -16,5 +16,3 @@ From incredible technical talks to insightful career advice from industry leader
 
 #### [Source](https://www.greynoise.io/blog/netnoisecon-recapping-our-debut-event)
 
-<br/>
----

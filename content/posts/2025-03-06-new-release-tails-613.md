@@ -91,5 +91,3 @@ For support and feedback, visit the [Support section](https://tails.net/support/
 
 #### [Source](https://blog.torproject.org/new-release-tails-6-13/)
 
-<br/>
----

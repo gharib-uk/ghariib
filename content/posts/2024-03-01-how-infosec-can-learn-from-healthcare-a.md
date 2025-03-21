@@ -16,5 +16,3 @@ Exploring how infosec can evolve by adopting healthcare's efficiency and aviatio
 
 #### [Source](https://blog.anantshri.info/how-infosec-can-learn-from-healthcare-and-aviation/)
 
-<br/>
----

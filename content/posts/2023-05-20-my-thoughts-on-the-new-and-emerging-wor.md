@@ -16,5 +16,3 @@ Exploring the fascinating new world of GPT, AI, and LLM. Discussing search engin
 
 #### [Source](https://blog.anantshri.info/my-thoughts-on-the-new-and-emerging-world-of-gpt-ai-llm/)
 
-<br/>
----

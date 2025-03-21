@@ -22,5 +22,3 @@ As of today, the TextSecure protocol will begin shipping as part of the Cyanogen
 
 #### [Source](https://signal.org/blog/cyanogen-integration/)
 
-<br/>
----

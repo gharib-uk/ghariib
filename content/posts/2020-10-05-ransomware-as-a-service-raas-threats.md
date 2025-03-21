@@ -16,5 +16,3 @@ This blog post explores the economics behind why ransomware remains a top tool f
 
 #### [Source](https://insights.sei.cmu.edu/blog/ransomware-as-a-service-raas-threats/)
 
-<br/>
----

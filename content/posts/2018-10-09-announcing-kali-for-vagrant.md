@@ -148,5 +148,3 @@ We hope you find this new offering useful. We have shown a few simple things tha
 
 #### [Source](https://www.kali.org/blog/announcing-kali-for-vagrant/)
 
-<br/>
----

@@ -44,5 +44,3 @@ In the next few days, [OffSec](https://www.offsec.com/) will post Virtual Machin
 
 #### [Source](https://www.kali.org/blog/kali-linux-1-0-7-release/)
 
-<br/>
----

@@ -18,5 +18,3 @@ The post [Microsoft and Oracle enhance Oracle Database@Azure with data and AI in
 
 #### [Source](https://azure.microsoft.com/en-us/blog/microsoft-and-oracle-enhance-oracle-databaseazure-with-data-and-ai-integration/)
 
-<br/>
----

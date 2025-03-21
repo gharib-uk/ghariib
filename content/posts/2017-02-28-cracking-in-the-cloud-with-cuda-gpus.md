@@ -143,5 +143,3 @@ We’ve registered new CUDA enabled [Kali Rolling images with Amazon](https://aw
 
 #### [Source](https://www.kali.org/blog/cloud-cracking-with-cuda-gpu/)
 
-<br/>
----

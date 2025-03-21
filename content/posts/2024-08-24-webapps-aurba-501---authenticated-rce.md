@@ -16,5 +16,3 @@ Aurba 501 - Authenticated RCE
 
 #### [Source](https://www.exploit-db.com/exploits/52074)
 
-<br/>
----

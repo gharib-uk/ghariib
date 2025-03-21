@@ -16,5 +16,3 @@ The Managed Security Service Provider (MSSP) and Managed Detection and Response 
 
 #### [Source](https://www.greynoise.io/blog/redefining-threat-intelligence-for-mssps-mdrs)
 
-<br/>
----

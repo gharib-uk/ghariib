@@ -16,5 +16,3 @@ Most countries have some sort of government agency dedicated to protecting digit
 
 #### [Source](https://www.tripwire.com/state-of-security/what-is-bundesamt-fur-sicherheit-in-der-informationstechnik-bsi)
 
-<br/>
----

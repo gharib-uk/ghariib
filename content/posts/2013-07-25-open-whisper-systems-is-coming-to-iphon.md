@@ -18,5 +18,3 @@ type: posts
 
 #### [Source](https://signal.org/blog/iphone-rsn/)
 
-<br/>
----

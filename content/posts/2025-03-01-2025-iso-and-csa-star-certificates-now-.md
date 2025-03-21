@@ -16,5 +16,3 @@ Amazon Web Services (AWS) successfully completed an onboarding audit with no fin
 
 #### [Source](https://aws.amazon.com/blogs/security/2025-iso-and-csa-star-certificates-now-available-with-four-additional-services/)
 
-<br/>
----

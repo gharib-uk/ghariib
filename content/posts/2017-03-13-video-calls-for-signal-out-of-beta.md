@@ -24,5 +24,3 @@ We think it’s a big improvement, and hope you will to.
 
 #### [Source](https://signal.org/blog/signal-video-calls/)
 
-<br/>
----

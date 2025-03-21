@@ -72,5 +72,3 @@ We are very grateful for Ampere who are now powering our arm64/armhf/armel packa
 
 #### [Source](https://www.kali.org/blog/ampere/)
 
-<br/>
----

@@ -22,5 +22,3 @@ Web technologies are now grouped by categories and we show version information (
 
 #### [Source](https://blog.shodan.io/changelog-www-shodan-io/)
 
-<br/>
----

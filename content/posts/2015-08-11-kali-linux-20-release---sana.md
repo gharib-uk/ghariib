@@ -101,5 +101,3 @@ Kali Linux 2.0 is a serious step forward for us, as we **continuously improve th
 
 #### [Source](https://www.kali.org/blog/kali-linux-2-0-release/)
 
-<br/>
----

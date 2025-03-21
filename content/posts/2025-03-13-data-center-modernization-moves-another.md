@@ -16,5 +16,3 @@ Today, we’re introducing the next phase in data center modernization: the 8th 
 
 #### [Source](https://blogs.cisco.com/datacenter/data-center-modernization-moves-another-step-forward-with-next-gen-ucs-servers)
 
-<br/>
----

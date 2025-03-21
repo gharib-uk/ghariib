@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://trustedsec.com/blog/operating-inside-the-interpreted-offensive-python)
 
-<br/>
----

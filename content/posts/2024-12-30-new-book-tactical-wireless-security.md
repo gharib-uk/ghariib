@@ -16,5 +16,3 @@ My New SDR Wireless Security Testing Book -“Tactical Wireless Security” is H
 
 #### [Source](https://cyberarms.wordpress.com/2024/12/30/new-book-tactical-wireless-security/)
 
-<br/>
----

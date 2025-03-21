@@ -22,5 +22,3 @@ The [Winter Break of Code](/blog/winter-break-of-code), being closely linked by 
 
 #### [Source](https://signal.org/blog/roosters-and-a-mountain-of-design/)
 
-<br/>
----

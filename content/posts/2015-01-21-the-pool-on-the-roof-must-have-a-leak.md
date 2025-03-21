@@ -30,5 +30,3 @@ Measured by lines of code, today was short. Measured by steps taken, it was tall
 
 #### [Source](https://signal.org/blog/the-pool-on-the-roof-must-have-a-leak/)
 
-<br/>
----

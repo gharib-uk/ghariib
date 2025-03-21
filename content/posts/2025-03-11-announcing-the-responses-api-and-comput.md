@@ -18,5 +18,3 @@ The post [Announcing the Responses API and Computer-Using Agent in Azure AI Foun
 
 #### [Source](https://azure.microsoft.com/en-us/blog/announcing-the-responses-api-and-computer-using-agent-in-azure-ai-foundry/)
 
-<br/>
----

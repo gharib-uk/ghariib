@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://trustedsec.com/blog/command-line-underdog-wmic-in-action)
 
-<br/>
----

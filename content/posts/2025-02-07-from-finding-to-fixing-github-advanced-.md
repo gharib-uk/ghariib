@@ -18,5 +18,3 @@ The post [From finding to fixing: GitHub Advanced Security integrates Endor Labs
 
 #### [Source](https://github.blog/security/from-finding-to-fixing-github-advanced-security-integrates-endor-labs-sca/)
 
-<br/>
----

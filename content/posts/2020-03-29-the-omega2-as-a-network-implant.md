@@ -216,5 +216,3 @@ I put this thing together as a proof of concept that had the potential to perfor
 
 #### [Source](http://blog.techorganic.com/2020/03/29/the-omega2-as-a-network-implant/)
 
-<br/>
----

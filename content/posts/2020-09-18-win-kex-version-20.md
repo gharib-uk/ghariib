@@ -78,5 +78,3 @@ We hope you enjoy Win-KeX as much as we do and we’d love to see you around in 
 
 #### [Source](https://www.kali.org/blog/win-kex-version-2-0/)
 
-<br/>
----

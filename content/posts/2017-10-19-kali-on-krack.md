@@ -83,5 +83,3 @@ Thanks to OffSec and Kali team member @Steev for the technical resources used in
 
 #### [Source](https://www.kali.org/blog/kali-on-krack/)
 
-<br/>
----

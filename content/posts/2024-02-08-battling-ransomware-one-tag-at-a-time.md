@@ -16,5 +16,3 @@ Discover how CISA's Ransomware Vulnerability Warning Pilot (RVWP) and GreyNoise 
 
 #### [Source](https://www.greynoise.io/blog/battling-ransomware-one-tag-at-a-time)
 
-<br/>
----

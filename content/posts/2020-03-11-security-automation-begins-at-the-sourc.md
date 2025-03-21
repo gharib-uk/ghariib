@@ -16,5 +16,3 @@ Hi, this is Vijay Sarvepalli, Information Security Architect in the CERT Divisio
 
 #### [Source](https://insights.sei.cmu.edu/blog/security-automation-begins-at-the-source-code/)
 
-<br/>
----

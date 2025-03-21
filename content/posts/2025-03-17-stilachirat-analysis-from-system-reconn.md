@@ -18,5 +18,3 @@ The post [StilachiRAT analysis: From system reconnaissance to cryptocurrency the
 
 #### [Source](https://www.microsoft.com/en-us/security/blog/2025/03/17/stilachirat-analysis-from-system-reconnaissance-to-cryptocurrency-theft/)
 
-<br/>
----

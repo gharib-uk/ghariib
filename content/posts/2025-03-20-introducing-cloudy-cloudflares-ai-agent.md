@@ -16,5 +16,3 @@ Cloudflare’s first AI agent, Cloudy, helps make complicated configurations eas
 
 #### [Source](https://blog.cloudflare.com/introducing-ai-agent/)
 
-<br/>
----

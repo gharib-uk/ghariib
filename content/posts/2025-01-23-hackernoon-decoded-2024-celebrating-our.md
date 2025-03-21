@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/hackernoon-decoded-2024-celebrating-our-cybersecurity-community?source=rss)
 
-<br/>
----

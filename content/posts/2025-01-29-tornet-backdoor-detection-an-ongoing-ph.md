@@ -20,5 +20,3 @@ The post [TorNet Backdoor Detection: An Ongoing Phishing Email Campaign Uses Pur
 
 #### [Source](https://socprime.com/blog/tornet-backdoor-detection/)
 
-<br/>
----

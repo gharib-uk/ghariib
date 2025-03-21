@@ -16,5 +16,3 @@ Gain real-time insights with our new threat events platform. This tool empowers 
 
 #### [Source](https://blog.cloudflare.com/threat-events-platform/)
 
-<br/>
----

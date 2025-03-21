@@ -16,5 +16,3 @@ In this post we break down some of the broader themes from Black Hat and DEF CON
 
 #### [Source](https://www.greynoise.io/blog/recurring-themes-present-and-missing-from-hacker-summer-camp)
 
-<br/>
----

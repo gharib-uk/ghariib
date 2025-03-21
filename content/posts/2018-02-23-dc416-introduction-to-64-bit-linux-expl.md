@@ -138,5 +138,3 @@ That concludes the writeup, I hope it was helpful. If you’ve already pwned the
 
 #### [Source](http://blog.techorganic.com/2018/02/23/dc416-introduction-to-64-bit-linux-exploit-development-vuln03-solution/)
 
-<br/>
----

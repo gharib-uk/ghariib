@@ -35,5 +35,3 @@ PS – On a related topic: the Kali images were recently added to the [container
 
 #### [Source](https://www.kali.org/blog/renaming-kali-stable-docker-image/)
 
-<br/>
----

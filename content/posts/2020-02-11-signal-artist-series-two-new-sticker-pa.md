@@ -18,5 +18,3 @@ We [announced support for stickers in Signal](https://signal.org/blog/make-priva
 
 #### [Source](https://signal.org/blog/swoon/)
 
-<br/>
----

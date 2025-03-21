@@ -18,5 +18,3 @@ If you spend a lot of time at the command line, you probably have either a very 
 
 #### [Source](https://hackaday.com/2025/03/20/linux-fu-a-warp-speed-prompt/)
 
-<br/>
----

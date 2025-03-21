@@ -16,5 +16,3 @@ See why Andrew Morris, GreyNoise's founder, is thrilled to step into his dream r
 
 #### [Source](https://www.greynoise.io/blog/weve-hired-ash-devata-as-ceo-at-greynoise-and-i-get-my-dream-job)
 
-<br/>
----

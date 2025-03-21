@@ -89,5 +89,3 @@ Kali Unkaputtbar is made possible by software from an incredible bunch of people
 
 #### [Source](https://www.kali.org/blog/unkaputtbar/)
 
-<br/>
----

@@ -28,5 +28,3 @@ Only calls between Signal users who have _both_ enabled the video calling beta w
 
 #### [Source](https://signal.org/blog/signal-video-calls-beta/)
 
-<br/>
----

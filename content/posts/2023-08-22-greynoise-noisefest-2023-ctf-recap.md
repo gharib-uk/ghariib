@@ -16,5 +16,3 @@ The GreyNoise Labs team is proud to have hosted the GreyNoise NoiseFest 2023 CTF
 
 #### [Source](https://www.greynoise.io/blog/greynoise-noisefest-2023-ctf-recap)
 
-<br/>
----

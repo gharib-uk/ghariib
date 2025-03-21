@@ -56,5 +56,3 @@ As we do every year, we will have some fresh pre-release Kali Linux 2016.2 ISOs 
 
 #### [Source](https://www.kali.org/blog/kali-dojo-black-hat-vegas-2016/)
 
-<br/>
----

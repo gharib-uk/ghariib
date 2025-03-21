@@ -18,5 +18,3 @@ The post [Securing generative AI models on Azure AI Foundry](https://www.microso
 
 #### [Source](https://www.microsoft.com/en-us/security/blog/2025/03/04/securing-generative-ai-models-on-azure-ai-foundry/)
 
-<br/>
----

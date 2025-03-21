@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/ine-secures-spot-in-g2s-2025-top-50-education-software-rankings?source=rss)
 
-<br/>
----

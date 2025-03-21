@@ -20,5 +20,3 @@ We have been [exploring techniques](/blog/private-contact-discovery/) to further
 
 #### [Source](https://signal.org/blog/sealed-sender/)
 
-<br/>
----

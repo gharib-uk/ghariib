@@ -20,5 +20,3 @@ Since we werenâ€™t actually given the opportunity to comment in that story, weâ€
 
 #### [Source](https://signal.org/blog/cellebrite-and-clickbait/)
 
-<br/>
----

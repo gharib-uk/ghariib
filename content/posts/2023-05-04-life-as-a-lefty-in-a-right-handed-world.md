@@ -16,5 +16,3 @@ As a lefty, or southpaw, my perspective of the world has always been different f
 
 #### [Source](https://blog.anantshri.info/life-as-a-lefty-in-a-right-handed-world/)
 
-<br/>
----

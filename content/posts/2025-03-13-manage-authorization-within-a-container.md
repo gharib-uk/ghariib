@@ -16,5 +16,3 @@ Containerization offers organizations significant benefits such as portability, 
 
 #### [Source](https://aws.amazon.com/blogs/security/manage-authorization-within-a-containerized-workload-using-amazon-verified-permissions/)
 
-<br/>
----

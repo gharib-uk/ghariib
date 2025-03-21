@@ -16,5 +16,3 @@ Many traditional threat intelligence solutions used by MSSPs can have an uninten
 
 #### [Source](https://www.greynoise.io/blog/top-3-benefits-mssps-mdrs-receive-with-greynoise)
 
-<br/>
----

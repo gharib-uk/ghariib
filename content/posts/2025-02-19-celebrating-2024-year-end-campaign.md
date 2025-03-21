@@ -63,5 +63,3 @@ Thank you again for supporting Tor and our mission. We look forward to sharing o
 
 #### [Source](https://blog.torproject.org/celebrating-2024-yec/)
 
-<br/>
----

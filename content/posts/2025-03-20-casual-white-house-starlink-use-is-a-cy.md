@@ -16,5 +16,3 @@ from the but-her-emails dept at TechDirt: Wed, Mar 19th 2025 05:26am – Karl 
 
 #### [Source](https://databreaches.net/2025/03/20/casual-white-house-starlink-use-is-a-cybersecurity-nightmare-a-transparency-problem-and-a-weird-marketing-stunt/)
 
-<br/>
----

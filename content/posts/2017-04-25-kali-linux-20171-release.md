@@ -76,5 +76,3 @@ We hope you enjoy this fine release!
 
 #### [Source](https://www.kali.org/blog/kali-linux-2017-1-release/)
 
-<br/>
----

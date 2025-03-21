@@ -153,5 +153,3 @@ A very special thanks to everyone who contributed to this project's early and co
 
 #### [Source](https://cloud.google.com/blog/topics/threat-intelligence/session-stealing-browser-in-the-middle/)
 
-<br/>
----

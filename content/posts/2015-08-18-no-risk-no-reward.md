@@ -18,5 +18,3 @@ After immersing myself for years and years in the world of finance (specifically
 
 #### [Source](https://signal.org/blog/no-risk-no-reward/)
 
-<br/>
----

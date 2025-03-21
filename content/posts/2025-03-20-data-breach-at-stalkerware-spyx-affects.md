@@ -16,5 +16,3 @@ Zack Whittaker reports: A consumer-grade spyware operation called SpyX was hit b
 
 #### [Source](https://databreaches.net/2025/03/20/data-breach-at-stalkerware-spyx-affects-close-to-2-million-including-thousands-of-apple-users/)
 
-<br/>
----

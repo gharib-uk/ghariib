@@ -18,5 +18,3 @@ My cell phone used to be a black and white Nokia until a couple of weeks ago whe
 
 #### [Source](https://signal.org/blog/alpine-hackathon-reportback/)
 
-<br/>
----

@@ -16,5 +16,3 @@ The blog post introduces Sift, a new tool from GreyNoise that helps threat hunte
 
 #### [Source](https://www.greynoise.io/blog/introducing-sift-automated-threat-hunting)
 
-<br/>
----

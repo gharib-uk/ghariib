@@ -22,5 +22,3 @@ By all rights, I should not be here. My application was last-minute to say the l
 
 #### [Source](https://signal.org/blog/better-than-cake/)
 
-<br/>
----

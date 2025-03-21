@@ -72,5 +72,3 @@ We hope that you appreciate and enjoy this new development for WSL as much as we
 
 #### [Source](https://www.kali.org/blog/kali-linux-modern-wsl/)
 
-<br/>
----

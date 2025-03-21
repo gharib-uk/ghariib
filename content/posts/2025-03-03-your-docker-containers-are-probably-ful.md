@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/your-docker-containers-are-probably-full-of-security-holesheres-how-to-fix-them-now?source=rss)
 
-<br/>
----

@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/bubba-ai-inc-is-launching-comp-ai-to-help-100000-startups-get-soc-2-compliant-by-2032?source=rss)
 
-<br/>
----

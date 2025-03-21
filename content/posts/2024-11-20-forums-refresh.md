@@ -117,5 +117,3 @@ Kali is a platform in a field full of fast moving knowledge and skills that can 
 
 #### [Source](https://www.kali.org/blog/forums-refresh/)
 
-<br/>
----

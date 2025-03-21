@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/hide-and-seek-in-memory-outsmarting-sneaky-malware-with-data-magic?source=rss)
 
-<br/>
----

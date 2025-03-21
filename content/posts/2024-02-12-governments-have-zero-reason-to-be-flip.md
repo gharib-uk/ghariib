@@ -16,5 +16,3 @@ Discover insights into the drawbacks of a proposed ban on open-source SDR, and e
 
 #### [Source](https://www.greynoise.io/blog/governments-have-zero-reason-to-be-flipping-mad-about-open-source-sdr-tech)
 
-<br/>
----

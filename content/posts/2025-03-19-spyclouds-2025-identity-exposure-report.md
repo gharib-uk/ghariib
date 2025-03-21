@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/spyclouds-2025-identity-exposure-report-the-scale-and-hidden-risks-of-digital-identity-threats?source=rss)
 
-<br/>
----

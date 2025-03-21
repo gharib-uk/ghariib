@@ -18,5 +18,3 @@ At Open Whisper Systems, we’ve been working on improving our encrypted asynchr
 
 #### [Source](https://signal.org/blog/advanced-ratcheting/)
 
-<br/>
----

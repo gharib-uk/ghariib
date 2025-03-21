@@ -20,5 +20,3 @@ Up until now, the only option to download the information was to
 
 #### [Source](https://blog.shodan.io/developer-access-to-shodan-trends/)
 
-<br/>
----

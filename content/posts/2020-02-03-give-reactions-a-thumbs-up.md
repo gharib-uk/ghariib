@@ -18,5 +18,3 @@ When you’re standing next to a friend who says something funny, you can just l
 
 #### [Source](https://signal.org/blog/reactions/)
 
-<br/>
----

@@ -16,5 +16,3 @@ This blog post expands on concerns brought to light from recent UEFI attacks, su
 
 #### [Source](https://insights.sei.cmu.edu/blog/uefi-5-recommendations-for-securing-restoring-trust/)
 
-<br/>
----

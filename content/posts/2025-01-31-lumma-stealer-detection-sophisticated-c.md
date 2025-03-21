@@ -20,5 +20,3 @@ The post [Lumma Stealer Detection: Sophisticated Campaign Using GitHub Infrastru
 
 #### [Source](https://socprime.com/blog/lumma-stealer-detection/)
 
-<br/>
----

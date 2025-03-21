@@ -395,5 +395,3 @@ If you wish to create your own metapackage, see how we do it [here](https://gitl
 
 #### [Source](https://www.kali.org/blog/major-metapackage-makeover/)
 
-<br/>
----

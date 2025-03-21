@@ -33,5 +33,3 @@ A month ago, we released the Kali Linux Tools website, detailing the tools avail
 
 #### [Source](https://www.kali.org/blog/kali-linux-1-0-9a-release/)
 
-<br/>
----

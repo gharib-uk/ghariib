@@ -16,5 +16,3 @@ In this article, you’ll learn about the Performance Co-Pilot (PCP) tool and ho
 
 #### [Source](https://www.redhat.com/en/blog/monitoring-red-hat-ansible-automation-platform-using-performance-co-pilot)
 
-<br/>
----

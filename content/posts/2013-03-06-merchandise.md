@@ -20,5 +20,3 @@ There are two designs available in a number of sizes:
 
 #### [Source](https://signal.org/blog/merch/)
 
-<br/>
----

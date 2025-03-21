@@ -16,5 +16,3 @@ Elber ESE DVB-S/S2 Satellite Receiver 1.5.x - Authentication Bypass
 
 #### [Source](https://www.exploit-db.com/exploits/52069)
 
-<br/>
----

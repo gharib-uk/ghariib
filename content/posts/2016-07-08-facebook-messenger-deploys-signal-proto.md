@@ -20,5 +20,3 @@ Facebook Messenger has started rolling out [Secret Conversations](https://newsro
 
 #### [Source](https://signal.org/blog/facebook-messenger/)
 
-<br/>
----

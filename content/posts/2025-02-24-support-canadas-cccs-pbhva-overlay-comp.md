@@ -16,5 +16,3 @@ Organizations seeking to adhere to the Canadian Centre for Cyber Security (CCCS)
 
 #### [Source](https://aws.amazon.com/blogs/security/support-canadas-cccs-pbhva-overlay-compliance-with-the-landing-zone-accelerator-on-aws/)
 
-<br/>
----

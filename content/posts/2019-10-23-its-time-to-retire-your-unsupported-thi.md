@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://insights.sei.cmu.edu/blog/its-time-to-retire-your-unsupported-things/)
 
-<br/>
----

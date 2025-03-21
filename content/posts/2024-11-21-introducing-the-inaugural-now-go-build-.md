@@ -16,5 +16,3 @@ Earlier this year, I announced the Now Go Build CTO Fellowship. A program design
 
 #### [Source](https://www.allthingsdistributed.com/2024/11/introducing-the-now-go-build-cto-fellows.html?utm_campaign=inbound&utm_source=rss)
 
-<br/>
----

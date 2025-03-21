@@ -16,5 +16,3 @@ We are thrilled to announce the general availability of Red Hat OpenShift Servic
 
 #### [Source](https://www.redhat.com/en/blog/introducing-red-hat-openshift-service-mesh-3)
 
-<br/>
----

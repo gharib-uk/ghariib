@@ -20,5 +20,3 @@ Signal groups are built on top of the new [private group system](/blog/signal-pr
 
 #### [Source](https://signal.org/blog/new-groups/)
 
-<br/>
----

@@ -26,5 +26,3 @@ Vulnerabilities has been mentioned in this article.
 
 #### [Source](https://www.tripwire.com/state-of-security/tripwire-patch-priority-index-february-2025)
 
-<br/>
----

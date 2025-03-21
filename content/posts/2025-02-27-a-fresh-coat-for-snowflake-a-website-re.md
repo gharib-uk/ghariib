@@ -56,5 +56,3 @@ Applications for the 2025 round are now open. Find [more information on GSoC her
 
 #### [Source](https://blog.torproject.org/snowflake-refresh-to-help-more-people-get-online/)
 
-<br/>
----

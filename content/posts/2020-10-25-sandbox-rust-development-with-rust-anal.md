@@ -72,5 +72,3 @@ P.S. Initial impressions of rust-analyzer are that it’s very good and I never 
 
 #### [Source](https://www.grepular.com/Sandbox_Rust_Development_with_Rust_Analyzer)
 
-<br/>
----

@@ -18,5 +18,3 @@ The post [Microsoft named a leader in The Forrester Wave: Public Cloud Platforms
 
 #### [Source](https://azure.microsoft.com/en-us/blog/microsoft-named-a-leader-in-the-forrester-wave-public-cloud-platforms-2024/)
 
-<br/>
----

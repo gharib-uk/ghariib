@@ -1402,5 +1402,3 @@ Special thanks to Conor Quigley and Luke Jenkins from the Google Threat Intellig
 
 #### [Source](https://cloud.google.com/blog/topics/threat-intelligence/scatterbrain-unmasking-poisonplug-obfuscator/)
 
-<br/>
----

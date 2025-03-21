@@ -23,5 +23,3 @@ The
 
 #### [Source](https://blog.shodan.io/historical-ip-information/)
 
-<br/>
----

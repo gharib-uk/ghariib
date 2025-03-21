@@ -193,5 +193,3 @@ As always, should you come across any bugs in Kali, please submit a report on ou
 
 #### [Source](https://www.kali.org/blog/kali-linux-2020-2-release/)
 
-<br/>
----

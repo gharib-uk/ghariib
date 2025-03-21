@@ -20,5 +20,3 @@ At Signal, our goal is to build a reliable, secure, and private communication ex
 
 #### [Source](https://signal.org/blog/signal-pins/)
 
-<br/>
----

@@ -16,5 +16,3 @@ PHP < 8.3.8 - Remote Code Execution (Unauthenticated) (Windows)
 
 #### [Source](https://www.exploit-db.com/exploits/52047)
 
-<br/>
----

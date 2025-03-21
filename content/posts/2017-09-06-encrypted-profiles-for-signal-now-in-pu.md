@@ -24,5 +24,3 @@ All of this is possible without sacrificing the privacy and security that you ha
 
 #### [Source](https://signal.org/blog/signal-profiles-beta/)
 
-<br/>
----

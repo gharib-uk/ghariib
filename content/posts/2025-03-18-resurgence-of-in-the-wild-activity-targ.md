@@ -16,5 +16,3 @@ GreyNoise has identified a notable resurgence of in-the-wild activity targeting 
 
 #### [Source](https://www.greynoise.io/blog/in-the-wild-activity-targeting-critical-servicenow-vulnerabilities)
 
-<br/>
----

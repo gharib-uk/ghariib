@@ -33,5 +33,3 @@ Additionally, we have had the pleasure of watching Kali make an appearance on [M
 
 #### [Source](https://www.kali.org/blog/azure-marketplace-weekly-iso-builds/)
 
-<br/>
----

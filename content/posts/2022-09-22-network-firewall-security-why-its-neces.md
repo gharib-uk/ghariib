@@ -16,5 +16,3 @@ Table of Contents What Is a Firewall? A Firewall Prevents Hackers From Infiltrat
 
 #### [Source](https://cyberhunter.solutions/network-firewall-security-why-its-necessary-for-business/)
 
-<br/>
----

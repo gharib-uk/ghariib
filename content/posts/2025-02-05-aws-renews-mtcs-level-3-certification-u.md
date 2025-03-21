@@ -16,5 +16,3 @@ Amazon Web Services (AWS) is pleased to announce the renewal of the Multi-Tier 
 
 #### [Source](https://aws.amazon.com/blogs/security/aws-renews-mtcs-level-3-certification-under-the-ss5842020-standard/)
 
-<br/>
----

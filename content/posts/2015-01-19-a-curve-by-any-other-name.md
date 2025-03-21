@@ -30,5 +30,3 @@ As usual, to understand the universe, we must first bake an apple pie from scrat
 
 #### [Source](https://signal.org/blog/a-curve-by-any-other-name/)
 
-<br/>
----

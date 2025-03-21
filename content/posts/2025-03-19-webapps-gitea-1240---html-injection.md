@@ -16,5 +16,3 @@ Gitea 1.24.0 - HTML Injection
 
 #### [Source](https://www.exploit-db.com/exploits/52087)
 
-<br/>
----

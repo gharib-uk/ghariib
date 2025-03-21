@@ -16,5 +16,3 @@ We’re excited to announce that Cloudflare for Campaigns now includes Email Sec
 
 #### [Source](https://blog.cloudflare.com/email-security-now-available-for-free-for-political-parties-and-campaigns/)
 
-<br/>
----

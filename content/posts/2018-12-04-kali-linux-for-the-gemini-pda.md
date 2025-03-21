@@ -72,5 +72,3 @@ With the community demand for Kali Linux on the Gemini and considering that the 
 
 #### [Source](https://www.kali.org/blog/kali-linux-for-the-gemini-pda/)
 
-<br/>
----

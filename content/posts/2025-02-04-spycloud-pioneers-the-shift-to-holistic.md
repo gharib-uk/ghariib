@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/spycloud-pioneers-the-shift-to-holistic-identity-threat-protection?source=rss)
 
-<br/>
----

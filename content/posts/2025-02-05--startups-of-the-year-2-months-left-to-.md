@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/startups-of-the-year-2-months-left-to-cast-your-vote?source=rss)
 
-<br/>
----

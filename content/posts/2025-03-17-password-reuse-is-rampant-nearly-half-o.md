@@ -16,5 +16,3 @@ Nearly half of observed login attempts across websites protected by Cloudflare i
 
 #### [Source](https://blog.cloudflare.com/password-reuse-rampant-half-user-logins-compromised/)
 
-<br/>
----

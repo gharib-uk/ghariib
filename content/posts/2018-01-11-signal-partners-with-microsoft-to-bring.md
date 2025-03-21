@@ -20,5 +20,3 @@ In collaboration with Signal, Microsoft is introducing a [Private Conversations]
 
 #### [Source](https://signal.org/blog/skype-partnership/)
 
-<br/>
----

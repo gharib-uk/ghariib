@@ -74,5 +74,3 @@ The troubling thing is, they could actually have made this secure. As well as th
 
 #### [Source](https://www.grepular.com/Keybase_Browser_Extension_Insecure)
 
-<br/>
----

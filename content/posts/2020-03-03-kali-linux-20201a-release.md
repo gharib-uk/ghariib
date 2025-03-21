@@ -67,5 +67,3 @@ _If you have read this far, we are aiming for a Tuesday in May for its release._
 
 #### [Source](https://www.kali.org/blog/kali-linux-2020-1a-release/)
 
-<br/>
----

@@ -88,5 +88,3 @@ Happy penetration testing!
 
 #### [Source](https://www.kali.org/blog/pixiewps-reaver-aircrack-ng-updates/)
 
-<br/>
----

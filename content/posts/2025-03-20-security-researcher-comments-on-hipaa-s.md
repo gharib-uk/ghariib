@@ -16,5 +16,3 @@ As long-time readers know, DataBreaches has occasionally run into difficulties w
 
 #### [Source](https://databreaches.net/2025/03/20/security-researcher-comments-on-hipaa-security-rule/)
 
-<br/>
----

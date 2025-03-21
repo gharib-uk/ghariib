@@ -74,5 +74,3 @@ After a strong 2019 with Kali, this is a major change to start out our 2020 deve
 
 #### [Source](https://www.kali.org/blog/kali-default-non-root-user/)
 
-<br/>
----

@@ -16,5 +16,3 @@ Genexus Protection Server 9.7.2.10 - 'protsrvservice' Unquoted Service Path
 
 #### [Source](https://www.exploit-db.com/exploits/52065)
 
-<br/>
----

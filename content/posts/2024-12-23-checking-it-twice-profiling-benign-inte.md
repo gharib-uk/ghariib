@@ -16,5 +16,3 @@ A comprehensive analysis of benign internet scanning activity from November 2024
 
 #### [Source](https://www.greynoise.io/blog/checking-it-twice-profiling-benign-internet-scanners----2024-edition)
 
-<br/>
----

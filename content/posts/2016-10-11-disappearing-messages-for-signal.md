@@ -25,5 +25,3 @@ With this update, any conversation can be configured to delete sent and received
 
 #### [Source](https://signal.org/blog/disappearing-messages/)
 
-<br/>
----

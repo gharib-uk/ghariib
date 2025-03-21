@@ -20,5 +20,3 @@ Signal provides _private groups:_ the Signal service has no record of your group
 
 #### [Source](https://signal.org/blog/signal-private-group-system/)
 
-<br/>
----

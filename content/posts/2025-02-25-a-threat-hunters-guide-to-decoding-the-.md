@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://trustedsec.com/blog/a-threat-hunters-guide-to-decoding-the-cloud)
 
-<br/>
----

@@ -16,5 +16,3 @@ As your Amazon Web Services (AWS) environment grows, you might develop a need to
 
 #### [Source](https://aws.amazon.com/blogs/security/four-ways-to-grant-cross-account-access-in-aws/)
 
-<br/>
----

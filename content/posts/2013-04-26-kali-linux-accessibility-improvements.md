@@ -24,5 +24,3 @@ We are very proud to have sponsored this work, which has brought much-improved a
 
 #### [Source](https://www.kali.org/blog/kali-linux-1-0-3-release/)
 
-<br/>
----

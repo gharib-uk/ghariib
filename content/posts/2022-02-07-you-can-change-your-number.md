@@ -20,5 +20,3 @@ Millions of people worldwide rely on Signal every day for secure and private com
 
 #### [Source](https://signal.org/blog/change-number/)
 
-<br/>
----

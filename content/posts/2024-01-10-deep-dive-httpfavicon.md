@@ -20,5 +20,3 @@ They typically contain the logo of the company which gives them 2 functions:
 
 #### [Source](https://blog.shodan.io/deep-dive-http-favicon/)
 
-<br/>
----

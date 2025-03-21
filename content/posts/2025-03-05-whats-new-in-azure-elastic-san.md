@@ -18,5 +18,3 @@ The post [What’s new in Azure Elastic SAN](https://azure.microsoft.com/en-us/b
 
 #### [Source](https://azure.microsoft.com/en-us/blog/whats-new-in-azure-elastic-san/)
 
-<br/>
----

@@ -62,5 +62,3 @@ Happy hacking
 
 #### [Source](https://www.kali.org/blog/kali-vm-builder-weekly/)
 
-<br/>
----

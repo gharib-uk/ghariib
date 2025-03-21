@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/cybersecurity-in-fintech-applications-protecting-financial-data-and-preventing-fraud?source=rss)
 
-<br/>
----

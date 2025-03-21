@@ -26,5 +26,3 @@ Our new method is faster and more efficient. It lays the groundwork for the intr
 
 #### [Source](https://signal.org/blog/building-faster-oram/)
 
-<br/>
----

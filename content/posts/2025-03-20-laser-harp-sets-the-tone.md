@@ -18,5 +18,3 @@ In many ways, living here in the future is quite exiting. We have access to the 
 
 #### [Source](https://hackaday.com/2025/03/20/laser-harp-sets-the-tone/)
 
-<br/>
----

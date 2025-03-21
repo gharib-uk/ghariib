@@ -22,5 +22,3 @@ Your contacts and calendars belong to you. So does your privacy. Flock makes it 
 
 #### [Source](https://signal.org/blog/flock/)
 
-<br/>
----

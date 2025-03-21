@@ -491,5 +491,3 @@ Want to keep up-to-date more easily? We have a [RSS feeds](https://www.kali.org/
 
 #### [Source](https://www.kali.org/blog/kali-linux-2023-1-release/)
 
-<br/>
----

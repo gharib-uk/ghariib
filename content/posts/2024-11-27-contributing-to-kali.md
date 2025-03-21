@@ -44,5 +44,3 @@ Your contributions are extremely helpful to both the community and the Kali team
 
 #### [Source](https://www.kali.org/blog/contributing-to-kali/)
 
-<br/>
----

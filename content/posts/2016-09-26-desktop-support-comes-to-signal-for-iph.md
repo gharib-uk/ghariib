@@ -22,5 +22,3 @@ The Signal Desktop app also supports a new iOS theme, which is enabled by defaul
 
 #### [Source](https://signal.org/blog/signal-desktop-ios/)
 
-<br/>
----

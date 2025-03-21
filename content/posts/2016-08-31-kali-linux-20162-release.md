@@ -61,5 +61,3 @@ We have a lot of exciting announcements that will be coming in the next few week
 
 #### [Source](https://www.kali.org/blog/kali-linux-2016-2-release/)
 
-<br/>
----

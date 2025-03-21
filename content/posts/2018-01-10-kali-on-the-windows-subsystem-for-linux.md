@@ -68,5 +68,3 @@ Without further ado, here’s the video demonstration of the setup described abo
 
 #### [Source](https://www.kali.org/blog/kali-on-the-windows-subsystem-for-linux/)
 
-<br/>
----

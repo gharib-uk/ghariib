@@ -16,5 +16,3 @@ See what predictions and hot takes our Storm Watch hosts have for 2024.
 
 #### [Source](https://www.greynoise.io/blog/weathering-2024-storm-watch-predictions-for-the-year-ahead)
 
-<br/>
----

@@ -20,5 +20,3 @@ Over the past year, we’ve been working to bring the privacy software we’ve d
 
 #### [Source](https://signal.org/blog/signal/)
 
-<br/>
----

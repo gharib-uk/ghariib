@@ -16,5 +16,3 @@ Join us on March 24, 2025, for a virtual presentation and Q&A on the gendered di
 
 #### [Source](https://citizenlab.ca/2025/03/online-presentation-of-no-escape-march-24/)
 
-<br/>
----

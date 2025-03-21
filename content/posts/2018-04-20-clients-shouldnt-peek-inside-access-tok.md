@@ -16,5 +16,3 @@ I am having a Twitter thread about why the Microsoft Graph- and only the Microso
 
 #### [Source](https://www.cloudidentity.com/blog/2018/04/20/clients-shouldnt-peek-inside-access-tokens/)
 
-<br/>
----

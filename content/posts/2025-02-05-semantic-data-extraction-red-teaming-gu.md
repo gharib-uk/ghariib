@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/generative-ais-double-edged-sword-unlocking-potential-while-mitigating-risks?source=rss)
 
-<br/>
----

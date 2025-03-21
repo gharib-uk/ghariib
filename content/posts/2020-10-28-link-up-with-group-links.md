@@ -20,5 +20,3 @@ We recently released [a new version of Signal groups](/blog/new-groups/) with gr
 
 #### [Source](https://signal.org/blog/group-links/)
 
-<br/>
----

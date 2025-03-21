@@ -26,5 +26,3 @@ We would like to thank all of the alpha and beta users who helped us test and st
 
 #### [Source](https://signal.org/blog/signal-for-ipad/)
 
-<br/>
----

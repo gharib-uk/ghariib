@@ -22,5 +22,3 @@ Signal’s upcoming beta releases will also introduce the option to transfer you
 
 #### [Source](https://signal.org/blog/a-synchronized-start-for-linked-devices/)
 
-<br/>
----

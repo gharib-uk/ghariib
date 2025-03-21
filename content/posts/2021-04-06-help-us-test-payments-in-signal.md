@@ -20,5 +20,3 @@ The latest Signal betas are rolling out today. Inside, you’ll find performance
 
 #### [Source](https://signal.org/blog/help-us-test-payments-in-signal/)
 
-<br/>
----

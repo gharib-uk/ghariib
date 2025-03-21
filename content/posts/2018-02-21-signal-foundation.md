@@ -20,5 +20,3 @@ Since then, we’ve made some progress. We’ve built a service used by millions
 
 #### [Source](https://signal.org/blog/signal-foundation/)
 
-<br/>
----

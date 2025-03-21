@@ -18,5 +18,3 @@ The post [New global report: How to stand out in an AI-savvy world](https://azur
 
 #### [Source](https://azure.microsoft.com/en-us/blog/new-global-report-how-to-stand-out-in-an-ai-savvy-world/)
 
-<br/>
----

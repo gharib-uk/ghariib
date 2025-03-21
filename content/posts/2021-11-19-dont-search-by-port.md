@@ -19,5 +19,3 @@ You want to learn more about [Elastic](https://www.elastic.co) clusters exposed 
 
 #### [Source](https://blog.shodan.io/dont-search-by-port/)
 
-<br/>
----

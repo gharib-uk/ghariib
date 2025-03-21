@@ -16,5 +16,3 @@ A new Censys report found 145,000 exposed ICSs and thousands of insecure human-m
 
 #### [Source](https://www.greynoise.io/blog/new-report-reveals-hidden-risks-how-internet-exposed-systems-threaten-critical-infrastructure)
 
-<br/>
----

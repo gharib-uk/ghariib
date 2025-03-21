@@ -16,5 +16,3 @@ In an opinion piece in the Tahrir Institute for Middle East Policy, Noura Aljiza
 
 #### [Source](https://citizenlab.ca/2025/02/truth-in-transition-disinformation-in-post-assad-syria/)
 
-<br/>
----

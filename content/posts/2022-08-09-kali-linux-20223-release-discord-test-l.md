@@ -265,5 +265,3 @@ Want to keep in up-to-date easier? We have a [RSS feeds](https://www.kali.org/rs
 
 #### [Source](https://www.kali.org/blog/kali-linux-2022-3-release/)
 
-<br/>
----

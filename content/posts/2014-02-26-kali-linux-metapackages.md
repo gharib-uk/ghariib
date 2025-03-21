@@ -93,5 +93,3 @@ apt-cache show kali-linux-web | grep Depends
 
 #### [Source](https://www.kali.org/blog/kali-linux-metapackages/)
 
-<br/>
----

@@ -56,5 +56,3 @@ A lot has been going on behind the scenes in the Kali Linux arena, and we’re e
 
 #### [Source](https://www.kali.org/blog/introducing-kali-linux-certified-professional/)
 
-<br/>
----

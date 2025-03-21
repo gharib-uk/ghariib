@@ -20,5 +20,3 @@ This Spring will be the first Open Whisper Systems _Spring Break Of Code_, a wee
 
 #### [Source](https://signal.org/blog/spring-break-of-code/)
 
-<br/>
----

@@ -46,5 +46,3 @@ The full changelog since [Tor Browser 14.0.6](https://gitlab.torproject.org/tpo/
 
 #### [Source](https://blog.torproject.org/new-release-tor-browser-1407/)
 
-<br/>
----

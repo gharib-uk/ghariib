@@ -26,5 +26,3 @@ Vulnerabilities has been mentioned in this article.
 
 #### [Source](https://thecyberthrone.in/2025/03/06/hunters-international-claims-tata-technologies-attack/)
 
-<br/>
----

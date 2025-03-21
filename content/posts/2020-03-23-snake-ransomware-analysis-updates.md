@@ -16,5 +16,3 @@ In January 2020, Sentinel Labs published two reports on Snake (also known as Eka
 
 #### [Source](https://insights.sei.cmu.edu/blog/snake-ransomware-analysis-updates/)
 
-<br/>
----

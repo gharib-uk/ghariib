@@ -32,5 +32,3 @@ Tomorrow, Tuesday 21st Jan, 2014 from 1300 - 1500 EST, we are conducting a [Redd
 
 #### [Source](https://www.kali.org/blog/kali-linux-amazon-ec2-ami/)
 
-<br/>
----

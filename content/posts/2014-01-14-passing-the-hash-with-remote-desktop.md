@@ -37,5 +37,3 @@ And that’s it! RDP sessions using harvested password hashes. Again, keep in mi
 
 #### [Source](https://www.kali.org/blog/passing-hash-remote-desktop/)
 
-<br/>
----

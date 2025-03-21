@@ -16,5 +16,3 @@ If you’d like to skip directly to the detailed mapping between the CISA guidan
 
 #### [Source](https://aws.amazon.com/blogs/security/enhancing-telecom-security-with-aws/)
 
-<br/>
----

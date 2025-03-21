@@ -18,5 +18,3 @@ In our [previous post](/blog/low-latency-switching), we discussed the global inf
 
 #### [Source](https://signal.org/blog/client-side-audio-quality/)
 
-<br/>
----

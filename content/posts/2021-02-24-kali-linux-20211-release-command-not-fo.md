@@ -232,5 +232,3 @@ As always, should you come across any bugs in Kali, please submit a report on ou
 
 #### [Source](https://www.kali.org/blog/kali-linux-2021-1-release/)
 
-<br/>
----

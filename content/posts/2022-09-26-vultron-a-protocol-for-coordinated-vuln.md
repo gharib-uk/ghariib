@@ -16,5 +16,3 @@ This post introduces Vultron, a protocol for multi-party coordinated vulnerabili
 
 #### [Source](https://insights.sei.cmu.edu/blog/vultron-a-protocol-for-coordinated-vulnerability-disclosure/)
 
-<br/>
----

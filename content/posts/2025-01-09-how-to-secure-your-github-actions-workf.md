@@ -18,5 +18,3 @@ The post [How to secure your GitHub Actions workflows with CodeQL](https://githu
 
 #### [Source](https://github.blog/security/application-security/how-to-secure-your-github-actions-workflows-with-codeql/)
 
-<br/>
----

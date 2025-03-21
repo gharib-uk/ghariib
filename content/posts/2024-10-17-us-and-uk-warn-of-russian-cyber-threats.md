@@ -16,5 +16,3 @@ Joint U.S. and UK advisory identifies 24 vulnerabilities exploited by Russian st
 
 #### [Source](https://www.greynoise.io/blog/u-s-and-uk-warn-of-russian-cyber-threats-9-of-24-vulnerabilities-in-the-advisory-are-being-probed-right-now)
 
-<br/>
----

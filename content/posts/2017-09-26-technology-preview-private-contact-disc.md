@@ -20,5 +20,3 @@ Using this service, Signal clients will be able to efficiently and scalably dete
 
 #### [Source](https://signal.org/blog/private-contact-discovery/)
 
-<br/>
----

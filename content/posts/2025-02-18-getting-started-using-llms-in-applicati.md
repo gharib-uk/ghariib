@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://trustedsec.com/blog/getting-started-using-llms-in-application-testing-with-an-mvp)
 
-<br/>
----

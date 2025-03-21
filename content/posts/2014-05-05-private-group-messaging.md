@@ -18,5 +18,3 @@ One of the major features we introduced in the [TextSecure v2](/blog/the-new-tex
 
 #### [Source](https://signal.org/blog/private-groups/)
 
-<br/>
----

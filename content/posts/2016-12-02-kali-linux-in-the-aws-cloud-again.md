@@ -18,5 +18,3 @@ We’re happy to announce that we’ve once again listed our [Kali Linux images 
 
 #### [Source](https://www.kali.org/blog/kali-linux-aws-cloud/)
 
-<br/>
----

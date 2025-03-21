@@ -18,5 +18,3 @@ We recently received a great bug report from Jean-Philippe Aumasson and Markus V
 
 #### [Source](https://signal.org/blog/signal-android-attachment-bug/)
 
-<br/>
----

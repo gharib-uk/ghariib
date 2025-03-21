@@ -205,5 +205,3 @@ Whether through a comprehensive Red Team engagement or a targeted external asses
 
 #### [Source](https://cloud.google.com/blog/topics/threat-intelligence/red-team-application-security-testing/)
 
-<br/>
----

@@ -16,5 +16,3 @@ Discover the latest findings from Censys and GreyNoise on the real-world threats
 
 #### [Source](https://www.greynoise.io/blog/challenging-assumptions-enhancing-the-understanding-of-securing-internet-exposed-industrial-control-systems)
 
-<br/>
----

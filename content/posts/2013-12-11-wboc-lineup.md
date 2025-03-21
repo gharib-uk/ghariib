@@ -20,5 +20,3 @@ We think the final lineup of those attending in January is going to be great:
 
 #### [Source](https://signal.org/blog/winter-break-of-code-lineup/)
 
-<br/>
----

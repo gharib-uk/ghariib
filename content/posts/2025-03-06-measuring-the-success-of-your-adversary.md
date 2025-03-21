@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://trustedsec.com/blog/measuring-the-success-of-your-adversary-simulations)
 
-<br/>
----

@@ -16,5 +16,3 @@ Table of Contents What Is Cloud Security? 5 Major Advantages of Cloud Security S
 
 #### [Source](https://cyberhunter.solutions/5-advantages-of-cloud-computing-security-solutions/)
 
-<br/>
----

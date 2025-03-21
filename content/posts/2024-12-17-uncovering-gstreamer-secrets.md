@@ -18,5 +18,3 @@ The post [Uncovering GStreamer secrets](https://github.blog/security/vulnerabili
 
 #### [Source](https://github.blog/security/vulnerability-research/uncovering-gstreamer-secrets/)
 
-<br/>
----

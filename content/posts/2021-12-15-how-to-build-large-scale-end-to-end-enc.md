@@ -18,5 +18,3 @@ Signal released [end-to-end encrypted group calls](https://signal.org/blog/group
 
 #### [Source](https://signal.org/blog/how-to-build-encrypted-group-calls/)
 
-<br/>
----

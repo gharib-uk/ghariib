@@ -26,5 +26,3 @@ Vulnerabilities has been mentioned in this article.
 
 #### [Source](https://thehackernews.com/2025/03/china-linked-silk-typhoon-expands-cyber.html)
 
-<br/>
----

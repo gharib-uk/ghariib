@@ -77,5 +77,3 @@ As usual, you do not need to re-download Kali Linux 1.0.4 if you already have it
 
 #### [Source](https://www.kali.org/blog/kali-linux-1-0-4-release/)
 
-<br/>
----

@@ -26,5 +26,3 @@ Vulnerabilities has been mentioned in this article.
 
 #### [Source](https://www.darkreading.com/remote-workforce/china-silk-typhoon-it-supply-chain-attacks)
 
-<br/>
----

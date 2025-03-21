@@ -16,5 +16,3 @@ We are closing the cleartext HTTP ports entirely for Cloudflare API traffic. Thi
 
 #### [Source](https://blog.cloudflare.com/https-only-for-cloudflare-apis-shutting-the-door-on-cleartext-traffic/)
 
-<br/>
----

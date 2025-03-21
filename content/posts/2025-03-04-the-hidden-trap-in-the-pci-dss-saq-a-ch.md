@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://trustedsec.com/blog/the-hidden-trap-in-the-pci-dss-saq-a-changes)
 
-<br/>
----

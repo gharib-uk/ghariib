@@ -759,5 +759,3 @@ b'\n\x1b[1;32765;32mWhere do you want to plant?\n1. City\n2. Forest\n\x1b[0m> Th
 
 #### [Source](http://blog.techorganic.com/2021/04/26/cyber-apocalypse-ctf-2021-pwnables/)
 
-<br/>
----

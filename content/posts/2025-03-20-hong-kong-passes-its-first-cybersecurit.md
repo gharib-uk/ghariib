@@ -16,5 +16,3 @@ Lo Hoi-ying reports: Hong Kong’s legislature has approved the city’s first b
 
 #### [Source](https://databreaches.net/2025/03/20/hong-kong-passes-its-first-cybersecurity-bill-covering-critical-infrastructure/)
 
-<br/>
----

@@ -16,5 +16,3 @@ Wi-Fi 7 offers transformative opportunities, enabling secure, high-performance n
 
 #### [Source](https://blogs.cisco.com/partner/navigating-the-future-of-connectivity-services-opportunities-around-ciscos-wi-fi-7)
 
-<br/>
----

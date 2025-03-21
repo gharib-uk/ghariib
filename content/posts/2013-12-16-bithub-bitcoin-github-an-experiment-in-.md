@@ -22,5 +22,3 @@ It’s never been clear to us how we should handle small donations, so oftentime
 
 #### [Source](https://signal.org/blog/bithub/)
 
-<br/>
----

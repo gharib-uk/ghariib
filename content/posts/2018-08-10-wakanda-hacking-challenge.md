@@ -382,5 +382,3 @@ Wakanda forever!
 
 #### [Source](http://blog.techorganic.com/2018/08/10/wakanda-hacking-challenge/)
 
-<br/>
----

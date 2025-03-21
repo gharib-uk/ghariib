@@ -18,5 +18,3 @@ The post [Phishing campaign impersonates Booking .com, delivers a suite of crede
 
 #### [Source](https://www.microsoft.com/en-us/security/blog/2025/03/13/phishing-campaign-impersonates-booking-com-delivers-a-suite-of-credential-stealing-malware/)
 
-<br/>
----

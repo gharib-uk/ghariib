@@ -118,5 +118,3 @@ The above patch fixed the issue for us, allowing encrypted LVM installs to compl
 
 #### [Source](https://www.kali.org/blog/tracking-fixing-installer-bugs/)
 
-<br/>
----

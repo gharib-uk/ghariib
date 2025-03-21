@@ -16,5 +16,3 @@ Amazon Web Services (AWS) is excited to announce that a new Information Securit
 
 #### [Source](https://aws.amazon.com/blogs/security/2024-h2-irap-report-is-now-available-on-aws-artifact-for-australian-customers/)
 
-<br/>
----

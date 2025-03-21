@@ -20,5 +20,3 @@ The trouble is that while building a social network is hard, most interesting so
 
 #### [Source](https://signal.org/blog/contact-discovery/)
 
-<br/>
----

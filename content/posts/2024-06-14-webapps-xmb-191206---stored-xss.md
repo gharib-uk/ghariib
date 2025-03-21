@@ -16,5 +16,3 @@ XMB 1.9.12.06 - Stored XSS
 
 #### [Source](https://www.exploit-db.com/exploits/52044)
 
-<br/>
----

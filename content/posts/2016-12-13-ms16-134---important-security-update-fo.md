@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://technet.microsoft.com/en-us/library/security/MS16-134)
 
-<br/>
----

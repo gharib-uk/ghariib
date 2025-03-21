@@ -16,5 +16,3 @@ GreyNoise is launching a multipart series on election cybersecurity. This series
 
 #### [Source](https://www.greynoise.io/blog/understanding-the-election-cybersecurity-landscape)
 
-<br/>
----

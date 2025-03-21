@@ -18,5 +18,3 @@ The post [Navigating the 2024 holiday season: Insights into Azure’s DDoS defen
 
 #### [Source](https://azure.microsoft.com/en-us/blog/navigating-the-2024-holiday-season-insights-into-azures-ddos-defense/)
 
-<br/>
----

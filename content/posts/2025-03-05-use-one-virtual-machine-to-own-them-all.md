@@ -24,5 +24,3 @@ Vulnerabilities has been mentioned in this article.
 
 #### [Source](https://doublepulsar.com/use-one-virtual-machine-to-own-them-all-active-exploitation-of-esxicape-0091ccc5bdfc?source=rss----8343faddf0ec---4)
 
-<br/>
----

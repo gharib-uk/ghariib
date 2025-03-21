@@ -83,5 +83,3 @@ root@kali:~# dpkg-reconfigure cryptsetup-nuke-password
 
 #### [Source](https://www.kali.org/blog/emergency-self-destruction-luks-kali/)
 
-<br/>
----

@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://trustedsec.com/blog/exploring-ntds-dit-part-1-cracking-the-surface-with-dit-explorer)
 
-<br/>
----

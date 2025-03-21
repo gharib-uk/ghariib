@@ -21,5 +21,3 @@ If you’re heading down to Black Hat Vegas 2015, join our free [Kali 2.0 Dojo w
 
 #### [Source](https://www.kali.org/blog/kali-linux-2-release-day-scheduled/)
 
-<br/>
----

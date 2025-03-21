@@ -16,5 +16,3 @@ About one in three organizations that leverage cloud service providers (CSPs) us
 
 #### [Source](https://www.tripwire.com/state-of-security/secure-information-aws-10-best-practices)
 
-<br/>
----

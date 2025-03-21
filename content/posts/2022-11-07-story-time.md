@@ -22,5 +22,3 @@ Stories are now available on Signal for Android and iOS, with Desktop coming soo
 
 #### [Source](https://signal.org/blog/introducing-stories/)
 
-<br/>
----

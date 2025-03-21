@@ -20,5 +20,3 @@ At Open Whisper Systems, our goal is to make private communication simple. The f
 
 #### [Source](https://signal.org/blog/allo/)
 
-<br/>
----

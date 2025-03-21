@@ -16,5 +16,3 @@ Table of Contents Reducing Cybersecurity Threats Costs to Finances and Reputatio
 
 #### [Source](https://cyberhunter.solutions/why-is-cybersecurity-important-to-the-success-of-a-business/)
 
-<br/>
----

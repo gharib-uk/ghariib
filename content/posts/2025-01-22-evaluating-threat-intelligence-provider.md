@@ -16,5 +16,3 @@ Discover whether your team truly needs a threat intelligence feed with our unbia
 
 #### [Source](https://www.greynoise.io/blog/evaluating-threat-intelligence-providers-what-security-teams-need-to-know)
 
-<br/>
----

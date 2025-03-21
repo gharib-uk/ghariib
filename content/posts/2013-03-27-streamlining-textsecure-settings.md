@@ -22,5 +22,3 @@ But this trip is different. This time it’s not about family or heritage. This 
 
 #### [Source](https://signal.org/blog/streamlining-textsecure-settings/)
 
-<br/>
----

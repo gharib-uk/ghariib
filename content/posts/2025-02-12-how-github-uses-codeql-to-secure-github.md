@@ -18,5 +18,3 @@ The post [How GitHub uses CodeQL to secure GitHub](https://github.blog/engineeri
 
 #### [Source](https://github.blog/engineering/how-github-uses-codeql-to-secure-github/)
 
-<br/>
----

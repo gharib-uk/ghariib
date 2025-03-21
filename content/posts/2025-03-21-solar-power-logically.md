@@ -18,5 +18,3 @@ We’ve all seen the ads. Some offer “free” solar panels. Others promise nea
 
 #### [Source](https://hackaday.com/2025/03/20/solar-power-logically/)
 
-<br/>
----

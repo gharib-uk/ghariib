@@ -16,5 +16,3 @@ Few years ago I wrote a post about how you can obtain the ID of a tenant from on
 
 #### [Source](https://www.cloudidentity.com/blog/2016/12/12/from-tenantid-to-domain/)
 
-<br/>
----

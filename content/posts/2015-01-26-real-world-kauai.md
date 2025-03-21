@@ -22,5 +22,3 @@ When I agreed to take part in Winter Break of Code, I had no idea what to really
 
 #### [Source](https://signal.org/blog/real-world-kauai/)
 
-<br/>
----

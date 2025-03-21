@@ -16,5 +16,3 @@ Firewall for AI discovers and protects your public LLM-powered applications, and
 
 #### [Source](https://blog.cloudflare.com/take-control-of-public-ai-application-security-with-cloudflare-firewall-for-ai/)
 
-<br/>
----

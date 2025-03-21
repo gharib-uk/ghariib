@@ -16,5 +16,3 @@ Every day, I talk with security leaders who are navigating a critical balancing 
 
 #### [Source](https://aws.amazon.com/blogs/security/secure-cloud-innovation-starts-at-reinforce-2025/)
 
-<br/>
----

@@ -20,5 +20,3 @@ I’ve been working with Open Whisper Systems on TextSecure for about a year and
 
 #### [Source](https://signal.org/blog/the-view-from-here/)
 
-<br/>
----

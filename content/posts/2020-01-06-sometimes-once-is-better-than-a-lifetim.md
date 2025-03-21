@@ -18,5 +18,3 @@ Today’s beta releases of Signal for Android and iOS include a new way to send 
 
 #### [Source](https://signal.org/blog/view-once/)
 
-<br/>
----

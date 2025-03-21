@@ -20,5 +20,3 @@ Every morning at standup I’d watch the knife spin in slow motion, dread fillin
 
 #### [Source](https://signal.org/blog/aloha-but-not/)
 
-<br/>
----

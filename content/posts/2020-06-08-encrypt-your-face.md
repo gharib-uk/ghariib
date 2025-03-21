@@ -20,5 +20,3 @@ One immediate thing seems clear about 2020: it’s a good year to cover your fac
 
 #### [Source](https://signal.org/blog/encrypt-your-face/)
 
-<br/>
----

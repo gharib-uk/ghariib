@@ -16,5 +16,3 @@ The Citizen Lab’s Siena Anstis and Ron Deibert examine the phenomenon of digit
 
 #### [Source](https://citizenlab.ca/2025/03/silenced-by-surveillance-the-impacts-of-digital-transnational-repression-on-journalists-human-rights-defenders-and-dissidents-in-exile/)
 
-<br/>
----

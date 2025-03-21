@@ -16,5 +16,3 @@ Tech cycles flip from centralized to decentralized: Examples include AI's shift 
 
 #### [Source](https://blog.anantshri.info/flip-cycles-of-computing/)
 
-<br/>
----

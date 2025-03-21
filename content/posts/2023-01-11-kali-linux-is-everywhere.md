@@ -201,5 +201,3 @@ To restate it, you won’t find a singular “right” way to interact with Kali
 
 #### [Source](https://www.kali.org/blog/kali-linux-is-everywhere/)
 
-<br/>
----

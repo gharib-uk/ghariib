@@ -22,5 +22,3 @@ Today, we’re launching group calls in Signal with the latest versions of our a
 
 #### [Source](https://signal.org/blog/group-calls/)
 
-<br/>
----

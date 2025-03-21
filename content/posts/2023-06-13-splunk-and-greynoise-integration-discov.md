@@ -16,5 +16,3 @@ In this blog you'll discover powerful and practical ways to leverage GreyNoise d
 
 #### [Source](https://www.greynoise.io/blog/splunk-and-greynoise-integration-discovering-hidden-insights-through-feeds-and-dashboards)
 
-<br/>
----

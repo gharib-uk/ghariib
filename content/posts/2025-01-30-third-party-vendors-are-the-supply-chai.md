@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/third-party-vendors-are-the-supply-chains-ignored-vulnerability?source=rss)
 
-<br/>
----

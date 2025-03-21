@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/sweet-security-unveils-patent-pending-llm-powered-detection-engine?source=rss)
 
-<br/>
----

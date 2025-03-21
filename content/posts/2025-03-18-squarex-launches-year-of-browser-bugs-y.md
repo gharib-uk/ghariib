@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/squarex-launches-year-of-browser-bugs-yobb-to-expose-critical-security-blind-spots?source=rss)
 
-<br/>
----

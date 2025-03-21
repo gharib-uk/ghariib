@@ -20,5 +20,3 @@ I woke up this morning feeling like this routine was normal, instead of implausi
 
 #### [Source](https://signal.org/blog/if-you-see-a-bug/)
 
-<br/>
----

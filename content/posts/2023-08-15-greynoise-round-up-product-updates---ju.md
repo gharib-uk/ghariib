@@ -16,5 +16,3 @@ As we roll through the summer, GreyNoise is back from its July two-week shutdown
 
 #### [Source](https://www.greynoise.io/blog/greynoise-round-up-product-updates-june-and-july-2023)
 
-<br/>
----

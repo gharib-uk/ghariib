@@ -47,5 +47,3 @@ Last month, [OffSec](https://www.offsec.com/) put out a promotional video as wel
 
 #### [Source](https://www.kali.org/blog/kali-linux-1-1-0-release/)
 
-<br/>
----

@@ -22,5 +22,3 @@ At a time when more people than ever are benefiting from these protections, the 
 
 #### [Source](https://signal.org/blog/earn-it/)
 
-<br/>
----

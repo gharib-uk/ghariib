@@ -20,5 +20,3 @@ The latest Signal release for Android includes support for GIF search and browsi
 
 #### [Source](https://signal.org/blog/giphy-experiment/)
 
-<br/>
----

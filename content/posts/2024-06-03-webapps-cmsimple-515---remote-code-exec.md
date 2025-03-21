@@ -16,5 +16,3 @@ CMSimple 5.15 - Remote Code Execution (RCE) (Authenticated)
 
 #### [Source](https://www.exploit-db.com/exploits/52040)
 
-<br/>
----

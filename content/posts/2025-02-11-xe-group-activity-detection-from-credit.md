@@ -20,5 +20,3 @@ The post [XE Group Activity Detection: From Credit Card Skimming to Exploiting C
 
 #### [Source](https://socprime.com/blog/detect-xe-group-attacks/)
 
-<br/>
----

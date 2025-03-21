@@ -16,5 +16,3 @@ GreyNoise researchers have released tags for critical vulnerabilities in Adobe C
 
 #### [Source](https://www.greynoise.io/blog/three-new-tags-for-coldfusion-2-and-citrix-1)
 
-<br/>
----

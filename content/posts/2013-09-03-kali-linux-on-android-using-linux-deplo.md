@@ -92,5 +92,3 @@ Anyone fancy a simple smartphone [hardware backdoor](https://www.offsec.com/kali
 
 #### [Source](https://www.kali.org/blog/kali-linux-android-linux-deploy/)
 
-<br/>
----

@@ -18,5 +18,3 @@ The post [Cybersecurity researchers: Digital detectives in a connected world](ht
 
 #### [Source](https://github.blog/security/vulnerability-research/cybersecurity-researchers-digital-detectives-in-a-connected-world/)
 
-<br/>
----

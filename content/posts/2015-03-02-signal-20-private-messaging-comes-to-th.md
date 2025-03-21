@@ -24,5 +24,3 @@ It is now possible to send end-to-end encrypted group, text, picture, and video 
 
 #### [Source](https://signal.org/blog/the-new-signal/)
 
-<br/>
----

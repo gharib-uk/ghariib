@@ -18,5 +18,3 @@ The Etch A Sketch is a classic children’s toy resembling a picture frame where
 
 #### [Source](https://hackaday.com/2025/03/20/a-modern-take-on-the-etch-a-sketch/)
 
-<br/>
----

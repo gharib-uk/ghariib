@@ -16,5 +16,3 @@ A blogpost exploring difference between startup and corporate roles. especially 
 
 #### [Source](https://blog.anantshri.info/startups-vs-corporates-unblurring-the-lines-for-job-seekers/)
 
-<br/>
----

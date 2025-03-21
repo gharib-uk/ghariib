@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/ine-security-alert-expediting-cmmc-20-compliance?source=rss)
 
-<br/>
----

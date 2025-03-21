@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/dumping-data-and-dodging-danger-a-quirky-quest-against-obfuscated-malware?source=rss)
 
-<br/>
----

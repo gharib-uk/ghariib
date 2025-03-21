@@ -20,5 +20,3 @@ Attempting to roll back the clock on security improvements which have massively 
 
 #### [Source](https://signal.org/blog/setback-in-the-outback/)
 
-<br/>
----

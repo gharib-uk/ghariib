@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://trustedsec.com/blog/are-attackers-passing-though-your-azure-app-proxy)
 
-<br/>
----

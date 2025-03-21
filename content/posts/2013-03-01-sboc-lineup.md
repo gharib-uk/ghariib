@@ -20,5 +20,3 @@ We think the final lineup of accepted proposals is great:
 
 #### [Source](https://signal.org/blog/spring-break-of-code-lineup/)
 
-<br/>
----

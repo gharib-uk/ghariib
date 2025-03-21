@@ -16,5 +16,3 @@ This post recaps our recent webinar "How MSSPs Can Leverage Automation to Reduce
 
 #### [Source](https://www.greynoise.io/blog/mssps-playbook-for-success-balancing-automation-and-human-expertise)
 
-<br/>
----

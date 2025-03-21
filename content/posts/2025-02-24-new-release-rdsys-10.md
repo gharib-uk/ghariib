@@ -38,5 +38,3 @@ Full changelog since 0.14.2 (when we fully replaced BridgeDB for Rdsys):
 
 #### [Source](https://blog.torproject.org/new-release-rdsys-1-0/)
 
-<br/>
----

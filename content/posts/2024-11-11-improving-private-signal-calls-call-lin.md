@@ -20,5 +20,3 @@ If you love group calls on Signal, but don’t want to create a group chat for e
 
 #### [Source](https://signal.org/blog/call-links/)
 
-<br/>
----

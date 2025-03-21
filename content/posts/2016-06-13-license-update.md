@@ -20,5 +20,3 @@ Our Signal Protocol libraries are open source, licensed GPLv3. We like the GPL f
 
 #### [Source](https://signal.org/blog/license-update/)
 
-<br/>
----

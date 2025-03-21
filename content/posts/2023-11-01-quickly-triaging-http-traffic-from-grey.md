@@ -16,5 +16,3 @@ The GreyNoise Labs team shares one way to dig into HTTP content in PCAPs generat
 
 #### [Source](https://www.greynoise.io/blog/quickly-triaging-http-traffic-from-greynoises-new-hosted-sensors)
 
-<br/>
----

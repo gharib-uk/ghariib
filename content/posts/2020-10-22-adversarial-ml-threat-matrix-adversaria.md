@@ -16,5 +16,3 @@ This SEI Blog post introduces the Adversarial ML Threat Matrix, a list of tactic
 
 #### [Source](https://insights.sei.cmu.edu/blog/adversarial-ml-threat-matrix-adversarial-tactics-techniques-and-common-knowledge-of-machine-learning/)
 
-<br/>
----

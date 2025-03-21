@@ -16,5 +16,3 @@ A newly discovered global cyber threat is rapidly expanding, infecting tens of t
 
 #### [Source](https://www.greynoise.io/blog/new-ddos-botnet-discovered)
 
-<br/>
----

@@ -22,5 +22,3 @@ Late this afternoon I took a break from working to surf. The sun was setting and
 
 #### [Source](https://signal.org/blog/paddle-out/)
 
-<br/>
----

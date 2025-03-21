@@ -20,5 +20,3 @@ The last code committed, the final waves surfed in to the shore, the closing sun
 
 #### [Source](https://signal.org/blog/sboc-goodbye/)
 
-<br/>
----

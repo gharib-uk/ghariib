@@ -152,5 +152,3 @@ As said in the introduction, this blog post is nothing new, it’s merely a step
 
 #### [Source](https://www.kali.org/blog/xz-backdoor-getting-started/)
 
-<br/>
----

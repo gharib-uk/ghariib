@@ -16,5 +16,3 @@ We’re launching the AWS Trust Center, a new online resource that shares how we
 
 #### [Source](https://aws.amazon.com/blogs/security/introducing-the-aws-trust-center/)
 
-<br/>
----

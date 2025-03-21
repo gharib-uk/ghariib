@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/secpod-launches-saner-cloud-a-revolutionary-cnapp-for-preventive-cybersecurity?source=rss)
 
-<br/>
----

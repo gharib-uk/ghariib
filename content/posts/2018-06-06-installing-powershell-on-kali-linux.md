@@ -115,5 +115,3 @@ We think it’s remarkable that, not only did Microsoft Open-source PowerShell, 
 
 #### [Source](https://www.kali.org/blog/installing-powershell-on-kali-linux/)
 
-<br/>
----

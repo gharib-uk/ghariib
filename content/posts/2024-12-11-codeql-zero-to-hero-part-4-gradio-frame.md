@@ -18,5 +18,3 @@ The post [CodeQL zero to hero part 4: Gradio framework case study](https://githu
 
 #### [Source](https://github.blog/security/vulnerability-research/codeql-zero-to-hero-part-4-gradio-framework-case-study/)
 
-<br/>
----

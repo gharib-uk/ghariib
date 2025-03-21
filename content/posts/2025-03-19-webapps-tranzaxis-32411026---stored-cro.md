@@ -16,5 +16,3 @@ TranzAxis 3.2.41.10.26 - Stored Cross-Site Scripting (XSS) (Authenticated)
 
 #### [Source](https://www.exploit-db.com/exploits/52086)
 
-<br/>
----

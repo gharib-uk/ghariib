@@ -90,5 +90,3 @@ OffSec has recently updated its “Penetration Testing With BackTrack” online 
 
 #### [Source](https://www.kali.org/blog/kali-linux-1-0-6-release/)
 
-<br/>
----

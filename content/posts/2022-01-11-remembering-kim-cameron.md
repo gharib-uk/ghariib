@@ -16,5 +16,3 @@ Kim might no longer update his blog, nudge identity products toward his vision o
 
 #### [Source](https://www.cloudidentity.com/blog/2022/01/11/remembering-kim-cameron/)
 
-<br/>
----

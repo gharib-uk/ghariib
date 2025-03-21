@@ -16,5 +16,3 @@ Configuring the ASP.NET OWIN middleware (MW from now on) in your web app makes i
 
 #### [Source](https://www.cloudidentity.com/blog/2017/03/20/tweak-sign-in-messages-with-the-asp-net-owin-middleware/)
 
-<br/>
----

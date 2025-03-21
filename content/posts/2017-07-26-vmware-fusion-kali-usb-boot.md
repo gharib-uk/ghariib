@@ -121,5 +121,3 @@ Note that on some installations, the shutdown, followed by removing the drive, p
 
 #### [Source](https://www.kali.org/blog/vmware-fusion-kali-usb-boot/)
 
-<br/>
----

@@ -16,5 +16,3 @@ February 12, 2025: This post was republished to include new services and feature
 
 #### [Source](https://aws.amazon.com/blogs/security/importance-of-encryption-and-how-aws-can-help/)
 
-<br/>
----

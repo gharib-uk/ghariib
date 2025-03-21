@@ -16,5 +16,3 @@ In less than one week I have to check in for my flight to Orlando, where a huge 
 
 #### [Source](https://www.cloudidentity.com/blog/2017/09/18/identity-development-at-ignite-2017/)
 
-<br/>
----

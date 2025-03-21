@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/crafting-multi-cloud-systems-how-tech-experts-are-solving-connectivity?source=rss)
 
-<br/>
----

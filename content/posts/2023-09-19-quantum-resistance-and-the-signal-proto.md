@@ -24,5 +24,3 @@ This post is written to introduce this work to non-experts, and will review what
 
 #### [Source](https://signal.org/blog/pqxdh/)
 
-<br/>
----

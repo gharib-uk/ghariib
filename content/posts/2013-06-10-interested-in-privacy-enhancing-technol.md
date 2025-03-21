@@ -18,5 +18,3 @@ Open Whisper Systems is a project focused on developing Open Source security and
 
 #### [Source](https://signal.org/blog/how-to-help/)
 
-<br/>
----

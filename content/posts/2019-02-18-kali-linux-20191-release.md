@@ -77,5 +77,3 @@ If you come across any bugs in Kali, please open a report on our [bug tracker](h
 
 #### [Source](https://www.kali.org/blog/kali-linux-2019-1-release/)
 
-<br/>
----

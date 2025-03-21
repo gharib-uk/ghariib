@@ -18,5 +18,3 @@ In the midst of world-wide protests against racism and police brutality, a lot o
 
 #### [Source](https://signal.org/blog/looking-back-as-the-world-moves-forward/)
 
-<br/>
----

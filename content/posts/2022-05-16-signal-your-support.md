@@ -22,5 +22,3 @@ Day in and day out, the team at Signal is working to keep your chats, voice, and
 
 #### [Source](https://signal.org/blog/signal-your-support/)
 
-<br/>
----

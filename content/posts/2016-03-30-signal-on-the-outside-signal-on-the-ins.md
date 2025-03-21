@@ -20,5 +20,3 @@ To continue eliminating confusion and simplifying everything within the Signal e
 
 #### [Source](https://signal.org/blog/signal-inside-and-out/)
 
-<br/>
----

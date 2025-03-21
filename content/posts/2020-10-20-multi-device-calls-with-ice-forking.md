@@ -20,5 +20,3 @@ Now that voice and video calls are [available for everyone](/blog/desktop-callin
 
 #### [Source](https://signal.org/blog/ice-forking/)
 
-<br/>
----

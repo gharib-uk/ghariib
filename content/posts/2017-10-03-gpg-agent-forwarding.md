@@ -33,5 +33,3 @@ Once done, I can ssh in to “server.example.com” and use the gpg command on t
 
 #### [Source](https://www.grepular.com/GPG_Agent_Forwarding)
 
-<br/>
----

@@ -20,5 +20,3 @@ Safety numbers allow Signal users to verify the privacy of their communication w
 
 #### [Source](https://signal.org/blog/safety-number-updates/)
 
-<br/>
----

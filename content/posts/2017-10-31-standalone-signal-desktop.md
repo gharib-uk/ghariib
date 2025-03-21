@@ -20,5 +20,3 @@ Signal Desktop is [now available](/download/) in a new, standalone form, and the
 
 #### [Source](https://signal.org/blog/standalone-signal-desktop/)
 
-<br/>
----

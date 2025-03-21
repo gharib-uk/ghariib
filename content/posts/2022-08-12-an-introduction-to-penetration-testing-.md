@@ -16,5 +16,3 @@ Table of Contents What Is Penetration Testing? What Are the Benefits of Pentesti
 
 #### [Source](https://cyberhunter.solutions/an-introduction-to-penetration-testing-benefits-and-types/)
 
-<br/>
----

@@ -16,5 +16,3 @@ Introducing new connectivity optionsFollowing the announcement of Red Hat Insigh
 
 #### [Source](https://www.redhat.com/en/blog/streamline-connectivity-between-your-environment-and-red-hat-insights-services)
 
-<br/>
----

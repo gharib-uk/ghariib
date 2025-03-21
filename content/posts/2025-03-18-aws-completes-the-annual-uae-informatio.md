@@ -16,5 +16,3 @@ Amazon Web Services (AWS) is pleased to announce the publication of our annual c
 
 #### [Source](https://aws.amazon.com/blogs/security/aws-completes-the-annual-uae-information-assurance-regulation-compliance-assessment-2/)
 
-<br/>
----

@@ -16,5 +16,3 @@ Oracle Database 12c Release 1 - Unquoted Service Path
 
 #### [Source](https://www.exploit-db.com/exploits/52063)
 
-<br/>
----

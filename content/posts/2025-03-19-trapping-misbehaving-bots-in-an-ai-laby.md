@@ -16,5 +16,3 @@ How Cloudflare uses generative AI to slow down, confuse, and waste the resources
 
 #### [Source](https://blog.cloudflare.com/ai-labyrinth/)
 
-<br/>
----

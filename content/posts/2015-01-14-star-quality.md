@@ -24,5 +24,3 @@ After being promptly woken up by numerous roosters at 7:30 AM, I still can’t b
 
 #### [Source](https://signal.org/blog/star-quality/)
 
-<br/>
----

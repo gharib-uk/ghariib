@@ -43,5 +43,3 @@ As not all donated mirrors come with HTTPS support, shifting to the HTTPS transp
 
 #### [Source](https://www.kali.org/blog/kali-linux-repository-https-support/)
 
-<br/>
----

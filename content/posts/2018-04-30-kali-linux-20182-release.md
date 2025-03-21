@@ -48,5 +48,3 @@ As always, if you encounter any bugs at all, we implore you to open a report on 
 
 #### [Source](https://www.kali.org/blog/kali-linux-2018-2-release/)
 
-<br/>
----

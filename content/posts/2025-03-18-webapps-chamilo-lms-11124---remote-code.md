@@ -16,5 +16,3 @@ Chamilo LMS 1.11.24 - Remote Code Execution (RCE)
 
 #### [Source](https://www.exploit-db.com/exploits/52083)
 
-<br/>
----

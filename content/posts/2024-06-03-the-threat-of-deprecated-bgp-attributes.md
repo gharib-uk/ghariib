@@ -16,5 +16,3 @@ This post examines how a small issue with Border Gateway Protocol routing, a dep
 
 #### [Source](https://insights.sei.cmu.edu/blog/the-threat-of-deprecated-bgp-attributes/)
 
-<br/>
----

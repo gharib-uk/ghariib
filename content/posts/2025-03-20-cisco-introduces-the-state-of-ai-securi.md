@@ -16,5 +16,3 @@ Cisco is proud to share the State of AI Security report covering key development
 
 #### [Source](https://blogs.cisco.com/security/cisco-introduces-the-state-of-ai-security-report-for-2025)
 
-<br/>
----

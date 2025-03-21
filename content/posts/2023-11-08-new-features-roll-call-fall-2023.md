@@ -24,5 +24,3 @@ We want you to know about the improvements we’re making in Signal, even the sm
 
 #### [Source](https://signal.org/blog/new-features-fall-2023/)
 
-<br/>
----

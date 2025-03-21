@@ -16,5 +16,3 @@ Welcome to our Monthly Roundup, where we curate a unique mix of articles, books,
 
 #### [Source](https://www.greynoise.io/blog/what-were-reading-march-2024)
 
-<br/>
----

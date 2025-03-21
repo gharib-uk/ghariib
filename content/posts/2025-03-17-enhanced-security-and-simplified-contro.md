@@ -16,5 +16,3 @@ Enhanced security, simplified control! This Security Week, Cloudflare unveils au
 
 #### [Source](https://blog.cloudflare.com/enhanced-security-and-simplified-controls-with-automated-botnet-protection/)
 
-<br/>
----

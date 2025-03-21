@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/ethical-hackers-reveal-how-to-break-into-any-mobile-device-legally?source=rss)
 
-<br/>
----

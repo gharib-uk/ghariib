@@ -22,5 +22,3 @@ With message requests, when someone who isn’t in your contacts starts a new ch
 
 #### [Source](https://signal.org/blog/message-requests/)
 
-<br/>
----

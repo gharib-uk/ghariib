@@ -16,5 +16,3 @@ A new book co-authored by Siena Anstis, senior legal advisor at The Citizen Lab,
 
 #### [Source](https://citizenlab.ca/2025/03/book-release-transnational-repression-and-international-law/)
 
-<br/>
----

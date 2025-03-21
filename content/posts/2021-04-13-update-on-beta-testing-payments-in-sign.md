@@ -20,5 +20,3 @@ This is not a future we are particularly excited about. At Signal, we want to he
 
 #### [Source](https://signal.org/blog/update-on-beta-testing-payments/)
 
-<br/>
----

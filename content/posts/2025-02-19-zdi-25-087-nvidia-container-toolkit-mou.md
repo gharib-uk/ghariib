@@ -16,5 +16,3 @@ This vulnerability allows remote attackers to escalate privileges on affected in
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-087/)
 
-<br/>
----

@@ -466,5 +466,3 @@ Online videos of 2015 dojos:
 
 #### [Source](https://www.kali.org/blog/10-years/)
 
-<br/>
----

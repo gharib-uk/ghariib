@@ -22,5 +22,3 @@ Everything that Open Whisper Systems produces is free and Open Source. We’ve b
 
 #### [Source](https://signal.org/blog/winter-of-code/)
 
-<br/>
----

@@ -16,5 +16,3 @@ Critical infrastructure organizations bear an enormous responsibility. The asset
 
 #### [Source](https://www.tripwire.com/state-of-security/strengthening-critical-infrastructure-ncsc-caf)
 
-<br/>
----

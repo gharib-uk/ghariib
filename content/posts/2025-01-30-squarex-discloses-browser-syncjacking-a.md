@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/squarex-discloses-browser-syncjacking-a-new-attack-technique-that-puts-millions-at-risk?source=rss)
 
-<br/>
----

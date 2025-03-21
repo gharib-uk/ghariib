@@ -97,5 +97,3 @@ A couple of weeks ago we released a blog post about “[What it means to be an O
 
 #### [Source](https://www.kali.org/blog/kali-linux-2016-1-release/)
 
-<br/>
----

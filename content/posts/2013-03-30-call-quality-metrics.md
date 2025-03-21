@@ -22,5 +22,3 @@ We know that, for many users, RedPhone has consistently delivered a call quality
 
 #### [Source](https://signal.org/blog/call-quality-metrics/)
 
-<br/>
----

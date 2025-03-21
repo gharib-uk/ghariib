@@ -26,5 +26,3 @@ Vulnerabilities has been mentioned in this article.
 
 #### [Source](https://www.bleepingcomputer.com/news/security/silk-typhoon-hackers-now-target-it-supply-chains-to-breach-networks/)
 
-<br/>
----

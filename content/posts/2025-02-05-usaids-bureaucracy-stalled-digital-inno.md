@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/usaids-bureaucracy-stalled-digital-innovation-projects?source=rss)
 
-<br/>
----

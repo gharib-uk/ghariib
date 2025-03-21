@@ -40,5 +40,3 @@ We will be releasing a bugfix rollup of Kali Linux during the BlackHat and DEF C
 
 #### [Source](https://www.kali.org/blog/pass-the-hash-toolkit-winexe-updates/)
 
-<br/>
----

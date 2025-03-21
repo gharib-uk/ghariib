@@ -20,5 +20,3 @@ A couple of days ago, [Jake](https://twitter.com/clpwn), one of the brilliant fu
 
 #### [Source](https://signal.org/blog/for-humans-and-tech/)
 
-<br/>
----

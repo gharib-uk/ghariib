@@ -22,5 +22,3 @@ This isn’t exactly a secret, but the full picture is hazy to most – dimly co
 
 #### [Source](https://signal.org/blog/the-instagram-ads-you-will-never-see/)
 
-<br/>
----

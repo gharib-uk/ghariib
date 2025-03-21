@@ -1033,5 +1033,3 @@ Additional Resources
 
 #### [Source](https://www.kali.org/blog/remotely-accessing-secure-kali-raspberry-pi/)
 
-<br/>
----

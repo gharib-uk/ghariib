@@ -20,5 +20,3 @@ The lineup for this January is set to be really great:
 
 #### [Source](https://signal.org/blog/winter-lineup-2014/)
 
-<br/>
----

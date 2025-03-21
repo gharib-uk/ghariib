@@ -33,5 +33,3 @@ General Manager, Amazon CloudFront
 
 #### [Source](https://signal.org/blog/looking-back-on-the-front/)
 
-<br/>
----

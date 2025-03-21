@@ -122,5 +122,3 @@ Thanks to Jacek for all his hard work, and being willing to share it with the co
 
 #### [Source](https://www.kali.org/blog/my-custom-kali-linux-distribution/)
 
-<br/>
----

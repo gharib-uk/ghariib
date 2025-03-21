@@ -16,5 +16,3 @@ This vulnerability allows remote attackers to create a denial-of-service conditi
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-049/)
 
-<br/>
----

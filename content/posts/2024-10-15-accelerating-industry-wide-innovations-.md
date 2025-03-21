@@ -18,5 +18,3 @@ The post [Accelerating industry-wide innovations in datacenter infrastructure an
 
 #### [Source](https://azure.microsoft.com/en-us/blog/accelerating-industry-wide-innovations-in-datacenter-infrastructure-and-security/)
 
-<br/>
----

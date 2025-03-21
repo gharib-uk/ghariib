@@ -16,5 +16,3 @@ GreyNoise celebrates reaching its 1,337th tag, attributing its success to the pr
 
 #### [Source](https://www.greynoise.io/blog/greynoise-tags-its-way-to-1337-elite-status)
 
-<br/>
----

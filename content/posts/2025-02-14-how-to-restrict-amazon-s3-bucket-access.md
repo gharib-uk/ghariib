@@ -16,5 +16,3 @@ February 14, 2025: This post was updated with the recommendation to restrict S3 
 
 #### [Source](https://aws.amazon.com/blogs/security/how-to-restrict-amazon-s3-bucket-access-to-a-specific-iam-role/)
 
-<br/>
----

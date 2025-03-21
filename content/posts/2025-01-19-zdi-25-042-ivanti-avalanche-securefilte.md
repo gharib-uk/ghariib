@@ -16,5 +16,3 @@ This vulnerability allows remote attackers to partially bypass authentication on
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-042/)
 
-<br/>
----

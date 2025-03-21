@@ -87,5 +87,3 @@ They have fixed the IP address leak on iOS. No sign of users being informed of t
 
 #### [Source](https://www.grepular.com/Skiff_Emails_Various_Privacy_Failures)
 
-<br/>
----

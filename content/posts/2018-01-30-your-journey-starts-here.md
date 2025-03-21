@@ -112,5 +112,3 @@ Kali Linux Revealed, the resources at [Kali.training](https://kali.training/) an
 
 #### [Source](https://www.kali.org/blog/your-kali-training-journey-starts-here/)
 
-<br/>
----

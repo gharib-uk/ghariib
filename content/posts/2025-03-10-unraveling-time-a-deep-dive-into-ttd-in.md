@@ -212,5 +212,3 @@ We extend our gratitude to the Microsoft Time Travel Debugging team for their re
 
 #### [Source](https://cloud.google.com/blog/topics/threat-intelligence/ttd-instruction-emulation-bugs/)
 
-<br/>
----

@@ -205,5 +205,3 @@ I’m using a Lithuanian VPS Host named [Time4VPS](https://www.time4vps.com/?aff
 
 #### [Source](https://www.grepular.com/Nginx_Restic_Backend)
 
-<br/>
----

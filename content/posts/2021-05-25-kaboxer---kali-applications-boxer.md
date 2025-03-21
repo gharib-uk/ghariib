@@ -144,8 +144,6 @@ kali@kali:~$ apt-cache search --names-only '\-kbx
 
 #### [Source](https://www.kali.org/blog/introducing-kaboxer/)
 
-<br/>
----
 
 covenant-kbx - .NET command and control framework
 firefox-developer-edition-en-us-kbx - Mozilla Firefox web browser - Developer Edition - en-US
@@ -155,5 +153,3 @@ kali@kali:~$
 
 #### [Source](https://www.kali.org/blog/introducing-kaboxer/)
 
-<br/>
----

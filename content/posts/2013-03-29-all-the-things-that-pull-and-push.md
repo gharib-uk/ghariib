@@ -22,5 +22,3 @@ I know very well that each and every crisis of modernity is concentrating, conca
 
 #### [Source](https://signal.org/blog/all-the-things-that-pull-and-push/)
 
-<br/>
----

@@ -18,5 +18,3 @@ The post [Microsoft Cost Management updates—March 2025](https://azure.microsof
 
 #### [Source](https://azure.microsoft.com/en-us/blog/microsoft-cost-management-updates-march-2025/)
 
-<br/>
----

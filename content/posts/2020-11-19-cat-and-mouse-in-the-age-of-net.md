@@ -16,5 +16,3 @@ This SEI Blog post explores evolving .NET threat landscape with challenges faced
 
 #### [Source](https://insights.sei.cmu.edu/blog/cat-and-mouse-age-net/)
 
-<br/>
----

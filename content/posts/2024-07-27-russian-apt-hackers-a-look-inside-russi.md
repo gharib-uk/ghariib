@@ -16,5 +16,3 @@ Introduction When it comes to the clandestine world of cyber warfare, Russian AP
 
 #### [Source](https://cyberarms.wordpress.com/2024/07/26/russian-apt-hackers-a-look-inside-russian-cyberwarfare/)
 
-<br/>
----

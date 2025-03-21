@@ -179,5 +179,3 @@ Download the brand new, mid-term release images for the [Nexus 6P, Oneplus 7 ser
 
 #### [Source](https://www.kali.org/blog/kali-nethunter-updates/)
 
-<br/>
----

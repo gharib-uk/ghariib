@@ -613,5 +613,3 @@ The highlighted line shows the invalid address  0x601b8080 passed to free(), wh
 
 #### [Source](https://www.azimuthsecurity.com/blog/2015/11/16/blackpwn-blackphone-silenttext-type-confusion-vulnerability)
 
-<br/>
----

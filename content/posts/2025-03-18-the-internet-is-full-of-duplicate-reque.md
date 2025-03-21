@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/the-internet-is-full-of-duplicate-requestsheres-how-smart-developers-prevent-them?source=rss)
 
-<br/>
----

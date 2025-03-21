@@ -16,5 +16,3 @@ It's now possible for [enterprise](https://enterprise.shodan.io) customers to su
 
 #### [Source](https://blog.shodan.io/introducing-data-feeds-for-search-results/)
 
-<br/>
----

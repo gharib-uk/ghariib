@@ -56,5 +56,3 @@ Over the next few days, we will respond to bridge operators who have enrolled in
 
 #### [Source](https://blog.torproject.org/fighting-censorship-with-webtunnel/)
 
-<br/>
----

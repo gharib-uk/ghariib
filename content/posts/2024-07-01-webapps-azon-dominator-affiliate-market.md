@@ -16,5 +16,3 @@ Azon Dominator Affiliate Marketing Script - SQL Injection
 
 #### [Source](https://www.exploit-db.com/exploits/52059)
 
-<br/>
----

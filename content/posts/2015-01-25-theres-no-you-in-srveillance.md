@@ -20,5 +20,3 @@ My ten-year-old mind was completely blown when I realized that I could eavesdrop
 
 #### [Source](https://signal.org/blog/theres-no-you-in-srveillance/)
 
-<br/>
----

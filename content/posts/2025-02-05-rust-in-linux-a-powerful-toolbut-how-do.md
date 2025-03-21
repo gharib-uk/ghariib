@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/rust-in-linux-a-powerful-toolbut-how-do-we-strike-the-right-balance?source=rss)
 
-<br/>
----

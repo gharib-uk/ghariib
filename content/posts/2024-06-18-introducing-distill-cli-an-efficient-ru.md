@@ -16,5 +16,3 @@ After a few code reviews from Rustaceans at Amazon and a bit of polishing, I'm r
 
 #### [Source](https://www.allthingsdistributed.com/2024/06/introducing-distill-cli.html?utm_campaign=inbound&utm_source=rss)
 
-<br/>
----

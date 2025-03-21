@@ -20,5 +20,3 @@ We continue to be inspired by the energy and enthusiasm that is helping to shape
 
 #### [Source](https://signal.org/blog/encrypt-more-faces/)
 
-<br/>
----

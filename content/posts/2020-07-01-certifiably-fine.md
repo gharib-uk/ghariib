@@ -24,5 +24,3 @@ Let’s take a deeper look at what’s going on.
 
 #### [Source](https://signal.org/blog/certifiably-fine/)
 
-<br/>
----

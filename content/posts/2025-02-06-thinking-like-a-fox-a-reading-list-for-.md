@@ -16,5 +16,3 @@ Here are a few of my favourite books to help you think like a fox - from sci-fi 
 
 #### [Source](https://www.allthingsdistributed.com/2025/02/thinking-like-a-fox-a-reading-list-for-the-future.html?utm_campaign=inbound&utm_source=rss)
 
-<br/>
----

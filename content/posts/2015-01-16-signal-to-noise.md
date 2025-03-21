@@ -20,5 +20,3 @@ I’m not sure those attending their first break of code know what they are gett
 
 #### [Source](https://signal.org/blog/signal-to-noise/)
 
-<br/>
----

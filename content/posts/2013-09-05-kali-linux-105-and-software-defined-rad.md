@@ -58,5 +58,3 @@ We hope you enjoy this release as much as we enjoyed making it. For a complete l
 
 #### [Source](https://www.kali.org/blog/kali-linux-1-0-5-release/)
 
-<br/>
----

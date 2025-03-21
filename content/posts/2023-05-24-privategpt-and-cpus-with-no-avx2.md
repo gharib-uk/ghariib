@@ -16,5 +16,3 @@ Venturing into AI with older CPUs. My journey to run LLM models with privateGPT 
 
 #### [Source](https://blog.anantshri.info/privategpt-and-cpus-with-no-avx2/)
 
-<br/>
----

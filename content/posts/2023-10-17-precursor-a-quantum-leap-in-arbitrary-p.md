@@ -16,5 +16,3 @@ Discover Precursor, a revolutionary tool for payload similarity analysis in data
 
 #### [Source](https://www.greynoise.io/blog/precursor-a-quantum-leap-in-arbitrary-payload-similarity-analysis)
 
-<br/>
----

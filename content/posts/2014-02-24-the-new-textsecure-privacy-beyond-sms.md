@@ -20,5 +20,3 @@ Using the lessons we’ve learned from the SMS environment over the past four ye
 
 #### [Source](https://signal.org/blog/the-new-textsecure/)
 
-<br/>
----

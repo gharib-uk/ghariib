@@ -16,5 +16,3 @@ The U.S. National Institute of Standards and Technology (NIST) recently held a p
 
 #### [Source](https://insights.sei.cmu.edu/blog/comments-on-nist-ir-8269-a-taxonomy-and-terminology-of-adversarial-machine-learning/)
 
-<br/>
----

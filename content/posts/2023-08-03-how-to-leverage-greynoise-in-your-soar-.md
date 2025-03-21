@@ -16,5 +16,3 @@ During our latest webinar we discussed some common use cases using GreyNoise wit
 
 #### [Source](https://www.greynoise.io/blog/how-to-leverage-greynoise-in-your-soar-playbooks-)
 
-<br/>
----

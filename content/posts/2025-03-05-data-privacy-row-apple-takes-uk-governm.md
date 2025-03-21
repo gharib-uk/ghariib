@@ -26,5 +26,3 @@ Vulnerabilities has been mentioned in this article.
 
 #### [Source](https://securityonline.info/data-privacy-row-apple-takes-uk-government-to-court/)
 
-<br/>
----

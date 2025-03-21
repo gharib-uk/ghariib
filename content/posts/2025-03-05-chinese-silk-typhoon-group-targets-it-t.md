@@ -26,5 +26,3 @@ Vulnerabilities has been mentioned in this article.
 
 #### [Source](https://hackread.com/chinese-silk-typhoon-group-it-tools-network-breaches/)
 
-<br/>
----

@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/european-cyber-report-2025-137percent-more-ddos-attacks-than-last-year-what-companies-need-to-know?source=rss)
 
-<br/>
----

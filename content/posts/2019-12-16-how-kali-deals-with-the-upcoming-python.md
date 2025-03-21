@@ -63,5 +63,3 @@ If you don’t have the coding skills required for this, you can still try to fi
 
 #### [Source](https://www.kali.org/blog/python-2-end-of-life/)
 
-<br/>
----

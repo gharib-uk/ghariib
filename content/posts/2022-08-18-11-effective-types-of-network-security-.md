@@ -16,5 +16,3 @@ Table of Contents Firewalls Network Segmentation Access Control Remote Access VP
 
 #### [Source](https://cyberhunter.solutions/11-effective-types-of-network-security-protection/)
 
-<br/>
----

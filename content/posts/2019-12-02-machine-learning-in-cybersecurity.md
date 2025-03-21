@@ -16,5 +16,3 @@ Our technical report provides an overview of the relevant parts of an ML lifecyc
 
 #### [Source](https://insights.sei.cmu.edu/blog/machine-learning-cybersecurity-2019/)
 
-<br/>
----

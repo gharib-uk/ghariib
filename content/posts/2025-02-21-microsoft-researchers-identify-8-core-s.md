@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/microsoft-researchers-identify-8-core-security-lessons-for-ai?source=rss)
 
-<br/>
----

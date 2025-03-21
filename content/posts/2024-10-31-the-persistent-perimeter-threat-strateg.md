@@ -16,5 +16,3 @@ Discover insights from a multi-year APT campaign that exploited network perimete
 
 #### [Source](https://www.greynoise.io/blog/the-persistent-perimeter-threat-strategic-insights-from-a-multi-year-apt-campaign-targeting-edge-devices)
 
-<br/>
----

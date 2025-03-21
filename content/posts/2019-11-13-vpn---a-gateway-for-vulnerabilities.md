@@ -16,5 +16,3 @@ Virtual Private Networks (VPNs) are the backbone of today's businesses providing
 
 #### [Source](https://insights.sei.cmu.edu/blog/vpn-a-gateway-for-vulnerabilities/)
 
-<br/>
----

@@ -16,5 +16,3 @@ This vulnerability allows remote attackers to bypass the Mark-of-the-Web protect
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-045/)
 
-<br/>
----

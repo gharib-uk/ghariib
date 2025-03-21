@@ -18,5 +18,3 @@ The post [AI innovation requires AI security: Hear what’s new at Microsoft Sec
 
 #### [Source](https://techcommunity.microsoft.com/blog/microsoft-security-blog/ai-innovation-requires-ai-security-hear-what%E2%80%99s-new-at-microsoft-secure/4394130)
 
-<br/>
----

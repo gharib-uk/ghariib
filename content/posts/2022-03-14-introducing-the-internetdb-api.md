@@ -16,5 +16,3 @@ For more than a decade, Shodan has been singularly focused on understanding netw
 
 #### [Source](https://blog.shodan.io/introducing-the-internetdb-api/)
 
-<br/>
----

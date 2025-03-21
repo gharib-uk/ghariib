@@ -16,5 +16,3 @@ Discover what our amazing researcher Matthew Remacle uncovers as he investigates
 
 #### [Source](https://www.greynoise.io/blog/a-day-in-the-life-of-a-greynoise-researcher-the-path-to-understanding-the-remote-code-execution-vulnerability-apache-cve-2023-50164-in-apache-struts2)
 
-<br/>
----

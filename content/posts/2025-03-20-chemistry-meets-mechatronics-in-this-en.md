@@ -18,5 +18,3 @@ There’s a classic grade school science experiment that involves extracting jui
 
 #### [Source](https://hackaday.com/2025/03/20/chemistry-meets-mechatronics-in-this-engaging-art-piece/)
 
-<br/>
----

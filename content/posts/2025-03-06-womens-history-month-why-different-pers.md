@@ -18,5 +18,3 @@ The post [Women’s History Month: Why different perspectives in cybersecurity a
 
 #### [Source](https://www.microsoft.com/en-us/security/blog/2025/03/06/womens-history-month-why-different-perspectives-in-cybersecurity-and-ai-matter-more-than-ever-before/)
 
-<br/>
----

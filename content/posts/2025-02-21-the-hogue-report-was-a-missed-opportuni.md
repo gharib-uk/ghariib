@@ -16,5 +16,3 @@ In an opinion piece for The Globe and Mail, The Citizen Lab’s Emile Dirks, Sie
 
 #### [Source](https://citizenlab.ca/2025/02/the-hogue-report-was-a-missed-opportunity-to-tackle-transnational-repression-op-ed-for-the-globe-mail/)
 
-<br/>
----

@@ -18,5 +18,3 @@ The post [Improve cloud performance and reliability with a guided learning plan]
 
 #### [Source](https://azure.microsoft.com/en-us/blog/improve-cloud-performance-and-reliability-with-a-guided-learning-plan/)
 
-<br/>
----

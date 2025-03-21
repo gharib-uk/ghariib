@@ -18,5 +18,3 @@ The post [Sign in as anyone: Bypassing SAML SSO authentication with parser diffe
 
 #### [Source](https://github.blog/security/sign-in-as-anyone-bypassing-saml-sso-authentication-with-parser-differentials/)
 
-<br/>
----

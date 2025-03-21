@@ -20,5 +20,3 @@ Today’s beta release of Signal for Android and iOS includes support for read r
 
 #### [Source](https://signal.org/blog/read-receipts/)
 
-<br/>
----

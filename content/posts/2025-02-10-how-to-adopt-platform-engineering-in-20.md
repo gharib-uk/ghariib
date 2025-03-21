@@ -16,5 +16,3 @@ The sheer amount of technologies today has created a massive boom in innovation,
 
 #### [Source](https://www.redhat.com/en/blog/how-adopt-platform-engineering-2025)
 
-<br/>
----

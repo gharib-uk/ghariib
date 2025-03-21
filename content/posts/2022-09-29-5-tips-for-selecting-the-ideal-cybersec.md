@@ -16,5 +16,3 @@ Table of Contents Characteristics of a Reliable Cybersecurity Partner 5 Tips for
 
 #### [Source](https://cyberhunter.solutions/5-tips-for-selecting-the-ideal-cybersecurity-partner/)
 
-<br/>
----

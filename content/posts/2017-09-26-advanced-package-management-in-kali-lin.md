@@ -221,5 +221,3 @@ In this post, we have only been able to scratch the surface of how you can exten
 
 #### [Source](https://www.kali.org/blog/advanced-package-management-in-kali-linux/)
 
-<br/>
----

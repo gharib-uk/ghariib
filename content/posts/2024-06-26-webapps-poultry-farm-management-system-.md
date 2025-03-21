@@ -16,5 +16,3 @@ Poultry Farm Management System v1.0 - Remote Code Execution (RCE)
 
 #### [Source](https://www.exploit-db.com/exploits/52053)
 
-<br/>
----

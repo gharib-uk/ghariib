@@ -16,5 +16,3 @@ Forrester Research has recognized Cloudflare as a Leader in its The Forrester Wa
 
 #### [Source](https://blog.cloudflare.com/cloudflare-named-leader-waf-forrester-2025/)
 
-<br/>
----

@@ -22,5 +22,3 @@ Spring Break of Code 2013 I cut open my foot and hand while surfing; both wounds
 
 #### [Source](https://signal.org/blog/android-contacts-the-social-graph-collider/)
 
-<br/>
----

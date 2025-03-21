@@ -89,5 +89,3 @@ And there we have it. An isolated nodejs application, not running as root, but w
 
 #### [Source](https://www.grepular.com/Manage_Firewall_from_Dockerised_NodeJS)
 
-<br/>
----

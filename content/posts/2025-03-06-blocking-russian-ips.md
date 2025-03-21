@@ -35,5 +35,3 @@ You can test what your website looks like from different IPs using [https://geot
 
 #### [Source](https://www.grepular.com/Blocking_Russian_IPs)
 
-<br/>
----

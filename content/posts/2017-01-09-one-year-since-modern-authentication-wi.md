@@ -16,5 +16,3 @@ About one year ago, I was all excited to finally hold in my hands the thing that
 
 #### [Source](https://www.cloudidentity.com/blog/2017/01/09/one-year-since-modern-authentication-with-azure-active-directory-for-web-applications-came-out/)
 
-<br/>
----

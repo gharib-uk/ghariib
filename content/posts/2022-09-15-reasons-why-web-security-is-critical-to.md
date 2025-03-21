@@ -16,5 +16,3 @@ Table of Contents Ransomware Is a Result of Attack Escalation Web-Based Assaults
 
 #### [Source](https://cyberhunter.solutions/reasons-why-web-security-is-critical-to-prevent-ransomware/)
 
-<br/>
----

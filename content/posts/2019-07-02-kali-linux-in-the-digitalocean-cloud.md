@@ -201,5 +201,3 @@ Swap: 0B 0B 0B
 
 #### [Source](https://www.kali.org/blog/kali-linux-in-the-digitalocean-cloud/)
 
-<br/>
----

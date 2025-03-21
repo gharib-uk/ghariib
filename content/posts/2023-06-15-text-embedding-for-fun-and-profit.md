@@ -16,5 +16,3 @@ In this blog we teach you about text embedding, why it’s useful, and a couple 
 
 #### [Source](https://www.greynoise.io/blog/text-embedding-for-fun-and-profit)
 
-<br/>
----

@@ -22,5 +22,3 @@ The CVEDB website lets you explore known vulnerabilities and provides a free API
 
 #### [Source](https://blog.shodan.io/5-free-things-for-everybody/)
 
-<br/>
----

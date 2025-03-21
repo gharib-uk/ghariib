@@ -22,5 +22,3 @@ We will continue to be responsive to the community through our formal channels, 
 
 #### [Source](https://www.kali.org/blog/kali-linux-1-0-1-release/)
 
-<br/>
----

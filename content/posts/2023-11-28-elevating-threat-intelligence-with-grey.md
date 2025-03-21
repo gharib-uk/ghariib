@@ -16,5 +16,3 @@ Learn more about our new integration for Microsoft Sentinel that enhances threat
 
 #### [Source](https://www.greynoise.io/blog/elevating-threat-intelligence-with-greynoise-and-microsoft-sentinel)
 
-<br/>
----

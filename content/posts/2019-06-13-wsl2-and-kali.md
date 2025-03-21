@@ -66,5 +66,3 @@ As it stands, WSL 2 is an exciting technology and most definitely worth paying a
 
 #### [Source](https://www.kali.org/blog/wsl2-and-kali/)
 
-<br/>
----

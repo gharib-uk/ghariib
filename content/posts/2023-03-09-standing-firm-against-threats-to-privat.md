@@ -22,5 +22,3 @@ We recognize that privacy is a human right and that free expression and the abil
 
 #### [Source](https://signal.org/blog/uk-online-safety-bill/)
 
-<br/>
----

@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/doppler-announces-integration-with-datadog-to-streamline-security-and-monitoring?source=rss)
 
-<br/>
----

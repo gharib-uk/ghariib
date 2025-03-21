@@ -18,5 +18,3 @@ Traditionally, asynchronous messaging systems such as email have relied on proto
 
 #### [Source](https://signal.org/blog/asynchronous-security/)
 
-<br/>
----

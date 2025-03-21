@@ -16,5 +16,3 @@ Today we are excited to announce support for Zero Trust datasets, and custom das
 
 #### [Source](https://blog.cloudflare.com/monitoring-and-forensics/)
 
-<br/>
----

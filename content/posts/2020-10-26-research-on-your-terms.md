@@ -22,5 +22,3 @@ Software companies typically overflow with data that explains the past and forec
 
 #### [Source](https://signal.org/blog/signal-research/)
 
-<br/>
----

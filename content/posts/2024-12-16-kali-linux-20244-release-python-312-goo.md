@@ -372,5 +372,3 @@ Want to keep up-to-date easier? We have got you!
 
 #### [Source](https://www.kali.org/blog/kali-linux-2024-4-release/)
 
-<br/>
----

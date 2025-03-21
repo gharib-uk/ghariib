@@ -126,5 +126,3 @@ Through numerous adversarial emulation engagements and [Red Team](https://cloud.
 
 #### [Source](https://cloud.google.com/blog/topics/threat-intelligence/c2-browser-isolation-environments/)
 
-<br/>
----

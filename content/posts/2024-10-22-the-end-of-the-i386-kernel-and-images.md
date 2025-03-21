@@ -52,5 +52,3 @@ What about packages, you may ask? i386 packages remain, as long as they can be r
 
 #### [Source](https://www.kali.org/blog/end-of-i386-kernel-and-images/)
 
-<br/>
----

@@ -152,5 +152,3 @@ In conclusion, SPAs offer a dynamic and engaging user experience, but they also 
 
 #### [Source](https://cloud.google.com/blog/topics/threat-intelligence/single-page-applications-vulnerable/)
 
-<br/>
----

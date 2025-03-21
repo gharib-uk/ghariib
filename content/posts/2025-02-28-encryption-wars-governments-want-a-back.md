@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/encryption-wars-governments-want-a-backdoor-but-hackers-are-watching?source=rss)
 
-<br/>
----

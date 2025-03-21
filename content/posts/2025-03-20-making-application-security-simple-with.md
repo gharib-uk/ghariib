@@ -16,5 +16,3 @@ We’re introducing a new Application Security experience in the Cloudflare dash
 
 #### [Source](https://blog.cloudflare.com/new-application-security-experience/)
 
-<br/>
----

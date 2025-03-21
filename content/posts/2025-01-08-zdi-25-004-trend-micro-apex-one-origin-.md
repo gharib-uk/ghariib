@@ -16,5 +16,3 @@ This vulnerability allows local attackers to escalate privileges on affected ins
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-004/)
 
-<br/>
----

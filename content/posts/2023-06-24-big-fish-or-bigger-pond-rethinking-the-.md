@@ -16,5 +16,3 @@ Challenging the status quo in tech: Could a future with numerous smaller, cooper
 
 #### [Source](https://blog.anantshri.info/big-fish-or-bigger-pond-rethinking-the-future-of-tech-companies/)
 
-<br/>
----

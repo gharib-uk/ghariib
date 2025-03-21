@@ -16,5 +16,3 @@ DETROIT – Former University of Michigan Co-Offensive Coordinator Matthew Weis
 
 #### [Source](https://databreaches.net/2025/03/20/former-university-of-michigan-football-quarterbacks-coach-and-co-offensive-coordinator-indicted-on-charges-of-unauthorized-access-to-computers-and-aggravated-identity-theft/)
 
-<br/>
----

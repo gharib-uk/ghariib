@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/gcore-radar-report-reveals-56percent-year-on-year-increase-in-ddos-attacks?source=rss)
 
-<br/>
----

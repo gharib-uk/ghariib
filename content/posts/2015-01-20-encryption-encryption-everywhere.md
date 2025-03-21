@@ -22,5 +22,3 @@ A few weeks ago, an email full of information to help prep for Winter Break of C
 
 #### [Source](https://signal.org/blog/encryption-encryption-everywhere/)
 
-<br/>
----

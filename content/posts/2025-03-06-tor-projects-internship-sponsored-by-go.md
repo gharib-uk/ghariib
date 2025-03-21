@@ -60,5 +60,3 @@ GSoC is an excellent opportunity to contribute to privacy-preserving technology 
 
 #### [Source](https://blog.torproject.org/tor-in-google-summer-of-code-mentorship/)
 
-<br/>
----

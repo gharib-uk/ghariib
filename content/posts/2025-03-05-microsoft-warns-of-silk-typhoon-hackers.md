@@ -26,5 +26,3 @@ Vulnerabilities has been mentioned in this article.
 
 #### [Source](https://cybersecuritynews.com/microsoft-warns-of-silk-typhoon-hackers/)
 
-<br/>
----

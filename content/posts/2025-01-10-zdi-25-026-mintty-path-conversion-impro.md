@@ -16,5 +16,3 @@ This vulnerability allows remote attackers to relay NTLM credentials on affected
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-026/)
 
-<br/>
----

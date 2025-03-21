@@ -16,5 +16,3 @@ This vulnerability allows remote attackers to bypass the Pointer Authentication 
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-093/)
 
-<br/>
----

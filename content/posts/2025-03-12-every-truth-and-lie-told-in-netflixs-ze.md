@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/every-truth-and-lie-told-in-netflixs-zero-day-ranked?source=rss)
 
-<br/>
----

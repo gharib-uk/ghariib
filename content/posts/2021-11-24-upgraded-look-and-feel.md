@@ -19,5 +19,3 @@ This year we rolled out the new [main Shodan website](https://www.shodan.io) and
 
 #### [Source](https://blog.shodan.io/upgraded-look-and-feel/)
 
-<br/>
----

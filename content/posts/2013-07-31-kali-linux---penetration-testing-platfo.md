@@ -64,5 +64,3 @@ Hopefully, these brief scenarios will spark your imagination and encourage you t
 
 #### [Source](https://www.kali.org/blog/kali-linux-penetration-testing-platform/)
 
-<br/>
----

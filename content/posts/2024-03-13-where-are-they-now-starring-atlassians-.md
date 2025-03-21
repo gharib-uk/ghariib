@@ -16,5 +16,3 @@ Despite rumors to the contrary, CVE-2023-22527 isn’t dead! See what it’s bee
 
 #### [Source](https://www.greynoise.io/blog/where-are-they-now-starring-atlassians-confluence-cve-2023-22527)
 
-<br/>
----

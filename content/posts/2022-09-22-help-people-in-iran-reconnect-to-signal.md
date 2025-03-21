@@ -22,5 +22,3 @@ If you are currently running a proxy, you will need to make some updates to ensu
 
 #### [Source](https://signal.org/blog/run-a-proxy/)
 
-<br/>
----

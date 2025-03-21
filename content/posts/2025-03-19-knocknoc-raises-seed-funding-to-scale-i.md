@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/knocknoc-raises-seed-funding-to-scale-its-just-in-time-network-access-control-technology?source=rss)
 
-<br/>
----

@@ -16,5 +16,3 @@ In 2021, Amazon Web Services (AWS) introduced the AWS Secrets and Configuration 
 
 #### [Source](https://aws.amazon.com/blogs/security/announcing-ascp-integration-with-pod-identity-enhanced-security-for-secrets-management-in-amazon-eks/)
 
-<br/>
----

@@ -20,5 +20,3 @@ The tech industry–its products, conceptual frameworks, linguistic conventions,
 
 #### [Source](https://signal.org/blog/signal-is-for-everyone/)
 
-<br/>
----

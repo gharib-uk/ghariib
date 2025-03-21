@@ -31,5 +31,3 @@ Then I waited. I wasn’t sure if this would work initially as for all I knew gi
 
 #### [Source](https://www.grepular.com/Sending_Email_Using_Curl)
 
-<br/>
----

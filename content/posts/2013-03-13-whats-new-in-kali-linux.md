@@ -59,5 +59,3 @@ With all these changes (and many more), you can see why we’re so excited about
 
 #### [Source](https://www.kali.org/blog/kali-linux-whats-new/)
 
-<br/>
----

@@ -80,5 +80,3 @@ We hope you enjoy this fine release as much as we enjoyed making it!
 
 #### [Source](https://www.kali.org/blog/kali-linux-2017-2-release/)
 
-<br/>
----

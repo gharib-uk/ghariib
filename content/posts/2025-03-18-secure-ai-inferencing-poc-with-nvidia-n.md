@@ -16,5 +16,3 @@ Confidential computing strengthens application security by providing isolation, 
 
 #### [Source](https://www.redhat.com/en/blog/secure-ai-inferencing-poc-nvidia-nim-coco-openshift-ai)
 
-<br/>
----

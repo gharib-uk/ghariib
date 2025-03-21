@@ -20,5 +20,3 @@ Shodan is a website aimed at technical users and organizations. We have nearly 5
 
 #### [Source](https://blog.shodan.io/accepting-crypto-a-vendor-perspective/)
 
-<br/>
----

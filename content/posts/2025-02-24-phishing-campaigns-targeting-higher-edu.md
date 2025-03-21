@@ -160,5 +160,3 @@ To assist the wider community in hunting and identifying activity outlined in th
 
 #### [Source](https://cloud.google.com/blog/topics/threat-intelligence/phishing-targeting-higher-education/)
 
-<br/>
----

@@ -16,5 +16,3 @@ TL;DR: as of today, Azure AD apps created on portal.azure.com won’t be provisi
 
 #### [Source](https://www.cloudidentity.com/blog/2016/10/04/provision-an-app-created-on-portal-azure-com-in-your-own-tenant/)
 
-<br/>
----

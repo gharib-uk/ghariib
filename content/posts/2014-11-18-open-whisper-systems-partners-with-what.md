@@ -20,5 +20,3 @@ Today we’re excited to publicly announce a partnership with WhatsApp, the most
 
 #### [Source](https://signal.org/blog/whatsapp/)
 
-<br/>
----

@@ -16,5 +16,3 @@ The mission and scope of the identity team at Microsoft keeps growing – and we
 
 #### [Source](https://www.cloudidentity.com/blog/2017/01/31/come-work-with-us-lots-of-great-positions-on-the-identity-team/)
 
-<br/>
----

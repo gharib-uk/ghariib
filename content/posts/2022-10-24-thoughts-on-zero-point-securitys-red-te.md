@@ -36,5 +36,3 @@ Overall, I had a positive experience taking the course and exam. I highly recomm
 
 #### [Source](http://blog.techorganic.com/2022/10/24/thoughts-on-zeropoint-securitys-red-team-ops-course/)
 
-<br/>
----

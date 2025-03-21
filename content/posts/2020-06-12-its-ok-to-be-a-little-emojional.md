@@ -20,5 +20,3 @@ The world was a different place when we [announced message reactions](https://si
 
 #### [Source](https://signal.org/blog/more-reactions/)
 
-<br/>
----

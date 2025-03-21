@@ -20,5 +20,3 @@ This new connection method is supported in the latest Signal Android beta releas
 
 #### [Source](https://signal.org/blog/help-iran-reconnect/)
 
-<br/>
----

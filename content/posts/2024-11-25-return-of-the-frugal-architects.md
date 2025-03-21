@@ -16,5 +16,3 @@ The Frugal Architect returns with expanded content, featuring stories from AWS c
 
 #### [Source](https://www.allthingsdistributed.com/2024/11/return-of-the-frugal-architect.html?utm_campaign=inbound&utm_source=rss)
 
-<br/>
----

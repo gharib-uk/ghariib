@@ -138,5 +138,3 @@ Time will tell if WireGuard replaces OpenVPN as the VPN of choice, or if the lat
 
 #### [Source](https://www.kali.org/blog/wireguard-on-kali/)
 
-<br/>
----

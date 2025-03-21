@@ -16,5 +16,3 @@ AEGON LIFE v1.0 Life Insurance Management System - Stored cross-site scripting (
 
 #### [Source](https://www.exploit-db.com/exploits/52042)
 
-<br/>
----

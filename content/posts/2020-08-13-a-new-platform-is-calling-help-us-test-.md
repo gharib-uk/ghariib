@@ -24,5 +24,3 @@ Beta users get an early chance to evaluate call quality and performance while we
 
 #### [Source](https://signal.org/blog/desktop-calling-beta/)
 
-<br/>
----

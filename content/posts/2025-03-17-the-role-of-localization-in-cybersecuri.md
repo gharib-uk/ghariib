@@ -16,5 +16,3 @@ If your website is targeting multiple states or countries, by default, you face 
 
 #### [Source](https://www.tripwire.com/state-of-security/role-localization-cybersecurity-threat-mitigation)
 
-<br/>
----

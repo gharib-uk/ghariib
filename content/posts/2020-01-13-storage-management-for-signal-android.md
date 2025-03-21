@@ -18,5 +18,3 @@ Signal for Android now includes storage management functionality that helps visu
 
 #### [Source](https://signal.org/blog/storage-management-for-android/)
 
-<br/>
----

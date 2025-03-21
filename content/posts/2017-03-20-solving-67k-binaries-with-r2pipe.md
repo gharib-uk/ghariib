@@ -154,5 +154,3 @@ Overall this was a great learning experiencef or me. I’ll be doing some more r
 
 #### [Source](http://blog.techorganic.com/2017/03/20/solving-67k-binaries-with-r2pipe/)
 
-<br/>
----

@@ -36,5 +36,3 @@ You can also follow feeds based on searches by just switching out the “account
 
 #### [Source](https://www.grepular.com/Twitter_to_RSS_with_Google_Cloud_Function)
 
-<br/>
----

@@ -16,5 +16,3 @@ Uncover the power of four essential digital-age skills: variable speed reading, 
 
 #### [Source](https://blog.anantshri.info/mastering-the-essential-skills-for-the-digital-age/)
 
-<br/>
----

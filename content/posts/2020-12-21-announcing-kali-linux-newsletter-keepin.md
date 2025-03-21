@@ -46,5 +46,3 @@ And if you think something is down, which should be working on our end:
 
 #### [Source](https://www.kali.org/blog/kali-linux-newsletter-keeping-in-touch/)
 
-<br/>
----

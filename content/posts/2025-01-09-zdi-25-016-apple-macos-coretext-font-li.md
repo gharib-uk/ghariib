@@ -16,5 +16,3 @@ This vulnerability allows remote attackers to disclose sensitive information on 
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-016/)
 
-<br/>
----

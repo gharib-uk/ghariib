@@ -16,5 +16,3 @@ Legal researchers Cynthia Khoo and Kate Robertson warn that a Canada-U.S. CLOUD 
 
 #### [Source](https://citizenlab.ca/2025/02/canada-us-cross-border-surveillance-cloud-act/)
 
-<br/>
----

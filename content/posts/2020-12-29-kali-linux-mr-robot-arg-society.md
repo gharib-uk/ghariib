@@ -158,5 +158,3 @@ We will leave you now with a video by [Beamofoldlight](https://twitter.com/dafre
 
 #### [Source](https://www.kali.org/blog/mr-robot-arg-society/)
 
-<br/>
----

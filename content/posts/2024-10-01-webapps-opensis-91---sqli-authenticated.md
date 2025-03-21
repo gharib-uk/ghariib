@@ -16,5 +16,3 @@ openSIS 9.1 - SQLi (Authenticated)
 
 #### [Source](https://www.exploit-db.com/exploits/52080)
 
-<br/>
----

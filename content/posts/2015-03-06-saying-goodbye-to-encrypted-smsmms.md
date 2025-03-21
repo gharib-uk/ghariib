@@ -20,5 +20,3 @@ The TextSecure story started back in 2009, at the dawn of the smartphone era. Ba
 
 #### [Source](https://signal.org/blog/goodbye-encrypted-sms/)
 
-<br/>
----

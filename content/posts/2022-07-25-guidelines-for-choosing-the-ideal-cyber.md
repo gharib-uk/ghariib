@@ -16,5 +16,3 @@ Table of Contents: Types of Cybersecurity Companies Important Security Services 
 
 #### [Source](https://cyberhunter.solutions/guidelines-for-choosing-the-ideal-cybersecurity-company-in-toronto/)
 
-<br/>
----

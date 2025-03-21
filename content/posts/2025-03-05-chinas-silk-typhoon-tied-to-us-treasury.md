@@ -26,5 +26,3 @@ Vulnerabilities has been mentioned in this article.
 
 #### [Source](https://go.theregister.com/feed/www.theregister.com/2025/03/05/china_silk_typhoon_update/)
 
-<br/>
----

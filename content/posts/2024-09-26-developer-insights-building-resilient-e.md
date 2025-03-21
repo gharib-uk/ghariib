@@ -18,5 +18,3 @@ The post [Developer insights: Building resilient end-to-end security](https://az
 
 #### [Source](https://azure.microsoft.com/en-us/blog/developer-insights-building-resilient-end-to-end-security/)
 
-<br/>
----

@@ -16,5 +16,3 @@ It's hard to tell the difference between web content produced by humans and web 
 
 #### [Source](https://blog.cloudflare.com/an-early-look-at-cryptographic-watermarks-for-ai-generated-content/)
 
-<br/>
----

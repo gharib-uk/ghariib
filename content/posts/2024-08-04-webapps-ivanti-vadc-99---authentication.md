@@ -16,5 +16,3 @@ Ivanti vADC 9.9 - Authentication Bypass
 
 #### [Source](https://www.exploit-db.com/exploits/52062)
 
-<br/>
----

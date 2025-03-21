@@ -16,5 +16,3 @@ Amazon Web Services (AWS) is pleased to announce the issuance of the Criteria to
 
 #### [Source](https://aws.amazon.com/blogs/security/2024-pitukri-isae-3000-type-ii-attestation-report-available-with-179-services-in-scope/)
 
-<br/>
----

@@ -271,5 +271,3 @@ Want to keep in up-to-date easier? Automate it! We have a [RSS feeds](https://ww
 
 #### [Source](https://www.kali.org/blog/kali-linux-2023-3-release/)
 
-<br/>
----

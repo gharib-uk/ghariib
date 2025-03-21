@@ -39,5 +39,3 @@ Hindu Goddess of time and change? Philippine martial art? Cool word in Swahili? 
 
 #### [Source](https://www.kali.org/blog/kali-linux-1-0-0-release/)
 
-<br/>
----

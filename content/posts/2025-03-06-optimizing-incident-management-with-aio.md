@@ -18,5 +18,3 @@ The post [Optimizing incident management with AIOps using the Triangle System](h
 
 #### [Source](https://azure.microsoft.com/en-us/blog/optimizing-incident-management-with-aiops-using-the-triangle-system/)
 
-<br/>
----

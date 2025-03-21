@@ -16,5 +16,3 @@ WP-UserOnline 2.88.0 - Stored Cross Site Scripting (XSS) (Authenticated)
 
 #### [Source](https://www.exploit-db.com/exploits/52048)
 
-<br/>
----

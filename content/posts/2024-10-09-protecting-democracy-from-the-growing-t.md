@@ -16,5 +16,3 @@ Deepfakes and disinformation campaigns are reshaping the election cybersecurity 
 
 #### [Source](https://www.greynoise.io/blog/protecting-democracy-from-the-growing-threat-of-deepfakes-and-disinformation)
 
-<br/>
----

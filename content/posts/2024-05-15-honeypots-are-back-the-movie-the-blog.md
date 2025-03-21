@@ -16,5 +16,3 @@ In this post we examine the resurgence of honeypots, highlighting their importan
 
 #### [Source](https://www.greynoise.io/blog/honeypots-are-back-the-movie-the-blog)
 
-<br/>
----

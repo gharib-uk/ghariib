@@ -268,5 +268,3 @@ Want to keep up-to-date easier? We’ve got you!
 
 #### [Source](https://www.kali.org/blog/kali-linux-2024-2-release/)
 
-<br/>
----

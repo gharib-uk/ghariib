@@ -45,5 +45,3 @@ As always, you can download our official ISO images on our [download page](https
 
 #### [Source](https://www.kali.org/blog/kali-linux-2018-1-release/)
 
-<br/>
----

@@ -18,5 +18,3 @@ The post [6 findings from IoT Signals report: Manufacturers prepare their shop f
 
 #### [Source](https://www.microsoft.com/en-us/industry/blog/manufacturing-and-mobility/2024/06/20/6-findings-from-iot-signals-report-manufacturers-prepare-their-shop-floor-for-ai/)
 
-<br/>
----

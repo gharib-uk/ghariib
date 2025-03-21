@@ -22,5 +22,3 @@ I recently had the opportunity to listen to another amazing podcast from 99% Inv
 
 #### [Source](https://signal.org/blog/hardness/)
 
-<br/>
----

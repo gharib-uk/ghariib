@@ -16,5 +16,3 @@ type: posts
 
 #### [Source](https://hackernoon.com/after-bybits-$15b-blind-signing-fiasco-human-wallet-steps-up-with-a-radical-security-fix?source=rss)
 
-<br/>
----

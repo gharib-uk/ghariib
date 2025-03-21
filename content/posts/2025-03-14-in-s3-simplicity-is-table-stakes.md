@@ -16,5 +16,3 @@ From simple object storage to sophisticated table management, builders have alwa
 
 #### [Source](https://www.allthingsdistributed.com/2025/03/in-s3-simplicity-is-table-stakes.html?utm_campaign=inbound&utm_source=rss)
 
-<br/>
----

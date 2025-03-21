@@ -16,5 +16,3 @@ Un’introduzione a Paragon Solutions. Paragon Solutions è stata fondata in Isr
 
 #### [Source](https://citizenlab.ca/2025/03/un-primo-sguardo-alle-operazioni-in-espansione-dello-spyware-di-paragon/)
 
-<br/>
----

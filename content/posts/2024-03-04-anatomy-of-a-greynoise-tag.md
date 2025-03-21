@@ -16,5 +16,3 @@ This post explores the utility and methodology behind GreyNoise tags, emphasizin
 
 #### [Source](https://www.greynoise.io/blog/anatomy-of-a-greynoise-tag)
 
-<br/>
----

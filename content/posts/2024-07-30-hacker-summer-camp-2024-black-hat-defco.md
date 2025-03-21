@@ -16,5 +16,3 @@ As the summer heat intensifies in USA, so does the excitement for the annual Hac
 
 #### [Source](https://blog.anantshri.info/hacker-summer-camp-2024-black-hat-defcon-and-beyond/)
 
-<br/>
----

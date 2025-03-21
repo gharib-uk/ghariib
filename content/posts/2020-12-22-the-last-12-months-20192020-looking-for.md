@@ -87,5 +87,3 @@ We hope to get to as many of those items as we can, as well as a few other thing
 
 #### [Source](https://www.kali.org/blog/2019-2020-review-onwards-with-2021/)
 
-<br/>
----

@@ -16,5 +16,3 @@ GreyNoise has discovered previously undisclosed zero-day vulnerabilities in IoT-
 
 #### [Source](https://www.greynoise.io/blog/greynoise-intelligence-discovers-zero-day-vulnerabilities-in-live-streaming-cameras-with-the-help-of-ai)
 
-<br/>
----

@@ -40,5 +40,3 @@ For more information about the changelog and their views, you can read about on 
 
 #### [Source](https://www.kali.org/blog/empire-starkiller/)
 
-<br/>
----

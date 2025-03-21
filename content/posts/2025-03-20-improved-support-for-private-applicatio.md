@@ -16,5 +16,3 @@ We are excited to introduce support for private hostname and IP address-defined 
 
 #### [Source](https://blog.cloudflare.com/improved-support-for-private-applications-and-reusable-access-policies-with-cloudflare-access/)
 
-<br/>
----

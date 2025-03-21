@@ -16,5 +16,3 @@ This post introduces GreyNoise Labs' series on BTLE, highlighting its privacy an
 
 #### [Source](https://www.greynoise.io/blog/bluetooth-unleashed-syncing-up-with-the-rattagatta-series-part-1)
 
-<br/>
----

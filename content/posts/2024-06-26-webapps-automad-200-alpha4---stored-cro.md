@@ -16,5 +16,3 @@ Automad 2.0.0-alpha.4 - Stored Cross-Site Scripting (XSS)
 
 #### [Source](https://www.exploit-db.com/exploits/52056)
 
-<br/>
----

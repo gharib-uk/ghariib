@@ -16,5 +16,3 @@ Dive into the fascinating and overlooked realm of Bluetooth Low Energy (BTLE) se
 
 #### [Source](https://www.greynoise.io/blog/bluuid-firewallas-diabetics-and-bluetooth)
 
-<br/>
----

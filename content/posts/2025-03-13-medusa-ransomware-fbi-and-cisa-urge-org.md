@@ -16,5 +16,3 @@ The Medusa ransomware gang continues to present a major threat to the critical i
 
 #### [Source](https://www.tripwire.com/state-of-security/medusa-ransomware-fbi-and-cisa-urge-organizations-act-now-mitigate-threat)
 
-<br/>
----

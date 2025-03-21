@@ -16,5 +16,3 @@ Shodan was originally designed as a tool to understand how technology use is cha
 
 #### [Source](https://blog.shodan.io/introducing-shodan-trends/)
 
-<br/>
----

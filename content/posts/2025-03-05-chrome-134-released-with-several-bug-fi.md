@@ -26,5 +26,3 @@ Vulnerabilities has been mentioned in this article.
 
 #### [Source](https://thecyberthrone.in/2025/03/05/chrome-134-released-with-several-bug-fixes/)
 
-<br/>
----

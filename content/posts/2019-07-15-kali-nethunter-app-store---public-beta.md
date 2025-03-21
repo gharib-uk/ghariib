@@ -69,5 +69,3 @@ If you are good at any of the above, or you would like to become good at any of 
 
 #### [Source](https://www.kali.org/blog/kali-nethunter-app-store/)
 
-<br/>
----

@@ -87,5 +87,3 @@ We hope that these submissions inspire you to help bring a piece of yourself to 
 
 #### [Source](https://www.kali.org/blog/kali-community-themes/)
 
-<br/>
----

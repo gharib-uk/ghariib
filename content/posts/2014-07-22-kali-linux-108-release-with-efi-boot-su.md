@@ -28,5 +28,3 @@ While keeping an up-to-date toolset is most definitely an important part of any 
 
 #### [Source](https://www.kali.org/blog/kali-linux-1-0-8-release/)
 
-<br/>
----

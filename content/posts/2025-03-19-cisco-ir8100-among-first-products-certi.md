@@ -16,5 +16,3 @@ Building on the strong foundation laid down by FAN 1.0, the Wi-SUN Alliance rece
 
 #### [Source](https://blogs.cisco.com/industrial-iot/cisco-ir8100-among-first-products-certified-for-wi-sun-fan-1-1)
 
-<br/>
----

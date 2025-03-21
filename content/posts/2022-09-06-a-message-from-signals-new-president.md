@@ -20,5 +20,3 @@ Signal is more important now than ever, and I expect this to stay true well into
 
 #### [Source](https://signal.org/blog/announcing-signal-president/)
 
-<br/>
----

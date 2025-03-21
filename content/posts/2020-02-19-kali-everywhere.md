@@ -83,5 +83,3 @@ Have fun with your Kali LXC / LXD images!
 
 #### [Source](https://www.kali.org/blog/kali-everywhere/)
 
-<br/>
----

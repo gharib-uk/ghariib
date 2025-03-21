@@ -117,5 +117,3 @@ There are few things as satisfying as running your own Linux install that you cr
 
 #### [Source](https://www.kali.org/blog/build-kali-with-live-build-on-debian-based-systems/)
 
-<br/>
----

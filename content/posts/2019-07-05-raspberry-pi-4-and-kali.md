@@ -45,5 +45,3 @@ Once you have it running feel free to let us know how its working for you [on ou
 
 #### [Source](https://www.kali.org/blog/raspberry-pi-4-and-kali/)
 
-<br/>
----

@@ -16,5 +16,3 @@ This post evaluates the pros and cons of the Exploit Prediction Scoring System (
 
 #### [Source](https://insights.sei.cmu.edu/blog/probably-dont-rely-on-epss-yet/)
 
-<br/>
----

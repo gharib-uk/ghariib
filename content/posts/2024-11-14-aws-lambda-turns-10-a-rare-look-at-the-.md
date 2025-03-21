@@ -16,5 +16,3 @@ On AWS Lambda's 10th anniversary, I'm publishing the internal PR/FAQ that helped
 
 #### [Source](https://www.allthingsdistributed.com/2024/11/aws-lambda-turns-10-a-rare-look-at-the-doc-that-started-it.html?utm_campaign=inbound&utm_source=rss)
 
-<br/>
----

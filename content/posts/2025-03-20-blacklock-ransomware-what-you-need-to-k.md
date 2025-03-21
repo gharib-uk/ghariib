@@ -16,5 +16,3 @@ What is the BlackLock ransomware? BlackLock is a relatively new ransomware group
 
 #### [Source](https://www.tripwire.com/state-of-security/blacklock-ransomware-what-you-need-know)
 
-<br/>
----

@@ -16,5 +16,3 @@ This vulnerability allows remote attackers to execute arbitrary code on affected
 
 #### [Source](http://www.zerodayinitiative.com/advisories/ZDI-25-147/)
 
-<br/>
----

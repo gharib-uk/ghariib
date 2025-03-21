@@ -635,5 +635,3 @@ And that’s that! Ch4inrulz was a fairly easy challenge overall.
 
 #### [Source](http://blog.techorganic.com/2018/08/19/ch4inrulz-hacking-challenge/)
 
-<br/>
----

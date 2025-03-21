@@ -16,5 +16,3 @@ Today’s reminder of the insider threat, from the U.S. Attorney’s Office for 
 
 #### [Source](https://databreaches.net/2025/03/20/department-of-defense-civilian-employee-pleads-guilty-to-taking-classified-documents/)
 
-<br/>
----

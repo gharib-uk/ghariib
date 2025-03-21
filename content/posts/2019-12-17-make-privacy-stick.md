@@ -20,5 +20,3 @@ They get slapped on street signs. We wear them on our clothes to identify oursel
 
 #### [Source](https://signal.org/blog/make-privacy-stick/)
 
-<br/>
----

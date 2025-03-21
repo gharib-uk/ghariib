@@ -20,5 +20,3 @@ We’ve taken the feedback we’ve received over the past six months and incorpo
 
 #### [Source](https://signal.org/blog/verified-safety-number-updates/)
 
-<br/>
----

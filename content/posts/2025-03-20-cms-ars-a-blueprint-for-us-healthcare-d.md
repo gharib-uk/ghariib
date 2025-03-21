@@ -16,5 +16,3 @@ Protecting sensitive patient information is more critical than ever. With techno
 
 #### [Source](https://www.tripwire.com/state-of-security/cms-ars-blueprint-us-healthcare-data-security-and-compliance)
 
-<br/>
----

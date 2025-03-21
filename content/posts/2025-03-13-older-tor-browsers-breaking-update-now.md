@@ -25,5 +25,3 @@ The few who are not yet, should update immediately from the [Tor Browser downloa
 
 #### [Source](https://blog.torproject.org/old-tor-browsers-breakage/)
 
-<br/>
----
