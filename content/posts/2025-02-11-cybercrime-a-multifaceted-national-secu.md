@@ -25,7 +25,7 @@ Despite the overlaps in effects and collaboration with states, tackling the root
 
 aside\_block
 
-<ListValue: \[StructValue(\[('title', 'Cybercrime: A Multifaceted National Security Threat'), ('body', <wagtail.rich\_text.RichText object at 0x3ed7fffb1550>), ('btn\_text', 'Download now'), ('href', 'https://services.google.com/fh/files/misc/cybercrime-multifaceted-national-security-threat.pdf'), ('image', <GAEImage: cybercrime-cover>)\])\]>
+<ListValue: \[StructValue(\[('title', 'Cybercrime: A Multifaceted National Security Threat'), ('body', <wagtail.rich\_text.RichText object at 0x3e340c2861f0>), ('btn\_text', 'Download now'), ('href', 'https://services.google.com/fh/files/misc/cybercrime-multifaceted-national-security-threat.pdf'), ('image', <GAEImage: cybercrime-cover>)\])\]>
 
 Stand-Alone Cybercrime is a Threat to Countries' National Security
 ------------------------------------------------------------------
@@ -245,7 +245,7 @@ If a single ransomware-as-a-service provider is taken down, many others are alre
 
 aside\_block
 
-<ListValue: \[StructValue(\[('title', 'The Evolution of Cybercrime'), ('body', <wagtail.rich\_text.RichText object at 0x3ed7fffb1a30>), ('btn\_text', 'Watch now'), ('href', 'https://www.youtube.com/watch?v=NtANWZPHUak'), ('image', <GAEImage: evolution of cybercrime>)\])\]>
+<ListValue: \[StructValue(\[('title', 'The Evolution of Cybercrime'), ('body', <wagtail.rich\_text.RichText object at 0x3e340c286190>), ('btn\_text', 'Watch now'), ('href', 'https://www.youtube.com/watch?v=NtANWZPHUak'), ('image', <GAEImage: evolution of cybercrime>)\])\]>
 
 About the Authors
 -----------------

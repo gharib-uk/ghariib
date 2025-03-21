@@ -18,7 +18,7 @@ type: posts
 
 NVIDIA has issued urgent security advisories addressing multiple vulnerabilities in its Hopper HGX 8-GPU High-Performance Computing (HMC) platforms, including a high-severity flaw (CVE-2024-0114, CVSS ... [_Read more_](https://cybersecuritynews.com/nvidia-multiple-vulnerabilities-code/)
 
-**Published Date:** Mar 05, 2025 (2 weeks, 1 day ago)
+**Published Date:** Mar 05, 2025 (2 weeks, 2 days ago)
 
 Vulnerabilities has been mentioned in this article.
 
