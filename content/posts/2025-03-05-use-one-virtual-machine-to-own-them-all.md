@@ -18,7 +18,7 @@ type: posts
 
 Yesterday, VMware quietly released patches for three ESXi zero day vulnerabilities: CVE-2025–22224, CVE-2025–22225, CVE-2025–22226.The advisory:Although the advisory doesn’t explicitly say it, this is ... [_Read more_](https://doublepulsar.com/use-one-virtual-machine-to-own-them-all-active-exploitation-of-esxicape-0091ccc5bdfc?source=rss----8343faddf0ec---4)
 
-**Published Date:** Mar 05, 2025 (2 weeks, 1 day ago)
+**Published Date:** Mar 05, 2025 (2 weeks, 2 days ago)
 
 Vulnerabilities has been mentioned in this article.
 

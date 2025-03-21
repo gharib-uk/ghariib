@@ -1,6 +1,6 @@
 ---
 title: "Introducing Cloudy Cloudflares AI agent for simplifying complex configurations"
-date: Thu, 20 Mar 2025 13:00:00 GMT
+date: Thu, 20 Mar 2025 13:10:00 GMT
 draft: false
 type: posts
 ---
