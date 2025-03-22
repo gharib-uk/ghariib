@@ -18,5 +18,3 @@ The post [Microsoft completes landmark EU Data Boundary, offering enhanced data 
 
 #### [Source](https://blogs.microsoft.com/on-the-issues/2025/02/26/microsoft-completes-landmark-eu-data-boundary-offering-enhanced-data-residency-and-transparency/)
 
-<br/>
----

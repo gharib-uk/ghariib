@@ -18,7 +18,7 @@ type: posts
 
 Tripwire's February 2025 Patch Priority Index (PPI) brings together important vulnerabilities for Microsoft.Up first on the list are patches for Microsoft Edge (Chromium-based) that resolve 4 remote c ... [_Read more_](https://www.tripwire.com/state-of-security/tripwire-patch-priority-index-february-2025)
 
-**Published Date:** Mar 05, 2025 (2 weeks, 2 days ago)
+**Published Date:** Mar 05, 2025 (2 weeks, 3 days ago)
 
 Vulnerabilities has been mentioned in this article.
 

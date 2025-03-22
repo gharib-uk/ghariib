@@ -18,5 +18,3 @@ The post [Announcing new models, customization tools, and enterprise agent upgra
 
 #### [Source](https://azure.microsoft.com/en-us/blog/announcing-new-models-customization-tools-and-enterprise-agent-upgrades-in-azure-ai-foundry/)
 
-<br/>
----

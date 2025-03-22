@@ -18,7 +18,7 @@ type: posts
 
 Google has released Chrome 134 to the stable channel, addressing 14 security vulnerabilities across its core components. These fixes include high-severity flaws that could lead to browser crashes, dat ... [_Read more_](https://thecyberthrone.in/2025/03/05/chrome-134-released-with-several-bug-fixes/)
 
-**Published Date:** Mar 05, 2025 (2 weeks, 2 days ago)
+**Published Date:** Mar 05, 2025 (2 weeks, 3 days ago)
 
 Vulnerabilities has been mentioned in this article.
 
