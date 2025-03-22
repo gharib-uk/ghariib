@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Issue with the AWS CDK CLI and custom credential plugins CVE-2025-2598</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Issue with the AWS CDK CLI and custom credential plugins CVE-2025-2598</h1>
+			<b><time>21.03.2025 14:04</time></b>
+		       
+
+			<div>
+				<h1 id="issue-with-the-aws-cdk-cli-and-custom-credential-plugins-cve-2025-2598">Issue with the AWS CDK CLI and custom credential plugins CVE-2025-2598</h1>
+<p>Publication Date: 2025/03/21 07:00 AM PDT Description AWS identified CVE-2025-2598, an issue in the AWS Cloud Development Kit (AWS CDK) Command Line Interface (AWS CDK CLI), versions 2.172.0 through 2.178.1. The AWS CDK CLI is a command line tool that deploys AWS CDK applications onto AWS accounts. When customers run AWS CDK</p>
+<p>**Publication Date: 2025/03/21 07:00 AM PDT<br>
+**</p>
+<p><strong>Description</strong></p>
+<p>AWS identified <a href="https://www.cve.org/CVERecord?id=CVE-2025-2598">CVE-2025-2598</a>, an issue in the <a href="https://docs.aws.amazon.com/cdk/v2/guide/cli.html">AWS Cloud Development Kit (AWS CDK) Command Line Interface (AWS CDK CLI)</a>, versions 2.172.0 through 2.178.1. The <a href="https://docs.aws.amazon.com/cdk/v2/guide/cli.html">AWS CDK CLI</a> is a command line tool that deploys AWS CDK applications onto AWS accounts.</p>
+<p>When customers run AWS CDK CLI commands with credential plugins and configure those plugins to return temporary credentials by including an expiration property, this issue can potentially result in the AWS credentials retrieved by the plugin to be printed to the console output. Any user with access to where the CDK CLI was ran would have access to this output. We have released a fix for this issue and recommend customers upgrade to <a href="https://github.com/aws/aws-cdk/releases/tag/v2.178.2">version 2.178.2</a> or later to address this issue. Plugins that omit the expiration property are not affected.</p>
+<p>To validate if credentials have been printed to the console output, customers can take the following actions:</p>
+<ol>
+<li>Identify executions running CDK CLI that have started after December 6, 2024.</li>
+<li>Scan any logs of those executions to locate statements similar to the following:<br>
+{<br>
+accessKeyId: &lsquo;<!-- raw HTML omitted -->&rsquo;,<br>
+secretAccessKey: &lsquo;<!-- raw HTML omitted -->&rsquo;,<br>
+sessionToken: &lsquo;<!-- raw HTML omitted -->&rsquo;,<br>
+expiration: <!-- raw HTML omitted -->,<br>
+&lsquo;$source&rsquo;: <!-- raw HTML omitted --><br>
+}</li>
+<li>If you identify credentials, these can be viewed by users who have access to the console where the CDK CLI was ran. As such, we recommend you take appropriate action, which can include (but is not limited to):
+<ul>
+<li>Revoke all temporary credentials obtained from the AWS IAM role used by the plugin.</li>
+<li>Limit the users who have access to the console output.</li>
+<li>Rotate long lived credentials of the AWS IAM user used by the plugin (if any).</li>
+</ul>
+</li>
+</ol>
+<p>Please refer to our &ldquo;<a href="https://www.npmjs.com/package/@aws-cdk/cli-plugin-contract">AWS CDK CLI Library</a>&rdquo; for more information about custom credential plugins.</p>
+<p><strong>Affected versions:</strong> 2.172.0 through 2.178.1</p>
+<p><strong>Resolution:</strong></p>
+<p>The issue has been addressed in version 2.178.2. We recommend upgrading to the latest version and ensuring any forked or derivative code is patched to incorporate the new fixes.</p>
+<p><strong>References:</strong></p>
+<ul>
+<li><a href="https://github.com/aws/aws-cdk/security/advisories/GHSA-v63m-x9r9-8gqp">GHSA-v63m-x9r9-8gqp</a></li>
+<li><a href="https://www.cve.org/CVERecord?id=CVE-2025-2598">CVE-2025-2598</a></li>
+</ul>
+<p>Please email <a href="mailto:aws-security@amazon.com">aws-security@amazon.com</a> with any security questions or concerns.</p>
+<h4 id="source"><a href="https://aws.amazon.com/security/security-bulletins/AWS-2025-005/">Source</a></h4>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/2025-03-22-cve-2025-2618---d-link-dap-1620-heap-ba/">CVE-2025-2618 - D-Link DAP-1620 Heap-Based Buffer Overflow Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-22-cve-2025-2619---d-link-dap-1620-stack-b/">CVE-2025-2619 - D-Link DAP-1620 Stack-Based Buffer Overflow Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-22-cve-2025-2186---funnelkit-woocommerce-s/">CVE-2025-2186 - FunnelKit WooCommerce SQL Injection</a></li>
+				
+				<li><a href="/posts/2025-03-22-cve-2025-2617---yangyouwang-crud-cross-/">CVE-2025-2617 - Yangyouwang Crud Cross-Site Scripting Vulnerability</a></li>
+				
+				<li><a href="/posts/2025-03-22-cve-2025-26796---apache-oozie-cross-sit/">CVE-2025-26796 - Apache Oozie Cross-site Scripting Vulnerability</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

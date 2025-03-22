@@ -40,113 +40,15 @@
 		
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-31-kubeadm-v1beta4/">Kubernetes v1.31: kubeadm v1beta4</a></h1>
+	<h1><a href="https://ghariib.ir/posts/cve-2024-56251-event-espresso-csrf-vulnerability/">CVE-2024-56251 - Event Espresso CSRF Vulnerability</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>As part of the Kubernetes v1.31 release, <code>kubeadm</code> is adopting a new (v1beta4) version of its configuration file format. Configuration in the previous v1beta3 format is now formally deprecated, which means it&rsquo;s supported but you should migrate to v1beta4 and stop using the deprecated format. Support for v1beta3 configuration will be removed after a minimum of 3 Kubernetes minor releases.</p>
-<p>In this article, I&rsquo;ll walk you through key changes; I&rsquo;ll explain about the kubeadm v1beta4 configuration format, and how to migrate from v1beta3 to v1beta4.</p>
-		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-31-kubeadm-v1beta4/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-31-new-kubernetes-cpumanager-static-policy-distribute-cpus-across-cores/">Kubernetes v1.31: New Kubernetes CPUManager Static Policy: Distribute CPUs Across Cores</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>In Kubernetes v1.31, we are excited to introduce a significant enhancement to CPU management capabilities: the <code>distribute-cpus-across-cores</code> option for the CPUManager static policy. This feature is currently in alpha and hidden by default, marking a strategic shift aimed at optimizing CPU utilization and improving system performance across multi-core processors.</p>
-<h2 id="understanding-the-feature">Understanding the feature</h2>
-<p>Traditionally, Kubernetes&rsquo; CPUManager tends to allocate CPUs as compactly as possible, typically packing them onto the fewest number of physical cores. However, allocation strategy matters, CPUs on the same physical host still share some resources of the physical core, such as the cache and execution units, etc.</p>
-		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-31-new-kubernetes-cpumanager-static-policy-distribute-cpus-across-cores/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-adds-a-new-cpu-manager-static-policy-option-for-strict-cpu-reservation/">Kubernetes v1.32 Adds A New CPU Manager Static Policy Option For Strict CPU Reservation</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>In Kubernetes v1.32, after years of community discussion, we are excited to introduce a <code>strict-cpu-reservation</code> option for the CPU Manager static policy. This feature is currently in alpha, with the associated policy hidden by default. You can only use the policy if you explicitly enable the alpha behavior in your cluster.</p>
-<h2 id="understanding-the-feature">Understanding the feature</h2>
-<p>The CPU Manager static policy is used to reduce latency or improve performance. The <code>reservedSystemCPUs</code> defines an explicit CPU set for OS system daemons and kubernetes system daemons. This option is designed for Telco/NFV type use cases where uncontrolled interrupts/timers may impact the workload performance. you can use this option to define the explicit cpuset for the system/kubernetes daemons as well as the interrupts/timers, so the rest CPUs on the system can be used exclusively for workloads, with less impact from uncontrolled interrupts/timers. More details of this parameter can be found on the Explicitly Reserved CPU List page.</p>
-		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-32-adds-a-new-cpu-manager-static-policy-option-for-strict-cpu-reservation/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-sneak-peek/">Kubernetes v1.32 sneak peek</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>As we get closer to the release date for Kubernetes v1.32, the project develops and matures. Features may be deprecated, removed, or replaced with better ones for the project&rsquo;s overall health.</p>
-<p>This blog outlines some of the planned changes for the Kubernetes v1.32 release, that the release team feels you should be aware of, for the continued maintenance of your Kubernetes environment and keeping up to date with the latest changes. Information listed below is based on the current status of the v1.32 release and may change before the actual release date.</p>
-		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-32-sneak-peek/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-memory-manager-goes-ga/">Kubernetes v1.32: Memory Manager Goes GA</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>With Kubernetes 1.32, the memory manager has officially graduated to General Availability (GA), marking a significant milestone in the journey toward efficient and predictable memory allocation for containerized applications. Since Kubernetes v1.22, where it graduated to beta, the memory manager has proved itself reliable, stable and a good complementary feature for the CPU Manager.</p>
-<p>As part of kubelet&rsquo;s workload admission process, the memory manager provides topology hints to optimize memory allocation and alignment. This enables users to allocate exclusive memory for Pods in the Guaranteed QoS class. More details about the process can be found in the memory manager goes to beta blog.</p>
-		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-32-memory-manager-goes-ga/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-penelope/">Kubernetes v1.32: Penelope</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p><strong>Editors:</strong> Matteo Bianchi, Edith Puclla, William Rizzo, Ryota Sawada, Rashan Smith</p>
-<p>Announcing the release of Kubernetes v1.32: Penelope!</p>
-<p>In line with previous releases, the release of Kubernetes v1.32 introduces new stable, beta, and alpha features. The consistent delivery of high-quality releases underscores the strength of our development cycle and the vibrant support from our community. This release consists of 44 enhancements in total. Of those enhancements, 13 have graduated to Stable, 12 are entering Beta, and 19 have entered in Alpha.</p>
-		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-32-penelope/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/kubernetes-v1-32-queueinghint-brings-a-new-possibility-to-optimize-pod-scheduling/">Kubernetes v1.32: QueueingHint Brings a New Possibility to Optimize Pod Scheduling</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>The Kubernetes scheduler is the core component that selects the nodes on which new Pods run. The scheduler processes these new Pods <strong>one by one</strong>. Therefore, the larger your clusters, the more important the throughput of the scheduler becomes.</p>
-<p>Over the years, Kubernetes SIG Scheduling has improved the throughput of the scheduler in multiple enhancements. This blog post describes a major improvement to the scheduler in Kubernetes v1.32: a scheduling context element named <em>QueueingHint</em>. This page provides background knowledge of the scheduler and explains how QueueingHint improves scheduling throughput.</p>
-		
-			<a href="https://ghariib.ir/posts/kubernetes-v1-32-queueinghint-brings-a-new-possibility-to-optimize-pod-scheduling/">Read more...</a>
-		
-	</div>
-</article>
-
-		
-			<article>
-	<h1><a href="https://ghariib.ir/posts/lateral-movement-visual-studio-dte/">Lateral Movement – Visual Studio DTE</a></h1>
-	<b><time>02.01.2025 00:00</time></b>
-	
-	<div>
-		<p>A lot of organizations have some sort of application development program and it is highly likely that developers will utilize Visual Studio for their development…</p>
-<p>Continue reading → Lateral Movement – Visual Studio DTE</p>
+		<p><strong>CVE ID :</strong> CVE-2024-56251<br>
+<strong>Published :</strong> Jan. 2, 2025, 12:15 p.m. | 58 minutes ago<br>
+<strong>Description :</strong> Cross-Site Request Forgery (CSRF) vulnerability in Event Espresso Event Espresso 4 Decaf allows Cross Site Request Forgery.This issue affects Event Espresso 4 Decaf: from n/a through 5.0.28.decaf.<br>
+<strong>Severity:</strong> 4.3 | MEDIUM<br>
+Visit the link for more details, such as CVSS details, affected products, timeline, and more&hellip;</p>
 <p>Go to Source</p>
 		
 	</div>
@@ -154,34 +56,146 @@
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/life-at-canonical-victoria-antipovas-perspective-as-a-new-joiner-in-product-marketing/">Life at Canonical: Victoria Antipova’s perspective as a new joiner in Product Marketing</a></h1>
+	<h1><a href="https://ghariib.ir/posts/cve-2024-56252-themelooks-enter-addons-stored-cross-site-scripting/">CVE-2024-56252 - ThemeLooks Enter Addons Stored Cross-site Scripting</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>Canonical is continuously hiring new talent. Being a remote- first company, Canonical’s new joiners receive a unique onboarding experience. In their first weeks, they are introduced to the different departments and the various tools they use to work asynchronously across the globe. New hires develop a good understanding of the open-source technologies that the company deploys and supports such as Openstack, Kubernetes, Kubeflow and OpenSearch – in addition of course to Ubuntu, the world’s most famous OS, which they install on their laptops. </p>
-		
-			<a href="https://ghariib.ir/posts/life-at-canonical-victoria-antipovas-perspective-as-a-new-joiner-in-product-marketing/">Read more...</a>
+		<p><strong>CVE ID :</strong> CVE-2024-56252<br>
+<strong>Published :</strong> Jan. 2, 2025, 12:15 p.m. | 58 minutes ago<br>
+<strong>Description :</strong> Improper Neutralization of Input During Web Page Generation (&lsquo;Cross-site Scripting&rsquo;) vulnerability in ThemeLooks Enter Addons allows Stored XSS.This issue affects Enter Addons: from n/a through 2.1.9.
+<strong>Severity:</strong> 6.5 | MEDIUM<br>
+Visit the link for more details, such as CVSS details, affected products, timeline, and more&hellip;</p>
+<p>Go to Source</p>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="https://ghariib.ir/posts/light-brite-turned-sci-fi-console-on-the-cheap/">Light Brite Turned Sci-Fi Console on the Cheap</a></h1>
+	<h1><a href="https://ghariib.ir/posts/cve-2024-56253-supsystic-data-tables-generator-missing-authorization-vulnerability/">CVE-2024-56253 - Supsystic Data Tables Generator Missing Authorization Vulnerability</a></h1>
 	<b><time>02.01.2025 00:00</time></b>
 	
 	<div>
-		<p>
-<figure>
-  <img src="https://hackaday.com/wp-content/uploads/2025/01/briteprop_feat.jpg?w=800" alt="" />
-</figure>
-
-
-</p>
-<p>Generally, the projects featured on Hackaday actually <em>do</em> something. We won’t go as far as to say they are practical creations, but they usually have some kind of function other than to sit there and blink. But what if just sitting still and blinking away randomly is precisely what you want a piece of hardware to do?</p>
-<p>That was exactly the goal when [createscifi] set out to dress a Lite Brite up as a futuristic prop. On a technical level, this project is pretty much as simple as it gets. But we appreciated seeing some of the techniques brought to bear on this project, and perhaps more importantly, really like the channel’s overall goal of creating affordable sci-fi props using common components. We don’t plan on filming our own space epic anytime soon…but we like to know the option is there.</p>
+		<p><strong>CVE ID :</strong> CVE-2024-56253<br>
+<strong>Published :</strong> Jan. 2, 2025, 12:15 p.m. | 58 minutes ago<br>
+<strong>Description :</strong> Missing Authorization vulnerability in supsystic.com Data Tables Generator by Supsystic allows Exploiting Incorrectly Configured Access Control Security Levels.This issue affects Data Tables Generator by Supsystic: from n/a through 1.10.36.
+<strong>Severity:</strong> 5.4 | MEDIUM<br>
+Visit the link for more details, such as CVSS details, affected products, timeline, and more&hellip;</p>
+<p>Go to Source</p>
 		
-			<a href="https://ghariib.ir/posts/light-brite-turned-sci-fi-console-on-the-cheap/">Read more...</a>
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/cve-2024-56254-move-addons-for-elementor-cross-site-scripting-vulnerability/">CVE-2024-56254 - Move Addons for Elementor Cross-site Scripting Vulnerability</a></h1>
+	<b><time>02.01.2025 00:00</time></b>
+	
+	<div>
+		<p><strong>CVE ID :</strong> CVE-2024-56254<br>
+<strong>Published :</strong> Jan. 2, 2025, 12:15 p.m. | 58 minutes ago<br>
+<strong>Description :</strong> Improper Neutralization of Input During Web Page Generation (&lsquo;Cross-site Scripting&rsquo;) vulnerability in moveaddons Move Addons for Elementor allows Stored XSS.This issue affects Move Addons for Elementor: from n/a through 1.3.6.
+<strong>Severity:</strong> 6.5 | MEDIUM<br>
+Visit the link for more details, such as CVSS details, affected products, timeline, and more&hellip;</p>
+<p>Go to Source</p>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/cve-2024-56255-ayecode-connect-missing-authorization-vulnerability/">CVE-2024-56255 - AyeCode Connect Missing Authorization Vulnerability</a></h1>
+	<b><time>02.01.2025 00:00</time></b>
+	
+	<div>
+		<p><strong>CVE ID :</strong> CVE-2024-56255<br>
+<strong>Published :</strong> Jan. 2, 2025, 12:15 p.m. | 58 minutes ago<br>
+<strong>Description :</strong> Missing Authorization vulnerability in AyeCode AyeCode Connect allows Exploiting Incorrectly Configured Access Control Security Levels.This issue affects AyeCode Connect: from n/a through 1.3.8.
+<strong>Severity:</strong> 4.3 | MEDIUM<br>
+Visit the link for more details, such as CVSS details, affected products, timeline, and more&hellip;</p>
+<p>Go to Source</p>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/cve-2024-56259-ayecode-wp-business-directory-plugins-geodirectory-cross-site-scripting-vulnerability/">CVE-2024-56259 - AyeCode WP Business Directory Plugins GeoDirectory Cross-site Scripting Vulnerability</a></h1>
+	<b><time>02.01.2025 00:00</time></b>
+	
+	<div>
+		<p><strong>CVE ID :</strong> CVE-2024-56259<br>
+<strong>Published :</strong> Jan. 2, 2025, 12:15 p.m. | 58 minutes ago<br>
+<strong>Description :</strong> Improper Neutralization of Input During Web Page Generation (&lsquo;Cross-site Scripting&rsquo;) vulnerability in AyeCode - WP Business Directory Plugins GeoDirectory allows Stored XSS.This issue affects GeoDirectory: from n/a through 2.3.84.
+<strong>Severity:</strong> 6.5 | MEDIUM<br>
+Visit the link for more details, such as CVSS details, affected products, timeline, and more&hellip;</p>
+<p>Go to Source</p>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/cve-2024-56260-apache-shopelement-cross-site-scripting/">CVE-2024-56260 - Apache ShopElement Cross-site Scripting</a></h1>
+	<b><time>02.01.2025 00:00</time></b>
+	
+	<div>
+		<p><strong>CVE ID :</strong> CVE-2024-56260<br>
+<strong>Published :</strong> Jan. 2, 2025, 12:15 p.m. | 58 minutes ago<br>
+<strong>Description :</strong> Improper Neutralization of Input During Web Page Generation (&lsquo;Cross-site Scripting&rsquo;) vulnerability in StorePlugin ShopElement allows Stored XSS.This issue affects ShopElement: from n/a through 2.0.0.
+<strong>Severity:</strong> 6.5 | MEDIUM<br>
+Visit the link for more details, such as CVSS details, affected products, timeline, and more&hellip;</p>
+<p>Go to Source</p>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/cve-2024-56261-gs-plugins-project-showcase-stored-xss-vulnerability/">CVE-2024-56261 - GS Plugins Project Showcase Stored XSS Vulnerability</a></h1>
+	<b><time>02.01.2025 00:00</time></b>
+	
+	<div>
+		<p><strong>CVE ID :</strong> CVE-2024-56261<br>
+<strong>Published :</strong> Jan. 2, 2025, 12:15 p.m. | 58 minutes ago<br>
+<strong>Description :</strong> Improper Neutralization of Input During Web Page Generation (&lsquo;Cross-site Scripting&rsquo;) vulnerability in GS Plugins Project Showcase allows Stored XSS.This issue affects Project Showcase: from n/a through 1.1.1.
+<strong>Severity:</strong> 6.5 | MEDIUM<br>
+Visit the link for more details, such as CVSS details, affected products, timeline, and more&hellip;</p>
+<p>Go to Source</p>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/cve-2024-56262-gs-plugins-gs-coaches-stored-xss/">CVE-2024-56262 - GS Plugins GS Coaches Stored XSS</a></h1>
+	<b><time>02.01.2025 00:00</time></b>
+	
+	<div>
+		<p><strong>CVE ID :</strong> CVE-2024-56262<br>
+<strong>Published :</strong> Jan. 2, 2025, 12:15 p.m. | 58 minutes ago<br>
+<strong>Description :</strong> Improper Neutralization of Input During Web Page Generation (&lsquo;Cross-site Scripting&rsquo;) vulnerability in GS Plugins GS Coaches allows Stored XSS.This issue affects GS Coaches: from n/a through 1.1.0.
+<strong>Severity:</strong> 6.5 | MEDIUM<br>
+Visit the link for more details, such as CVSS details, affected products, timeline, and more&hellip;</p>
+<p>Go to Source</p>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="https://ghariib.ir/posts/cve-2024-56263-gs-plugins-gs-shots-for-dribbble-cross-site-scripting-xss/">CVE-2024-56263 - GS Plugins GS Shots for Dribbble Cross-site Scripting (XSS)</a></h1>
+	<b><time>02.01.2025 00:00</time></b>
+	
+	<div>
+		<p><strong>CVE ID :</strong> CVE-2024-56263<br>
+<strong>Published :</strong> Jan. 2, 2025, 12:15 p.m. | 58 minutes ago<br>
+<strong>Description :</strong> Improper Neutralization of Input During Web Page Generation (&lsquo;Cross-site Scripting&rsquo;) vulnerability in GS Plugins GS Shots for Dribbble allows DOM-Based XSS.This issue affects GS Shots for Dribbble: from n/a through 1.2.0.
+<strong>Severity:</strong> 6.5 | MEDIUM<br>
+Visit the link for more details, such as CVSS details, affected products, timeline, and more&hellip;</p>
+<p>Go to Source</p>
+		
+			<a href="https://ghariib.ir/posts/cve-2024-56263-gs-plugins-gs-shots-for-dribbble-cross-site-scripting-xss/">Read more...</a>
 		
 	</div>
 </article>
@@ -191,7 +205,7 @@
 
 	<a href="/page/476/">Previous Page</a>
 
-477 of 556
+477 of 576
 
 	<a href="/page/478/">Next Page</a>
 
