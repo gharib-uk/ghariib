@@ -202,7 +202,7 @@ Potential targets of government-backed intrusion activity targeting their person
 
 aside\_block
 
-<ListValue: \[StructValue(\[('title', 'More insights on this threat activity'), ('body', <wagtail.rich\_text.RichText object at 0x3e3f0b2a6400>), ('btn\_text', 'Listen now'), ('href', 'https://open.spotify.com/episode/3reADyxut9u4ueSPlCma8I'), ('image', <GAEImage: Defender's Advantage podcast>)\])\]>
+<ListValue: \[StructValue(\[('title', 'More insights on this threat activity'), ('body', <wagtail.rich\_text.RichText object at 0x3e894a8c64f0>), ('btn\_text', 'Listen now'), ('href', 'https://open.spotify.com/episode/3reADyxut9u4ueSPlCma8I'), ('image', <GAEImage: Defender's Advantage podcast>)\])\]>
 
 Indicators of Compromise
 ------------------------
