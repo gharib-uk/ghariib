@@ -18,7 +18,7 @@ type: posts
 
 Reports have surfaced alleging that the UK government secretly issued an order to Apple, demanding the creation of a backdoor within iCloud that would grant British law enforcement agencies access to ... [_Read more_](https://securityonline.info/data-privacy-row-apple-takes-uk-government-to-court/)
 
-**Published Date:** Mar 05, 2025 (2 weeks, 2 days ago)
+**Published Date:** Mar 05, 2025 (2 weeks, 3 days ago)
 
 Vulnerabilities has been mentioned in this article.
 

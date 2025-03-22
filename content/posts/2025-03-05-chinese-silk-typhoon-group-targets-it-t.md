@@ -18,7 +18,7 @@ type: posts
 
 Cybersecurity researchers at Microsoft Threat Intelligence have observed that Silk Typhoon aka HAFNIUM, a Chinese espionage group known for its technical skill, is now using common IT solutions as a g ... [_Read more_](https://hackread.com/chinese-silk-typhoon-group-it-tools-network-breaches/)
 
-**Published Date:** Mar 05, 2025 (2 weeks, 1 day ago)
+**Published Date:** Mar 05, 2025 (2 weeks, 2 days ago)
 
 Vulnerabilities has been mentioned in this article.
 

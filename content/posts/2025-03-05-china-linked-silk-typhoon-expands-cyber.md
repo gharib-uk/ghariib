@@ -18,7 +18,7 @@ type: posts
 
 Network Security / Data Breach The China-lined threat actor behind the zero-day exploitation of security flaws in Microsoft Exchange servers in January 2021 has shifted its tactics to target the infor ... [_Read more_](https://thehackernews.com/2025/03/china-linked-silk-typhoon-expands-cyber.html)
 
-**Published Date:** Mar 05, 2025 (2 weeks, 1 day ago)
+**Published Date:** Mar 05, 2025 (2 weeks, 2 days ago)
 
 Vulnerabilities has been mentioned in this article.
 
