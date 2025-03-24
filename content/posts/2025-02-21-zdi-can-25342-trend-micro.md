@@ -10,9 +10,9 @@ type: posts
 
 
 
-A CVSS score 7.6 AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:H severity vulnerability discovered by 'Nicolas Caluori' was reported to the affected vendor on: 2025-02-21, 29 days ago. The vendor is given until 2025-06-21 to publish a fix or workaround. Once the vendor has created and tested a patch we will coordinate the release of a
+A CVSS score 7.6 AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:H severity vulnerability discovered by 'Nicolas Caluori' was reported to the affected vendor on: 2025-02-21, 31 days ago. The vendor is given until 2025-06-21 to publish a fix or workaround. Once the vendor has created and tested a patch we will coordinate the release of a
 
-A CVSS score 7.6 [AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:H](https://nvd.nist.gov/cvss.cfm?calculator&version=3.0&vector=AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:H) severity vulnerability discovered by 'Nicolas Caluori' was reported to the affected vendor on: 2025-02-21, 29 days ago. The vendor is given until 2025-06-21 to publish a fix or workaround. Once the vendor has created and tested a patch we will coordinate the release of a public advisory.
+A CVSS score 7.6 [AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:H](https://nvd.nist.gov/cvss.cfm?calculator&version=3.0&vector=AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:H) severity vulnerability discovered by 'Nicolas Caluori' was reported to the affected vendor on: 2025-02-21, 31 days ago. The vendor is given until 2025-06-21 to publish a fix or workaround. Once the vendor has created and tested a patch we will coordinate the release of a public advisory.
 
 #### [Source](http://www.zerodayinitiative.com/advisories/upcoming/)
 

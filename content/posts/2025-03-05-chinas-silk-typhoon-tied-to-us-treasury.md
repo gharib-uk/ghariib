@@ -18,7 +18,7 @@ type: posts
 
 Silk Typhoon, the Chinese government crew believed to be behind the December US Treasury intrusions, has been abusing stolen API keys and cloud credentials in ongoing attacks targeting IT companies an ... [_Read more_](https://go.theregister.com/feed/www.theregister.com/2025/03/05/china_silk_typhoon_update/)
 
-**Published Date:** Mar 05, 2025 (2 weeks, 2 days ago)
+**Published Date:** Mar 05, 2025 (2 weeks, 4 days ago)
 
 Vulnerabilities has been mentioned in this article.
 

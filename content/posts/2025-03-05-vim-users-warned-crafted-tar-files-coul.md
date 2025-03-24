@@ -18,7 +18,7 @@ type: posts
 
 A newly discovered vulnerability in the popular text editor Vim could allow malicious actors to execute arbitrary code on unsuspecting users’ systems. The flaw, tracked as CVE-2025-27423, resides with ... [_Read more_](https://securityonline.info/vim-users-warned-crafted-tar-files-could-trigger-code-execution-cve-2025-27423/)
 
-**Published Date:** Mar 05, 2025 (2 weeks, 3 days ago)
+**Published Date:** Mar 05, 2025 (2 weeks, 5 days ago)
 
 Vulnerabilities has been mentioned in this article.
 

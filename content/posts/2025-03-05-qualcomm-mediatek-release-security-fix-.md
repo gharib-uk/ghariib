@@ -18,7 +18,7 @@ type: posts
 
 Source: Andriy Popov via Alamy Stock PhotoNEWS BRIEFQualcomm and MediaTek, two semiconductor companies, have disclosed and patched several open vulnerabilities, some of which had already been fixed in ... [_Read more_](https://www.darkreading.com/remote-workforce/qualcomm-mediatek-security-fix-bonanza)
 
-**Published Date:** Mar 05, 2025 (2 weeks, 2 days ago)
+**Published Date:** Mar 05, 2025 (2 weeks, 4 days ago)
 
 Vulnerabilities has been mentioned in this article.
 

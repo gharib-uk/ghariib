@@ -18,7 +18,7 @@ type: posts
 
 The ransomware group Hunters International has claimed responsibility for a significant cyberattack on Tata Technologies, a global engineering and digital solutions provider. Here are the key details ... [_Read more_](https://thecyberthrone.in/2025/03/06/hunters-international-claims-tata-technologies-attack/)
 
-**Published Date:** Mar 06, 2025 (2 weeks, 2 days ago)
+**Published Date:** Mar 06, 2025 (2 weeks, 4 days ago)
 
 Vulnerabilities has been mentioned in this article.
 

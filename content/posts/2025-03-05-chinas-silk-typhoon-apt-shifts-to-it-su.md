@@ -18,7 +18,7 @@ type: posts
 
 Source: Chebakalex7 via ShutterstockThe China-backed cyber-espionage group known as "Silk Typhoon" has begun targeting organizations in the IT supply chain to gain access to their downstream customers ... [_Read more_](https://www.darkreading.com/remote-workforce/china-silk-typhoon-it-supply-chain-attacks)
 
-**Published Date:** Mar 05, 2025 (2 weeks, 2 days ago)
+**Published Date:** Mar 05, 2025 (2 weeks, 4 days ago)
 
 Vulnerabilities has been mentioned in this article.
 

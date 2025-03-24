@@ -18,7 +18,7 @@ type: posts
 
 Microsoft warns that Chinese cyber-espionage threat group 'Silk Typhoon' has shifted its tactics, now targeting remote management tools and cloud services in supply chain attacks that give them access ... [_Read more_](https://www.bleepingcomputer.com/news/security/silk-typhoon-hackers-now-target-it-supply-chains-to-breach-networks/)
 
-**Published Date:** Mar 05, 2025 (2 weeks, 2 days ago)
+**Published Date:** Mar 05, 2025 (2 weeks, 4 days ago)
 
 Vulnerabilities has been mentioned in this article.
 
