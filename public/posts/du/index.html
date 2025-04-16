@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>du command</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>du command</h1>
+			<b><time>16.04.2025 00:00</time></b>
+		       
+		           <a href="/tags/linux-du">linux, du</a>
+        	       
+
+			<div>
+				<h2 id="working-with-du-command-in-linux-efficiently">Working with <code>du</code> command in linux efficiently</h2>
+<h2 id="1-find-the-largest-directories-sorted"><strong>1. Find the Largest Directories (Sorted)</strong></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo du -ahx / | sort -rh | head -20
+</span></span></code></pre></div><ul>
+<li><code>-a</code> → Show both <strong>files</strong> and <strong>directories</strong></li>
+<li><code>-h</code> → Human-readable sizes (e.g., MB, GB)</li>
+<li><code>-x</code> → Stay on the same filesystem (avoid mounted drives)</li>
+<li><code>sort -rh</code> → Sort by <strong>size</strong>, largest first</li>
+<li><code>head -20</code> → Show <strong>top 20</strong> largest directories/files</li>
+</ul>
+<hr>
+<h2 id="2-find-the-largest-directories-only-excluding-files"><strong>2. Find the Largest Directories Only (Excluding Files)</strong></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo du -hx --max-depth<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> / | sort -rh | head -20
+</span></span></code></pre></div><ul>
+<li><code>--max-depth=3</code> → Limits output to top 3 levels for better readability</li>
+</ul>
+<hr>
+<h2 id="3-find-the-largest-files-over-500mb"><strong>3. Find the Largest Files (Over 500MB)</strong></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo find / -type f -size +500M -exec du -h <span style="color:#f92672">{}</span> + | sort -rh | head -20
+</span></span></code></pre></div><ul>
+<li><code>-type f</code> → Only files</li>
+<li><code>-size +500M</code> → Files larger than <strong>500MB</strong></li>
+<li><code>du -h</code> → Show <strong>file sizes</strong> in human-readable format</li>
+</ul>
+<hr>
+<h2 id="4-exclude-certain-directories-like-proc-sys-etc"><strong>4. Exclude Certain Directories (Like /proc, /sys, etc.)</strong></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo du -ahx --exclude<span style="color:#f92672">={</span>/proc,/sys,/dev,/run,/snap,/tmp,/mnt,/media<span style="color:#f92672">}</span> / | sort -rh | head -20
+</span></span></code></pre></div><ul>
+<li>This avoids system directories that don’t consume real disk space.</li>
+</ul>
+<hr>
+<h2 id="5-find-the-largest-users-disk-usage-by-user"><strong>5. Find the Largest Users (Disk Usage by User)</strong></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo du -sh /home/* 2&gt;/dev/null
+</span></span></code></pre></div><ul>
+<li>This shows how much each user is consuming in <code>/home</code>.</li>
+</ul>
+<hr>
+<h2 id="6-save-output-to-a-file"><strong>6. Save Output to a File</strong></h2>
+<p>If you want to analyze later:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo du -ahx / | sort -rh &gt; large_files.txt
+</span></span></code></pre></div><p>Then open it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>less large_files.txt
+</span></span></code></pre></div><hr>
+<h3 id="next-steps-after-finding-large-files"><strong>Next Steps After Finding Large Files:</strong></h3>
+<ol>
+<li>
+<p><strong>Check logs</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo du -sh /var/log/*
+</span></span></code></pre></div><ul>
+<li>You can clear logs with:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo journalctl --vacuum-time<span style="color:#f92672">=</span>7d  <span style="color:#75715e"># Keep logs for 7 days</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p><strong>Check package cache</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo du -sh /var/cache/apt
+</span></span></code></pre></div><ul>
+<li>Clean it with:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt clean
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p><strong>Check old kernels</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dpkg --list | grep linux-image
+</span></span></code></pre></div><ul>
+<li>Remove old ones (except the current):
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt remove --purge linux-image-OLD-VERSION
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ol>
+<hr>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/du/">du command</a></li>
+				
+				<li><a href="/posts/mail-sec/">Mail Essential Security</a></li>
+				
+				<li><a href="/posts/kali-tools/">Essential Linux Security Tools</a></li>
+				
+				<li><a href="/posts/iphone-storage/">Iphone storage on Linux</a></li>
+				
+				<li><a href="/posts/ntopng/">Install nTopNG on Linux</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

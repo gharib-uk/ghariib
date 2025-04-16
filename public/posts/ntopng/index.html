@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Install nTopNG on Linux</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+	
+</head>
+<body>
+	<header>
+	==========================<br>
+	== <a href="https://ghariib.ir/">Gharib Personal Blog</a> ==<br>
+	==========================
+	<div style="float: right;">A Techi Personal Blog</div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/posts/"><b>Posts</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Install nTopNG on Linux</h1>
+			<b><time>12.04.2025 00:00</time></b>
+		       
+		           <a href="/tags/top-ntop-ntopng">top, ntop, ntopng</a>
+        	       
+
+			<div>
+				<h1 id="ntopng">nTopNG</h1>
+<p>Follow the provided commands to install ntopng on your system</p>
+<h2 id="ubuntu">Ubuntu</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>apt-get install software-properties-common wget
+</span></span><span style="display:flex;"><span>add-apt-repository universe
+</span></span><span style="display:flex;"><span>wget https://packages.ntop.org/apt-stable/xx.yy/all/apt-ntop-stable.deb
+</span></span><span style="display:flex;"><span>apt install ./apt-ntop-stable.deb
+</span></span></code></pre></div><h2 id="debian">Debian</h2>
+<p>Before to install make sure to edit /etc/apt/sources.list and add &ldquo;contrib&rdquo; at the end of each line that begins with deb and deb-src.</p>
+<p><code>codename</code> could be bullseye, bookworm or buster.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wget https://packages.ntop.org/apt-stable/&lt;codename&gt;/all/apt-ntop-stable.deb
+</span></span><span style="display:flex;"><span>apt install ./apt-ntop-stable.deb
+</span></span></code></pre></div><h2 id="installation">Installation</h2>
+<p>Note that ntopng must not be installed together with nedge. Remove ntopng before installing nedge.</p>
+<p>nTopNG</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>apt-get clean all
+</span></span><span style="display:flex;"><span>apt-get update
+</span></span><span style="display:flex;"><span>apt-get install pfring-dkms ntopng pfring-drivers-zc-dkms
+</span></span></code></pre></div><p>nEdge</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>apt-get install nedge
+</span></span></code></pre></div><h2 id="sample-ntopng-configuration">Sample nTopNG Configuration</h2>
+<p>path is <code>/etc/ntopng/ntopng.conf</code></p>
+<pre tabindex="0"><code class="language-config" data-lang="config">#         The  configuration  file is similar to the command line, with the exception that an equal
+#        sign &#39;=&#39; must be used between key and value. Example:  -i=p1p2  or  --interface=p1p2  For
+#        options with no value (e.g. -v) the equal is also necessary. Example: &#34;-v=&#34; must be used.
+#
+#
+#       -G|--pid-path
+#        Specifies the path where the PID (process ID) is saved. This option is ignored when
+#        ntopng is controlled with systemd (e.g., service ntopng start).
+#
+-G=/var/run/ntopng.pid
+#
+#       -e|--daemon
+#        This  parameter  causes ntop to become a daemon, i.e. a task which runs in the background
+#        without connection to a specific terminal. To use ntop other than as a casual  monitoring
+#        tool, you probably will want to use this option. This option is ignored when ntopng is
+#        controlled with systemd (e.g., service ntopng start)
+#
+# -e=
+#
+#       -i|--interface
+#        Specifies  the  network  interface or collector endpoint to be used by ntopng for network
+#        monitoring. On Unix you can specify both the interface name  (e.g.  lo)  or  the  numeric
+#        interface id as shown by ntopng -h. On Windows you must use the interface number instead.
+#        Note that you can specify -i multiple times in order to instruct ntopng to create  multi-
+#        ple interfaces.
+#
+# -i=eth1
+# -i=eth2
+#
+#       -w|--http-port
+#        Sets the HTTP port of the embedded web server.
+#
+-w=3002
+#
+#       -m|--local-networks
+#        ntopng determines the ip addresses and netmasks for each active interface. Any traffic on
+#        those  networks  is considered local. This parameter allows the user to define additional
+#        networks and subnetworks whose traffic is also considered local in  ntopng  reports.  All
+#        other hosts are considered remote. If not specified the default is set to 192.168.1.0/24.
+#
+#        Commas  separate  multiple  network  values.  Both netmask and CIDR notation may be used,
+#        even mixed together, for instance &#34;131.114.21.0/24,10.0.0.0/255.0.0.0&#34;.
+#
+# -m=10.10.123.0/24,10.10.124.0/24
+#
+#       -n|--dns-mode
+#        Sets the DNS address resolution mode: 0 - Decode DNS responses  and  resolve  only  local
+#        (-m)  numeric  IPs  1  -  Decode DNS responses and resolve all numeric IPs 2 - Decode DNS
+#        responses and don&#39;t resolve numeric IPs 3 - Don&#39;t decode DNS responses and don&#39;t  resolve
+#
+# -n=1
+#
+#       -S|--sticky-hosts
+#        ntopng  periodically purges idle hosts. With this option you can modify this behaviour by
+#        telling ntopng not to purge the hosts specified by -S. This parameter requires  an  argu-
+#        ment  that  can  be  &#34;all&#34;  (Keep  all hosts in memory), &#34;local&#34; (Keep only local hosts),
+#        &#34;remote&#34; (Keep only remote hosts), &#34;none&#34; (Flush hosts when idle).
+#
+# -S=
+#
+#       -d|--data-dir
+#        Specifies the data directory (it must be writable by the user that is executing ntopng).
+#
+# -d=/var/lib/ntopng
+#
+#       -q|--disable-autologout
+#        Disable web interface logout for inactivity.
+#
+# -q=
+#
+# Define nDPI custom protocols
+#
+#--ndpi-protocols=/etc/ntopng/custom_protocols.txt
+# Use prefix due to nginx proxy
+#--http-prefix=&#34;/ntopng&#34;
+
+# Everybody&#39;s admin
+#--disable-login=1
+
+# Do not resolve any names
+--dns-mode=3
+
+# Limit memory usage
+--max-num-flows=10000
+--max-num-hosts=10000
+--community
+</code></pre><h3 id="arm64-images">ARM64 Images</h3>
+<pre tabindex="0"><code>sudo docker run --privileged --restart=always -d -p 3002:3000 --net=host ntop/ntopng_arm64.dev:latest -i eth0
+</code></pre>
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/posts/du/">du command</a></li>
+				
+				<li><a href="/posts/mail-sec/">Mail Essential Security</a></li>
+				
+				<li><a href="/posts/kali-tools/">Essential Linux Security Tools</a></li>
+				
+				<li><a href="/posts/iphone-storage/">Iphone storage on Linux</a></li>
+				
+				<li><a href="/posts/ntopng/">Install nTopNG on Linux</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2025 <a href="https://ghariib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
+	<a href="https://github.com/Gharib110"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>
