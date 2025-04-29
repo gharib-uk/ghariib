@@ -1,556 +1,721 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<style type=text/css>body{font-family:monospace;}</style>
-	<title>SmartDNS Proxy</title>
-	
-	
-	<link rel="stylesheet" href="/css/style.css">
-	
-	
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script type="application/javascript" src='https://ghariib.ir/js/theme-mode.js'></script>
+    <link rel="stylesheet" href='https://ghariib.ir/css/frameworks.min.css' />
+    <link rel="stylesheet" href='https://ghariib.ir/css/github.min.css' />
+    <link rel="stylesheet" href='https://ghariib.ir/css/github-style.css' />
+    <link rel="stylesheet" href='https://ghariib.ir/css/light.css' />
+    <link rel="stylesheet" href='https://ghariib.ir/css/dark.css' />
+    <link rel="stylesheet" href='https://ghariib.ir/css/syntax.css' />
+    <title>SmartDNS Proxy - Alireza Gharib Personal Blog</title>
+    
+    <link rel="icon" type="image/x-icon" href='/images/github.png'>
+    
+    <meta name="theme-color" content="#1e2327">
+
+    
+    <meta name="description"
+  content="Create a SNIProxy with SmartDNS" />
+<meta name="keywords"
+  content='blog' />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://ghariib.ir/posts/smartdns/" />
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="SmartDNS Proxy - Alireza Gharib Personal Blog" />
+<meta name="twitter:description"
+  content="Create a SNIProxy with SmartDNS" />
+<meta name="twitter:site" content="https://ghariib.ir/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image"
+  content="https://ghariib.ir/">
+
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="SmartDNS Proxy - Alireza Gharib Personal Blog">
+<meta property="og:description"
+  content="Create a SNIProxy with SmartDNS" />
+<meta property="og:url" content="https://ghariib.ir/posts/smartdns/" />
+<meta property="og:site_name" content="SmartDNS Proxy" />
+<meta property="og:image"
+  content="https://ghariib.ir/">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2024-09-25 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
 </head>
+
 <body>
-	<header>
-	==========================<br>
-	== <a href="https://blog.alirezagharib.ir/">Gharib Personal Blog</a> ==<br>
-	==========================
-	<div style="float: right;">A Techi Personal Blog</div><br>
-	<p>
-	<nav>
-			<a href="/"><b>Start</b></a>.
-			
-			
-			<a href="/posts/"><b>Posts</b></a>.
-			
-			<a href="/categories/"><b>Categories</b></a>.
-			
-			<a href="/tags/"><b>Tags</b></a>.
-			
-	</nav>
-	</p>
-	
-</header>
+  <div style="position: relative">
+  <header class="Header js-details-container Details px-3 px-md-4 px-lg-5 flex-wrap flex-md-nowrap open Details--on">
+    <div class="Header-item mobile-none" style="margin-top: -4px; margin-bottom: -4px;">
+      <a class="Header-link" href="https://ghariib.ir/">
+        <img class="octicon" height="32" width="32" src="/images/GitHub-Mark-Light-32px.png">
+      </a>
+    </div>
+    <div class="Header-item d-md-none">
+      <button class="Header-link btn-link js-details-target" type="button"
+        onclick="document.querySelector('#header-search').style.display = document.querySelector('#header-search').style.display == 'none'? 'block': 'none'">
+        <svg height="24" class="octicon octicon-three-bars" viewBox="0 0 16 16" version="1.1" width="24">
+          <path fill-rule="evenodd" d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z">
+          </path>
+        </svg>
+      </button>
+    </div>
+    <div style="display: none;" id="header-search"
+      class="Header-item Header-item--full flex-column flex-md-row width-full flex-order-2 flex-md-order-none mr-0 mr-md-3 mt-3 mt-md-0 Details-content--hidden-not-important d-md-flex">
+      <div
+        class="Header-search header-search flex-auto js-site-search position-relative flex-self-stretch flex-md-self-auto mb-3 mb-md-0 mr-0 mr-md-3 scoped-search site-scoped-search js-jump-to">
+        <div class="position-relative">
+          <form target="_blank" action="https://www.google.com/search" accept-charset="UTF-8" method="get"
+            autocomplete="off">
+            <label
+              class="Header-search-label form-control input-sm header-search-wrapper p-0 js-chromeless-input-container header-search-wrapper-jump-to position-relative d-flex flex-justify-between flex-items-center">
+              <input type="text"
+                class="Header-search-input form-control input-sm header-search-input jump-to-field js-jump-to-field js-site-search-focus js-site-search-field is-clearable"
+                name="q" value="" placeholder="Search" autocomplete="off">
+              <input type="hidden" name="q" value="site:https://ghariib.ir/">
+            </label>
+          </form>
+        </div>
+      </div>
+    </div>
 
-	
-	<main>
-		<article>
-			<h1>SmartDNS Proxy</h1>
-			<b><time>25.09.2024 00:00</time></b>
-		       
-		           <a href="/tags/smartdns-proxy-sniproxy">smartdns, proxy, sniproxy</a>
-        	       
+    <div class="Header-item Header-item--full flex-justify-center d-md-none position-relative">
+      <a class="Header-link " href="https://ghariib.ir/">
+        <img class="octicon octicon-mark-github v-align-middle" height="32" width="32" src="/images/GitHub-Mark-Light-32px.png">
+      </a>
+    </div>
+    <div class="Header-item" style="margin-right: 0;">
+      <a href="javascript:void(0)" class="Header-link no-select" onclick="switchTheme()">
+        <svg style="fill: var(--color-profile-color-modes-toggle-moon);" class="no-select" viewBox="0 0 16 16"
+          version="1.1" width="16" height="16">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M4.52208 7.71754C7.5782 7.71754 10.0557 5.24006 10.0557 2.18394C10.0557 1.93498 10.0392 1.68986 10.0074 1.44961C9.95801 1.07727 10.3495 0.771159 10.6474 0.99992C12.1153 2.12716 13.0615 3.89999 13.0615 5.89383C13.0615 9.29958 10.3006 12.0605 6.89485 12.0605C3.95334 12.0605 1.49286 10.001 0.876728 7.24527C0.794841 6.87902 1.23668 6.65289 1.55321 6.85451C2.41106 7.40095 3.4296 7.71754 4.52208 7.71754Z">
+          </path>
+        </svg>
+      </a>
+    </div>
+  </header>
+</div>
 
-			<div>
-				<h1 id="smartdns">SmartDNS</h1>
+  
+<div>
+  <main>
+    <div class="gisthead pagehead bg-gray-light pb-0 pt-3 mb-4">
+      <div class="px-0">
+        <div class="mb-3 d-flex px-3 px-md-3 px-lg-5">
+          <div class="flex-auto min-width-0 width-fit mr-3">
+            <div class="d-flex">
+              <div class="d-none d-md-block">
+                <a class="avatar mr-2 flex-shrink-0" href="https://ghariib.ir/">
+                  <img class=" avatar-user"
+                    src="/images/avatar.jpg"
+                    width="32" height="32"></a>
+              </div>
+              <div class="d-flex flex-column">
+                <h1 class="break-word f3 text-normal mb-md-0 mb-1">
+                  <span class="author">
+                    <a href="https://ghariib.ir/">Alireza Gharib</a>
+                  </span>
+                  <span class="path-divider">/</span>
+                  <strong class="css-truncate css-truncate-target mr-1" style="max-width: 410px">
+                    <a href="https://ghariib.ir/posts/smartdns/">SmartDNS Proxy</a>
+                  </strong>
+                </h1>
+                <div class="note m-0">
+                  Created <relative-time datetime="Wed, 25 Sep 2024 00:00:00 &#43;0000"
+                    class="no-wrap">
+                    Wed, 25 Sep 2024 00:00:00 &#43;0000</relative-time>
+
+                  
+                  <span class="file-info-divider"></span>
+                  Modified <relative-time datetime="Wed, 25 Sep 2024 00:00:00 &#43;0000"
+                    class="no-wrap">
+                    Wed, 25 Sep 2024 00:00:00 &#43;0000</relative-time>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-lg px-3 new-discussion-timeline">
+      <div class="repository-content gist-content">
+        <div>
+          <div class="js-gist-file-update-container js-task-list-container file-box">
+            <div id="file-pytest" class="file my-2">
+              <div id="post-header" class="file-header d-flex flex-md-items-center flex-items-start sticky-header" style="z-index: 2">
+                <div class="file-info d-flex flex-md-items-center flex-items-start flex-order-1 flex-auto">
+                  <div class="text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1 mt-2 mt-md-0">
+                    
+                    <summary id="toc-toggle" onclick="clickToc()" class="btn btn-octicon m-0 mr-2 p-2">
+                      <svg aria-hidden="true" viewBox="0 0 16 16" height="16" width="16" class="octicon octicon-list-unordered">
+                        <path fill-rule="evenodd" d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"></path>
+                      </svg>
+                    </summary>
+                    <details-menu class="SelectMenu" id="toc-details" style="display: none;">
+                      <div class="SelectMenu-modal rounded-3 mt-1" style="max-height: 340px;">
+                        <div class="SelectMenu-list SelectMenu-list--borderless p-2" style="overscroll-behavior: contain;" id="toc-list">
+                        </div>
+                      </div>
+                    </details-menu>
+                      2112 Words
+                    
+
+                  </div>
+                  <div class="file-actions flex-order-2 pt-0">
+                    
+                    
+                    <a class="muted-link mr-3" href="/tags/smartdns-proxy-sniproxy">
+                      <svg class="octicon octicon-tag" viewBox="0 0 16 16" version="1.1" width="16" height="16">
+                        <path fill-rule="evenodd"
+                          d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z">
+                        </path>
+                      </svg>
+                      smartdns, proxy, sniproxy
+                    </a>
+                    
+                    
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="Box-body px-5 pb-5" style="z-index: 1">
+                <article class="markdown-body entry-content container-lg"><h1 id="smartdns">SmartDNS</h1>
 <p>This method is usefule when a service is prohibited in your region/area.
 Buy a vps a 4$ worth VPS is good enough and it is preferable to use Ubuntu/Debian Images.</p>
 <ul>
 <li>Install nginx with <code>apt install nginx</code>.</li>
 <li>Modify the Nginx Config at <code>/etc/nginx/nginx.conf</code> with the following config</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>worker_processes  auto;
-</span></span><span style="display:flex;"><span>worker_rlimit_nofile 35000;
-</span></span><span style="display:flex;"><span>events <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    worker_connections  15000;
-</span></span><span style="display:flex;"><span>    multi_accept off;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>http <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>     access_log /var/log/nginx/access.log;
-</span></span><span style="display:flex;"><span>     error_log /var/log/nginx/error.log;
-</span></span><span style="display:flex;"><span>     server <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            listen <span style="color:#ae81ff">80</span> default_server;
-</span></span><span style="display:flex;"><span>            listen <span style="color:#f92672">[</span>::<span style="color:#f92672">]</span>:80 default_server;
-</span></span><span style="display:flex;"><span>            resolver 8.8.8.8 ipv6<span style="color:#f92672">=</span>off;
-</span></span><span style="display:flex;"><span>            location / <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                proxy_pass http://$host$request_uri;
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>stream <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>   log_format basic <span style="color:#e6db74">&#39;$remote_addr [$time_local] &#39;</span>
-</span></span><span style="display:flex;"><span>                     <span style="color:#e6db74">&#39;$protocol $status $bytes_sent $bytes_received &#39;</span>
-</span></span><span style="display:flex;"><span>                     <span style="color:#e6db74">&#39;$session_time&#39;</span>;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>   access_log /var/log/nginx/access.log basic;
-</span></span><span style="display:flex;"><span>   error_log  /var/log/nginx/error.log error;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>   server <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        resolver 1.1.1.1 ipv6<span style="color:#f92672">=</span>off;
-</span></span><span style="display:flex;"><span>        listen 443;
-</span></span><span style="display:flex;"><span>        ssl_preread on;
-</span></span><span style="display:flex;"><span>        proxy_connect_timeout 5s;
-</span></span><span style="display:flex;"><span>        proxy_pass $ssl_preread_server_name:443;
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">worker_processes  auto<span class="p">;</span>
+</span></span><span class="line"><span class="cl">worker_rlimit_nofile 35000<span class="p">;</span>
+</span></span><span class="line"><span class="cl">events <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    worker_connections  15000<span class="p">;</span>
+</span></span><span class="line"><span class="cl">    multi_accept off<span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">http <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">     access_log /var/log/nginx/access.log<span class="p">;</span>
+</span></span><span class="line"><span class="cl">     error_log /var/log/nginx/error.log<span class="p">;</span>
+</span></span><span class="line"><span class="cl">     server <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            listen <span class="m">80</span> default_server<span class="p">;</span>
+</span></span><span class="line"><span class="cl">            listen <span class="o">[</span>::<span class="o">]</span>:80 default_server<span class="p">;</span>
+</span></span><span class="line"><span class="cl">            resolver 8.8.8.8 <span class="nv">ipv6</span><span class="o">=</span>off<span class="p">;</span>
+</span></span><span class="line"><span class="cl">            location / <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                proxy_pass http://<span class="nv">$host$request_uri</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">stream <span class="o">{</span>
+</span></span><span class="line"><span class="cl">   log_format basic <span class="s1">&#39;$remote_addr [$time_local] &#39;</span>
+</span></span><span class="line"><span class="cl">                     <span class="s1">&#39;$protocol $status $bytes_sent $bytes_received &#39;</span>
+</span></span><span class="line"><span class="cl">                     <span class="s1">&#39;$session_time&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   access_log /var/log/nginx/access.log basic<span class="p">;</span>
+</span></span><span class="line"><span class="cl">   error_log  /var/log/nginx/error.log error<span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   server <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        resolver 1.1.1.1 <span class="nv">ipv6</span><span class="o">=</span>off<span class="p">;</span>
+</span></span><span class="line"><span class="cl">        listen 443<span class="p">;</span>
+</span></span><span class="line"><span class="cl">        ssl_preread on<span class="p">;</span>
+</span></span><span class="line"><span class="cl">        proxy_connect_timeout 5s<span class="p">;</span>
+</span></span><span class="line"><span class="cl">        proxy_pass <span class="nv">$ssl_preread_server_name</span>:443<span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
 </span></span></code></pre></div><ul>
 <li>Download src or prebuilt binaries or packages from <a href="https://github.com/pymumu/smartdns">smartdns</a></li>
 <li>Install it with <code>dpkg</code> command or compile src to get the binary file</li>
 <li>Use the following config. You can also modify anything you want except the ip addres of the server.</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># dns server name, default is host name</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># server-name, </span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># example:</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   server-name smartdns</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># whether resolv local hostname to ip address</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># resolv-hostname yes</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># dns server run user</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># user [username]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># example: run as nobody</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   user nobody</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Include another configuration options, if -group is specified, only include the rules to specified group.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># conf-file [file] [-group group-name]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># conf-file blacklist-ip.conf</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># conf-file whitelist-ip.conf -group office</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># conf-file *.conf</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># dns server bind ip and port, default dns server port is 53, support binding multi ip and port</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># bind udp server</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   bind [IP]:[port][@device] [-group [group]] [-no-rule-addr] [-no-rule-nameserver] [-no-rule-ipset] [-no-speed-check] [-no-cache] [-no-rule-soa] [-no-dualstack-selection]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># bind tcp server</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   bind-tcp [IP]:[port][@device] [-group [group]] [-no-rule-addr] [-no-rule-nameserver] [-no-rule-ipset] [-no-speed-check] [-no-cache] [-no-rule-soa] [-no-dualstack-selection]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># bind tls server</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   bind-tls [IP]:[port][@device] [-group [group]] [-no-rule-addr] [-no-rule-nameserver] [-no-rule-ipset] [-no-speed-check] [-no-cache] [-no-rule-soa] [-no-dualstack-selection]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   bind-cert-key-file [path to file]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#      tls private key file</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   bind-cert-file [path to file]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#      tls cert file</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   bind-cert-key-pass [password]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#      tls private key password</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># bind-https server</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   bind-https [IP]:[port][@device] [-group [group]] [-no-rule-addr] [-no-rule-nameserver] [-no-rule-ipset] [-no-speed-check] [-no-cache] [-no-rule-soa] [-no-dualstack-selection]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># option:</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -group: set domain request to use the appropriate server group.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -no-rule-addr: skip address rule.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -no-rule-nameserver: skip nameserver rule.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -no-rule-ipset: skip ipset rule or nftset rule.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -no-speed-check: do not check speed.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -no-cache: skip cache.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -no-rule-soa: Skip address SOA(#) rules.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -no-dualstack-selection: Disable dualstack ip selection.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -no-ip-alias: ignore ip alias.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -force-aaaa-soa: force AAAA query return SOA.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -force-https-soa: force HTTPS query return SOA.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -no-serve-expired: no serve expired.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -no-rules: skip all rules.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -ipset ipsetname: use ipset rule.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -nftset nftsetname: use nftset rule.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># example: </span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#  IPV4: </span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#    bind :53</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#    bind :53@eth0</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#    bind :6053 -group office -no-speed-check</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#  IPV6:</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#    bind [::]:53</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#    bind [::]:53@eth0</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#    bind-tcp [::]:53</span>
-</span></span><span style="display:flex;"><span>bind &lt;VPS_IPADDRESS&gt;:53
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># tcp connection idle timeout</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># tcp-idle-time [second]</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># dns cache size</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># cache-size [number]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   0: for no cache</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -1: auto set cache size</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># cache-size 32768</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># dns cache memory size</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># cache-mem-size [size]</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># enable persist cache when restart</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># cache-persist no</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># cache persist file</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># cache-file /tmp/smartdns.cache</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># cache persist time</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># cache-checkpoint-time [second]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># cache-checkpoint-time 86400</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># prefetch domain</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># prefetch-domain [yes|no]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># prefetch-domain yes</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># cache serve expired </span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># serve-expired [yes|no]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># serve-expired yes</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># cache serve expired TTL</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># serve-expired-ttl [num]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># serve-expired-ttl 0</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># reply TTL value to use when replying with expired data</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># serve-expired-reply-ttl [num]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># serve-expired-reply-ttl 30</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># List of hosts that supply bogus NX domain results </span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># bogus-nxdomain [ip/subnet]</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># List of IPs that will be filtered when nameserver is configured -blacklist-ip parameter</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># blacklist-ip [ip/subnet]</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># List of IPs that will be accepted when nameserver is configured -whitelist-ip parameter</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># whitelist-ip [ip/subnet]</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># List of IPs that will be ignored</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ignore-ip [ip/subnet]</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># alias of IPs</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ip-alias [ip/subnet] [ip1[,ip2]...]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ip-alias 192.168.0.1/24 10.9.0.1,10.9.0.2</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># speed check mode</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># speed-check-mode [ping|tcp:port|none|,]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># example:</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   speed-check-mode ping,tcp:80,tcp:443</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   speed-check-mode tcp:443,ping</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   speed-check-mode none</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># force AAAA query return SOA</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># force-AAAA-SOA [yes|no]</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># force specific qtype return soa</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># force-qtype-SOA [-,][qtypeid |...]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># force-qtype-SOA [qtypeid|start_id-end_id|,...]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># force-qtype-SOA 65 28 add type 65,28</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># force-qtype-SOA 65,28 add type 65,28</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># force-qtype-SOA 65-68 add type 65-68</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># force-qtype-SOA -,65-68, clear type 65-68</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># force-qtype-SOA - clear all type</span>
-</span></span><span style="display:flex;"><span>force-qtype-SOA <span style="color:#ae81ff">65</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Enable IPV4, IPV6 dual stack IP optimization selection strategy</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># dualstack-ip-selection-threshold [num] (0~1000)</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># dualstack-ip-allow-force-AAAA [yes|no]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># dualstack-ip-selection [yes|no]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># dualstack-ip-selection no</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># edns client subnet</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># edns-client-subnet [ip/subnet]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># edns-client-subnet 192.168.1.1/24</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># edns-client-subnet 8::8/56</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ttl for all resource record</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># rr-ttl: ttl for all record</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># rr-ttl-min: minimum ttl for resource record</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># rr-ttl-max: maximum ttl for resource record</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># rr-ttl-reply-max: maximum reply ttl for resource record</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># example:</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># rr-ttl 300</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># rr-ttl-min 60</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># rr-ttl-max 86400</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># rr-ttl-reply-max 60</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Maximum number of IPs returned to the client|8|number of IPs, 1~16</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># example:</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># max-reply-ip-num 1</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Maximum number of queries per second|0|number of queries, 0 means no limit.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># example:</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># max-query-limit 65535</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># response mode</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># response-mode [first-ping|fastest-ip|fastest-response]</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># set log level</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># log-level: [level], level=off, fatal, error, warn, notice, info, debug</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># log-file: file path of log file.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># log-console [yes|no]: output log to console.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># log-syslog [yes|no]: output log to syslog.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># log-size: size of each log file, support k,m,g</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># log-num: number of logs, 0 means disable log</span>
-</span></span><span style="display:flex;"><span>log-level info
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># log-file /var/log/smartdns/smartdns.log</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># log-size 128k</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># log-num 2</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># log-file-mode [mode]: file mode of log file.</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># dns audit</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># audit-enable [yes|no]: enable or disable audit.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># audit-enable yes</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># audit-SOA [yes|no]: enable or disable log soa result.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># audit-size size of each audit file, support k,m,g</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># audit-file /var/log/smartdns-audit.log</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># audit-console [yes|no]: output audit log to console.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># audit-syslog [yes|no]: output audit log to syslog.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># audit-file-mode [mode]: file mode of audit file.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># audit-size 128k</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># audit-num 2</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Support reading dnsmasq dhcp file to resolve local hostname</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># dnsmasq-lease-file /var/lib/misc/dnsmasq.leases</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># certificate file</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ca-file [file]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ca-file /etc/ssl/certs/ca-certificates.crt</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># certificate path</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ca-path [path]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ca-path /etc/ssl/certs</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># remote udp dns server list</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># server [IP]:[PORT]|URL [-blacklist-ip] [-whitelist-ip] [-check-edns] [-group [group] ...] [-exclude-default-group]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># default port is 53</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -blacklist-ip: filter result with blacklist ip</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -whitelist-ip: filter result with whitelist ip,  result in whitelist-ip will be accepted.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -check-edns: result must exist edns RR, or discard result.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   g|-group [group]: set server to group, use with nameserver /domain/group.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   e|-exclude-default-group: exclude this server from default group.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   p|-proxy [proxy-name]: use proxy to connect to server.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   b|-bootstrap-dns: set as bootstrap dns server.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -set-mark: set mark on packets.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -subnet [ip/subnet]: set edns client subnet.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -host-ip [ip]: set dns server host ip.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -interface [interface]: set dns server interface.</span>
-</span></span><span style="display:flex;"><span>server 8.8.8.8  -group g1
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#server 8.8.8.8 -group g2</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># server tls://dns.google:853 </span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># server https://dns.google/dns-query</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># remote tcp dns server list</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># server-tcp [IP]:[PORT] [-blacklist-ip] [-whitelist-ip] [-group [group] ...] [-exclude-default-group]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># default port is 53</span>
-</span></span><span style="display:flex;"><span>server-tcp 8.8.8.8 -group g1
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#server-tcp 8.8.8.8 -group g2</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#server-tcp 18.130.3.145 -group g3</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># remote tls dns server list</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># server-tls [IP]:[PORT] [-blacklist-ip] [-whitelist-ip] [-spki-pin [sha256-pin]] [-group [group] ...] [-exclude-default-group]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -spki-pin: TLS spki pin to verify.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -tls-host-verify: cert hostname to verify.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -host-name: TLS sni hostname.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   k|-no-check-certificate: no check certificate.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   p|-proxy [proxy-name]: use proxy to connect to server.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -bootstrap-dns: set as bootstrap dns server.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Get SPKI with this command:</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#    echo | openssl s_client -connect &#39;[ip]:853&#39; | openssl x509 -pubkey -noout | openssl pkey -pubin -outform der | openssl dgst -sha256 -binary | openssl enc -base64</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># default port is 853</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># server-tls 8.8.8.8</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># server-tls 1.0.0.1</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># remote https dns server list</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># server-https https://[host]:[port]/path [-blacklist-ip] [-whitelist-ip] [-spki-pin [sha256-pin]] [-group [group] ...] [-exclude-default-group]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -spki-pin: TLS spki pin to verify.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -tls-host-verify: cert hostname to verify.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -host-name: TLS sni hostname.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -http-host: http host.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   k|-no-check-certificate: no check certificate.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   p|-proxy [proxy-name]: use proxy to connect to server.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -bootstrap-dns: set as bootstrap dns server.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># default port is 443</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># server-https https://cloudflare-dns.com/dns-query</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># socks5 and http proxy list</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># proxy-server URL -name [proxy name]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   URL: socks5://[username:password@]host:port</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#        http://[username:password@]host:port</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -name: proxy name, use with server -proxy [proxy-name]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># example:</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   proxy-server socks5://alireza:MainHelpAptel45610@127.0.0.1:2059 -name proxy</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#proxy-server http://127.0.0.1:6660 -name proxy</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># specific nameserver to domain</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># nameserver [/domain/][group|-]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># nameserer group, set the domain name to use the appropriate server group.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#nameserver /chatgpt.com/g1, #Set the domain name to use the appropriate server group.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># nameserver /www.example.com/-, ignore this domain</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># expand ptr record from address record</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># expand-ptr-from-address yes</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># specific address to domain</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># address [/domain/][ip1,ip2|-|-4|-6|#|#4|#6]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># address #, block all A and AAAA request.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># address #6, block all AAAA request.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># address -6, allow all AAAA request.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#5.202.100.100,5.202.100.101,185.55.226.26,185.55.225.25,78.157.42.100,78.157.42.101,91.107.164.5</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># address /www.example.com/1.2.3.4,5.6.7.8, return multiple ip addresses</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># address /www.example.com/-, ignore address, query from upstream, suffix 4, for ipv4, 6 for ipv6, none for all</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># address /www.example.com/#, return SOA to client, suffix 4, for ipv4, 6 for ipv6, none for all</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># specific cname to domain</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># cname /domain/target</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># add srv record, support multiple srv record.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># srv-record /domain/[target][,port][,priority][,weight]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># srv-record /_ldap._tcp.example.com/ldapserver.example.com,389</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># srv-record /_ldap._tcp.example.com/</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># https-record /domain/[target=][,port=][,priority=][,alph=][,ech=][,ipv4hint=][,ipv6hint=]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># https-record noipv4hint,noipv6hint</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># https-record /www.example.com/ipv4hint=192.168.1.2</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># enable DNS64 feature</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># dns64 [ip/subnet]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># dns64 64:ff9b::/96</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># enable ipset timeout by ttl feature</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ipset-timeout [yes]</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># specific ipset to domain</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ipset [/domain/][ipsetname|#4:v4setname|#6:v6setname|-|#4:-|#6:-]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ipset [ipsetname|#4:v4setname|#6:v6setname], set global ipset.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ipset /www.example.com/block, set ipset with ipset name of block. </span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ipset /www.example.com/-, ignore this domain.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ipset ipsetname, set global ipset.</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># add to ipset when ping is unreachable</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ipset-no-speed ipsetname</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ipset-no-speed pass</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># enable nftset timeout by ttl feature</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># nftset-timeout [yes|no]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># nftset-timeout yes</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># add to nftset when ping is unreachable</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># nftset-no-speed [#4:ip#table#set,#6:ipv6#table#setv6]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># nftset-no-speed #4:ip#table#set</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># enable nftset debug, check nftset setting result, output log when error.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># nftset-debug [yes|no]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># nftset-debug yes</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># specific nftset to domain</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># nftset [/domain/][#4:ip#table#set,#6:ipv6#table#setv6]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># nftset [#4:ip#table#set,#6:ipv6#table#setv6] set global nftset.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># nftset /www.example.com/ip#table#set, equivalent to &#39;nft add element ip table set { ... }&#39;</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># nftset /www.example.com/-, ignore this domain</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># nftset /www.example.com/#6:-, ignore ipv6</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># nftset #6:ip#table#set, set global nftset.</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># set ddns domain</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ddns-domain domain</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># lookup local network hostname or ip address from mdns</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># mdns-lookup [yes|no]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># mdns-lookup no</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># set hosts file</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># hosts-file [file]</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># set domain rules</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># domain-rules /domain/ [-speed-check-mode [...]]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># rules:</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   [-c] -speed-check-mode [mode]: speed check mode</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#                             speed-check-mode [ping|tcp:port|none|,]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   [-a] -address [address|-]: same as address option</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   [-n] -nameserver [group|-]: same as nameserver option</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   [-p] -ipset [ipset|-]: same as ipset option</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   [-t] -nftset [nftset|-]: same as nftset option</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   [-d] -dualstack-ip-selection [yes|no]: same as dualstack-ip-selection option</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   [-g|-group group-name]: set domain-rules to group.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -no-serve-expired: ignore expired domain</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -delete: delete domain rule</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -no-ip-alias: ignore ip alias</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   -no-cache: ignore cache</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># collection of domains </span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># the domain-set can be used with /domain/ for address, nameserver, ipset, etc.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># domain-set -name [set-name] -type list -file [/path/to/file]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   [-n] -name [set name]: domain set name</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   [-t] -type [list]: domain set type, list only now</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   [-f] -file [path/to/set]: file path of domain set</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># </span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># example:</span>
-</span></span><span style="display:flex;"><span>domain-set -name sanction -type list -file /etc/smartdns/proxy.list
-</span></span><span style="display:flex;"><span>address /domain-set:sanction/&lt;VPS_IP_ADDRESS&gt;
-</span></span><span style="display:flex;"><span>nameserver /domain-set:sanction/g1
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ipset /domain-set:domain-list/ipset</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># domain-rules /domain-set:domain-list/ -speed-check-mode ping</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># set ip rules</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ip-rules ip-cidrs [-ip-alias [...]]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># rules:</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   [-c] -ip-alias [ip1,ip2]: same as ip-alias option</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   [-a] -whitelist-ip: same as whitelist-ip option</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   [-n] -blacklist-ip: same as blacklist-ip option</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   [-p] -bogus-nxdomain: same as bogus-nxdomain option</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   [-t] -ignore-ip: same as ignore-ip option</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># collection of IPs </span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># the ip-set can be used with /ip-cidr/ for ip-alias, ignore-ip, etc.</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ip-set -name [set-name] -type list -file [/path/to/file]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   [-n] -name [set name]: ip set name</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   [-t] -type [list]: ip set type, list only now</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#   [-f] -file [path/to/set]: file path of ip set</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># </span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># example:</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ip-set -name ip-list -file /etc/smartdns/ip-list.conf</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># bogus-nxdomain ip-set:ip-list</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ip-alias ip-set:ip-list 1.2.3.4</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># ip-alias ip-set:ip-list ip-set:ip-map-list</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># set client rules</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># client-rules [ip-cidr|mac|ip-set] [-group [group]] [-no-rule-addr] [-no-rule-nameserver] [-no-rule-ipset] [-no-speed-check] [-no-cache] [-no-rule-soa] [-no-dualstack-selection]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># client-rules option is same as bind option, please see bind option for detail.</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># set group rules</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># group-begin [group-name]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># group-match [-g|group group-name] [-domain domain] [-client-ip [ip-cidr|mac|ip-set]]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># group-end</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># load plugin</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># plugin [path/to/file] [args]</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># plugin /usr/lib/smartdns/libsmartdns-ui.so --p 8080 -i 0.0.0.0 -r /usr/share/smartdns/wwwroot</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># dns server name, default is host name</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># server-name, </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># example:</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   server-name smartdns</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># whether resolv local hostname to ip address</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># resolv-hostname yes</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># dns server run user</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># user [username]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># example: run as nobody</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   user nobody</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Include another configuration options, if -group is specified, only include the rules to specified group.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># conf-file [file] [-group group-name]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># conf-file blacklist-ip.conf</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># conf-file whitelist-ip.conf -group office</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># conf-file *.conf</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># dns server bind ip and port, default dns server port is 53, support binding multi ip and port</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># bind udp server</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   bind [IP]:[port][@device] [-group [group]] [-no-rule-addr] [-no-rule-nameserver] [-no-rule-ipset] [-no-speed-check] [-no-cache] [-no-rule-soa] [-no-dualstack-selection]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># bind tcp server</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   bind-tcp [IP]:[port][@device] [-group [group]] [-no-rule-addr] [-no-rule-nameserver] [-no-rule-ipset] [-no-speed-check] [-no-cache] [-no-rule-soa] [-no-dualstack-selection]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># bind tls server</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   bind-tls [IP]:[port][@device] [-group [group]] [-no-rule-addr] [-no-rule-nameserver] [-no-rule-ipset] [-no-speed-check] [-no-cache] [-no-rule-soa] [-no-dualstack-selection]</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   bind-cert-key-file [path to file]</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#      tls private key file</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   bind-cert-file [path to file]</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#      tls cert file</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   bind-cert-key-pass [password]</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#      tls private key password</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># bind-https server</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   bind-https [IP]:[port][@device] [-group [group]] [-no-rule-addr] [-no-rule-nameserver] [-no-rule-ipset] [-no-speed-check] [-no-cache] [-no-rule-soa] [-no-dualstack-selection]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># option:</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -group: set domain request to use the appropriate server group.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -no-rule-addr: skip address rule.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -no-rule-nameserver: skip nameserver rule.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -no-rule-ipset: skip ipset rule or nftset rule.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -no-speed-check: do not check speed.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -no-cache: skip cache.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -no-rule-soa: Skip address SOA(#) rules.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -no-dualstack-selection: Disable dualstack ip selection.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -no-ip-alias: ignore ip alias.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -force-aaaa-soa: force AAAA query return SOA.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -force-https-soa: force HTTPS query return SOA.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -no-serve-expired: no serve expired.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -no-rules: skip all rules.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -ipset ipsetname: use ipset rule.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -nftset nftsetname: use nftset rule.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># example: </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#  IPV4: </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    bind :53</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    bind :53@eth0</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    bind :6053 -group office -no-speed-check</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#  IPV6:</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    bind [::]:53</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    bind [::]:53@eth0</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    bind-tcp [::]:53</span>
+</span></span><span class="line"><span class="cl"><span class="nb">bind</span> &lt;VPS_IPADDRESS&gt;:53
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># tcp connection idle timeout</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># tcp-idle-time [second]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># dns cache size</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># cache-size [number]</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   0: for no cache</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -1: auto set cache size</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># cache-size 32768</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># dns cache memory size</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># cache-mem-size [size]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># enable persist cache when restart</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># cache-persist no</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># cache persist file</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># cache-file /tmp/smartdns.cache</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># cache persist time</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># cache-checkpoint-time [second]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># cache-checkpoint-time 86400</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># prefetch domain</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># prefetch-domain [yes|no]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># prefetch-domain yes</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># cache serve expired </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># serve-expired [yes|no]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># serve-expired yes</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># cache serve expired TTL</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># serve-expired-ttl [num]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># serve-expired-ttl 0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># reply TTL value to use when replying with expired data</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># serve-expired-reply-ttl [num]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># serve-expired-reply-ttl 30</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># List of hosts that supply bogus NX domain results </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># bogus-nxdomain [ip/subnet]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># List of IPs that will be filtered when nameserver is configured -blacklist-ip parameter</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># blacklist-ip [ip/subnet]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># List of IPs that will be accepted when nameserver is configured -whitelist-ip parameter</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># whitelist-ip [ip/subnet]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># List of IPs that will be ignored</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ignore-ip [ip/subnet]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># alias of IPs</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ip-alias [ip/subnet] [ip1[,ip2]...]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ip-alias 192.168.0.1/24 10.9.0.1,10.9.0.2</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># speed check mode</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># speed-check-mode [ping|tcp:port|none|,]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># example:</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   speed-check-mode ping,tcp:80,tcp:443</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   speed-check-mode tcp:443,ping</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   speed-check-mode none</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># force AAAA query return SOA</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># force-AAAA-SOA [yes|no]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># force specific qtype return soa</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># force-qtype-SOA [-,][qtypeid |...]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># force-qtype-SOA [qtypeid|start_id-end_id|,...]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># force-qtype-SOA 65 28 add type 65,28</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># force-qtype-SOA 65,28 add type 65,28</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># force-qtype-SOA 65-68 add type 65-68</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># force-qtype-SOA -,65-68, clear type 65-68</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># force-qtype-SOA - clear all type</span>
+</span></span><span class="line"><span class="cl">force-qtype-SOA <span class="m">65</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Enable IPV4, IPV6 dual stack IP optimization selection strategy</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># dualstack-ip-selection-threshold [num] (0~1000)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># dualstack-ip-allow-force-AAAA [yes|no]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># dualstack-ip-selection [yes|no]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># dualstack-ip-selection no</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># edns client subnet</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># edns-client-subnet [ip/subnet]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># edns-client-subnet 192.168.1.1/24</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># edns-client-subnet 8::8/56</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># ttl for all resource record</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># rr-ttl: ttl for all record</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># rr-ttl-min: minimum ttl for resource record</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># rr-ttl-max: maximum ttl for resource record</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># rr-ttl-reply-max: maximum reply ttl for resource record</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># example:</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># rr-ttl 300</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># rr-ttl-min 60</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># rr-ttl-max 86400</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># rr-ttl-reply-max 60</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Maximum number of IPs returned to the client|8|number of IPs, 1~16</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># example:</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># max-reply-ip-num 1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Maximum number of queries per second|0|number of queries, 0 means no limit.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># example:</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># max-query-limit 65535</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># response mode</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># response-mode [first-ping|fastest-ip|fastest-response]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># set log level</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># log-level: [level], level=off, fatal, error, warn, notice, info, debug</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># log-file: file path of log file.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># log-console [yes|no]: output log to console.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># log-syslog [yes|no]: output log to syslog.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># log-size: size of each log file, support k,m,g</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># log-num: number of logs, 0 means disable log</span>
+</span></span><span class="line"><span class="cl">log-level info
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># log-file /var/log/smartdns/smartdns.log</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># log-size 128k</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># log-num 2</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># log-file-mode [mode]: file mode of log file.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># dns audit</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># audit-enable [yes|no]: enable or disable audit.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># audit-enable yes</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># audit-SOA [yes|no]: enable or disable log soa result.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># audit-size size of each audit file, support k,m,g</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># audit-file /var/log/smartdns-audit.log</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># audit-console [yes|no]: output audit log to console.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># audit-syslog [yes|no]: output audit log to syslog.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># audit-file-mode [mode]: file mode of audit file.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># audit-size 128k</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># audit-num 2</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Support reading dnsmasq dhcp file to resolve local hostname</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># dnsmasq-lease-file /var/lib/misc/dnsmasq.leases</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># certificate file</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ca-file [file]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ca-file /etc/ssl/certs/ca-certificates.crt</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># certificate path</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ca-path [path]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ca-path /etc/ssl/certs</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># remote udp dns server list</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># server [IP]:[PORT]|URL [-blacklist-ip] [-whitelist-ip] [-check-edns] [-group [group] ...] [-exclude-default-group]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># default port is 53</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -blacklist-ip: filter result with blacklist ip</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -whitelist-ip: filter result with whitelist ip,  result in whitelist-ip will be accepted.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -check-edns: result must exist edns RR, or discard result.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   g|-group [group]: set server to group, use with nameserver /domain/group.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   e|-exclude-default-group: exclude this server from default group.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   p|-proxy [proxy-name]: use proxy to connect to server.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   b|-bootstrap-dns: set as bootstrap dns server.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -set-mark: set mark on packets.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -subnet [ip/subnet]: set edns client subnet.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -host-ip [ip]: set dns server host ip.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -interface [interface]: set dns server interface.</span>
+</span></span><span class="line"><span class="cl">server 8.8.8.8  -group g1
+</span></span><span class="line"><span class="cl"><span class="c1">#server 8.8.8.8 -group g2</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># server tls://dns.google:853 </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># server https://dns.google/dns-query</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># remote tcp dns server list</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># server-tcp [IP]:[PORT] [-blacklist-ip] [-whitelist-ip] [-group [group] ...] [-exclude-default-group]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># default port is 53</span>
+</span></span><span class="line"><span class="cl">server-tcp 8.8.8.8 -group g1
+</span></span><span class="line"><span class="cl"><span class="c1">#server-tcp 8.8.8.8 -group g2</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#server-tcp 18.130.3.145 -group g3</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># remote tls dns server list</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># server-tls [IP]:[PORT] [-blacklist-ip] [-whitelist-ip] [-spki-pin [sha256-pin]] [-group [group] ...] [-exclude-default-group]</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -spki-pin: TLS spki pin to verify.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -tls-host-verify: cert hostname to verify.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -host-name: TLS sni hostname.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   k|-no-check-certificate: no check certificate.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   p|-proxy [proxy-name]: use proxy to connect to server.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -bootstrap-dns: set as bootstrap dns server.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Get SPKI with this command:</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    echo | openssl s_client -connect &#39;[ip]:853&#39; | openssl x509 -pubkey -noout | openssl pkey -pubin -outform der | openssl dgst -sha256 -binary | openssl enc -base64</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># default port is 853</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># server-tls 8.8.8.8</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># server-tls 1.0.0.1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># remote https dns server list</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># server-https https://[host]:[port]/path [-blacklist-ip] [-whitelist-ip] [-spki-pin [sha256-pin]] [-group [group] ...] [-exclude-default-group]</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -spki-pin: TLS spki pin to verify.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -tls-host-verify: cert hostname to verify.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -host-name: TLS sni hostname.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -http-host: http host.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   k|-no-check-certificate: no check certificate.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   p|-proxy [proxy-name]: use proxy to connect to server.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -bootstrap-dns: set as bootstrap dns server.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># default port is 443</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># server-https https://cloudflare-dns.com/dns-query</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># socks5 and http proxy list</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># proxy-server URL -name [proxy name]</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   URL: socks5://[username:password@]host:port</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#        http://[username:password@]host:port</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -name: proxy name, use with server -proxy [proxy-name]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># example:</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   proxy-server socks5://alireza:MainHelpAptel45610@127.0.0.1:2059 -name proxy</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#proxy-server http://127.0.0.1:6660 -name proxy</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># specific nameserver to domain</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># nameserver [/domain/][group|-]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># nameserer group, set the domain name to use the appropriate server group.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#nameserver /chatgpt.com/g1, #Set the domain name to use the appropriate server group.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># nameserver /www.example.com/-, ignore this domain</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># expand ptr record from address record</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># expand-ptr-from-address yes</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># specific address to domain</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># address [/domain/][ip1,ip2|-|-4|-6|#|#4|#6]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># address #, block all A and AAAA request.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># address #6, block all AAAA request.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># address -6, allow all AAAA request.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#5.202.100.100,5.202.100.101,185.55.226.26,185.55.225.25,78.157.42.100,78.157.42.101,91.107.164.5</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># address /www.example.com/1.2.3.4,5.6.7.8, return multiple ip addresses</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># address /www.example.com/-, ignore address, query from upstream, suffix 4, for ipv4, 6 for ipv6, none for all</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># address /www.example.com/#, return SOA to client, suffix 4, for ipv4, 6 for ipv6, none for all</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># specific cname to domain</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># cname /domain/target</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># add srv record, support multiple srv record.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># srv-record /domain/[target][,port][,priority][,weight]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># srv-record /_ldap._tcp.example.com/ldapserver.example.com,389</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># srv-record /_ldap._tcp.example.com/</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># https-record /domain/[target=][,port=][,priority=][,alph=][,ech=][,ipv4hint=][,ipv6hint=]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># https-record noipv4hint,noipv6hint</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># https-record /www.example.com/ipv4hint=192.168.1.2</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># enable DNS64 feature</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># dns64 [ip/subnet]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># dns64 64:ff9b::/96</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># enable ipset timeout by ttl feature</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ipset-timeout [yes]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># specific ipset to domain</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ipset [/domain/][ipsetname|#4:v4setname|#6:v6setname|-|#4:-|#6:-]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ipset [ipsetname|#4:v4setname|#6:v6setname], set global ipset.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ipset /www.example.com/block, set ipset with ipset name of block. </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ipset /www.example.com/-, ignore this domain.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ipset ipsetname, set global ipset.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># add to ipset when ping is unreachable</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ipset-no-speed ipsetname</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ipset-no-speed pass</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># enable nftset timeout by ttl feature</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># nftset-timeout [yes|no]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># nftset-timeout yes</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># add to nftset when ping is unreachable</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># nftset-no-speed [#4:ip#table#set,#6:ipv6#table#setv6]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># nftset-no-speed #4:ip#table#set</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># enable nftset debug, check nftset setting result, output log when error.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># nftset-debug [yes|no]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># nftset-debug yes</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># specific nftset to domain</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># nftset [/domain/][#4:ip#table#set,#6:ipv6#table#setv6]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># nftset [#4:ip#table#set,#6:ipv6#table#setv6] set global nftset.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># nftset /www.example.com/ip#table#set, equivalent to &#39;nft add element ip table set { ... }&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># nftset /www.example.com/-, ignore this domain</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># nftset /www.example.com/#6:-, ignore ipv6</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># nftset #6:ip#table#set, set global nftset.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># set ddns domain</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ddns-domain domain</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># lookup local network hostname or ip address from mdns</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># mdns-lookup [yes|no]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># mdns-lookup no</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># set hosts file</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># hosts-file [file]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># set domain rules</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># domain-rules /domain/ [-speed-check-mode [...]]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># rules:</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   [-c] -speed-check-mode [mode]: speed check mode</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#                             speed-check-mode [ping|tcp:port|none|,]</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   [-a] -address [address|-]: same as address option</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   [-n] -nameserver [group|-]: same as nameserver option</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   [-p] -ipset [ipset|-]: same as ipset option</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   [-t] -nftset [nftset|-]: same as nftset option</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   [-d] -dualstack-ip-selection [yes|no]: same as dualstack-ip-selection option</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   [-g|-group group-name]: set domain-rules to group.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -no-serve-expired: ignore expired domain</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -delete: delete domain rule</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -no-ip-alias: ignore ip alias</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   -no-cache: ignore cache</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># collection of domains </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># the domain-set can be used with /domain/ for address, nameserver, ipset, etc.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># domain-set -name [set-name] -type list -file [/path/to/file]</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   [-n] -name [set name]: domain set name</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   [-t] -type [list]: domain set type, list only now</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   [-f] -file [path/to/set]: file path of domain set</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># example:</span>
+</span></span><span class="line"><span class="cl">domain-set -name sanction -type list -file /etc/smartdns/proxy.list
+</span></span><span class="line"><span class="cl">address /domain-set:sanction/&lt;VPS_IP_ADDRESS&gt;
+</span></span><span class="line"><span class="cl">nameserver /domain-set:sanction/g1
+</span></span><span class="line"><span class="cl"><span class="c1"># ipset /domain-set:domain-list/ipset</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># domain-rules /domain-set:domain-list/ -speed-check-mode ping</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># set ip rules</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ip-rules ip-cidrs [-ip-alias [...]]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># rules:</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   [-c] -ip-alias [ip1,ip2]: same as ip-alias option</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   [-a] -whitelist-ip: same as whitelist-ip option</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   [-n] -blacklist-ip: same as blacklist-ip option</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   [-p] -bogus-nxdomain: same as bogus-nxdomain option</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   [-t] -ignore-ip: same as ignore-ip option</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># collection of IPs </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># the ip-set can be used with /ip-cidr/ for ip-alias, ignore-ip, etc.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ip-set -name [set-name] -type list -file [/path/to/file]</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   [-n] -name [set name]: ip set name</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   [-t] -type [list]: ip set type, list only now</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   [-f] -file [path/to/set]: file path of ip set</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># example:</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ip-set -name ip-list -file /etc/smartdns/ip-list.conf</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># bogus-nxdomain ip-set:ip-list</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ip-alias ip-set:ip-list 1.2.3.4</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ip-alias ip-set:ip-list ip-set:ip-map-list</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># set client rules</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># client-rules [ip-cidr|mac|ip-set] [-group [group]] [-no-rule-addr] [-no-rule-nameserver] [-no-rule-ipset] [-no-speed-check] [-no-cache] [-no-rule-soa] [-no-dualstack-selection]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># client-rules option is same as bind option, please see bind option for detail.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># set group rules</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># group-begin [group-name]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># group-match [-g|group group-name] [-domain domain] [-client-ip [ip-cidr|mac|ip-set]]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># group-end</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># load plugin</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># plugin [path/to/file] [args]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># plugin /usr/lib/smartdns/libsmartdns-ui.so --p 8080 -i 0.0.0.0 -r /usr/share/smartdns/wwwroot</span>
 </span></span></code></pre></div><ul>
 <li>Create a domain list at this location <code>/etc/smartdns/proxy.list</code> and put the actual domain name any slash or https things line by line, each line just one domain. For instance</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>asfadfad.com
-</span></span><span style="display:flex;"><span>asfdkanskf.net
-</span></span><span style="display:flex;"><span>.
-</span></span><span style="display:flex;"><span>.
-</span></span><span style="display:flex;"><span>.
-</span></span><span style="display:flex;"><span>.
-</span></span><span style="display:flex;"><span>.
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">asfadfad.com
+</span></span><span class="line"><span class="cl">asfdkanskf.net
+</span></span><span class="line"><span class="cl">.
+</span></span><span class="line"><span class="cl">.
+</span></span><span class="line"><span class="cl">.
+</span></span><span class="line"><span class="cl">.
+</span></span><span class="line"><span class="cl">.
 </span></span></code></pre></div><ul>
 <li>Everything is ready just power the smartdns and nginx up ! ;)</li>
 </ul>
-
-			</div>
-		</article>
-	</main>
-<aside>
-	<div>
-		<div>
-			<h3>LATEST POSTS</h3>
-		</div>
-		<div>
-			<ul>
-				
-				<li><a href="/posts/du/">du command</a></li>
-				
-				<li><a href="/posts/mail-sec/">Mail Essential Security</a></li>
-				
-				<li><a href="/posts/kali-tools/">Essential Linux Security Tools</a></li>
-				
-				<li><a href="/posts/iphone-storage/">Iphone storage on Linux</a></li>
-				
-				<li><a href="/posts/ntopng/">Install nTopNG on Linux</a></li>
-				
-			</ul>
-		</div>
-	</div>
-</aside>
+</article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script type="application/javascript" src='https://ghariib.ir/js/toc.js'></script>
+<link rel="stylesheet" href='https://ghariib.ir/css/toc.css' />
 
 
-	<footer>
-	<p>&copy; 2025 <a href="https://blog.alirezagharib.ir/"><b>Alireza Gharib. All right reserved</b></a>.
-	<a href="https://github.com/gharib-uk"><b>Github</b></a>.
-	</p>
-</footer>
 
+  <div class="footer container-xl width-full p-responsive">
+  <div
+    class="position-relative d-flex flex-row-reverse flex-lg-row flex-wrap flex-lg-nowrap flex-justify-center flex-lg-justify-between flex-sm-items-center pt-6 pb-2 mt-6 f6 text-gray border-top border-gray-light ">
+    <a aria-label="Homepage" title="GitHub" class="footer-octicon d-none d-lg-block mr-lg-4" href="https://ghariib.ir/">
+      <svg height="24" class="octicon octicon-mark-github" viewBox="0 0 16 16" version="1.1" width="24">
+        <path fill-rule="evenodd"
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+        </path>
+      </svg>
+    </a>
+    <ul class="list-style-none d-flex flex-wrap col-12 flex-justify-center flex-lg-justify-between mb-2 mb-lg-0">
+      
+      <li class="mr-3 mr-lg-0">Theme by <a href='https://github.com/MeiK2333/github-style'>github-style</a></li>
+      
+    </ul>
+  </div>
+  <div class="d-flex flex-justify-center pb-6">
+    <span class="f6 text-gray-light"></span>
+  </div>
+
+
+</div>
 </body>
+
+<script type="application/javascript" src="https://ghariib.ir/js/github-style.js"></script>
+
+
+
+
+
 </html>
