@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script type="application/javascript" src='https://ghariib.ir/js/theme-mode.js'></script>
+    <link rel="stylesheet" href='https://ghariib.ir/css/frameworks.min.css' />
+    <link rel="stylesheet" href='https://ghariib.ir/css/github.min.css' />
+    <link rel="stylesheet" href='https://ghariib.ir/css/github-style.css' />
+    <link rel="stylesheet" href='https://ghariib.ir/css/light.css' />
+    <link rel="stylesheet" href='https://ghariib.ir/css/dark.css' />
+    <link rel="stylesheet" href='https://ghariib.ir/css/syntax.css' />
+    <title>OSINT-Forensic Tools 2 - Alireza Gharib Personal Blog</title>
+    
+    <link rel="icon" type="image/x-icon" href='/images/github.png'>
+    
+    <meta name="theme-color" content="#1e2327">
+
+    
+    <meta name="description"
+  content="OSINT-Forensic Tools 2" />
+<meta name="keywords"
+  content='blog' />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://ghariib.ir/post/osint4/" />
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="OSINT-Forensic Tools 2 - Alireza Gharib Personal Blog" />
+<meta name="twitter:description"
+  content="OSINT-Forensic Tools 2" />
+<meta name="twitter:site" content="https://ghariib.ir/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image"
+  content="https://ghariib.ir/">
+
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="OSINT-Forensic Tools 2 - Alireza Gharib Personal Blog">
+<meta property="og:description"
+  content="OSINT-Forensic Tools 2" />
+<meta property="og:url" content="https://ghariib.ir/post/osint4/" />
+<meta property="og:site_name" content="OSINT-Forensic Tools 2" />
+<meta property="og:image"
+  content="https://ghariib.ir/">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2024-08-05 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body>
+  <div style="position: relative">
+  <header class="Header js-details-container Details px-3 px-md-4 px-lg-5 flex-wrap flex-md-nowrap open Details--on">
+    <div class="Header-item mobile-none" style="margin-top: -4px; margin-bottom: -4px;">
+      <a class="Header-link" href="https://ghariib.ir/">
+        <img class="octicon" height="32" width="32" src="/images/GitHub-Mark-Light-32px.png">
+      </a>
+    </div>
+    <div class="Header-item d-md-none">
+      <button class="Header-link btn-link js-details-target" type="button"
+        onclick="document.querySelector('#header-search').style.display = document.querySelector('#header-search').style.display == 'none'? 'block': 'none'">
+        <svg height="24" class="octicon octicon-three-bars" viewBox="0 0 16 16" version="1.1" width="24">
+          <path fill-rule="evenodd" d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z">
+          </path>
+        </svg>
+      </button>
+    </div>
+    <div style="display: none;" id="header-search"
+      class="Header-item Header-item--full flex-column flex-md-row width-full flex-order-2 flex-md-order-none mr-0 mr-md-3 mt-3 mt-md-0 Details-content--hidden-not-important d-md-flex">
+      <div
+        class="Header-search header-search flex-auto js-site-search position-relative flex-self-stretch flex-md-self-auto mb-3 mb-md-0 mr-0 mr-md-3 scoped-search site-scoped-search js-jump-to">
+        <div class="position-relative">
+          <form target="_blank" action="https://www.google.com/search" accept-charset="UTF-8" method="get"
+            autocomplete="off">
+            <label
+              class="Header-search-label form-control input-sm header-search-wrapper p-0 js-chromeless-input-container header-search-wrapper-jump-to position-relative d-flex flex-justify-between flex-items-center">
+              <input type="text"
+                class="Header-search-input form-control input-sm header-search-input jump-to-field js-jump-to-field js-site-search-focus js-site-search-field is-clearable"
+                name="q" value="" placeholder="Search" autocomplete="off">
+              <input type="hidden" name="q" value="site:https://ghariib.ir/">
+            </label>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="Header-item Header-item--full flex-justify-center d-md-none position-relative">
+      <a class="Header-link " href="https://ghariib.ir/">
+        <img class="octicon octicon-mark-github v-align-middle" height="32" width="32" src="/images/GitHub-Mark-Light-32px.png">
+      </a>
+    </div>
+    <div class="Header-item" style="margin-right: 0;">
+      <a href="javascript:void(0)" class="Header-link no-select" onclick="switchTheme()">
+        <svg style="fill: var(--color-profile-color-modes-toggle-moon);" class="no-select" viewBox="0 0 16 16"
+          version="1.1" width="16" height="16">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M4.52208 7.71754C7.5782 7.71754 10.0557 5.24006 10.0557 2.18394C10.0557 1.93498 10.0392 1.68986 10.0074 1.44961C9.95801 1.07727 10.3495 0.771159 10.6474 0.99992C12.1153 2.12716 13.0615 3.89999 13.0615 5.89383C13.0615 9.29958 10.3006 12.0605 6.89485 12.0605C3.95334 12.0605 1.49286 10.001 0.876728 7.24527C0.794841 6.87902 1.23668 6.65289 1.55321 6.85451C2.41106 7.40095 3.4296 7.71754 4.52208 7.71754Z">
+          </path>
+        </svg>
+      </a>
+    </div>
+  </header>
+</div>
+
+  
+<div>
+  <main>
+    <div class="gisthead pagehead bg-gray-light pb-0 pt-3 mb-4">
+      <div class="px-0">
+        <div class="mb-3 d-flex px-3 px-md-3 px-lg-5">
+          <div class="flex-auto min-width-0 width-fit mr-3">
+            <div class="d-flex">
+              <div class="d-none d-md-block">
+                <a class="avatar mr-2 flex-shrink-0" href="https://ghariib.ir/">
+                  <img class=" avatar-user"
+                    src="/images/avatar.jpg"
+                    width="32" height="32"></a>
+              </div>
+              <div class="d-flex flex-column">
+                <h1 class="break-word f3 text-normal mb-md-0 mb-1">
+                  <span class="author">
+                    <a href="https://ghariib.ir/">Alireza Gharib</a>
+                  </span>
+                  <span class="path-divider">/</span>
+                  <strong class="css-truncate css-truncate-target mr-1" style="max-width: 410px">
+                    <a href="https://ghariib.ir/post/osint4/">OSINT-Forensic Tools 2</a>
+                  </strong>
+                </h1>
+                <div class="note m-0">
+                  Created <relative-time datetime="Mon, 05 Aug 2024 00:00:00 &#43;0000"
+                    class="no-wrap">
+                    Mon, 05 Aug 2024 00:00:00 &#43;0000</relative-time>
+
+                  
+                  <span class="file-info-divider"></span>
+                  Modified <relative-time datetime="Tue, 29 Apr 2025 19:15:58 &#43;0330"
+                    class="no-wrap">
+                    Tue, 29 Apr 2025 19:15:58 &#43;0330</relative-time>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-lg px-3 new-discussion-timeline">
+      <div class="repository-content gist-content">
+        <div>
+          <div class="js-gist-file-update-container js-task-list-container file-box">
+            <div id="file-pytest" class="file my-2">
+              <div id="post-header" class="file-header d-flex flex-md-items-center flex-items-start sticky-header" style="z-index: 2">
+                <div class="file-info d-flex flex-md-items-center flex-items-start flex-order-1 flex-auto">
+                  <div class="text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1 mt-2 mt-md-0">
+                    
+                    <summary id="toc-toggle" onclick="clickToc()" class="btn btn-octicon m-0 mr-2 p-2">
+                      <svg aria-hidden="true" viewBox="0 0 16 16" height="16" width="16" class="octicon octicon-list-unordered">
+                        <path fill-rule="evenodd" d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"></path>
+                      </svg>
+                    </summary>
+                    <details-menu class="SelectMenu" id="toc-details" style="display: none;">
+                      <div class="SelectMenu-modal rounded-3 mt-1" style="max-height: 340px;">
+                        <div class="SelectMenu-list SelectMenu-list--borderless p-2" style="overscroll-behavior: contain;" id="toc-list">
+                        </div>
+                      </div>
+                    </details-menu>
+                      2026 Words
+                    
+
+                  </div>
+                  <div class="file-actions flex-order-2 pt-0">
+                    
+                    
+                    <a class="muted-link mr-3" href="/tags/osint-forensics">
+                      <svg class="octicon octicon-tag" viewBox="0 0 16 16" version="1.1" width="16" height="16">
+                        <path fill-rule="evenodd"
+                          d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z">
+                        </path>
+                      </svg>
+                      osint, forensics
+                    </a>
+                    
+                    
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="Box-body px-5 pb-5" style="z-index: 1">
+                <article class="markdown-body entry-content container-lg"><h1 id="forensics">Forensics</h1>
+<p>Curated list of awesome <strong>free</strong> (mostly open source) forensic analysis tools and resources.</p>
+<ul>
+<li>Awesome Forensics
+<ul>
+<li><a href="#collections">Collections</a></li>
+<li><a href="#tools">Tools</a>
+<ul>
+<li><a href="#distributions">Distributions</a></li>
+<li><a href="#frameworks">Frameworks</a></li>
+<li><a href="#live-forensics">Live Forensics</a></li>
+<li><a href="#ioc-scanner">IOC Scanner</a></li>
+<li><a href="#acquisition">Acquisition</a></li>
+<li><a href="#imaging">Imaging</a></li>
+<li><a href="#carving">Carving</a></li>
+<li><a href="#memory-forensics">Memory Forensics</a></li>
+<li><a href="#network-forensics">Network Forensics</a></li>
+<li><a href="#windows-artifacts">Windows Artifacts</a>
+<ul>
+<li><a href="#ntfsmft-processing">NTFS/MFT Processing</a></li>
+</ul>
+</li>
+<li><a href="#os-x-forensics">OS X Forensics</a></li>
+<li><a href="#mobile-forensics">Mobile Forensics</a></li>
+<li><a href="#docker-forensics">Docker Forensics</a></li>
+<li><a href="#internet-artifacts">Internet Artifacts</a></li>
+<li><a href="#timeline-analysis">Timeline Analysis</a></li>
+<li><a href="#disk-image-handling">Disk image handling</a></li>
+<li><a href="#decryption">Decryption</a></li>
+<li><a href="#management">Management</a></li>
+<li><a href="#picture-analysis">Picture Analysis</a></li>
+<li><a href="#metadata-forensics">Metadata Forensics</a></li>
+<li><a href="#steganography">Steganography</a></li>
+</ul>
+</li>
+<li><a href="#learn-forensics">Learn Forensics</a>
+<ul>
+<li><a href="#ctfs-and-challenges">CTFs and Challenges</a></li>
+</ul>
+</li>
+<li><a href="#resources">Resources</a>
+<ul>
+<li><a href="#web">Web</a></li>
+<li><a href="#blogs">Blogs</a></li>
+<li><a href="#books">Books</a></li>
+<li><a href="#file-system-corpora">File System Corpora</a></li>
+<li><a href="#other">Other</a></li>
+<li><a href="#labs">Labs</a></li>
+</ul>
+</li>
+<li><a href="#related-awesome-lists">Related Awesome Lists</a></li>
+<li><a href="#contributing">Contributing</a></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="collections">Collections</h2>
+<ul>
+<li><a href="https://aboutdfir.com">AboutDFIR – The Definitive Compendium Project</a> - Collection of forensic resources for learning and research. Offers lists of certifications, books, blogs, challenges and more</li>
+<li>:star: <a href="https://github.com/ForensicArtifacts/artifacts">ForensicArtifacts.com Artifact Repository</a> - Machine-readable knowledge base of forensic artifacts</li>
+</ul>
+<h2 id="tools">Tools</h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/List_of_digital_forensics_tools">Forensics tools on Wikipedia</a></li>
+<li><a href="https://ericzimmerman.github.io/#!index.md">Eric Zimmerman&rsquo;s Tools</a></li>
+</ul>
+<h3 id="distributions">Distributions</h3>
+<ul>
+<li><a href="https://github.com/vitaly-kamluk/bitscout">bitscout</a> - LiveCD/LiveUSB for remote forensic acquisition and analysis</li>
+<li><a href="https://remnux.org/">Remnux</a> - Distro for reverse-engineering and analyzing malicious software</li>
+<li><a href="https://github.com/teamdfir/sift">SANS Investigative Forensics Toolkit (sift)</a> - Linux distribution for forensic analysis</li>
+<li><a href="https://tsurugi-linux.org/">Tsurugi Linux</a> - Linux distribution for forensic analysis</li>
+<li><a href="https://www.winfe.net/home">WinFE</a> - Windows Forensics enviroment</li>
+</ul>
+<h3 id="frameworks">Frameworks</h3>
+<ul>
+<li>:star:<a href="http://www.sleuthkit.org/autopsy/">Autopsy</a> - SleuthKit GUI</li>
+<li><a href="https://github.com/coinbase/dexter">dexter</a> - Dexter is a forensics acquisition framework designed to be extensible and secure</li>
+<li><a href="https://github.com/arxsys/dff">dff</a> - Forensic framework</li>
+<li><a href="https://github.com/fox-it/dissect">Dissect</a> - Dissect is a digital forensics &amp; incident response framework and toolset that allows you to quickly access and analyse forensic artefacts from various disk and file formats, developed by Fox-IT (part of NCC Group).</li>
+<li><a href="https://github.com/hashlookup/hashlookup-forensic-analyser">hashlookup-forensic-analyser</a> - A tool to analyse files from a forensic acquisition to find known/unknown hashes from <a href="https://www.circl.lu/services/hashlookup/">hashlookup</a> API or using a local Bloom filter.</li>
+<li><a href="https://github.com/certtools/intelmq">IntelMQ</a> - IntelMQ collects and processes security feeds</li>
+<li><a href="https://github.com/DFIRKuiper/Kuiper">Kuiper</a> - Digital Investigation Platform</li>
+<li><a href="https://github.com/lmco/laikaboss">Laika BOSS</a> - Laika is an object scanner and intrusion detection system</li>
+<li><a href="https://github.com/Invoke-IR/PowerForensics">PowerForensics</a> - PowerForensics is a framework for live disk forensic analysis</li>
+<li><a href="https://github.com/tap-ir/tapir">TAPIR</a> - TAPIR (Trustable Artifacts Parser for Incident Response) is a multi-user, client/server, incident response framework</li>
+<li>:star: <a href="https://github.com/sleuthkit/sleuthkit">The Sleuth Kit</a> - Tools for low level forensic analysis</li>
+<li><a href="https://github.com/google/turbinia">turbinia</a> - Turbinia is an open-source framework for deploying, managing, and running forensic workloads on cloud platforms</li>
+<li><a href="https://github.com/sepinf-inc/IPED">IPED - Indexador e Processador de Evidências Digitais</a> - Brazilian Federal Police Tool for Forensic Investigations</li>
+<li><a href="https://github.com/pjrinaldi/wombatforensics">Wombat Forensics</a> - Forensic GUI tool</li>
+</ul>
+<h3 id="live-forensics">Live Forensics</h3>
+<ul>
+<li><a href="https://github.com/google/grr">grr</a> - GRR Rapid Response: remote live forensics for incident response</li>
+<li><a href="https://github.com/intezer/linux-explorer">Linux Expl0rer</a> - Easy-to-use live forensics toolbox for Linux endpoints written in Python &amp; Flask</li>
+<li><a href="https://github.com/mozilla/mig">mig</a> - Distributed &amp; real time digital forensics at the speed of the cloud</li>
+<li><a href="https://github.com/osquery/osquery">osquery</a> - SQL powered operating system analytics</li>
+<li><a href="https://github.com/gmagklaras/pofr">POFR</a> - The Penguin OS Flight Recorder collects, stores and organizes for further analysis process execution, file access and network/socket endpoint data from the Linux Operating System.</li>
+<li><a href="https://github.com/tclahr/uac">UAC</a> - UAC (Unix-like Artifacts Collector) is a Live Response collection script for Incident Response that makes use of native binaries and tools to automate the collection of AIX, Android, ESXi, FreeBSD, Linux, macOS, NetBSD, NetScaler, OpenBSD and Solaris systems artifacts.</li>
+</ul>
+<h3 id="ioc-scanner">IOC Scanner</h3>
+<ul>
+<li><a href="https://github.com/codeyourweb/fastfinder">Fastfinder</a> - Fast customisable cross-platform suspicious file finder. Supports md5/sha1/sha256 hashes, literal/wildcard strings, regular expressions and YARA rules</li>
+<li><a href="https://github.com/Neo23x0/Fenrir">Fenrir</a> - Simple Bash IOC Scanner</li>
+<li><a href="https://github.com/Neo23x0/Loki">Loki</a> - Simple IOC and Incident Response Scanner</li>
+<li><a href="https://fireeye.market/apps/211364">Redline</a> - Free endpoint security tool from FireEye</li>
+<li><a href="https://www.nextron-systems.com/thor-lite/">THOR Lite</a> - Free IOC and YARA Scanner</li>
+<li><a href="https://github.com/rusty-ferris-club/recon">recon</a> - Performance oriented file finder with support for SQL querying, index and analyze file metadata with support for YARA.</li>
+</ul>
+<h3 id="acquisition">Acquisition</h3>
+<ul>
+<li><a href="https://github.com/fox-it/acquire">Acquire</a> - Acquire is a tool to quickly gather forensic artifacts from disk images or a live system into a lightweight container</li>
+<li><a href="https://github.com/forensicanalysis/artifactcollector">artifactcollector</a> - A customizable agent to collect forensic artifacts on any Windows, macOS or Linux system</li>
+<li><a href="https://github.com/Silv3rHorn/ArtifactExtractor">ArtifactExtractor</a> - Extract common Windows artifacts from source images and VSCs</li>
+<li><a href="https://github.com/microsoft/avml">AVML</a> - A portable volatile memory acquisition tool for Linux</li>
+<li><a href="https://belkasoft.com/ram-capturer">Belkasoft RAM Capturer</a> - Volatile Memory Acquisition Tool</li>
+<li><a href="https://dfir-orc.github.io/">DFIR ORC</a> - Forensics artefact collection tool for systems running Microsoft Windows</li>
+<li><a href="https://github.com/SekoiaLab/Fastir_Collector">FastIR Collector</a> - Collect artifacts on windows</li>
+<li><a href="https://fireeye.market/apps/211368">FireEye Memoryze</a> - A free memory forensic software</li>
+<li><a href="https://github.com/fit-project/fit">FIT</a> - Forensic acquisition of web pages, emails, social media, etc.</li>
+<li><a href="https://github.com/securityjoes/ForensicMiner">ForensicMiner</a> - A PowerShell-based DFIR automation tool, for artifact and evidence collection on Windows machines.</li>
+<li><a href="https://github.com/504ensicsLabs/LiME">LiME</a> - Loadable Kernel Module (LKM), which allows the acquisition of volatile memory from Linux and Linux-based devices, formerly called DMD</li>
+<li><a href="https://www.magnetforensics.com/resources/magnet-dumpit-for-windows/">Magnet RAM Capture / DumpIt</a> - A free imaging tool designed to capture the physical memory</li>
+<li><a href="https://github.com/alpine-sec/SPECTR3">SPECTR3</a> - Acquire, triage and investigate remote evidence via portable iSCSI readonly access</li>
+<li><a href="https://github.com/op7ic/unix_collector">unix_collector</a> - A live forensic collection script for UNIX-like systems as a single script.</li>
+<li><a href="https://github.com/Velocidex/velociraptor">Velociraptor</a> - Velociraptor is a tool for collecting host based state information using Velocidex Query Language (VQL) queries</li>
+<li><a href="https://www.securizame.com/wintriage-the-triage-tool-for-windows-dfirers/">WinTriage</a> - Wintriage is a live response tool that extracts Windows artifacts. It must be executed with local or domain administrator privileges and recommended to be done from an external drive.</li>
+</ul>
+<h3 id="imaging">Imaging</h3>
+<ul>
+<li><a href="https://sourceforge.net/projects/dcfldd/">dc3dd</a> - Improved version of dd</li>
+<li><a href="https://dcfldd.sourceforge.net/">dcfldd</a> - Different improved version of dd (this version has some bugs!, another version is on github <a href="https://github.com/adulau/dcfldd">adulau/dcfldd</a>)</li>
+<li><a href="https://www.exterro.com/digital-forensics-software/ftk-imager">FTK Imager</a> - Free imageing tool for windows</li>
+<li>:star: <a href="https://sourceforge.net/projects/guymager/">Guymager</a> - Open source version for disk imageing on linux systems</li>
+</ul>
+<h3 id="carving">Carving</h3>
+<ul>
+<li><a href="https://github.com/EricZimmerman/bstrings">bstrings</a> - Improved strings utility</li>
+<li><a href="https://github.com/simsong/bulk_extractor">bulk_extractor</a> - Extracts information such as email addresses, creditcard numbers and histrograms from disk images</li>
+<li><a href="https://github.com/mandiant/flare-floss">floss</a> - Static analysis tool to automatically deobfuscate strings from malware binaries</li>
+<li>:star: <a href="https://www.cgsecurity.org/wiki/PhotoRec">photorec</a> - File carving tool</li>
+<li><a href="https://github.com/sevagas/swap_digger">swap_digger</a> - A bash script used to automate Linux swap analysis, automating swap extraction and searches for Linux user credentials, Web form credentials, Web form emails, etc.</li>
+</ul>
+<h3 id="memory-forensics">Memory Forensics</h3>
+<ul>
+<li><a href="https://github.com/ShaneK2/inVtero.net">inVtero.net</a> - High speed memory analysis framework
+developed in .NET supports all Windows x64, includes code integrity and write support</li>
+<li><a href="https://github.com/denandz/KeeFarce">KeeFarce</a> - Extract KeePass passwords from memory</li>
+<li><a href="https://github.com/ufrisk/MemProcFS">MemProcFS</a> - An easy and convenient way of accessing physical memory as files a virtual file system.</li>
+<li><a href="https://github.com/google/rekall">Rekall</a> - Memory Forensic Framework</li>
+<li><a href="https://github.com/volatilityfoundation/volatility">volatility</a> - The memory forensic framework</li>
+<li><a href="https://github.com/kevthehermit/VolUtility">VolUtility</a> - Web App for Volatility framework</li>
+</ul>
+<h3 id="network-forensics">Network Forensics</h3>
+<ul>
+<li><a href="https://github.com/kismetwireless/kismet">Kismet</a> - A passive wireless sniffer</li>
+<li><a href="https://www.netresec.com/?page=Networkminer">NetworkMiner</a> - Network Forensic Analysis Tool</li>
+<li><a href="https://squey.org">Squey</a> - Logs/PCAP visualization software designed to detect anomalies and weak signals in large amounts of data.</li>
+<li>:star: <a href="https://www.wireshark.org/">WireShark</a> - A network protocol analyzer</li>
+</ul>
+<h3 id="windows-artifacts">Windows Artifacts</h3>
+<ul>
+<li><a href="https://github.com/yampelo/beagle">Beagle</a> -  Transform data sources and logs into graphs</li>
+<li><a href="https://github.com/cgosec/Blauhaunt">Blauhaunt</a> - A tool collection for filtering and visualizing logon events</li>
+<li><a href="https://www.pinguin.lu/fred">FRED</a> - Cross-platform microsoft registry hive editor</li>
+<li><a href="https://github.com/Yamato-Security/hayabusa">Hayabusa</a> - A a sigma-based threat hunting and fast forensics timeline generator for Windows event logs.</li>
+<li><a href="https://www.nirsoft.net/utils/computer_activity_view.html">LastActivityView</a> - LastActivityView by Nirsoftis a tool for Windows operating system that collects information from various sources on a running system, and displays a log of actions made by the user and events occurred on this computer.</li>
+<li><a href="https://github.com/JPCERTCC/LogonTracer">LogonTracer</a> - Investigate malicious Windows logon by visualizing and analyzing Windows event log</li>
+<li><a href="https://github.com/alicangnll/pyshadow">PyShadow</a> - A library for Windows to read shadow copies, delete shadow copies, create symbolic links to shadow copies, and create shadow copies</li>
+<li><a href="https://github.com/williballenthin/python-evt">python-evt</a> - Pure Python parser for classic Windows Event Log files (.evt)</li>
+<li><a href="https://github.com/keydet89/RegRipper3.0">RegRipper3.0</a> - RegRipper is an open source Perl tool for parsing the Registry and presenting it for analysis</li>
+<li><a href="https://github.com/airbus-cert/regrippy">RegRippy</a> - A framework for reading and extracting useful forensics data from Windows registry hives</li>
+</ul>
+<h4 id="ntfsmft-processing">NTFS/MFT Processing</h4>
+<ul>
+<li><a href="http://az4n6.blogspot.com/2015/09/whos-your-master-mft-parsers-reviewed.html">MFT-Parsers</a> - Comparison of MFT-Parsers</li>
+<li><a href="https://binaryforay.blogspot.com/2018/06/introducing-mftecmd.html">MFTEcmd</a> - MFT Parser by Eric Zimmerman</li>
+<li><a href="https://github.com/aarsakian/MFTExtractor">MFTExtractor</a> - MFT-Parser</li>
+<li><a href="https://github.com/kero99/mftmactime">MFTMactime</a> - MFT and USN parser that allows direct extraction in filesystem timeline format (mactime), dump all resident files in the MFT in their original folder structure and run yara rules over them all.</li>
+<li><a href="http://strozfriedberg.github.io/ntfs-linker/">NTFS journal parser</a></li>
+<li><a href="https://github.com/PoorBillionaire/USN-Journal-Parser">NTFS USN Journal parser</a></li>
+<li><a href="https://github.com/Lazza/RecuperaBit">RecuperaBit</a> - Reconstruct and recover NTFS data</li>
+<li><a href="https://github.com/williballenthin/python-ntfs">python-ntfs</a> - NTFS analysis</li>
+</ul>
+<h3 id="os-x-forensics">OS X Forensics</h3>
+<ul>
+<li><a href="https://github.com/sgan81/apfs-fuse">APFS Fuse</a> - A read-only FUSE driver for the new Apple File System</li>
+<li><a href="https://github.com/ydkhatri/mac_apt">mac_apt (macOS Artifact Parsing Tool)</a> - Extracts forensic artifacts from disk images or live machines</li>
+<li><a href="https://github.com/mac4n6/Mac-Locations-Scraper">MacLocationsScraper</a> - Dump the contents of the location database files on iOS and macOS</li>
+<li><a href="https://github.com/mac4n6/macMRU-Parser">macMRUParser</a> - Python script to parse the Most Recently Used (MRU) plist files on macOS into a more human friendly format</li>
+<li><a href="https://github.com/jipegit/OSXAuditor">OSXAuditor</a></li>
+<li><a href="https://github.com/Yelp/osxcollector">OSX Collect</a></li>
+</ul>
+<h3 id="mobile-forensics">Mobile Forensics</h3>
+<ul>
+<li><a href="https://github.com/den4uk/andriller">Andriller</a> - A software utility with a collection of forensic tools for smartphones</li>
+<li><a href="https://github.com/abrignoni/ALEAPP">ALEAPP</a> - An Android Logs Events and Protobuf Parser</li>
+<li><a href="https://www.doubleblak.com/index.php">ArtEx</a> - Artifact Examiner for iOS Full File System extractions</li>
+<li><a href="https://github.com/abrignoni/iLEAPP">iLEAPP</a> - An iOS Logs, Events, And Plists Parser</li>
+<li><a href="https://github.com/mac4n6/iOS-Frequent-Locations-Dumper">iOS Frequent Locations Dumper</a> - Dump the contents of the StateModel#.archive files located in /private/var/mobile/Library/Caches/com.apple.routined/</li>
+<li><a href="https://github.com/jfarley248/MEAT">MEAT</a> - Perform different kinds of acquisitions on iOS devices</li>
+<li><a href="https://github.com/MobSF/Mobile-Security-Framework-MobSF">MobSF</a> - An automated, all-in-one mobile application (Android/iOS/Windows) pen-testing, malware analysis and security assessment framework capable of performing static and dynamic analysis.</li>
+<li><a href="https://github.com/vgmoose/OpenBackupExtractor">OpenBackupExtractor</a> - An app for extracting data from iPhone and iPad backups.</li>
+</ul>
+<h3 id="docker-forensics">Docker Forensics</h3>
+<ul>
+<li><a href="https://github.com/docker-forensics-toolkit/toolkit">dof (Docker Forensics Toolkit)</a> - Extracts and interprets forensic artifacts from disk images of Docker Host systems</li>
+<li><a href="https://github.com/google/docker-explorer">Docker Explorer</a> Extracts and interprets forensic artifacts from disk images of Docker Host systems</li>
+</ul>
+<h3 id="internet-artifacts">Internet Artifacts</h3>
+<ul>
+<li><a href="https://www.nirsoft.net/utils/chrome_cache_view.html">ChromeCacheView</a> - A small utility that reads the cache folder of Google Chrome Web browser, and displays the list of all files currently stored in the cache</li>
+<li><a href="https://github.com/eLoopWoo/chrome-url-dumper">chrome-url-dumper</a> - Dump all local stored infromation collected by Chrome</li>
+<li><a href="https://github.com/obsidianforensics/hindsight">hindsight</a> - Internet history forensics for Google Chrome/Chromium</li>
+<li><a href="https://github.com/moaistory/IE10Analyzer">IE10Analyzer</a> - This tool can parse normal records and recover deleted records in WebCacheV01.dat.</li>
+<li><a href="https://github.com/obsidianforensics/unfurl">unfurl</a> - Extract and visualize data from URLs</li>
+<li><a href="https://github.com/moaistory/WinSearchDBAnalyzer">WinSearchDBAnalyzer</a> - This tool can parse normal records and recover deleted records in Windows.edb.</li>
+</ul>
+<h3 id="timeline-analysis">Timeline Analysis</h3>
+<ul>
+<li><a href="https://github.com/log2timeline/dftimewolf">DFTimewolf</a> - Framework for orchestrating forensic collection, processing and data export using GRR and Rekall</li>
+<li>:star: <a href="https://github.com/log2timeline/plaso">plaso</a> - Extract timestamps from various files and aggregate them</li>
+<li><a href="https://binaryforay.blogspot.com/2017/04/introducing-timeline-explorer-v0400.html">Timeline Explorer</a> - Timeline Analysis tool for CSV and Excel files. Built for SANS FOR508 students</li>
+<li><a href="https://github.com/airbus-cert/timeliner">timeliner</a> - A rewrite of mactime, a bodyfile reader</li>
+<li><a href="https://github.com/google/timesketch">timesketch</a> - Collaborative forensic timeline analysis</li>
+</ul>
+<h3 id="disk-image-handling">Disk image handling</h3>
+<ul>
+<li><a href="https://github.com/aburgh/Disk-Arbitrator">Disk Arbitrator</a> - A Mac OS X forensic utility designed to help the user ensure correct forensic procedures are followed during imaging of a disk device</li>
+<li><a href="https://github.com/ralphje/imagemounter">imagemounter</a> - Command line utility and Python package to ease the (un)mounting of forensic disk images</li>
+<li><a href="https://github.com/libyal/libewf">libewf</a> - Libewf is a library and some tools to access the Expert Witness Compression Format (EWF, E01)</li>
+<li><a href="https://github.com/forensicmatt/PancakeViewer">PancakeViewer</a> - Disk image viewer based in dfvfs, similar to the FTK Imager viewer</li>
+<li><a href="https://www.pinguin.lu/xmount">xmount</a> - Convert between different disk image formats</li>
+</ul>
+<h3 id="decryption">Decryption</h3>
+<ul>
+<li><a href="https://hashcat.net/hashcat/">hashcat</a> - Fast password cracker with GPU support</li>
+<li><a href="https://www.openwall.com/john/">John the Ripper</a> - Password cracker</li>
+</ul>
+<h3 id="management">Management</h3>
+<ul>
+<li><a href="https://github.com/SecurityBrewery/catalyst">Catalyst</a> - Catalyst is an open source security automation and ticket system</li>
+<li><a href="https://github.com/dfirtrack/dfirtrack">dfirtrack</a> - Digital Forensics and Incident Response Tracking application, track systems</li>
+<li><a href="https://github.com/veeral-patel/incidents">Incidents</a> - Web application for organizing non-trivial security investigations. Built on the idea that incidents are trees of tickets, where some tickets are leads</li>
+<li><a href="https://github.com/dfir-iris/iris-web">iris</a> - Collaborative Incident Response platform</li>
+</ul>
+<h3 id="picture-analysis">Picture Analysis</h3>
+<ul>
+<li><a href="https://github.com/Ghirensics/ghiro">Ghiro</a> - A fully automated tool designed to run forensics analysis over a massive amount of images</li>
+<li><a href="https://github.com/GuidoBartoli/sherloq">sherloq</a> - An open-source digital photographic image forensic toolset</li>
+</ul>
+<h3 id="metadata-forensics">Metadata Forensics</h3>
+<ul>
+<li><a href="https://exiftool.org/">ExifTool</a> by Phil Harvey</li>
+<li><a href="https://github.com/ElevenPaths/FOCA">FOCA</a> - FOCA is a tool used mainly to find metadata and hidden information in the documents</li>
+</ul>
+<h3 id="steganography">Steganography</h3>
+<ul>
+<li><a href="https://www.sonicvisualiser.org">Sonicvisualizer</a></li>
+<li><a href="https://github.com/StefanoDeVuono/steghide">Steghide</a> - is a steganography program that hides data in various kinds of image and audio files</li>
+<li><a href="https://github.com/samolds/wavsteg">Wavsteg</a> - is a steganography program that hides data in various kinds of image and audio files</li>
+<li><a href="https://github.com/zed-0xff/zsteg">Zsteg</a> - A steganographic coder for WAV files</li>
+</ul>
+<h2 id="learn-forensics">Learn Forensics</h2>
+<ul>
+<li><a href="https://www.amanhardikar.com/mindmaps/ForensicChallenges.html">Forensic challenges</a> - Mindmap of forensic challenges</li>
+<li><a href="https://www.open.edu/openlearn/science-maths-technology/digital-forensics/content-section-0?active-tab=description-tab">OpenLearn</a> - Digital forensic course</li>
+<li><a href="https://www.enisa.europa.eu/topics/training-and-exercises/trainings-for-cybersecurity-specialists/online-training-material/technical-operational">Training material</a> - Online training material by European Union Agency for Network and Information Security for different topics (e.g. <a href="https://www.enisa.europa.eu/topics/training-and-exercises/trainings-for-cybersecurity-specialists/online-training-material/technical-operational#digital_forensics">Digital forensics</a>, <a href="https://www.enisa.europa.eu/topics/training-and-exercises/trainings-for-cybersecurity-specialists/online-training-material/technical-operational#network_forensics">Network forensics</a>)</li>
+</ul>
+<h3 id="ctfs-and-challenges">CTFs and Challenges</h3>
+<ul>
+<li><a href="https://belkasoft.com/ctf">BelkaCTF</a> - CTFs by Belkasoft</li>
+<li><a href="https://cyberdefenders.org/blueteam-ctf-challenges/?type=ctf">CyberDefenders</a></li>
+<li><a href="https://archive.ooo">DefCon CTFs</a> - archive of DEF CON CTF challenges.</li>
+<li><a href="https://github.com/apsdehal/awesome-ctf/blob/master/README.md#forensics">Forensics CTFs</a></li>
+<li><a href="https://www.magnetforensics.com/blog/magnet-weekly-ctf-challenge/">MagnetForensics CTF Challenge</a></li>
+<li><a href="https://www.malwaretech.com/challenges">MalwareTech Challenges</a></li>
+<li><a href="https://github.com/stuxnet999/MemLabs">MemLabs</a></li>
+<li><a href="https://nw3.ctfd.io">NW3C Chanllenges</a></li>
+<li><a href="https://betweentwodfirns.blogspot.com/2017/11/dfir-ctf-precision-widgets-of-north.html">Precision Widgets of North Dakota Intrusion</a></li>
+<li><a href="https://challenges.re">ReverseEngineering Challenges</a></li>
+</ul>
+<h2 id="resources">Resources</h2>
+<h3 id="web">Web</h3>
+<ul>
+<li><a href="https://www.forensicfocus.com/">ForensicsFocus</a></li>
+<li><a href="https://www.infosecinstitute.com/resources/">Insecstitute Resources</a></li>
+<li><a href="https://www.sans.org/digital-forensics-incident-response/">SANS Digital Forensics</a></li>
+</ul>
+<h3 id="blogs">Blogs</h3>
+<ul>
+<li><a href="https://www.flashbackdata.com/blog/">FlashbackData</a></li>
+<li><a href="https://www.netresec.com/index.ashx?page=Blog">Netresec</a></li>
+<li><a href="https://www.sans.org/blog/?focus-area=digital-forensics">SANS Forensics Blog</a></li>
+<li><a href="https://securityaffairs.com/">SecurityAffairs</a> - blog by Pierluigi Paganini</li>
+<li><a href="https://thisweekin4n6.com/">This Week In 4n6</a> - Weekly updates for forensics</li>
+<li><a href="https://blog.digital-forensics.it/">Zena Forensics</a></li>
+</ul>
+<h3 id="books">Books</h3>
+<p><em>more at <a href="http://dfir.org/?q=node/8">Recommended Readings</a> by Andrew Case</em></p>
+<ul>
+<li><a href="https://www.pearson.com/en-us/subject-catalog/p/Davidoff-Network-Forensics-Tracking-Hackers-through-Cyberspace/P200000009228">Network Forensics: Tracking Hackers through Cyberspace</a> - Learn to recognize hackers’ tracks and uncover network-based evidence</li>
+<li><a href="https://www.memoryanalysis.net/amf">The Art of Memory Forensics</a> - Detecting Malware and Threats in Windows, Linux, and Mac Memory</li>
+<li><a href="https://nostarch.com/nsm">The Practice of Network Security Monitoring</a> - Understanding Incident Detection and Response</li>
+</ul>
+<h3 id="file-system-corpora">File System Corpora</h3>
+<ul>
+<li><a href="https://www.ashemery.com/dfir.html">Digital Forensic Challenge Images</a> - Two DFIR challenges with images</li>
+<li><a href="https://sourceforge.net/projects/dftt/">Digital Forensics Tool Testing Images</a></li>
+<li><a href="https://cfreds.nist.gov">The CFReDS Project</a>
+<ul>
+<li><a href="https://cfreds.nist.gov/Hacking_Case.html">Hacking Case (4.5 GB NTFS Image)</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="other">Other</h3>
+<ul>
+<li><a href="https://www.reddit.com/r/computerforensics/">/r/computerforensics/</a> - Subreddit for computer forensics</li>
+<li><a href="https://github.com/Invoke-IR/ForensicPosters">ForensicPosters</a> - Posters of file system structures</li>
+<li><a href="https://www.sans.org/posters/">SANS Posters</a> - Free posters provided by SANS</li>
+</ul>
+<h3 id="labs">Labs</h3>
+<ul>
+<li><a href="https://github.com/op7ic/BlueTeam.Lab">BlueTeam.Lab</a> - Blue Team detection lab created with Terraform and Ansible in Azure.</li>
+</ul>
+</article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script type="application/javascript" src='https://ghariib.ir/js/toc.js'></script>
+<link rel="stylesheet" href='https://ghariib.ir/css/toc.css' />
+
+
+
+  <div class="footer container-xl width-full p-responsive">
+  <div
+    class="position-relative d-flex flex-row-reverse flex-lg-row flex-wrap flex-lg-nowrap flex-justify-center flex-lg-justify-between flex-sm-items-center pt-6 pb-2 mt-6 f6 text-gray border-top border-gray-light ">
+    <a aria-label="Homepage" title="GitHub" class="footer-octicon d-none d-lg-block mr-lg-4" href="https://ghariib.ir/">
+      <svg height="24" class="octicon octicon-mark-github" viewBox="0 0 16 16" version="1.1" width="24">
+        <path fill-rule="evenodd"
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+        </path>
+      </svg>
+    </a>
+    <ul class="list-style-none d-flex flex-wrap col-12 flex-justify-center flex-lg-justify-between mb-2 mb-lg-0">
+      
+      <li class="mr-3 mr-lg-0">Theme by <a href='https://github.com/MeiK2333/github-style'>github-style</a></li>
+      
+    </ul>
+  </div>
+  <div class="d-flex flex-justify-center pb-6">
+    <span class="f6 text-gray-light"></span>
+  </div>
+
+
+</div>
+</body>
+
+<script type="application/javascript" src="https://ghariib.ir/js/github-style.js"></script>
+
+
+
+
+
+</html>
