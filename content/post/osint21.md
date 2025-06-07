@@ -103,6 +103,7 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [Online FlowChart Editor](https://mermaid-js.github.io/mermaid-live-editor/) - Generation of diagrams like flowcharts or sequence diagrams from text in a similar manner as markdown
 - [Markdown Editor](https://markdown-editor.github.io/) - Markdown editor
 - [SQL Editor](https://www.mycompiler.io/new/sql) - sql editor
+- [SQLable](https://sqlable.com/) - Online SQL tools for formatting, validation, conversion, data generation, and query playgrounds
 - [SQLite Viewer](https://inloop.github.io/sqlite-viewer/) - drop sqlite file and view content, sqlite viewer
 - [OCR Text Extractor](https://osint.sh/ocr/) - OCR text extractor from png, jpeg, webp and pdf
 - [Wetranscriber](https://www.wetranscriber.com/) - A free, simple and efficient transcription platform for individuals or teams
